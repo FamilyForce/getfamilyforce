@@ -1742,10 +1742,38 @@ contactForm.addEventListener('submit', (e) => {
     return;
   }
 
-  /* ─── SUCCESS ─── */
-  formContent.style.display = 'none';
-  formSuccess.classList.add('visible');
-  formSuccess.querySelector('.success-heading').focus();
+  /* ─── SUBMIT TO API ─── */
+  const submitBtn = contactForm.querySelector('[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
+
+  fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      first_name: nameInput.value.trim(),
+      email: emailInput.value.trim(),
+      subject: subjectInput.value,
+      message: messageInput.value.trim(),
+    }),
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      formContent.style.display = 'none';
+      formSuccess.classList.add('visible');
+      formSuccess.querySelector('.success-heading').focus();
+    } else {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send message';
+      alert('Something went wrong. Please try again or email us directly at support@getfamilyforce.com');
+    }
+  })
+  .catch(() => {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send message';
+    alert('Something went wrong. Please try again or email us directly at support@getfamilyforce.com');
+  });
 });
 
 /* Inline validation on blur */
