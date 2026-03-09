@@ -889,6 +889,14 @@ button { font: inherit; cursor: pointer; }
     gtag('js', new Date());
     gtag('config', 'G-NWDKH78LWB');
   </script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window._supabaseClient = supabase.createClient(
+      'https://ewjqbafaxeasyvknxmof.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+    );
+  </script>
 </head>
 
 <body>
@@ -1219,15 +1227,32 @@ button { font: inherit; cursor: pointer; }
     submitBtn.setAttribute('aria-disabled', 'true');
     submitBtn.textContent = 'Sending…';
 
-    /* Persist ?next param so sign-in-sent can forward the user after magic link */
+    /* Persist ?next param */
     var params = new URLSearchParams(window.location.search);
     var next = params.get('next');
-    if (next) {
-      sessionStorage.setItem('ff_signin_next', next);
-    }
+    if (next) sessionStorage.setItem('ff_signin_next', next);
 
-    /* Redirect to confirmation page */
-    window.location.href = 'sign-in-sent.html';
+    /* Send magic link via Supabase */
+    var SUPABASE_URL  = 'https://ewjqbafaxeasyvknxmof.supabase.co';
+    var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ';
+    var sb = window._supabaseClient;
+
+    sb.auth.signInWithOtp({
+      email: email,
+      options: {
+        emailRedirectTo: 'https://getfamilyforce.com/auth/callback'
+      }
+    }).then(function(result) {
+      if (result.error) {
+        submitBtn.removeAttribute('disabled');
+        submitBtn.removeAttribute('aria-disabled');
+        submitBtn.textContent = 'Send my link';
+        setError('Something went wrong. Please try again.');
+      } else {
+        localStorage.setItem('ff_user_email', email);
+        window.location.href = 'sign-in-sent.html';
+      }
+    });
   });
 }());
 </script>

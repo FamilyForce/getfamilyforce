@@ -1304,6 +1304,18 @@ button { font: inherit; cursor: pointer; }
     gtag('js', new Date());
     gtag('config', 'G-NWDKH78LWB');
   </script>
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    window._supabaseClient = supabase.createClient(
+      'https://ewjqbafaxeasyvknxmof.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+    );
+    // Redirect to sign-in if not authenticated
+    window._supabaseClient.auth.getSession().then(({ data }) => {
+      if (!data.session) window.location.href = 'sign-in.html';
+    });
+  </script>
 </head>
 
 <body>
@@ -1679,7 +1691,7 @@ button { font: inherit; cursor: pointer; }
      All vanilla JS — zero dependencies.
      ═══════════════════════════════════════════════════════════ -->
 <script>
-(function () {
+(async function () {
   'use strict';
 
 
@@ -1720,8 +1732,10 @@ button { font: inherit; cursor: pointer; }
 
 
   /* ─── READ USER DATA ─── */
-  const userName  = localStorage.getItem('ff_user_name')  || '';
-  const userEmail = localStorage.getItem('ff_user_email') || '';
+  // Pull from Supabase session
+  const { data: { session } } = await window._supabaseClient.auth.getSession();
+  const userEmail = session?.user?.email || localStorage.getItem('ff_user_email') || '';
+  const userName  = userEmail.split('@')[0] || '';
 
   // Greeting
   if (userName) {
@@ -1853,12 +1867,14 @@ button { font: inherit; cursor: pointer; }
     }
   });
 
-  // Sign out (clears localStorage)
+  // Sign out
   function handleSignOut() {
-    localStorage.removeItem('ff_user_name');
-    localStorage.removeItem('ff_user_email');
-    localStorage.removeItem('ff_progress');
-    window.location.href = 'sign-in.html';
+    window._supabaseClient.auth.signOut().then(() => {
+      localStorage.removeItem('ff_user_name');
+      localStorage.removeItem('ff_user_email');
+      localStorage.removeItem('ff_progress');
+      window.location.href = 'sign-in.html';
+    });
   }
 
   if (signoutBtn) signoutBtn.addEventListener('click', handleSignOut);
