@@ -733,312 +733,306 @@ button { font: inherit; cursor: pointer; }
 
 
 /* ═══════════════════════════════════════════════════════════
-   11. OWNED PLAYBOOK SECTION
+   10b. CERTIFICATE NAME BANNER
    ═══════════════════════════════════════════════════════════ */
-.owned-section {
-  padding-top: 40px;
-  padding-bottom: 0;
+
+/* ── Saved state: single clean inline row ── */
+.cert-name-banner {
+  padding: 0 0 28px;
 }
 
-.owned-section-label {
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--text-ghost);
-  margin-bottom: 20px;
-}
-
-
-/* ─── Owned Card ─── */
-.owned-card {
-  position: relative;
-  border: 2px solid #1D1D1F;
-  border-radius: var(--radius-card);
-  background: var(--surface);
-  padding: 48px 36px 36px;
-  max-width: 640px;
-}
-
-/* Badge */
-.owned-badge {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  background: #1D1D1F;
-  color: #FFFFFF;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 5px 10px;
-  border-radius: 100px;
-  line-height: 1;
-  display: inline-block;
-}
-
-/* Book identity row */
-.owned-book-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 32px;
-}
-
-.owned-book-emoji {
-  font-size: 32px;
-  line-height: 1;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.owned-book-title {
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--text);
-  line-height: 1.2;
-  margin-bottom: 5px;
-}
-
-.owned-book-subtitle {
-  font-size: 13px;
-  color: var(--text-dim);
-  font-weight: 400;
-}
-
-
-/* ─── Progress Bars ─── */
-.progress-section {
-  margin-bottom: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.progress-row {
-  display: grid;
-  grid-template-columns: 90px 1fr 36px;
+.cnb-saved {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-.progress-label {
-  font-size: 12.5px;
-  color: var(--text-mid);
-  font-weight: 500;
-}
-
-.progress-track {
-  height: 6px;
-  background: var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  border-radius: 3px;
-  background: var(--terra);
-  transition: width 0.6s ease;
-}
-
-.progress-fill.complete {
-  background: #22C55E;
-}
-
-.progress-pct {
-  font-size: 11.5px;
-  color: var(--text-dim);
-  font-weight: 500;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-
-/* ─── Owned Card Actions ─── */
-.owned-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-
-/* ═══════════════════════════════════════════════════════════
-   12. CERTIFICATE GHOST (locked preview)
-   ═══════════════════════════════════════════════════════════ */
-.cert-ghost {
-  margin-top: 24px;
-  max-width: 640px;
-  position: relative;
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  border: 1px solid var(--border);
-  background: var(--surface);
-}
-
-/* Blurred cert preview inside */
-.cert-ghost-preview {
-  filter: blur(3px);
-  opacity: 0.45;
-  padding: 40px 36px;
-  pointer-events: none;
-  user-select: none;
-}
-
-.cert-ghost-preview-inner {
-  text-align: center;
-}
-
-.cert-ghost-header {
-  font-size: 9px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--terra-dark);
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-.cert-ghost-label {
-  font-size: 11px;
-  color: var(--text-dim);
-  margin-bottom: 4px;
-}
-
-.cert-ghost-name {
-  font-family: var(--serif);
-  font-size: 28px;
-  letter-spacing: -0.01em;
-  margin-bottom: 16px;
-}
-
-.cert-ghost-playbook {
-  font-family: var(--serif);
-  font-size: 16px;
-  color: var(--terra);
-  margin-bottom: 16px;
-}
-
-.cert-ghost-divider {
-  width: 40px;
-  height: 1px;
-  background: var(--border);
-  margin: 0 auto 16px;
-}
-
-.cert-ghost-seal {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--terra), var(--terra-bright));
-  margin: 0 auto;
+.cnb-saved-info {
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-/* Overlay on top of ghost */
-.cert-ghost-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  background: rgba(250, 250, 250, 0.72);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
-  padding: 32px;
-  text-align: center;
-}
-
-.cert-ghost-msg {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
-  max-width: 280px;
-  line-height: 1.5;
-}
-
-
-/* ═══════════════════════════════════════════════════════════
-   13. UNOWNED PLAYBOOKS SECTION
-   ═══════════════════════════════════════════════════════════ */
-.store-section {
-  padding-top: 72px;
-  padding-bottom: 80px;
-}
-
-.store-heading {
+  gap: 6px;
   font-family: var(--sans);
-  font-size: clamp(22px, 3vw, 28px);
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.cnb-label { font-weight: 400; }
+
+.cnb-name-display {
   font-weight: 600;
-  letter-spacing: -0.01em;
   color: var(--text);
-  margin-bottom: 28px;
 }
 
-.unowned-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-grid-gap);
+.cnb-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: var(--sans);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+  letter-spacing: .01em;
 }
-
-/* Unowned card */
-.unowned-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: border-color 0.3s ease;
-}
-
 @media (hover: hover) {
-  .unowned-card:hover {
-    border-color: #C2BFD0;
+  .cnb-edit-btn:hover {
+    color: var(--terra);
+    border-color: var(--terra);
+    background: rgba(110,78,214,.04);
   }
 }
 
-/* Color bar at top */
-.unowned-card-bar {
-  height: 8px;
+/* ── Form state ── */
+.cnb-form {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 20px 24px;
+  max-width: 560px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04);
+}
+
+.cnb-form-label {
+  display: block;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-mid);
+  letter-spacing: .03em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.cnb-form-hint { display: none; }
+
+.cnb-form-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.cnb-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: var(--sans);
+  color: var(--text);
+  background: var(--elevated);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  min-width: 0;
+}
+.cnb-input::placeholder { color: var(--text-ghost); }
+.cnb-input:focus {
+  border-color: var(--terra);
+  box-shadow: 0 0 0 3px rgba(110,78,214,.1);
+  background: var(--surface);
+}
+.cnb-input[style*="border-color: rgb(231"] {
+  box-shadow: 0 0 0 3px rgba(231,76,60,.08);
+}
+
+.cnb-save-btn {
+  padding: 10px 18px;
+  background: var(--terra);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--sans);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .15s;
+  letter-spacing: .01em;
+}
+@media (hover: hover) {
+  .cnb-save-btn:hover { background: var(--terra-dark); }
+}
+
+.cnb-input-err {
+  font-size: 12px;
+  color: #e74c3c;
+  margin-top: 8px;
+  font-family: var(--sans);
+}
+
+@media (max-width: 480px) {
+  .cnb-form { padding: 16px 18px; }
+  .cnb-form-row { flex-direction: column; align-items: stretch; }
+  .cnb-save-btn { width: 100%; text-align: center; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   11. LIBRARY TABLE
+   ═══════════════════════════════════════════════════════════ */
+.library-section {
+  padding: 48px 0 100px;
+}
+
+.library-table {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lib-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 0 20px;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 20px 24px 20px 32px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow .2s, transform .2s;
+}
+@media (hover: hover) {
+  .lib-row:hover {
+    box-shadow: 0 4px 24px rgba(110,78,214,.08);
+    transform: translateY(-1px);
+  }
+}
+
+.lib-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 16px 0 0 16px;
+}
+
+.lib-info {
+  padding-left: 8px;
+  min-width: 0;
+}
+
+.lib-title {
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lib-meta {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lib-price-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
   flex-shrink: 0;
 }
 
-.unowned-card-body {
-  padding: 28px 28px 0;
-  flex: 1;
+.lib-price-original {
+  font-size: 12px;
+  color: var(--text-ghost);
+  font-family: var(--sans);
+  font-weight: 400;
+  text-decoration: line-through;
 }
 
-.unowned-card-title {
-  font-size: 17px;
+.lib-badge {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  color: #5BA88E;
+  font-family: var(--sans);
+  white-space: nowrap;
+}
+
+.lib-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.lib-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font-size: 13px;
   font-weight: 600;
-  color: var(--text);
-  margin-bottom: 8px;
-  letter-spacing: -0.01em;
+  font-family: var(--sans);
+  text-decoration: none;
+  transition: background .2s, color .2s, transform .15s;
+  white-space: nowrap;
 }
 
-.unowned-card-hook {
-  font-size: 14px;
+.lib-btn--read {
+  background: var(--elevated);
+  color: var(--text);
+  border: 1px solid var(--border-light);
+}
+@media (hover: hover) {
+  .lib-btn--read:hover { background: var(--border-light); transform: translateY(-1px); }
+}
+
+.lib-btn--quiz {
+  background: var(--terra);
+  color: #fff;
+  border: 1px solid transparent;
+}
+@media (hover: hover) {
+  .lib-btn--quiz:hover { background: var(--terra-dark); transform: translateY(-1px); }
+}
+
+.lib-btn--cert {
+  background: transparent;
   color: var(--text-dim);
-  font-weight: 300;
-  line-height: 1.6;
-  margin-bottom: 20px;
+  border: 1px solid var(--border-light);
+}
+@media (hover: hover) {
+  .lib-btn--cert:hover { background: var(--elevated); color: var(--text); }
 }
 
-.unowned-card-price {
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--text);
-  letter-spacing: -0.01em;
+@media (max-width: 860px) {
+  .lib-row {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    padding-left: 28px;
+  }
+  .lib-price-wrap { display: none; }
+  .lib-actions {
+    grid-column: 1;
+    grid-row: 2;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
 }
 
-.unowned-card-footer {
-  padding: 20px 28px 28px;
+@media (max-width: 480px) {
+  .lib-row { padding: 16px 18px; gap: 0 12px; }
+  .lib-title { font-size: 15px; }
+  .lib-meta { font-size: 12px; }
+  .lib-btn { padding: 8px 12px; font-size: 12px; }
+  .lib-actions { gap: 6px; }
 }
-
 
 /* ═══════════════════════════════════════════════════════════
    14. FOOTER
@@ -1450,197 +1444,193 @@ button { font: inherit; cursor: pointer; }
   <div class="dash-greeting">
     <div class="wrap">
       <h1 class="dash-heading" id="greeting">Hi there.</h1>
-      <p class="dash-sub" id="dash-sub">Your library · 1 playbook owned</p>
+      <p class="dash-sub" id="dash-sub">Your library · 5 playbooks · all free</p>
+    </div>
+  </div>
+
+  <!-- ─── CERTIFICATE NAME ─── -->
+  <div class="cert-name-banner" id="cert-name-banner">
+    <div class="wrap">
+
+      <!-- View state: name is set -->
+      <div class="cnb-saved" id="cnb-saved" hidden>
+        <div class="cnb-saved-info">
+          <span class="cnb-label">Certificate name —</span>
+          <strong class="cnb-name-display" id="cnb-name-display"></strong>
+        </div>
+        <button class="cnb-edit-btn" id="cnb-edit-btn" aria-label="Edit certificate name">
+          <svg width="11" height="11" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M14.5 2.5a2.121 2.121 0 013 3L6 17H2v-4L14.5 2.5z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Edit
+        </button>
+      </div>
+
+      <!-- Input state: name not set or editing -->
+      <div class="cnb-form" id="cnb-form">
+        <label class="cnb-form-label" for="cnb-input">Your name on the certificate</label>
+        <div class="cnb-form-row">
+          <input
+            type="text"
+            id="cnb-input"
+            class="cnb-input"
+            placeholder="e.g. Sarah Johnson"
+            autocomplete="name"
+            maxlength="60"
+            aria-describedby="cnb-input-err"
+          >
+          <button class="cnb-save-btn" id="cnb-save-btn">Save name</button>
+        </div>
+        <p class="cnb-input-err" id="cnb-input-err" role="alert" hidden>Please enter your name.</p>
+      </div>
+
     </div>
   </div>
 
 
-  <!-- ─── OWNED PLAYBOOKS ─── -->
-  <section class="owned-section" aria-labelledby="owned-section-label">
-    <div class="wrap">
-      <p class="owned-section-label" id="owned-section-label">Your Playbooks</p>
-
-      <!-- ─── Owned Card: Screen Time ─── -->
-      <article
-        class="owned-card"
-        aria-label="The Screen Time Playbook — yours, free"
-      >
-        <!-- Badge -->
-        <span class="owned-badge" aria-label="Owned — free">YOURS · FREE</span>
-
-        <!-- Book identity -->
-        <div class="owned-book-row">
-          <span class="owned-book-emoji" aria-hidden="true">📚</span>
-          <div>
-            <h2 class="owned-book-title">The Screen Time Playbook</h2>
-            <p class="owned-book-subtitle">Playbook 01 · Ages 2–6</p>
-          </div>
-        </div>
-
-        <!-- Progress bars -->
-        <div class="progress-section" aria-label="Your progress">
-
-          <div class="progress-row">
-            <span class="progress-label" id="label-ebook">eBook</span>
-            <div
-              class="progress-track"
-              role="progressbar"
-              aria-valuenow="0"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              aria-labelledby="label-ebook"
-              id="track-ebook"
-            >
-              <div class="progress-fill" id="fill-ebook" style="width:0%"></div>
-            </div>
-            <span class="progress-pct" id="pct-ebook" aria-live="polite">0%</span>
-          </div>
-
-          <div class="progress-row">
-            <span class="progress-label" id="label-quiz">Quiz</span>
-            <div
-              class="progress-track"
-              role="progressbar"
-              aria-valuenow="0"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              aria-labelledby="label-quiz"
-              id="track-quiz"
-            >
-              <div class="progress-fill" id="fill-quiz" style="width:0%"></div>
-            </div>
-            <span class="progress-pct" id="pct-quiz" aria-live="polite">0%</span>
-          </div>
-
-          <div class="progress-row">
-            <span class="progress-label" id="label-cert">Certificate</span>
-            <div
-              class="progress-track"
-              role="progressbar"
-              aria-valuenow="0"
-              aria-valuemin="0"
-              aria-valuemax="100"
-              aria-labelledby="label-cert"
-              id="track-cert"
-            >
-              <div class="progress-fill" id="fill-cert" style="width:0%"></div>
-            </div>
-            <span class="progress-pct" id="pct-cert" aria-live="polite">0%</span>
-          </div>
-
-        </div><!-- /progress-section -->
-
-        <!-- Action buttons -->
-        <div class="owned-actions">
-          <a href="manuscripts/screen-time-playbook-final.pdf" class="btn-secondary" target="_blank" rel="noopener">
-            <span aria-hidden="true">📖</span> Read
-          </a>
-          <a href="quiz-intro-screentime.html" class="btn-primary">
-            <span aria-hidden="true">📝</span> Take Quiz
-          </a>
-        </div>
-
-      </article><!-- /owned-card -->
-
-
-      <!-- ─── Ghosted Certificate Preview ─── -->
-      <div
-        class="cert-ghost"
-        id="cert-ghost"
-        aria-label="Locked certificate — complete the quiz to unlock"
-      >
-        <!-- Blurred preview (decorative, hidden from AT) -->
-        <div class="cert-ghost-preview" aria-hidden="true">
-          <div class="cert-ghost-preview-inner">
-            <p class="cert-ghost-header">FamilyForce · Certificate of Completion</p>
-            <p class="cert-ghost-label">This certifies that</p>
-            <p class="cert-ghost-name" id="cert-ghost-name">Your Name</p>
-            <p class="cert-ghost-label">has completed</p>
-            <p class="cert-ghost-playbook">The Screen Time Playbook</p>
-            <div class="cert-ghost-divider"></div>
-            <div class="cert-ghost-seal">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <!-- Overlay -->
-        <div class="cert-ghost-overlay" role="complementary">
-          <p class="cert-ghost-msg">Complete the quiz to unlock your certificate</p>
-          <a href="quiz-intro-screentime.html" class="btn-primary-sm">Take Quiz →</a>
-        </div>
-      </div><!-- /cert-ghost -->
-
-    </div><!-- /wrap -->
-  </section><!-- /owned-section -->
-
-
-  <!-- ─── UNOWNED PLAYBOOKS ─── -->
-  <section class="store-section" aria-labelledby="store-heading">
+  <!-- ─── LIBRARY ─── -->
+  <section class="library-section" aria-label="Your playbook library">
     <div class="wrap">
 
-      <h2 class="store-heading" id="store-heading">Add to your library</h2>
+      <div class="library-table">
 
-      <div class="unowned-grid">
-
-        <!-- Card 1: Sleep Training -->
-        <article class="unowned-card" aria-label="Sleep Training Playbook — $4.99">
-          <div class="unowned-card-bar" style="background:#5B7BB5" aria-hidden="true"></div>
-          <div class="unowned-card-body">
-            <h3 class="unowned-card-title">The Sleep Training Playbook</h3>
-            <p class="unowned-card-hook">The science of getting everyone to sleep.</p>
-            <p class="unowned-card-price">$4.99</p>
+        <!-- ── Screen Time ── -->
+        <article class="lib-row" data-playbook="screen-time" aria-label="Screen Time Playbook">
+          <div class="lib-accent" style="background:#9B80FF" aria-hidden="true"></div>
+          <div class="lib-info">
+            <h2 class="lib-title">Screen Time</h2>
+            <p class="lib-meta">Ages 0–6 · What the data actually says</p>
           </div>
-          <div class="unowned-card-footer">
-            <a href="playbook-sleep.html" class="btn-secondary">Get this playbook →</a>
+          <div class="lib-price-wrap">
+            <span class="lib-price-original">$14.99</span>
+            <span class="lib-badge">FREE</span>
+          </div>
+          <div class="lib-actions">
+            <a href="manuscripts/screen-time-playbook-final.pdf" class="lib-btn lib-btn--read" target="_blank" rel="noopener" aria-label="Read Screen Time Playbook PDF">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Read
+            </a>
+            <a href="quiz-intro-screentime.html" class="lib-btn lib-btn--quiz" aria-label="Take Screen Time quiz">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Quiz
+            </a>
+            <a href="certificates/certificate-screentime.html" class="lib-btn lib-btn--cert" aria-label="View Screen Time certificate">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Certificate
+            </a>
           </div>
         </article>
 
-        <!-- Card 2: Tantrums -->
-        <article class="unowned-card" aria-label="Tantrums Playbook — $4.99">
-          <div class="unowned-card-bar" style="background:#7C5CFC" aria-hidden="true"></div>
-          <div class="unowned-card-body">
-            <h3 class="unowned-card-title">The Tantrums Playbook</h3>
-            <p class="unowned-card-hook">What's actually happening — and what works.</p>
-            <p class="unowned-card-price">$4.99</p>
+        <!-- ── Potty Training ── -->
+        <article class="lib-row" data-playbook="potty-training" aria-label="Potty Training Playbook">
+          <div class="lib-accent" style="background:#6E4ED6" aria-hidden="true"></div>
+          <div class="lib-info">
+            <h2 class="lib-title">Potty Training</h2>
+            <p class="lib-meta">Ages 2–3 · 40+ expert sources distilled</p>
           </div>
-          <div class="unowned-card-footer">
-            <a href="playbook-tantrum.html" class="btn-secondary">Get this playbook →</a>
+          <div class="lib-price-wrap">
+            <span class="lib-price-original">$14.99</span>
+            <span class="lib-badge">FREE</span>
           </div>
-        </article>
-
-        <!-- Card 3: Feeding -->
-        <article class="unowned-card" aria-label="Feeding Playbook — $4.99">
-          <div class="unowned-card-bar" style="background:#5BA88E" aria-hidden="true"></div>
-          <div class="unowned-card-body">
-            <h3 class="unowned-card-title">The Feeding Playbook</h3>
-            <p class="unowned-card-hook">From first solids to the picky-eating years.</p>
-            <p class="unowned-card-price">$4.99</p>
-          </div>
-          <div class="unowned-card-footer">
-            <a href="playbook-feeding.html" class="btn-secondary">Get this playbook →</a>
-          </div>
-        </article>
-
-        <!-- Card 4: Potty Training -->
-        <article class="unowned-card" aria-label="Potty Training Playbook — $4.99">
-          <div class="unowned-card-bar" style="background:#6E4ED6" aria-hidden="true"></div>
-          <div class="unowned-card-body">
-            <h3 class="unowned-card-title">The Potty Training Playbook</h3>
-            <p class="unowned-card-hook">40+ expert sources distilled.</p>
-            <p class="unowned-card-price">$4.99</p>
-          </div>
-          <div class="unowned-card-footer">
-            <a href="playbook-potty-training.html" class="btn-secondary">Get this playbook →</a>
+          <div class="lib-actions">
+            <a href="manuscripts/potty-training-playbook-final.pdf" class="lib-btn lib-btn--read" target="_blank" rel="noopener" aria-label="Read Potty Training Playbook PDF">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Read
+            </a>
+            <a href="quiz-intro.html" class="lib-btn lib-btn--quiz" aria-label="Take Potty Training quiz">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Quiz
+            </a>
+            <a href="certificates/certificate.html" class="lib-btn lib-btn--cert" aria-label="View Potty Training certificate">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Certificate
+            </a>
           </div>
         </article>
 
-      </div><!-- /unowned-grid -->
+        <!-- ── Sleep Training ── -->
+        <article class="lib-row" data-playbook="sleep-training" aria-label="Sleep Training Playbook">
+          <div class="lib-accent" style="background:#5B7BB5" aria-hidden="true"></div>
+          <div class="lib-info">
+            <h2 class="lib-title">Sleep Training</h2>
+            <p class="lib-meta">Ages 0–3 · The science of infant sleep</p>
+          </div>
+          <div class="lib-price-wrap">
+            <span class="lib-price-original">$14.99</span>
+            <span class="lib-badge">FREE</span>
+          </div>
+          <div class="lib-actions">
+            <a href="manuscripts/sleep-training-playbook-final.pdf" class="lib-btn lib-btn--read" target="_blank" rel="noopener" aria-label="Read Sleep Training Playbook PDF">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Read
+            </a>
+            <a href="quiz-intro-sleep.html" class="lib-btn lib-btn--quiz" aria-label="Take Sleep Training quiz">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Quiz
+            </a>
+            <a href="certificates/certificate-sleep.html" class="lib-btn lib-btn--cert" aria-label="View Sleep Training certificate">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Certificate
+            </a>
+          </div>
+        </article>
+
+        <!-- ── Tantrums ── -->
+        <article class="lib-row" data-playbook="tantrum" aria-label="Tantrums Playbook">
+          <div class="lib-accent" style="background:#7C5CFC" aria-hidden="true"></div>
+          <div class="lib-info">
+            <h2 class="lib-title">Tantrums</h2>
+            <p class="lib-meta">Ages 1–4 · Emotional regulation strategies</p>
+          </div>
+          <div class="lib-price-wrap">
+            <span class="lib-price-original">$14.99</span>
+            <span class="lib-badge">FREE</span>
+          </div>
+          <div class="lib-actions">
+            <a href="manuscripts/tantrum-playbook-final.pdf" class="lib-btn lib-btn--read" target="_blank" rel="noopener" aria-label="Read Tantrums Playbook PDF">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Read
+            </a>
+            <a href="quiz-intro-tantrum.html" class="lib-btn lib-btn--quiz" aria-label="Take Tantrums quiz">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Quiz
+            </a>
+            <a href="certificates/certificate-tantrum.html" class="lib-btn lib-btn--cert" aria-label="View Tantrums certificate">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Certificate
+            </a>
+          </div>
+        </article>
+
+        <!-- ── Feeding ── -->
+        <article class="lib-row" data-playbook="feeding" aria-label="Feeding Playbook">
+          <div class="lib-accent" style="background:#5BA88E" aria-hidden="true"></div>
+          <div class="lib-info">
+            <h2 class="lib-title">Feeding</h2>
+            <p class="lib-meta">Ages 0–3 · From first solids to picky eating</p>
+          </div>
+          <div class="lib-price-wrap">
+            <span class="lib-price-original">$14.99</span>
+            <span class="lib-badge">FREE</span>
+          </div>
+          <div class="lib-actions">
+            <a href="manuscripts/feeding-playbook-final.pdf" class="lib-btn lib-btn--read" target="_blank" rel="noopener" aria-label="Read Feeding Playbook PDF">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Read
+            </a>
+            <a href="quiz-intro-feeding.html" class="lib-btn lib-btn--quiz" aria-label="Take Feeding quiz">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Quiz
+            </a>
+            <a href="certificates/certificate-feeding.html" class="lib-btn lib-btn--cert" aria-label="View Feeding certificate">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              Certificate
+            </a>
+          </div>
+        </article>
+
+      </div><!-- /library-table -->
 
     </div><!-- /wrap -->
-  </section><!-- /store-section -->
+  </section>
 
 </main><!-- /main-content -->
 
@@ -1661,11 +1651,11 @@ button { font: inherit; cursor: pointer; }
       </div>
       <nav aria-label="Playbook links">
         <p class="footer-heading">Playbooks</p>
-        <a href="playbook-free-screentime.html" class="footer-link">Screen Time &#8212; Free</a>
-        <a href="playbook-potty-training.html" class="footer-link">Potty Training (Free)</a>
-        <a href="playbook-sleep.html" class="footer-link">Sleep Training (Free)</a>
-        <a href="playbook-tantrum.html" class="footer-link">Tantrums (Free)</a>
-        <a href="playbook-feeding.html" class="footer-link">Feeding (Free)</a>
+        <a href="playbook-free-screentime.html" class="footer-link">Screen Time — Free</a>
+        <a href="playbook-potty-training.html" class="footer-link">Potty Training — Free</a>
+        <a href="playbook-sleep.html" class="footer-link">Sleep Training — Free</a>
+        <a href="playbook-tantrum.html" class="footer-link">Tantrums — Free</a>
+        <a href="playbook-feeding.html" class="footer-link">Feeding — Free</a>
         <a href="index.html#library" class="footer-link">All Playbooks</a>
       </nav>
       <nav aria-label="Company links">
@@ -1734,30 +1724,31 @@ button { font: inherit; cursor: pointer; }
   /* ─── READ USER DATA ─── */
   // Pull from Supabase session
   const { data: { session } } = await window._supabaseClient.auth.getSession();
-  const userEmail = session?.user?.email || localStorage.getItem('ff_user_email') || '';
-  const userName  = userEmail.split('@')[0] || '';
+  const userEmail    = session?.user?.email || localStorage.getItem('ff_user_email') || '';
+  const certName     = localStorage.getItem('ff_user_name') || '';
+  const emailFallback = userEmail.split('@')[0] || '';
+  const userName     = certName || emailFallback;
 
-  // Greeting
-  if (userName) {
-    greetingEl.textContent = 'Hi, ' + userName + '.';
-  } else {
-    greetingEl.textContent = 'Hi there.';
+  // Greeting — uses cert name (first name only) if available
+  function updateGreeting() {
+    const name = localStorage.getItem('ff_user_name') || emailFallback;
+    const firstName = name.trim().split(/\s+/)[0] || '';
+    greetingEl.textContent = firstName ? 'Hi, ' + firstName + '.' : 'Hi there.';
+
+    // Avatar initials
+    const parts = name.trim().split(/\s+/);
+    const initials = name
+      ? (parts.length >= 2
+          ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+          : parts[0].slice(0, 2).toUpperCase())
+      : '?';
+    avatarInitials.textContent = initials;
+    avatarBtn.setAttribute('aria-label', 'Account menu' + (name ? ' for ' + name : ''));
+    dropdownNameEl.textContent = name || 'Your Account';
   }
+  updateGreeting();
+  window._ffUpdateGreeting = updateGreeting; // expose for name banner
 
-  // Avatar initials (up to 2 chars)
-  if (userName) {
-    const parts = userName.trim().split(/\s+/);
-    const initials = parts.length >= 2
-      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
-      : parts[0].slice(0, 2).toUpperCase();
-    avatarInitials.textContent  = initials;
-    avatarBtn.setAttribute('aria-label', 'Account menu for ' + userName);
-  } else {
-    avatarInitials.textContent = '?';
-  }
-
-  // Dropdown identity
-  dropdownNameEl.textContent  = userName  || 'Your Account';
   dropdownEmailEl.textContent = userEmail || '';
 
   // Mobile menu identity
@@ -1768,6 +1759,60 @@ button { font: inherit; cursor: pointer; }
   if (certGhostNameEl) {
     certGhostNameEl.textContent = userName || 'Your Name';
   }
+
+
+  /* ─── CERTIFICATE NAME BANNER ─── */
+  (function() {
+    const banner   = document.getElementById('cert-name-banner');
+    const savedDiv = document.getElementById('cnb-saved');
+    const formDiv  = document.getElementById('cnb-form');
+    const display  = document.getElementById('cnb-name-display');
+    const editBtn  = document.getElementById('cnb-edit-btn');
+    const input    = document.getElementById('cnb-input');
+    const saveBtn  = document.getElementById('cnb-save-btn');
+    const errMsg   = document.getElementById('cnb-input-err');
+    if (!banner) return;
+
+    function showSaved(name) {
+      display.textContent = name;
+      savedDiv.removeAttribute('hidden');
+      formDiv.setAttribute('hidden', '');
+    }
+
+    function showForm(prefill) {
+      if (prefill) input.value = prefill;
+      savedDiv.setAttribute('hidden', '');
+      formDiv.removeAttribute('hidden');
+      input.focus();
+    }
+
+    function saveName() {
+      const val = input.value.trim();
+      if (!val) {
+        errMsg.removeAttribute('hidden');
+        input.style.borderColor = '#e74c3c';
+        input.focus();
+        return;
+      }
+      errMsg.setAttribute('hidden', '');
+      input.style.borderColor = '';
+      localStorage.setItem('ff_user_name', val);
+      showSaved(val);
+      if (window._ffUpdateGreeting) window._ffUpdateGreeting();
+    }
+
+    // Init
+    const existing = localStorage.getItem('ff_user_name') || '';
+    if (existing) {
+      showSaved(existing);
+    } else {
+      showForm('');
+    }
+
+    saveBtn.addEventListener('click', saveName);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
+    editBtn.addEventListener('click', () => showForm(localStorage.getItem('ff_user_name') || ''));
+  })();
 
 
   /* ─── READ PROGRESS DATA ─── */
@@ -1785,7 +1830,7 @@ button { font: inherit; cursor: pointer; }
 
   // Determine pass/complete thresholds
   const ebookDone  = ebookVal >= 100;
-  const quizPassed = quizVal  >= 70;   // 70% to pass
+  const quizPassed = quizVal  >= 80;   // 70% to pass
   const certDone   = certEarned;
 
   // Update eBook bar
@@ -1801,9 +1846,40 @@ button { font: inherit; cursor: pointer; }
   setBar(fillCert,  trackCert,  pctCert,  certDone ? 100 : 0, certDone);
 
   // Hide certificate ghost if cert is already earned
-  if (certDone && certGhost) {
-    certGhost.hidden = true;
-  }
+  /* ─── UPDATE LIBRARY ROWS WITH PROGRESS ─── */
+  (function() {
+    const rows = document.querySelectorAll('.lib-row[data-playbook]');
+    rows.forEach(row => {
+      const key  = row.getAttribute('data-playbook');
+      const data = progressData[key] || {};
+      const quizPassed = (data.quiz || 0) >= 80;
+
+      if (quizPassed) {
+        // Update Quiz button → Passed
+        const quizBtn = row.querySelector('.lib-btn--quiz');
+        if (quizBtn) {
+          quizBtn.innerHTML = `
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Passed`;
+          quizBtn.style.background = '#5BA88E';
+          quizBtn.style.cursor = 'default';
+          quizBtn.removeAttribute('href');
+          quizBtn.setAttribute('aria-label', key + ' quiz passed');
+        }
+        // Highlight certificate button
+        const certBtn = row.querySelector('.lib-btn--cert');
+        if (certBtn) {
+          certBtn.style.background = 'rgba(110,78,214,.08)';
+          certBtn.style.color = 'var(--terra)';
+          certBtn.style.borderColor = 'rgba(110,78,214,.2)';
+        }
+        // Add passed indicator to row
+        row.style.borderColor = 'rgba(91,168,142,.3)';
+      }
+    });
+  })();
 
 
   /* ─── AVATAR DROPDOWN ─── */

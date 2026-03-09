@@ -1435,7 +1435,7 @@ button { font: inherit; cursor: pointer; }
     <!-- Desktop nav links (logged-in) -->
     <ul class="nav-links-loggedin" role="list">
       <li><a href="index.html#library">Playbooks</a></li>
-      <li><a href="dashboard.html">My Library</a></li>
+      <li><a href="../dashboard.html">My Library</a></li>
       <!-- Avatar with dropdown -->
       <li class="nav-avatar" id="navAvatar">
         <button
@@ -1453,7 +1453,7 @@ button { font: inherit; cursor: pointer; }
             <div class="nav-dropdown-name" id="dropdownName">Parent</div>
             <div class="nav-dropdown-email" id="dropdownEmail">parent@example.com</div>
           </div>
-          <a href="dashboard.html" class="nav-dropdown-link" role="menuitem">
+          <a href="../dashboard.html" class="nav-dropdown-link" role="menuitem">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="margin-right:6px;opacity:.6"><rect x="1" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="1" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="9" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.4"/></svg>
             My Library
           </a>
@@ -1492,7 +1492,7 @@ button { font: inherit; cursor: pointer; }
   </div>
   <ul class="mobile-menu-links" role="list">
     <li><a href="index.html#library">Playbooks</a></li>
-    <li><a href="dashboard.html">My Library</a></li>
+    <li><a href="../dashboard.html">My Library</a></li>
     <li><a href="certificate.html" aria-current="page">My Certificates</a></li>
   </ul>
   <div class="mobile-menu-footer">
@@ -1687,7 +1687,7 @@ button { font: inherit; cursor: pointer; }
       </a>
 
       <!-- Back to Library -->
-      <a href="dashboard.html" class="cert-library-link">
+      <a href="../dashboard.html" class="cert-library-link">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -1715,7 +1715,7 @@ button { font: inherit; cursor: pointer; }
       </div>
       <nav aria-label="Playbook links">
         <p class="footer-heading">Playbooks</p>
-        <a href="playbook-free-screentime.html" class="footer-link">Screen Time &#8212; Free</a>
+        <a href="playbook-free-screentime.html" class="footer-link">Screen Time — Free</a>
         <a href="playbook-potty-training.html" class="footer-link">Potty Training</a>
         <a href="playbook-sleep.html" class="footer-link">Sleep Training</a>
         <a href="playbook-tantrum.html" class="footer-link">Tantrums</a>
@@ -2008,6 +2008,74 @@ document.getElementById('facebookBtn').addEventListener('click', () => {
     'width=580,height=400,noopener,noreferrer'
   );
 });
+
+
+/* ─── CONFETTI ─── */
+(function() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'confetti-canvas';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const COLORS = ['#6E4ED6','#9B80FF','#5BA88E','#FFD700','#FF6B9D','#5B7BB5','#7C5CFC'];
+  const pieces = [];
+  const COUNT  = 120;
+
+  for (let i = 0; i < COUNT; i++) {
+    pieces.push({
+      x:     Math.random() * canvas.width,
+      y:     Math.random() * canvas.height - canvas.height,
+      w:     Math.random() * 10 + 6,
+      h:     Math.random() * 5 + 4,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      speed: Math.random() * 3 + 2,
+      angle: Math.random() * Math.PI * 2,
+      spin:  (Math.random() - 0.5) * 0.15,
+      drift: (Math.random() - 0.5) * 1.5,
+      opacity: Math.random() * 0.4 + 0.6,
+    });
+  }
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      ctx.save();
+      ctx.globalAlpha = p.opacity;
+      ctx.translate(p.x + p.w / 2, p.y + p.h / 2);
+      ctx.rotate(p.angle);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+      p.y     += p.speed;
+      p.x     += p.drift;
+      p.angle += p.spin;
+      if (p.y > canvas.height) {
+        p.y = -20;
+        p.x = Math.random() * canvas.width;
+      }
+    });
+    frame++;
+    if (frame < 240) requestAnimationFrame(draw);
+    else {
+      // Fade out canvas
+      let op = 1;
+      const fade = setInterval(() => {
+        op -= 0.05;
+        canvas.style.opacity = op;
+        if (op <= 0) { clearInterval(fade); canvas.remove(); }
+      }, 30);
+    }
+  }
+  draw();
+})();
 
 </script>
 
