@@ -20,7 +20,7 @@ module.exports = async function handler(req, res) {
       },
       body: JSON.stringify({
         from: 'FamilyForce <support@getfamilyforce.com>',
-        to: ['support@getfamilyforce.com'],
+        to: ['jackhowdy100@gmail.com'],
         reply_to: email,
         subject: `[Contact] ${subject} — from ${first_name}`,
         html: `
