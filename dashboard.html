@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE — Dashboard / My Library (Logged-in)
+     Stack: Vanilla HTML/CSS/JS (zero dependencies, no build step)
+     Accessibility: WCAG 2.1 AA compliant
+     ═══════════════════════════════════════════════════════════ -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+
+<!-- ─── SEO META ─── -->
+<title>My Library — FamilyForce</title>
+<meta name="description" content="Your FamilyForce library — track your playbook progress and access your certificates.">
+<link rel="canonical" href="https://getfamilyforce.com/dashboard">
+
+<!-- ─── OPEN GRAPH ─── -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="My Library — FamilyForce">
+<meta property="og:description" content="Track your playbook progress and access your FamilyForce certificates.">
+<meta property="og:url" content="https://getfamilyforce.com/dashboard">
+<meta property="og:site_name" content="FamilyForce">
+
+<!-- ─── FAVICONS ─── -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#6E4ED6">
+
+<!-- ─── FONTS ─── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   1. DESIGN TOKENS (CSS Custom Properties)
+   Copied exactly from index.html — FamilyForce Design System v2
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  /* Color: Surface */
+  --bg: #FAFAFA;
+  --surface: #FFFFFF;
+  --elevated: #F4F0FC;
+
+  /* Color: Border */
+  --border: #E5E2EC;
+  --border-light: #EDEBF2;
+
+  /* Color: Text */
+  --text: #1D1D1F;
+  --text-mid: #5C5960;
+  --text-dim: #8A879A;
+  --text-ghost: #C2BFD0;
+
+  /* Color: Brand purple (was terracotta — variable name kept for compat) */
+  --terra: #6E4ED6;
+  --terra-dark: #5B3CC4;    /* AA contrast-safe for small text */
+  --terra-bright: #7C5CFC;
+  --terra-glow: rgba(110, 78, 214, 0.06);
+
+  /* Color: Semantic */
+  --focus-ring: 0 0 0 3px rgba(110, 78, 214, 0.4);
+  --selection: rgba(110, 78, 214, 0.15);
+
+  /* Typography: Font stacks */
+  --sans: 'Outfit', system-ui, -apple-system, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+
+  /* Spacing: Responsive tokens (overridden at breakpoints) */
+  --space-page-x: clamp(28px, 5vw, 64px);
+  --space-section-y: 120px;
+  --space-section-y-lg: 160px;
+  --space-stack-lg: 48px;
+  --space-stack-md: 32px;
+  --space-stack-sm: 20px;
+  --space-grid-gap: 20px;
+  --space-card-x: 24px;
+  --space-card-y: 32px;
+
+  /* Radius */
+  --radius-pill: 100px;
+  --radius-container: 20px;
+  --radius-card: 16px;
+  --radius-input: 10px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration: 0.5s;
+  --reveal-duration: 1.1s;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   2. RESET & BASE
+   ═══════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within { scroll-behavior: smooth; }
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--text);
+}
+
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+
+@font-face { font-family: 'Outfit'; font-display: swap; src: local('Outfit'); }
+@font-face { font-family: 'Instrument Serif'; font-display: swap; src: local('Instrument Serif'); }
+
+
+/* ═══════════════════════════════════════════════════════════
+   3. FOCUS MANAGEMENT (WCAG 2.1 AA)
+   ═══════════════════════════════════════════════════════════ */
+:focus {
+  outline: 2px solid var(--terra);
+  outline-offset: 2px;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 4px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-nav:focus-visible,
+.pill:focus-visible {
+  border-radius: var(--radius-pill);
+}
+
+.avatar-btn:focus-visible {
+  border-radius: 50%;
+}
+
+.owned-card:focus-visible {
+  box-shadow: 0 0 0 3px rgba(110,78,214,.4) inset;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   4. LAYOUT PRIMITIVES
+   ═══════════════════════════════════════════════════════════ */
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 max(var(--space-page-x), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--space-page-x), env(safe-area-inset-right, 0px));
+}
+
+.section {
+  position: relative;
+  padding: var(--space-section-y) 0;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+  margin: 0 auto;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   5. TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════ */
+.label {
+  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--terra-dark);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   6. NAVIGATION — LOGGED-IN VARIANT
+   Fixed header. Logo left, nav links center-right, avatar right.
+   Mobile: hamburger at ≤480px (avatar stays visible).
+   ═══════════════════════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250, 250, 250, 0.85);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  box-shadow: 0 1px 0 var(--border);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 72px;
+  padding: 0 var(--space-page-x);
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.logo-f { color: var(--text); }
+.logo-s { color: var(--terra); }
+
+/* Nav links (center-right) */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+  margin: 0 auto 0 0;
+  padding-left: 40px;
+}
+
+.nav-links a {
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  letter-spacing: 0.01em;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.nav-links a.active {
+  color: var(--text);
+  font-weight: 700;
+}
+
+@media (hover: hover) {
+  .nav-links a:hover { color: var(--text); }
+}
+
+/* Nav right: avatar + hamburger wrapper */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   7. AVATAR + DROPDOWN
+   ═══════════════════════════════════════════════════════════ */
+.avatar-wrap {
+  position: relative;
+}
+
+.avatar-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #1D1D1F;
+  color: #FFFFFF;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--sans);
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  /* Touch target: use transparent padding trick without altering size */
+  position: relative;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Extend hit area to 44×44px */
+.avatar-btn::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+}
+
+@media (hover: hover) {
+  .avatar-btn:hover { opacity: 0.85; }
+}
+
+/* Dropdown panel */
+.avatar-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 8px 32px rgba(29, 29, 31, 0.10),
+    0 2px 8px rgba(29, 29, 31, 0.06);
+  min-width: 210px;
+  padding: 8px;
+  z-index: 1010;
+  /* Animate in */
+  transform-origin: top right;
+  animation: dropdownIn 0.18s var(--ease) both;
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.avatar-dropdown[hidden] {
+  display: none;
+}
+
+/* User identity block */
+.dropdown-user {
+  padding: 10px 12px 12px;
+  border-radius: 8px;
+}
+
+.dropdown-user-name {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.dropdown-user-email {
+  display: block;
+  font-size: 11.5px;
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+/* Divider inside dropdown */
+.dropdown-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 6px 0;
+}
+
+/* Dropdown menu items */
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-mid);
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  font-family: var(--sans);
+  /* min touch target */
+  min-height: 36px;
+}
+
+@media (hover: hover) {
+  .dropdown-item:hover {
+    background: var(--elevated);
+    color: var(--text);
+  }
+}
+
+.dropdown-item:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 8px;
+}
+
+.dropdown-item.dropdown-item--active {
+  color: var(--terra);
+  font-weight: 600;
+}
+
+.dropdown-signout {
+  color: var(--text-dim);
+}
+
+@media (hover: hover) {
+  .dropdown-signout:hover {
+    background: #FFF5F5;
+    color: #C62828;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   8. HAMBURGER + MOBILE MENU
+   ═══════════════════════════════════════════════════════════ */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.hamburger span {
+  display: block;
+  height: 1.5px;
+  background: var(--text);
+  border-radius: 1px;
+  transition: transform 0.3s ease, width 0.3s ease, opacity 0.3s ease;
+}
+
+.hamburger span:first-child  { width: 20px; }
+.hamburger span:nth-child(2) { width: 20px; }
+.hamburger span:last-child   { width: 14px; }
+
+.hamburger[aria-expanded="true"] span:first-child {
+  transform: translateY(6.5px) rotate(45deg);
+}
+
+.hamburger[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger[aria-expanded="true"] span:last-child {
+  width: 20px;
+  transform: translateY(-6.5px) rotate(-45deg);
+}
+
+/* Mobile menu overlay */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  background: rgba(250, 250, 250, 0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease,
+              visibility 0.25s ease,
+              transform 0.3s var(--ease);
+  pointer-events: none;
+}
+
+.mobile-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.mobile-menu-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-dim);
+  width: 44px; height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.mobile-menu-close:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: 8px;
+}
+
+.mobile-menu-links {
+  flex: 1;
+  padding: 24px 20px;
+  list-style: none;
+}
+
+.mobile-menu-links li a,
+.mobile-menu-links li button {
+  display: flex;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  min-height: 56px;
+  width: 100%;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  cursor: pointer;
+  font-family: var(--sans);
+  text-align: left;
+}
+
+.mobile-menu-links li a.active {
+  color: var(--terra);
+  font-weight: 700;
+}
+
+.mobile-menu-links li button {
+  color: var(--text-dim);
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.mobile-menu-links li.divider-li {
+  padding: 4px 0 0;
+}
+
+.mobile-menu-cta {
+  padding: 20px 20px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--border-light);
+}
+
+.mobile-user-info {
+  padding: 12px 0 0;
+  margin-bottom: 8px;
+}
+
+.mobile-user-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mobile-user-email {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   9. BUTTONS
+   ═══════════════════════════════════════════════════════════ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 15px 32px;
+  background: var(--terra);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  transition: background-color var(--duration) var(--ease),
+              transform var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+  cursor: pointer;
+  font-family: var(--sans);
+  text-decoration: none;
+}
+
+.btn-primary:active {
+  background: #4A2EA8;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled,
+.btn-primary[aria-disabled="true"] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--text-mid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 500;
+  transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+  font-family: var(--sans);
+  text-decoration: none;
+}
+
+.btn-secondary:active {
+  border-color: var(--terra-dark);
+  color: var(--terra-dark);
+  background: var(--terra-glow);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 60px rgba(110, 78, 214, 0.18),
+                0 0 0 1px rgba(110, 78, 214, 0.15);
+    background: var(--terra-dark);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--terra);
+    color: var(--terra);
+  }
+}
+
+/* Small button variant for cert ghost overlay */
+.btn-primary-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 24px;
+  background: var(--terra);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+  font-family: var(--sans);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .btn-primary-sm:hover {
+    background: var(--terra-dark);
+    transform: translateY(-2px);
+  }
+}
+
+.btn-primary-sm:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--radius-pill);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   10. DASHBOARD — GREETING SECTION
+   ═══════════════════════════════════════════════════════════ */
+.dash-greeting {
+  padding-top: calc(72px + 56px); /* nav height + breathing room */
+  padding-bottom: 8px;
+}
+
+.dash-heading {
+  font-family: var(--sans);
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.dash-sub {
+  font-size: 15px;
+  color: var(--text-dim);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   11. OWNED PLAYBOOK SECTION
+   ═══════════════════════════════════════════════════════════ */
+.owned-section {
+  padding-top: 40px;
+  padding-bottom: 0;
+}
+
+.owned-section-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-ghost);
+  margin-bottom: 20px;
+}
+
+
+/* ─── Owned Card ─── */
+.owned-card {
+  position: relative;
+  border: 2px solid #1D1D1F;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  padding: 48px 36px 36px;
+  max-width: 640px;
+}
+
+/* Badge */
+.owned-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: #1D1D1F;
+  color: #FFFFFF;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 100px;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* Book identity row */
+.owned-book-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.owned-book-emoji {
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.owned-book-title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 5px;
+}
+
+.owned-book-subtitle {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: 400;
+}
+
+
+/* ─── Progress Bars ─── */
+.progress-section {
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.progress-row {
+  display: grid;
+  grid-template-columns: 90px 1fr 36px;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-label {
+  font-size: 12.5px;
+  color: var(--text-mid);
+  font-weight: 500;
+}
+
+.progress-track {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--terra);
+  transition: width 0.6s ease;
+}
+
+.progress-fill.complete {
+  background: #22C55E;
+}
+
+.progress-pct {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  font-weight: 500;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+
+/* ─── Owned Card Actions ─── */
+.owned-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   12. CERTIFICATE GHOST (locked preview)
+   ═══════════════════════════════════════════════════════════ */
+.cert-ghost {
+  margin-top: 24px;
+  max-width: 640px;
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* Blurred cert preview inside */
+.cert-ghost-preview {
+  filter: blur(3px);
+  opacity: 0.45;
+  padding: 40px 36px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.cert-ghost-preview-inner {
+  text-align: center;
+}
+
+.cert-ghost-header {
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--terra-dark);
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.cert-ghost-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+.cert-ghost-name {
+  font-family: var(--serif);
+  font-size: 28px;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+
+.cert-ghost-playbook {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--terra);
+  margin-bottom: 16px;
+}
+
+.cert-ghost-divider {
+  width: 40px;
+  height: 1px;
+  background: var(--border);
+  margin: 0 auto 16px;
+}
+
+.cert-ghost-seal {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--terra), var(--terra-bright));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Overlay on top of ghost */
+.cert-ghost-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(250, 250, 250, 0.72);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  padding: 32px;
+  text-align: center;
+}
+
+.cert-ghost-msg {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   13. UNOWNED PLAYBOOKS SECTION
+   ═══════════════════════════════════════════════════════════ */
+.store-section {
+  padding-top: 72px;
+  padding-bottom: 80px;
+}
+
+.store-heading {
+  font-family: var(--sans);
+  font-size: clamp(22px, 3vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 28px;
+}
+
+.unowned-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-grid-gap);
+}
+
+/* Unowned card */
+.unowned-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.3s ease;
+}
+
+@media (hover: hover) {
+  .unowned-card:hover {
+    border-color: #C2BFD0;
+  }
+}
+
+/* Color bar at top */
+.unowned-card-bar {
+  height: 8px;
+  flex-shrink: 0;
+}
+
+.unowned-card-body {
+  padding: 28px 28px 0;
+  flex: 1;
+}
+
+.unowned-card-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.unowned-card-hook {
+  font-size: 14px;
+  color: var(--text-dim);
+  font-weight: 300;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.unowned-card-price {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.unowned-card-footer {
+  padding: 20px 28px 28px;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   14. FOOTER
+   Matching pattern from playbook-potty-training.html exactly.
+   ═══════════════════════════════════════════════════════════ */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 60px 0 36px;
+  padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px));
+  background: var(--surface);
+  margin-top: 40px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 80px;
+  margin-bottom: var(--space-stack-lg);
+}
+
+.footer-heading {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-ghost);
+  margin-bottom: 18px;
+  font-weight: 600;
+}
+
+.footer-link {
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 13px;
+  display: block;
+  margin-bottom: 12px;
+  transition: color 0.3s ease;
+  padding: 2px 0;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .footer-link:hover { color: var(--terra); }
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--text-ghost);
+  font-weight: 300;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   15. RESPONSIVE: COMPACT (481–899px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 899px) {
+  :root {
+    --space-section-y: 80px;
+    --space-stack-lg: 40px;
+    --space-stack-md: 24px;
+    --space-grid-gap: 16px;
+    --radius-container: 16px;
+  }
+
+  .footer-grid {
+    display: block;
+  }
+
+  .footer-grid > * + * {
+    margin-top: 32px;
+  }
+
+  .owned-card {
+    max-width: 100%;
+  }
+
+  .cert-ghost {
+    max-width: 100%;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   16. RESPONSIVE: COMPACT NARROW (≤480px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  :root {
+    --space-page-x: 20px;
+    --space-section-y: 56px;
+    --space-grid-gap: 12px;
+    --radius-card: 12px;
+  }
+
+  /* Nav: show hamburger, hide desktop links */
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-inner { height: 64px; }
+
+  /* Greeting */
+  .dash-greeting {
+    padding-top: calc(64px + 40px);
+    padding-bottom: 0;
+  }
+
+  .dash-heading {
+    font-size: clamp(28px, 7vw, 36px);
+  }
+
+  /* Owned card */
+  .owned-card {
+    padding: 40px 20px 24px;
+    max-width: 100%;
+  }
+
+  .owned-badge {
+    top: 12px;
+    left: 12px;
+  }
+
+  .owned-book-row {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .owned-book-emoji { font-size: 26px; }
+  .owned-book-title { font-size: 17px; }
+
+  .progress-row {
+    grid-template-columns: 80px 1fr 30px;
+    gap: 8px;
+  }
+
+  .progress-label { font-size: 12px; }
+  .progress-pct { font-size: 11px; }
+
+  .owned-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .owned-actions .btn-primary,
+  .owned-actions .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    min-height: 50px;
+  }
+
+  /* Cert ghost */
+  .cert-ghost-preview { padding: 28px 20px; }
+
+  .cert-ghost-msg {
+    font-size: 14px;
+  }
+
+  /* Unowned grid: 1 column */
+  .unowned-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .unowned-card-body {
+    padding: 20px 20px 0;
+  }
+
+  .unowned-card-footer {
+    padding: 16px 20px 20px;
+  }
+
+  /* Unowned CTA: full-width */
+  .unowned-card-footer .btn-secondary {
+    width: 100%;
+    justify-content: center;
+    min-height: 48px;
+  }
+
+  /* Footer */
+  .footer-link {
+    font-size: 14px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Store section */
+  .store-section {
+    padding-top: 48px;
+    padding-bottom: 56px;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   17. REDUCED MOTION
+   ═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-primary-sm {
+    transition-property: background-color, border-color, color !important;
+  }
+
+  .progress-fill {
+    transition: none !important;
+  }
+
+  .avatar-dropdown {
+    animation: none !important;
+  }
+
+  .mobile-menu {
+    transition: none !important;
+  }
+
+  html { scroll-behavior: auto !important; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   18. SKIP LINK
+   ═══════════════════════════════════════════════════════════ */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  background: var(--terra);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  z-index: 9999;
+  font-weight: 600;
+  transition: top 0.2s;
+  font-family: var(--sans);
+}
+
+.skip-link:focus {
+  top: 16px;
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+</style>
+</head>
+
+<body>
+
+<!-- ─── Skip Link ─── -->
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     NAVIGATION — LOGGED-IN
+     Logo left | Playbooks + My Library (active) | Avatar right
+     ═══════════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav" aria-label="Main navigation">
+  <div class="nav-inner">
+
+    <!-- Logo -->
+    <a href="index.html" class="logo" aria-label="FamilyForce — Home">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-f">Family</span><span class="logo-s">Force</span>
+    </a>
+
+    <!-- Desktop nav links -->
+    <ul class="nav-links" role="list">
+      <li><a href="index.html#library">Playbooks</a></li>
+      <li><a href="dashboard.html" class="active" aria-current="page">My Library</a></li>
+    </ul>
+
+    <!-- Right: Avatar + Hamburger -->
+    <div class="nav-right">
+
+      <!-- Avatar button + dropdown -->
+      <div class="avatar-wrap" id="avatar-wrap">
+        <button
+          class="avatar-btn"
+          id="avatar-btn"
+          aria-expanded="false"
+          aria-haspopup="true"
+          aria-controls="avatar-dropdown"
+          aria-label="Account menu"
+        >
+          <span id="avatar-initials" aria-hidden="true">?</span>
+        </button>
+
+        <div
+          class="avatar-dropdown"
+          id="avatar-dropdown"
+          role="menu"
+          aria-label="Account menu"
+          hidden
+        >
+          <!-- User identity -->
+          <div class="dropdown-user">
+            <span class="dropdown-user-name" id="dropdown-name">Loading…</span>
+            <span class="dropdown-user-email" id="dropdown-email"></span>
+          </div>
+
+          <div class="dropdown-divider" role="separator"></div>
+
+          <!-- Menu items -->
+          <a href="dashboard.html" class="dropdown-item dropdown-item--active" role="menuitem" aria-current="page">My Library</a>
+          <a href="certificates/certificate.html" class="dropdown-item" role="menuitem">My Certificates</a>
+
+          <div class="dropdown-divider" role="separator"></div>
+
+          <button class="dropdown-item dropdown-signout" role="menuitem" id="signout-btn">Sign Out</button>
+        </div>
+      </div>
+
+      <!-- Hamburger (mobile only) -->
+      <button
+        class="hamburger"
+        id="hamburger-btn"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+  </div>
+</nav><!-- /nav -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     MOBILE MENU
+     ═══════════════════════════════════════════════════════════ -->
+<div
+  class="mobile-menu"
+  id="mobile-menu"
+  role="dialog"
+  aria-label="Navigation menu"
+  aria-modal="true"
+>
+  <div class="mobile-menu-header">
+    <a href="index.html" class="logo" style="font-size:18px" aria-label="FamilyForce — Home">
+      <svg width="12" height="14" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-f">Family</span><span class="logo-s">Force</span>
+    </a>
+    <button class="mobile-menu-close" aria-label="Close menu" id="mobile-menu-close">✕</button>
+  </div>
+
+  <ul class="mobile-menu-links" role="list">
+    <!-- User info at top -->
+    <li>
+      <div class="mobile-user-info">
+        <div class="mobile-user-name" id="mobile-user-name">Loading…</div>
+        <div class="mobile-user-email" id="mobile-user-email"></div>
+      </div>
+    </li>
+    <li><a href="index.html#library">Playbooks</a></li>
+    <li><a href="dashboard.html" class="active" aria-current="page">My Library</a></li>
+    <li><a href="certificates/certificate.html">My Certificates</a></li>
+    <li class="divider-li" style="border-top:1px solid var(--border-light);padding-top:4px"></li>
+    <li><button id="mobile-signout-btn">Sign Out</button></li>
+  </ul>
+</div><!-- /mobile-menu -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════════ -->
+<main id="main-content">
+
+  <!-- ─── GREETING ─── -->
+  <div class="dash-greeting">
+    <div class="wrap">
+      <h1 class="dash-heading" id="greeting">Hi there.</h1>
+      <p class="dash-sub" id="dash-sub">Your library · 1 playbook owned</p>
+    </div>
+  </div>
+
+
+  <!-- ─── OWNED PLAYBOOKS ─── -->
+  <section class="owned-section" aria-labelledby="owned-section-label">
+    <div class="wrap">
+      <p class="owned-section-label" id="owned-section-label">Your Playbooks</p>
+
+      <!-- ─── Owned Card: Screen Time ─── -->
+      <article
+        class="owned-card"
+        aria-label="The Screen Time Playbook — yours, free"
+      >
+        <!-- Badge -->
+        <span class="owned-badge" aria-label="Owned — free">YOURS · FREE</span>
+
+        <!-- Book identity -->
+        <div class="owned-book-row">
+          <span class="owned-book-emoji" aria-hidden="true">📚</span>
+          <div>
+            <h2 class="owned-book-title">The Screen Time Playbook</h2>
+            <p class="owned-book-subtitle">Playbook 01 · Ages 2–6</p>
+          </div>
+        </div>
+
+        <!-- Progress bars -->
+        <div class="progress-section" aria-label="Your progress">
+
+          <div class="progress-row">
+            <span class="progress-label" id="label-ebook">eBook</span>
+            <div
+              class="progress-track"
+              role="progressbar"
+              aria-valuenow="0"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-labelledby="label-ebook"
+              id="track-ebook"
+            >
+              <div class="progress-fill" id="fill-ebook" style="width:0%"></div>
+            </div>
+            <span class="progress-pct" id="pct-ebook" aria-live="polite">0%</span>
+          </div>
+
+          <div class="progress-row">
+            <span class="progress-label" id="label-quiz">Quiz</span>
+            <div
+              class="progress-track"
+              role="progressbar"
+              aria-valuenow="0"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-labelledby="label-quiz"
+              id="track-quiz"
+            >
+              <div class="progress-fill" id="fill-quiz" style="width:0%"></div>
+            </div>
+            <span class="progress-pct" id="pct-quiz" aria-live="polite">0%</span>
+          </div>
+
+          <div class="progress-row">
+            <span class="progress-label" id="label-cert">Certificate</span>
+            <div
+              class="progress-track"
+              role="progressbar"
+              aria-valuenow="0"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-labelledby="label-cert"
+              id="track-cert"
+            >
+              <div class="progress-fill" id="fill-cert" style="width:0%"></div>
+            </div>
+            <span class="progress-pct" id="pct-cert" aria-live="polite">0%</span>
+          </div>
+
+        </div><!-- /progress-section -->
+
+        <!-- Action buttons -->
+        <div class="owned-actions">
+          <a href="playbook-free-screentime.html" class="btn-secondary">
+            <span aria-hidden="true">📖</span> Read
+          </a>
+          <a href="quiz-intro-screentime.html" class="btn-primary">
+            <span aria-hidden="true">📝</span> Take Quiz
+          </a>
+        </div>
+
+      </article><!-- /owned-card -->
+
+
+      <!-- ─── Ghosted Certificate Preview ─── -->
+      <div
+        class="cert-ghost"
+        id="cert-ghost"
+        aria-label="Locked certificate — complete the quiz to unlock"
+      >
+        <!-- Blurred preview (decorative, hidden from AT) -->
+        <div class="cert-ghost-preview" aria-hidden="true">
+          <div class="cert-ghost-preview-inner">
+            <p class="cert-ghost-header">FamilyForce · Certificate of Completion</p>
+            <p class="cert-ghost-label">This certifies that</p>
+            <p class="cert-ghost-name" id="cert-ghost-name">Your Name</p>
+            <p class="cert-ghost-label">has completed</p>
+            <p class="cert-ghost-playbook">The Screen Time Playbook</p>
+            <div class="cert-ghost-divider"></div>
+            <div class="cert-ghost-seal">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overlay -->
+        <div class="cert-ghost-overlay" role="complementary">
+          <p class="cert-ghost-msg">Complete the quiz to unlock your certificate</p>
+          <a href="quiz-intro-screentime.html" class="btn-primary-sm">Take Quiz →</a>
+        </div>
+      </div><!-- /cert-ghost -->
+
+    </div><!-- /wrap -->
+  </section><!-- /owned-section -->
+
+
+  <!-- ─── UNOWNED PLAYBOOKS ─── -->
+  <section class="store-section" aria-labelledby="store-heading">
+    <div class="wrap">
+
+      <h2 class="store-heading" id="store-heading">Add to your library</h2>
+
+      <div class="unowned-grid">
+
+        <!-- Card 1: Sleep Training -->
+        <article class="unowned-card" aria-label="Sleep Training Playbook — $4.99">
+          <div class="unowned-card-bar" style="background:#5B7BB5" aria-hidden="true"></div>
+          <div class="unowned-card-body">
+            <h3 class="unowned-card-title">The Sleep Training Playbook</h3>
+            <p class="unowned-card-hook">The science of getting everyone to sleep.</p>
+            <p class="unowned-card-price">$4.99</p>
+          </div>
+          <div class="unowned-card-footer">
+            <a href="playbook-sleep.html" class="btn-secondary">Get this playbook →</a>
+          </div>
+        </article>
+
+        <!-- Card 2: Tantrums -->
+        <article class="unowned-card" aria-label="Tantrums Playbook — $4.99">
+          <div class="unowned-card-bar" style="background:#7C5CFC" aria-hidden="true"></div>
+          <div class="unowned-card-body">
+            <h3 class="unowned-card-title">The Tantrums Playbook</h3>
+            <p class="unowned-card-hook">What's actually happening — and what works.</p>
+            <p class="unowned-card-price">$4.99</p>
+          </div>
+          <div class="unowned-card-footer">
+            <a href="playbook-tantrum.html" class="btn-secondary">Get this playbook →</a>
+          </div>
+        </article>
+
+        <!-- Card 3: Feeding -->
+        <article class="unowned-card" aria-label="Feeding Playbook — $4.99">
+          <div class="unowned-card-bar" style="background:#5BA88E" aria-hidden="true"></div>
+          <div class="unowned-card-body">
+            <h3 class="unowned-card-title">The Feeding Playbook</h3>
+            <p class="unowned-card-hook">From first solids to the picky-eating years.</p>
+            <p class="unowned-card-price">$4.99</p>
+          </div>
+          <div class="unowned-card-footer">
+            <a href="playbook-feeding.html" class="btn-secondary">Get this playbook →</a>
+          </div>
+        </article>
+
+        <!-- Card 4: Potty Training -->
+        <article class="unowned-card" aria-label="Potty Training Playbook — $4.99">
+          <div class="unowned-card-bar" style="background:#6E4ED6" aria-hidden="true"></div>
+          <div class="unowned-card-body">
+            <h3 class="unowned-card-title">The Potty Training Playbook</h3>
+            <p class="unowned-card-hook">40+ expert sources distilled.</p>
+            <p class="unowned-card-price">$4.99</p>
+          </div>
+          <div class="unowned-card-footer">
+            <a href="playbook-potty-training.html" class="btn-secondary">Get this playbook →</a>
+          </div>
+        </article>
+
+      </div><!-- /unowned-grid -->
+
+    </div><!-- /wrap -->
+  </section><!-- /store-section -->
+
+</main><!-- /main-content -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER — matches playbook-potty-training.html pattern exactly
+     ═══════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="logo" style="margin-bottom:14px;font-size:20px;display:inline-flex;align-items:center;gap:6px" aria-label="FamilyForce — Home">
+          <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="logo-f">Family</span><span class="logo-s">Force</span>
+        </a>
+        <p style="font-family:var(--sans);font-size:13px;color:var(--text-dim);max-width:260px;line-height:1.7;font-weight:300;margin-top:8px">Research-backed parenting guides for parents who do the work.</p>
+        <p style="font-family:var(--sans);font-size:11px;color:var(--text-ghost);max-width:260px;line-height:1.7;font-weight:300;margin-top:6px">Created by a real dad.</p>
+      </div>
+      <nav aria-label="Playbook links">
+        <p class="footer-heading">Playbooks</p>
+        <a href="playbook-free-screentime.html" class="footer-link">Screen Time &#8212; Free</a>
+        <a href="playbook-potty-training.html" class="footer-link">Potty Training (Free)</a>
+        <a href="playbook-sleep.html" class="footer-link">Sleep Training (Free)</a>
+        <a href="playbook-tantrum.html" class="footer-link">Tantrums (Free)</a>
+        <a href="playbook-feeding.html" class="footer-link">Feeding (Free)</a>
+        <a href="index.html#library" class="footer-link">All Playbooks</a>
+      </nav>
+      <nav aria-label="Company links">
+        <p class="footer-heading">Company</p>
+        <a href="contact.html" class="footer-link">Contact</a>
+        <a href="privacy.html" class="footer-link">Privacy</a>
+        <a href="terms.html" class="footer-link">Terms</a>
+      </nav>
+    </div>
+    <div class="divider" style="width:100%;margin-bottom:20px" aria-hidden="true"></div>
+    <div class="footer-bottom">
+      <small>&#169; 2026 FamilyForce Inc.</small>
+      <small>getfamilyforce.com</small>
+    </div>
+  </div>
+</footer><!-- /footer -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+     Reads localStorage, renders user data, controls avatar
+     dropdown, hamburger menu, and progress bars.
+     All vanilla JS — zero dependencies.
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+
+  /* ─── ELEMENT REFS ─── */
+  const greetingEl       = document.getElementById('greeting');
+  const dashSubEl        = document.getElementById('dash-sub');
+  const avatarInitials   = document.getElementById('avatar-initials');
+  const dropdownNameEl   = document.getElementById('dropdown-name');
+  const dropdownEmailEl  = document.getElementById('dropdown-email');
+  const mobileUserName   = document.getElementById('mobile-user-name');
+  const mobileUserEmail  = document.getElementById('mobile-user-email');
+  const certGhostNameEl  = document.getElementById('cert-ghost-name');
+
+  const avatarBtn        = document.getElementById('avatar-btn');
+  const avatarDropdown   = document.getElementById('avatar-dropdown');
+  const avatarWrap       = document.getElementById('avatar-wrap');
+  const signoutBtn       = document.getElementById('signout-btn');
+  const mobileSignoutBtn = document.getElementById('mobile-signout-btn');
+
+  const hamburgerBtn     = document.getElementById('hamburger-btn');
+  const mobileMenu       = document.getElementById('mobile-menu');
+  const mobileMenuClose  = document.getElementById('mobile-menu-close');
+
+  const mainEl           = document.getElementById('main-content');
+  const footerEl         = document.getElementById('site-footer');
+
+  const fillEbook  = document.getElementById('fill-ebook');
+  const fillQuiz   = document.getElementById('fill-quiz');
+  const fillCert   = document.getElementById('fill-cert');
+  const pctEbook   = document.getElementById('pct-ebook');
+  const pctQuiz    = document.getElementById('pct-quiz');
+  const pctCert    = document.getElementById('pct-cert');
+  const trackEbook = document.getElementById('track-ebook');
+  const trackQuiz  = document.getElementById('track-quiz');
+  const trackCert  = document.getElementById('track-cert');
+
+  const certGhost = document.getElementById('cert-ghost');
+
+
+  /* ─── READ USER DATA ─── */
+  const userName  = localStorage.getItem('ff_user_name')  || '';
+  const userEmail = localStorage.getItem('ff_user_email') || '';
+
+  // Greeting
+  if (userName) {
+    greetingEl.textContent = 'Hi, ' + userName + '.';
+  } else {
+    greetingEl.textContent = 'Hi there.';
+  }
+
+  // Avatar initials (up to 2 chars)
+  if (userName) {
+    const parts = userName.trim().split(/\s+/);
+    const initials = parts.length >= 2
+      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      : parts[0].slice(0, 2).toUpperCase();
+    avatarInitials.textContent  = initials;
+    avatarBtn.setAttribute('aria-label', 'Account menu for ' + userName);
+  } else {
+    avatarInitials.textContent = '?';
+  }
+
+  // Dropdown identity
+  dropdownNameEl.textContent  = userName  || 'Your Account';
+  dropdownEmailEl.textContent = userEmail || '';
+
+  // Mobile menu identity
+  mobileUserName.textContent  = userName  || 'Your Account';
+  mobileUserEmail.textContent = userEmail || '';
+
+  // Certificate ghost name
+  if (certGhostNameEl) {
+    certGhostNameEl.textContent = userName || 'Your Name';
+  }
+
+
+  /* ─── READ PROGRESS DATA ─── */
+  let progressData = {};
+  try {
+    progressData = JSON.parse(localStorage.getItem('ff_progress') || '{}');
+  } catch (_) {
+    progressData = {};
+  }
+
+  const pottyData   = progressData['potty-training'] || {};
+  const ebookVal    = typeof pottyData.ebook === 'number' ? Math.min(100, Math.max(0, pottyData.ebook)) : 0;
+  const quizVal     = typeof pottyData.quiz  === 'number' ? Math.min(100, Math.max(0, pottyData.quiz))  : 0;
+  const certEarned  = pottyData.cert === true;
+
+  // Determine pass/complete thresholds
+  const ebookDone  = ebookVal >= 100;
+  const quizPassed = quizVal  >= 70;   // 70% to pass
+  const certDone   = certEarned;
+
+  // Update eBook bar
+  function setBar(fillEl, trackEl, pctEl, value, isDone) {
+    fillEl.style.width = value + '%';
+    fillEl.classList.toggle('complete', isDone);
+    trackEl.setAttribute('aria-valuenow', String(value));
+    pctEl.textContent = value + '%';
+  }
+
+  setBar(fillEbook, trackEbook, pctEbook, ebookVal,          ebookDone);
+  setBar(fillQuiz,  trackQuiz,  pctQuiz,  quizVal,           quizPassed);
+  setBar(fillCert,  trackCert,  pctCert,  certDone ? 100 : 0, certDone);
+
+  // Hide certificate ghost if cert is already earned
+  if (certDone && certGhost) {
+    certGhost.hidden = true;
+  }
+
+
+  /* ─── AVATAR DROPDOWN ─── */
+  function openDropdown() {
+    avatarDropdown.removeAttribute('hidden');
+    avatarBtn.setAttribute('aria-expanded', 'true');
+    // Apply inert to background content (not the nav which owns the dropdown)
+    mainEl.setAttribute('inert', '');
+    footerEl.setAttribute('inert', '');
+    // Focus first menu item
+    const firstItem = avatarDropdown.querySelector('[role="menuitem"]');
+    if (firstItem) firstItem.focus();
+  }
+
+  function closeDropdown(returnFocus) {
+    avatarDropdown.setAttribute('hidden', '');
+    avatarBtn.setAttribute('aria-expanded', 'false');
+    mainEl.removeAttribute('inert');
+    footerEl.removeAttribute('inert');
+    if (returnFocus) avatarBtn.focus();
+  }
+
+  avatarBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (avatarBtn.getAttribute('aria-expanded') === 'true') {
+      closeDropdown(true);
+    } else {
+      openDropdown();
+    }
+  });
+
+  // Close on outside click
+  document.addEventListener('click', function (e) {
+    if (!avatarDropdown.hasAttribute('hidden') && !avatarWrap.contains(e.target)) {
+      closeDropdown(false);
+    }
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      if (!avatarDropdown.hasAttribute('hidden')) {
+        closeDropdown(true);
+      }
+    }
+  });
+
+  // Roving focus within dropdown
+  avatarDropdown.addEventListener('keydown', function (e) {
+    const items = Array.from(avatarDropdown.querySelectorAll('[role="menuitem"]'));
+    const idx = items.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      items[(idx + 1) % items.length].focus();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      items[(idx - 1 + items.length) % items.length].focus();
+    } else if (e.key === 'Tab') {
+      // Tab closes dropdown and returns to normal focus flow
+      closeDropdown(false);
+    }
+  });
+
+  // Sign out (clears localStorage)
+  function handleSignOut() {
+    localStorage.removeItem('ff_user_name');
+    localStorage.removeItem('ff_user_email');
+    localStorage.removeItem('ff_progress');
+    window.location.href = 'sign-in.html';
+  }
+
+  if (signoutBtn) signoutBtn.addEventListener('click', handleSignOut);
+  if (mobileSignoutBtn) mobileSignoutBtn.addEventListener('click', handleSignOut);
+
+
+  /* ─── MOBILE MENU ─── */
+  function openMenu() {
+    mobileMenu.classList.add('open');
+    hamburgerBtn.setAttribute('aria-expanded', 'true');
+    mainEl.setAttribute('inert', '');
+    footerEl.setAttribute('inert', '');
+    document.querySelector('.nav-inner').setAttribute('inert', '');
+    mobileMenuClose.focus();
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    mobileMenu.classList.remove('open');
+    hamburgerBtn.setAttribute('aria-expanded', 'false');
+    mainEl.removeAttribute('inert');
+    footerEl.removeAttribute('inert');
+    document.querySelector('.nav-inner').removeAttribute('inert');
+    hamburgerBtn.focus();
+    document.body.style.overflow = '';
+  }
+
+  hamburgerBtn.addEventListener('click', openMenu);
+  mobileMenuClose.addEventListener('click', closeMenu);
+
+  // Close on Escape (keydown already handles this globally above — but also here for menu)
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+      closeMenu();
+    }
+  });
+
+  // Close on link navigation
+  mobileMenu.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Trap focus inside mobile menu
+  mobileMenu.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    const focusable = mobileMenu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+    const first = focusable[0];
+    const last  = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  });
+
+
+  /* ─── NAV SCROLL SOLIDIFY (already solid on dashboard, but keep consistent) ─── */
+  /* Nav is always solid on dashboard — no action needed. */
+
+})();
+</script>
+
+</body>
+</html>

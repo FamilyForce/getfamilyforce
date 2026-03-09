@@ -1,0 +1,28 @@
+# Draft / versioned files — not for deployment
+index-v1.html
+index-v2.html
+FamilyForce_Production.html
+playbook-*-v1.html
+playbook-*-v2.html
+playbook-tantrums-v2.html
+playbook-screentime-v2.html
+playbook-paid.html
+
+# Design/dev files
+*.jsx
+CLAUDE.md
+ResponsiveGuide.jsx
+ComponentLibrary.jsx
+DesignSystem.jsx
+Wireframes.jsx
+
+# Research & manuscript source files (PDFs are kept, markdown is not)
+research/
+manuscripts/*.md
+manuscripts/*.docx
+audio-files/
+
+# System
+.DS_Store
+Thumbs.db
+*.log

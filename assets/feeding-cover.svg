@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 680" width="480" height="680" role="img" aria-label="The Feeding Playbook cover">
+  <rect x="0" y="0" width="480" height="680" fill="#1A1433"/>
+  <rect x="0" y="0" width="480" height="272" fill="#1A1433"/>
+  <rect x="0" y="272" width="480" height="408" fill="#FFFFFF"/>
+  <rect x="14" y="14" width="452" height="652" fill="none" stroke="#7C5CFC" stroke-width="1.5"/>
+
+  <text x="240" y="68"
+    font-family="'Outfit', 'Helvetica Neue', Arial, sans-serif"
+    font-size="13" font-weight="600" letter-spacing="8"
+    fill="#FFFFFF" opacity="0.85" text-anchor="middle">THE</text>
+
+  <text x="240" y="210"
+    font-family="'Instrument Serif', Georgia, 'Times New Roman', serif"
+    font-size="110" font-weight="400"
+    fill="#FFFFFF" text-anchor="middle">Feeding</text>
+
+  <text x="240" y="326"
+    font-family="'Outfit', 'Helvetica Neue', Arial, sans-serif"
+    font-size="22" font-weight="700" letter-spacing="10"
+    fill="#1A1433" text-anchor="middle">PLAYBOOK</text>
+
+  <line x1="190" y1="338" x2="290" y2="338" stroke="#6E4ED6" stroke-width="1.5"/>
+
+  <text x="240" y="382"
+    font-family="'Outfit', 'Helvetica Neue', Arial, sans-serif"
+    font-size="13.5" fill="#6B6878" text-anchor="middle">A research-backed guide to starting solids</text>
+  <text x="240" y="402"
+    font-family="'Outfit', 'Helvetica Neue', Arial, sans-serif"
+    font-size="13.5" fill="#6B6878" text-anchor="middle">and raising a good eater</text>
+
+  <line x1="200" y1="570" x2="280" y2="570" stroke="#DDDAE8" stroke-width="1"/>
+
+  <text x="240" y="606"
+    font-family="'Outfit', 'Helvetica Neue', Arial, sans-serif"
+    font-size="14" font-weight="700" letter-spacing="4"
+    fill="#1A1433" text-anchor="middle">JACK HARTLEY</text>
+
+  <text x="240" y="626"
+    font-family="'Outfit', 'Helvetica Neue', Arial, sans-serif"
+    font-size="12" font-weight="300" fill="#9B97AE" text-anchor="middle">Dad of Two</text>
+
+  <text x="240" y="654"
+    font-family="'Outfit', 'Helvetica Neue', Arial, sans-serif"
+    font-size="10" font-weight="300" letter-spacing="1"
+    fill="#C2BFD0" text-anchor="middle">FamilyForce Publishing · familyforce.com</text>
+</svg>

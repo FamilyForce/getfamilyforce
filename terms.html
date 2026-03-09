@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE — Terms of Service
+     Stack: Vanilla HTML/CSS/JS (zero dependencies, no build step)
+     Accessibility: WCAG 2.1 AA compliant
+     ═══════════════════════════════════════════════════════════ -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+
+<title>Terms of Service · FamilyForce</title>
+<meta name="description" content="FamilyForce terms of service. The rules for using our platform and purchasing our playbooks.">
+<link rel="canonical" href="https://getfamilyforce.com/terms">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Terms of Service · FamilyForce">
+<meta property="og:url" content="https://getfamilyforce.com/terms">
+<meta property="og:site_name" content="FamilyForce">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#6E4ED6">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #FAFAFA;
+  --surface: #FFFFFF;
+  --elevated: #F4F0FC;
+  --border: #E5E2EC;
+  --border-light: #EDEBF2;
+  --text: #1D1D1F;
+  --text-mid: #5C5960;
+  --text-dim: #8A879A;
+  --text-ghost: #C2BFD0;
+  --terra: #6E4ED6;
+  --terra-dark: #5B3CC4;
+  --terra-bright: #7C5CFC;
+  --terra-glow: rgba(110,78,214,.06);
+  --focus-ring: 0 0 0 3px rgba(110,78,214,.4);
+  --sans: 'Outfit', system-ui, -apple-system, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --radius-card: 16px;
+  --radius-pill: 100px;
+  --space-page-x: clamp(20px, 5vw, 80px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── NAV ─── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250,250,250,.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-light);
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-page-x);
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.logo-s { color: var(--terra); }
+.nav-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color .2s;
+}
+@media (hover: hover) { .nav-back:hover { color: var(--terra); } }
+
+/* ─── PAGE LAYOUT ─── */
+.page-main { padding-top: 72px; }
+.page-hero {
+  background: linear-gradient(160deg, #F5F2FF 0%, #FAFAFA 60%);
+  border-bottom: 1px solid var(--border-light);
+  padding: 72px var(--space-page-x) 56px;
+}
+.page-hero-inner { max-width: 720px; margin: 0 auto; }
+.page-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--terra-dark);
+  margin-bottom: 16px;
+}
+.page-title {
+  font-family: var(--serif);
+  font-size: clamp(32px, 5vw, 48px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.page-meta { font-size: 13px; color: var(--text-dim); }
+
+/* ─── CONTENT ─── */
+.content-wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 64px var(--space-page-x) 120px;
+}
+
+/* TOC */
+.toc {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-card);
+  padding: 28px 32px;
+  margin-bottom: 56px;
+}
+.toc-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+.toc-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.toc-list a { font-size: 14px; font-weight: 500; color: var(--terra); text-decoration: none; transition: color .2s; }
+@media (hover: hover) { .toc-list a:hover { color: var(--terra-dark); } }
+
+/* Sections */
+.policy-section {
+  margin-bottom: 56px;
+  scroll-margin-top: 100px;
+}
+.policy-section h2 {
+  font-family: var(--serif);
+  font-size: 24px;
+  color: var(--text);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+.policy-section p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-mid);
+  margin-bottom: 14px;
+}
+.policy-section p:last-child { margin-bottom: 0; }
+.policy-section ul {
+  list-style: none;
+  margin: 12px 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.policy-section ul li {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text-mid);
+  padding-left: 20px;
+  position: relative;
+}
+.policy-section ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--terra);
+  opacity: .5;
+}
+.policy-section a { color: var(--terra); text-decoration: underline; text-underline-offset: 3px; }
+
+/* Highlight box */
+.policy-highlight {
+  background: var(--elevated);
+  border-left: 3px solid var(--terra);
+  border-radius: 0 8px 8px 0;
+  padding: 16px 20px;
+  margin: 20px 0;
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.7;
+}
+
+/* ─── FOOTER ─── */
+.site-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border-light);
+  padding: 48px var(--space-page-x) 40px;
+}
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.footer-inner small { font-size: 12px; color: var(--text-ghost); }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 12px; color: var(--text-dim); text-decoration: none; transition: color .2s; }
+@media (hover: hover) { .footer-links a:hover { color: var(--terra); } }
+</style>
+</head>
+
+<body>
+
+<!-- ─── NAV ─── -->
+<nav class="nav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" aria-label="FamilyForce — Home">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Family<span class="logo-s">Force</span></span>
+    </a>
+    <a href="index.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M16 10H4M9 5l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to home
+    </a>
+  </div>
+</nav>
+
+<main id="main-content" class="page-main">
+
+  <!-- ─── HERO ─── -->
+  <div class="page-hero">
+    <div class="page-hero-inner">
+      <p class="page-label">Legal</p>
+      <h1 class="page-title">Terms of Service</h1>
+      <p class="page-meta">Last updated: March 6, 2026 &nbsp;·&nbsp; Effective: March 6, 2026</p>
+    </div>
+  </div>
+
+  <!-- ─── CONTENT ─── -->
+  <div class="content-wrap">
+
+    <div class="policy-highlight">
+      <strong>The short version:</strong> Buy a playbook, get the content. One purchase covers both parents. We offer a 30-day no-questions-asked refund. Do not redistribute the content. Be a decent human.
+    </div>
+
+    <!-- TOC -->
+    <nav class="toc" aria-label="Table of contents">
+      <p class="toc-title">Contents</p>
+      <ol class="toc-list">
+        <li><a href="#acceptance">1. Acceptance of terms</a></li>
+        <li><a href="#products">2. Products and access</a></li>
+        <li><a href="#payment">3. Payment and pricing</a></li>
+        <li><a href="#refunds">4. Refunds</a></li>
+        <li><a href="#licence">5. Licence and permitted use</a></li>
+        <li><a href="#prohibited">6. Prohibited use</a></li>
+        <li><a href="#accounts">7. Accounts</a></li>
+        <li><a href="#disclaimer">8. Disclaimer</a></li>
+        <li><a href="#liability">9. Limitation of liability</a></li>
+        <li><a href="#ip">10. Intellectual property</a></li>
+        <li><a href="#changes">11. Changes to these terms</a></li>
+        <li><a href="#governing">12. Governing law</a></li>
+        <li><a href="#contact">13. Contact</a></li>
+      </ol>
+    </nav>
+
+    <!-- 1 -->
+    <section class="policy-section" id="acceptance">
+      <h2>1. Acceptance of terms</h2>
+      <p>By accessing or using the FamilyForce website at <strong>getfamilyforce.com</strong> or purchasing any of our products, you agree to be bound by these Terms of Service ("Terms"). If you do not agree, please do not use the site or make a purchase.</p>
+      <p>These Terms apply to all visitors, users, and customers of FamilyForce Inc. ("FamilyForce", "we", "us", "our").</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="policy-section" id="products">
+      <h2>2. Products and access</h2>
+      <p>FamilyForce offers digital parenting playbooks ("Playbooks") in PDF and audio (MP3) format, together with associated quizzes and certificates of completion.</p>
+      <ul>
+        <li>The Screen Time Playbook is available free of charge with no purchase required.</li>
+        <li>All other Playbooks are paid digital products priced at $4.99 each.</li>
+        <li>Upon purchase, you will receive access to the Playbook content via your FamilyForce account.</li>
+        <li>Both parents in a household may access a purchased Playbook and each complete their own quiz and certificate.</li>
+        <li>Access is provided digitally. No physical products are shipped.</li>
+      </ul>
+      <p>We reserve the right to update, modify, or discontinue any product at any time. Where content is materially changed after your purchase, your existing access to the original content will remain available.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="policy-section" id="payment">
+      <h2>3. Payment and pricing</h2>
+      <p>All prices are listed in US dollars (USD) and are inclusive of any applicable taxes unless otherwise stated.</p>
+      <p>Payments are processed securely by <a href="https://stripe.com" target="_blank" rel="noopener noreferrer">Stripe</a>. By completing a purchase, you also agree to Stripe's terms of service. FamilyForce does not store your payment card details.</p>
+      <p>We reserve the right to change our pricing at any time. Price changes will not affect purchases already completed.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="policy-section" id="refunds">
+      <h2>4. Refunds</h2>
+      <p>We offer a full refund within 30 days of purchase, no questions asked. If you are not satisfied with your purchase for any reason, contact us at <a href="mailto:support@getfamilyforce.com">support@getfamilyforce.com</a> and we will process your refund within 24 hours.</p>
+      <p>Refunds are returned to the original payment method. After 30 days, refunds are at our discretion.</p>
+      <p>The free Screen Time Playbook is not eligible for a refund as no payment is taken.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="policy-section" id="licence">
+      <h2>5. Licence and permitted use</h2>
+      <p>Upon purchase (or, for free content, upon access), FamilyForce grants you a limited, non-exclusive, non-transferable, personal licence to:</p>
+      <ul>
+        <li>Download and read the Playbook for your personal, household use.</li>
+        <li>Share access with your co-parent or partner within the same household.</li>
+        <li>Listen to the audiobook for personal use.</li>
+        <li>Complete the quiz and receive a personalised certificate of completion.</li>
+        <li>Print one copy of your certificate for personal display.</li>
+      </ul>
+      <p>This licence does not include the right to sublicense, sell, or distribute the content in any form.</p>
+    </section>
+
+    <!-- 6 -->
+    <section class="policy-section" id="prohibited">
+      <h2>6. Prohibited use</h2>
+      <p>You may not:</p>
+      <ul>
+        <li>Redistribute, resell, or share Playbook content with anyone outside your household.</li>
+        <li>Upload Playbook content to any third-party platform, website, or file-sharing service.</li>
+        <li>Remove or alter any copyright notices, watermarks, or attributions.</li>
+        <li>Use the content for commercial purposes, training, or teaching without written permission.</li>
+        <li>Attempt to reverse-engineer, scrape, or reproduce the website or its content by automated means.</li>
+        <li>Use the platform in any way that violates applicable laws or regulations.</li>
+      </ul>
+    </section>
+
+    <!-- 7 -->
+    <section class="policy-section" id="accounts">
+      <h2>7. Accounts</h2>
+      <p>To access purchased Playbooks, you will need a FamilyForce account. You are responsible for maintaining the confidentiality of your sign-in credentials and for all activity under your account.</p>
+      <p>You agree to notify us immediately at <a href="mailto:support@getfamilyforce.com">support@getfamilyforce.com</a> if you suspect unauthorised use of your account.</p>
+      <p>We reserve the right to suspend or terminate accounts that violate these Terms.</p>
+    </section>
+
+    <!-- 8 -->
+    <section class="policy-section" id="disclaimer">
+      <h2>8. Disclaimer</h2>
+      <p>FamilyForce Playbooks are for informational and educational purposes only. They are not a substitute for professional medical, psychological, or paediatric advice.</p>
+      <p>Every child is different. The strategies and information in our Playbooks are based on research and expert guidance, but results may vary. Always consult a qualified healthcare professional if you have concerns about your child's health or development.</p>
+      <p>FamilyForce makes no warranties, express or implied, about the accuracy, completeness, or suitability of the content for your particular circumstances.</p>
+    </section>
+
+    <!-- 9 -->
+    <section class="policy-section" id="liability">
+      <h2>9. Limitation of liability</h2>
+      <p>To the fullest extent permitted by law, FamilyForce Inc. shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of, or inability to use, our products or website.</p>
+      <p>Our total liability to you for any claim arising from these Terms or your use of our products shall not exceed the amount you paid for the relevant product.</p>
+    </section>
+
+    <!-- 10 -->
+    <section class="policy-section" id="ip">
+      <h2>10. Intellectual property</h2>
+      <p>All content on getfamilyforce.com, including but not limited to the text of our Playbooks, audiobooks, quiz questions, certificate designs, logos, graphics, and website code, is owned by or licensed to FamilyForce Inc. and is protected by copyright and other intellectual property laws.</p>
+      <p>Nothing in these Terms transfers any intellectual property rights to you beyond the personal licence described in Section 5.</p>
+    </section>
+
+    <!-- 11 -->
+    <section class="policy-section" id="changes">
+      <h2>11. Changes to these terms</h2>
+      <p>We may update these Terms from time to time. When we do, we will update the "Last updated" date at the top of this page.</p>
+      <p>Continued use of the site or your FamilyForce account after changes are posted constitutes your acceptance of the updated Terms. We will notify registered users of material changes by email.</p>
+    </section>
+
+    <!-- 12 -->
+    <section class="policy-section" id="governing">
+      <h2>12. Governing law</h2>
+      <p>These Terms are governed by and construed in accordance with the laws of the Hong Kong Special Administrative Region ("Hong Kong SAR"). Any disputes arising under or in connection with these Terms shall first be referred to good-faith negotiation between the parties.</p>
+      <p>If a dispute cannot be resolved informally within 30 days, both parties agree to submit to the non-exclusive jurisdiction of the courts of Hong Kong SAR.</p>
+    </section>
+
+    <!-- 13 -->
+    <section class="policy-section" id="contact">
+      <h2>13. Contact</h2>
+      <p>Questions about these Terms? Get in touch:</p>
+      <ul>
+        <li><strong>Email:</strong> <a href="mailto:support@getfamilyforce.com">support@getfamilyforce.com</a></li>
+        <li><strong>Website:</strong> <a href="contact.html">getfamilyforce.com/contact</a></li>
+      </ul>
+      <p>We aim to respond within 2 business days.</p>
+    </section>
+
+  </div>
+</main>
+
+<!-- ─── FOOTER ─── -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="logo" style="margin-bottom:14px;font-size:20px;display:inline-flex;align-items:center;gap:6px" aria-label="FamilyForce — Home">
+          <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="logo-f">Family</span><span class="logo-s">Force</span>
+        </a>
+        <p style="font-family:var(--sans);font-size:13px;color:var(--text-dim);max-width:260px;line-height:1.7;font-weight:300;margin-top:8px">Research-backed parenting guides for parents who do the work.</p>
+        <p style="font-family:var(--sans);font-size:11px;color:var(--text-ghost);max-width:260px;line-height:1.7;font-weight:300;margin-top:6px">Created by a real dad.</p>
+      </div>
+      <nav aria-label="Playbook links">
+        <p class="footer-heading">Playbooks</p>
+        <a href="playbook-free-screentime.html" class="footer-link">Screen Time &#8212; Free</a>
+        <a href="playbook-potty-training.html" class="footer-link">Potty Training (Free)</a>
+        <a href="playbook-sleep.html" class="footer-link">Sleep Training (Free)</a>
+        <a href="playbook-tantrum.html" class="footer-link">Tantrums (Free)</a>
+        <a href="playbook-feeding.html" class="footer-link">Feeding (Free)</a>
+        <a href="index.html#library" class="footer-link">All Playbooks</a>
+      </nav>
+      <nav aria-label="Company links">
+        <p class="footer-heading">Company</p>
+        <a href="contact.html" class="footer-link">Contact</a>
+        <a href="privacy.html" class="footer-link">Privacy</a>
+        <a href="terms.html" class="footer-link" aria-current="page">Terms</a>
+      </nav>
+    </div>
+    <div class="divider" style="width:100%;margin-bottom:20px" aria-hidden="true"></div>
+    <div class="footer-bottom">
+      <small>&#169; 2026 FamilyForce Inc.</small>
+      <small>getfamilyforce.com</small>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

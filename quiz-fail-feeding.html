@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE — Feeding Playbook Quiz Fail State (Screen #11)
+     Stack: Vanilla HTML/CSS/JS (zero dependencies, no build step)
+     Accessibility: WCAG 2.1 AA compliant
+     ═══════════════════════════════════════════════════════════ -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+
+<title>Almost there! · Feeding Playbook Quiz · FamilyForce</title>
+<meta name="description" content="Review the chapters and retake the feeding playbook quiz. You're almost there.">
+
+<!-- ─── FAVICONS ─── -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#6E4ED6">
+
+<!-- ─── FONTS ─── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   1. DESIGN TOKENS (CSS Custom Properties)
+   Copied exactly from index.html — do not modify
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  /* Color: Surface */
+  --bg: #FAFAFA;
+  --surface: #FFFFFF;
+  --elevated: #F4F0FC;
+
+  /* Color: Border */
+  --border: #E5E2EC;
+  --border-light: #EDEBF2;
+
+  /* Color: Text */
+  --text: #1D1D1F;
+  --text-mid: #5C5960;
+  --text-dim: #8A879A;
+  --text-ghost: #C2BFD0;
+
+  /* Color: Brand purple (was terracotta — variable name kept for compat) */
+  --terra: #6E4ED6;
+  --terra-dark: #5B3CC4;    /* AA contrast-safe for small text */
+  --terra-bright: #7C5CFC;
+  --terra-glow: rgba(110, 78, 214, 0.06);
+
+  /* Color: Semantic */
+  --focus-ring: 0 0 0 3px rgba(110, 78, 214, 0.4);
+  --selection: rgba(110, 78, 214, 0.15);
+
+  /* Typography: Font stacks */
+  --sans: 'Outfit', system-ui, -apple-system, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+
+  /* Spacing: Responsive tokens (overridden at breakpoints) */
+  --space-page-x: clamp(28px, 5vw, 64px);
+  --space-section-y: 120px;
+  --space-section-y-lg: 160px;
+  --space-stack-lg: 48px;
+  --space-stack-md: 32px;
+  --space-stack-sm: 20px;
+  --space-grid-gap: 20px;
+  --space-card-x: 24px;
+  --space-card-y: 32px;
+
+  /* Radius */
+  --radius-pill: 100px;
+  --radius-container: 20px;
+  --radius-card: 16px;
+  --radius-input: 10px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration: 0.5s;
+  --reveal-duration: 1.1s;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   2. RESET & BASE
+   ═══════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--text);
+}
+
+img { display: block; max-width: 100%; }
+svg { max-width: 100%; }
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+
+
+/* ═══════════════════════════════════════════════════════════
+   3. FOCUS MANAGEMENT (WCAG 2.1 AA: 2.4.7)
+   ═══════════════════════════════════════════════════════════ */
+:focus {
+  outline: 2px solid var(--terra);
+  outline-offset: 2px;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(110,78,214,.4);
+  border-radius: 4px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-nav:focus-visible {
+  border-radius: var(--radius-pill);
+}
+
+.chapter-card:focus-visible,
+.crosssell-card:focus-visible {
+  border-radius: var(--radius-card);
+  box-shadow: 0 0 0 3px rgba(110,78,214,.4);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   4. LAYOUT PRIMITIVES
+   ═══════════════════════════════════════════════════════════ */
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 max(var(--space-page-x), env(safe-area-inset-left, 0));
+  padding-right: max(var(--space-page-x), env(safe-area-inset-right, 0));
+}
+
+.section {
+  position: relative;
+  padding: var(--space-section-y) 0;
+}
+
+/* Screen-reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   5. TYPOGRAPHY CLASSES
+   ═══════════════════════════════════════════════════════════ */
+.heading {
+  font-family: var(--sans);
+  font-size: clamp(32px, 4.5vw, 52px);
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+.body {
+  font-weight: 300;
+  font-size: 16.5px;
+  line-height: 1.8;
+  color: var(--text-mid);
+}
+
+.label {
+  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--terra-dark);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   6. DIVIDER
+   ═══════════════════════════════════════════════════════════ */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+  margin: 0 auto;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   7. NAVIGATION — LOGGED IN
+   Fixed header with avatar dropdown.
+   ═══════════════════════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250, 250, 250, 0.85);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  box-shadow: 0 1px 0 var(--border);
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 72px;
+  padding: 0 var(--space-page-x);
+}
+
+/* Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+.logo-f { color: var(--text); }
+.logo-s { color: var(--terra); }
+
+/* Desktop nav links */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  letter-spacing: 0.01em;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+@media (hover: hover) {
+  .nav-links a:hover { color: var(--text); }
+}
+
+/* Avatar button */
+.nav-avatar-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--terra);
+  color: #fff;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  letter-spacing: 0.02em;
+  transition: background-color var(--duration) var(--ease),
+              transform var(--duration) var(--ease);
+  /* Ensure 44×44 touch target via extended hit area */
+  padding: 4px;
+  margin: -4px;
+}
+
+.nav-avatar-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(110,78,214,.4);
+  border-radius: 50%;
+}
+
+@media (hover: hover) {
+  .nav-avatar-btn:hover {
+    background: var(--terra-dark);
+    transform: scale(1.05);
+  }
+}
+
+/* Avatar dropdown */
+.avatar-dropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: 0 16px 48px rgba(29,29,31,.1), 0 4px 12px rgba(29,29,31,.06);
+  min-width: 220px;
+  padding: 8px 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.25s var(--ease);
+  pointer-events: none;
+  z-index: 200;
+}
+
+.avatar-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+.dropdown-header {
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 4px;
+}
+
+.dropdown-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.dropdown-email {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  margin-top: 2px;
+  font-weight: 300;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--text-mid);
+  font-weight: 400;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border-radius: 0;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+@media (hover: hover) {
+  .dropdown-item:hover {
+    background: var(--elevated);
+    color: var(--text);
+  }
+}
+
+.dropdown-item:focus-visible {
+  background: var(--elevated);
+  outline: none;
+  box-shadow: none;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--border-light);
+  margin: 4px 0;
+}
+
+.dropdown-signout {
+  color: #E53935;
+  font-weight: 500;
+}
+
+/* Hamburger (hidden on desktop) */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  display: block;
+  height: 1.5px;
+  background: var(--text);
+  border-radius: 1px;
+  transition: transform 0.3s ease;
+}
+
+.hamburger span:first-child { width: 20px; }
+.hamburger span:last-child  { width: 14px; }
+
+/* Mobile menu */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  background: rgba(250, 250, 250, 0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.3s var(--ease);
+  pointer-events: none;
+}
+
+.mobile-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.mobile-menu-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-dim);
+  width: 44px; height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.mobile-menu-links {
+  flex: 1;
+  padding: 24px 20px;
+  list-style: none;
+}
+
+.mobile-menu-links a {
+  display: block;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.mobile-menu-cta {
+  padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0));
+}
+
+.mobile-avatar-info {
+  padding: 20px 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--border-light);
+  margin-top: auto;
+}
+
+.mobile-avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--terra);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mobile-avatar-text .name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mobile-avatar-text .email {
+  font-size: 11.5px;
+  color: var(--text-dim);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   8. BUTTONS
+   ═══════════════════════════════════════════════════════════ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 42px;
+  background: var(--terra);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  transition: background-color var(--duration) var(--ease),
+              transform var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.btn-primary:active {
+  background: #4A2EA8;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(110,78,214,.12);
+}
+
+.btn-primary:disabled,
+.btn-primary[aria-disabled="true"] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 17px 34px;
+  background: transparent;
+  color: var(--text-mid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-size: 14.5px;
+  font-weight: 500;
+  transition: border-color 0.4s ease, color 0.4s ease, background-color 0.4s ease;
+  text-decoration: none;
+}
+
+.btn-secondary:active {
+  border-color: var(--terra-dark);
+  color: var(--terra-dark);
+  background: var(--terra-glow);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.btn-nav {
+  padding: 11px 26px;
+  background: var(--terra);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  transition: background-color var(--duration) var(--ease),
+              transform var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+}
+
+@media (hover: hover) {
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 60px rgba(110,78,214,.18), 0 0 0 1px rgba(110,78,214,.15);
+    background: var(--terra-dark);
+  }
+  .btn-primary:hover::before { opacity: 1; }
+
+  .btn-secondary:hover {
+    border-color: var(--terra);
+    color: var(--terra);
+  }
+
+  .btn-nav:hover {
+    background: var(--terra-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(110,78,214,.18);
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   9. QUIZ-FAIL PAGE LAYOUT
+   ═══════════════════════════════════════════════════════════ */
+
+/* Page-level wrapper — full-height, centers the card */
+.qf-page {
+  min-height: 100vh;
+  padding-top: calc(72px + 48px); /* nav + breathing room */
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0));
+  padding-left: var(--space-page-x);
+  padding-right: var(--space-page-x);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Central card */
+.qf-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-container);
+  padding: 48px 40px 44px;
+  width: 100%;
+  max-width: 520px;
+}
+
+/* ── Emoji ── */
+.qf-emoji {
+  font-size: 48px;
+  line-height: 1;
+  text-align: center;
+  margin-bottom: 20px;
+  display: block;
+  user-select: none;
+}
+
+/* ── Heading ── */
+.qf-heading {
+  font-family: var(--sans);
+  font-size: clamp(26px, 5vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  text-align: center;
+  color: var(--text);
+  margin-bottom: 24px;
+}
+
+/* ── Score display ── */
+.qf-score-wrap {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.qf-score {
+  font-family: var(--sans);
+  font-size: clamp(36px, 8vw, 54px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text);
+}
+
+/* Score numbers highlighted in brand purple */
+.qf-score .score-num {
+  color: var(--terra);
+}
+
+.qf-pass-note {
+  font-size: 14px;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 10px;
+  font-weight: 400;
+}
+
+/* ── Section label ── */
+.qf-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* ── Chapter review cards ── */
+.chapters-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
+.chapter-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  color: var(--text-mid);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+  min-height: 52px;
+}
+
+.chapter-card-text {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.chapter-card-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-ghost);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.chapter-card-title {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.chapter-arrow {
+  color: var(--text-ghost);
+  font-size: 16px;
+  flex-shrink: 0;
+  transition: transform 0.25s var(--ease), color 0.25s ease;
+  font-style: normal;
+}
+
+@media (hover: hover) {
+  .chapter-card:hover {
+    border-color: var(--terra);
+    color: var(--terra);
+    background: var(--elevated);
+  }
+
+  .chapter-card:hover .chapter-card-title {
+    color: var(--terra);
+  }
+
+  .chapter-card:hover .chapter-arrow {
+    transform: translateX(3px);
+    color: var(--terra);
+  }
+}
+
+/* ── Action buttons (stacked full-width) ── */
+.qf-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.qf-actions .btn-primary,
+.qf-actions .btn-secondary {
+  width: 100%;
+  min-height: 52px;
+  font-size: 15px;
+}
+
+/* ── Encouraging note ── */
+.qf-retake-note {
+  font-size: 13px;
+  color: var(--text-ghost);
+  text-align: center;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* ── Cross-sell section ── */
+.qf-crosssell {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-container);
+  padding: 36px 40px 40px;
+  width: 100%;
+  max-width: 520px;
+  margin-top: 24px;
+}
+
+.qf-crosssell-heading {
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.qf-crosssell-body {
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: var(--text-mid);
+  font-weight: 300;
+  margin-bottom: 20px;
+}
+
+/* Cross-sell preview card */
+.crosssell-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 18px 20px;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  color: var(--text);
+  font-size: 14.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s var(--ease);
+  min-height: 56px;
+}
+
+.crosssell-card-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.crosssell-card-eyebrow {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--terra-dark);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.crosssell-card-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.crosssell-arrow {
+  font-size: 18px;
+  color: var(--terra);
+  flex-shrink: 0;
+  transition: transform 0.25s var(--ease);
+  font-style: normal;
+}
+
+@media (hover: hover) {
+  .crosssell-card:hover {
+    border-color: var(--terra);
+    box-shadow: 0 4px 20px rgba(110,78,214,.12);
+    transform: translateY(-2px);
+  }
+
+  .crosssell-card:hover .crosssell-arrow {
+    transform: translateX(4px);
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   10. FOOTER
+   ═══════════════════════════════════════════════════════════ */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 60px 0 36px;
+  padding-bottom: calc(36px + env(safe-area-inset-bottom, 0));
+  background: var(--surface);
+  width: 100%;
+  margin-top: 80px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 80px;
+  margin-bottom: var(--space-stack-lg);
+}
+
+.footer-heading {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-ghost);
+  margin-bottom: 18px;
+  font-weight: 600;
+}
+
+.footer-link {
+  color: var(--text-dim);
+  font-weight: 300;
+  font-size: 13px;
+  display: block;
+  margin-bottom: 12px;
+  transition: color 0.3s ease;
+  padding: 2px 0;
+  border-radius: 4px;
+}
+
+@media (hover: hover) {
+  .footer-link:hover { color: var(--terra); }
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-ghost);
+  font-weight: 300;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   11. RESPONSIVE: COMPACT (≤ 899px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 899px) {
+  :root {
+    --space-section-y: 80px;
+    --space-stack-lg: 40px;
+    --space-stack-md: 24px;
+    --radius-container: 16px;
+  }
+
+  .footer-grid {
+    display: block;
+  }
+
+  .footer-grid > * + * {
+    margin-top: 32px;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   12. RESPONSIVE: COMPACT NARROW (≤ 480px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  :root {
+    --space-page-x: 20px;
+    --space-section-y: 56px;
+    --radius-container: 12px;
+    --radius-card: 12px;
+  }
+
+  /* Nav: hamburger mode */
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-inner  { height: 64px; }
+
+  /* Card: full bleed with reduced padding */
+  .qf-card {
+    padding: 32px 20px 28px;
+    border-radius: var(--radius-container);
+  }
+
+  .qf-crosssell {
+    padding: 24px 20px 28px;
+    border-radius: var(--radius-container);
+  }
+
+  .qf-page {
+    padding-top: calc(64px + 28px);
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .qf-emoji { font-size: 40px; }
+
+  .qf-actions .btn-primary,
+  .qf-actions .btn-secondary {
+    min-height: 54px;
+    font-size: 15px;
+  }
+
+  .chapter-card { min-height: 56px; padding: 14px 14px; }
+
+  .footer-link {
+    font-size: 14px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   13. REDUCED MOTION
+   ═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all decorative animations */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Keep functional focus rings (no animation there anyway) */
+  :focus-visible {
+    transition: none !important;
+  }
+
+  /* Nav instant appearance */
+  .mobile-menu {
+    transition: none !important;
+  }
+
+  /* Disable button hover lift */
+  .btn-primary:hover,
+  .btn-nav:hover {
+    transform: none !important;
+  }
+
+  /* Disable card hover lifts */
+  .crosssell-card:hover {
+    transform: none !important;
+  }
+
+  /* Disable arrow slide */
+  .chapter-arrow,
+  .crosssell-arrow {
+    transition: none !important;
+  }
+
+  /* Disable avatar dropdown animation */
+  .avatar-dropdown {
+    transition: none !important;
+  }
+
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ─── SKIP LINK (WCAG 2.4.1) ─── -->
+<a href="#main-content" class="skip-link" style="
+  position:absolute;
+  top:-100px;
+  left:16px;
+  background:var(--terra);
+  color:#fff;
+  padding:12px 24px;
+  border-radius:8px;
+  z-index:9999;
+  font-weight:600;
+  font-family:var(--sans);
+  transition:top .2s;
+">Skip to content</a>
+<style>.skip-link:focus { top: 16px; }</style>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     NAVIGATION — LOGGED IN
+     ═══════════════════════════════════════════════════════════ -->
+<nav class="nav" id="nav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <!-- Logo -->
+    <a href="index.html" class="logo" aria-label="FamilyForce Home">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-f">Family</span><span class="logo-s">Force</span>
+    </a>
+
+    <!-- Desktop logged-in links -->
+    <ul class="nav-links" role="list">
+      <li><a href="index.html#library">Playbooks</a></li>
+      <li><a href="dashboard.html">My Library</a></li>
+      <li>
+        <!-- Avatar with dropdown -->
+        <div style="position:relative">
+          <button
+            class="nav-avatar-btn"
+            id="avatar-btn"
+            aria-label="Account menu"
+            aria-expanded="false"
+            aria-haspopup="true"
+            aria-controls="avatar-dropdown"
+          >
+            <span id="nav-initials" aria-hidden="true">SC</span>
+          </button>
+
+          <div
+            class="avatar-dropdown"
+            id="avatar-dropdown"
+            role="menu"
+            aria-label="Account options"
+          >
+            <div class="dropdown-header">
+              <div class="dropdown-name" id="dropdown-name">Sarah Connell</div>
+              <div class="dropdown-email" id="dropdown-email">sarah@example.com</div>
+            </div>
+            <a href="dashboard.html"   class="dropdown-item" role="menuitem">My Library</a>
+            <a href="certificates/certificate.html" class="dropdown-item" role="menuitem">My Certificates</a>
+            <div class="dropdown-divider" role="separator"></div>
+            <a href="#"                class="dropdown-item dropdown-signout" role="menuitem" id="sign-out-btn">Sign Out</a>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <!-- Hamburger (mobile only) -->
+    <button
+      class="hamburger"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      id="hamburger-btn"
+    >
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+<!-- ─── MOBILE MENU OVERLAY ─── -->
+<div
+  class="mobile-menu"
+  id="mobile-menu"
+  role="dialog"
+  aria-label="Navigation menu"
+  aria-modal="true"
+>
+  <div class="mobile-menu-header">
+    <a href="index.html" class="logo" style="font-size:18px" aria-label="FamilyForce Home">
+      <svg width="12" height="14" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-f">Family</span><span class="logo-s">Force</span>
+    </a>
+    <button class="mobile-menu-close" aria-label="Close menu" id="mobile-menu-close">✕</button>
+  </div>
+  <ul class="mobile-menu-links" role="list">
+    <li><a href="index.html#library">Playbooks</a></li>
+    <li><a href="dashboard.html">My Library</a></li>
+    <li><a href="certificates/certificate.html">My Certificates</a></li>
+    <li><a href="#" id="mobile-sign-out">Sign Out</a></li>
+  </ul>
+  <div class="mobile-avatar-info">
+    <div class="mobile-avatar-circle" id="mobile-avatar-circle" aria-hidden="true">SC</div>
+    <div class="mobile-avatar-text">
+      <div class="name"  id="mobile-user-name">Sarah Connell</div>
+      <div class="email" id="mobile-user-email">sarah@example.com</div>
+    </div>
+  </div>
+  <div class="mobile-menu-cta" style="padding-top:16px">
+    <a href="dashboard.html" class="btn-primary" style="width:100%;min-height:54px;font-size:15px;text-decoration:none">
+      Go to My Library
+    </a>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN CONTENT
+     ═══════════════════════════════════════════════════════════ -->
+<main id="main-content">
+  <div class="qf-page">
+
+    <!-- ── RESULT CARD ── -->
+    <article class="qf-card" aria-label="Quiz result">
+
+      <!-- Emoji -->
+      <span class="qf-emoji" role="img" aria-label="Flexed bicep — you've got this">💪</span>
+
+      <!-- Heading -->
+      <h1 class="qf-heading">Almost there!</h1>
+
+      <!-- Score display -->
+      <div class="qf-score-wrap">
+        <p
+          class="qf-score"
+          id="score-display"
+          aria-live="polite"
+          aria-label="Score: loading"
+        >
+          <!-- Populated by JS from localStorage -->
+          <span class="score-num" id="score-gotten">5</span>
+          <span style="color:var(--text-dim);font-weight:300;font-size:.6em;margin:0 4px">/</span>
+          <span class="score-num" id="score-total">10</span>
+          <span style="color:var(--text-dim);font-weight:300;font-size:.55em;margin-left:8px">·</span>
+          <span style="color:var(--text-mid);font-weight:500;font-size:.55em;margin-left:8px" id="score-pct">50%</span>
+        </p>
+      </div>
+      <p class="qf-pass-note">You need 70% to pass.</p>
+
+      <!-- Divider -->
+      <div class="divider" style="width:100%;margin:28px 0" role="separator" aria-hidden="true"></div>
+
+      <!-- Chapters to review -->
+      <section aria-labelledby="chapters-heading">
+        <span class="qf-section-label" id="chapters-heading">Chapters to review</span>
+        <ul class="chapters-list" aria-label="Suggested chapters to review">
+
+          <li>
+            <a
+              href="playbook-feeding.html#chapter-5"
+              class="chapter-card"
+              aria-label="Chapter 5: The window — open in playbook"
+            >
+              <div class="chapter-card-text">
+                <span class="chapter-card-label">Chapter 5</span>
+                <span class="chapter-card-title">The window — flavor learning</span>
+              </div>
+              <span class="chapter-arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="playbook-feeding.html#chapter-6"
+              class="chapter-card"
+              aria-label="Chapter 6: The iron gap — open in playbook"
+            >
+              <div class="chapter-card-text">
+                <span class="chapter-card-label">Chapter 6</span>
+                <span class="chapter-card-title">The iron gap</span>
+              </div>
+              <span class="chapter-arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="playbook-feeding.html#chapter-7"
+              class="chapter-card"
+              aria-label="Chapter 7: The allergen mistake — open in playbook"
+            >
+              <div class="chapter-card-text">
+                <span class="chapter-card-label">Chapter 7</span>
+                <span class="chapter-card-title">The allergen mistake</span>
+              </div>
+              <span class="chapter-arrow" aria-hidden="true">→</span>
+            </a>
+          </li>
+
+        </ul>
+      </section>
+
+      <!-- Divider -->
+      <div class="divider" style="width:100%;margin:28px 0" role="separator" aria-hidden="true"></div>
+
+      <!-- Action buttons -->
+      <div class="qf-actions" role="group" aria-label="Quiz actions">
+        <a
+          href="playbook-feeding.html"
+          class="btn-secondary"
+          aria-label="Review The Feeding Playbook"
+        >
+          Review the Playbook
+        </a>
+        <button
+          class="btn-primary"
+          id="retake-btn"
+          aria-label="Retake the quiz — your previous score will be cleared"
+        >
+          Retake Quiz
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Encouraging note -->
+      <p class="qf-retake-note" style="margin-top:16px">
+        No limit on retakes. Many parents pass on the second&nbsp;try.
+      </p>
+
+    </article>
+    <!-- /RESULT CARD -->
+
+
+    <!-- ── EMOTIONAL CROSS-SELL ── -->
+    <aside
+      class="qf-crosssell"
+      aria-label="While you are here, a personal note"
+    >
+
+      <h2 class="qf-crosssell-heading">You'll ace the retake.</h2>
+      <p class="qf-crosssell-body">
+        While the feeding chapters are fresh — potty training is free and uses
+        the same research-backed approach. Worth a read.
+      </p>
+
+      <a
+        href="playbook-free-screentime.html"
+        class="crosssell-card"
+        aria-label="Read the Screen Time Playbook — free"
+      >
+        <div class="crosssell-card-inner">
+          <span class="crosssell-card-eyebrow">Free playbook</span>
+          <span class="crosssell-card-title">Read Screen Time</span>
+        </div>
+        <span class="crosssell-arrow" aria-hidden="true">→</span>
+      </a>
+
+    </aside>
+    <!-- /CROSS-SELL -->
+
+  </div>
+  <!-- /qf-page -->
+</main>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="logo" style="margin-bottom:14px;font-size:20px;display:inline-flex;align-items:center;gap:6px" aria-label="FamilyForce — Home">
+          <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="logo-f">Family</span><span class="logo-s">Force</span>
+        </a>
+        <p style="font-family:var(--sans);font-size:13px;color:var(--text-dim);max-width:260px;line-height:1.7;font-weight:300;margin-top:8px">Research-backed parenting guides for parents who do the work.</p>
+        <p style="font-family:var(--sans);font-size:11px;color:var(--text-ghost);max-width:260px;line-height:1.7;font-weight:300;margin-top:6px">Created by a real dad.</p>
+      </div>
+      <nav aria-label="Playbook links">
+        <p class="footer-heading">Playbooks</p>
+        <a href="playbook-free-screentime.html" class="footer-link">Screen Time (Free)</a>
+        <a href="playbook-potty-training.html" class="footer-link">Potty Training (Free)</a>
+        <a href="playbook-sleep.html" class="footer-link">Sleep Training (Free)</a>
+        <a href="playbook-tantrum.html" class="footer-link">Tantrums (Free)</a>
+        <a href="playbook-feeding.html" class="footer-link">Feeding (Free)</a>
+        <a href="index.html#library" class="footer-link">All Playbooks</a>
+      </nav>
+      <nav aria-label="Company links">
+        <p class="footer-heading">Company</p>
+        <a href="contact.html" class="footer-link">Contact</a>
+        <a href="privacy.html" class="footer-link">Privacy</a>
+        <a href="terms.html" class="footer-link">Terms</a>
+      </nav>
+    </div>
+    <div class="divider" style="width:100%;margin-bottom:20px" aria-hidden="true"></div>
+    <div class="footer-bottom">
+      <small>&#169; 2026 FamilyForce Inc.</small>
+      <small>getfamilyforce.com</small>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+     - Read quiz score from localStorage
+     - Render user info (name/initials) from localStorage
+     - Retake button: clear score, navigate to quiz
+     - Avatar dropdown toggle
+     - Mobile menu toggle (Escape, focus trap)
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ─── CONSTANTS ─── */
+  const SCORE_KEY   = 'ff_quiz_score_feeding';  // { score: 5, total: 10, passed: false }
+
+  /* ─── 1. SCORE DISPLAY ─── */
+  (function renderScore() {
+    var raw    = localStorage.getItem(SCORE_KEY);
+    var gotten = 5;
+    var total  = 10;
+
+    if (raw) {
+      try {
+        var data = JSON.parse(raw);
+        if (typeof data.score === 'number') gotten = data.score;
+        if (typeof data.total === 'number') total  = data.total;
+      } catch (e) {
+        // Fall through to defaults
+      }
+    }
+
+    var pct  = total > 0 ? Math.round((gotten / total) * 100) : 0;
+    var pctStr = pct + '%';
+
+    var elGotten = document.getElementById('score-gotten');
+    var elTotal  = document.getElementById('score-total');
+    var elPct    = document.getElementById('score-pct');
+    var elWrap   = document.getElementById('score-display');
+
+    if (elGotten) elGotten.textContent = gotten;
+    if (elTotal)  elTotal.textContent  = total;
+    if (elPct)    elPct.textContent    = pctStr;
+
+    // Update aria-label for screen readers
+    if (elWrap) {
+      elWrap.setAttribute('aria-label', 'Your score: ' + gotten + ' out of ' + total + ' — ' + pctStr);
+    }
+  })();
+
+
+  /* ─── 2. USER INFO ─── */
+  (function renderUser() {
+    var name  = localStorage.getItem('ff_user_name')  || 'You';
+    var email = localStorage.getItem('ff_user_email') || '';
+
+    // Compute initials (first letter of each word, max 2)
+    var initials = name
+      .split(' ')
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(function (w) { return w[0].toUpperCase(); })
+      .join('');
+
+    if (!initials) initials = 'ME';
+
+    // Desktop nav
+    var navInit = document.getElementById('nav-initials');
+    if (navInit) navInit.textContent = initials;
+
+    var dName  = document.getElementById('dropdown-name');
+    var dEmail = document.getElementById('dropdown-email');
+    if (dName)  dName.textContent  = name;
+    if (dEmail) dEmail.textContent = email;
+
+    // Mobile menu
+    var mCircle = document.getElementById('mobile-avatar-circle');
+    var mName   = document.getElementById('mobile-user-name');
+    var mEmail  = document.getElementById('mobile-user-email');
+    if (mCircle) mCircle.textContent = initials;
+    if (mName)   mName.textContent   = name;
+    if (mEmail)  mEmail.textContent  = email;
+  })();
+
+
+  /* ─── 3. RETAKE BUTTON ─── */
+  var retakeBtn = document.getElementById('retake-btn');
+  if (retakeBtn) {
+    retakeBtn.addEventListener('click', function () {
+      // Clear previous score before retaking
+      localStorage.removeItem(SCORE_KEY);
+      window.location.href = 'quiz-feeding.html';
+    });
+  }
+
+
+  /* ─── 4. SIGN OUT ─── */
+  function handleSignOut(e) {
+    e.preventDefault();
+    localStorage.removeItem('ff_user_name');
+    localStorage.removeItem('ff_user_email');
+    localStorage.removeItem('ff_owned');
+    localStorage.removeItem('ff_progress');
+    localStorage.removeItem(SCORE_KEY);
+    window.location.href = 'index.html';
+  }
+
+  var signOutBtn = document.getElementById('sign-out-btn');
+  if (signOutBtn) signOutBtn.addEventListener('click', handleSignOut);
+
+  var mobileSignOut = document.getElementById('mobile-sign-out');
+  if (mobileSignOut) mobileSignOut.addEventListener('click', handleSignOut);
+
+
+  /* ─── 5. AVATAR DROPDOWN ─── */
+  var avatarBtn  = document.getElementById('avatar-btn');
+  var dropdown   = document.getElementById('avatar-dropdown');
+
+  if (avatarBtn && dropdown) {
+    function openDropdown() {
+      dropdown.classList.add('open');
+      avatarBtn.setAttribute('aria-expanded', 'true');
+      // Focus first item
+      var firstItem = dropdown.querySelector('[role="menuitem"]');
+      if (firstItem) firstItem.focus();
+    }
+
+    function closeDropdown() {
+      dropdown.classList.remove('open');
+      avatarBtn.setAttribute('aria-expanded', 'false');
+    }
+
+    avatarBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (dropdown.classList.contains('open')) {
+        closeDropdown();
+      } else {
+        openDropdown();
+      }
+    });
+
+    // Close on click outside
+    document.addEventListener('click', function (e) {
+      if (!avatarBtn.contains(e.target) && !dropdown.contains(e.target)) {
+        closeDropdown();
+      }
+    });
+
+    // Close on Escape
+    dropdown.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        closeDropdown();
+        avatarBtn.focus();
+      }
+
+      // Arrow key navigation within dropdown
+      var items = Array.from(dropdown.querySelectorAll('[role="menuitem"]'));
+      var idx   = items.indexOf(document.activeElement);
+
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        var next = items[(idx + 1) % items.length];
+        if (next) next.focus();
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        var prev = items[(idx - 1 + items.length) % items.length];
+        if (prev) prev.focus();
+      }
+    });
+  }
+
+
+  /* ─── 6. MOBILE MENU TOGGLE ─── */
+  var hamburger    = document.getElementById('hamburger-btn');
+  var mobileMenu   = document.getElementById('mobile-menu');
+  var mobileClose  = document.getElementById('mobile-menu-close');
+  var mainEl       = document.getElementById('main-content');
+  var footerEl     = document.querySelector('.site-footer');
+
+  if (hamburger && mobileMenu && mobileClose) {
+
+    function openMenu() {
+      mobileMenu.classList.add('open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      // Inert background content
+      if (mainEl)   mainEl.setAttribute('inert', '');
+      if (footerEl) footerEl.setAttribute('inert', '');
+      document.querySelector('.nav').setAttribute('inert', '');
+      mobileClose.focus();
+    }
+
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      if (mainEl)   mainEl.removeAttribute('inert');
+      if (footerEl) footerEl.removeAttribute('inert');
+      document.querySelector('.nav').removeAttribute('inert');
+      hamburger.focus();
+    }
+
+    hamburger.addEventListener('click', openMenu);
+    mobileClose.addEventListener('click', closeMenu);
+
+    // Close on nav link click
+    mobileMenu.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+        closeMenu();
+      }
+    });
+
+    // Focus trap inside mobile menu
+    mobileMenu.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      var focusable = Array.from(
+        mobileMenu.querySelectorAll('a, button, [tabindex="0"]')
+      ).filter(function (el) { return !el.hasAttribute('disabled'); });
+
+      var first = focusable[0];
+      var last  = focusable[focusable.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+  }
+
+})();
+</script>
+
+</body>
+</html>

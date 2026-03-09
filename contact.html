@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE — Contact Page
+     Stack: Vanilla HTML/CSS/JS (zero dependencies, no build step)
+     Accessibility: WCAG 2.1 AA compliant
+     ═══════════════════════════════════════════════════════════ -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+
+<!-- ─── SEO META ─── -->
+<title>Contact · FamilyForce</title>
+<meta name="description" content="Get in touch with FamilyForce. We read every message and usually reply within 24 hours.">
+<link rel="canonical" href="https://getfamilyforce.com/contact">
+
+<!-- ─── OPEN GRAPH ─── -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Contact · FamilyForce">
+<meta property="og:description" content="Get in touch with FamilyForce. We read every message and usually reply within 24 hours.">
+<meta property="og:url" content="https://getfamilyforce.com/contact">
+<meta property="og:site_name" content="FamilyForce">
+
+<!-- ─── FAVICONS ─── -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#6E4ED6">
+
+<!-- ─── FONTS ─── -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════════════
+   1. DESIGN TOKENS (CSS Custom Properties)
+   Copied exactly from index.html
+   ═══════════════════════════════════════════════════════════ */
+:root {
+  /* Color: Surface */
+  --bg: #FAFAFA;
+  --surface: #FFFFFF;
+  --elevated: #F4F0FC;
+
+  /* Color: Border */
+  --border: #E5E2EC;
+  --border-light: #EDEBF2;
+
+  /* Color: Text */
+  --text: #1D1D1F;
+  --text-mid: #5C5960;
+  --text-dim: #8A879A;
+  --text-ghost: #C2BFD0;
+
+  /* Color: Brand purple (was terracotta — variable name kept for compat) */
+  --terra: #6E4ED6;
+  --terra-dark: #5B3CC4;    /* AA contrast-safe for small text */
+  --terra-bright: #7C5CFC;
+  --terra-glow: rgba(110, 78, 214, 0.06);
+
+  /* Color: Semantic */
+  --focus-ring: 0 0 0 3px rgba(110, 78, 214, 0.4);
+  --selection: rgba(110, 78, 214, 0.15);
+
+  /* Typography: Font stacks */
+  --sans: 'Outfit', system-ui, -apple-system, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+
+  /* Spacing: Responsive tokens (overridden at breakpoints) */
+  --space-page-x: clamp(28px, 5vw, 64px);
+  --space-section-y: 120px;
+  --space-section-y-lg: 160px;
+  --space-stack-lg: 48px;
+  --space-stack-md: 32px;
+  --space-stack-sm: 20px;
+  --space-grid-gap: 20px;
+  --space-card-x: 24px;
+  --space-card-y: 32px;
+
+  /* Radius */
+  --radius-pill: 100px;
+  --radius-container: 20px;
+  --radius-card: 16px;
+  --radius-input: 10px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration: 0.5s;
+  --reveal-duration: 1.1s;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   2. RESET & BASE
+   ═══════════════════════════════════════════════════════════ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:focus-within { scroll-behavior: smooth; }
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+::selection {
+  background: var(--selection);
+  color: var(--text);
+}
+
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+
+
+/* ═══════════════════════════════════════════════════════════
+   3. FOCUS MANAGEMENT (WCAG 2.1 AA: 2.4.7)
+   ═══════════════════════════════════════════════════════════ */
+:focus {
+  outline: 2px solid var(--terra);
+  outline-offset: 2px;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(110, 78, 214, .4);
+  border-radius: 4px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.btn-nav:focus-visible {
+  border-radius: var(--radius-pill);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   4. LAYOUT PRIMITIVES
+   ═══════════════════════════════════════════════════════════ */
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 max(var(--space-page-x), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--space-page-x), env(safe-area-inset-right, 0px));
+}
+
+.section {
+  position: relative;
+  padding: var(--space-section-y) 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   5. TYPOGRAPHY CLASSES
+   ═══════════════════════════════════════════════════════════ */
+.display {
+  font-family: var(--sans);
+  font-size: clamp(52px, 8vw, 96px);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+
+.heading {
+  font-family: var(--sans);
+  font-size: clamp(32px, 4.5vw, 52px);
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--terra-dark);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   6. NAVIGATION (matched exactly from playbook-potty-training.html)
+   ═══════════════════════════════════════════════════════════ */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  transition: background-color var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease),
+              backdrop-filter var(--duration) var(--ease);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.nav.solid {
+  background: rgba(250, 250, 250, 0.88);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 72px;
+  padding: 0 var(--space-page-x);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.logo-f { color: var(--text); }
+.logo-s { color: var(--terra); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  letter-spacing: 0.01em;
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .nav-links a:hover { color: var(--text); }
+}
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.hamburger span {
+  display: block;
+  height: 1.5px;
+  background: var(--text);
+  border-radius: 1px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.hamburger span:first-child { width: 20px; }
+.hamburger span:last-child  { width: 14px; }
+
+/* Mobile menu */
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  background: rgba(250, 250, 250, 0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.3s var(--ease);
+  pointer-events: none;
+}
+
+.mobile-menu.open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.mobile-menu-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--text-dim);
+  width: 44px; height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.mobile-menu-close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(110, 78, 214, .4);
+  border-radius: 8px;
+}
+
+.mobile-menu-links {
+  flex: 1;
+  padding: 20px 20px;
+  list-style: none;
+}
+
+.mobile-menu-links a {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.mobile-menu-cta {
+  padding: 20px 20px;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   7. BUTTONS
+   ═══════════════════════════════════════════════════════════ */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px 42px;
+  background: var(--terra);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--sans);
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease),
+              transform var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.btn-primary:active {
+  background: #4A2EA8;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled,
+.btn-primary[aria-disabled="true"] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 17px 34px;
+  background: transparent;
+  color: var(--text-mid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-family: var(--sans);
+  font-size: 14.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.3s ease, color 0.3s ease, background-color 0.3s ease;
+}
+
+.btn-nav {
+  padding: 11px 26px;
+  background: var(--terra);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-pill);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--duration) var(--ease),
+              transform var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+}
+
+@media (hover: hover) {
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 60px rgba(110, 78, 214, .18), 0 0 0 1px rgba(110, 78, 214, .15);
+    background: var(--terra-dark);
+  }
+  .btn-primary:hover::before { opacity: 1; }
+
+  .btn-secondary:hover {
+    border-color: var(--terra);
+    color: var(--terra);
+  }
+
+  .btn-nav:hover {
+    background: var(--terra-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(110, 78, 214, .18);
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   8. SCROLL REVEAL
+   ═══════════════════════════════════════════════════════════ */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity var(--reveal-duration) var(--ease),
+              transform var(--reveal-duration) var(--ease);
+}
+
+[data-reveal].in {
+  opacity: 1;
+  transform: none;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   9. DIVIDER
+   ═══════════════════════════════════════════════════════════ */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+  margin: 0 auto;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   10. PAGE HERO — Contact
+   ═══════════════════════════════════════════════════════════ */
+.contact-hero {
+  padding: calc(140px + env(safe-area-inset-top, 0px)) 0 72px;
+  text-align: center;
+}
+
+.contact-hero-heading {
+  font-family: var(--sans);
+  font-size: clamp(42px, 6vw, 76px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.06;
+  color: var(--text);
+  margin-bottom: 18px;
+}
+
+.contact-hero-sub {
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--text-mid);
+  max-width: 400px;
+  margin: 0 auto 32px;
+}
+
+/* Email pill badge */
+.email-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--terra-dark);
+  text-decoration: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.email-pill:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(110, 78, 214, .4);
+  border-radius: var(--radius-pill);
+}
+
+@media (hover: hover) {
+  .email-pill:hover {
+    background: #EBE6F8;
+    border-color: rgba(110, 78, 214, .25);
+    color: var(--terra);
+  }
+}
+
+.email-pill-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   11. CONTACT LAYOUT GRID
+   Two-column at ≥ 900px, stacked below.
+   ═══════════════════════════════════════════════════════════ */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 80px;
+  align-items: start;
+}
+
+/* Form column */
+.contact-form-col { min-width: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   12. CONTACT FORM
+   ═══════════════════════════════════════════════════════════ */
+.form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-container);
+  padding: 44px 40px 40px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.form-group:last-of-type { margin-bottom: 0; }
+
+.form-label {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-mid);
+  letter-spacing: 0.01em;
+}
+
+.form-label .req {
+  color: var(--terra);
+  margin-left: 2px;
+  font-weight: 600;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-input);
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--text);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder { color: var(--text-ghost); }
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--terra);
+  box-shadow: 0 0 0 3px rgba(110, 78, 214, .25);
+}
+
+.form-input.invalid,
+.form-textarea.invalid {
+  border-color: #E53935;
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, .18);
+}
+
+.form-textarea {
+  min-height: 140px;
+  resize: vertical;
+  line-height: 1.65;
+}
+
+/* Error message */
+.form-error {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 500;
+  color: #E53935;
+  display: none;
+}
+
+.form-error.visible { display: block; }
+
+/* Subject chips */
+.chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.chip {
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease,
+              border-color 0.2s ease,
+              color 0.2s ease,
+              box-shadow 0.2s ease;
+  /* Minimum touch target */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.chip:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(110, 78, 214, .4);
+  border-radius: var(--radius-pill);
+}
+
+.chip[aria-pressed="true"],
+.chip.selected {
+  background: var(--terra);
+  border-color: var(--terra);
+  color: #fff;
+}
+
+@media (hover: hover) {
+  .chip:not(.selected):hover {
+    border-color: var(--terra);
+    color: var(--terra);
+    background: var(--terra-glow);
+  }
+}
+
+.chips-wrap.invalid-group .chip:not(.selected) {
+  border-color: #E53935;
+}
+
+/* Submit button row */
+.form-submit-row {
+  margin-top: 28px;
+}
+
+.btn-submit {
+  width: 100%;
+  min-height: 54px;
+  font-size: 15.5px;
+  padding: 18px 24px;
+}
+
+/* ─── Success state ─── */
+.form-success {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 40px;
+  gap: 16px;
+}
+
+.form-success.visible { display: flex; }
+
+.success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #E8F5E9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.success-heading {
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.success-sub {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--text-mid);
+  line-height: 1.65;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   13. FAQ / ACCORDION
+   ═══════════════════════════════════════════════════════════ */
+.faq-col { min-width: 0; }
+
+.faq-heading {
+  font-family: var(--sans);
+  font-size: clamp(22px, 2.5vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 28px;
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.accordion-item {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.accordion-item:last-child { border-bottom: none; }
+
+/* Trigger button */
+.accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px;
+  background: none;
+  border: none;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  /* Touch target */
+  min-height: 64px;
+  transition: background-color 0.2s ease;
+}
+
+.accordion-trigger:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 3px rgba(110, 78, 214, .4);
+  border-radius: 4px;
+}
+
+@media (hover: hover) {
+  .accordion-trigger:hover { background: var(--elevated); }
+}
+
+/* Chevron */
+.accordion-chevron {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  transition: transform 0.35s var(--ease), color 0.2s ease;
+}
+
+.accordion-trigger[aria-expanded="true"] .accordion-chevron {
+  transform: rotate(180deg);
+  color: var(--terra);
+}
+
+/* Animated content — CSS grid trick */
+.accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s var(--ease);
+  overflow: hidden;
+}
+
+.accordion-trigger[aria-expanded="true"] + .accordion-content {
+  grid-template-rows: 1fr;
+}
+
+.accordion-content-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.accordion-body {
+  padding: 0 24px 22px;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--text-mid);
+}
+
+.accordion-body a {
+  color: var(--terra);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .accordion-body a:hover { color: var(--terra-dark); }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   14. FOOTER (matched exactly from playbook-potty-training.html)
+   ═══════════════════════════════════════════════════════════ */
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 60px 0 36px;
+  padding-bottom: calc(36px + env(safe-area-inset-bottom, 0px));
+  background: var(--surface);
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 80px;
+  margin-bottom: var(--space-stack-lg);
+}
+
+.footer-heading {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-ghost);
+  margin-bottom: 18px;
+  font-weight: 600;
+}
+
+.footer-link {
+  color: var(--text-dim);
+  font-family: var(--sans);
+  font-weight: 300;
+  font-size: 13px;
+  display: block;
+  margin-bottom: 12px;
+  transition: color 0.3s ease;
+  padding: 2px 0;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .footer-link:hover { color: var(--terra); }
+}
+
+.footer-link[aria-current="page"] {
+  color: var(--terra-dark);
+  font-weight: 500;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--text-ghost);
+  font-weight: 300;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   15. UTILITY
+   ═══════════════════════════════════════════════════════════ */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  background: var(--terra);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  z-index: 9999;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 14px;
+  transition: top 0.2s ease;
+  text-decoration: none;
+}
+
+.skip-link:focus { top: 16px; }
+
+
+/* ═══════════════════════════════════════════════════════════
+   16. RESPONSIVE: COMPACT (≤ 899px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 899px) {
+  :root {
+    --space-section-y: 80px;
+    --space-section-y-lg: 100px;
+    --space-stack-lg: 40px;
+    --space-stack-md: 24px;
+    --space-grid-gap: 16px;
+    --radius-container: 16px;
+  }
+
+  .contact-hero {
+    padding-top: calc(100px + env(safe-area-inset-top, 0px));
+    padding-bottom: 56px;
+  }
+
+  /* Stack form and FAQ vertically */
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 52px;
+  }
+
+  /* Move FAQ above form on compact (form first on mobile) */
+  .faq-col { order: 2; }
+  .contact-form-col { order: 1; }
+
+  .form-card { padding: 32px 28px 28px; }
+
+  .footer-grid {
+    display: block;
+  }
+
+  .footer-grid > * + * { margin-top: 32px; }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   17. RESPONSIVE: COMPACT NARROW (≤ 480px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  :root {
+    --space-page-x: 20px;
+    --space-section-y: 56px;
+    --space-section-y-lg: 72px;
+    --space-stack-lg: 32px;
+    --space-stack-md: 20px;
+    --radius-container: 12px;
+    --radius-card: 12px;
+  }
+
+  /* Nav: hamburger mode */
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .nav-inner { height: 64px; }
+
+  .contact-hero {
+    padding-top: calc(88px + env(safe-area-inset-top, 0px));
+    padding-bottom: 44px;
+  }
+
+  .contact-hero-heading { font-size: 38px; }
+
+  /* Email pill: allow wrap */
+  .email-pill { font-size: 13px; padding: 10px 18px; }
+
+  .form-card { padding: 24px 20px 22px; }
+
+  /* Email input: iOS zoom prevention — 16px minimum */
+  .form-input[type="email"] {
+    font-size: max(16px, 1rem);
+  }
+
+  /* Chips: smaller padding on narrow screens */
+  .chip { padding: 10px 14px; font-size: 12.5px; min-height: 44px; }
+
+  .chips-wrap { gap: 6px; }
+
+  .btn-submit { font-size: 15px; min-height: 54px; }
+
+  .accordion-trigger { padding: 18px 18px; font-size: 14.5px; }
+  .accordion-body { padding: 0 18px 18px; }
+
+  /* Footer */
+  .footer-link {
+    font-size: 14px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   18. REDUCED MOTION
+   ═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .btn-primary,
+  .btn-nav {
+    transition-property: background-color, box-shadow !important;
+  }
+
+  .mobile-menu {
+    transition: none !important;
+  }
+
+  /* Accordion: instant open/close — no animation */
+  .accordion-content {
+    transition: none !important;
+  }
+
+  /* Chevron: instant rotate */
+  .accordion-chevron {
+    transition: none !important;
+  }
+
+  html { scroll-behavior: auto; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- Skip link (WCAG 2.4.1) -->
+<a href="#main-content" class="skip-link">Skip to content</a>
+
+<!-- ═══ NAVIGATION (matched from playbook-potty-training.html) ═══ -->
+<nav class="nav" id="nav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" aria-label="FamilyForce — Home">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-f">Family</span><span class="logo-s">Force</span>
+    </a>
+
+    <ul class="nav-links" role="list">
+      <li><a href="sign-in.html">Sign In</a></li>
+      <li>
+        <button class="btn-nav" id="nav-cta-btn" aria-haspopup="dialog">Get It Free</button>
+      </li>
+    </ul>
+
+    <button class="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu" id="hamburger-btn">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation menu" aria-modal="true">
+  <div class="mobile-menu-header">
+    <a href="index.html" class="logo" style="font-size:18px" aria-label="FamilyForce — Home">
+      <svg width="12" height="14" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-f">Family</span><span class="logo-s">Force</span>
+    </a>
+    <button class="mobile-menu-close" aria-label="Close navigation menu" id="mobile-menu-close">✕</button>
+  </div>
+  <ul class="mobile-menu-links" role="list">
+    <li><a href="sign-in.html">Sign In</a></li>
+  </ul>
+  <div class="mobile-menu-cta">
+    <button class="btn-primary" id="mobile-cta-btn" style="width:100%;min-height:54px;font-size:15px" aria-haspopup="dialog">
+      Get Free Access
+    </button>
+  </div>
+</div>
+
+
+<!-- ═══ MAIN ═══ -->
+<main id="main-content">
+
+  <!-- ─── PAGE HERO ─── -->
+  <section class="contact-hero" aria-label="Contact FamilyForce">
+    <div class="wrap">
+      <div data-reveal data-d="0">
+        <p class="label" style="margin-bottom:20px">Contact</p>
+      </div>
+      <div data-reveal data-d="60">
+        <h1 class="contact-hero-heading">Get in touch</h1>
+      </div>
+      <div data-reveal data-d="140">
+        <p class="contact-hero-sub">We read every message. Usually reply within 24 hours.</p>
+        <a
+          href="mailto:support@getfamilyforce.com"
+          class="email-pill"
+          aria-label="Email us at support@getfamilyforce.com"
+        >
+          <svg class="email-pill-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          support@getfamilyforce.com
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider" style="width:min(80%,900px)" role="separator" aria-hidden="true"></div>
+
+  <!-- ─── CONTACT GRID: Form + FAQ ─── -->
+  <section class="section" aria-label="Contact form and FAQ" style="padding-bottom:64px">
+    <div class="wrap">
+      <div class="contact-grid">
+
+        <!-- ─── CONTACT FORM ─── -->
+        <div class="contact-form-col" data-reveal data-d="0">
+          <div class="form-card">
+
+            <!-- Form content (swapped for success on submit) -->
+            <div id="form-content">
+              <h2 style="font-family:var(--sans);font-size:20px;font-weight:600;color:var(--text);margin-bottom:28px;letter-spacing:-0.01em">Send us a message</h2>
+
+              <!-- Hidden subject input for form submission -->
+              <input type="hidden" id="subject-value" name="subject" value="">
+
+              <form id="contact-form" novalidate aria-label="Contact form">
+
+                <!-- First name -->
+                <div class="form-group">
+                  <label class="form-label" for="contact-name">
+                    First name <span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <input
+                    class="form-input"
+                    type="text"
+                    id="contact-name"
+                    name="first_name"
+                    autocomplete="given-name"
+                    placeholder="Sarah"
+                    required
+                    aria-required="true"
+                    aria-describedby="name-err"
+                  >
+                  <span class="form-error" id="name-err" role="alert">Please enter your first name.</span>
+                </div>
+
+                <!-- Email address -->
+                <div class="form-group">
+                  <label class="form-label" for="contact-email">
+                    Email address <span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <input
+                    class="form-input"
+                    type="email"
+                    id="contact-email"
+                    name="email"
+                    autocomplete="email"
+                    inputmode="email"
+                    placeholder="sarah@example.com"
+                    required
+                    aria-required="true"
+                    aria-describedby="email-err"
+                  >
+                  <span class="form-error" id="email-err" role="alert">Please enter a valid email address.</span>
+                </div>
+
+                <!-- Subject chips -->
+                <div class="form-group">
+                  <p class="form-label" id="subject-label">
+                    Subject <span class="req" aria-hidden="true">*</span>
+                  </p>
+                  <div
+                    class="chips-wrap"
+                    id="chips-wrap"
+                    role="group"
+                    aria-labelledby="subject-label"
+                    aria-describedby="subject-err"
+                  >
+                    <button
+                      type="button"
+                      class="chip"
+                      data-value="General question"
+                      aria-pressed="false"
+                    >General question</button>
+                    <button
+                      type="button"
+                      class="chip"
+                      data-value="Refund request"
+                      aria-pressed="false"
+                    >Refund request</button>
+                    <button
+                      type="button"
+                      class="chip"
+                      data-value="Technical issue"
+                      aria-pressed="false"
+                    >Technical issue</button>
+                    <button
+                      type="button"
+                      class="chip"
+                      data-value="Something else"
+                      aria-pressed="false"
+                    >Something else</button>
+                  </div>
+                  <span class="form-error" id="subject-err" role="alert">Please select a subject.</span>
+                </div>
+
+                <!-- Message -->
+                <div class="form-group" style="margin-bottom:0">
+                  <label class="form-label" for="contact-message">
+                    Message <span class="req" aria-hidden="true">*</span>
+                  </label>
+                  <textarea
+                    class="form-textarea"
+                    id="contact-message"
+                    name="message"
+                    placeholder="Tell us what's on your mind…"
+                    required
+                    aria-required="true"
+                    aria-describedby="message-err"
+                  ></textarea>
+                  <span class="form-error" id="message-err" role="alert">Please enter your message.</span>
+                </div>
+
+                <!-- Submit -->
+                <div class="form-submit-row">
+                  <button type="submit" class="btn-primary btn-submit">
+                    Send Message
+                    <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                      <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                </div>
+
+              </form>
+            </div>
+
+            <!-- Success state (hidden until submit) -->
+            <div class="form-success" id="form-success" aria-live="polite" aria-atomic="true">
+              <div class="success-icon" aria-hidden="true">
+                <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+                  <path d="M5 13l6 6 10-10" stroke="#27AE60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <p class="success-heading">Message sent.</p>
+              <p class="success-sub">We'll be in touch soon.</p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ─── FAQ / ACCORDION ─── -->
+        <div class="faq-col" data-reveal data-d="120">
+          <h2 class="faq-heading">Common questions</h2>
+
+          <div class="accordion" role="list">
+
+            <!-- Item 1 -->
+            <div class="accordion-item" role="listitem">
+              <section aria-labelledby="faq-q1-heading">
+                <h3 id="faq-q1-heading" style="margin:0">
+                  <button
+                    class="accordion-trigger"
+                    id="faq-btn-1"
+                    aria-expanded="false"
+                    aria-controls="faq-panel-1"
+                  >
+                    Can I get a refund?
+                    <span class="accordion-chevron" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                  </button>
+                </h3>
+                <div
+                  class="accordion-content"
+                  id="faq-panel-1"
+                  role="region"
+                  aria-labelledby="faq-btn-1"
+                >
+                  <div class="accordion-content-inner">
+                    <div class="accordion-body">
+                      Yes. If you are not happy with your purchase for any reason, email us within 30 days and we will give you a full refund, no questions asked. Send a note to <a href="mailto:support@getfamilyforce.com">support@getfamilyforce.com</a> and we will sort it within 24 hours.
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <!-- Item 2 -->
+            <div class="accordion-item" role="listitem">
+              <section aria-labelledby="faq-q2-heading">
+                <h3 id="faq-q2-heading" style="margin:0">
+                  <button
+                    class="accordion-trigger"
+                    id="faq-btn-2"
+                    aria-expanded="false"
+                    aria-controls="faq-panel-2"
+                  >
+                    Can I read on my phone?
+                    <span class="accordion-chevron" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                  </button>
+                </h3>
+                <div
+                  class="accordion-content"
+                  id="faq-panel-2"
+                  role="region"
+                  aria-labelledby="faq-btn-2"
+                >
+                  <div class="accordion-content-inner">
+                    <div class="accordion-body">
+                      Yes. The eBook is a PDF that works on any device. The audiobook is an MP3 you can listen to on your phone, in the car, or at 3am when the baby is finally asleep. Everything works offline once downloaded.
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <!-- Item 3 -->
+            <div class="accordion-item" role="listitem">
+              <section aria-labelledby="faq-q3-heading">
+                <h3 id="faq-q3-heading" style="margin:0">
+                  <button
+                    class="accordion-trigger"
+                    id="faq-btn-3"
+                    aria-expanded="false"
+                    aria-controls="faq-panel-3"
+                  >
+                    I did not receive my sign-in link.
+                    <span class="accordion-chevron" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                  </button>
+                </h3>
+                <div
+                  class="accordion-content"
+                  id="faq-panel-3"
+                  role="region"
+                  aria-labelledby="faq-btn-3"
+                >
+                  <div class="accordion-content-inner">
+                    <div class="accordion-body">
+                      Check your spam or junk folder first. If it is not there, try signing in again as the link expires after 15 minutes. Still stuck? Email us at <a href="mailto:support@getfamilyforce.com">support@getfamilyforce.com</a> and we will get you sorted quickly.
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <!-- Item 4 -->
+            <div class="accordion-item" role="listitem">
+              <section aria-labelledby="faq-q4-heading">
+                <h3 id="faq-q4-heading" style="margin:0">
+                  <button
+                    class="accordion-trigger"
+                    id="faq-btn-4"
+                    aria-expanded="false"
+                    aria-controls="faq-panel-4"
+                  >
+                    Do both parents get access?
+                    <span class="accordion-chevron" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                  </button>
+                </h3>
+                <div
+                  class="accordion-content"
+                  id="faq-panel-4"
+                  role="region"
+                  aria-labelledby="faq-btn-4"
+                >
+                  <div class="accordion-content-inner">
+                    <div class="accordion-body">
+                      Yes. Both parents receive full access. Once you purchase, you can share the playbook with your partner and each complete the quiz and earn your own certificate. We built it this way on purpose. This stuff works better when you are both on the same page.
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+
+            <!-- Item 5 -->
+            <div class="accordion-item" role="listitem">
+              <section aria-labelledby="faq-q5-heading">
+                <h3 id="faq-q5-heading" style="margin:0">
+                  <button class="accordion-trigger" id="faq-btn-5" aria-expanded="false" aria-controls="faq-panel-5">
+                    How long are the playbooks?
+                    <span class="accordion-chevron" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </button>
+                </h3>
+                <div class="accordion-content" id="faq-panel-5" role="region" aria-labelledby="faq-btn-5">
+                  <div class="accordion-content-inner"><div class="accordion-body">
+                    Each playbook is designed to be read in one sitting, typically 45 to 60 minutes. They are not padded out. Every chapter earns its place. If you prefer to listen, the audiobook covers the same content and runs about the same length.
+                  </div></div>
+                </div>
+              </section>
+            </div>
+
+            <!-- Item 6 -->
+            <div class="accordion-item" role="listitem">
+              <section aria-labelledby="faq-q6-heading">
+                <h3 id="faq-q6-heading" style="margin:0">
+                  <button class="accordion-trigger" id="faq-btn-6" aria-expanded="false" aria-controls="faq-panel-6">
+                    Is the information based on real research?
+                    <span class="accordion-chevron" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </button>
+                </h3>
+                <div class="accordion-content" id="faq-panel-6" role="region" aria-labelledby="faq-btn-6">
+                  <div class="accordion-content-inner"><div class="accordion-body">
+                    Yes. Every claim in every playbook is backed by peer-reviewed research or expert consensus. Sources are cited throughout. We review academic journals, pediatric guidelines, and clinical studies so you do not have to. The advice is practical, but the foundation is solid.
+                  </div></div>
+                </div>
+              </section>
+            </div>
+
+          </div><!-- /accordion -->
+        </div><!-- /faq-col -->
+
+      </div><!-- /contact-grid -->
+    </div>
+  </section>
+
+</main>
+
+
+<!-- ═══ FOOTER (matched exactly from playbook-potty-training.html) ═══ -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="logo" style="margin-bottom:14px;font-size:20px;display:inline-flex;align-items:center;gap:6px" aria-label="FamilyForce — Home">
+          <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="logo-f">Family</span><span class="logo-s">Force</span>
+        </a>
+        <p style="font-family:var(--sans);font-size:13px;color:var(--text-dim);max-width:260px;line-height:1.7;font-weight:300;margin-top:8px">Research-backed parenting guides for parents who do the work.</p>
+        <p style="font-family:var(--sans);font-size:11px;color:var(--text-ghost);max-width:260px;line-height:1.7;font-weight:300;margin-top:6px">Created by a real dad.</p>
+      </div>
+      <nav aria-label="Playbook links">
+        <p class="footer-heading">Playbooks</p>
+        <a href="playbook-free-screentime.html" class="footer-link">Screen Time &#8212; Free</a>
+        <a href="playbook-potty-training.html" class="footer-link">Potty Training (Free)</a>
+        <a href="playbook-sleep.html" class="footer-link">Sleep Training (Free)</a>
+        <a href="playbook-tantrum.html" class="footer-link">Tantrums (Free)</a>
+        <a href="playbook-feeding.html" class="footer-link">Feeding (Free)</a>
+        <a href="index.html#library" class="footer-link">All Playbooks</a>
+      </nav>
+      <nav aria-label="Company links">
+        <p class="footer-heading">Company</p>
+        <a href="contact.html" class="footer-link" aria-current="page">Contact</a>
+        <a href="privacy.html" class="footer-link">Privacy</a>
+        <a href="terms.html" class="footer-link">Terms</a>
+      </nav>
+    </div>
+    <div class="divider" style="width:100%;margin-bottom:20px" aria-hidden="true"></div>
+    <div class="footer-bottom">
+      <small>&#169; 2026 FamilyForce Inc.</small>
+      <small>getfamilyforce.com</small>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT — Zero dependencies
+     ═══════════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ─── REDUCED MOTION ─── */
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ─── SCROLL REVEAL ─── */
+if (!prefersReducedMotion) {
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const delay = +(entry.target.dataset.d || 0);
+        setTimeout(() => entry.target.classList.add('in'), delay);
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('[data-reveal]').forEach(el => revealObserver.observe(el));
+} else {
+  document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('in'));
+}
+
+
+/* ─── NAV SCROLL STATE ─── */
+const navEl = document.getElementById('nav');
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      navEl.classList.toggle('solid', window.scrollY > 60);
+      ticking = false;
+    });
+    ticking = true;
+  }
+}, { passive: true });
+
+
+/* ─── MOBILE MENU ─── */
+const hamburger = document.getElementById('hamburger-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const mobileClose = document.getElementById('mobile-menu-close');
+const mainContent = document.getElementById('main-content');
+const siteFooter = document.querySelector('.site-footer');
+
+function openMobileMenu() {
+  mobileMenu.classList.add('open');
+  hamburger.setAttribute('aria-expanded', 'true');
+  if (mainContent) mainContent.setAttribute('inert', '');
+  if (siteFooter) siteFooter.setAttribute('inert', '');
+  document.body.style.overflow = 'hidden';
+  requestAnimationFrame(() => mobileClose.focus());
+}
+
+function closeMobileMenu() {
+  mobileMenu.classList.remove('open');
+  hamburger.setAttribute('aria-expanded', 'false');
+  if (mainContent) mainContent.removeAttribute('inert');
+  if (siteFooter) siteFooter.removeAttribute('inert');
+  document.body.style.overflow = '';
+  hamburger.focus();
+}
+
+hamburger.addEventListener('click', openMobileMenu);
+mobileClose.addEventListener('click', closeMobileMenu);
+
+mobileMenu.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', closeMobileMenu);
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+    closeMobileMenu();
+  }
+});
+
+mobileMenu.addEventListener('keydown', (e) => {
+  if (e.key !== 'Tab') return;
+  const focusable = mobileMenu.querySelectorAll('a, button, [tabindex]:not([tabindex="-1"])');
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  if (e.shiftKey && document.activeElement === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && document.activeElement === last) {
+    e.preventDefault();
+    first.focus();
+  }
+});
+
+/* Nav CTA: redirect to free playbook */
+const navCta = document.getElementById('nav-cta-btn');
+const mobileCta = document.getElementById('mobile-cta-btn');
+if (navCta) navCta.addEventListener('click', () => { window.location.href = 'playbook-potty-training.html'; });
+if (mobileCta) mobileCta.addEventListener('click', () => { window.location.href = 'playbook-potty-training.html'; });
+
+
+/* ─── SUBJECT CHIPS ─── */
+const chips = document.querySelectorAll('.chip');
+const subjectInput = document.getElementById('subject-value');
+const chipsWrap = document.getElementById('chips-wrap');
+
+chips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    // Deselect all
+    chips.forEach(c => {
+      c.classList.remove('selected');
+      c.setAttribute('aria-pressed', 'false');
+    });
+
+    // Select clicked
+    chip.classList.add('selected');
+    chip.setAttribute('aria-pressed', 'true');
+    subjectInput.value = chip.dataset.value;
+
+    // Clear chip error state
+    chipsWrap.classList.remove('invalid-group');
+    document.getElementById('subject-err').classList.remove('visible');
+  });
+});
+
+
+/* ─── FORM VALIDATION & SUBMIT ─── */
+const contactForm = document.getElementById('contact-form');
+const formContent = document.getElementById('form-content');
+const formSuccess = document.getElementById('form-success');
+
+const nameInput = document.getElementById('contact-name');
+const emailInput = document.getElementById('contact-email');
+const messageInput = document.getElementById('contact-message');
+const nameErr = document.getElementById('name-err');
+const emailErr = document.getElementById('email-err');
+const subjectErr = document.getElementById('subject-err');
+const messageErr = document.getElementById('message-err');
+
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+}
+
+function setFieldError(input, errEl, hasError) {
+  if (hasError) {
+    input.classList.add('invalid');
+    errEl.classList.add('visible');
+    input.setAttribute('aria-invalid', 'true');
+  } else {
+    input.classList.remove('invalid');
+    errEl.classList.remove('visible');
+    input.removeAttribute('aria-invalid');
+  }
+}
+
+contactForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  let valid = true;
+  let firstErrorEl = null;
+
+  /* Validate name */
+  const nameOk = nameInput.value.trim().length > 0;
+  setFieldError(nameInput, nameErr, !nameOk);
+  if (!nameOk) { valid = false; if (!firstErrorEl) firstErrorEl = nameInput; }
+
+  /* Validate email */
+  const emailOk = validateEmail(emailInput.value);
+  setFieldError(emailInput, emailErr, !emailOk);
+  if (!emailOk) { valid = false; if (!firstErrorEl) firstErrorEl = emailInput; }
+
+  /* Validate subject */
+  const subjectOk = subjectInput.value.length > 0;
+  if (!subjectOk) {
+    chipsWrap.classList.add('invalid-group');
+    subjectErr.classList.add('visible');
+    valid = false;
+    if (!firstErrorEl) firstErrorEl = chips[0];
+  } else {
+    chipsWrap.classList.remove('invalid-group');
+    subjectErr.classList.remove('visible');
+  }
+
+  /* Validate message */
+  const messageOk = messageInput.value.trim().length > 0;
+  setFieldError(messageInput, messageErr, !messageOk);
+  if (!messageOk) { valid = false; if (!firstErrorEl) firstErrorEl = messageInput; }
+
+  if (!valid) {
+    if (firstErrorEl) firstErrorEl.focus();
+    return;
+  }
+
+  /* ─── SUCCESS ─── */
+  formContent.style.display = 'none';
+  formSuccess.classList.add('visible');
+  formSuccess.querySelector('.success-heading').focus();
+});
+
+/* Inline validation on blur */
+nameInput.addEventListener('blur', () => {
+  if (nameInput.value.trim()) setFieldError(nameInput, nameErr, false);
+});
+
+emailInput.addEventListener('blur', () => {
+  if (validateEmail(emailInput.value)) setFieldError(emailInput, emailErr, false);
+});
+
+messageInput.addEventListener('blur', () => {
+  if (messageInput.value.trim()) setFieldError(messageInput, messageErr, false);
+});
+
+
+/* ─── ACCORDION ─── */
+const accordionTriggers = document.querySelectorAll('.accordion-trigger');
+
+accordionTriggers.forEach(trigger => {
+  trigger.addEventListener('click', () => {
+    const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+    const panelId = trigger.getAttribute('aria-controls');
+    const panel = panelId ? document.getElementById(panelId) : null;
+
+    /* Close all */
+    accordionTriggers.forEach(t => {
+      t.setAttribute('aria-expanded', 'false');
+      const pid = t.getAttribute('aria-controls');
+      const p = pid ? document.getElementById(pid) : null;
+      if (p) { p.style.gridTemplateRows = '0fr'; }
+    });
+
+    /* Open clicked if it was closed */
+    if (!isExpanded) {
+      trigger.setAttribute('aria-expanded', 'true');
+      if (panel) { panel.style.gridTemplateRows = '1fr'; }
+    }
+  });
+});
+
+/* Keyboard navigation within accordion: arrow keys */
+accordionTriggers.forEach((trigger, i) => {
+  trigger.addEventListener('keydown', (e) => {
+    let target = null;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      target = accordionTriggers[i + 1] || accordionTriggers[0];
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      target = accordionTriggers[i - 1] || accordionTriggers[accordionTriggers.length - 1];
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      target = accordionTriggers[0];
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      target = accordionTriggers[accordionTriggers.length - 1];
+    }
+
+    if (target) target.focus();
+  });
+});
+
+
+/* ─── SUCCESS HEADING: make focusable ─── */
+const successHeading = document.querySelector('.form-success .success-heading');
+if (successHeading) successHeading.setAttribute('tabindex', '-1');
+</script>
+
+</body>
+</html>
