@@ -873,6 +873,15 @@ button { font: inherit; cursor: pointer; }
 /* ═══════════════════════════════════════════════════════════
    11. LIBRARY TABLE
    ═══════════════════════════════════════════════════════════ */
+
+.dash-progress-summary {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-top: 8px;
+  font-family: var(--sans);
+}
+.dash-progress-summary strong { color: var(--terra); font-weight: 700; }
+
 .section-label {
   font-family: var(--sans);
   font-size: 11px;
@@ -883,58 +892,37 @@ button { font: inherit; cursor: pointer; }
   margin-bottom: 14px;
 }
 
-.completed-section {
-  padding: 0 0 32px;
-}
+.completed-section { padding: 0 0 32px; }
+.completed-section .lib-row { border-color: rgba(91,168,142,.25); background: rgba(91,168,142,.03); }
+.library-section { padding: 0 0 100px; }
 
-.completed-section .lib-row {
-  border-color: rgba(91,168,142,.25);
-  background: rgba(91,168,142,.03);
-}
-
-.library-section {
-  padding: 0 0 100px;
-}
-
-.library-table {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.library-table { display: flex; flex-direction: column; gap: 12px; }
 
 .lib-row {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: 0 20px;
   background: var(--surface);
   border: 1px solid var(--border-light);
   border-radius: 16px;
-  padding: 20px 24px 20px 32px;
+  padding: 18px 20px 18px 28px;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   transition: box-shadow .2s, transform .2s;
 }
 @media (hover: hover) {
-  .lib-row:hover {
-    box-shadow: 0 4px 24px rgba(110,78,214,.08);
-    transform: translateY(-1px);
-  }
+  .lib-row:hover { box-shadow: 0 4px 24px rgba(110,78,214,.07); transform: translateY(-1px); }
 }
 
 .lib-accent {
   position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
+  left: 0; top: 0; bottom: 0;
   width: 4px;
   border-radius: 16px 0 0 16px;
 }
 
-.lib-info {
-  padding-left: 8px;
-  min-width: 0;
-}
+.lib-info { padding-left: 4px; min-width: 0; }
 
 .lib-title {
   font-family: var(--sans);
@@ -947,142 +935,111 @@ button { font: inherit; cursor: pointer; }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-.lib-title-link {
-  color: inherit;
-  text-decoration: none;
-  transition: color .15s;
-}
-@media (hover: hover) {
-  .lib-title-link:hover { color: var(--terra); }
-}
+.lib-title-link { color: inherit; text-decoration: none; transition: color .15s; }
+@media (hover: hover) { .lib-title-link:hover { color: var(--terra); } }
 
 .lib-meta {
   font-size: 13px;
   color: var(--text-dim);
   font-weight: 400;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.lib-price-wrap {
+/* ─── CTA wrap ─── */
+.lib-cta-wrap {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-  flex-shrink: 0;
-}
-
-.lib-price-original {
-  font-size: 12px;
-  color: var(--text-ghost);
-  font-family: var(--sans);
-  font-weight: 400;
-  text-decoration: line-through;
-}
-
-.lib-badge {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: .06em;
-  color: #5BA88E;
-  font-family: var(--sans);
-  white-space: nowrap;
-}
-
-.lib-actions {
-  display: flex;
-  gap: 8px;
   align-items: center;
+  gap: 8px;
   flex-shrink: 0;
 }
 
-.lib-btn {
+.lib-primary-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 9px 16px;
+  gap: 7px;
+  padding: 10px 20px;
   border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   font-family: var(--sans);
   text-decoration: none;
-  transition: background .2s, color .2s, transform .15s;
   white-space: nowrap;
-}
-
-.lib-btn--read {
-  background: var(--elevated);
-  color: var(--text);
-  border: 1px solid var(--border-light);
-}
-@media (hover: hover) {
-  .lib-btn--read:hover { background: var(--border-light); transform: translateY(-1px); }
-}
-
-.lib-btn--quiz {
+  transition: background .15s, transform .1s;
   background: var(--terra);
   color: #fff;
-  border: 1px solid transparent;
+  border: none;
+  cursor: pointer;
 }
-@media (hover: hover) {
-  .lib-btn--quiz:hover { background: var(--terra-dark); transform: translateY(-1px); }
-}
+@media (hover: hover) { .lib-primary-btn:hover { background: var(--terra-dark); transform: translateY(-1px); } }
 
-.lib-btn--cert {
+.lib-primary-btn.state--read   { background: var(--elevated); color: var(--text); border: 1px solid var(--border-light); }
+@media (hover: hover) { .lib-primary-btn.state--read:hover { background: var(--border-light); } }
+.lib-primary-btn.state--quiz   { background: var(--terra); color: #fff; }
+.lib-primary-btn.state--cert   { background: #5BA88E; color: #fff; }
+@media (hover: hover) { .lib-primary-btn.state--cert:hover { background: #4A9070; } }
+
+/* ─── More (···) menu ─── */
+.lib-more-wrap { position: relative; }
+
+.lib-more-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
   background: transparent;
   color: var(--text-dim);
-  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: background .15s, color .15s;
 }
-@media (hover: hover) {
-  .lib-btn--cert:hover { background: var(--elevated); color: var(--text); }
+@media (hover: hover) { .lib-more-btn:hover { background: var(--elevated); color: var(--text); } }
+
+.lib-more-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.12);
+  min-width: 160px;
+  padding: 6px;
+  z-index: 100;
 }
 
-.lib-btn-stack {
+.lib-more-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
-}
-
-.lib-btn--listen {
-  opacity: .45;
-  cursor: not-allowed;
-  background: var(--elevated);
-  color: var(--text-mid);
-  border: 1px solid var(--border-light);
-}
-
-.lib-btn-sub {
-  font-size: 10px;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
   font-family: var(--sans);
-  color: var(--text-ghost);
-  letter-spacing: .02em;
+  color: var(--text);
+  text-decoration: none;
+  transition: background .12s;
+  cursor: pointer;
   white-space: nowrap;
 }
+@media (hover: hover) { a.lib-more-item:hover { background: var(--elevated); } }
 
-@media (max-width: 860px) {
-  .lib-row {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    padding-left: 28px;
-  }
-  .lib-price-wrap { display: none; }
-  .lib-actions {
-    grid-column: 1;
-    grid-row: 2;
-    flex-wrap: wrap;
-    margin-top: 10px;
-  }
+.lib-more-item--disabled {
+  color: var(--text-ghost);
+  cursor: default;
+}
+.lib-more-item--disabled em { font-style: normal; font-size: 11px; }
+
+@media (max-width: 640px) {
+  .lib-row { padding: 16px 16px 16px 24px; }
+  .lib-primary-btn { padding: 9px 14px; font-size: 13px; }
+  .lib-meta { display: none; }
 }
 
-@media (max-width: 480px) {
-  .lib-row { padding: 16px 18px; gap: 0 12px; }
-  .lib-title { font-size: 15px; }
-  .lib-meta { font-size: 12px; }
-  .lib-btn { padding: 8px 12px; font-size: 12px; }
-  .lib-actions { gap: 6px; }
+@media (max-width: 400px) {
+  .lib-cta-wrap { flex-direction: column; align-items: flex-end; gap: 6px; }
+  .lib-more-btn { display: none; }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1188,6 +1145,65 @@ button { font: inherit; cursor: pointer; }
   .badges-grid { gap: 16px; }
   .badge-item { width: 72px; }
   .badge-circle { width: 68px; height: 68px; }
+}
+
+/* ─── Badge Modal ─── */
+.badge-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+.badge-modal {
+  background: var(--surface);
+  border-radius: 24px;
+  padding: 40px 32px 32px;
+  max-width: 320px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 24px 64px rgba(0,0,0,.2);
+}
+.badge-modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.badge-modal-circle {
+  width: 96px; height: 96px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 44px;
+}
+.badge-modal-name {
+  font-family: var(--sans);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 10px;
+  letter-spacing: -.02em;
+}
+.badge-modal-desc {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.65;
+  margin-bottom: 14px;
+}
+.badge-modal-date {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 500;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1599,6 +1615,7 @@ button { font: inherit; cursor: pointer; }
     <div class="wrap">
       <h1 class="dash-heading" id="greeting">Hi there.</h1>
       <p class="dash-sub" id="dash-sub">Your library · 5 playbooks · all free</p>
+      <p class="dash-progress-summary" id="dash-progress-summary" hidden></p>
     </div>
   </div>
 
@@ -1905,6 +1922,19 @@ button { font: inherit; cursor: pointer; }
 
 </main><!-- /main-content -->
 
+<!-- ─── BADGE MODAL ─── -->
+<div class="badge-modal-overlay" id="badge-modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="badge-modal-title">
+  <div class="badge-modal">
+    <button class="badge-modal-close" id="badge-modal-close" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="badge-modal-circle" id="badge-modal-circle"></div>
+    <h2 class="badge-modal-name" id="badge-modal-title"></h2>
+    <p class="badge-modal-desc" id="badge-modal-desc"></p>
+    <p class="badge-modal-date" id="badge-modal-date"></p>
+  </div>
+</div>
+
 
 <!-- ═══════════════════════════════════════════════════════════
      FOOTER — matches playbook-potty-training.html pattern exactly
@@ -2100,6 +2130,23 @@ button { font: inherit; cursor: pointer; }
   })();
 
 
+  /* ─── PROGRESS SUMMARY ─── */
+  (function() {
+    const summaryEl = document.getElementById('dash-progress-summary');
+    if (!summaryEl) return;
+    let completed = 0, badgesEarned = 0;
+    ['screen-time','potty-training','sleep-training','tantrum','feeding'].forEach(k => {
+      const d = progressData[k] || {};
+      if ((d.quiz || 0) >= 80) completed++;
+      if (d.cert === true) badgesEarned++;
+    });
+    if (completed > 0) {
+      summaryEl.innerHTML = `<strong>${completed} of 5</strong> playbooks completed · <strong>${badgesEarned}</strong> badge${badgesEarned !== 1 ? 's' : ''} earned`;
+      summaryEl.removeAttribute('hidden');
+    }
+  })();
+
+
   /* ─── UPDATE LIBRARY ROWS WITH PROGRESS ─── */
   (function() {
     const completedSection = document.getElementById('completed-section');
@@ -2112,46 +2159,68 @@ button { font: inherit; cursor: pointer; }
     rows.forEach(row => {
       const key  = row.getAttribute('data-playbook');
       const data = progressData[key] || {};
-      const quizPassed = (data.quiz || 0) >= 80;
+      const quiz = data.quiz || 0;
+      const quizPassed = quiz >= 80;
+      const quizTried  = quiz > 0 && !quizPassed;
+      const primaryBtn = row.querySelector('.lib-primary-btn');
 
       if (quizPassed) {
         completedCount++;
-
-        // Update Quiz button → Passed
-        const quizBtn = row.querySelector('.lib-btn--quiz');
-        if (quizBtn) {
-          quizBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Passed`;
-          quizBtn.style.background = '#5BA88E';
-          quizBtn.style.cursor = 'default';
-          quizBtn.removeAttribute('href');
-          quizBtn.setAttribute('aria-label', key + ' quiz passed');
+        // Update primary CTA → View Certificate
+        if (primaryBtn) {
+          primaryBtn.textContent = '✓ View Certificate';
+          primaryBtn.className = 'lib-primary-btn state--cert';
+          primaryBtn.href = primaryBtn.dataset.cert;
+          primaryBtn.removeAttribute('target');
         }
-
-        // Highlight certificate button
-        const certBtn = row.querySelector('.lib-btn--cert');
-        if (certBtn) {
-          certBtn.style.background = 'rgba(110,78,214,.08)';
-          certBtn.style.color = 'var(--terra)';
-          certBtn.style.borderColor = 'rgba(110,78,214,.2)';
-        }
-
-        // Move row to completed section
         completedTable.appendChild(row);
+      } else if (quizTried) {
+        // Failed quiz → retake
+        if (primaryBtn) {
+          primaryBtn.textContent = 'Retake Quiz';
+          primaryBtn.className = 'lib-primary-btn state--quiz';
+          primaryBtn.href = primaryBtn.dataset.quiz;
+          primaryBtn.removeAttribute('target');
+        }
+      } else {
+        // Not started → start reading (default)
+        if (primaryBtn) {
+          primaryBtn.className = 'lib-primary-btn state--read';
+        }
       }
     });
 
-    // Show/hide completed section
     if (completedCount > 0) {
       completedSection.removeAttribute('hidden');
-      // Update library label if some remain
       const remaining = document.querySelectorAll('#library-table .lib-row').length;
       if (remaining === 0) {
         librarySection.setAttribute('hidden', '');
       } else {
-        libraryLabel.textContent = 'In Progress';
+        libraryLabel.textContent = 'Continue Learning';
       }
     }
   })();
+
+
+  /* ─── MORE MENU TOGGLE ─── */
+  document.querySelectorAll('.lib-more-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const menu = this.closest('.lib-more-wrap').querySelector('.lib-more-menu');
+      const isOpen = !menu.hidden;
+      // Close all menus
+      document.querySelectorAll('.lib-more-menu').forEach(m => m.hidden = true);
+      document.querySelectorAll('.lib-more-btn').forEach(b => b.setAttribute('aria-expanded','false'));
+      if (!isOpen) {
+        menu.hidden = false;
+        this.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.lib-more-menu').forEach(m => m.hidden = true);
+    document.querySelectorAll('.lib-more-btn').forEach(b => b.setAttribute('aria-expanded','false'));
+  });
 
 
   /* ─── SORT BADGES: earned first ─── */
@@ -2159,13 +2228,69 @@ button { font: inherit; cursor: pointer; }
     const grid = document.querySelector('.badges-grid');
     if (!grid) return;
     const items = Array.from(grid.querySelectorAll('.badge-item'));
-    // Sort: earned → locked
-    items.sort((a, b) => {
-      const aEarned = a.classList.contains('badge-item--earned') ? 0 : 1;
-      const bEarned = b.classList.contains('badge-item--earned') ? 0 : 1;
-      return aEarned - bEarned;
-    });
+    items.sort((a, b) => (a.classList.contains('badge-item--earned') ? 0 : 1) - (b.classList.contains('badge-item--earned') ? 0 : 1));
     items.forEach(item => grid.appendChild(item));
+  })();
+
+
+  /* ─── BADGE MODAL ─── */
+  (function() {
+    const overlay    = document.getElementById('badge-modal-overlay');
+    const closeBtn   = document.getElementById('badge-modal-close');
+    const circleEl   = document.getElementById('badge-modal-circle');
+    const nameEl     = document.getElementById('badge-modal-title');
+    const descEl     = document.getElementById('badge-modal-desc');
+    const dateEl     = document.getElementById('badge-modal-date');
+    if (!overlay) return;
+
+    const BADGE_DATA = {
+      'screen-time':   { name: 'Digital Guardian',  desc: 'You understand what the research actually says about screens — not the panic, not the permissiveness. The nuance.' },
+      'potty-training':{ name: 'Potty Pro',          desc: 'You learned the science, skipped the stress, and got it done. Most parents guess. You didn\'t.' },
+      'sleep-training':{ name: 'Sleep Champion',     desc: 'You chose a method, you stayed consistent, and you got everyone sleeping. That takes real commitment.' },
+      'tantrum':       { name: 'Tantrum Tamer',      desc: 'You stayed calm long enough to finish reading. That\'s the bar. You cleared it.' },
+      'feeding':       { name: 'Good Eater Guide',   desc: 'From first solids to picky-eating standoffs — you know what the evidence says and how to use it.' },
+    };
+
+    document.querySelectorAll('.badge-item').forEach(item => {
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', function() {
+        const key     = this.getAttribute('data-cert');
+        const earned  = this.classList.contains('badge-item--earned');
+        const info    = BADGE_DATA[key] || {};
+        const circle  = this.querySelector('.badge-circle').cloneNode(true);
+
+        // Remove lock/check overlays from clone
+        circle.querySelectorAll('.badge-lock-overlay,.badge-earned-check').forEach(el => el.remove());
+        circle.style.filter  = 'none';
+        circle.style.opacity = '1';
+        circle.style.width   = '96px';
+        circle.style.height  = '96px';
+
+        circleEl.innerHTML = '';
+        circleEl.appendChild(circle);
+        nameEl.textContent = info.name || key;
+
+        if (earned) {
+          descEl.textContent = info.desc;
+          const d = progressData[key] || {};
+          dateEl.textContent = d.cert ? 'Earned · ' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '';
+        } else {
+          descEl.textContent = 'Complete the quiz to unlock this badge.';
+          dateEl.textContent = '';
+        }
+
+        overlay.removeAttribute('hidden');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeModal() {
+      overlay.setAttribute('hidden', '');
+      document.body.style.overflow = '';
+    }
+    closeBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
   })();
 
 
