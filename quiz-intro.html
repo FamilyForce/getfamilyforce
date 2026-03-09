@@ -1217,28 +1217,6 @@ button { font: inherit; cursor: pointer; }
         aria-label="Read the Potty Training Playbook before taking the quiz"
       >Read first →</a>
     </p>
-
-
-    <!-- Name for certificate -->
-    <div class="cert-name-wrap">
-      <label class="cert-name-label" for="cert-name">
-        Your name on the certificate <span style="color:#e74c3c" aria-hidden="true">*</span>
-      </label>
-      <input
-        type="text"
-        id="cert-name"
-        class="cert-name-input"
-        placeholder="e.g. Sarah Johnson"
-        autocomplete="name"
-        aria-required="true"
-        aria-describedby="cert-name-err"
-        maxlength="60"
-      >
-      <p class="cert-name-error" id="cert-name-err" role="alert">Please enter your name for the certificate.</p>
-    </div>
-
-    <div class="card-divider" role="separator" aria-hidden="true"></div>
-
     <!-- Primary CTA -->
     <a
       href="quiz.html"
@@ -1504,43 +1482,6 @@ if (!prefersReducedMotion) {
   });
 }
 
-/* ─── Certificate Name Field ─── */
-(function() {
-  const nameInput    = document.getElementById('cert-name');
-  const nameErr      = document.getElementById('cert-name-err');
-  const previewName  = document.querySelector('.cert-preview-name');
-  const startBtn     = document.querySelector('.btn-start-quiz');
-  if (!nameInput || !startBtn) return;
-
-  // Pre-fill from localStorage
-  const saved = localStorage.getItem('ff_user_name') || '';
-  if (saved) {
-    nameInput.value = saved;
-    if (previewName) previewName.textContent = saved;
-  }
-
-  // Live preview + save on input
-  nameInput.addEventListener('input', function() {
-    const val = this.value.trim();
-    if (previewName) previewName.textContent = val || 'Your Name Here';
-    nameErr.classList.remove('visible');
-    nameInput.classList.remove('invalid');
-    if (val) localStorage.setItem('ff_user_name', val);
-  });
-
-  // Intercept Start Quiz click — require name
-  startBtn.addEventListener('click', function(e) {
-    const val = nameInput.value.trim();
-    if (!val) {
-      e.preventDefault();
-      nameInput.classList.add('invalid');
-      nameErr.classList.add('visible');
-      nameInput.focus();
-      return;
-    }
-    localStorage.setItem('ff_user_name', val);
-  });
-})();
 
 </script>
 

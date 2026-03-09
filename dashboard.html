@@ -1011,6 +1011,29 @@ button { font: inherit; cursor: pointer; }
   .lib-btn--cert:hover { background: var(--elevated); color: var(--text); }
 }
 
+.lib-btn-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.lib-btn--listen {
+  opacity: .45;
+  cursor: not-allowed;
+  background: var(--elevated);
+  color: var(--text-mid);
+  border: 1px solid var(--border-light);
+}
+
+.lib-btn-sub {
+  font-size: 10px;
+  font-family: var(--sans);
+  color: var(--text-ghost);
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
 @media (max-width: 860px) {
   .lib-row {
     grid-template-columns: 1fr;
@@ -1032,6 +1055,111 @@ button { font: inherit; cursor: pointer; }
   .lib-meta { font-size: 12px; }
   .lib-btn { padding: 8px 12px; font-size: 12px; }
   .lib-actions { gap: 6px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   13b. BADGES SECTION
+   ═══════════════════════════════════════════════════════════ */
+.badges-section {
+  padding: 0 0 72px;
+}
+
+.badges-heading {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+}
+
+.badges-grid {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.badge-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 88px;
+}
+
+.badge-circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform .2s, box-shadow .2s;
+  flex-shrink: 0;
+}
+
+.badge-circle.badge-locked {
+  filter: grayscale(1);
+  opacity: .35;
+}
+
+.badge-circle.badge-earned {
+  filter: none;
+  opacity: 1;
+  box-shadow: 0 4px 20px rgba(110,78,214,.25);
+}
+@media (hover: hover) {
+  .badge-circle.badge-earned:hover {
+    transform: scale(1.06);
+    box-shadow: 0 6px 28px rgba(110,78,214,.3);
+  }
+}
+
+.badge-lock-overlay {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  background: rgba(0,0,0,.5);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge-name {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-mid);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.badge-item.badge-item--earned .badge-name {
+  color: var(--text);
+}
+
+.badge-earned-check {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  background: #5BA88E;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .badges-grid { gap: 16px; }
+  .badge-item { width: 72px; }
+  .badge-circle { width: 68px; height: 68px; }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1486,6 +1614,76 @@ button { font: inherit; cursor: pointer; }
   </div>
 
 
+  <!-- ─── BADGES ─── -->
+  <section class="badges-section" aria-labelledby="badges-heading">
+    <div class="wrap">
+      <p class="badges-heading" id="badges-heading">My Badges</p>
+      <div class="badges-grid">
+
+        <!-- Screen Time: Digital Guardian -->
+        <div class="badge-item" data-cert="screen-time" aria-label="Digital Guardian badge — locked">
+          <div class="badge-circle badge-locked" style="background:linear-gradient(135deg,#9B80FF,#6E4ED6)">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
+              <path d="M14 17.5h7M17.5 14v7" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div class="badge-lock-overlay" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+          <p class="badge-name">Digital Guardian</p>
+        </div>
+
+        <!-- Potty Training: Potty Pro -->
+        <div class="badge-item" data-cert="potty-training" aria-label="Potty Pro badge — locked">
+          <div class="badge-circle badge-locked" style="background:linear-gradient(135deg,#6E4ED6,#5B3CC4)">
+            <span style="font-size:34px" aria-hidden="true">🚽</span>
+            <div class="badge-lock-overlay" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+          <p class="badge-name">Potty Pro</p>
+        </div>
+
+        <!-- Sleep Training: Sleep Champion -->
+        <div class="badge-item" data-cert="sleep-training" aria-label="Sleep Champion badge — locked">
+          <div class="badge-circle badge-locked" style="background:linear-gradient(135deg,#5B7BB5,#4A6A9F)">
+            <span style="font-size:34px" aria-hidden="true">🌙</span>
+            <div class="badge-lock-overlay" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+          <p class="badge-name">Sleep Champion</p>
+        </div>
+
+        <!-- Tantrums: Tantrum Tamer -->
+        <div class="badge-item" data-cert="tantrum" aria-label="Tantrum Tamer badge — locked">
+          <div class="badge-circle badge-locked" style="background:linear-gradient(135deg,#7C5CFC,#6E4ED6)">
+            <span style="font-size:34px" aria-hidden="true">⚡</span>
+            <div class="badge-lock-overlay" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+          <p class="badge-name">Tantrum Tamer</p>
+        </div>
+
+        <!-- Feeding: Good Eater Guide -->
+        <div class="badge-item" data-cert="feeding" aria-label="Good Eater Guide badge — locked">
+          <div class="badge-circle badge-locked" style="background:linear-gradient(135deg,#5BA88E,#4A9070)">
+            <span style="font-size:34px" aria-hidden="true">🥦</span>
+            <div class="badge-lock-overlay" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+          <p class="badge-name">Good Eater Guide</p>
+        </div>
+
+      </div><!-- /badges-grid -->
+    </div><!-- /wrap -->
+  </section>
+
   <!-- ─── LIBRARY ─── -->
   <section class="library-section" aria-label="Your playbook library">
     <div class="wrap">
@@ -1508,6 +1706,13 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Read
             </a>
+            <div class="lib-btn-stack">
+              <button class="lib-btn lib-btn--listen" disabled aria-label="Listen — coming soon">
+                <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8a7 7 0 0114 0v5a2 2 0 01-2 2h-1a2 2 0 01-2-2v-2a2 2 0 012-2h1V8A6 6 0 004 8v1h1a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                Listen
+              </button>
+              <span class="lib-btn-sub">coming soon</span>
+            </div>
             <a href="quiz-intro-screentime.html" class="lib-btn lib-btn--quiz" aria-label="Take Screen Time quiz">
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
@@ -1535,6 +1740,13 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Read
             </a>
+            <div class="lib-btn-stack">
+              <button class="lib-btn lib-btn--listen" disabled aria-label="Listen — coming soon">
+                <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8a7 7 0 0114 0v5a2 2 0 01-2 2h-1a2 2 0 01-2-2v-2a2 2 0 012-2h1V8A6 6 0 004 8v1h1a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                Listen
+              </button>
+              <span class="lib-btn-sub">coming soon</span>
+            </div>
             <a href="quiz-intro.html" class="lib-btn lib-btn--quiz" aria-label="Take Potty Training quiz">
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
@@ -1562,6 +1774,13 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Read
             </a>
+            <div class="lib-btn-stack">
+              <button class="lib-btn lib-btn--listen" disabled aria-label="Listen — coming soon">
+                <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8a7 7 0 0114 0v5a2 2 0 01-2 2h-1a2 2 0 01-2-2v-2a2 2 0 012-2h1V8A6 6 0 004 8v1h1a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                Listen
+              </button>
+              <span class="lib-btn-sub">coming soon</span>
+            </div>
             <a href="quiz-intro-sleep.html" class="lib-btn lib-btn--quiz" aria-label="Take Sleep Training quiz">
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
@@ -1589,6 +1808,13 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Read
             </a>
+            <div class="lib-btn-stack">
+              <button class="lib-btn lib-btn--listen" disabled aria-label="Listen — coming soon">
+                <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8a7 7 0 0114 0v5a2 2 0 01-2 2h-1a2 2 0 01-2-2v-2a2 2 0 012-2h1V8A6 6 0 004 8v1h1a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                Listen
+              </button>
+              <span class="lib-btn-sub">coming soon</span>
+            </div>
             <a href="quiz-intro-tantrum.html" class="lib-btn lib-btn--quiz" aria-label="Take Tantrums quiz">
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
@@ -1616,6 +1842,13 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Read
             </a>
+            <div class="lib-btn-stack">
+              <button class="lib-btn lib-btn--listen" disabled aria-label="Listen — coming soon">
+                <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8a7 7 0 0114 0v5a2 2 0 01-2 2h-1a2 2 0 01-2-2v-2a2 2 0 012-2h1V8A6 6 0 004 8v1h1a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                Listen
+              </button>
+              <span class="lib-btn-sub">coming soon</span>
+            </div>
             <a href="quiz-intro-feeding.html" class="lib-btn lib-btn--quiz" aria-label="Take Feeding quiz">
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
@@ -1631,6 +1864,7 @@ button { font: inherit; cursor: pointer; }
 
     </div><!-- /wrap -->
   </section>
+
 
 </main><!-- /main-content -->
 
@@ -1693,8 +1927,6 @@ button { font: inherit; cursor: pointer; }
   const dropdownEmailEl  = document.getElementById('dropdown-email');
   const mobileUserName   = document.getElementById('mobile-user-name');
   const mobileUserEmail  = document.getElementById('mobile-user-email');
-  const certGhostNameEl  = document.getElementById('cert-ghost-name');
-
   const avatarBtn        = document.getElementById('avatar-btn');
   const avatarDropdown   = document.getElementById('avatar-dropdown');
   const avatarWrap       = document.getElementById('avatar-wrap');
@@ -1708,17 +1940,7 @@ button { font: inherit; cursor: pointer; }
   const mainEl           = document.getElementById('main-content');
   const footerEl         = document.getElementById('site-footer');
 
-  const fillEbook  = document.getElementById('fill-ebook');
-  const fillQuiz   = document.getElementById('fill-quiz');
-  const fillCert   = document.getElementById('fill-cert');
-  const pctEbook   = document.getElementById('pct-ebook');
-  const pctQuiz    = document.getElementById('pct-quiz');
-  const pctCert    = document.getElementById('pct-cert');
-  const trackEbook = document.getElementById('track-ebook');
-  const trackQuiz  = document.getElementById('track-quiz');
-  const trackCert  = document.getElementById('track-cert');
 
-  const certGhost = document.getElementById('cert-ghost');
 
 
   /* ─── READ USER DATA ─── */
@@ -1755,13 +1977,7 @@ button { font: inherit; cursor: pointer; }
   mobileUserName.textContent  = userName  || 'Your Account';
   mobileUserEmail.textContent = userEmail || '';
 
-  // Certificate ghost name
-  if (certGhostNameEl) {
-    certGhostNameEl.textContent = userName || 'Your Name';
-  }
-
-
-  /* ─── CERTIFICATE NAME BANNER ─── */
+    /* ─── CERTIFICATE NAME BANNER ─── */
   (function() {
     const banner   = document.getElementById('cert-name-banner');
     const savedDiv = document.getElementById('cnb-saved');
@@ -1823,29 +2039,30 @@ button { font: inherit; cursor: pointer; }
     progressData = {};
   }
 
-  const pottyData   = progressData['potty-training'] || {};
-  const ebookVal    = typeof pottyData.ebook === 'number' ? Math.min(100, Math.max(0, pottyData.ebook)) : 0;
-  const quizVal     = typeof pottyData.quiz  === 'number' ? Math.min(100, Math.max(0, pottyData.quiz))  : 0;
-  const certEarned  = pottyData.cert === true;
+  /* ─── UPDATE BADGES ─── */
+  (function() {
+    const items = document.querySelectorAll('.badge-item[data-cert]');
+    items.forEach(item => {
+      const key    = item.getAttribute('data-cert');
+      const data   = progressData[key] || {};
+      const earned = data.cert === true;
+      const circle = item.querySelector('.badge-circle');
+      const lock   = item.querySelector('.badge-lock-overlay');
+      if (earned) {
+        circle.classList.remove('badge-locked');
+        circle.classList.add('badge-earned');
+        item.classList.add('badge-item--earned');
+        item.setAttribute('aria-label', item.getAttribute('aria-label').replace('— locked', '— earned'));
+        // Replace lock icon with checkmark
+        if (lock) {
+          lock.className = 'badge-earned-check';
+          lock.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        }
+      }
+    });
+  })();
 
-  // Determine pass/complete thresholds
-  const ebookDone  = ebookVal >= 100;
-  const quizPassed = quizVal  >= 80;   // 70% to pass
-  const certDone   = certEarned;
 
-  // Update eBook bar
-  function setBar(fillEl, trackEl, pctEl, value, isDone) {
-    fillEl.style.width = value + '%';
-    fillEl.classList.toggle('complete', isDone);
-    trackEl.setAttribute('aria-valuenow', String(value));
-    pctEl.textContent = value + '%';
-  }
-
-  setBar(fillEbook, trackEbook, pctEbook, ebookVal,          ebookDone);
-  setBar(fillQuiz,  trackQuiz,  pctQuiz,  quizVal,           quizPassed);
-  setBar(fillCert,  trackCert,  pctCert,  certDone ? 100 : 0, certDone);
-
-  // Hide certificate ghost if cert is already earned
   /* ─── UPDATE LIBRARY ROWS WITH PROGRESS ─── */
   (function() {
     const rows = document.querySelectorAll('.lib-row[data-playbook]');

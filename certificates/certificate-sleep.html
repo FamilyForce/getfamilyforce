@@ -1570,6 +1570,19 @@ button { font: inherit; cursor: pointer; }
 'use strict';
 
 /* ─── HELPERS ─── */
+
+/* ─── QUIZ PASS GUARD ─── */
+(function() {
+  try {
+    var raw = localStorage.getItem('ff_quiz_score_sleep');
+    if (!raw) { window.location.replace('../quiz-intro-sleep.html'); return; }
+    var data = JSON.parse(raw);
+    if (!data.passed) { window.location.replace('../quiz-intro-sleep.html'); return; }
+  } catch(e) {
+    window.location.replace('../quiz-intro-sleep.html');
+  }
+})();
+
 function getLS(key, fallback) {
   try { return localStorage.getItem(key) || fallback; }
   catch (e) { return fallback; }
