@@ -2244,38 +2244,36 @@ button { font: inherit; cursor: pointer; }
     if (!overlay) return;
 
     const BADGE_DATA = {
-      'screen-time':   { name: 'Digital Guardian',  desc: 'You understand what the research actually says about screens — not the panic, not the permissiveness. The nuance.' },
-      'potty-training':{ name: 'Potty Pro',          desc: 'You learned the science, skipped the stress, and got it done. Most parents guess. You didn\'t.' },
-      'sleep-training':{ name: 'Sleep Champion',     desc: 'You chose a method, you stayed consistent, and you got everyone sleeping. That takes real commitment.' },
-      'tantrum':       { name: 'Tantrum Tamer',      desc: 'You stayed calm long enough to finish reading. That\'s the bar. You cleared it.' },
-      'feeding':       { name: 'Good Eater Guide',   desc: 'From first solids to picky-eating standoffs — you know what the evidence says and how to use it.' },
+      'screen-time':    { name: 'Digital Guardian', emoji: null, svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/><path d="M14 17.5h7M17.5 14v7" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>', bg: 'linear-gradient(135deg,#9B80FF,#6E4ED6)', desc: 'You understand what the research actually says about screens — not the panic, not the permissiveness. The nuance.' },
+      'potty-training': { name: 'Potty Pro',        emoji: '🚽', bg: 'linear-gradient(135deg,#6E4ED6,#5B3CC4)', desc: 'You learned the science, skipped the stress, and got it done. Most parents guess. You didn\'t.' },
+      'sleep-training': { name: 'Sleep Champion',   emoji: '🌙', bg: 'linear-gradient(135deg,#5B7BB5,#4A6A9F)', desc: 'You chose a method, you stayed consistent, and you got everyone sleeping. That takes real commitment.' },
+      'tantrum':        { name: 'Tantrum Tamer',    emoji: '⚡', bg: 'linear-gradient(135deg,#7C5CFC,#6E4ED6)', desc: 'You stayed calm long enough to finish reading. That\'s the bar. You cleared it.' },
+      'feeding':        { name: 'Good Eater Guide', emoji: '🥦', bg: 'linear-gradient(135deg,#5BA88E,#4A9070)', desc: 'From first solids to picky-eating standoffs — you know what the evidence says and how to use it.' },
     };
 
     document.querySelectorAll('.badge-item').forEach(item => {
       item.style.cursor = 'pointer';
-      item.addEventListener('click', function() {
-        const key     = this.getAttribute('data-cert');
-        const earned  = this.classList.contains('badge-item--earned');
-        const info    = BADGE_DATA[key] || {};
-        const circle  = this.querySelector('.badge-circle').cloneNode(true);
+      item.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const key    = this.getAttribute('data-cert');
+        const earned = this.classList.contains('badge-item--earned');
+        const info   = BADGE_DATA[key] || {};
 
-        // Remove lock/check overlays from clone
-        circle.querySelectorAll('.badge-lock-overlay,.badge-earned-check').forEach(el => el.remove());
-        circle.style.filter  = 'none';
-        circle.style.opacity = '1';
-        circle.style.width   = '96px';
-        circle.style.height  = '96px';
+        // Rebuild circle directly
+        circleEl.style.background = info.bg || '#6E4ED6';
+        circleEl.innerHTML = info.emoji
+          ? `<span style="font-size:44px">${info.emoji}</span>`
+          : (info.svg || '');
 
-        circleEl.innerHTML = '';
-        circleEl.appendChild(circle);
         nameEl.textContent = info.name || key;
+        descEl.textContent = earned ? info.desc : 'Complete the quiz to unlock this badge.';
 
         if (earned) {
-          descEl.textContent = info.desc;
           const d = progressData[key] || {};
-          dateEl.textContent = d.cert ? 'Earned · ' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '';
+          dateEl.textContent = d.cert
+            ? 'Earned · ' + new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})
+            : 'Earned';
         } else {
-          descEl.textContent = 'Complete the quiz to unlock this badge.';
           dateEl.textContent = '';
         }
 
@@ -2288,9 +2286,10 @@ button { font: inherit; cursor: pointer; }
       overlay.setAttribute('hidden', '');
       document.body.style.overflow = '';
     }
-    closeBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+    closeBtn.addEventListener('click', function(e) { e.stopPropagation(); closeModal(); });
+    document.querySelector('.badge-modal').addEventListener('click', function(e) { e.stopPropagation(); });
+    overlay.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !overlay.hidden) closeModal(); });
   })();
 
 
