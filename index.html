@@ -1690,7 +1690,7 @@ a { color: inherit; }
     <div class="hero-visual" data-reveal data-d="2" aria-hidden="true">
       <div class="hero-photo-wrap">
         <img
-          src="https://files2.heygen.ai/avatar/v3/67f5c5d34f304271a3d25de529ce669b_38490/preview_talk_1.webp"
+          src="images/hero-dad.jpg"
           alt="Jack Hartley, FamilyForce"
           class="hero-photo-img"
           loading="eager"
@@ -2119,7 +2119,7 @@ a { color: inherit; }
 
       <div class="story-photo" aria-hidden="true">
         <img
-          src="https://files2.heygen.ai/avatar/v3/67f5c5d34f304271a3d25de529ce669b_38490/preview_talk_1.webp"
+          src="images/hero-dad.jpg"
           alt="Jack Hartley, FamilyForce"
           style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:24px;"
           loading="lazy"
@@ -2237,9 +2237,9 @@ a { color: inherit; }
         </div>
       </div>
 
-      <div class="testimonial-card testimonial-card--featured">
+      <div class="testimonial-card">
         <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
-        <span class="testimonial-tag testimonial-tag--expecting">Expecting Dad</span>
+        <span class="testimonial-tag">Expecting Dad</span>
         <p class="testimonial-quote">Read Sleep Training and Feeding before our son arrived. The first month was still hard. I wasn't figuring it out as we went. We had a plan. That felt completely different.</p>
         <div>
           <p class="testimonial-author">Ryan P.</p>
@@ -2527,6 +2527,28 @@ function copyShareText(btn) {
   closeBtn.addEventListener('click', close);
   mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && mobileMenu.classList.contains('open')) close(); });
+})();
+</script>
+
+<!-- Session check: redirect sign-in links to dashboard if already signed in -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function() {
+  var sb = supabase.createClient(
+    'https://ewjqbafaxeasyvknxmof.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+  );
+  sb.auth.getSession().then(function(res) {
+    if (!res.data.session) return;
+    // Swap all sign-in links → dashboard
+    document.querySelectorAll('a[href="sign-in.html"]').forEach(function(a) {
+      a.href = 'dashboard.html';
+      // Update nav "Sign In" label → "My Library"
+      if (a.textContent.trim() === 'Sign In') {
+        a.textContent = 'My Library';
+      }
+    });
+  });
 })();
 </script>
 

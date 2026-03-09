@@ -1489,24 +1489,24 @@ button { font: inherit; cursor: pointer; }
     <div class="divider" style="width:100%;margin-bottom:40px" role="separator" aria-hidden="true"></div>
 
     <aside class="cert-crosssell" aria-label="Recommended next step">
-      <h2 class="cert-crosssell-heading">You've mastered baby and toddler feeding.</h2>
+      <h2 class="cert-crosssell-heading">You've mastered feeding.</h2>
       <p class="cert-crosssell-body">
-        Sleep training is next — and the research-backed approach is exactly the same. You already know how to do this.
+        Sleep training is next — and the same research-backed approach applies. You already know how to do this.
       </p>
       <a
-        href="playbook-feeding.html"
+        href="../playbook-sleep.html"
         class="cert-crosssell-card"
-        aria-label="Preview The Tantrum Playbook"
+        aria-label="Preview the Sleep Training Playbook"
       >
         <div class="cert-crosssell-card-icon" aria-hidden="true">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="9" stroke="#6E4ED6" stroke-width="1.5" fill="rgba(110,78,214,.08)"/>
-            <path d="M9 12l2 2 4-4" stroke="#6E4ED6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 3a6 6 0 00-6 6c0 3.31 2.69 6 6 6s6-2.69 6-6a6 6 0 00-6-6z" stroke="#6E4ED6" stroke-width="1.5" fill="rgba(110,78,214,.08)"/>
+            <path d="M3 17h18M7 21h10" stroke="#6E4ED6" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
         </div>
         <div class="cert-crosssell-card-text">
-          <div class="cert-crosssell-card-title">Preview Tantrums →</div>
-          <div class="cert-crosssell-card-sub">The same research-backed approach, applied to tantrums.</div>
+          <div class="cert-crosssell-card-title">Preview Sleep Training →</div>
+          <div class="cert-crosssell-card-sub">The same research-backed method, applied to sleep.</div>
         </div>
         <span class="cert-crosssell-card-arrow" aria-hidden="true">›</span>
       </a>
@@ -1540,18 +1540,18 @@ button { font: inherit; cursor: pointer; }
       </div>
       <nav aria-label="Playbook links">
         <p class="footer-heading">Playbooks</p>
-        <a href="playbook-free-screentime.html" class="footer-link">Screen Time — Free</a>
-        <a href="playbook-potty-training.html" class="footer-link">Potty Training</a>
-        <a href="playbook-sleep.html" class="footer-link">Sleep Training</a>
-        <a href="playbook-tantrum.html" class="footer-link">Tantrums</a>
-        <a href="playbook-feeding.html" class="footer-link">Feeding</a>
-        <a href="index.html#library" class="footer-link">All Playbooks</a>
+        <a href="../playbook-free-screentime.html" class="footer-link">Screen Time — Free</a>
+        <a href="../playbook-potty-training.html" class="footer-link">Potty Training — Free</a>
+        <a href="../playbook-sleep.html" class="footer-link">Sleep Training — Free</a>
+        <a href="../playbook-tantrum.html" class="footer-link">Tantrums — Free</a>
+        <a href="../playbook-feeding.html" class="footer-link">Feeding — Free</a>
+        <a href="../index.html#library" class="footer-link">All Playbooks</a>
       </nav>
       <nav aria-label="Company links">
         <p class="footer-heading">Company</p>
-        <a href="contact.html" class="footer-link">Contact</a>
-        <a href="privacy.html" class="footer-link">Privacy</a>
-        <a href="terms.html" class="footer-link">Terms</a>
+        <a href="../contact.html" class="footer-link">Contact</a>
+        <a href="../privacy.html" class="footer-link">Privacy</a>
+        <a href="../terms.html" class="footer-link">Terms</a>
       </nav>
     </div>
     <div class="divider" style="width:100%;margin-bottom:20px" aria-hidden="true"></div>
@@ -1574,12 +1574,12 @@ button { font: inherit; cursor: pointer; }
 /* ─── QUIZ PASS GUARD ─── */
 (function() {
   try {
-    var raw = localStorage.getItem('ff_quiz_score_feeding');
-    if (!raw) { window.location.replace('../quiz-intro-feeding.html'); return; }
+    var raw = localStorage.getItem('ff_quiz_score');
+    if (!raw) { window.location.replace('../quiz-intro.html'); return; }
     var data = JSON.parse(raw);
-    if (!data.passed) { window.location.replace('../quiz-intro-feeding.html'); return; }
+    if (!data.passed) { window.location.replace('../quiz-intro.html'); return; }
   } catch(e) {
-    window.location.replace('../quiz-intro-feeding.html');
+    window.location.replace('../quiz-intro.html');
   }
 })();
 

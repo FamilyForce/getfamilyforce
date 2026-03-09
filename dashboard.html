@@ -873,8 +873,27 @@ button { font: inherit; cursor: pointer; }
 /* ═══════════════════════════════════════════════════════════
    11. LIBRARY TABLE
    ═══════════════════════════════════════════════════════════ */
+.section-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+
+.completed-section {
+  padding: 0 0 32px;
+}
+
+.completed-section .lib-row {
+  border-color: rgba(91,168,142,.25);
+  background: rgba(91,168,142,.03);
+}
+
 .library-section {
-  padding: 48px 0 100px;
+  padding: 0 0 100px;
 }
 
 .library-table {
@@ -927,6 +946,15 @@ button { font: inherit; cursor: pointer; }
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.lib-title-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color .15s;
+}
+@media (hover: hover) {
+  .lib-title-link:hover { color: var(--terra); }
 }
 
 .lib-meta {
@@ -1463,7 +1491,6 @@ button { font: inherit; cursor: pointer; }
 
     <!-- Desktop nav links -->
     <ul class="nav-links" role="list">
-      <li><a href="index.html#library">Playbooks</a></li>
       <li><a href="dashboard.html" class="active" aria-current="page">My Library</a></li>
     </ul>
 
@@ -1554,7 +1581,6 @@ button { font: inherit; cursor: pointer; }
         <div class="mobile-user-email" id="mobile-user-email"></div>
       </div>
     </li>
-    <li><a href="index.html#library">Playbooks</a></li>
     <li><a href="dashboard.html" class="active" aria-current="page">My Library</a></li>
     <li><a href="certificates/certificate.html">My Certificates</a></li>
     <li class="divider-li" style="border-top:1px solid var(--border-light);padding-top:4px"></li>
@@ -1684,17 +1710,28 @@ button { font: inherit; cursor: pointer; }
     </div><!-- /wrap -->
   </section>
 
-  <!-- ─── LIBRARY ─── -->
-  <section class="library-section" aria-label="Your playbook library">
+  <!-- ─── COMPLETED PLAYBOOKS ─── -->
+  <section class="completed-section" id="completed-section" hidden aria-labelledby="completed-heading">
     <div class="wrap">
+      <p class="section-label" id="completed-heading">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="margin-right:5px;vertical-align:-2px"><path d="M2 8l4 4 8-8" stroke="#5BA88E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Completed
+      </p>
+      <div class="library-table" id="completed-table"></div>
+    </div>
+  </section>
 
-      <div class="library-table">
+  <!-- ─── LIBRARY ─── -->
+  <section class="library-section" id="library-section" aria-label="Your playbook library">
+    <div class="wrap">
+      <p class="section-label" id="library-label">Your Library</p>
+      <div class="library-table" id="library-table">
 
         <!-- ── Screen Time ── -->
         <article class="lib-row" data-playbook="screen-time" aria-label="Screen Time Playbook">
           <div class="lib-accent" style="background:#9B80FF" aria-hidden="true"></div>
           <div class="lib-info">
-            <h2 class="lib-title">Screen Time</h2>
+            <h2 class="lib-title"><a href="playbook-free-screentime.html" class="lib-title-link">Screen Time</a></h2>
             <p class="lib-meta">Ages 0–6 · What the data actually says</p>
           </div>
           <div class="lib-price-wrap">
@@ -1728,7 +1765,7 @@ button { font: inherit; cursor: pointer; }
         <article class="lib-row" data-playbook="potty-training" aria-label="Potty Training Playbook">
           <div class="lib-accent" style="background:#6E4ED6" aria-hidden="true"></div>
           <div class="lib-info">
-            <h2 class="lib-title">Potty Training</h2>
+            <h2 class="lib-title"><a href="playbook-potty-training.html" class="lib-title-link">Potty Training</a></h2>
             <p class="lib-meta">Ages 2–3 · 40+ expert sources distilled</p>
           </div>
           <div class="lib-price-wrap">
@@ -1762,7 +1799,7 @@ button { font: inherit; cursor: pointer; }
         <article class="lib-row" data-playbook="sleep-training" aria-label="Sleep Training Playbook">
           <div class="lib-accent" style="background:#5B7BB5" aria-hidden="true"></div>
           <div class="lib-info">
-            <h2 class="lib-title">Sleep Training</h2>
+            <h2 class="lib-title"><a href="playbook-sleep.html" class="lib-title-link">Sleep Training</a></h2>
             <p class="lib-meta">Ages 0–3 · The science of infant sleep</p>
           </div>
           <div class="lib-price-wrap">
@@ -1796,7 +1833,7 @@ button { font: inherit; cursor: pointer; }
         <article class="lib-row" data-playbook="tantrum" aria-label="Tantrums Playbook">
           <div class="lib-accent" style="background:#7C5CFC" aria-hidden="true"></div>
           <div class="lib-info">
-            <h2 class="lib-title">Tantrums</h2>
+            <h2 class="lib-title"><a href="playbook-tantrum.html" class="lib-title-link">Tantrums</a></h2>
             <p class="lib-meta">Ages 1–4 · Emotional regulation strategies</p>
           </div>
           <div class="lib-price-wrap">
@@ -1830,7 +1867,7 @@ button { font: inherit; cursor: pointer; }
         <article class="lib-row" data-playbook="feeding" aria-label="Feeding Playbook">
           <div class="lib-accent" style="background:#5BA88E" aria-hidden="true"></div>
           <div class="lib-info">
-            <h2 class="lib-title">Feeding</h2>
+            <h2 class="lib-title"><a href="playbook-feeding.html" class="lib-title-link">Feeding</a></h2>
             <p class="lib-meta">Ages 0–3 · From first solids to picky eating</p>
           </div>
           <div class="lib-price-wrap">
@@ -2065,26 +2102,31 @@ button { font: inherit; cursor: pointer; }
 
   /* ─── UPDATE LIBRARY ROWS WITH PROGRESS ─── */
   (function() {
-    const rows = document.querySelectorAll('.lib-row[data-playbook]');
+    const completedSection = document.getElementById('completed-section');
+    const completedTable   = document.getElementById('completed-table');
+    const librarySection   = document.getElementById('library-section');
+    const libraryLabel     = document.getElementById('library-label');
+    const rows = Array.from(document.querySelectorAll('#library-table .lib-row[data-playbook]'));
+    let completedCount = 0;
+
     rows.forEach(row => {
       const key  = row.getAttribute('data-playbook');
       const data = progressData[key] || {};
       const quizPassed = (data.quiz || 0) >= 80;
 
       if (quizPassed) {
+        completedCount++;
+
         // Update Quiz button → Passed
         const quizBtn = row.querySelector('.lib-btn--quiz');
         if (quizBtn) {
-          quizBtn.innerHTML = `
-            <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Passed`;
+          quizBtn.innerHTML = `<svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Passed`;
           quizBtn.style.background = '#5BA88E';
           quizBtn.style.cursor = 'default';
           quizBtn.removeAttribute('href');
           quizBtn.setAttribute('aria-label', key + ' quiz passed');
         }
+
         // Highlight certificate button
         const certBtn = row.querySelector('.lib-btn--cert');
         if (certBtn) {
@@ -2092,10 +2134,38 @@ button { font: inherit; cursor: pointer; }
           certBtn.style.color = 'var(--terra)';
           certBtn.style.borderColor = 'rgba(110,78,214,.2)';
         }
-        // Add passed indicator to row
-        row.style.borderColor = 'rgba(91,168,142,.3)';
+
+        // Move row to completed section
+        completedTable.appendChild(row);
       }
     });
+
+    // Show/hide completed section
+    if (completedCount > 0) {
+      completedSection.removeAttribute('hidden');
+      // Update library label if some remain
+      const remaining = document.querySelectorAll('#library-table .lib-row').length;
+      if (remaining === 0) {
+        librarySection.setAttribute('hidden', '');
+      } else {
+        libraryLabel.textContent = 'In Progress';
+      }
+    }
+  })();
+
+
+  /* ─── SORT BADGES: earned first ─── */
+  (function() {
+    const grid = document.querySelector('.badges-grid');
+    if (!grid) return;
+    const items = Array.from(grid.querySelectorAll('.badge-item'));
+    // Sort: earned → locked
+    items.sort((a, b) => {
+      const aEarned = a.classList.contains('badge-item--earned') ? 0 : 1;
+      const bEarned = b.classList.contains('badge-item--earned') ? 0 : 1;
+      return aEarned - bEarned;
+    });
+    items.forEach(item => grid.appendChild(item));
   })();
 
 
