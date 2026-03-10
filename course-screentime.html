@@ -1309,6 +1309,14 @@ function renderQuestion(app) {
 // ═══════════════════════════════════════════════════════════
 
 function renderComplete(app) {
+  // ── Award the badge ──────────────────────────────────────
+  try {
+    const progress = JSON.parse(localStorage.getItem('ff_progress') || '{}');
+    if (!progress['screen-time']) progress['screen-time'] = {};
+    progress['screen-time'].cert = true;
+    localStorage.setItem('ff_progress', JSON.stringify(progress));
+  } catch(e) {}
+
   // Congrats card
   const congrats = el('div', 'card no-print');
   const ce = el('div', 'eyebrow'); ce.style.textAlign = 'center'; ce.textContent = 'Course Complete 🎉';
