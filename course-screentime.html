@@ -592,7 +592,36 @@ p + p { margin-top: 12px; }
   .course-header { display: none !important; }
   body { background: white; }
   .main { width: 100%; padding: 0; }
-  .cert-outer { border: 1.5px solid var(--terra); }
+
+  /* Fix: ::before overlay renders white in print and covers all content */
+  .cert-outer::before { display: none !important; }
+
+  /* Force background colors to print */
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  .cert-outer {
+    border: 2px solid #5B3CC4;
+    box-shadow: none;
+    padding: 40px;
+  }
+
+  /* Seal: force purple bg */
+  .cert-seal {
+    background: #6E4ED6 !important;
+    color: white !important;
+    box-shadow: none;
+  }
+
+  /* Name input: ensure value shows */
+  .cert-name-input {
+    border: none !important;
+    border-bottom: 2px solid #5B3CC4 !important;
+    font-size: 22px !important;
+    color: #5B3CC4 !important;
+  }
+
+  /* Remove card shadow/bg */
+  .card { box-shadow: none; border: none; }
 }
 </style>
 </head>

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE — Sleep Training Course
+     Gated: Supabase auth required
+     Stack: Vanilla HTML/CSS/JS · Zero dependencies · No build
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>Sleep Training Course · FamilyForce</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#6E4ED6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const _sb = supabase.createClient(
+    'https://ewjqbafaxeasyvknxmof.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+  );
+  const _preview = new URLSearchParams(location.search).get('preview') === '1';
+  if (_preview) { document.documentElement.classList.add('authed'); }
+  else { _sb.auth.getSession().then(({ data }) => { if (!data.session) window.location.href = 'sign-in.html?next=course-sleep.html'; else document.documentElement.classList.add('authed'); }); }
+</script>
+<style>
+:root {
+  --sans:'Outfit',system-ui,sans-serif; --serif:'Instrument Serif',Georgia,serif;
+  --terra:#6E4ED6; --terra-dark:#5B3CC4; --terra-light:#9B80FF;
+  --terra-tint:#EDE9FB; --terra-tint2:#F5F3FF;
+  --bg:#F8F7FF; --surface:#FFFFFF; --elevated:#F3F0FF;
+  --text:#0D0820; --text-mid:#4A4560; --text-dim:#8B85A8;
+  --border:rgba(110,78,214,.12); --border-light:rgba(110,78,214,.07);
+  --correct:#22c55e; --correct-bg:#F0FDF4; --correct-border:#86efac;
+  --wrong:#ef4444; --wrong-bg:#FEF2F2; --wrong-border:#fca5a5;
+  --radius-pill:100px; --radius-card:20px; --radius-sm:12px;
+  --shadow-card:0 2px 16px rgba(110,78,214,.08); --ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;}
+html:not(.authed) body>*{visibility:hidden;}
+html:not(.authed) .auth-loading{visibility:visible;}
+.auth-loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);font-size:14px;color:var(--text-dim);}
+html.authed .auth-loading{display:none;}
+.course-header{position:sticky;top:0;z-index:100;background:rgba(248,247,255,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-light);height:60px;display:flex;align-items:center;}
+.header-inner{width:min(760px,100% - 40px);margin-inline:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.header-logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px;color:var(--text);text-decoration:none;flex-shrink:0;}
+.logo-mark{width:28px;height:28px;border-radius:8px;background:var(--terra);color:white;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;}
+.header-back{font-size:13px;font-weight:600;color:var(--text-mid);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .15s;flex-shrink:0;}
+.header-back:hover{color:var(--terra);}
+.header-course-name{font-size:13px;font-weight:600;color:var(--text-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;text-align:center;}
+@media(max-width:480px){.header-course-name{display:none;}}
+.main{width:min(680px,100% - 40px);margin-inline:auto;padding:32px 0 80px;}
+.progress-section{margin-bottom:28px;}
+.progress-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.progress-label{font-size:12px;font-weight:600;color:var(--text-dim);}
+.progress-pct{font-size:12px;font-weight:700;color:var(--terra);}
+.progress-bar-wrap{height:5px;background:var(--terra-tint);border-radius:99px;overflow:hidden;margin-bottom:14px;}
+.progress-bar-fill{height:100%;background:var(--terra);border-radius:99px;transition:width .5s var(--ease);}
+.roadmap{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
+.roadmap::-webkit-scrollbar{display:none;}
+.roadmap-ch{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;width:60px;opacity:.35;transition:opacity .2s;}
+.roadmap-ch.done,.roadmap-ch.current{opacity:1;}
+.roadmap-icon{width:34px;height:34px;border-radius:50%;background:var(--terra-tint);display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid transparent;position:relative;transition:all .2s;flex-shrink:0;}
+.roadmap-ch.done .roadmap-icon{background:var(--correct-bg);border-color:var(--correct);}
+.roadmap-ch.done .roadmap-icon::after{content:'✓';position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;background:var(--correct);color:white;border-radius:50%;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;}
+.roadmap-ch.current .roadmap-icon{background:var(--terra-tint);border-color:var(--terra);box-shadow:0 0 0 3px rgba(110,78,214,.15);}
+.roadmap-label{font-size:9px;font-weight:600;color:var(--text-dim);text-align:center;line-height:1.3;max-width:60px;}
+.roadmap-ch.current .roadmap-label{color:var(--terra);font-weight:700;}
+.roadmap-ch.done .roadmap-label{color:var(--text-mid);}
+.card{background:var(--surface);border-radius:var(--radius-card);padding:32px;box-shadow:var(--shadow-card);border:1px solid var(--border-light);margin-bottom:16px;}
+.card-sm{padding:24px;}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;}
+h1{font-family:var(--serif);font-size:clamp(28px,5vw,36px);line-height:1.15;color:var(--text);font-weight:400;}
+h2{font-family:var(--serif);font-size:clamp(22px,4vw,28px);line-height:1.2;color:var(--text);font-weight:400;margin-bottom:6px;}
+h3{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
+p{font-size:15px;line-height:1.75;color:var(--text-mid);}
+p+p{margin-top:12px;}
+.divider{height:1px;background:var(--border-light);margin:24px 0;}
+.welcome-badge{width:72px;height:72px;border-radius:20px;background:var(--terra-tint);margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.stat-row{display:flex;gap:10px;margin:24px 0;}
+.stat-box{flex:1;background:var(--terra-tint2);border-radius:var(--radius-sm);padding:16px 10px;text-align:center;border:1px solid var(--border-light);}
+.stat-num{font-size:22px;font-weight:800;color:var(--terra);}
+.stat-lbl{font-size:11px;color:var(--text-dim);margin-top:3px;font-weight:600;}
+.how-step{display:flex;gap:14px;align-items:flex-start;padding:12px 0;}
+.how-step+.how-step{border-top:1px solid var(--border-light);}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--terra);color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.step-text{font-size:15px;color:var(--text-mid);line-height:1.55;}
+.step-text strong{color:var(--text);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--sans);font-weight:700;font-size:15px;border:none;border-radius:var(--radius-pill);padding:14px 28px;cursor:pointer;width:100%;transition:background .2s,transform .15s,opacity .15s;text-decoration:none;}
+.btn-primary{background:var(--terra);color:white;}
+@media(hover:hover){.btn-primary:hover{background:var(--terra-dark);transform:translateY(-1px);}}
+.btn-secondary{background:transparent;color:var(--terra-dark);border:1.5px solid var(--terra);}
+@media(hover:hover){.btn-secondary:hover{background:var(--terra-tint);}}
+.btn-ghost{background:var(--terra-tint);color:var(--terra-dark);}
+@media(hover:hover){.btn-ghost:hover{background:var(--elevated);}}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+.btn+.btn{margin-top:10px;}
+.btn-sm{font-size:13px;padding:10px 20px;width:auto;}
+.btn-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.story-block{border-left:3px solid rgba(110,78,214,.3);padding:18px 22px;margin:22px 0;background:rgba(248,247,255,.7);border-radius:0 12px 12px 0;}
+.story-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-light);margin-bottom:10px;}
+.story-block p{font-style:italic;color:var(--text);font-size:15px;line-height:1.8;}
+.story-block p+p{margin-top:12px;}
+.science-block{background:var(--terra-tint);border-radius:var(--radius-sm);padding:18px 20px;margin:18px 0;}
+.science-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;}
+.science-block p{color:var(--text);font-style:normal;}
+.takeaway{background:var(--terra);color:white;border-radius:var(--radius-sm);padding:16px 20px;margin:18px 0;font-size:14px;font-weight:600;line-height:1.6;}
+.takeaway-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.65;margin-bottom:5px;}
+.question-card{background:var(--surface);border-radius:var(--radius-card);border-top:3px solid var(--terra);padding:28px;box-shadow:var(--shadow-card);border-left:1px solid var(--border-light);border-right:1px solid var(--border-light);border-bottom:1px solid var(--border-light);margin-bottom:16px;}
+.q-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:12px;}
+.q-text{font-size:16px;font-weight:600;line-height:1.55;color:var(--text);margin-bottom:4px;}
+.options{display:flex;flex-direction:column;gap:10px;margin:20px 0;}
+.option{border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;cursor:pointer;font-size:14px;line-height:1.5;color:var(--text);background:var(--surface);text-align:left;transition:border-color .15s,background .15s;font-family:var(--sans);width:100%;}
+@media(hover:hover){.option:hover:not(:disabled){border-color:var(--terra-light);background:var(--terra-tint);}}
+.option.selected{border-color:var(--terra);background:var(--terra-tint);color:var(--terra-dark);font-weight:600;}
+.option.correct{border-color:var(--correct);background:var(--correct-bg);color:#15803d;font-weight:600;}
+.option.wrong{border-color:var(--wrong);background:var(--wrong-bg);color:#b91c1c;}
+.option:disabled{cursor:default;}
+.feedback{border-radius:var(--radius-sm);padding:16px 18px;font-size:14px;line-height:1.7;margin-top:4px;}
+.feedback-correct{background:var(--correct-bg);border:1px solid var(--correct-border);color:#166534;}
+.feedback-wrong{background:var(--wrong-bg);border:1px solid var(--wrong-border);color:#991b1b;}
+.feedback-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.try-this{border:2px solid var(--correct);border-radius:var(--radius-sm);padding:16px 18px;margin-top:14px;background:var(--correct-bg);}
+.try-this-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16a34a;margin-bottom:6px;}
+.try-this-text{font-size:14px;line-height:1.65;color:#166534;font-weight:500;}
+.cert-outer{background:white;border:2px solid var(--terra);border-radius:20px;padding:clamp(28px,6vw,48px) clamp(24px,6vw,48px);text-align:center;position:relative;overflow:hidden;}
+.cert-outer::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(110,78,214,.05) 0%,transparent 60%);pointer-events:none;}
+.cert-seal{width:80px;height:80px;border-radius:50%;background:var(--terra);margin:0 auto 18px;display:flex;align-items:center;justify-content:center;font-size:36px;color:white;box-shadow:0 6px 24px rgba(110,78,214,.3);}
+.cert-pretitle{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.cert-title{font-family:var(--serif);font-size:clamp(22px,4vw,30px);color:var(--text);margin-bottom:20px;line-height:1.2;}
+.cert-name-wrap{margin:16px auto;max-width:380px;}
+.cert-name-label{font-size:12px;color:var(--text-dim);margin-bottom:6px;font-weight:600;}
+.cert-name-input{border:none;border-bottom:2px solid var(--terra);background:transparent;font-family:var(--serif);font-size:24px;color:var(--terra-dark);font-style:italic;text-align:center;width:100%;padding:6px 0;outline:none;}
+.cert-name-input::placeholder{color:var(--terra-tint);font-style:italic;}
+.cert-rule{width:80px;height:2px;background:var(--terra-tint);margin:22px auto;border-radius:99px;}
+.cert-body{font-size:14px;color:var(--text-mid);line-height:1.7;max-width:420px;margin-inline:auto;}
+.cert-sig-row{display:flex;justify-content:center;margin-top:32px;}
+.cert-sig{text-align:center;}
+.cert-sig-line{width:130px;height:1px;background:var(--border);margin:0 auto 8px;}
+.cert-sig-name{font-size:15px;font-weight:700;color:var(--text);}
+.cert-sig-role{font-size:12px;color:var(--text-dim);margin-top:2px;}
+.cert-date{font-size:12px;color:var(--text-dim);margin-top:22px;}
+.action-list{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+.action-item{display:flex;align-items:flex-start;gap:12px;background:var(--correct-bg);border:1px solid var(--correct-border);border-radius:var(--radius-sm);padding:12px 14px;}
+.action-num{width:24px;height:24px;border-radius:50%;background:var(--correct);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.action-body{font-size:14px;line-height:1.55;color:#166534;}
+.action-chapter{font-size:11px;font-weight:700;color:#16a34a;margin-bottom:2px;}
+.rule-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;}
+.rule-item+.rule-item{border-top:1px solid var(--border-light);}
+.rule-icon{font-size:22px;flex-shrink:0;line-height:1.4;}
+.rule-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.rule-desc{font-size:14px;color:var(--text-mid);line-height:1.55;}
+.save-note{font-size:12px;color:var(--text-dim);text-align:center;padding-top:4px;}
+.fade-in{animation:fadeIn .3s var(--ease);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:768px){.roadmap{padding:2px 2px 6px;scroll-padding-inline:12px;gap:8px;}.roadmap-icon{width:38px;height:38px;font-size:17px;}.roadmap-ch{width:64px;}}
+@media(max-width:480px){
+  .main{width:calc(100% - 32px);padding-top:24px;padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));}
+  .card{padding:20px;border-radius:16px;}.card-sm{padding:16px;border-radius:16px;}.question-card{padding:20px;border-radius:16px;}
+  .progress-section{margin-bottom:20px;}.welcome-badge{width:60px;height:60px;font-size:28px;border-radius:16px;margin-bottom:16px;}
+  .stat-box{padding:12px 8px;}.stat-num{font-size:19px;}.stat-lbl{font-size:10px;}.divider{margin:18px 0;}.step-text{font-size:14px;}
+  .story-block{padding:14px 16px;margin:18px 0;}.story-block p{font-size:14px;}.science-block{padding:14px 16px;}.science-block p{font-size:14px;}
+  .takeaway{padding:14px 16px;font-size:13px;}.q-text{font-size:15px;}.options{gap:8px;margin:16px 0;}.option{padding:12px 14px;}
+  .feedback{padding:14px 16px;font-size:14px;}.feedback-title{font-size:14px;}.try-this{padding:14px 16px;}.try-this-text{font-size:13px;}
+  .btn-row{flex-direction:column;gap:8px;}.btn-row .btn{width:100%;}.btn-sm{font-size:14px;padding:12px 20px;}
+  .cert-name-input{font-size:20px;}.cert-body{font-size:13px;}.action-item{padding:10px 12px;}.action-body{font-size:13px;}
+}
+@media(max-width:360px){
+  .main{width:calc(100% - 24px);}.card{padding:16px;}.question-card{padding:16px;}
+  .stat-row{flex-wrap:wrap;}.stat-box{flex:1 1 calc(50% - 6px);}.stat-box:last-child{flex:1 1 100%;padding:10px;}.stat-num{font-size:18px;}
+  .roadmap-ch{width:52px;}.roadmap-icon{width:32px;height:32px;font-size:14px;}.cert-name-input{font-size:18px;}.h3{font-size:15px;}
+}
+@media print{
+  .no-print{display:none!important;}.course-header{display:none!important;}
+  body{background:white;}.main{width:100%;padding:0;}
+  .cert-outer::before{display:none!important;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .cert-outer{border:2px solid #5B3CC4;box-shadow:none;padding:40px;}
+  .cert-seal{background:#6E4ED6!important;color:white!important;box-shadow:none;}
+  .cert-name-input{border:none!important;border-bottom:2px solid #5B3CC4!important;font-size:22px!important;color:#5B3CC4!important;}
+  .card{box-shadow:none;border:none;}
+}
+</style>
+</head>
+<body>
+<div class="auth-loading">Signing you in…</div>
+<div id="preview-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#f59e0b;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-align:center;padding:8px;">
+  ⚠️ PREVIEW MODE — Remove <code style="background:rgba(0,0,0,.2);padding:2px 6px;border-radius:4px;">?preview=1</code> before deploying
+</div>
+<script>if(new URLSearchParams(location.search).get('preview')==='1'){document.getElementById('preview-banner').style.display='block';}</script>
+<header class="course-header no-print">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo"><div class="logo-mark">F</div>FamilyForce</a>
+    <span class="header-course-name">Sleep Training Course</span>
+    <a href="dashboard.html" class="header-back">← Dashboard</a>
+  </div>
+</header>
+<main class="main" id="app"></main>
+<script>
+// ═══════════════════════════════════════════════════════════
+// COURSE DATA — 13 chapters
+// ═══════════════════════════════════════════════════════════
+const CHAPTERS = [
+  {
+    id:'deficit', short:"133\nNights", title:"The 133-Night Deficit", chapter:"Chapter 1", icon:"😴",
+    story:{paragraphs:[
+      "My First Son did not sleep through the night until he was fourteen months old. For over a year, he woke two, three, sometimes four times a night. We rocked him. We fed him. We bounced on a yoga ball at 3 AM like it was a reasonable thing for adults to do. I put the remote control in the refrigerator. That last one is not a joke.",
+      "I had read zero books on infant sleep. I had googled things at 2 AM, absorbed contradictory advice from strangers, and received one sentence from our pediatrician: 'Some babies just take longer.' I took that as permission to keep doing what we were doing — rocking our son to sleep every night and wondering why he couldn't fall back asleep on his own at 1 AM.",
+      "I did not understand, at the time, that we were the problem. When Second Son arrived, I did the research. At five months, we started. Night one was hard. Night five, he fussed for a few minutes. Night seven, I put him down, walked out, silence. Same parents. Same house. The difference was a plan."
+    ]},
+    science:"Parents lose 133 nights of sleep in their baby's first year. Seven in ten report losing three hours per night across year one. A systematic review of parental sleep studies found mothers average fewer than six hours per night in the first four months, with impairment comparable to alcohol intoxication — the strongest predictor of postpartum depression. The good news is buried in the same literature: a 2006 meta-analysis by Mindell, commissioned by the American Academy of Sleep Medicine and reviewing 52 studies, found 94% of behavioral sleep interventions effective. A 2016 randomized trial by Gradisar found lower cortisol and no attachment differences at 12 months. A 2012 five-year follow-up by Price found zero differences in emotional health, behavior, or parent-child closeness. The science is not ambiguous. The problem is that it's buried in journals while the internet is full of noise.",
+    takeaway:"The difference between a brutal first year and a manageable one is rarely the baby. It is almost always the information the parents had going in.",
+    question:{
+      text:"A parent googles infant sleep at 2 AM and reads contradictory advice suggesting sleep training is harmful. Based on what the research actually shows, what is accurate?",
+      options:[
+        {text:"The evidence is genuinely mixed — some studies show harm, others show benefit",correct:false},
+        {text:"94% of 52 peer-reviewed studies found behavioral sleep interventions effective, with five-year follow-ups showing zero differences in child outcomes",correct:true},
+        {text:"Sleep training is effective but has documented risks to attachment",correct:false},
+        {text:"The research is too recent to draw firm conclusions",correct:false}
+      ],
+      explanation:"The Mindell meta-analysis reviewed 52 studies and found 94% effective. Price's 2012 five-year follow-up of 326 families found zero differences in emotional health, behavior, or parent-child closeness between sleep-trained and control children. Zero. The internet noise does not reflect the scientific consensus."
+    },
+    tryThis:"Find the last sleep advice you read online. Look up one primary source behind it — an actual study, not a blog post. Notice the difference between 'a study suggests' and what the study actually says."
+  },
+  {
+    id:'biology', short:"How\nBabies Sleep", title:"How Babies Sleep", chapter:"Chapter 2", icon:"🧬",
+    story:{paragraphs:[
+      "When First Son was eight weeks old, I told a friend: 'Something is wrong with him. He won't sleep more than two hours at a time.' Nothing was wrong with him. I just had no idea what normal looked like.",
+      "I kept him up during the day thinking he'd be more tired at night. I rocked him harder. I interpreted every waking as a problem to solve. All of it made things worse. Keeping him up longer made him overtired — which made him sleep worse, not better. Rocking him to sleep every time meant he needed rocking every 45 minutes, all night long.",
+      "With Second Son, I understood the biology before he arrived. Newborns don't have a circadian rhythm. Sleep cycles are short and arousals are normal. The brain builds its internal clock on a timeline no amount of parenting can accelerate. That knowledge didn't make the newborn phase easy. It made it survivable."
+    ]},
+    science:"Four things every parent needs to understand. First: newborns have no internal clock. The circadian rhythm builds on a predictable schedule — melatonin starts at 9 weeks, body temperature rhythms at 11 weeks, adult-style sleep cycling at 3-4 months. This is why you cannot sleep train before 4 months. Second: sleep cycles are 45-60 minutes. Between every cycle, your baby briefly arouses. If they fell asleep being rocked, they expect rocking at 1 AM. If they fell asleep independently, they drift back under. This is the core insight. Third: overtired babies sleep worse. Cortisol creates a second wind that leads to shorter naps, more night wakings, earlier mornings. Dr. Weissbluth's phrase: 'sleep begets sleep.' Fourth: wake windows are your tool. At 3-4 months, babies can handle about 75 minutes to 2 hours awake. At 7-10 months, 2.5-3.5 hours. Miss the window and cortisol takes over.",
+    takeaway:"Your baby's sleep is governed by biology, not behavior. The sleep cycle problem — needing the same conditions to fall back asleep as to fall asleep — is the key insight in this entire course.",
+    question:{
+      text:"A parent rocks their 6-month-old to sleep at 7 PM. The baby wakes crying at 1 AM and 3 AM. The parent is puzzled — the baby fell asleep so easily at bedtime. What does the research explain?",
+      options:[
+        {text:"The baby is hungry — 6-month-olds still need night feeds",correct:false},
+        {text:"The baby fell asleep being rocked, woke in a still crib between sleep cycles, and the conditions didn't match — so they couldn't resettle independently",correct:true},
+        {text:"The 7 PM bedtime is too early — late bedtimes reduce night wakings",correct:false},
+        {text:"The baby has a sleep disorder that needs medical evaluation",correct:false}
+      ],
+      explanation:"This is the sleep cycle mismatch. Every 45-60 minutes, babies briefly arouse. If the conditions they fell asleep in (rocking, being held) are gone, they wake fully. The bedtime looked easy because the rocking worked. The night wakings are the cost. The fix is teaching the baby to fall asleep independently in the crib, so the 1 AM arousal matches the bedtime conditions."
+    },
+    tryThis:"Set a wake window alarm today. If your baby is 5-7 months, set it for 2.5 hours after they wake up. When it goes off, start the wind-down — don't wait for eye-rubbing. The window closes before the cues appear."
+  },
+  {
+    id:'safe_sleep', short:"Safe\nSleep", title:"Safe Sleep", chapter:"Chapter 3", icon:"🛡️",
+    story:{paragraphs:[
+      "When First Son was three weeks old, I fell asleep holding him on the couch. I did not mean to. It was 4 AM. I had been feeding him a bottle, telling myself I would stay awake. The next thing I remember is my wife shaking my shoulder. He was wedged between my body and the cushion.",
+      "Nothing happened. He was fine. But the image of what could have happened stayed with me for weeks. I didn't tell anyone for months.",
+      "I'm telling you now because the most dangerous sleep decisions parents make are the ones they make at 4 AM when they're too exhausted to think clearly. The parent who swears they'll never co-sleep on the couch is the same parent who does it three weeks in. This chapter exists so you know the rules before you're too tired to look them up."
+    ]},
+    science:"Approximately 3,500 infants die each year in the United States from sudden unexpected infant death. The AAP updated its safe sleep guidelines in 2022. Three letters cover it: A — Alone (nothing in the crib except baby and a fitted sheet; no bumpers, blankets, pillows, stuffed animals, or positioners); B — Back (every sleep, every time, until baby can roll both ways); C — Crib (firm, flat surface meeting CPSC standards — not a swing, car seat, or inclined surface). Room sharing (baby in your room on a separate surface) for at least 6 months reduces SIDS risk by approximately 50%. Two specific warnings: swaddling must stop when rolling begins, and weighted swaddles were explicitly warned against in the 2022 AAP update. Overheating is an independent SIDS risk factor — keep the sleep environment 68-72°F. A boring crib is a safe crib.",
+    takeaway:"Safe sleep is not a parenting philosophy. It is the baseline everything else is built on. Get this right first, before anything else in this course.",
+    question:{
+      text:"A parent puts their 3-month-old to sleep in a crib with a light blanket for warmth, a rolled towel for positioning, and a small stuffed animal. The baby is on their back. What needs to change?",
+      options:[
+        {text:"Nothing — back sleeping is the primary safe sleep measure",correct:false},
+        {text:"The blanket and stuffed animal — but the rolled towel for positioning is AAP-approved",correct:false},
+        {text:"The blanket, stuffed animal, and rolled towel — all soft items except a fitted sheet must be removed",correct:true},
+        {text:"Only the blanket — stuffed animals are fine once the baby can hold their head up",correct:false}
+      ],
+      explanation:"Alone means alone — no bumpers, no positioners, no blankets, no stuffed animals. The rolled towel is a positioner; positioners are not AAP-safe regardless of intention. The 'A' in ABC means nothing in the crib but baby and a fitted sheet. Use a sleep sack for warmth. The safe sleep setup is deliberately boring."
+    },
+    tryThis:"Walk to your baby's sleep space right now. Remove everything except the fitted sheet and the baby. If they're not in it yet, set it up correctly before they arrive. A boring crib is a safe crib."
+  },
+  {
+    id:'newborn', short:"Newborn\nPhase", title:"The Newborn Phase", chapter:"Chapter 4", icon:"🐣",
+    story:{paragraphs:[
+      "The first six weeks with First Son were chaos that I mistook for a problem. I thought if I could just find the right trick, the right swaddle, the right sound machine setting, he would sleep in long predictable stretches. He would not, because he could not. I was trying to impose order on biology that wasn't ready for order.",
+      "With Second Son, I focused on three things: a consistent bedtime routine starting at six weeks, brief attempts at drowsy-but-awake even when they failed, and protecting sleep through shifts. From the beginning, I took 8 PM to 1 AM. She took 1 AM to 6 AM. During your shift, you handled everything. During your off shift, you slept in another room with earplugs. Each of us got a five-hour block every night — enough to stay sane.",
+      "By four months, he had a recognized bedtime routine and some experience falling asleep without being held. That foundation made everything that came next possible."
+    ]},
+    science:"Formal sleep training is not appropriate before 4 months — the neurological systems it depends on aren't developed yet. But a 2009 study by Mindell across 10,000 children in 14 countries found that consistent bedtime routines predicted earlier bedtimes, shorter sleep onset, and fewer night wakings — detectable in infants as young as seven months. The routine's consistency mattered more than its content. Start one by 6 weeks: bath, pajamas, feed, book, song, crib. Fifteen minutes. Same order every night. Practice drowsy-but-awake — placing the baby down sleepy but not fully asleep — without pressure. You're planting seeds, not harvesting. The four-month regression is not a regression. It's a permanent maturation of sleep architecture. A baby who has never fallen asleep independently will feel this change brutally. One who has practiced it, even occasionally, will navigate it more smoothly.",
+    takeaway:"You cannot sleep train a newborn. But the newborn phase is not a waiting room. The habits you build in the first four months determine how hard or easy month five will be.",
+    question:{
+      text:"A parent skips the bedtime routine on nights when their newborn is already drowsy, figuring there's no point going through the steps if the baby will fall asleep anyway. What does the research say about this?",
+      options:[
+        {text:"They're right — routines matter for toddlers but not newborns",correct:false},
+        {text:"The bedtime routine builds a learned sleep association over time — skipping it inconsistently undermines the signal the baby's brain is learning to recognize",correct:true},
+        {text:"The routine is helpful but only needs to happen 3-4 times per week to be effective",correct:false},
+        {text:"This is fine as long as the order of steps stays the same when the routine does happen",correct:false}
+      ],
+      explanation:"The Mindell study's most striking finding: consistency mattered more than the specific routine. The sequence is a signal the baby's brain learns to associate with sleep onset. Inconsistent application weakens the signal. A 15-minute routine done every night is building a biological anchor for sleep. Skipping it when the baby seems tired is skipping exactly the deposit that pays off in months 4, 5, and 6."
+    },
+    tryThis:"Start your bedtime routine tonight if you haven't already. Same 4-5 steps, same order, under 20 minutes, every night. Write it on a card and put it where your partner can see it. Both of you running the same sequence builds the signal faster."
+  },
+  {
+    id:'method', short:"Choose\nYour Method", title:"Choosing Your Method", chapter:"Chapter 5", icon:"📋",
+    story:{paragraphs:[
+      "With First Son, I did not choose a method. I had a vague sense I was supposed to 'let him cry' or 'not let him cry' and I toggled between the two depending on how tired I was and how guilty I felt. Some nights I rocked him for an hour. Other nights I lasted four minutes before going back in.",
+      "The inconsistency was the problem. He was getting a different signal every night. Sometimes crying worked and I appeared. Sometimes it didn't. He had no way to learn anything because the rules kept changing.",
+      "With Second Son, I picked graduated extinction before night one. When night two was harder than night one, I didn't panic — because I knew that was normal. When my wife wanted to go in sooner, we had already agreed on the intervals. The plan held because we'd made the decision in advance, not in the moment."
+    ]},
+    science:"Five evidence-based methods on a spectrum from most crying/fastest to least crying/slowest. Extinction: put down awake, leave, don't return until morning. Strongest evidence base, 19 studies, most babies improve in 2-3 nights. Graduated Extinction (Ferber): put down awake, return at increasing intervals (3, 5, 10 min), brief check-ins without picking up. 5-7 nights. Lower cortisol, no attachment differences at 12 months (Gradisar 2016). Chair Method: sit next to crib, comfort without picking up, move chair farther every 2-3 nights. 1-2 weeks. Pick-Up Put-Down: pick up when crying, put back down when calm, repeat. Most work for the parent, least evidence. Bedtime Fading: push bedtime later temporarily, then move earlier by 15 min every 2-3 nights. 2-6 weeks. The right method depends on your baby's temperament and your tolerance. Picking a method you can't sustain is worse than picking a gentler one you can. Whatever you choose: choose before night one.",
+    takeaway:"No single method is right for every family. But no method works without consistency. Pick one, understand it completely, agree on it together, and hold the line.",
+    question:{
+      text:"A parent starts graduated extinction but gives in and picks the baby up after 35 minutes of crying on night one. Based on the research, what has just happened?",
+      options:[
+        {text:"The training session is ruined and they should start over tomorrow",correct:false},
+        {text:"The baby has learned that 35 minutes of crying produces results — the threshold for the next session has been raised",correct:true},
+        {text:"This was the right call — extended crying is harmful and should be stopped",correct:false},
+        {text:"This is a normal reset and has no effect on future nights",correct:false}
+      ],
+      explanation:"Giving in teaches the equation: crying long enough = parent appears. The next night, the baby will cry at least as long. This is not a judgment — it is behavioral mechanics. If you do pick them up, put them back down when calm but still awake, resume intervals from the beginning, and hold the rest of the night. One pick-up sets you back roughly one night, not seven. But it must be followed by consistency for the rest of the session."
+    },
+    tryThis:"Before night one, write your method on paper: the name, the check-in intervals, and what you'll do if one of you wants to quit. Tape it somewhere visible. Decisions made rested, in daylight, hold better than decisions made in a dark hallway at 2 AM."
+  },
+  {
+    id:'game_night', short:"Game\nNight", title:"Game Night", chapter:"Chapter 6", icon:"🌙",
+    story:{paragraphs:[
+      "Night one with Second Son. Bath at 6:40. Pajamas. Bottle at 6:55, lights dimmed, but I kept him awake. Two short books. I said 'I love you, it's time to sleep.' Put him in the crib. He looked at me. I walked out and closed the door.",
+      "He started crying within thirty seconds. I set the timer for three minutes. Those three minutes were the longest of my life. When it went off, I went in. I didn't pick him up. Hand on chest, 'You're okay, I love you.' Out. Five minutes. Ten minutes. Repeated at ten-minute intervals.",
+      "He fell asleep forty-seven minutes after I put him down. Night two: thirty minutes. Night three: fifteen. Night four: ten. Night five: five minutes of fussing. Night six: three minutes. Night seven: I put him down, walked out. Silence. I stood in the hallway and didn't know what to do with myself."
+    ]},
+    science:"The graduated extinction protocol: feed at the beginning of the routine, not the end. Baby goes into the crib drowsy but awake. Check-ins at 3 minutes, 5 minutes, then every 10 minutes — 30 seconds or less, hand on chest, brief words, no picking up. Apply the same protocol to night wakings. The night-by-night pattern is consistent with Mindell's finding that over 80% of children show clinically significant improvement within the first week. Many experience an extinction burst on night two — behavior temporarily intensifies before extinguishing. Night two being worse than night one is not failure. It's the last test. Two things that derail the process: inconsistency (going in after 30 minutes teaches 30-minute crying), and starting before both caregivers are fully committed. One reluctant parent will break on night two. The plan must be made before night one.",
+    takeaway:"Sleep training is simple but not easy. The method is straightforward. The resolve required is harder than most parenting tasks you'll face. Most of the hard part is over in 48 hours.",
+    question:{
+      text:"A parent is on night two of graduated extinction. The baby cried 47 minutes on night one, then calmed. Tonight they've been crying for 55 minutes and it seems worse than last night. The parent is ready to quit. What does the research predict?",
+      options:[
+        {text:"This is a sign the method isn't working for this baby — switch methods",correct:false},
+        {text:"This is the extinction burst — temporary intensification before extinction. Night three will almost certainly be shorter.",correct:true},
+        {text:"55 minutes of crying indicates potential harm and the session should stop",correct:false},
+        {text:"This is normal variation with no predictive meaning for night three",correct:false}
+      ],
+      explanation:"The extinction burst is documented in sleep research and behavioral science. The old behavior gets its last, hardest test before the baby moves on. Night two being harder than night one is a nearly universal pattern in graduated extinction — and the strongest predictor that night three will drop sharply. The worst moment to quit is the moment before it breaks. Hold the plan."
+    },
+    tryThis:"Set up timers on your phone right now for your check-in intervals: 3 min, 5 min, then 10 min repeating. Label them 'Check in — do not pick up.' When the alarm sounds during a hard night, the phone is in charge, not your feelings."
+  },
+  {
+    id:'team', short:"The\nTeam", title:"The Team", chapter:"Chapter 7", icon:"🤝",
+    story:{paragraphs:[
+      "The worst argument my wife and I had in the first year of First Son's life was about sleep. She wanted to go in. I wanted to wait. Or she wanted to wait and I wanted to go in. It changed night to night because we had no plan — every decision made in real time by two people who were exhausted and scared.",
+      "With Second Son, we had the argument before night one. We sat at the kitchen table during nap time and talked through the plan. She told me she wasn't sure she could listen to him cry for more than twenty minutes. I said the research suggested it could go longer. We agreed on a cap: if he was still crying hard after an hour, we'd go in together and try again the next night.",
+      "We never hit the cap. But having it gave my wife permission to trust the process. That conversation took twenty minutes. It saved us weeks of conflict."
+    ]},
+    science:"A 2020 review of 23 studies found parental difficulties with limit-setting were the most frequently implicated factors in persistent sleep problems. When parents disagreed or one undermined the other, training took significantly longer. Father involvement specifically: a 2010 study by Tikotzky found higher paternal involvement in caregiving predicted fewer night wakings, even after controlling for breastfeeding. A 2020 study by Ragni found paternal involvement at bedtime was the single strongest predictor of reduced bedtime difficulties — more powerful than any maternal variable. There's also a physiological reason for the non-nursing parent to take the lead during training: nursing parents smell like food. Their presence is more stimulating during check-ins. And the research documents that mothers and nursing parents show higher physiological arousal in response to infant crying — this is hormonal architecture, not weakness. The plan will cost her more. Acknowledging that and building it into the structure is how you survive night one together.",
+    takeaway:"Sleep training is a team decision that tests the team. The 20-minute conversation you have before night one is worth more than any technique you deploy during it.",
+    question:{
+      text:"On night one, one parent goes in and picks up the baby during an agreed interval because 'it just felt wrong.' The other parent is frustrated. Based on the research, what's the most productive response?",
+      options:[
+        {text:"Abandon the method — if one parent can't sustain it, a gentler approach should be chosen",correct:false},
+        {text:"Put the baby back down when calm but still awake, resume intervals, hold the rest of the night, and debrief in the morning — one pick-up doesn't end the training",correct:true},
+        {text:"The pick-up parent should step back from training nights entirely",correct:false},
+        {text:"Start completely over the next night with a fresh baseline",correct:false}
+      ],
+      explanation:"One pick-up sets progress back roughly one night, not seven. What matters is what happens next: put the baby down when calm but still awake, resume your intervals, and hold the rest of the session. The morning debrief matters too — 'what felt impossible' is a real data point. You may need to adjust the cap, the intervals, or who does check-ins. Make those decisions rested, not in the dark."
+    },
+    tryThis:"Before sleep training begins, have the kitchen table conversation. Agree on: the method, the check-in intervals, the cap you can both live with, and who does check-ins on night one. Write it on paper and put it on the fridge. The paper holds the plan when you can't."
+  },
+  {
+    id:'feeding', short:"The\nFeeding Factor", title:"The Feeding Factor", chapter:"Chapter 8", icon:"🍼",
+    story:{paragraphs:[
+      "My wife breastfed both boys. With First Son, the last thing she did every night was nurse him to sleep. It worked beautifully for the first three months. By month four, nursing to sleep was the only way he would go down — not rocking, not bouncing, not me. Only nursing. My wife was the sole bedtime parent, the sole 1 AM parent, and the sole 4 AM parent. She felt trapped. I felt useless. We were both right.",
+      "With Second Son, we moved the last feed to the start of the bedtime routine at six weeks. She nursed him in the living room with the lights on. Then I took over — bath, pajamas, books, crib. He learned to associate the crib with sleep, not the breast with sleep.",
+      "When we started sleep training at five months, the transition was smoother because the strongest sleep association had already been decoupled from bedtime."
+    ]},
+    science:"Breastfed babies wake more at night than formula-fed babies — a systematic review of 21 studies covering 6,000 infants confirmed this for babies under 6 months. But breast milk contains melatonin, and nursing releases prolactin and oxytocin that help the nursing parent fall back asleep faster. The net result: breastfeeding parents often get more total sleep despite more wakings. After 6 months, the difference disappears. The practical issue is not the milk — it's the association. Nursing as the last thing before sleep creates a sleep onset association. The fix is moving the feed to the beginning of the routine, not the end. On night weaning: most 5-6 month olds still need one night feed. Most 7-8 month olds who eat solids during the day do not. By 9 months, the vast majority of healthy babies can go 12 hours without eating. Wean gradually — reduce by one ounce or 2 minutes every 2-3 nights. Keep night feeds businesslike: dim lights, no eye contact, no talking. Feed, burp, crib, out.",
+    takeaway:"The issue is never which milk — it's when the feed happens. Move it to the beginning of the routine, separated from the act of falling asleep by 15-20 minutes of bedtime steps.",
+    question:{
+      text:"A breastfeeding parent is told by a family member that switching to formula will fix the baby's night wakings. Based on the research, is this true?",
+      options:[
+        {text:"Yes — formula digests more slowly and produces longer sleep stretches",correct:false},
+        {text:"No — the difference in night wakings is driven by sleep associations, not the type of milk, and disappears entirely by 6 months",correct:true},
+        {text:"Partially — formula helps with night wakings but only after 6 months",correct:false},
+        {text:"Yes before 4 months, no after — the biology changes at that point",correct:false}
+      ],
+      explanation:"Formula does digest more slowly, but the research consistently shows the difference in night waking frequency is marginal and disappears by 6 months. After that point, night wakings are driven by sleep associations — the conditions the baby learned to fall asleep in — not by what they ate. Switching to formula while keeping the nursing-to-sleep habit won't change the 1 AM wakings. Moving the feed to the beginning of the routine will."
+    },
+    tryThis:"Move the last feed to the beginning of tonight's bedtime routine. Feed in a lit room, not the nursery. Keep the baby awake during the feed. Then hand off to your partner or continue with the rest of the routine yourself — bath, books, crib — with the feed separated from sleep by at least 15 minutes."
+  },
+  {
+    id:'naps', short:"Naps", title:"Naps", chapter:"Chapter 9", icon:"⛅",
+    story:{paragraphs:[
+      "Nighttime sleep training with Second Son took one week. Nap training took three. I was not prepared for that. I assumed that once he learned to fall asleep independently at night, naps would follow automatically. They did not.",
+      "With First Son, naps were never trained. They happened in the car, the stroller, or someone's arms — never the same place twice, never the same time. His nap schedule was whatever worked in the moment.",
+      "The thing I didn't understand: naps and nighttime are governed by different biological systems. Nighttime sleep has melatonin, darkness, and 12 hours of accumulated sleep pressure working in its favor. Naps have none of that. The biological drive to stay awake during the day is strong. Naps are harder. They take longer. They require their own strategy."
+    ]},
+    science:"Clinical consensus on nap training: First, train nighttime before naps. A baby who can fall asleep independently at bedtime has the foundational skill — nap training builds on it in a harder context. Second, use the same method. Consistency across contexts accelerates learning. Third, cap the attempt at 60 minutes. If the baby hasn't slept after 60 minutes, get them up. Try again at the next wake window. A rescue nap in the stroller is acceptable on these days. Fourth, start with the first nap. Morning sleep pressure, while lower than nighttime, is the highest of any daytime period. Nap transitions: 4-5 naps to 3 around 4-5 months; 3 to 2 around 7-9 months; 2 to 1 around 12-18 months. Each transition temporarily disrupts the schedule. During transitions, move bedtime earlier — a 6 PM bedtime during a nap transition is a strategy, not a mistake. The 2-to-1 transition is the hardest, taking 2-4 weeks.",
+    takeaway:"Naps are the second half of sleep training and the harder half. Train nighttime first. Let it consolidate for 1-2 weeks. Then tackle naps — expect them to take longer and require more patience.",
+    question:{
+      text:"A parent starts nap training on the same day as nighttime training to get it all done at once. Based on the research, what's the likely outcome?",
+      options:[
+        {text:"Both resolve faster when trained simultaneously — momentum helps",correct:false},
+        {text:"Nighttime and naps interfere with each other — nighttime should consolidate first, then naps are tackled separately",correct:true},
+        {text:"This is fine as long as the same method is used for both",correct:false},
+        {text:"Naps should actually be trained first since daytime sleep is shorter",correct:false}
+      ],
+      explanation:"Nighttime has the strongest biological supports — melatonin, darkness, accumulated sleep pressure. Naps have none of these, making them harder. Attempting both simultaneously overwhelms the baby and the parents. The recommended sequence: get nighttime solid first (usually one week), let it consolidate, then start naps. The nighttime skill transfers — the baby already knows how to fall asleep independently; you're just applying it in a harder context."
+    },
+    tryThis:"If you're not yet sleep training: mark your calendar for nap training to start 2 weeks after nighttime training begins. If nap training is already underway: cap your attempts at exactly 60 minutes. If the baby isn't asleep, get them up. A failed nap attempt followed by a rescue nap is better than 90 minutes of crying with no sleep."
+  },
+  {
+    id:'cosleep', short:"Co-Sleeping\nQuestion", title:"The Co-Sleeping Question", chapter:"Chapter 10", icon:"🛏️",
+    story:{paragraphs:[
+      "After the couch scare with First Son, my wife and I made a rule: no baby on the couch or recliner under any circumstances. We followed it. But during the worst stretches around seven and eight months, we brought First Son into our bed. Not because we'd researched it and made an informed decision. Because it was 3 AM and nothing else was working.",
+      "We didn't tell our pediatrician. We didn't look up how to do it safely. We just did it — badly, with pillows and a thick comforter and the vague hope that nothing bad would happen.",
+      "Nothing bad happened. But looking back, the way we did it was among the most dangerous options available. Not because bed sharing is inherently deadly, but because uninformed, reactive bed sharing done out of exhaustion with the wrong setup is where the real risk lives."
+    ]},
+    science:"A 2024 study found that 64% of parents who did not intend to co-sleep were doing so by the time their baby was two months old. The AAP position is clear: unable to recommend bed sharing under any circumstances, based on epidemiological data showing elevated SIDS risk. However, the risk is not uniform. A study by Blair found that for smoking parents, bed sharing increased risk nearly 14-fold. For non-smoking parents in the absence of other hazards, the increased risk was 2.09 and was not statistically significant. Emily Oster estimated that the safest possible bed sharing configuration — non-smoking, sober, firm mattress, breastfeeding, healthy full-term baby — carries a risk of approximately 0.15 per 1,000. Not zero. But context. The highest-risk scenario is not intentional bed sharing — it is falling asleep unintentionally on a couch or recliner. The Safe Sleep Seven (non-smokers, sober, breastfeeding, healthy full-term baby, back position, light bedding, firm mattress) describes the lowest-risk bed sharing conditions.",
+    takeaway:"Most parents will co-sleep at some point whether they plan to or not. The safest thing is real information, not silence. Know the AAP recommendation, know the risk factors, and never fall asleep with a baby on a couch or recliner.",
+    question:{
+      text:"A parent falls asleep accidentally with their baby on the couch at 3 AM. The next night they plan to intentionally bring the baby into their bed instead — figuring it's safer since they'll be prepared. Based on the research, are they right?",
+      options:[
+        {text:"No — intentional bed sharing and accidental couch sharing carry equivalent risk",correct:false},
+        {text:"Yes — intentional bed sharing in a proper adult bed is always safer than accidental couch sharing",correct:true},
+        {text:"No — intentional bed sharing is more dangerous because parents sleep more deeply when they feel safe",correct:false},
+        {text:"The research cannot compare these scenarios directly",correct:false}
+      ],
+      explanation:"Correct. The Academy of Breastfeeding Medicine's 2019 protocol explicitly acknowledged this: accidental sleep on a couch or recliner may be more dangerous than intentional, planned bed sharing on a safe firm surface. A couch has gaps, soft surfaces, and angles that are far more hazardous than a flat, firm mattress. If you're going to sleep with your baby, a prepared firm bed is safer than an accidental couch. That said, the AAP recommendation remains to use a separate safe sleep surface — not because bed sharing is categorically impossible to do more safely, but because the safest baseline is the separate crib."
+    },
+    tryThis:"Have the 3 AM plan conversation now, while you're rested. What will you do when both of you are exhausted and the baby won't settle? A prepared safe fallback is better than an exhausted improvisation. Decide in advance."
+  },
+  {
+    id:'regressions', short:"Regressions", title:"Regressions", chapter:"Chapter 11", icon:"📉",
+    story:{paragraphs:[
+      "At ten months, Second Son stopped sleeping through the night. Three weeks earlier, everything was perfect. Down at 7, asleep in minutes, up at 6:30. Then, without warning, he was waking at midnight, standing up in his crib, screaming in a way he hadn't since the first week of training.",
+      "My first thought was that sleep training had failed. That we'd done it wrong, or it had worn off, or he'd somehow unlearned everything.",
+      "None of that was true. He was going through the eight-to-ten-month developmental surge — pulling up, separation anxiety, object permanence kicking in. With First Son, I would have gone back to rocking and holding, whatever stopped the crying. With Second Son, I held the line. Same routine, same response, same intervals. It lasted eleven days. Then it was over."
+    ]},
+    science:"Sleep regressions are not regressions — they are progressions. Sleep disrupts because the brain is busy building new capacities. Four major events: Four months (permanent maturation of sleep architecture from newborn to adult-style — the only one that doesn't go back; if independent sleep onset isn't established, this forces the issue); Eight to ten months (mobility, separation anxiety, object permanence; typically 2-4 weeks); Twelve months (walking, language, beginning of 2-to-1 nap transition); Eighteen months (language explosion, willfulness, boundary testing; 2-6 weeks). The clinical guidance is identical for all of them: maintain consistency. Do not introduce new sleep associations to cope with a temporary disruption. The habits created during a regression outlast the regression itself. Add extra connection during the day — more holding, more eye contact, more responsiveness. This meets the developmental need without creating bedtime problems. If consistency slipped and you need to retrain: expect 2-4 nights, not seven. The skill is still there.",
+    takeaway:"Regressions are signs of growth, not failure. What you do during them determines whether they last two weeks or two months. Maintain the routine; add connection during the day.",
+    question:{
+      text:"During the 8-month regression, a parent starts rocking their baby to sleep again to get through the disruption. Two months later, the regression is over but the baby still needs rocking. What happened?",
+      options:[
+        {text:"The regression damaged the baby's ability to self-soothe — retraining will take longer now",correct:false},
+        {text:"The habit created during the regression outlasted it — the baby learned rocking again and now associates it with sleep onset",correct:true},
+        {text:"Two months of rocking has no lasting effect — the original training should reassert itself",correct:false},
+        {text:"The regression lasted unusually long — this isn't a habit problem but a developmental one",correct:false}
+      ],
+      explanation:"This is the core regression trap. The disruption is temporary. The habits you create during it are not. Rocking to sleep during the 8-month surge teaches the rocking-sleep association all over again. When the regression ends, the association remains. You then need to retrain — which will take 2-4 nights, not seven, since the original learning is still there. Better path: maintain the routine, add daytime connection, hold the bedtime expectations. Extra comfort during waking hours; same expectations at bedtime."
+    },
+    tryThis:"Mark the four regression windows on your calendar now: 4 months, 8-10 months, 12 months, 18 months. When sleep falls apart near one of these dates, name it — 'This is the 8-month regression' — before you decide what to do. Naming it correctly tells you to hold the line, not change the approach."
+  },
+  {
+    id:'toddler', short:"The\nToddler", title:"The Toddler", chapter:"Chapter 12", icon:"🚶",
+    story:{paragraphs:[
+      "First Son climbed out of his crib at twenty months. He did it at 5:30 AM on a Tuesday. I heard a thud, then silence, then his bedroom door opening. He wandered into our room like it was nothing. We transitioned him to a toddler bed that week — mostly out of fear. In hindsight, too early.",
+      "He spent the next three months getting up repeatedly after lights out, appearing in our doorway, asking for water, one more book, to go potty, deploying every delay tactic available to a two-year-old's imagination.",
+      "With Second Son, I kept him in the crib until nearly three. He never climbed out. When we transitioned, he already had the language to understand the rules and the impulse control to mostly follow them. The difference wasn't the child. It was the timing."
+    ]},
+    science:"Most sleep experts recommend keeping a child in a crib until 2.5 to 3 years. The crib is a contained, predictable environment. A toddler bed introduces freedom of movement — and the stalling behavior that exhausts parents of toddlers worldwide. If they climb out, lower the mattress first. If they keep climbing, transition for safety regardless of age. When you transition, keep everything else exactly the same. Introduce a toddler clock — a device with a light that changes color at wake time. The clock becomes the authority, not you. The bedtime pass technique: give your toddler one pass per night for one request (a hug, a drink, the bathroom). When it's used, no more requests are honored. Research by Friman found this significantly reduced bedtime resistance with minimal distress. Night terrors affect roughly 30% of toddlers: child appears awake, eyes open, possibly screaming, but is not conscious and can't be reached. Correct response is counterintuitive — don't try to wake them, don't hold them still, don't call their name. Stay nearby, ensure they can't hurt themselves, and wait 5-15 minutes. They will have no memory of it in the morning.",
+    takeaway:"The toddler phase is the same problem in a bigger body with better negotiating skills. Keep them in the crib as long as safely possible. When you transition, the clock becomes the authority.",
+    question:{
+      text:"A parent goes in to respond to their toddler's fifth post-bedtime request — this time for water, which seems reasonable. Based on the research, what is this teaching?",
+      options:[
+        {text:"Nothing harmful — reasonable requests should be met; the issue is unreasonable ones",correct:false},
+        {text:"That the conversation is still open — every response to a stall tactic, however reasonable it seems, teaches escalation works",correct:true},
+        {text:"Responsiveness builds security, which reduces bedtime anxiety over time",correct:false},
+        {text:"The water request is fine; it's only a problem if it exceeds 3-4 requests per night",correct:false}
+      ],
+      explanation:"From a behavioral perspective, the fifth request is not about water. It's about testing whether the boundary is real. Meeting it — however reasonably — signals that more negotiation is available. This is why the bedtime pass technique works: it meets the need for one request legitimately, then closes the door. One response, then silence. The goal isn't to be cold. It's to be clear. Clear boundaries produce less bedtime anxiety, not more."
+    },
+    tryThis:"Buy a toddler clock if you don't have one. Set the 'green light' time to your actual target wake time and enforce it for one week. Tell your toddler the rule in simple language: 'When it's red, it's sleep time. When it turns green, you can come get me.' Then hold it. The clock is now in charge."
+  },
+  {
+    id:'after_game', short:"After\nthe Game", title:"After the Game", chapter:"Chapter 13", icon:"🌅",
+    story:{paragraphs:[
+      "When Second Son started sleeping through the night, I didn't know what to do with the evenings. For months, my nights had been structured around feeding, rocking, checking the monitor, lying in bed wondering if the next wakeup was five minutes or five hours away.",
+      "Suddenly I had three hours between his bedtime and mine. My wife and I sat on the couch and looked at each other. She said, 'What do we do now?' I said, 'I have no idea.' We watched a movie. The whole thing. Without pausing. It felt like a vacation.",
+      "It also gave us something harder to measure. I stopped dreading bedtime. My wife stopped resenting me for not being able to help with the night feeds she was carrying alone. We started being people again, not just parents in survival mode. The research says we made the right call. The five-year follow-ups say we made the right call. But here is what the research cannot capture: the morning after the first full night, I picked up Second Son from his crib and he smiled at me. A rested, bright-eyed, happy-to-see-you smile. He had slept well. So had we."
+    ]},
+    science:"Gradisar's 2016 trial: cortisol declined in trained infants; no attachment differences at 12 months. Price's 2012 five-year follow-up: zero differences in emotional health, behavior, or parent-child closeness. Hiscock's 2008 study: significant improvements in maternal mood and fatigue. Mindell's meta-analysis: 94% of 52 studies found effective outcomes. The evidence does not show that the short-term distress of training has long-term costs. It shows the opposite — families sleep better, function better, and report stronger relationships. Sleep deprivation at the level of year one impairs judgment and reaction time at rates comparable to alcohol intoxication. It is the strongest predictor of postpartum depression. Getting sleep back is not a luxury. It is a prerequisite for being the parent you want to be. The research is not ambiguous. The outcomes are clear. You did the reading. You made the plan. You held the line. That is what this was.",
+    takeaway:"133 nights of lost sleep, recovered. The research answered the question about whether this was the right call. What the research can't capture is the Tuesday morning where everyone is rested and everything feels possible.",
+    question:{
+      text:"A parent who completed sleep training reads a parenting article suggesting sleep training causes stress damage that doesn't show up until school age. Based on the actual research evidence, how should they evaluate this claim?",
+      options:[
+        {text:"Take it seriously — long-term studies are always more rigorous than short-term ones",correct:false},
+        {text:"Evaluate it against the existing evidence: Price's 5-year follow-up of 326 families found zero differences in any developmental measure — this claim contradicts the best available data",correct:true},
+        {text:"The article is probably right — short-term benefits don't rule out long-term costs",correct:false},
+        {text:"Wait for more research before drawing conclusions either way",correct:false}
+      ],
+      explanation:"Price and colleagues specifically looked for harm in a five-year longitudinal study of 326 families. Zero differences in emotional health. Zero differences in behavior. Zero differences in parent-child closeness. This was the explicit research question — not a side finding. Any claim of long-term damage needs to reckon with that data. 'Wait for more research' is not a neutral position when this level of evidence already exists."
+    },
+    tryThis:"Write down what the last 13 chapters changed in how you think about sleep. Not a to-do list — one sentence about what you understand now that you didn't before. This is the information that travels with you into the regressions, the toddler years, and the next child."
+  }
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const SAVE_KEY='ff_course_sleep_v1';
+function loadState(){try{const s=localStorage.getItem(SAVE_KEY);if(s)return JSON.parse(s);}catch(e){}return null;}
+function saveState(s){try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));}catch(e){}}
+function freshState(){return{screen:'welcome',chapterIndex:0,completed:[],selectedOption:null,showFeedback:false};}
+let STATE=loadState()||freshState();
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function el(tag,cls){const e=document.createElement(tag);if(cls)e.className=cls;return e;}
+function ch(){return CHAPTERS[STATE.chapterIndex];}
+function done(id){return STATE.completed.includes(id);}
+function pct(){return Math.round((STATE.completed.length/CHAPTERS.length)*100);}
+function userName(){return localStorage.getItem('ff_user_name')||'';}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════
+function render(){
+  saveState(STATE);
+  const app=document.getElementById('app');
+  app.innerHTML='';app.className='fade-in';
+  if(STATE.screen==='chapter'||STATE.screen==='question')renderProgress(app);
+  switch(STATE.screen){
+    case'welcome':renderWelcome(app);break;
+    case'chapter':renderChapter(app);break;
+    case'question':renderQuestion(app);break;
+    case'complete':renderComplete(app);break;
+  }
+}
+
+function renderProgress(app){
+  const wrap=el('div','progress-section no-print');
+  const meta=el('div','progress-meta');
+  const lbl=el('span','progress-label');lbl.textContent=`Chapter ${STATE.chapterIndex+1} of ${CHAPTERS.length}`;
+  const pctLbl=el('span','progress-pct');pctLbl.textContent=pct()+'% complete';
+  meta.appendChild(lbl);meta.appendChild(pctLbl);wrap.appendChild(meta);
+  const barWrap=el('div','progress-bar-wrap');
+  const fill=el('div','progress-bar-fill');fill.style.width=pct()+'%';
+  barWrap.appendChild(fill);wrap.appendChild(barWrap);
+  const roadmap=el('div','roadmap');
+  CHAPTERS.forEach((c,i)=>{
+    const isDone=done(c.id),isCurrent=i===STATE.chapterIndex;
+    const chip=el('div','roadmap-ch'+(isDone?' done':isCurrent?' current':''));
+    const icon=el('div','roadmap-icon');icon.textContent=c.icon;chip.appendChild(icon);
+    const lbl2=el('div','roadmap-label');lbl2.textContent=(c.short||c.title).replace('\n',' ');lbl2.title=c.title;chip.appendChild(lbl2);
+    roadmap.appendChild(chip);
+  });
+  wrap.appendChild(roadmap);
+  setTimeout(()=>{const chips=roadmap.querySelectorAll('.roadmap-ch');if(chips[STATE.chapterIndex])chips[STATE.chapterIndex].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});},60);
+  app.appendChild(wrap);
+}
+
+function renderWelcome(app){
+  const card=el('div','card');
+  const badge=el('div','welcome-badge');badge.textContent='🌙';card.appendChild(badge);
+  const ey=el('div','eyebrow');ey.textContent='FamilyForce · Sleep Training';card.appendChild(ey);
+  const title=el('h1');title.textContent='The Sleep Training Playbook';card.appendChild(title);
+  const sub=el('p');sub.style.marginTop='12px';
+  sub.textContent='A research-backed course for exhausted parents who are done winging it. 13 chapters, one question each, earn your certificate.';card.appendChild(sub);
+  const stats=el('div','stat-row');
+  [['13','Chapters'],['~65','Minutes'],['1','Certificate']].forEach(([num,lbl])=>{
+    const box=el('div','stat-box');
+    const n=el('div','stat-num');n.textContent=num;box.appendChild(n);
+    const l=el('div','stat-lbl');l.textContent=lbl;box.appendChild(l);stats.appendChild(box);
+  });card.appendChild(stats);
+  card.appendChild(el('div','divider'));
+  const h=el('h3');h.textContent='How each chapter works';card.appendChild(h);
+  [["Jack's story","A real moment from raising First Son vs. Second Son. The moment that made it real."],
+   ["The science","What the research actually shows — specific, actionable, not a headline."],
+   ["One question","Answer it correctly to unlock the next chapter. Get it wrong: review and try again."],
+   ["Try This","One specific action to do before moving on."]
+  ].forEach(([t,d],i)=>{
+    const step=el('div','how-step');
+    const num=el('div','step-num');num.textContent=i+1;step.appendChild(num);
+    const text=el('div','step-text');text.innerHTML=`<strong>${t}</strong> — ${d}`;step.appendChild(text);
+    card.appendChild(step);
+  });
+  const hasProg=STATE.completed.length>0;
+  if(hasProg){
+    const resume=el('button','btn btn-primary');resume.style.marginTop='24px';
+    resume.textContent=`↩  Resume — Chapter ${STATE.chapterIndex+1}`;
+    resume.onclick=()=>{STATE.screen='chapter';render();};card.appendChild(resume);
+    const restart=el('button','btn btn-secondary');restart.textContent='→  Start from Chapter 1';
+    restart.onclick=()=>{STATE.chapterIndex=0;STATE.screen='chapter';render();};card.appendChild(restart);
+    const reset=el('button','btn btn-ghost');reset.style.color='var(--text-dim)';reset.textContent='↺  Clear Progress';
+    reset.onclick=()=>{if(confirm('Clear all progress?')){STATE=freshState();render();}};card.appendChild(reset);
+  }else{
+    const start=el('button','btn btn-primary');start.style.marginTop='24px';start.textContent='→  Start Course';
+    start.onclick=()=>{STATE.screen='chapter';render();};card.appendChild(start);
+  }
+  app.appendChild(card);app.appendChild(mkSaveNote());
+}
+
+function renderChapter(app){
+  const c=ch();const card=el('div','card');
+  const ey=el('div','eyebrow');ey.textContent=`${c.chapter} · ${c.icon} ${c.title}`;card.appendChild(ey);
+  const story=el('div','story-block');
+  const slbl=el('div','story-label');slbl.textContent="Jack's Story";story.appendChild(slbl);
+  c.story.paragraphs.forEach(t=>{const p=el('p');p.textContent=t;story.appendChild(p);});card.appendChild(story);
+  const sci=el('div','science-block');
+  const sciLbl=el('div','science-label');sciLbl.textContent='The Science';sci.appendChild(sciLbl);
+  const sciP=el('p');sciP.textContent=c.science;sci.appendChild(sciP);card.appendChild(sci);
+  const kt=el('div','takeaway');
+  const ktLbl=el('div','takeaway-label');ktLbl.textContent='🎯  Key Takeaway';kt.appendChild(ktLbl);
+  kt.appendChild(document.createTextNode(c.takeaway));card.appendChild(kt);
+  const cta=el('button','btn btn-primary');cta.style.marginTop='24px';
+  cta.textContent='→  Answer the Chapter Question';
+  cta.onclick=()=>{STATE.screen='question';STATE.selectedOption=null;STATE.showFeedback=false;render();};card.appendChild(cta);
+  if(STATE.chapterIndex>0){
+    const back=el('button','btn btn-ghost');back.style.color='var(--text-dim)';
+    back.textContent=`← Chapter ${STATE.chapterIndex}`;
+    back.onclick=()=>{STATE.chapterIndex--;STATE.screen='chapter';render();};card.appendChild(back);
+  }
+  app.appendChild(card);app.appendChild(mkSaveNote());
+}
+
+function renderQuestion(app){
+  const c=ch();const q=c.question;const card=el('div','question-card');
+  const qlbl=el('div','q-label');qlbl.textContent=`${c.chapter} · Check Your Understanding`;card.appendChild(qlbl);
+  const qtext=el('div','q-text');qtext.textContent=q.text;card.appendChild(qtext);
+  const opts=el('div','options');
+  q.options.forEach((opt,i)=>{
+    const btn=el('button','option');
+    if(STATE.showFeedback){if(opt.correct)btn.className+=' correct';else if(i===STATE.selectedOption)btn.className+=' wrong';btn.disabled=true;}
+    else if(STATE.selectedOption===i)btn.className+=' selected';
+    btn.textContent=opt.text;
+    btn.onclick=()=>{if(STATE.showFeedback)return;STATE.selectedOption=i;render();};
+    opts.appendChild(btn);
+  });card.appendChild(opts);
+  if(STATE.showFeedback){
+    const isCorrect=q.options[STATE.selectedOption]?.correct;
+    const fb=el('div',`feedback feedback-${isCorrect?'correct':'wrong'}`);
+    const fbt=el('div','feedback-title');fbt.textContent=isCorrect?'✅  Correct!':'❌  Not quite.';fb.appendChild(fbt);
+    const fbText=el('div');fbText.textContent=q.explanation;fb.appendChild(fbText);card.appendChild(fb);
+    if(isCorrect){
+      if(!done(c.id))STATE.completed.push(c.id);saveState(STATE);
+      if(c.tryThis){
+        const tt=el('div','try-this');
+        const ttLbl=el('div','try-this-label');ttLbl.textContent='✋  Try This Before You Move On';tt.appendChild(ttLbl);
+        const ttText=el('div','try-this-text');ttText.textContent=c.tryThis;tt.appendChild(ttText);card.appendChild(tt);
+      }
+      const isLast=STATE.chapterIndex===CHAPTERS.length-1;
+      const next=el('button','btn btn-primary');
+      next.textContent=isLast?'🎓  Get My Certificate':`→  Chapter ${STATE.chapterIndex+2}: ${CHAPTERS[STATE.chapterIndex+1].title}`;
+      next.onclick=()=>{if(isLast){STATE.screen='complete';}else{STATE.chapterIndex++;STATE.screen='chapter';STATE.selectedOption=null;STATE.showFeedback=false;}render();};
+      card.appendChild(next);
+    }else{
+      const row=el('div','btn-row');
+      const retry=el('button','btn btn-ghost btn-sm');retry.textContent='↺  Try Again';
+      retry.onclick=()=>{STATE.selectedOption=null;STATE.showFeedback=false;render();};row.appendChild(retry);
+      const review=el('button','btn btn-secondary btn-sm');review.textContent='📖  Review Chapter';
+      review.onclick=()=>{STATE.screen='chapter';STATE.selectedOption=null;STATE.showFeedback=false;render();};row.appendChild(review);
+      card.appendChild(row);
+    }
+  }else{
+    const check=el('button','btn btn-primary');check.textContent='Check';
+    check.disabled=STATE.selectedOption===null;
+    check.onclick=()=>{STATE.showFeedback=true;render();};card.appendChild(check);
+    const goBack=el('button','btn btn-ghost');goBack.style.color='var(--text-dim)';goBack.textContent='← Review the Chapter';
+    goBack.onclick=()=>{STATE.screen='chapter';render();};card.appendChild(goBack);
+  }
+  app.appendChild(card);app.appendChild(mkSaveNote());
+}
+
+function renderComplete(app){
+  // Award badge
+  try{
+    const progress=JSON.parse(localStorage.getItem('ff_progress')||'{}');
+    if(!progress['sleep-training'])progress['sleep-training']={};
+    progress['sleep-training'].cert=true;
+    localStorage.setItem('ff_progress',JSON.stringify(progress));
+  }catch(e){}
+
+  const congrats=el('div','card no-print');
+  const ce=el('div','eyebrow');ce.style.textAlign='center';ce.textContent='Course Complete 🎉';congrats.appendChild(ce);
+  const ct=el('h2');ct.style.textAlign='center';ct.style.marginTop='4px';ct.textContent='You finished all 13 chapters';congrats.appendChild(ct);
+  const cs=el('p');cs.style.textAlign='center';cs.style.marginTop='8px';
+  cs.textContent="Here's your certificate. Type your name, then print or save it as a PDF.";congrats.appendChild(cs);
+  app.appendChild(congrats);
+
+  const certCard=el('div','card');
+  const certOuter=el('div','cert-outer');
+  const seal=el('div','cert-seal');seal.textContent='✓';certOuter.appendChild(seal);
+  const pretitle=el('div','cert-pretitle');pretitle.textContent='Certificate of Completion';certOuter.appendChild(pretitle);
+  const certTitle=el('h2','cert-title');certTitle.textContent='The Sleep Training Playbook';certOuter.appendChild(certTitle);
+  const nameWrap=el('div','cert-name-wrap');
+  const nameLbl=el('div','cert-name-label');nameLbl.textContent='Awarded to';nameWrap.appendChild(nameLbl);
+  const nameInput=el('input','cert-name-input');nameInput.type='text';nameInput.placeholder='Your name';
+  nameInput.setAttribute('spellcheck','false');nameInput.value=userName();nameWrap.appendChild(nameInput);certOuter.appendChild(nameWrap);
+  certOuter.appendChild(el('div','cert-rule'));
+  const body=el('div','cert-body');
+  body.textContent="has successfully completed all 13 chapters of The Sleep Training Playbook, demonstrating understanding of research-backed approaches to infant and toddler sleep.";certOuter.appendChild(body);
+  const sigRow=el('div','cert-sig-row');
+  const sig=el('div','cert-sig');
+  const sigLine=el('div','cert-sig-line');sig.appendChild(sigLine);
+  const sigName=el('div','cert-sig-name');sigName.textContent='Jack Hartley';sig.appendChild(sigName);
+  const sigRole=el('div','cert-sig-role');sigRole.textContent='Author, The Sleep Training Playbook';sig.appendChild(sigRole);
+  sigRow.appendChild(sig);certOuter.appendChild(sigRow);
+  const dateEl=el('div','cert-date');dateEl.textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});certOuter.appendChild(dateEl);
+  certCard.appendChild(certOuter);app.appendChild(certCard);
+
+  const actions=el('div','card card-sm no-print');
+  const printBtn=el('button','btn btn-primary');printBtn.textContent='🖨️  Print / Save as PDF';
+  printBtn.onclick=()=>window.print();actions.appendChild(printBtn);
+  const pdfBtn=el('button','btn btn-secondary');pdfBtn.textContent='📄  Download Full Book';
+  pdfBtn.onclick=()=>{const a=document.createElement('a');a.href='assets/downloads/sleep-training-playbook.epub';a.download='Sleep-Training-Playbook-Jack-Hartley.epub';a.click();};actions.appendChild(pdfBtn);
+  const dashBtn=el('button','btn btn-ghost');dashBtn.textContent='← Back to Dashboard';
+  dashBtn.onclick=()=>{window.location.href='dashboard.html';};actions.appendChild(dashBtn);
+  app.appendChild(actions);
+
+  const actionCard=el('div','card no-print');
+  const ae=el('div','eyebrow');ae.textContent='Your Action Plan';actionCard.appendChild(ae);
+  const at=el('h3');at.style.marginTop='4px';at.textContent='13 things to try this week';actionCard.appendChild(at);
+  const as_=el('p');as_.style.fontSize='13px';as_.style.marginTop='6px';as_.style.marginBottom='16px';
+  as_.textContent='One specific action from each chapter. Pick the ones that match where you are right now.';actionCard.appendChild(as_);
+  const list=el('div','action-list');
+  CHAPTERS.forEach((c,i)=>{
+    if(!c.tryThis)return;
+    const item=el('div','action-item');
+    const num=el('div','action-num');num.textContent=i+1;item.appendChild(num);
+    const bdy=el('div','action-body');
+    const clbl=el('div','action-chapter');clbl.textContent=`${c.icon} ${c.title}`;bdy.appendChild(clbl);
+    const txt=el('div');txt.textContent=c.tryThis;bdy.appendChild(txt);item.appendChild(bdy);list.appendChild(item);
+  });actionCard.appendChild(list);app.appendChild(actionCard);
+
+  const rulesCard=el('div','card no-print');
+  const re=el('div','eyebrow');re.textContent='The Core Principles';rulesCard.appendChild(re);
+  const rt=el('h3');rt.style.marginTop='4px';rt.style.marginBottom='16px';rt.textContent='What the research reduces to';rulesCard.appendChild(rt);
+  [
+    ['🛏️','Start before night one','Choose your method, write the plan, align with your partner. Decisions made rested hold. Decisions made at 2 AM in a dark hallway don\'t.'],
+    ['🧬','The sleep association is the problem','If your baby needs X to fall asleep, they need X at 1 AM. Teaching independent sleep onset at bedtime is the entire fix.'],
+    ['🔄','Consistency is the method','Any approach works with consistency. No approach works without it. Inconsistency actively makes things worse.'],
+    ['📉','Regressions are growth, not failure','Hold the routine. Add daytime connection. The habits you build during a regression outlast it.']
+  ].forEach(([icon,title2,desc])=>{
+    const rule=el('div','rule-item');
+    const ri=el('div','rule-icon');ri.textContent=icon;rule.appendChild(ri);
+    const rb=el('div');
+    const rTitle=el('div','rule-title');rTitle.textContent=title2;rb.appendChild(rTitle);
+    const rDesc=el('div','rule-desc');rDesc.textContent=desc;rb.appendChild(rDesc);
+    rule.appendChild(rb);rulesCard.appendChild(rule);
+  });app.appendChild(rulesCard);
+}
+
+function mkSaveNote(){const n=el('p','save-note no-print');n.textContent='✓  Progress saved automatically';return n;}
+render();
+</script>
+</body>
+</html>

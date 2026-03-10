@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE — Potty Training Course
+     Gated: Supabase auth required
+     Stack: Vanilla HTML/CSS/JS · Zero dependencies · No build
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>Potty Training Course · FamilyForce</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#6E4ED6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const _sb = supabase.createClient(
+    'https://ewjqbafaxeasyvknxmof.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+  );
+  const _preview = new URLSearchParams(location.search).get('preview') === '1';
+  if (_preview) { document.documentElement.classList.add('authed'); }
+  else { _sb.auth.getSession().then(({ data }) => { if (!data.session) window.location.href = 'sign-in.html?next=course-potty.html'; else document.documentElement.classList.add('authed'); }); }
+</script>
+<style>
+:root {
+  --sans:'Outfit',system-ui,sans-serif; --serif:'Instrument Serif',Georgia,serif;
+  --terra:#6E4ED6; --terra-dark:#5B3CC4; --terra-light:#9B80FF;
+  --terra-tint:#EDE9FB; --terra-tint2:#F5F3FF;
+  --bg:#F8F7FF; --surface:#FFFFFF; --elevated:#F3F0FF;
+  --text:#0D0820; --text-mid:#4A4560; --text-dim:#8B85A8;
+  --border:rgba(110,78,214,.12); --border-light:rgba(110,78,214,.07);
+  --correct:#22c55e; --correct-bg:#F0FDF4; --correct-border:#86efac;
+  --wrong:#ef4444; --wrong-bg:#FEF2F2; --wrong-border:#fca5a5;
+  --radius-pill:100px; --radius-card:20px; --radius-sm:12px;
+  --shadow-card:0 2px 16px rgba(110,78,214,.08); --ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;}
+html:not(.authed) body>*{visibility:hidden;}
+html:not(.authed) .auth-loading{visibility:visible;}
+.auth-loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);font-size:14px;color:var(--text-dim);}
+html.authed .auth-loading{display:none;}
+.course-header{position:sticky;top:0;z-index:100;background:rgba(248,247,255,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-light);height:60px;display:flex;align-items:center;}
+.header-inner{width:min(760px,100% - 40px);margin-inline:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.header-logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px;color:var(--text);text-decoration:none;flex-shrink:0;}
+.logo-mark{width:28px;height:28px;border-radius:8px;background:var(--terra);color:white;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;}
+.header-back{font-size:13px;font-weight:600;color:var(--text-mid);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .15s;flex-shrink:0;}
+.header-back:hover{color:var(--terra);}
+.header-course-name{font-size:13px;font-weight:600;color:var(--text-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;text-align:center;}
+@media(max-width:480px){.header-course-name{display:none;}}
+.main{width:min(680px,100% - 40px);margin-inline:auto;padding:32px 0 80px;}
+.progress-section{margin-bottom:28px;}
+.progress-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.progress-label{font-size:12px;font-weight:600;color:var(--text-dim);}
+.progress-pct{font-size:12px;font-weight:700;color:var(--terra);}
+.progress-bar-wrap{height:5px;background:var(--terra-tint);border-radius:99px;overflow:hidden;margin-bottom:14px;}
+.progress-bar-fill{height:100%;background:var(--terra);border-radius:99px;transition:width .5s var(--ease);}
+.roadmap{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
+.roadmap::-webkit-scrollbar{display:none;}
+.roadmap-ch{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;width:60px;opacity:.35;transition:opacity .2s;}
+.roadmap-ch.done,.roadmap-ch.current{opacity:1;}
+.roadmap-icon{width:34px;height:34px;border-radius:50%;background:var(--terra-tint);display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid transparent;position:relative;transition:all .2s;flex-shrink:0;}
+.roadmap-ch.done .roadmap-icon{background:var(--correct-bg);border-color:var(--correct);}
+.roadmap-ch.done .roadmap-icon::after{content:'✓';position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;background:var(--correct);color:white;border-radius:50%;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;}
+.roadmap-ch.current .roadmap-icon{background:var(--terra-tint);border-color:var(--terra);box-shadow:0 0 0 3px rgba(110,78,214,.15);}
+.roadmap-label{font-size:9px;font-weight:600;color:var(--text-dim);text-align:center;line-height:1.3;max-width:60px;}
+.roadmap-ch.current .roadmap-label{color:var(--terra);font-weight:700;}
+.roadmap-ch.done .roadmap-label{color:var(--text-mid);}
+.card{background:var(--surface);border-radius:var(--radius-card);padding:32px;box-shadow:var(--shadow-card);border:1px solid var(--border-light);margin-bottom:16px;}
+.card-sm{padding:24px;}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;}
+h1{font-family:var(--serif);font-size:clamp(28px,5vw,36px);line-height:1.15;color:var(--text);font-weight:400;}
+h2{font-family:var(--serif);font-size:clamp(22px,4vw,28px);line-height:1.2;color:var(--text);font-weight:400;margin-bottom:6px;}
+h3{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
+p{font-size:15px;line-height:1.75;color:var(--text-mid);}
+p+p{margin-top:12px;}
+.divider{height:1px;background:var(--border-light);margin:24px 0;}
+.welcome-badge{width:72px;height:72px;border-radius:20px;background:var(--terra-tint);margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.stat-row{display:flex;gap:10px;margin:24px 0;}
+.stat-box{flex:1;background:var(--terra-tint2);border-radius:var(--radius-sm);padding:16px 10px;text-align:center;border:1px solid var(--border-light);}
+.stat-num{font-size:22px;font-weight:800;color:var(--terra);}
+.stat-lbl{font-size:11px;color:var(--text-dim);margin-top:3px;font-weight:600;}
+.how-step{display:flex;gap:14px;align-items:flex-start;padding:12px 0;}
+.how-step+.how-step{border-top:1px solid var(--border-light);}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--terra);color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.step-text{font-size:15px;color:var(--text-mid);line-height:1.55;}
+.step-text strong{color:var(--text);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--sans);font-weight:700;font-size:15px;border:none;border-radius:var(--radius-pill);padding:14px 28px;cursor:pointer;width:100%;transition:background .2s,transform .15s,opacity .15s;text-decoration:none;}
+.btn-primary{background:var(--terra);color:white;}
+@media(hover:hover){.btn-primary:hover{background:var(--terra-dark);transform:translateY(-1px);}}
+.btn-secondary{background:transparent;color:var(--terra-dark);border:1.5px solid var(--terra);}
+@media(hover:hover){.btn-secondary:hover{background:var(--terra-tint);}}
+.btn-ghost{background:var(--terra-tint);color:var(--terra-dark);}
+@media(hover:hover){.btn-ghost:hover{background:var(--elevated);}}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+.btn+.btn{margin-top:10px;}
+.btn-sm{font-size:13px;padding:10px 20px;width:auto;}
+.btn-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.story-block{border-left:3px solid rgba(110,78,214,.3);padding:18px 22px;margin:22px 0;background:rgba(248,247,255,.7);border-radius:0 12px 12px 0;}
+.story-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-light);margin-bottom:10px;}
+.story-block p{font-style:italic;color:var(--text);font-size:15px;line-height:1.8;}
+.story-block p+p{margin-top:12px;}
+.science-block{background:var(--terra-tint);border-radius:var(--radius-sm);padding:18px 20px;margin:18px 0;}
+.science-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;}
+.science-block p{color:var(--text);font-style:normal;}
+.takeaway{background:var(--terra);color:white;border-radius:var(--radius-sm);padding:16px 20px;margin:18px 0;font-size:14px;font-weight:600;line-height:1.6;}
+.takeaway-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.65;margin-bottom:5px;}
+.question-card{background:var(--surface);border-radius:var(--radius-card);border-top:3px solid var(--terra);padding:28px;box-shadow:var(--shadow-card);border-left:1px solid var(--border-light);border-right:1px solid var(--border-light);border-bottom:1px solid var(--border-light);margin-bottom:16px;}
+.q-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:12px;}
+.q-text{font-size:16px;font-weight:600;line-height:1.55;color:var(--text);margin-bottom:4px;}
+.options{display:flex;flex-direction:column;gap:10px;margin:20px 0;}
+.option{border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;cursor:pointer;font-size:14px;line-height:1.5;color:var(--text);background:var(--surface);text-align:left;transition:border-color .15s,background .15s;font-family:var(--sans);width:100%;}
+@media(hover:hover){.option:hover:not(:disabled){border-color:var(--terra-light);background:var(--terra-tint);}}
+.option.selected{border-color:var(--terra);background:var(--terra-tint);color:var(--terra-dark);font-weight:600;}
+.option.correct{border-color:var(--correct);background:var(--correct-bg);color:#15803d;font-weight:600;}
+.option.wrong{border-color:var(--wrong);background:var(--wrong-bg);color:#b91c1c;}
+.option:disabled{cursor:default;}
+.feedback{border-radius:var(--radius-sm);padding:16px 18px;font-size:14px;line-height:1.7;margin-top:4px;}
+.feedback-correct{background:var(--correct-bg);border:1px solid var(--correct-border);color:#166534;}
+.feedback-wrong{background:var(--wrong-bg);border:1px solid var(--wrong-border);color:#991b1b;}
+.feedback-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.try-this{border:2px solid var(--correct);border-radius:var(--radius-sm);padding:16px 18px;margin-top:14px;background:var(--correct-bg);}
+.try-this-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16a34a;margin-bottom:6px;}
+.try-this-text{font-size:14px;line-height:1.65;color:#166534;font-weight:500;}
+.cert-outer{background:white;border:2px solid var(--terra);border-radius:20px;padding:clamp(28px,6vw,48px) clamp(24px,6vw,48px);text-align:center;position:relative;overflow:hidden;}
+.cert-outer::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(110,78,214,.05) 0%,transparent 60%);pointer-events:none;}
+.cert-seal{width:80px;height:80px;border-radius:50%;background:var(--terra);margin:0 auto 18px;display:flex;align-items:center;justify-content:center;font-size:36px;color:white;box-shadow:0 6px 24px rgba(110,78,214,.3);}
+.cert-pretitle{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.cert-title{font-family:var(--serif);font-size:clamp(22px,4vw,30px);color:var(--text);margin-bottom:20px;line-height:1.2;}
+.cert-name-wrap{margin:16px auto;max-width:380px;}
+.cert-name-label{font-size:12px;color:var(--text-dim);margin-bottom:6px;font-weight:600;}
+.cert-name-input{border:none;border-bottom:2px solid var(--terra);background:transparent;font-family:var(--serif);font-size:24px;color:var(--terra-dark);font-style:italic;text-align:center;width:100%;padding:6px 0;outline:none;}
+.cert-name-input::placeholder{color:var(--terra-tint);font-style:italic;}
+.cert-rule{width:80px;height:2px;background:var(--terra-tint);margin:22px auto;border-radius:99px;}
+.cert-body{font-size:14px;color:var(--text-mid);line-height:1.7;max-width:420px;margin-inline:auto;}
+.cert-sig-row{display:flex;justify-content:center;margin-top:32px;}
+.cert-sig{text-align:center;}
+.cert-sig-line{width:130px;height:1px;background:var(--border);margin:0 auto 8px;}
+.cert-sig-name{font-size:15px;font-weight:700;color:var(--text);}
+.cert-sig-role{font-size:12px;color:var(--text-dim);margin-top:2px;}
+.cert-date{font-size:12px;color:var(--text-dim);margin-top:22px;}
+.action-list{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+.action-item{display:flex;align-items:flex-start;gap:12px;background:var(--correct-bg);border:1px solid var(--correct-border);border-radius:var(--radius-sm);padding:12px 14px;}
+.action-num{width:24px;height:24px;border-radius:50%;background:var(--correct);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.action-body{font-size:14px;line-height:1.55;color:#166534;}
+.action-chapter{font-size:11px;font-weight:700;color:#16a34a;margin-bottom:2px;}
+.rule-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;}
+.rule-item+.rule-item{border-top:1px solid var(--border-light);}
+.rule-icon{font-size:22px;flex-shrink:0;line-height:1.4;}
+.rule-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.rule-desc{font-size:14px;color:var(--text-mid);line-height:1.55;}
+.save-note{font-size:12px;color:var(--text-dim);text-align:center;padding-top:4px;}
+.fade-in{animation:fadeIn .3s var(--ease);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:768px){.roadmap{padding:2px 2px 6px;scroll-padding-inline:12px;gap:8px;}.roadmap-icon{width:38px;height:38px;font-size:17px;}.roadmap-ch{width:64px;}}
+@media(max-width:480px){
+  .main{width:calc(100% - 32px);padding-top:24px;padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));}
+  .card{padding:20px;border-radius:16px;}.card-sm{padding:16px;border-radius:16px;}.question-card{padding:20px;border-radius:16px;}
+  .progress-section{margin-bottom:20px;}.welcome-badge{width:60px;height:60px;font-size:28px;border-radius:16px;margin-bottom:16px;}
+  .stat-box{padding:12px 8px;}.stat-num{font-size:19px;}.stat-lbl{font-size:10px;}.divider{margin:18px 0;}.step-text{font-size:14px;}
+  .story-block{padding:14px 16px;margin:18px 0;}.story-block p{font-size:14px;}.science-block{padding:14px 16px;}.science-block p{font-size:14px;}
+  .takeaway{padding:14px 16px;font-size:13px;}.q-text{font-size:15px;}.options{gap:8px;margin:16px 0;}.option{padding:12px 14px;}
+  .feedback{padding:14px 16px;font-size:14px;}.feedback-title{font-size:14px;}.try-this{padding:14px 16px;}.try-this-text{font-size:13px;}
+  .btn-row{flex-direction:column;gap:8px;}.btn-row .btn{width:100%;}.btn-sm{font-size:14px;padding:12px 20px;}
+  .cert-name-input{font-size:20px;}.cert-body{font-size:13px;}.action-item{padding:10px 12px;}.action-body{font-size:13px;}
+}
+@media(max-width:360px){
+  .main{width:calc(100% - 24px);}.card{padding:16px;}.question-card{padding:16px;}
+  .stat-row{flex-wrap:wrap;}.stat-box{flex:1 1 calc(50% - 6px);}.stat-box:last-child{flex:1 1 100%;padding:10px;}.stat-num{font-size:18px;}
+  .roadmap-ch{width:52px;}.roadmap-icon{width:32px;height:32px;font-size:14px;}.cert-name-input{font-size:18px;}
+}
+@media print{
+  .no-print{display:none!important;}.course-header{display:none!important;}
+  body{background:white;}.main{width:100%;padding:0;}
+  .cert-outer::before{display:none!important;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .cert-outer{border:2px solid #5B3CC4;box-shadow:none;padding:40px;}
+  .cert-seal{background:#6E4ED6!important;color:white!important;box-shadow:none;}
+  .cert-name-input{border:none!important;border-bottom:2px solid #5B3CC4!important;font-size:22px!important;color:#5B3CC4!important;}
+  .card{box-shadow:none;border:none;}
+}
+</style>
+</head>
+<body>
+<div class="auth-loading">Signing you in…</div>
+<div id="preview-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#f59e0b;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-align:center;padding:8px;">
+  ⚠️ PREVIEW MODE — Remove <code style="background:rgba(0,0,0,.2);padding:2px 6px;border-radius:4px;">?preview=1</code> before deploying
+</div>
+<script>if(new URLSearchParams(location.search).get('preview')==='1'){document.getElementById('preview-banner').style.display='block';}</script>
+<header class="course-header no-print">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo"><div class="logo-mark">F</div>FamilyForce</a>
+    <span class="header-course-name">Potty Training Course</span>
+    <a href="dashboard.html" class="header-back">← Dashboard</a>
+  </div>
+</header>
+<main class="main" id="app"></main>
+<script>
+// ═══════════════════════════════════════════════════════════
+// COURSE DATA — 12 chapters (11 + bonus)
+// ═══════════════════════════════════════════════════════════
+const CHAPTERS = [
+  {
+    id:'two_sons', short:"Two\nSons", title:"Two Sons", chapter:"Chapter 1", icon:"👦",
+    story:{paragraphs:[
+      "My First Son is energetic, funny, and completely potty trained. Getting there was one of the hardest things we did as parents. Looking back, most of the hard parts were unnecessary.",
+      "My Second Son trained faster, smoother, and with less stress on everyone in the house. He is also energetic, also funny, roughly the same kid temperamentally. The difference between those two experiences was not luck. It was not parenting talent. It was not which child was more cooperative. The difference was that by the time Second Son arrived, I had read every peer-reviewed study, clinical guideline, and parenting book I could find.",
+      "First Son took fourteen months. Second Son took eight. Same house. Same parents. Same love and effort. The only thing that changed was the information I walked in with."
+    ]},
+    science:"There is more rigorous research on potty training than most parents ever see. The American Academy of Pediatrics has formal guidelines. The Agency for Healthcare Research and Quality conducted a full systematic review of all toilet training evidence. Multiple prospective studies in Pediatrics track outcomes based on when training starts, what methods are used, and how caregivers respond to setbacks. None of that research is hard to find — it is just hard to find translated into something a parent can use at 7pm when everything is falling apart. This course is that translation. Parental stress during potty training is well documented and circular: parents who are stressed have children who have more accidents, and children who have more accidents produce more parental stress. The single most useful thing you can do for your child's progress is manage your own emotional state. Not perform calm. Just find somewhere to put the frustration that isn't your child's face.",
+    takeaway:"The difference between a hard potty training experience and a manageable one is rarely the child. It is almost always the information the parent had going in.",
+    question:{
+      text:"A parent is starting potty training with their toddler and feels mostly confident they can figure it out on the fly. Based on the research, what is the strongest predictor of how long training takes?",
+      options:[
+        {text:"The child's personality and temperament — cooperative kids train faster regardless of parental approach",correct:false},
+        {text:"The information and preparation the parent has before starting — method, timing, and consistency matter more than child factors",correct:true},
+        {text:"Whether the parent uses rewards — sticker charts are the single highest-leverage tool",correct:false},
+        {text:"Birth order — second and later children watch siblings and train faster regardless of approach",correct:false}
+      ],
+      explanation:"The research is consistent: parental factors — timing, method, consistency, emotional state, and preparation — are more predictive of training duration and ease than child temperament. The AHRQ systematic review found that mixed signals between caregivers and inconsistent method application extend training significantly, while children trained with consistent, informed approaches complete training faster. The child's job is to learn. The parent's job is to give them reliable conditions to learn in."
+    },
+    tryThis:"Before you start training, read every chapter of this course. Not skimming — reading. The most common training mistakes happen because parents start before they understand the full picture. The time you invest here comes back to you in weeks saved."
+  },
+  {
+    id:'ready', short:"Is She\nReady?", title:"Is Your Child Ready?", chapter:"Chapter 2", icon:"✅",
+    story:{paragraphs:[
+      "First Son was 19 months old when my wife pointed at him squatting in the corner of the living room and said: 'He knows.' She was right — he had that look of total concentration. I thought: this is it. He's ready. We started training that week.",
+      "Fourteen months later, he was done. For over a year, we dealt with inconsistency, confusion, and a level of frustration I now know was almost entirely caused by one mistake: I started too early.",
+      "With Second Son, I waited until 29 months. I ran through a readiness checklist. He checked 12 of 14 signs. I cleared the calendar and started on a Monday. He was trained in eight months. Same house. Same parents. Ten months of difference — just from the starting point."
+    ]},
+    science:"The single most important decision in potty training isn't which method you use. It's when you start. A 2003 study in Pediatrics (Blum, Taubman, and Nemeth) followed children based on when parents initiated training. Children who started before 27 months took significantly longer to complete — often over a year. Those who started between 27 and 32 months typically finished in under 10 months. The reason is neurological: voluntary sphincter control develops between 24 and 30 months. Before that, a child can feel the urge but cannot reliably act on it in time. No method, no sticker chart, and no amount of patience overrides that timeline. Readiness signs to check: stays dry 90+ minutes; shows awareness of going (pauses, hides, goes still); can pull pants up and down; follows two-step instructions; uses words for needs; bothered by wet or soiled diaper; can walk to potty and sit independently; has bowel movements on some schedule; can sit still for 2+ minutes. Girls typically reach readiness 2–3 months before boys — this is developmental biology, not cooperation.",
+    takeaway:"Starting at the right time is the single highest-leverage decision in potty training. Get the window right and everything else gets easier. Get it wrong and no method in the world makes up for it.",
+    question:{
+      text:"A parent's 20-month-old hides behind the couch and goes quiet every time he has a bowel movement. The parent takes this as a clear readiness sign and starts training. Based on the Blum 2003 study, what is the most likely outcome?",
+      options:[
+        {text:"Training should go well — awareness of going is the primary readiness sign",correct:false},
+        {text:"Training will likely take significantly longer — awareness of going is not the same as voluntary sphincter control, which typically develops between 24 and 30 months",correct:true},
+        {text:"The outcome depends on the method used — intensive training can compensate for early starts",correct:false},
+        {text:"This is borderline — the outcome could go either way depending on the child",correct:false}
+      ],
+      explanation:"Awareness of going — the pause, the hide, the concentration — is a sign the child's sensory awareness is developing. It is not the same as voluntary sphincter control. A child who knows something is happening cannot necessarily stop, walk to a potty, and get there in time. The 2003 Blum study specifically found that children starting before 27 months took significantly longer regardless of awareness or enthusiasm. Starting at 20 months, even with clear awareness signs, puts training before the neurological window that makes it efficient."
+    },
+    tryThis:"Run the readiness checklist right now. Check every item honestly. If your child scores 10 or more, you're likely in the window. Fewer than 8 — wait 4 to 6 weeks and check again. If you've already started early and it's taking forever: that's information, not failure. Keep going. The finish line is still coming."
+  },
+  {
+    id:'prepare', short:"Before\nYou Start", title:"Before You Start", chapter:"Chapter 3", icon:"📋",
+    story:{paragraphs:[
+      "The week I started training First Son, three things happened that had no business happening during potty training week. My mother-in-law arrived for a five-day visit. My son picked up a runny nose from daycare. And we had a birthday party on Saturday requiring a two-hour car ride each way. I trained anyway.",
+      "Life got in the way. First Son was confused, overtired, off his routine, surrounded by new energy. Every signal I tried to read was noise. By Thursday I didn't know if we were making progress or going backwards.",
+      "With Second Son, I spent two weeks preparing. Equipment was ready. Every caregiver — including daycare — knew the plan and agreed to follow it. I picked a stretch of five days with nothing on the calendar. No visitors. No travel. No disruptions. The preparation took two weeks and saved two months."
+    ]},
+    science:"The Agency for Healthcare Research and Quality systematic review identified consistency as one of the strongest predictors of training success — more so than the specific method used. Mixed signals between caregivers significantly extended training time regardless of approach. Preparation covers three areas. Equipment: choose between a standalone potty chair (lower, feet can plant — helps with bowel movements) or a toilet insert with step stool (skips later transition). Either works; the failure mode is no plan on day one. Caregivers: every adult in your child's life needs to use the same language, the same prompting schedule, and the same response to accidents. If one caregiver says 'do you need to go?' while another says 'let's sit on the potty,' the child gets two different signals. Share your plan in writing, not just verbally. Timing: avoid starting during or immediately after a new sibling, a house move, a daycare change, a major illness, or any significant family disruption. The child needs stability while building a new skill.",
+    takeaway:"Two weeks of setup before day one will save you two months of confusion after it. Preparation is not optional — it is the method.",
+    question:{
+      text:"A parent verbally tells their daycare that they're starting potty training at home and asks them to 'follow along.' The daycare keeps using pull-ups because that's their default. What does the research predict about training duration?",
+      options:[
+        {text:"Home training will still progress normally — children learn to code-switch between environments quickly",correct:false},
+        {text:"Training will take significantly longer — inconsistency between home and daycare is one of the strongest predictors of extended training time",correct:true},
+        {text:"The daycare environment is less important than home consistency — focus on home first",correct:false},
+        {text:"This is fine for the first two weeks; full daycare alignment matters more in weeks 3-4",correct:false}
+      ],
+      explanation:"The AHRQ systematic review was explicit: caregiver inconsistency extends training time more than almost any other variable. A child who wears underwear at home and pull-ups at daycare receives a clear signal — pull-ups are available when the situation is inconvenient. That undermines the home training directly. The fix is a written plan handed to daycare before training begins, not a verbal mention after. Most daycares will cooperate when given a clear, simple written protocol. Verbal requests often get lost in the day-to-day."
+    },
+    tryThis:"This week: buy the equipment (potty chair or insert + step stool + 10+ pairs of underwear), write a one-page caregiver plan (words you use, prompting schedule, what you say at accidents), pick your start-date window on the calendar, and hand the written plan to every caregiver — including daycare — before day one."
+  },
+  {
+    id:'method', short:"The\nMethod", title:"The Method", chapter:"Chapter 4", icon:"🎯",
+    story:{paragraphs:[
+      "With First Son, I didn't really have a method. I had a vague plan to put him on the potty sometimes, keep diapers available just in case, and hope it resolved itself. He spent weeks in an in-between state: sometimes the potty, sometimes a diaper, always confused about which was expected. I kept diapers for outings because public accidents made me nervous. I asked him constantly if he needed to go. He said no every time and had an accident ten minutes later.",
+      "I thought the problem was him. It wasn't. The problem was that I had given him no clear signal about what was expected.",
+      "With Second Son, I followed the intensive method from day one. No diapers except sleep. No asking if he needed to go. Naked from the waist down for the first two days, then pants with no underwear, then underwear. I watched his cues and brought him to the potty on a schedule. Within a week, the pattern was set. The uncertainty was gone."
+    ]},
+    science:"The intensive method was developed by Azrin and Foxx (1974) and documented in a 1976 Butler study showing 90%+ success rates in structured clinical settings. Real-world results are lower but the behavioral foundation is the strongest in the literature. Four stages in order: (1) Naked from the waist down — no clothing means immediate sensation feedback; the body learns the signal without the buffer of clothing. (2) Commando (pants, no underwear) — adds clothing complexity while maintaining physical feedback. (3) Underwear — full clothing; the skill is essentially established. Don't rush to this after one good day. (4) Outside the home — consolidates across all environments (see Chapter 8). Two rules that apply throughout every stage: First, don't ask — tell. 'Do you need to go?' gives a toddler an easy no. Say 'Let's go sit on the potty' instead. Not a question — what happens now. Second, prompt on a schedule. Take your child to the potty every 90 minutes regardless of whether they signal. In early stages, they cannot reliably read their own urgency in time. The schedule does what their body hasn't learned to do yet.",
+    takeaway:"A clear method applied consistently beats any amount of patient hoping. Every time you reach for the diaper during training hours, you're not being kind — you're changing the rules.",
+    question:{
+      text:"A parent asks their 28-month-old 'Do you need to go potty?' approximately every 30 minutes. The child says 'no' most of the time and then has accidents. What does the research suggest is happening?",
+      options:[
+        {text:"The child is being defiant — a reward for using the potty should be introduced",correct:false},
+        {text:"'Do you need to go?' invites a no — replacing it with 'Let's go sit on the potty' (a statement, not a question) and using a timed schedule eliminates this pattern",correct:true},
+        {text:"30-minute intervals are too frequent — extend to 60 minutes to give the child more autonomy",correct:false},
+        {text:"The child isn't ready yet — the consistent 'no' response is a readiness signal",correct:false}
+      ],
+      explanation:"A toddler's default answer to 'Do you need to go?' is almost always 'no' — because they genuinely cannot reliably read their own urgency yet, because 'no' is the easiest answer, and because going to the potty interrupts something more interesting. The language shift to 'Let's go sit on the potty' removes the negotiation entirely. It isn't a question — it is what happens now. Paired with a 90-minute timer (not the child's request), this removes the two biggest variables: the child's self-reporting and the parent's judgment about timing."
+    },
+    tryThis:"Starting today — even before training begins — replace every 'Do you need to go?' with 'Let's go sit on the potty.' Practice the new phrase now so it comes naturally on day one. Set a 90-minute timer on your phone and label it 'potty time — go now.' Run it for one day before training even starts to build the habit."
+  },
+  {
+    id:'three_days', short:"First\nThree Days", title:"The First Three Days", chapter:"Chapter 5", icon:"📅",
+    story:{paragraphs:[
+      "Day two with First Son, I cracked. Day one had been reasonable — a few successes, several accidents, but the pattern felt like it was emerging. Then day two: seven accidents before noon. He was frustrated. I was frustrated. I told myself we needed a reset and put him back in a diaper for the afternoon.",
+      "That was the moment the whole thing fell apart. The diaper said: the rules have conditions. When things get hard, the old way comes back. First Son learned that lesson clearly. We spent the next several months unlearning it.",
+      "With Second Son, day two was also hard. Accidents. Resistance at one point. I stayed calm, kept the timer running, and did not reach for the diapers. By day three something had shifted. The accidents were fewer. He was starting to move toward the potty on his own. The first three days are where most parents quit. They are also where the whole thing is decided."
+    ]},
+    science:"Studies on the intensive method show consistently that the first three days are simultaneously the highest-accident period and the highest-learning period. The method's track record rests on one thing above all: commitment through this window. Children pulled back to diapers mid-process do not resume where they left off — they learn the transition is reversible, which adds weeks to overall training time. The emotional arc is predictable: Day 1 — novelty and parental attention produce early successes; accidents happen but there is momentum. Day 2 — novelty has worn off, child is tired of the process, accidents often spike; this is the day most parents lose faith and also the day where holding the line matters most. Day 3 — a visible shift; the child begins anticipating the potty rather than reacting to it. Parental emotional state directly influences child behavior: parents who remain calm and neutral during accidents have children who recover faster and have fewer subsequent accidents. This isn't about performing calm — it's about not letting frustration become the child's stress.",
+    takeaway:"Don't mistake day two difficulty for failure. It is the process. The first three days are the hardest and the most important. Hold the line.",
+    question:{
+      text:"On day two, a parent has had 8 accidents before noon and puts the child back in a diaper 'just for the afternoon to reset.' What does the research say about the effect of this decision?",
+      options:[
+        {text:"A short reset can be helpful — a few hours in a diaper won't affect overall progress",correct:false},
+        {text:"The diaper teaches that the rules have conditions — the transition is reversible under pressure — which reliably adds weeks to total training time",correct:true},
+        {text:"This depends on whether it was communicated as temporary; a clear explanation preserves progress",correct:false},
+        {text:"A mid-day diaper is fine as long as training resumes by the next morning",correct:false}
+      ],
+      explanation:"The intensive method's behavioral mechanism depends on removing the diaper as an option during waking hours — fully, not conditionally. A diaper introduced on day two communicates a clear rule to the child: when enough accidents happen, the old system returns. That is the lesson they learn, and it directly undermines every future attempt to hold the standard. Day two's difficulty is not a sign training isn't working. It is the documented low point of the process. The right response is not a reset — it is to note what time accidents clustered, adjust prompting intervals, and hold through to day three."
+    },
+    tryThis:"Write 'Day 2 is supposed to be hard' on a Post-it note and put it somewhere you'll see it on day two. Plan your own schedule for days 1–3 as carefully as your child's: no other major obligations, easy food ready, a plan for your own emotional reset when needed. You cannot stay calm if you are also managing three other urgent things."
+  },
+  {
+    id:'poop', short:"The\nPoop Chapter", title:"The Poop Chapter", chapter:"Chapter 6", icon:"💩",
+    story:{paragraphs:[
+      "First Son was pee-trained within two weeks. Then came the standoff. For 19 days, he refused to poop on the potty. He would sit there, cooperate with the routine, and then nothing. Twenty minutes later — a corner of the living room.",
+      "I pushed. I bribed. I reasoned with a two-year-old about the logic of using the toilet. None of it worked, and some of it made things worse. Eventually it resolved — not because of anything I did, but because he was ready and I finally stopped making it a battle.",
+      "With Second Son, when I saw the first signs of poop resistance, I immediately removed all pressure. I let him ask for a diaper if he needed one. I said nothing about it. Made no faces. Four days later he pooped on the potty on his own. 19 days versus 4. The difference was entirely in how I responded."
+    ]},
+    science:"Stool toileting refusal — the clinical term — occurs in approximately 20% of children during training. One in five. It is not a failing parent or a problem child. It is a predictable developmental event. The cause is usually two things: the bowel has always been the child's private domain (the diaper was safe, familiar, personal — removing it creates resistance), and any constipation or discomfort previously associated with defecation creates a fear-withholding cycle. The clinical guidance across every major pediatric body is consistent: remove all pressure from bowel training; maintain pee training; allow the child to use a diaper for bowel movements temporarily if needed. A 2003 study by Taubman, Blum, and Nemeth found that positive parental language shortened duration; negative language or frustration made it last longer. Watch for constipation: hard, infrequent, or painful stools need addressing first. Polyethylene glycol (MiraLax and generics) is tasteless, mixes into any liquid, and has a strong pediatric safety record — confirm dosing with your pediatrician. If constipation is present, it must be resolved before training can progress.",
+    takeaway:"Poop takes longer than pee. This is normal. The only thing that reliably makes it take longer is pressure. Remove the pressure and most cases resolve on their own.",
+    question:{
+      text:"A parent's toddler is successfully using the potty for pee but refuses to poop anywhere except in a pull-up they ask for specifically. The parent is 3 weeks in and feels like giving the pull-up is a step backward. What does the research say?",
+      options:[
+        {text:"The pull-up is a step backward — holding the standard on poop at this stage is important for overall progress",correct:false},
+        {text:"Giving the pull-up for poop while maintaining pee training is the evidence-based approach — it removes the fear and resistance without derailing pee progress",correct:true},
+        {text:"The pull-up should be given but only in the bathroom — this preserves the location association",correct:false},
+        {text:"Three weeks without poop on the potty is a clinical concern that needs pediatrician evaluation",correct:false}
+      ],
+      explanation:"Pee and poop are different training tasks with different timelines. The clinical guidance is explicit: temporarily allowing a pull-up for bowel movements removes the fear and resistance that cause withholding. Withholding leads to constipation. Constipation makes withholding more likely. That cycle can lead to encopresis — involuntary leakage from chronic impaction — which affects 1–4% of school-age children and is almost entirely preventable. Giving the pull-up for poop without comment is the correct response, not a defeat. Most stool toileting refusal resolves within 4–8 weeks when pressure is removed."
+    },
+    tryThis:"If your child is showing poop resistance: stop commenting on it entirely, give the diaper if they ask without any visible reaction, and check for constipation (hard stools, fewer than 3 times per week, straining, or hiding). If constipation is present, talk to your pediatrician about polyethylene glycol before resuming pressure on poop timing."
+  },
+  {
+    id:'regression', short:"When It\nFalls Apart", title:"When It Falls Apart", chapter:"Chapter 7", icon:"📉",
+    story:{paragraphs:[
+      "First Son was trained at 33 months. Solid, consistent — we were done. Then his baby brother arrived. Within a week, First Son had regressed completely. Accidents every day. Asking for diapers.",
+      "I was exhausted with a newborn and had no patience for it. I pushed. I expressed frustration. I told him he was a big boy now and big boys don't do this. He regressed further. It took six weeks to get back to where we were.",
+      "When Second Son had his own regression — triggered by a new daycare — I handled it differently. I acknowledged the change, stayed neutral about accidents, went back to more frequent prompting, and said nothing about the regression itself. Two weeks later it was over. Same length of disruption. My response determined how long the recovery took."
+    ]},
+    science:"Regression after successful training is common, normal, and well-documented. The AAP identifies the most frequent triggers: new sibling, house move, change in childcare, illness, and general family stress. Regression is not failed training — it is a child under stress reverting to an earlier, more familiar behavior. The two responses that extend regression: punishment and excessive emotional reaction from the parent. The two responses that shorten it: calm consistency and addressing the underlying stressor directly. Around age three, children develop the capacity for shame and may begin hiding accidents or denying they happened. This is actually a good sign — they know what they're supposed to do. Meet it with neutral acknowledgment: 'You had an accident. That's okay. Let's clean up.' One important distinction: if a child has been fully dry for six months or more and suddenly begins wetting again with no obvious cause, that is not behavioral regression. See your pediatrician — a sudden return after a long settled period could indicate a UTI or another medical issue.",
+    takeaway:"Regression is information, not failure. Something in your child's world has changed. Respond to the cause, not the behavior. Calm consistency plus addressing the stressor is the fastest path through.",
+    question:{
+      text:"A child who has been trained for 4 months starts having daily accidents after starting at a new daycare. A parent expresses frustration and reminds her she's 'too old for this.' Based on the research, what will this most likely do?",
+      options:[
+        {text:"Motivate the child — mild social pressure from a parent is effective for regression in older toddlers",correct:false},
+        {text:"Extend the regression — emotional reaction from a parent is one of the two documented responses that makes regression last longer",correct:true},
+        {text:"Have no significant effect — the trigger is environmental and parental response doesn't influence duration",correct:false},
+        {text:"Help in the short term but the regression will return without addressing the daycare environment",correct:false}
+      ],
+      explanation:"The research is specific on this: parental punishment and excessive emotional reaction (frustration, disappointment, sighing) are the two factors most consistently associated with longer regression duration. The child in regression is already stressed — the parental reaction adds to the stress, which prolongs the behavior it's meant to stop. The correct response is calm acknowledgment ('you had an accident, let's clean up'), quiet return to basics (more prompts, easier clothing), and direct acknowledgment of the stressor: 'It must be a big adjustment at the new school.' Children don't need solutions to their stressors. They need to feel seen."
+    },
+    tryThis:"When regression hits, do two things before responding to the accidents: (1) Name the likely trigger out loud with your child — 'It's been a big change having a new school, hasn't it?' (2) Return quietly to more frequent prompting, no drama, no announcement that you're 'going back to basics.' Neutral, consistent, and warm. Give it two weeks."
+  },
+  {
+    id:'outside', short:"Leaving\nthe House", title:"Leaving the House", chapter:"Chapter 8", icon:"🚗",
+    story:{paragraphs:[
+      "I kept First Son in diapers for all outings for the first six weeks of training. I told myself it was practical. What I was actually doing was avoiding the anxiety of a public accident. The result: First Son learned the rules had an exception. Out of the house, normal rules did not apply. It took months to undo that lesson.",
+      "With Second Son, we left the house diaper-free on day four. I packed a change of clothes, brought a portable travel potty, found the bathroom immediately upon arriving anywhere, and took him before we started anything. We had one accident in a parking lot. We cleaned it up. He found it more funny than distressing.",
+      "Day four felt reckless. It wasn't. The research is consistent: waiting teaches avoidance. By week two, going out was as routine as staying in."
+    ]},
+    science:"A skill learned at home does not automatically transfer to new environments. Research on toilet training in multiple settings shows that children trained exclusively at home take significantly longer to achieve full, consistent dryness than those who practice in varied environments early in the process. Public restrooms present specific sensory challenges. The automatic flush sensor is the most common fear — the unexpected sound startles many toddlers and can put them off the toilet for weeks. Covering the sensor with a sticky note during your child's visit eliminates this almost entirely. Daycare inconsistency is one of the most reliable predictors of extended training time. If daycare continues using pull-ups after you have transitioned to underwear at home, the mixed message directly slows progress. Most daycares will follow a written training plan if provided one. Many will not unless you ask directly and hand them the plan.",
+    takeaway:"The real world is part of the training. A child who is dry only at home is not fully trained. Get out early — day four or five — and bring the skill with you.",
+    question:{
+      text:"A parent waits until week three to try an outing without a diaper. For the first two weeks, all outings used pull-ups 'to be safe.' What has the child likely learned?",
+      options:[
+        {text:"Nothing harmful — two weeks of home training first builds a stronger foundation for generalizing to public settings",correct:false},
+        {text:"That the rules have an exception — when out of the house, pull-ups are available; this lesson actively slows full training",correct:true},
+        {text:"That public restrooms are different — a brief orientation to public bathrooms in week 3 will correct this",correct:false},
+        {text:"This is a minor setback at most — children generalize quickly once public training begins",correct:false}
+      ],
+      explanation:"Every time a pull-up was used on an outing, the child received clear information: this environment has different rules. The home standard is not universal. That lesson is real and requires active relearning. Children don't generalize skills automatically — they learn them in context. Public restrooms, park bathrooms, and restaurant bathrooms are all different from the home bathroom. Each one needs to be practiced. Going out diaper-free on day 4 or 5 means the child learns from the start that the standard applies everywhere. Waiting two weeks means spending weeks 3–6 undoing the 'outings are different' rule."
+    },
+    tryThis:"On day 4 or 5 of training: go somewhere short — a 30-minute errand, a playground visit. Pack two full outfit changes, a portable travel potty, and wipes. Find the bathroom the moment you arrive and take your child through it before you need it. Cover the auto-flush sensor with a sticky note before they sit down."
+  },
+  {
+    id:'nighttime', short:"Nighttime", title:"Nighttime", chapter:"Chapter 9", icon:"🌙",
+    story:{paragraphs:[
+      "I put First Son in underwear at night at 34 months — he'd been daytime trained for a month and I assumed the hard part was over. He wet the bed every night for a week. I woke him at midnight to use the bathroom. I restricted fluids after 5pm. I got frustrated. None of it helped.",
+      "I was trying to train something that cannot be trained.",
+      "With Second Son, I waited. He stayed in pull-ups at night until he was consistently waking up dry — which happened around 38 months. I did nothing to accelerate it. I just watched for the pattern and acted when the pattern was there. Zero bed-wetting episodes after the transition. The difference was understanding what nighttime dryness actually is."
+    ]},
+    science:"Nighttime bladder control is neurological, not behavioral. It is driven by the development of vasopressin — an antidiuretic hormone that suppresses urine production during sleep. Until this hormone is functioning reliably overnight, the child's body produces urine the bladder cannot hold through a full sleep cycle. This cannot be accelerated by parental instruction, reward systems, or fluid restriction. The data on bedwetting is worth knowing before you start to worry: approximately 30% of children still wet the bed at age 4.5; 15–20% at age 5; 10% at age 7; 5% at age 10. All of these fall within the normal developmental range. Bedwetting is not considered a medical concern until age 7. When intervention is appropriate, the bedwetting alarm — a moisture sensor that wakes the child when wetting begins — has 50–80% success rates in randomized trials and produces more lasting results than desmopressin (synthetic vasopressin), which has higher relapse rates after stopping. Most doctors recommend the alarm first.",
+    takeaway:"Nighttime dryness is biological, not behavioral. You cannot train it. You can only recognize when it has arrived — 5 out of 7 dry mornings for 2–3 weeks — and remove the pull-up at that point.",
+    question:{
+      text:"A parent restricts their child's fluids after 5pm and wakes them at 11pm for a bathroom trip to prevent bed-wetting. Based on the research, are these effective strategies?",
+      options:[
+        {text:"Yes — fluid restriction reduces urine production overnight; midnight trips train the bladder to empty before deep sleep",correct:false},
+        {text:"No — nighttime dryness is controlled by vasopressin development, which cannot be influenced by these interventions; both disrupt sleep without addressing the mechanism",correct:true},
+        {text:"Fluid restriction helps; midnight trips do not — the timing of waking has to match the child's sleep cycle",correct:false},
+        {text:"Both help temporarily but create dependencies that need to be faded before full dryness is achieved",correct:false}
+      ],
+      explanation:"Vasopressin suppresses urine production during sleep — this is the biological mechanism nighttime dryness depends on. Fluid restriction doesn't change vasopressin production. Midnight trips don't train vasopressin. They disrupt sleep without addressing the underlying neurological development. Hydration matters for healthy bladder development and for sleep quality — restricting it specifically to reduce bed-wetting has no evidence base. Midnight lifts disrupt the sleep architecture needed for the hormone to work correctly. The evidence-based approach: keep the pull-up until consistently dry (5 of 7 mornings for 2–3 weeks). Then transition. Put a waterproof mattress cover on first."
+    },
+    tryThis:"Keep the pull-up at night. Stop restricting fluids in the evening. Stop midnight trips. Instead: check the pull-up every morning for 2–3 weeks and note whether it's wet or dry. When you hit 5 dry mornings out of 7 for 2 weeks in a row, that's your signal. Put a waterproof mattress cover on the bed first, then make the transition."
+  },
+  {
+    id:'boys_girls', short:"Boys\n& Girls", title:"Boys and Girls", chapter:"Chapter 10", icon:"💜",
+    story:{paragraphs:[
+      "My sister-in-law called me when her first daughter was 22 months old. She had started training two weeks earlier because someone told her girls were ready earlier than boys. Things were not going well.",
+      "I asked her a few questions. Same pattern: started too early, no clear method, asking instead of telling, diapers still available during outings. I walked her through the research. She adjusted her approach, waited two more months. Her daughter trained at 27 months in under nine months.",
+      "Her second daughter, trained from the start with the right timing and method, was done at 30 months in seven. Both faster than First Son. Both smoother than anything I managed the first time. The research explains exactly why."
+    ]},
+    science:"Research consistently shows that girls achieve potty training readiness approximately 2–3 months earlier than boys and complete training 2–3 months faster. A Schum et al. study in Pediatrics tracked 267 children and found girls reached daytime dryness at a median age of 32.5 months vs. 35 months for boys. Nighttime dryness followed the same pattern. The reasons are developmental — girls tend to develop language and fine motor skills earlier, both of which support training. There is no evidence they are more cooperative or motivated; they are simply developmentally ahead on the specific skills required. For boys specifically: the AAP recommends learning to sit for both urination and defecation during initial training. Standing to urinate is a secondary skill introduced after the child is reliably trained seated — starting with standing creates coordination challenges and unnecessary cleaning complications. For girls: wiping front to back is an essential hygiene habit to establish from day one. Back-to-front wiping introduces bacteria into the urethra, causing UTIs. If your daughter develops sudden urgency, burning, or frequent accidents after a period of good progress — consider a UTI before assuming regression. Treat it first.",
+    takeaway:"Boys and girls are on different timelines. That is not a problem to fix. It is a fact to plan around.",
+    question:{
+      text:"A parent's son is 34 months old and still in training. Their neighbor's daughter trained at 30 months. The parent is worried their son is behind. Based on the Schum et al. research, what is accurate?",
+      options:[
+        {text:"34 months is late for a boy — evaluation by a pediatrician is appropriate",correct:false},
+        {text:"34 months is within the normal range for boys — the median is 35 months; this child is actually slightly ahead",correct:true},
+        {text:"The comparison is valid — if a girl can train at 30 months, a boy who is 34 months is behind",correct:false},
+        {text:"The child's readiness signs matter more than age — at 34 months, readiness is the only relevant factor",correct:false}
+      ],
+      explanation:"The Schum et al. study found boys reach daytime dryness at a median of 35 months — meaning half of boys are still training at 35 months. A 34-month-old boy who is still in training is statistically ahead of the median. The comparison to a girl who trained at 30 months is meaningless — girls reach readiness 2–3 months earlier and complete training 2–3 months faster. The ranges are different by biology. 'Behind' has to be measured against the correct population baseline."
+    },
+    tryThis:"If you have a boy: practice sitting for all bathroom visits — introduce standing only after sitting is consistent and your son asks about it or shows interest. If you have a girl: teach front-to-back wiping from day one, same words every time. If you have both: don't compare their timelines. The faster child's progress says nothing about the other's capability."
+  },
+  {
+    id:'rewards', short:"Rewards\nSystem", title:"The Rewards System", chapter:"Chapter 11", icon:"⭐",
+    story:{paragraphs:[
+      "With First Son, I avoided rewards. I had read somewhere that external rewards undermined intrinsic motivation and I didn't want to raise a child who needed a sticker to do basic things. First Son had very little motivation to use the potty. In the absence of any external incentive and without sufficient internal motivation yet developed, sitting on a cold plastic chair to do something unfamiliar had no appeal.",
+      "With Second Son, I used a sticker chart from day one and a small treat for every successful trip. I felt slightly guilty about it. I faded both over about ten days as the habit solidified. By day twelve, he didn't ask about the sticker chart and I had quietly put it away.",
+      "He is fully trained and has no particular attachment to treats as a life requirement. The reward system did exactly what it was supposed to do: it provided external motivation during the window when internal motivation hadn't formed yet. Then I removed it. The behavior remained."
+    ]},
+    science:"Positive reinforcement is among the most well-documented principles in behavioral psychology. The concern about undermining intrinsic motivation — the overjustification effect — is real but applies primarily to activities the child already finds intrinsically interesting. Sitting on a potty at age two is not one of those activities. Research on potty training specifically shows that tangible rewards — stickers, small food treats, specific praise — meaningfully accelerate acquisition of the target behavior. The critical factor is fading the reward intentionally once the behavior is established. Rewards that continue indefinitely create dependency. Rewards that are tapered as the habit forms do not. Fading process: days 1–5, reward every successful trip; days 6–10, reward only the first successful trip of the day; then intermittently; by two weeks, most children have internalized the behavior. Specific praise — 'you felt the urge and got there in time' — is more effective than general praise ('good job') and requires no fading.",
+    takeaway:"Rewards are a tool, not a bribe. Use them intentionally during acquisition, fade them deliberately as the habit forms, and don't feel guilty about either.",
+    question:{
+      text:"A parent has used sticker charts and small treats for 6 weeks without fading them. The child now refuses to use the potty without a treat. The parent is frustrated. What caused this?",
+      options:[
+        {text:"The treats were too appealing — a less preferred reward would have avoided this",correct:false},
+        {text:"The reward was not faded after the behavior was established — continuing indefinitely creates the dependency it was designed to avoid",correct:true},
+        {text:"Rewards should have been avoided entirely — this outcome was predictable",correct:false},
+        {text:"Six weeks is too soon to fade — the dependency will resolve naturally by week 10",correct:false}
+      ],
+      explanation:"This is exactly what happens when rewards aren't faded on schedule. The reward was doing its job in weeks 1–2 by providing external motivation before internal motivation formed. By week 6, the behavior is established — the external reward should have been gone by week 2 or 3. Continuing it past that point trains the child to use the potty for the treat, not because it is the expected behavior. The fix from here: fade deliberately — one reward per day, then every other day, then none — while keeping specific verbal praise. The verbal acknowledgment continues; the sticker or treat disappears."
+    },
+    tryThis:"Start the sticker chart on day one of training. One sticker per successful trip, child places it themselves. Add a small food treat for the first 5 days if motivation is low. Start fading the treat on day 6. Keep the sticker chart for 2–3 weeks, then quietly retire it. Never stop specific verbal praise — 'you felt it and got there' — that never needs fading."
+  },
+  {
+    id:'done', short:"Done", title:"Done", chapter:"Chapter 12", icon:"🏁",
+    story:{paragraphs:[
+      "There was no single moment with either son when I thought: we are done. With First Son, there was just a gradual thinning of accidents, followed by a long stretch without one, followed by the realization somewhere around month sixteen that I had stopped thinking about it.",
+      "With Second Son, the process was shorter and the transition smoother, but the ending was similarly quiet. One day we were in the middle of training. Then we weren't. Nobody announced it. That's how it ends. Not with a ceremony. Just with the absence of the thing that had been consuming your attention.",
+      "First Son took fourteen months. Second Son took eight. Both are trained. Both are fine. The goal was never a number. The goal was getting them there. You have the information now. That's the whole difference."
+    ]},
+    science:"Clinically, a child is considered trained when they are consistently dry during the day, using the toilet on their own, handling their own clothes, for at least two weeks without accidents. Most children meet this definition somewhere between 30 and 48 months for daytime training. Nighttime dryness is a separate milestone. Talk to your pediatrician if: the child is past age 5 and still having regular daytime accidents despite consistent training; the child suddenly regresses after 6+ months of full dryness with no identifiable stressor (possible UTI or other medical issue — not a training reset); the child experiences pain or discomfort during urination or defecation; or you observe unusual patterns in frequency or urgency. If none of those apply, the range of normal is wide. Some kids are done at 28 months. Some are still working at 42. Both are fine.",
+    takeaway:"Done is not a moment. It's a pattern. Two weeks of accident-free, independent bathroom use. When the accidents have stopped and the routine is independent and the potty is just where you go — you're done. The work is finished. The habit belongs to them now.",
+    question:{
+      text:"A parent's child has been accident-free for 4 days and is using the potty independently. The parent wonders if they are finished. What does the clinical definition say?",
+      options:[
+        {text:"Yes — 4 consecutive dry days with independent use is the clinical threshold",correct:false},
+        {text:"Not yet — the clinical definition is 2 full weeks of consistent dryness and independent use",correct:true},
+        {text:"It depends on the method used — some methods have shorter consolidation periods",correct:false},
+        {text:"Close enough — after 4 good days, introducing underwear and treating it as done will solidify the habit",correct:false}
+      ],
+      explanation:"The clinical standard is two weeks — not four days, not 'a few good days in a row.' The reason is consolidation: skills learned under training conditions (close to home, parent prompting, focused attention) need time to become truly independent habits across all contexts. A child who goes 4 days without accidents may still have a bad day at daycare, a regression under stress, or struggles in a new environment. Two full weeks of consistent dryness and independent use across normal daily life is the reliable signal that the skill has genuinely consolidated."
+    },
+    tryThis:"Set a two-week counter in your head or on your phone from the last accident. When you hit 14 consecutive accident-free days of independent use — quietly retire the sticker chart, stop tracking, and let potty be unremarkable. Keep the waterproof mattress cover on through the first year of nighttime dryness. Then give yourself credit. You did the work."
+  }
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const SAVE_KEY='ff_course_potty_v1';
+function loadState(){try{const s=localStorage.getItem(SAVE_KEY);if(s)return JSON.parse(s);}catch(e){}return null;}
+function saveState(s){try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));}catch(e){}}
+function freshState(){return{screen:'welcome',chapterIndex:0,completed:[],selectedOption:null,showFeedback:false};}
+let STATE=loadState()||freshState();
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function el(tag,cls){const e=document.createElement(tag);if(cls)e.className=cls;return e;}
+function ch(){return CHAPTERS[STATE.chapterIndex];}
+function done(id){return STATE.completed.includes(id);}
+function pct(){return Math.round((STATE.completed.length/CHAPTERS.length)*100);}
+function userName(){return localStorage.getItem('ff_user_name')||'';}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════
+function render(){
+  saveState(STATE);
+  const app=document.getElementById('app');
+  app.innerHTML='';app.className='fade-in';
+  if(STATE.screen==='chapter'||STATE.screen==='question')renderProgress(app);
+  switch(STATE.screen){
+    case'welcome':renderWelcome(app);break;
+    case'chapter':renderChapter(app);break;
+    case'question':renderQuestion(app);break;
+    case'complete':renderComplete(app);break;
+  }
+}
+
+function renderProgress(app){
+  const wrap=el('div','progress-section no-print');
+  const meta=el('div','progress-meta');
+  const lbl=el('span','progress-label');lbl.textContent=`Chapter ${STATE.chapterIndex+1} of ${CHAPTERS.length}`;
+  const pctLbl=el('span','progress-pct');pctLbl.textContent=pct()+'% complete';
+  meta.appendChild(lbl);meta.appendChild(pctLbl);wrap.appendChild(meta);
+  const barWrap=el('div','progress-bar-wrap');
+  const fill=el('div','progress-bar-fill');fill.style.width=pct()+'%';
+  barWrap.appendChild(fill);wrap.appendChild(barWrap);
+  const roadmap=el('div','roadmap');
+  CHAPTERS.forEach((c,i)=>{
+    const isDone=done(c.id),isCurrent=i===STATE.chapterIndex;
+    const chip=el('div','roadmap-ch'+(isDone?' done':isCurrent?' current':''));
+    const icon=el('div','roadmap-icon');icon.textContent=c.icon;chip.appendChild(icon);
+    const lbl2=el('div','roadmap-label');lbl2.textContent=(c.short||c.title).replace('\n',' ');lbl2.title=c.title;chip.appendChild(lbl2);
+    roadmap.appendChild(chip);
+  });
+  wrap.appendChild(roadmap);
+  setTimeout(()=>{const chips=roadmap.querySelectorAll('.roadmap-ch');if(chips[STATE.chapterIndex])chips[STATE.chapterIndex].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});},60);
+  app.appendChild(wrap);
+}
+
+function renderWelcome(app){
+  const card=el('div','card');
+  const badge=el('div','welcome-badge');badge.textContent='🚽';card.appendChild(badge);
+  const ey=el('div','eyebrow');ey.textContent='FamilyForce · Potty Training';card.appendChild(ey);
+  const title=el('h1');title.textContent='The Potty Training Playbook';card.appendChild(title);
+  const sub=el('p');sub.style.marginTop='12px';
+  sub.textContent='A research-backed course covering timing, method, the poop chapter, regressions, nighttime, and everything in between. 12 chapters, one question each, earn your certificate.';card.appendChild(sub);
+  const stats=el('div','stat-row');
+  [['12','Chapters'],['~60','Minutes'],['1','Certificate']].forEach(([num,lbl])=>{
+    const box=el('div','stat-box');
+    const n=el('div','stat-num');n.textContent=num;box.appendChild(n);
+    const l=el('div','stat-lbl');l.textContent=lbl;box.appendChild(l);stats.appendChild(box);
+  });card.appendChild(stats);
+  card.appendChild(el('div','divider'));
+  const h=el('h3');h.textContent='How each chapter works';card.appendChild(h);
+  [["Jack's story","A real moment from training First Son vs. Second Son. The moment that made it real."],
+   ["The science","What the research actually shows — specific, actionable, not a headline."],
+   ["One question","Answer it correctly to unlock the next chapter. Get it wrong: review and try again."],
+   ["Try This","One specific action to do before moving on."]
+  ].forEach(([t,d],i)=>{
+    const step=el('div','how-step');
+    const num=el('div','step-num');num.textContent=i+1;step.appendChild(num);
+    const text=el('div','step-text');text.innerHTML=`<strong>${t}</strong> — ${d}`;step.appendChild(text);
+    card.appendChild(step);
+  });
+  const hasProg=STATE.completed.length>0;
+  if(hasProg){
+    const resume=el('button','btn btn-primary');resume.style.marginTop='24px';
+    resume.textContent=`↩  Resume — Chapter ${STATE.chapterIndex+1}`;
+    resume.onclick=()=>{STATE.screen='chapter';render();};card.appendChild(resume);
+    const restart=el('button','btn btn-secondary');restart.textContent='→  Start from Chapter 1';
+    restart.onclick=()=>{STATE.chapterIndex=0;STATE.screen='chapter';render();};card.appendChild(restart);
+    const reset=el('button','btn btn-ghost');reset.style.color='var(--text-dim)';reset.textContent='↺  Clear Progress';
+    reset.onclick=()=>{if(confirm('Clear all progress?')){STATE=freshState();render();}};card.appendChild(reset);
+  }else{
+    const start=el('button','btn btn-primary');start.style.marginTop='24px';start.textContent='→  Start Course';
+    start.onclick=()=>{STATE.screen='chapter';render();};card.appendChild(start);
+  }
+  app.appendChild(card);app.appendChild(mkSaveNote());
+}
+
+function renderChapter(app){
+  const c=ch();const card=el('div','card');
+  const ey=el('div','eyebrow');ey.textContent=`${c.chapter} · ${c.icon} ${c.title}`;card.appendChild(ey);
+  const story=el('div','story-block');
+  const slbl=el('div','story-label');slbl.textContent="Jack's Story";story.appendChild(slbl);
+  c.story.paragraphs.forEach(t=>{const p=el('p');p.textContent=t;story.appendChild(p);});card.appendChild(story);
+  const sci=el('div','science-block');
+  const sciLbl=el('div','science-label');sciLbl.textContent='The Science';sci.appendChild(sciLbl);
+  const sciP=el('p');sciP.textContent=c.science;sci.appendChild(sciP);card.appendChild(sci);
+  const kt=el('div','takeaway');
+  const ktLbl=el('div','takeaway-label');ktLbl.textContent='🎯  Key Takeaway';kt.appendChild(ktLbl);
+  kt.appendChild(document.createTextNode(c.takeaway));card.appendChild(kt);
+  const cta=el('button','btn btn-primary');cta.style.marginTop='24px';
+  cta.textContent='→  Answer the Chapter Question';
+  cta.onclick=()=>{STATE.screen='question';STATE.selectedOption=null;STATE.showFeedback=false;render();};card.appendChild(cta);
+  if(STATE.chapterIndex>0){
+    const back=el('button','btn btn-ghost');back.style.color='var(--text-dim)';
+    back.textContent=`← Chapter ${STATE.chapterIndex}`;
+    back.onclick=()=>{STATE.chapterIndex--;STATE.screen='chapter';render();};card.appendChild(back);
+  }
+  app.appendChild(card);app.appendChild(mkSaveNote());
+}
+
+function renderQuestion(app){
+  const c=ch();const q=c.question;const card=el('div','question-card');
+  const qlbl=el('div','q-label');qlbl.textContent=`${c.chapter} · Check Your Understanding`;card.appendChild(qlbl);
+  const qtext=el('div','q-text');qtext.textContent=q.text;card.appendChild(qtext);
+  const opts=el('div','options');
+  q.options.forEach((opt,i)=>{
+    const btn=el('button','option');
+    if(STATE.showFeedback){if(opt.correct)btn.className+=' correct';else if(i===STATE.selectedOption)btn.className+=' wrong';btn.disabled=true;}
+    else if(STATE.selectedOption===i)btn.className+=' selected';
+    btn.textContent=opt.text;
+    btn.onclick=()=>{if(STATE.showFeedback)return;STATE.selectedOption=i;render();};
+    opts.appendChild(btn);
+  });card.appendChild(opts);
+  if(STATE.showFeedback){
+    const isCorrect=q.options[STATE.selectedOption]?.correct;
+    const fb=el('div',`feedback feedback-${isCorrect?'correct':'wrong'}`);
+    const fbt=el('div','feedback-title');fbt.textContent=isCorrect?'✅  Correct!':'❌  Not quite.';fb.appendChild(fbt);
+    const fbText=el('div');fbText.textContent=q.explanation;fb.appendChild(fbText);card.appendChild(fb);
+    if(isCorrect){
+      if(!done(c.id))STATE.completed.push(c.id);saveState(STATE);
+      if(c.tryThis){
+        const tt=el('div','try-this');
+        const ttLbl=el('div','try-this-label');ttLbl.textContent='✋  Try This Before You Move On';tt.appendChild(ttLbl);
+        const ttText=el('div','try-this-text');ttText.textContent=c.tryThis;tt.appendChild(ttText);card.appendChild(tt);
+      }
+      const isLast=STATE.chapterIndex===CHAPTERS.length-1;
+      const next=el('button','btn btn-primary');
+      next.textContent=isLast?'🎓  Get My Certificate':`→  Chapter ${STATE.chapterIndex+2}: ${CHAPTERS[STATE.chapterIndex+1].title}`;
+      next.onclick=()=>{if(isLast){STATE.screen='complete';}else{STATE.chapterIndex++;STATE.screen='chapter';STATE.selectedOption=null;STATE.showFeedback=false;}render();};
+      card.appendChild(next);
+    }else{
+      const row=el('div','btn-row');
+      const retry=el('button','btn btn-ghost btn-sm');retry.textContent='↺  Try Again';
+      retry.onclick=()=>{STATE.selectedOption=null;STATE.showFeedback=false;render();};row.appendChild(retry);
+      const review=el('button','btn btn-secondary btn-sm');review.textContent='📖  Review Chapter';
+      review.onclick=()=>{STATE.screen='chapter';STATE.selectedOption=null;STATE.showFeedback=false;render();};row.appendChild(review);
+      card.appendChild(row);
+    }
+  }else{
+    const check=el('button','btn btn-primary');check.textContent='Check';
+    check.disabled=STATE.selectedOption===null;
+    check.onclick=()=>{STATE.showFeedback=true;render();};card.appendChild(check);
+    const goBack=el('button','btn btn-ghost');goBack.style.color='var(--text-dim)';goBack.textContent='← Review the Chapter';
+    goBack.onclick=()=>{STATE.screen='chapter';render();};card.appendChild(goBack);
+  }
+  app.appendChild(card);app.appendChild(mkSaveNote());
+}
+
+function renderComplete(app){
+  // Award badge
+  try{
+    const progress=JSON.parse(localStorage.getItem('ff_progress')||'{}');
+    if(!progress['potty-training'])progress['potty-training']={};
+    progress['potty-training'].cert=true;
+    localStorage.setItem('ff_progress',JSON.stringify(progress));
+  }catch(e){}
+
+  const congrats=el('div','card no-print');
+  const ce=el('div','eyebrow');ce.style.textAlign='center';ce.textContent='Course Complete 🎉';congrats.appendChild(ce);
+  const ct=el('h2');ct.style.textAlign='center';ct.style.marginTop='4px';ct.textContent='You finished all 12 chapters';congrats.appendChild(ct);
+  const cs=el('p');cs.style.textAlign='center';cs.style.marginTop='8px';
+  cs.textContent="Here's your certificate. Type your name, then print or save it as a PDF.";congrats.appendChild(cs);
+  app.appendChild(congrats);
+
+  const certCard=el('div','card');
+  const certOuter=el('div','cert-outer');
+  const seal=el('div','cert-seal');seal.textContent='✓';certOuter.appendChild(seal);
+  const pretitle=el('div','cert-pretitle');pretitle.textContent='Certificate of Completion';certOuter.appendChild(pretitle);
+  const certTitle=el('h2','cert-title');certTitle.textContent='The Potty Training Playbook';certOuter.appendChild(certTitle);
+  const nameWrap=el('div','cert-name-wrap');
+  const nameLbl=el('div','cert-name-label');nameLbl.textContent='Awarded to';nameWrap.appendChild(nameLbl);
+  const nameInput=el('input','cert-name-input');nameInput.type='text';nameInput.placeholder='Your name';
+  nameInput.setAttribute('spellcheck','false');nameInput.value=userName();nameWrap.appendChild(nameInput);certOuter.appendChild(nameWrap);
+  certOuter.appendChild(el('div','cert-rule'));
+  const body=el('div','cert-body');
+  body.textContent="has successfully completed all 12 chapters of The Potty Training Playbook, demonstrating understanding of research-backed approaches to readiness, method, regression, nighttime training, and long-term success.";certOuter.appendChild(body);
+  const sigRow=el('div','cert-sig-row');
+  const sig=el('div','cert-sig');
+  const sigLine=el('div','cert-sig-line');sig.appendChild(sigLine);
+  const sigName=el('div','cert-sig-name');sigName.textContent='Jack Hartley';sig.appendChild(sigName);
+  const sigRole=el('div','cert-sig-role');sigRole.textContent='Author, The Potty Training Playbook';sig.appendChild(sigRole);
+  sigRow.appendChild(sig);certOuter.appendChild(sigRow);
+  const dateEl=el('div','cert-date');dateEl.textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});certOuter.appendChild(dateEl);
+  certCard.appendChild(certOuter);app.appendChild(certCard);
+
+  const actions=el('div','card card-sm no-print');
+  const printBtn=el('button','btn btn-primary');printBtn.textContent='🖨️  Print / Save as PDF';
+  printBtn.onclick=()=>window.print();actions.appendChild(printBtn);
+  const epubBtn=el('button','btn btn-secondary');epubBtn.textContent='📄  Download Full Book';
+  epubBtn.onclick=()=>{const a=document.createElement('a');a.href='assets/downloads/potty-training-playbook.epub';a.download='Potty-Training-Playbook-Jack-Hartley.epub';a.click();};actions.appendChild(epubBtn);
+  const dashBtn=el('button','btn btn-ghost');dashBtn.textContent='← Back to Dashboard';
+  dashBtn.onclick=()=>{window.location.href='dashboard.html';};actions.appendChild(dashBtn);
+  app.appendChild(actions);
+
+  const actionCard=el('div','card no-print');
+  const ae=el('div','eyebrow');ae.textContent='Your Action Plan';actionCard.appendChild(ae);
+  const at=el('h3');at.style.marginTop='4px';at.textContent='12 things to try this week';actionCard.appendChild(at);
+  const as_=el('p');as_.style.fontSize='13px';as_.style.marginTop='6px';as_.style.marginBottom='16px';
+  as_.textContent='One specific action from each chapter. Pick the ones that match where you are right now.';actionCard.appendChild(as_);
+  const list=el('div','action-list');
+  CHAPTERS.forEach((c,i)=>{
+    if(!c.tryThis)return;
+    const item=el('div','action-item');
+    const num=el('div','action-num');num.textContent=i+1;item.appendChild(num);
+    const bdy=el('div','action-body');
+    const clbl=el('div','action-chapter');clbl.textContent=`${c.icon} ${c.title}`;bdy.appendChild(clbl);
+    const txt=el('div');txt.textContent=c.tryThis;bdy.appendChild(txt);item.appendChild(bdy);list.appendChild(item);
+  });actionCard.appendChild(list);app.appendChild(actionCard);
+
+  const rulesCard=el('div','card no-print');
+  const re=el('div','eyebrow');re.textContent='The Core Principles';rulesCard.appendChild(re);
+  const rt=el('h3');rt.style.marginTop='4px';rt.style.marginBottom='16px';rt.textContent='What the research reduces to';rulesCard.appendChild(rt);
+  [
+    ['⏰','Timing is everything','Starting between 27 and 32 months cuts training time roughly in half. No method compensates for starting before the neurological window opens.'],
+    ['📋','Consistency is the method','Mixed signals between caregivers extend training more than any other variable. One plan, written down, shared with everyone — before day one.'],
+    ['💩','Remove pressure from poop','Stool toileting refusal affects 1 in 5 kids. The only thing that reliably makes it worse is pressure. Give the diaper. Say nothing. Wait.'],
+    ['🌙','Nighttime is biological, not behavioral','You cannot train vasopressin. Watch for dry mornings. When the pattern is there, remove the pull-up. Until then, let it be.']
+  ].forEach(([icon,title2,desc])=>{
+    const rule=el('div','rule-item');
+    const ri=el('div','rule-icon');ri.textContent=icon;rule.appendChild(ri);
+    const rb=el('div');
+    const rTitle=el('div','rule-title');rTitle.textContent=title2;rb.appendChild(rTitle);
+    const rDesc=el('div','rule-desc');rDesc.textContent=desc;rb.appendChild(rDesc);
+    rule.appendChild(rb);rulesCard.appendChild(rule);
+  });app.appendChild(rulesCard);
+}
+
+function mkSaveNote(){const n=el('p','save-note no-print');n.textContent='✓  Progress saved automatically';return n;}
+render();
+</script>
+</body>
+</html>

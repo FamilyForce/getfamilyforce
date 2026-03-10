@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE — Feeding Course
+     Gated: Supabase auth required
+     Stack: Vanilla HTML/CSS/JS · Zero dependencies · No build
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<title>The Feeding Course · FamilyForce</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#6E4ED6">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const _sb = supabase.createClient(
+    'https://ewjqbafaxeasyvknxmof.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+  );
+  const _preview = new URLSearchParams(location.search).get('preview') === '1';
+  if (_preview) { document.documentElement.classList.add('authed'); }
+  else { _sb.auth.getSession().then(({ data }) => { if (!data.session) window.location.href = 'sign-in.html?next=course-feeding.html'; else document.documentElement.classList.add('authed'); }); }
+</script>
+<style>
+:root {
+  --sans:'Outfit',system-ui,sans-serif; --serif:'Instrument Serif',Georgia,serif;
+  --terra:#6E4ED6; --terra-dark:#5B3CC4; --terra-light:#9B80FF;
+  --terra-tint:#EDE9FB; --terra-tint2:#F5F3FF;
+  --bg:#F8F7FF; --surface:#FFFFFF; --elevated:#F3F0FF;
+  --text:#0D0820; --text-mid:#4A4560; --text-dim:#8B85A8;
+  --border:rgba(110,78,214,.12); --border-light:rgba(110,78,214,.07);
+  --correct:#22c55e; --correct-bg:#F0FDF4; --correct-border:#86efac;
+  --wrong:#ef4444; --wrong-bg:#FEF2F2; --wrong-border:#fca5a5;
+  --radius-pill:100px; --radius-card:20px; --radius-sm:12px;
+  --shadow-card:0 2px 16px rgba(110,78,214,.08); --ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;}
+html:not(.authed) body>*{visibility:hidden;}
+html:not(.authed) .auth-loading{visibility:visible;}
+.auth-loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);font-size:14px;color:var(--text-dim);}
+html.authed .auth-loading{display:none;}
+.course-header{position:sticky;top:0;z-index:100;background:rgba(248,247,255,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border-light);height:60px;display:flex;align-items:center;}
+.header-inner{width:min(760px,100% - 40px);margin-inline:auto;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.header-logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px;color:var(--text);text-decoration:none;flex-shrink:0;}
+.logo-mark{width:28px;height:28px;border-radius:8px;background:var(--terra);color:white;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;}
+.header-back{font-size:13px;font-weight:600;color:var(--text-mid);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .15s;flex-shrink:0;}
+.header-back:hover{color:var(--terra);}
+.header-course-name{font-size:13px;font-weight:600;color:var(--text-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;text-align:center;}
+@media(max-width:480px){.header-course-name{display:none;}}
+.main{width:min(680px,100% - 40px);margin-inline:auto;padding:32px 0 80px;}
+.progress-section{margin-bottom:28px;}
+.progress-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.progress-label{font-size:12px;font-weight:600;color:var(--text-dim);}
+.progress-pct{font-size:12px;font-weight:700;color:var(--terra);}
+.progress-bar-wrap{height:5px;background:var(--terra-tint);border-radius:99px;overflow:hidden;margin-bottom:14px;}
+.progress-bar-fill{height:100%;background:var(--terra);border-radius:99px;transition:width .5s var(--ease);}
+.roadmap{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none;}
+.roadmap::-webkit-scrollbar{display:none;}
+.roadmap-ch{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;width:60px;opacity:.35;transition:opacity .2s;}
+.roadmap-ch.done,.roadmap-ch.current{opacity:1;}
+.roadmap-icon{width:34px;height:34px;border-radius:50%;background:var(--terra-tint);display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid transparent;position:relative;transition:all .2s;flex-shrink:0;}
+.roadmap-ch.done .roadmap-icon{background:var(--correct-bg);border-color:var(--correct);}
+.roadmap-ch.done .roadmap-icon::after{content:'✓';position:absolute;bottom:-3px;right:-3px;width:14px;height:14px;background:var(--correct);color:white;border-radius:50%;font-size:8px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1;}
+.roadmap-ch.current .roadmap-icon{background:var(--terra-tint);border-color:var(--terra);box-shadow:0 0 0 3px rgba(110,78,214,.15);}
+.roadmap-label{font-size:9px;font-weight:600;color:var(--text-dim);text-align:center;line-height:1.3;max-width:60px;}
+.roadmap-ch.current .roadmap-label{color:var(--terra);font-weight:700;}
+.roadmap-ch.done .roadmap-label{color:var(--text-mid);}
+.card{background:var(--surface);border-radius:var(--radius-card);padding:32px;box-shadow:var(--shadow-card);border:1px solid var(--border-light);margin-bottom:16px;}
+.card-sm{padding:24px;}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;}
+h1{font-family:var(--serif);font-size:clamp(28px,5vw,36px);line-height:1.15;color:var(--text);font-weight:400;}
+h2{font-family:var(--serif);font-size:clamp(22px,4vw,28px);line-height:1.2;color:var(--text);font-weight:400;margin-bottom:6px;}
+h3{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
+p{font-size:15px;line-height:1.75;color:var(--text-mid);}
+p+p{margin-top:12px;}
+.divider{height:1px;background:var(--border-light);margin:24px 0;}
+.welcome-badge{width:72px;height:72px;border-radius:20px;background:var(--terra-tint);margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-size:36px;}
+.stat-row{display:flex;gap:10px;margin:24px 0;}
+.stat-box{flex:1;background:var(--terra-tint2);border-radius:var(--radius-sm);padding:16px 10px;text-align:center;border:1px solid var(--border-light);}
+.stat-num{font-size:22px;font-weight:800;color:var(--terra);}
+.stat-lbl{font-size:11px;color:var(--text-dim);margin-top:3px;font-weight:600;}
+.how-step{display:flex;gap:14px;align-items:flex-start;padding:12px 0;}
+.how-step+.how-step{border-top:1px solid var(--border-light);}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--terra);color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.step-text{font-size:15px;color:var(--text-mid);line-height:1.55;}
+.step-text strong{color:var(--text);}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--sans);font-weight:700;font-size:15px;border:none;border-radius:var(--radius-pill);padding:14px 28px;cursor:pointer;width:100%;transition:background .2s,transform .15s,opacity .15s;text-decoration:none;}
+.btn-primary{background:var(--terra);color:white;}
+@media(hover:hover){.btn-primary:hover{background:var(--terra-dark);transform:translateY(-1px);}}
+.btn-secondary{background:transparent;color:var(--terra-dark);border:1.5px solid var(--terra);}
+@media(hover:hover){.btn-secondary:hover{background:var(--terra-tint);}}
+.btn-ghost{background:var(--terra-tint);color:var(--terra-dark);}
+@media(hover:hover){.btn-ghost:hover{background:var(--elevated);}}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+.btn+.btn{margin-top:10px;}
+.btn-sm{font-size:13px;padding:10px 20px;width:auto;}
+.btn-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;}
+.story-block{border-left:3px solid rgba(110,78,214,.3);padding:18px 22px;margin:22px 0;background:rgba(248,247,255,.7);border-radius:0 12px 12px 0;}
+.story-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra-light);margin-bottom:10px;}
+.story-block p{font-style:italic;color:var(--text);font-size:15px;line-height:1.8;}
+.story-block p+p{margin-top:12px;}
+.science-block{background:var(--terra-tint);border-radius:var(--radius-sm);padding:18px 20px;margin:18px 0;}
+.science-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:8px;}
+.science-block p{color:var(--text);font-style:normal;}
+.takeaway{background:var(--terra);color:white;border-radius:var(--radius-sm);padding:16px 20px;margin:18px 0;font-size:14px;font-weight:600;line-height:1.6;}
+.takeaway-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;opacity:.65;margin-bottom:5px;}
+.question-card{background:var(--surface);border-radius:var(--radius-card);border-top:3px solid var(--terra);padding:28px;box-shadow:var(--shadow-card);border-left:1px solid var(--border-light);border-right:1px solid var(--border-light);border-bottom:1px solid var(--border-light);margin-bottom:16px;}
+.q-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--terra);margin-bottom:12px;}
+.q-text{font-size:16px;font-weight:600;line-height:1.55;color:var(--text);margin-bottom:4px;}
+.options{display:flex;flex-direction:column;gap:10px;margin:20px 0;}
+.option{border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 18px;cursor:pointer;font-size:14px;line-height:1.5;color:var(--text);background:var(--surface);text-align:left;transition:border-color .15s,background .15s;font-family:var(--sans);width:100%;}
+@media(hover:hover){.option:hover:not(:disabled){border-color:var(--terra-light);background:var(--terra-tint);}}
+.option.selected{border-color:var(--terra);background:var(--terra-tint);color:var(--terra-dark);font-weight:600;}
+.option.correct{border-color:var(--correct);background:var(--correct-bg);color:#15803d;font-weight:600;}
+.option.wrong{border-color:var(--wrong);background:var(--wrong-bg);color:#b91c1c;}
+.option:disabled{cursor:default;}
+.feedback{border-radius:var(--radius-sm);padding:16px 18px;font-size:14px;line-height:1.7;margin-top:4px;}
+.feedback-correct{background:var(--correct-bg);border:1px solid var(--correct-border);color:#166534;}
+.feedback-wrong{background:var(--wrong-bg);border:1px solid var(--wrong-border);color:#991b1b;}
+.feedback-title{font-weight:700;margin-bottom:4px;font-size:15px;}
+.try-this{border:2px solid var(--correct);border-radius:var(--radius-sm);padding:16px 18px;margin-top:14px;background:var(--correct-bg);}
+.try-this-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#16a34a;margin-bottom:6px;}
+.try-this-text{font-size:14px;line-height:1.65;color:#166534;font-weight:500;}
+.cert-outer{background:white;border:2px solid var(--terra);border-radius:20px;padding:clamp(28px,6vw,48px) clamp(24px,6vw,48px);text-align:center;position:relative;overflow:hidden;}
+.cert-outer::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at top,rgba(110,78,214,.05) 0%,transparent 60%);pointer-events:none;}
+.cert-seal{width:80px;height:80px;border-radius:50%;background:var(--terra);margin:0 auto 18px;display:flex;align-items:center;justify-content:center;font-size:36px;color:white;box-shadow:0 6px 24px rgba(110,78,214,.3);}
+.cert-pretitle{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;}
+.cert-title{font-family:var(--serif);font-size:clamp(22px,4vw,30px);color:var(--text);margin-bottom:20px;line-height:1.2;}
+.cert-name-wrap{margin:16px auto;max-width:380px;}
+.cert-name-label{font-size:12px;color:var(--text-dim);margin-bottom:6px;font-weight:600;}
+.cert-name-input{border:none;border-bottom:2px solid var(--terra);background:transparent;font-family:var(--serif);font-size:24px;color:var(--terra-dark);font-style:italic;text-align:center;width:100%;padding:6px 0;outline:none;}
+.cert-name-input::placeholder{color:var(--terra-tint);font-style:italic;}
+.cert-rule{width:80px;height:2px;background:var(--terra-tint);margin:22px auto;border-radius:99px;}
+.cert-body{font-size:14px;color:var(--text-mid);line-height:1.7;max-width:420px;margin-inline:auto;}
+.cert-sig-row{display:flex;justify-content:center;margin-top:32px;}
+.cert-sig{text-align:center;}
+.cert-sig-line{width:130px;height:1px;background:var(--border);margin:0 auto 8px;}
+.cert-sig-name{font-size:15px;font-weight:700;color:var(--text);}
+.cert-sig-role{font-size:12px;color:var(--text-dim);margin-top:2px;}
+.cert-date{font-size:12px;color:var(--text-dim);margin-top:22px;}
+.action-list{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+.action-item{display:flex;align-items:flex-start;gap:12px;background:var(--correct-bg);border:1px solid var(--correct-border);border-radius:var(--radius-sm);padding:12px 14px;}
+.action-num{width:24px;height:24px;border-radius:50%;background:var(--correct);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.action-body{font-size:14px;line-height:1.55;color:#166534;}
+.action-chapter{font-size:11px;font-weight:700;color:#16a34a;margin-bottom:2px;}
+.rule-item{display:flex;gap:14px;align-items:flex-start;padding:14px 0;}
+.rule-item+.rule-item{border-top:1px solid var(--border-light);}
+.rule-icon{font-size:22px;flex-shrink:0;line-height:1.4;}
+.rule-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.rule-desc{font-size:14px;color:var(--text-mid);line-height:1.55;}
+.save-note{font-size:12px;color:var(--text-dim);text-align:center;padding-top:4px;}
+.fade-in{animation:fadeIn .3s var(--ease);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+@media(max-width:768px){.roadmap{padding:2px 2px 6px;scroll-padding-inline:12px;gap:8px;}.roadmap-icon{width:38px;height:38px;font-size:17px;}.roadmap-ch{width:64px;}}
+@media(max-width:480px){
+  .main{width:calc(100% - 32px);padding-top:24px;padding-bottom:calc(72px + env(safe-area-inset-bottom,0px));}
+  .card{padding:20px;border-radius:16px;}.card-sm{padding:16px;border-radius:16px;}.question-card{padding:20px;border-radius:16px;}
+  .progress-section{margin-bottom:20px;}.welcome-badge{width:60px;height:60px;font-size:28px;border-radius:16px;margin-bottom:16px;}
+  .stat-box{padding:12px 8px;}.stat-num{font-size:19px;}.stat-lbl{font-size:10px;}.divider{margin:18px 0;}.step-text{font-size:14px;}
+  .story-block{padding:14px 16px;margin:18px 0;}.story-block p{font-size:14px;}.science-block{padding:14px 16px;}.science-block p{font-size:14px;}
+  .takeaway{padding:14px 16px;font-size:13px;}.q-text{font-size:15px;}.options{gap:8px;margin:16px 0;}.option{padding:12px 14px;}
+  .feedback{padding:14px 16px;font-size:14px;}.feedback-title{font-size:14px;}.try-this{padding:14px 16px;}.try-this-text{font-size:13px;}
+  .btn-row{flex-direction:column;gap:8px;}.btn-row .btn{width:100%;}.btn-sm{font-size:14px;padding:12px 20px;}
+  .cert-name-input{font-size:20px;}.cert-body{font-size:13px;}.action-item{padding:10px 12px;}.action-body{font-size:13px;}
+}
+@media(max-width:360px){
+  .main{width:calc(100% - 24px);}.card{padding:16px;}.question-card{padding:16px;}
+  .stat-row{flex-wrap:wrap;}.stat-box{flex:1 1 calc(50% - 6px);}.stat-box:last-child{flex:1 1 100%;padding:10px;}.stat-num{font-size:18px;}
+  .roadmap-ch{width:52px;}.roadmap-icon{width:32px;height:32px;font-size:14px;}.cert-name-input{font-size:18px;}
+}
+@media print{
+  .no-print{display:none!important;}.course-header{display:none!important;}
+  body{background:white;}.main{width:100%;padding:0;}
+  .cert-outer::before{display:none!important;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .cert-outer{border:2px solid #5B3CC4;box-shadow:none;padding:40px;}
+  .cert-seal{background:#6E4ED6!important;color:white!important;box-shadow:none;}
+  .cert-name-input{border:none!important;border-bottom:2px solid #5B3CC4!important;font-size:22px!important;color:#5B3CC4!important;}
+  .card{box-shadow:none;border:none;}
+}
+</style>
+</head>
+<body>
+<div class="auth-loading">Signing you in…</div>
+<div id="preview-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#f59e0b;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-align:center;padding:8px;">
+  ⚠️ PREVIEW MODE — Remove <code style="background:rgba(0,0,0,.2);padding:2px 6px;border-radius:4px;">?preview=1</code> before deploying
+</div>
+<script>if(new URLSearchParams(location.search).get('preview')==='1'){document.getElementById('preview-banner').style.display='block';}</script>
+<header class="course-header no-print">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo"><div class="logo-mark">F</div>FamilyForce</a>
+    <span class="header-course-name">The Feeding Course</span>
+    <a href="dashboard.html" class="header-back">← Dashboard</a>
+  </div>
+</header>
+<main class="main" id="app"></main>
+<script>
+// ═══════════════════════════════════════════════════════════
+// COURSE DATA — 13 chapters
+// ═══════════════════════════════════════════════════════════
+const CHAPTERS = [
+  {
+    id:'remote', short:"Three\nWindows", title:"The Remote Was in the Fridge", chapter:"Chapter 1", icon:"🍽️",
+    story:{paragraphs:[
+      "My First Son is seven now. He eats plain pasta, chicken nuggets, and exactly one vegetable — corn — which, if you know anything about vegetables, is barely one. I did that. Not on purpose. But I did it.",
+      "The first time he refused solid food, I thought something was wrong with him. He was five and a half months old. I'd bought the rice cereal everyone told me to buy. Mixed it with formula. Put it on a spoon. He pushed it out with his tongue, looked at me with what I can only describe as contempt, and went back to trying to eat his own fist.",
+      "What I didn't know: the tongue-thrust reflex — which pushes food out of an infant's mouth — typically fades between four and six months. If it's still happening, the baby isn't ready yet. I also didn't know about the iron gap, the flavor window, and the allergen mistake. I'll explain all of those. But first — the big picture."
+    ]},
+    science:"Between birth and age three, there are three phases that operate by completely different rules. The Milk Phase (0–6 months): breast milk or formula, no solids, your job is responsive feeding and one critical supplement almost everyone misses. The Flavor Window (6–12 months): the most important feeding period of your child's life, and the one parents understand least. The brain is maximally plastic for flavor acceptance — what your baby eats now predicts what your toddler eats at age two, three, and five. The window opens at six months and starts closing at twelve. The Autonomy Phase (12–36 months): your toddler has opinions. Food neophobia peaks. This is where most parents unknowingly create the picky eater they'll spend years fighting. Knowing which phase you're in — and what that phase actually requires — is the entire game.",
+    takeaway:"You are not feeding your baby. You are programming your toddler. The decisions you make in each window determine the food relationship your child brings to age five.",
+    question:{
+      text:"A parent's 5-month-old keeps pushing food off the spoon with their tongue. The parent is frustrated. What does this likely mean?",
+      options:[
+        {text:"The baby doesn't like the food and needs different flavors",correct:false},
+        {text:"The tongue-thrust reflex hasn't fully faded yet — the baby may not be developmentally ready for solids",correct:true},
+        {text:"The spoon technique is wrong — try a different angle",correct:false},
+        {text:"This is normal and will resolve only after 7–8 months",correct:false}
+      ],
+      explanation:"The tongue-thrust reflex is a protective mechanism that pushes objects out of the mouth. It typically fades between 4 and 6 months. If food is consistently being pushed out, the baby may not be developmentally ready — regardless of age on the calendar. Other readiness signs to watch for: sitting with support, head control, showing interest in food, and moving food to the back of the tongue to swallow. All signs together matter more than any one alone."
+    },
+    tryThis:"Write down which phase your baby is currently in: Milk Phase (0–6m), Flavor Window (6–12m), or Autonomy Phase (12–36m). Then read just the chapters for your phase this week. The rules are different — knowing which game you're playing changes everything."
+  },
+  {
+    id:'responsive', short:"Hungry\nor Not", title:"Hungry or Not", chapter:"Chapter 2", icon:"🤱",
+    story:{paragraphs:[
+      "First Son was a big eater. At six weeks, he was taking five-ounce bottles every two hours. My wife and I took this as a sign he needed more. We started giving him six ounces. Then seven. He'd drain the bottle, seem satisfied, and we'd feel proud.",
+      "What we were actually doing was teaching him to override his fullness signal.",
+      "With Second Son, we paid attention to what he was telling us. He'd slow his sucking. His hands would go slack. He'd release the nipple and turn his head slightly. We'd stop. He grew exactly as the pediatrician expected. He still stops when he's full. His older brother, now seven, regularly eats past comfort and then tells me his stomach hurts."
+    ]},
+    science:"Responsive feeding means following the baby's hunger and fullness cues rather than a clock or a volume target. Hunger cues: rooting (turning head, mouth open), sucking on hands, bringing fists to mouth, escalating fussiness. Fullness cues: turning head away, releasing the nipple repeatedly, slowing the sucking pace, going slack in the arms, becoming calm without finishing the feed. A 2017 University of Leeds study filmed 27 mother-infant pairs and identified 22 distinct cues infants use during feeding. Breastfed infants show more of these cues more frequently because breastfeeding requires active participation to continue milk flow — formula doesn't have this built-in feedback loop. The research linking responsive feeding to lower obesity risk is consistent and replicated across multiple studies. A baby whose fullness signal is consistently respected maintains better caloric self-regulation into childhood. A baby pushed past fullness learns to eat past fullness. That habit does not fix itself at age two.",
+    takeaway:"Your job is to offer. The baby's job is to decide how much. This principle runs through every phase of feeding — it starts here, in the first weeks.",
+    question:{
+      text:"A parent notices their baby has slowed sucking, gone slack in the arms, and released the nipple twice. There's still an ounce in the bottle. What should the parent do?",
+      options:[
+        {text:"Gently encourage the baby to finish — partial feeds can disrupt sleep",correct:false},
+        {text:"Stop the feed — the baby is showing multiple fullness cues",correct:true},
+        {text:"Wait another minute then try again — one release doesn't confirm fullness",correct:false},
+        {text:"Check how long the feed has been going and decide based on timing",correct:false}
+      ],
+      explanation:"Multiple simultaneous fullness cues — slowing sucking, going slack, releasing the nipple — are clear signals the baby is done. The ounce in the bottle is irrelevant. Continuing the feed teaches the baby to override their internal fullness signal, which research links to poorer caloric self-regulation into childhood. The formula in the bottle is not wasted — it did its job up to the point the baby stopped. The parent's job is to offer; the baby's job is to decide how much."
+    },
+    tryThis:"At the next feed, put the clock and the ounce count out of view. Watch only the baby's hands and face. When their hands go slack, stop — even if the bottle isn't empty. Do this for three feeds in a row and notice what you observe."
+  },
+  {
+    id:'vitamin_d', short:"Vitamin\nD", title:"The One Thing Missing", chapter:"Chapter 3", icon:"☀️",
+    story:{paragraphs:[
+      "I'm going to keep this chapter short because the point is simple and the evidence behind it is as solid as evidence gets.",
+      "With First Son, nobody told me. His pediatrician didn't mention it at the first appointment. I don't remember reading it anywhere. First Son was exclusively breastfed for six months — no Vitamin D supplement. His levels were borderline low at his one-year check. Nothing severe happened. But it was a miss that I didn't need to make.",
+      "With Second Son, I had a note in my phone before he was born. Started the drops on day three."
+    ]},
+    science:"Breast milk is almost perfect — the product of millions of years of evolutionary pressure on human nutrition. It contains immunoglobulins, human milk oligosaccharides that shape the infant gut microbiome, and compounds science is still mapping. What it contains almost none of is Vitamin D. Vitamin D deficiency causes rickets — softening and weakening of bones — and is associated with immune dysfunction and asthma risk. 96% of diagnosed rickets cases occur in breastfed infants. The American Academy of Pediatrics is unambiguous: all breastfed infants need 400 IU of Vitamin D daily, starting in the first few days of life. Sun exposure is not a substitute — the AAP and AAD do not recommend sun exposure as a Vitamin D source for babies under six months. Formula-fed infants consuming at least 32 ounces per day don't need the supplement — formula is fortified — but once intake drops below that level (including during the transition to solids), the supplement applies.",
+    takeaway:"This is a one-minute daily task that prevents a well-documented risk in a well-studied population. The science is unambiguous. The supplement is cheap. Do this one.",
+    question:{
+      text:"A breastfeeding parent tells their pediatrician they skip the Vitamin D drops on sunny days, figuring some outdoor time provides enough. What does the research say?",
+      options:[
+        {text:"A few hours of outdoor time per week in summer months can replace the supplement",correct:false},
+        {text:"Sun exposure for infants under 6 months is not recommended as a Vitamin D source — the drops are required regardless of sun exposure",correct:true},
+        {text:"This is fine for summer months; the drops are needed in winter only",correct:false},
+        {text:"The research is mixed on this — some evidence supports sun exposure as a substitute",correct:false}
+      ],
+      explanation:"The AAP recommends 400 IU of Vitamin D supplementation for all breastfed infants from the first few days of life — regardless of season, geography, or sun exposure. The American Academy of Dermatology specifically does not recommend sun exposure as a Vitamin D source for infants under six months because infant skin is extremely sensitive. Breast milk itself is low in Vitamin D by design — the evolutionary assumption was sun exposure that no longer applies given modern safe infant sun practices. The drops are the reliable, evidence-backed path."
+    },
+    tryThis:"If you're breastfeeding, check your medicine cabinet right now. If you don't have infant Vitamin D drops (400 IU), add them to your shopping list before you finish this chapter. If you already have them — check that you're using them daily, not occasionally."
+  },
+  {
+    id:'fed', short:"Fed", title:"Fed", chapter:"Chapter 4", icon:"🤍",
+    story:{paragraphs:[
+      "My wife nursed First Son for six months. It was hard. She had supply issues early on. She used a lactation consultant, a nipple shield, and what I can only describe as industrial-grade determination. By month six she was done, and we switched to formula, and she carried guilt about that switch for two years.",
+      "I want to say something about that guilt, because the research has something specific and important to say about it.",
+      "The IQ advantage associated with breastfeeding — widely reported as three to four points — largely disappears when researchers control for maternal intelligence and family environment using sibling and twin studies. A 2020 UK twin study of 7,000 families found no reliable association between breastfeeding and IQ at all after controlling for family environment. The benefits of breastfeeding are real. They are smaller than the headlines suggest. And they are entirely separate from the question of whether a parent is doing a good job."
+    ]},
+    science:"A 2021 systematic review (Jackson et al., Maternal & Child Nutrition, 20 studies) found that both breastfeeding and formula-feeding mothers experience guilt — but from different sources. Formula-feeding mothers experience guilt primarily from healthcare professionals. Breastfeeding mothers experience it primarily from peers and family. Both types predict poorer maternal mental health. A 2024 follow-up study modeled the pathway: high pressure to breastfeed plus poor support was directly associated with increased postnatal anxiety and depression, mediated entirely through guilt and shame. A 2025 analysis of 584 Reddit posts found 58% said breastfeeding inhibited infant bonding. 63% reported increased bonding after switching to formula. The relevant outcome is not feeding method — it's maternal mental health. A calm, present, non-anxious parent feeds a child better in every measurable sense than a stressed, exhausted parent continuing something that isn't working out of fear of judgment.",
+    takeaway:"Breastfeed if you can and want to. If it's not working, or if the cost to your mental health is high — switch. A healthy, present parent is the variable that matters most. Fed is not second best. Fed is the goal.",
+    question:{
+      text:"A parent who switched to formula at 3 months tells you they feel like they failed their baby. Based on the research, what is accurate?",
+      options:[
+        {text:"The IQ advantage of breastfeeding is well-established — there is a real cost to switching early",correct:false},
+        {text:"The IQ advantage largely disappears when family environment is controlled for, and maternal mental health is a stronger predictor of infant outcomes than feeding method",correct:true},
+        {text:"Formula is equivalent to breast milk in all measurable ways — there is no nutritional difference",correct:false},
+        {text:"The research on this is genuinely unclear — both positions have equal evidence",correct:false}
+      ],
+      explanation:"The 3–4 point IQ advantage of breastfeeding largely disappears in sibling and twin studies that control for maternal intelligence and family environment. The gut microbiome benefits of breastfeeding are real but modest. What the research does show clearly is that maternal mental health is one of the strongest predictors of infant outcomes — and that feeding pressure, guilt, and shame are documented pathways to postnatal depression. A parent who switches to formula and recovers their mental health is doing right by their baby. That is what the evidence supports."
+    },
+    tryThis:"If you're currently in any feeding decision that is causing significant stress — breastfeeding that isn't working, pressure from someone around you, guilt about a switch you've already made — write one sentence about what you actually want. Not what you're supposed to want. What you want. Then read it to your partner."
+  },
+  {
+    id:'window', short:"The\nWindow", title:"The Window", chapter:"Chapter 5", icon:"🪟",
+    story:{paragraphs:[
+      "Here is the most important thing I learned in a thousand hours of reading about infant feeding: there is a window. It opens at six months. It starts closing at twelve. What you put through it determines what your toddler eats.",
+      "With First Son, I fed him what he seemed to like. He liked bananas. He liked sweet potato. He liked pears. By twelve months he had a list of accepted foods. It was short. It was sweet. It didn't include anything green. At eighteen months, I tried to introduce broccoli. He looked at it the way you look at a parking ticket. For three years after that, we fought about broccoli.",
+      "With Second Son, I read the research before we started. At six months: sweet potato and rice. Week two: pureed spinach. Week three: kale mixed into apple. Then lentils. Then liver. Then broccoli. Then salmon. He made faces. Some of them were alarming. He kept eating. At two, he eats broccoli the way other kids eat French fries."
+    ]},
+    science:"The flavor perception system in the human brain is not fixed at birth. Between six and twelve months, it is maximally plastic — it adapts most readily to new inputs. A 2016 paper by Catherine Forestell at the College of William and Mary summarizes the mechanism: the infant brain uses early flavor exposure to build a map of the edible world. The wider the map drawn in the first year, the more accepting the toddler will be at ages two, three, and five. This has been replicated across multiple populations. The window is not binary — it doesn't slam shut on day 365. But the plasticity drops substantially after twelve months. Food neophobia (fear of new foods), which is developmentally normal in toddlers, makes everything harder. What a baby accepted curiously at nine months may be thrown across the room at eighteen months. Not because the food changed. Because the brain changed.",
+    takeaway:"Offer variety relentlessly between six and twelve months. Lead with iron. Include bitter vegetables. The goal isn't a baby who loves everything — it's a baby who has been introduced to everything. That's all the window requires.",
+    question:{
+      text:"A parent sticks to the five foods their 8-month-old seems to 'like best' — banana, sweet potato, pear, apple pouch, and rice cereal. They plan to introduce more variety at 12 months when the baby 'can handle it better.' What does the research predict?",
+      options:[
+        {text:"This is a reasonable strategy — palate flexibility increases between 12 and 18 months",correct:false},
+        {text:"By 12 months the flavor window is narrowing — foods not introduced before then are perceived as novel and are much more likely to be refused",correct:true},
+        {text:"The timing doesn't matter much — total number of exposures is what determines acceptance",correct:false},
+        {text:"The research is split — some studies show later introduction is fine as long as variety is eventually offered",correct:false}
+      ],
+      explanation:"The Forestell research is clear: the infant brain is building its flavor map most efficiently between 6 and 12 months. After 12 months, the neophobia (fear of new foods) that is developmentally normal in toddlers makes everything harder. A food that would have been accepted with curiosity at 9 months may be refused categorically at 18 months — not because the child is difficult, but because their brain has moved into a developmental phase where unfamiliar food signals 'potentially dangerous.' The sweet, starchy foods First Son ate were accepted at 24 months and 6 months alike. The window is for the hard stuff — bitter greens, iron-rich meats, complex flavors."
+    },
+    tryThis:"This week, introduce one food your baby has never had that isn't sweet. Pureed spinach mixed into pear. Lentils. Broccoli thinned with breast milk. Chicken. It doesn't need to be received well — it needs to enter the map. Put it on the spoon. That's the whole job."
+  },
+  {
+    id:'iron', short:"The\nIron Gap", title:"The Iron Gap", chapter:"Chapter 6", icon:"🥩",
+    story:{paragraphs:[
+      "Nobody told me about the iron gap before First Son. I started with rice cereal because that's what everyone said to start with. Then banana. Then sweet potato. By eight months I had a child eating a wide variety of sweet, starchy foods with almost no protein and minimal iron. At his twelve-month checkup, his ferritin was low. The pediatrician mentioned it. I nodded. I didn't understand what I was looking at.",
+      "Here's the biology. A baby born at full term arrives with iron stores supplied by the mother during the third trimester. Those stores are sufficient for the first four to six months. Breast milk provides small amounts of iron — not enough for a rapidly growing brain and blood volume. At six months, the stores run out.",
+      "With Second Son, first food was pureed chicken mixed with sweet potato. Week two: lentil soup. Week three: egg yolk. Week four: chicken liver — I know, I made the face too. He didn't. By nine months he was eating ground beef off a spoon like it was dessert. His twelve-month ferritin was in the middle of the normal range."
+    ]},
+    science:"Iron deficiency in infancy causes lasting neurodevelopmental damage — lower cognitive scores, behavioral problems, and motor delays that do not fully reverse even after iron levels are restored. This is the finding of a 2010 AAP clinical report (Baker & Greer) reviewing multiple longitudinal studies. A 2020 RCT (Awasthi et al.) found iron-fortified cereal in 160 infants produced 9.7 g/L higher hemoglobin, 45% lower anemia rate, and significantly better language and motor scores at 12 months. Your first solid foods should be iron-rich. Heme iron (from meat) is absorbed at 15–35% efficiency. Non-heme iron (from plants) at 5–12% — pair it with Vitamin C to double or triple absorption. High-iron first foods: pureed meat (chicken, beef, lamb), pureed lentils or beans, iron-fortified oat cereal, egg yolk, chicken liver (the highest iron density of any food — 13mg per 100g). A note on rice cereal: it is iron-fortified, which helps, but it is also the highest-arsenic food in the commercial baby food category. The CDC, AAP, and FDA now all recommend oat or barley cereals instead.",
+    takeaway:"Lead with iron. Meat, lentils, fortified oat cereal. Pair plant iron with Vitamin C. No rice cereal as a staple. Ask for the ferritin number at the 12-month visit — 'normal' isn't enough information.",
+    question:{
+      text:"A parent is making their baby's first purees and chooses banana, sweet potato, and pear because the baby seems to love the sweet flavors. Based on the research, what's missing?",
+      options:[
+        {text:"Nothing — sweet flavors build positive food associations that help during the toddler years",correct:false},
+        {text:"Iron — all three foods are low in iron, and iron stores run out at 6 months; the first foods should be iron-rich",correct:true},
+        {text:"Protein — but this can be added after 8 months once the digestive system matures",correct:false},
+        {text:"Variety — the problem is too few different foods, not the specific iron content",correct:false}
+      ],
+      explanation:"Banana, sweet potato, and pear are all nutritious — but they are all low in iron. At 6 months, the iron stores a baby was born with run out. Breast milk provides some iron but not enough for a growing brain. The first solid foods are the primary opportunity to close this gap. If the first foods are iron-poor sweet foods, the baby gets the window but misses the point. The iron needs to come first — lead with meat, lentils, fortified oat cereal, or egg yolk. Sweet potato and banana are excellent additions; they should not be the foundation."
+    },
+    tryThis:"Check your baby's current food list. Count how many items are iron-rich (meat, lentils, egg yolk, fortified cereal). If the answer is zero or one, add a new iron-rich food this week. If you've been avoiding liver — try one teaspoon of chicken liver pureed into sweet potato. It looks alarming. The iron content justifies it."
+  },
+  {
+    id:'allergen', short:"Allergen\nMistake", title:"The Allergen Mistake", chapter:"Chapter 7", icon:"🥜",
+    story:{paragraphs:[
+      "For most of First Son's infancy, the standard advice was: delay allergen introduction. Peanuts: wait until at least age one. Some guidelines said three. The logic seemed intuitive — introduce something potentially dangerous to a vulnerable system, and you risk triggering a reaction. The safer play seemed obvious.",
+      "The research proved the opposite.",
+      "With First Son, I avoided peanuts until fourteen months out of fear. I avoided tree nuts and shellfish because they sounded risky. When I finally introduced peanut butter at fourteen months, he accepted it fine. But I'd spent eight months missing the window where early introduction builds lasting tolerance. With Second Son: peanut butter at five months, diluted, a quarter teaspoon on the tip of a spoon. He ate it. We waited 24 hours. No reaction. By six months it was a regular part of his diet. At his last allergy assessment: no food allergies."
+    ]},
+    science:"The LEAP trial (Learning Early About Peanut Allergy), New England Journal of Medicine 2015, randomized 640 high-risk infants to either consume peanuts or avoid them from 4–11 months until age 5. In infants with no prior sensitivity: peanut allergy at 60 months was 13.7% in the avoidance group and 1.9% in the consumption group. In high-sensitivity infants: 35.3% vs 10.6%. The avoidance advice caused peanut allergies. A 2024 follow-up study (LEAP-Trio) confirmed the protection held at age twelve. A 2023 modeling analysis estimated that introducing peanut to all infants at 4–6 months regardless of risk level would reduce population peanut allergy by 77%. This is now the universal consensus — every major allergy guideline in the US, UK, Australia, and Europe recommends introducing allergenic foods before twelve months, without prior testing, for healthy infants. Protocol: one new allergen every 3–5 days, watch 24 hours. Signs of true reaction: hives, facial swelling, vomiting, difficulty breathing. Redness around the mouth from acid contact is not an allergic reaction.",
+    takeaway:"Early and often — not late and fearful. The window that matters for allergy prevention is the same one that matters for flavor learning. Use it.",
+    question:{
+      text:"A parent with no family history of allergies delays peanut introduction until 12 months 'just to be safe.' Based on the LEAP trial and 2023 modeling research, what has this decision likely done?",
+      options:[
+        {text:"Nothing — the evidence for early introduction applies only to high-risk infants with severe eczema",correct:false},
+        {text:"Increased the risk of peanut allergy — the 2023 modeling found early introduction of peanut to all infants reduces population peanut allergy by 77%",correct:true},
+        {text:"Provided protection — delayed introduction gives the immune system more time to mature before exposure",correct:false},
+        {text:"Made no difference — the LEAP trial was only statistically significant for peanut, not other allergens",correct:false}
+      ],
+      explanation:"The 2023 Roberts modeling analysis found that targeting only high-risk infants (severe eczema) reduced population peanut allergy by 4.6%. Introducing peanut to all infants at 4–6 months reduced it by 77%. Every month of delay reduced the protective benefit. The immune system learns tolerance through early exposure — not by avoiding exposure until it 'matures.' Delayed introduction was the advice that caused the peanut allergy epidemic. Early introduction is the evidence-based reversal of that mistake."
+    },
+    tryThis:"Introduce one of the top 9 allergens this week if you haven't already. Peanut butter diluted with warm water (1 tsp smooth peanut butter + 2 tsp water, tip of a spoon). Do it at home, midday, when you can watch for 2 hours. If you've done peanuts: pick the next one from the list — egg, fish, tree nut butter, or sesame."
+  },
+  {
+    id:'hands_first', short:"Hands\nFirst", title:"Hands First", chapter:"Chapter 8", icon:"🤲",
+    story:{paragraphs:[
+      "The first time First Son gagged on a piece of soft-cooked sweet potato, I panicked. I reached in. I patted his back. I made the kind of face that communicates EMERGENCY to a baby. He cried. I decided the food was too chunky. I went back to thin purees. For months, any lumpier texture produced anxiety in both of us because we'd learned together that gagging meant danger. By twelve months he was refusing anything that wasn't the consistency of yogurt.",
+      "With Second Son, the first time he gagged, I sat on my hands. My wife looked at me like I'd lost my mind. He worked it out in four seconds and grabbed another piece of carrot. We said nothing. We kept eating. By nine months he was handling soft-cooked vegetables, ground meat, and scrambled egg without drama.",
+      "The distinction that changes everything: gagging is not choking."
+    ]},
+    science:"Baby-led weaning (BLW) means the baby feeds themselves from the start — finger foods, self-feeding, baby leads the quantity. The BLISS trial (Daniels et al., University of Otago, 206 families) found no significant difference in choking incidents between BLW and traditional spoon-feeding, no difference in iron status when iron-rich first foods were included, and better satiety responsiveness in BLW infants at 12 and 24 months — meaning they were better at stopping when full. What the research actually supports isn't a strict method. It's a principle: the baby decides whether to eat and how much. The parent decides what's on offer. Gagging vs. choking: gagging is a protective reflex. In infants, the gag reflex is positioned much further forward in the mouth than in adults — it's designed to prevent swallowing what shouldn't be swallowed yet. Baby gags, face goes red, alarming sounds, sorts it out in 3–5 seconds. This is the system working. Choking: baby cannot make sound, color is changing, airway is blocked — this is 911. Texture timeline: 6–7m smooth purees; 8–9m lumpy mashed + soft finger foods; 10–12m chopped soft table food; 12m+ family food. Delaying texture progression past 9 months is a documented risk factor for texture aversion at 12 months (Coulthard et al.).",
+    takeaway:"Self-feeding builds satiety responsiveness. Gagging is the system working. Sit on your hands, watch, and let the baby solve it. Progress textures by 9 months — the oral motor system needs the challenge while it's still developing.",
+    question:{
+      text:"During a meal, an 8-month-old's face goes red, they make alarming sounds, and they seem to be working something around in their mouth. After 4 seconds, they swallow and reach for more food. What happened?",
+      options:[
+        {text:"The baby was choking — they should be assessed immediately",correct:false},
+        {text:"The baby gagged — a normal protective reflex that resolved itself; the correct response is to stay calm and let them continue",correct:true},
+        {text:"The food was too advanced for this age — revert to smooth purees",correct:false},
+        {text:"This is concerning and worth raising at the next pediatrician visit",correct:false}
+      ],
+      explanation:"This is a textbook gag response — red face, alarming sounds, resolved in a few seconds. The gag reflex in infants is positioned further forward in the mouth precisely to catch items before they become a choking risk. It is working correctly. The correct response from the parent is to stay calm, say nothing, and let the baby continue. Panicking, reaching in, or expressing alarm communicates 'this is dangerous' to the baby and can create lasting texture anxiety. Choking looks completely different: the baby is silent, cannot cough, and their color is changing."
+    },
+    tryThis:"If you've been sticking to smooth purees, introduce one soft finger food this week. Well-cooked carrot, broccoli floret, banana piece, or scrambled egg. Put it on the tray, let the baby pick it up on their own. Sit on your hands if you need to. Let the gag reflex do its job if it fires."
+  },
+  {
+    id:'pouch', short:"Pouch\nProblem", title:"The Pouch Problem", chapter:"Chapter 9", icon:"🧃",
+    story:{paragraphs:[
+      "Here is something I did with First Son that I thought was progressive and nutritionally thoughtful: I fed him almost exclusively from organic baby food pouches from a company with a nature word in its name. The packaging said 'farm to table' and showed pictures of produce being harvested by people in sun hats. The ingredients listed apple, spinach, and pear. I thought I was crushing it.",
+      "I later learned three things. The 2021 Congressional report on commercial baby food found that major manufacturers — including organic, premium brands — were selling products with arsenic, lead, cadmium, and mercury at levels exceeding their own internal safety standards. Rice-based products had the highest arsenic concentrations. And the sucking motion required by a pouch is a front-to-back tongue movement — the same motion as nursing. Not the lateral movement required for chewing. Eight months of pouches, and First Son had never practiced the motion that eating actually requires.",
+      "By twelve months, he refused anything with a lump in it. I didn't understand why. Now I do."
+    ]},
+    science:"Three distinct problems with an all-pouch diet. First, heavy metals: the 2021 House Subcommittee report found major brands — including Beech-Nut — testing at up to 91 ppb arsenic. The FDA's enforceable limit for apple juice is 10 ppb. Rice-based products are worst. Organic labeling does not reduce heavy metal content — heavy metals are absorbed from soil, and organic status doesn't change soil composition. Second, nutrition: a 2023 Western Sydney University analysis of 276 commercial pouches found only 2 met adequate nutrient levels for their labeled age group; only 1 of 276 vegetable pouches contained no sweetening agents. Third, oral motor development: sucking from a pouch uses a front-to-back tongue motion. Chewing and eating require lateral tongue manipulation. Heavy pouch use (more than 2–3 per day as a staple) is increasingly associated by occupational therapists and SLPs with texture aversion at twelve months. One fix that solves the oral motor problem entirely: squeeze the pouch content onto a spoon, then offer the spoon.",
+    takeaway:"Occasional use is fine. Daily staple use is not. Home-prepared food is significantly lower in heavy metals. And if you use pouches, squeeze them onto a spoon — same convenience, completely different feeding motion.",
+    question:{
+      text:"A parent buys organic, premium pouches labeled with healthy-sounding ingredients. They assume the organic certification means the heavy metal concern doesn't apply. Is this accurate?",
+      options:[
+        {text:"Yes — organic certification requires testing for heavy metal contamination",correct:false},
+        {text:"No — heavy metals are absorbed from soil, and organic certification doesn't change soil composition; organic products were among those flagged in the 2021 Congressional report",correct:true},
+        {text:"Partially — organic reduces arsenic but not lead or cadmium",correct:false},
+        {text:"Yes for US-produced products, but not for imported ingredients",correct:false}
+      ],
+      explanation:"The 2021 Congressional report specifically noted that organic and premium brands were among those whose internal documents showed products testing above their own safety thresholds. Heavy metals — arsenic, lead, cadmium, mercury — are absorbed by plants from soil. Organic farming practices reduce pesticide residue but have no effect on soil heavy metal content. The organic label is meaningful for some concerns; this is not one of them. Home-prepared food from fresh ingredients — roasted sweet potato mashed with a fork, scrambled egg, pureed lentils — tests dramatically lower for heavy metals than commercially processed products."
+    },
+    tryThis:"Pick one meal today that's currently a pouch and replace it with a home-prepared equivalent. Roast sweet potato and mash it with a fork. Scramble an egg. Open a can of lentils, drain and mash. It takes 8 minutes and has no arsenic. If you do use a pouch today, squeeze it onto a spoon before offering."
+  },
+  {
+    id:'table', short:"The\nTable", title:"The Table", chapter:"Chapter 10", icon:"🍽️",
+    story:{paragraphs:[
+      "With First Son, we turned on the TV during dinner so he'd sit still long enough to eat. When he refused something, we commented on it. We tried to talk him into trying things. We made him separate pasta when he refused what everyone else was eating. We celebrated every bite of something new like it was a medal ceremony.",
+      "Every one of these behaviors is documented in the research as counterproductive. Not in an abstract way — they backfire specifically: pressure to eat increases food refusal. Rewarding vegetable eating with dessert decreases preference for the vegetable and increases preference for the dessert. Making a separate meal teaches the child that refusal is a viable strategy for getting preferred food.",
+      "With Second Son, we ate together, TV off, one food for the table. When he refused something, we said nothing. We moved on. He ate when he was hungry. He still does."
+    ]},
+    science:"A 2021 review in the Journal of Pediatric Gastroenterology and Nutrition found that family meal frequency was the single strongest predictor of healthy dietary patterns in children — stronger than any specific food intervention, method, or app. Families eating together five or more times per week have children with measurably better diet quality, lower obesity risk, and better dietary variety. Ellyn Satter's Division of Responsibility, endorsed by the AAP, WIC, Head Start, and the USDA: parent's job is what food is offered, when, and where. Child's job is whether to eat and how much. Behaviors that backfire: commenting on what gets eaten, requiring a 'no thank you bite,' celebrating new food tries (signals it's an achievement, not normal), bribing with dessert, making separate meals, using screens to distract, showing anxiety about intake. A 2024 study (Masztalerz-Kozubek et al., Appetite, 467 toddlers) found distracted mealtime environments significantly predicted lower healthy dietary patterns and higher processed food intake. The screen shuts down both social modeling and hunger/fullness signal awareness simultaneously.",
+    takeaway:"Eat together. One food for the table. No comments on what gets eaten or doesn't. Turn the screens off. Get out of the way. The family table is the most powerful feeding intervention available — and it costs nothing.",
+    question:{
+      text:"A parent celebrates enthusiastically when their toddler tries a new food — high fives, clapping, 'I'm so proud of you!' They believe positive reinforcement will make the child more likely to try new things. What does the research predict?",
+      options:[
+        {text:"The child becomes more adventurous — positive reinforcement is consistently effective for food acceptance",correct:false},
+        {text:"The child learns that trying new food is an achievement requiring special recognition, making routine acceptance less likely — neutral reactions are more effective",correct:true},
+        {text:"The effect is neutral — emotional responses don't significantly affect food acceptance",correct:false},
+        {text:"It works short-term but the effect fades without continued reinforcement",correct:false}
+      ],
+      explanation:"Satter's Division of Responsibility research shows that celebratory reactions to new food trying create a category problem: the child learns that new food is an event, not a normal part of eating. The goal is for trying new food to be as unremarkable as drinking water. When a child tries something new and the table erupts, the implicit message is 'this is unusual, this is a big deal.' A child who doesn't try the new food the next night now has a 'failure' to navigate. The research-backed response is warm neutrality: 'Glad you liked it' at most. Normal, not celebrated."
+    },
+    tryThis:"At dinner tonight: TV off, eat the same food as your child, and make a rule with yourself to say nothing about what they eat or don't. If they refuse something, pass the bread. If they try something new, say 'glad you liked it' and change the subject. See what one meal with no pressure actually looks like."
+  },
+  {
+    id:'refusals', short:"Twenty\nRefusals", title:"Twenty Refusals", chapter:"Chapter 11", icon:"🥦",
+    story:{paragraphs:[
+      "First Son refused broccoli fourteen times before he tried it. I know this because I made a mark on a Post-it note for each attempt, around month eight of the broccoli wars. I stopped at fourteen because I ran out of patience and we called broccoli a lost cause.",
+      "Here's what the research says: fourteen wasn't enough. And I'd been doing it wrong.",
+      "The watching was the problem. Every time I put broccoli on his plate, I watched him. My expression changed. He read my expression as 'this is the food my parent is worried about,' which made it the food he was most suspicious of. I thought I was being patient. What I was actually doing was communicating anxiety — and anxiety about a food makes a toddler more suspicious of it, not less."
+    ]},
+    science:"Food neophobia — fear of new foods — is a normal developmental phenomenon peaking between 18 and 24 months, present in 25–36% of toddlers across cultures. Leann Birch's foundational 1987 study established that infants in the 6–12 month range typically accepted novel flavors within 8–15 exposures. For toddlers, the timeline is less predictable. A 2018 USDA study directly observed 55 toddlers across 16 exposures to a novel food — the classic sensory exploration sequence wasn't reliably observed. What the research does support consistently: repeated neutral exposure works better than any form of pressure or encouragement. 'Neutral' means the food is on the plate, the parent is eating it, no comment is made. Social modeling dominates: a 2012 Queensland study found maternal food preferences were the single strongest predictor of toddler food preferences — stronger than number of exposures, hunger level, or anything else measured. The most powerful thing a parent can do is eat the food themselves. What to say when food is refused: nothing. Pass the bread. What to say when it's finally tried: 'Glad you liked it.' Normalize the event; don't celebrate it.",
+    takeaway:"Keep offering without pressure, while eating the food yourself. The exposure principle works on a longer timeline for toddlers than for infants. Your behavior matters more than your child's reaction. Stay boring about it.",
+    question:{
+      text:"A parent has offered peas 12 times. The toddler has never touched them. The parent is starting to think their child has a genuine aversion. What does the research most support?",
+      options:[
+        {text:"At 12 exposures with no progress, this is likely a genuine aversion — introduce an alternative vegetable",correct:false},
+        {text:"12 exposures is within the normal range — continue neutral offering while eating peas yourself; social modeling is the most powerful lever",correct:true},
+        {text:"The refusal means the peas need to be presented differently — try pea puree instead of whole peas",correct:false},
+        {text:"Try pairing peas with a preferred food to create a positive association",correct:false}
+      ],
+      explanation:"Birch's research found 8–15 exposures work reliably for the 6–12 month range. For toddlers, the timeline extends and the process is less linear. Twelve exposures with no acceptance is normal. The research's most consistent finding for toddlers is that social modeling — eating the food yourself at the family table, without comment — is the single strongest predictor of eventual acceptance. A food on the plate that the toddler doesn't touch is not a failed exposure. It is a food under consideration. Keep offering it, keep eating it yourself, say nothing. 'Not yet' is different from 'never.'"
+    },
+    tryThis:"Pick one food your toddler currently refuses. Put it on their plate at dinner tonight with no comment. Eat it yourself. When they ignore it, pass the bread. Do this every time you eat it for the next two weeks — tracking nothing, saying nothing. Notice what happens at week three."
+  },
+  {
+    id:'milk', short:"Milk\nSide Dish", title:"Milk Becomes a Side Dish", chapter:"Chapter 12", icon:"🥛",
+    story:{paragraphs:[
+      "At twelve months, something needs to change about milk. Not that milk stops being valuable — whole cow's milk is an excellent source of calcium, protein, and fat for a growing toddler. The problem is not the milk. It's the volume.",
+      "With First Son, I switched to whole cow's milk at eleven months because formula was expensive and I figured 'it's all milk.' He had two twelve-ounce bottles of cow's milk per day. At his twelve-month checkup, his ferritin was low. His pediatrician mentioned it. I nodded. I didn't connect the milk volumes to the iron numbers until I read about 'milk anemia' three years later.",
+      "The mechanism: cow's milk is low in iron, fills a small stomach, and — at high volumes — directly inhibits iron absorption from other foods eaten at the same meal. Two twelve-ounce bottles per day was crowding out everything iron-rich I tried to feed him."
+    ]},
+    science:"Before twelve months: no cow's milk as a primary drink — firm guideline from the CDC, AAP, and ESPGHAN. Why: (1) Iron displacement — cow's milk is low in iron; large volumes leave no room for iron-rich food; nearly 10% of toddlers aged 1–3 have iron deficiency, and the primary cause in healthy children is too much milk. Pediatric literature calls this 'milk anemia.' (2) Inhibited absorption — high calcium and casein in cow's milk directly inhibit non-heme iron absorption from other foods at the same meal. (3) Kidney load — cow's milk protein creates a higher renal solute load than infant kidneys can handle before twelve months. (4) GI blood loss — in some infants under twelve months, cow's milk protein irritates the gut lining causing microscopic blood loss. After twelve months: replace formula with whole cow's milk if not continuing to breastfeed. Target 2 cups (16 oz) per day; maximum 24 oz per day — above this, iron displacement becomes clinically significant. Offer milk with meals or after, not as the primary between-meal hunger tool. AAP recommends transitioning from bottle to open or straw cup by 12 months — extended bottle use past 15 months is associated with higher total milk intake and increased dental caries.",
+    takeaway:"At twelve months, milk becomes a side dish — two cups a day, offered with meals, not the main course. Make room for the iron-rich foods that are still doing critical work.",
+    question:{
+      text:"A 14-month-old drinks two 12-ounce bottles of whole milk per day and eats fairly well at meals. At their checkup, ferritin comes back low. What is the most likely cause?",
+      options:[
+        {text:"The child needs an iron supplement — dietary iron at this age is rarely sufficient",correct:false},
+        {text:"The 24 oz of daily milk is filling the stomach, displacing iron-rich foods, and directly inhibiting non-heme iron absorption from other foods — this is milk anemia",correct:true},
+        {text:"The child has a genetic predisposition to low iron absorption",correct:false},
+        {text:"The bottle feeding method is the issue — switching to a cup will resolve the iron levels",correct:false}
+      ],
+      explanation:"This is the textbook milk anemia picture: 24 oz of cow's milk per day is above the recommended maximum. High calcium and casein in cow's milk directly inhibit non-heme iron absorption from foods eaten in the same meal. Two large bottles also fill a small stomach, reducing intake of iron-rich foods. The fix: reduce total milk to 16 oz per day maximum, offer it with or after meals (not before), and transition off the bottle to reduce volume consumption. The iron-rich foods that were being blocked can then do their job."
+    },
+    tryThis:"Measure your child's total milk intake today — count every ounce. If it's over 16 oz, decide which of the two daily servings to reduce first. Move milk to be offered with meals or after, not as a between-meal drink. Track ferritin at the next routine checkup — ask for the number, not just 'normal.'"
+  },
+  {
+    id:'done', short:"When\nDone", title:"When Done Looks Different", chapter:"Chapter 13", icon:"🌈",
+    story:{paragraphs:[
+      "Second Son turned three in January. His birthday dinner was salmon with rice and cucumber. He asked for a second serving of the cucumber.",
+      "I want to be clear: I am not claiming victory. Second Son is not a perfect eater. He went through a phase at twenty-two months where he ate pasta and cheese for lunch, every single day, for six weeks. He still won't eat mushrooms — which is fine, nobody needs to love mushrooms.",
+      "What I'm saying is that the foundation is there. He has a wide map. He trusts food. He doesn't use the dinner table as a battle station. When new food appears on his plate, his default response is curiosity rather than suspicion. That's what done looks like. It is not a child who eats everything. It's a child who has a generally peaceful relationship with food — because the adults around them followed the evidence when the windows were open."
+    ]},
+    science:"Toddler growth slows dramatically after twelve months. A child gaining a pound every two weeks in infancy will gain six to ten pounds in the entire second year. This is normal. It's why toddler appetites drop so noticeably after the first birthday — the body needs less fuel when it's not growing as fast. Parents who don't know this panic, pressure, and make things worse. Signs feeding has gone well: child will try most foods that appear in front of them; mealtimes are not consistently stressful; growth is on the child's curve; child can eat outside the home without crisis; child shows hunger and fullness signals and acts on them. Red flags for clinical concerns: food list shrinking, not growing; consistent worsening mealtime battles; gagging or distress at the sight of food; inability to eat in social settings; fewer than 10 accepted foods total; weight loss or growth chart drop-off. Most picky eating is developmental and resolves by age 4–6. ARFID (Avoidant/Restrictive Food Intake Disorder) is the clinical diagnosis for eating restriction with functional impairment — three or more red flags warrants a pediatrician conversation.",
+    takeaway:"The research doesn't promise a child who eats everything. It promises a child with the tools for a healthy food relationship — because the adults around them used the windows correctly. That's the whole job.",
+    question:{
+      text:"A parent's 18-month-old used to eat well but now refuses most dinners and seems to eat very little. The parent is worried about nutrition and growth. Based on the research, what is most likely happening?",
+      options:[
+        {text:"This signals a feeding problem that needs to be addressed with a new strategy immediately",correct:false},
+        {text:"This is normal — toddler growth slows dramatically after 12 months and appetite drops accordingly; if the child is following their growth curve, this is expected",correct:true},
+        {text:"The toddler has developed food neophobia — early intervention is needed",correct:false},
+        {text:"The child needs more calorie-dense foods to compensate for reduced volume",correct:false}
+      ],
+      explanation:"After the first birthday, toddler growth slows from roughly 1 pound every 2 weeks to 6–10 pounds over the entire second year. The body simply doesn't need as much fuel. The resulting drop in appetite looks alarming to parents who experienced a much hungrier infant. What matters is not meal volume but growth trajectory — is the child following their own curve on the growth chart? Most pediatric practitioners would check this before calling reduced appetite a problem. Pressing a child who isn't hungry to eat more is the exact mechanism that disrupts caloric self-regulation."
+    },
+    tryThis:"Write one sentence about what you understand now that you didn't before this course. Not a to-do list — one sentence. Then look at your child's most recent meal and find one thing that went better than it would have without what you just learned. That's the whole point."
+  }
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const SAVE_KEY='ff_course_feeding_v1';
+function loadState(){try{const s=localStorage.getItem(SAVE_KEY);if(s)return JSON.parse(s);}catch(e){}return null;}
+function saveState(s){try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));}catch(e){}}
+function freshState(){return{screen:'welcome',chapterIndex:0,completed:[],selectedOption:null,showFeedback:false};}
+let STATE=loadState()||freshState();
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function el(tag,cls){const e=document.createElement(tag);if(cls)e.className=cls;return e;}
+function ch(){return CHAPTERS[STATE.chapterIndex];}
+function done(id){return STATE.completed.includes(id);}
+function pct(){return Math.round((STATE.completed.length/CHAPTERS.length)*100);}
+function userName(){return localStorage.getItem('ff_user_name')||'';}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════
+function render(){
+  saveState(STATE);
+  const app=document.getElementById('app');
+  app.innerHTML='';app.className='fade-in';
+  if(STATE.screen==='chapter'||STATE.screen==='question')renderProgress(app);
+  switch(STATE.screen){
+    case'welcome':renderWelcome(app);break;
+    case'chapter':renderChapter(app);break;
+    case'question':renderQuestion(app);break;
+    case'complete':renderComplete(app);break;
+  }
+}
+
+function renderProgress(app){
+  const wrap=el('div','progress-section no-print');
+  const meta=el('div','progress-meta');
+  const lbl=el('span','progress-label');lbl.textContent=`Chapter ${STATE.chapterIndex+1} of ${CHAPTERS.length}`;
+  const pctLbl=el('span','progress-pct');pctLbl.textContent=pct()+'% complete';
+  meta.appendChild(lbl);meta.appendChild(pctLbl);wrap.appendChild(meta);
+  const barWrap=el('div','progress-bar-wrap');
+  const fill=el('div','progress-bar-fill');fill.style.width=pct()+'%';
+  barWrap.appendChild(fill);wrap.appendChild(barWrap);
+  const roadmap=el('div','roadmap');
+  CHAPTERS.forEach((c,i)=>{
+    const isDone=done(c.id),isCurrent=i===STATE.chapterIndex;
+    const chip=el('div','roadmap-ch'+(isDone?' done':isCurrent?' current':''));
+    const icon=el('div','roadmap-icon');icon.textContent=c.icon;chip.appendChild(icon);
+    const lbl2=el('div','roadmap-label');lbl2.textContent=(c.short||c.title).replace('\n',' ');lbl2.title=c.title;chip.appendChild(lbl2);
+    roadmap.appendChild(chip);
+  });
+  wrap.appendChild(roadmap);
+  setTimeout(()=>{const chips=roadmap.querySelectorAll('.roadmap-ch');if(chips[STATE.chapterIndex])chips[STATE.chapterIndex].scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});},60);
+  app.appendChild(wrap);
+}
+
+function renderWelcome(app){
+  const card=el('div','card');
+  const badge=el('div','welcome-badge');badge.textContent='🍽️';card.appendChild(badge);
+  const ey=el('div','eyebrow');ey.textContent='FamilyForce · Feeding';card.appendChild(ey);
+  const title=el('h1');title.textContent='The Feeding Playbook';card.appendChild(title);
+  const sub=el('p');sub.style.marginTop='12px';
+  sub.textContent='A research-backed course on getting feeding right from the start — milk phase, flavor window, and the toddler years. 13 chapters, one question each, earn your certificate.';card.appendChild(sub);
+  const stats=el('div','stat-row');
+  [['13','Chapters'],['~65','Minutes'],['1','Certificate']].forEach(([num,lbl])=>{
+    const box=el('div','stat-box');
+    const n=el('div','stat-num');n.textContent=num;box.appendChild(n);
+    const l=el('div','stat-lbl');l.textContent=lbl;box.appendChild(l);stats.appendChild(box);
+  });card.appendChild(stats);
+  card.appendChild(el('div','divider'));
+  const h=el('h3');h.textContent='How each chapter works';card.appendChild(h);
+  [["Jack's story","A real moment from feeding First Son vs. Second Son. The moment that made it real."],
+   ["The science","What the research actually shows — specific, actionable, not a headline."],
+   ["One question","Answer it correctly to unlock the next chapter. Get it wrong: review and try again."],
+   ["Try This","One specific action to do before moving on."]
+  ].forEach(([t,d],i)=>{
+    const step=el('div','how-step');
+    const num=el('div','step-num');num.textContent=i+1;step.appendChild(num);
+    const text=el('div','step-text');text.innerHTML=`<strong>${t}</strong> — ${d}`;step.appendChild(text);
+    card.appendChild(step);
+  });
+  const hasProg=STATE.completed.length>0;
+  if(hasProg){
+    const resume=el('button','btn btn-primary');resume.style.marginTop='24px';
+    resume.textContent=`↩  Resume — Chapter ${STATE.chapterIndex+1}`;
+    resume.onclick=()=>{STATE.screen='chapter';render();};card.appendChild(resume);
+    const restart=el('button','btn btn-secondary');restart.textContent='→  Start from Chapter 1';
+    restart.onclick=()=>{STATE.chapterIndex=0;STATE.screen='chapter';render();};card.appendChild(restart);
+    const reset=el('button','btn btn-ghost');reset.style.color='var(--text-dim)';reset.textContent='↺  Clear Progress';
+    reset.onclick=()=>{if(confirm('Clear all progress?')){STATE=freshState();render();}};card.appendChild(reset);
+  }else{
+    const start=el('button','btn btn-primary');start.style.marginTop='24px';start.textContent='→  Start Course';
+    start.onclick=()=>{STATE.screen='chapter';render();};card.appendChild(start);
+  }
+  app.appendChild(card);app.appendChild(mkSaveNote());
+}
+
+function renderChapter(app){
+  const c=ch();const card=el('div','card');
+  const ey=el('div','eyebrow');ey.textContent=`${c.chapter} · ${c.icon} ${c.title}`;card.appendChild(ey);
+  const story=el('div','story-block');
+  const slbl=el('div','story-label');slbl.textContent="Jack's Story";story.appendChild(slbl);
+  c.story.paragraphs.forEach(t=>{const p=el('p');p.textContent=t;story.appendChild(p);});card.appendChild(story);
+  const sci=el('div','science-block');
+  const sciLbl=el('div','science-label');sciLbl.textContent='The Science';sci.appendChild(sciLbl);
+  const sciP=el('p');sciP.textContent=c.science;sci.appendChild(sciP);card.appendChild(sci);
+  const kt=el('div','takeaway');
+  const ktLbl=el('div','takeaway-label');ktLbl.textContent='🎯  Key Takeaway';kt.appendChild(ktLbl);
+  kt.appendChild(document.createTextNode(c.takeaway));card.appendChild(kt);
+  const cta=el('button','btn btn-primary');cta.style.marginTop='24px';
+  cta.textContent='→  Answer the Chapter Question';
+  cta.onclick=()=>{STATE.screen='question';STATE.selectedOption=null;STATE.showFeedback=false;render();};card.appendChild(cta);
+  if(STATE.chapterIndex>0){
+    const back=el('button','btn btn-ghost');back.style.color='var(--text-dim)';
+    back.textContent=`← Chapter ${STATE.chapterIndex}`;
+    back.onclick=()=>{STATE.chapterIndex--;STATE.screen='chapter';render();};card.appendChild(back);
+  }
+  app.appendChild(card);app.appendChild(mkSaveNote());
+}
+
+function renderQuestion(app){
+  const c=ch();const q=c.question;const card=el('div','question-card');
+  const qlbl=el('div','q-label');qlbl.textContent=`${c.chapter} · Check Your Understanding`;card.appendChild(qlbl);
+  const qtext=el('div','q-text');qtext.textContent=q.text;card.appendChild(qtext);
+  const opts=el('div','options');
+  q.options.forEach((opt,i)=>{
+    const btn=el('button','option');
+    if(STATE.showFeedback){if(opt.correct)btn.className+=' correct';else if(i===STATE.selectedOption)btn.className+=' wrong';btn.disabled=true;}
+    else if(STATE.selectedOption===i)btn.className+=' selected';
+    btn.textContent=opt.text;
+    btn.onclick=()=>{if(STATE.showFeedback)return;STATE.selectedOption=i;render();};
+    opts.appendChild(btn);
+  });card.appendChild(opts);
+  if(STATE.showFeedback){
+    const isCorrect=q.options[STATE.selectedOption]?.correct;
+    const fb=el('div',`feedback feedback-${isCorrect?'correct':'wrong'}`);
+    const fbt=el('div','feedback-title');fbt.textContent=isCorrect?'✅  Correct!':'❌  Not quite.';fb.appendChild(fbt);
+    const fbText=el('div');fbText.textContent=q.explanation;fb.appendChild(fbText);card.appendChild(fb);
+    if(isCorrect){
+      if(!done(c.id))STATE.completed.push(c.id);saveState(STATE);
+      if(c.tryThis){
+        const tt=el('div','try-this');
+        const ttLbl=el('div','try-this-label');ttLbl.textContent='✋  Try This Before You Move On';tt.appendChild(ttLbl);
+        const ttText=el('div','try-this-text');ttText.textContent=c.tryThis;tt.appendChild(ttText);card.appendChild(tt);
+      }
+      const isLast=STATE.chapterIndex===CHAPTERS.length-1;
+      const next=el('button','btn btn-primary');
+      next.textContent=isLast?'🎓  Get My Certificate':`→  Chapter ${STATE.chapterIndex+2}: ${CHAPTERS[STATE.chapterIndex+1].title}`;
+      next.onclick=()=>{if(isLast){STATE.screen='complete';}else{STATE.chapterIndex++;STATE.screen='chapter';STATE.selectedOption=null;STATE.showFeedback=false;}render();};
+      card.appendChild(next);
+    }else{
+      const row=el('div','btn-row');
+      const retry=el('button','btn btn-ghost btn-sm');retry.textContent='↺  Try Again';
+      retry.onclick=()=>{STATE.selectedOption=null;STATE.showFeedback=false;render();};row.appendChild(retry);
+      const review=el('button','btn btn-secondary btn-sm');review.textContent='📖  Review Chapter';
+      review.onclick=()=>{STATE.screen='chapter';STATE.selectedOption=null;STATE.showFeedback=false;render();};row.appendChild(review);
+      card.appendChild(row);
+    }
+  }else{
+    const check=el('button','btn btn-primary');check.textContent='Check';
+    check.disabled=STATE.selectedOption===null;
+    check.onclick=()=>{STATE.showFeedback=true;render();};card.appendChild(check);
+    const goBack=el('button','btn btn-ghost');goBack.style.color='var(--text-dim)';goBack.textContent='← Review the Chapter';
+    goBack.onclick=()=>{STATE.screen='chapter';render();};card.appendChild(goBack);
+  }
+  app.appendChild(card);app.appendChild(mkSaveNote());
+}
+
+function renderComplete(app){
+  // Award badge
+  try{
+    const progress=JSON.parse(localStorage.getItem('ff_progress')||'{}');
+    if(!progress['feeding'])progress['feeding']={};
+    progress['feeding'].cert=true;
+    localStorage.setItem('ff_progress',JSON.stringify(progress));
+  }catch(e){}
+
+  const congrats=el('div','card no-print');
+  const ce=el('div','eyebrow');ce.style.textAlign='center';ce.textContent='Course Complete 🎉';congrats.appendChild(ce);
+  const ct=el('h2');ct.style.textAlign='center';ct.style.marginTop='4px';ct.textContent='You finished all 13 chapters';congrats.appendChild(ct);
+  const cs=el('p');cs.style.textAlign='center';cs.style.marginTop='8px';
+  cs.textContent="Here's your certificate. Type your name, then print or save it as a PDF.";congrats.appendChild(cs);
+  app.appendChild(congrats);
+
+  const certCard=el('div','card');
+  const certOuter=el('div','cert-outer');
+  const seal=el('div','cert-seal');seal.textContent='✓';certOuter.appendChild(seal);
+  const pretitle=el('div','cert-pretitle');pretitle.textContent='Certificate of Completion';certOuter.appendChild(pretitle);
+  const certTitle=el('h2','cert-title');certTitle.textContent='The Feeding Playbook';certOuter.appendChild(certTitle);
+  const nameWrap=el('div','cert-name-wrap');
+  const nameLbl=el('div','cert-name-label');nameLbl.textContent='Awarded to';nameWrap.appendChild(nameLbl);
+  const nameInput=el('input','cert-name-input');nameInput.type='text';nameInput.placeholder='Your name';
+  nameInput.setAttribute('spellcheck','false');nameInput.value=userName();nameWrap.appendChild(nameInput);certOuter.appendChild(nameWrap);
+  certOuter.appendChild(el('div','cert-rule'));
+  const body=el('div','cert-body');
+  body.textContent="has successfully completed all 13 chapters of The Feeding Playbook, demonstrating understanding of research-backed approaches to infant and toddler nutrition across the milk phase, flavor window, and autonomy phase.";certOuter.appendChild(body);
+  const sigRow=el('div','cert-sig-row');
+  const sig=el('div','cert-sig');
+  const sigLine=el('div','cert-sig-line');sig.appendChild(sigLine);
+  const sigName=el('div','cert-sig-name');sigName.textContent='Jack Hartley';sig.appendChild(sigName);
+  const sigRole=el('div','cert-sig-role');sigRole.textContent='Author, The Feeding Playbook';sig.appendChild(sigRole);
+  sigRow.appendChild(sig);certOuter.appendChild(sigRow);
+  const dateEl=el('div','cert-date');dateEl.textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});certOuter.appendChild(dateEl);
+  certCard.appendChild(certOuter);app.appendChild(certCard);
+
+  const actions=el('div','card card-sm no-print');
+  const printBtn=el('button','btn btn-primary');printBtn.textContent='🖨️  Print / Save as PDF';
+  printBtn.onclick=()=>window.print();actions.appendChild(printBtn);
+  const epubBtn=el('button','btn btn-secondary');epubBtn.textContent='📄  Download Full Book';
+  epubBtn.onclick=()=>{const a=document.createElement('a');a.href='assets/downloads/feeding-playbook.epub';a.download='Feeding-Playbook-Jack-Hartley.epub';a.click();};actions.appendChild(epubBtn);
+  const dashBtn=el('button','btn btn-ghost');dashBtn.textContent='← Back to Dashboard';
+  dashBtn.onclick=()=>{window.location.href='dashboard.html';};actions.appendChild(dashBtn);
+  app.appendChild(actions);
+
+  const actionCard=el('div','card no-print');
+  const ae=el('div','eyebrow');ae.textContent='Your Action Plan';actionCard.appendChild(ae);
+  const at=el('h3');at.style.marginTop='4px';at.textContent='13 things to try this week';actionCard.appendChild(at);
+  const as_=el('p');as_.style.fontSize='13px';as_.style.marginTop='6px';as_.style.marginBottom='16px';
+  as_.textContent='One specific action from each chapter. Pick the ones that match where you are right now.';actionCard.appendChild(as_);
+  const list=el('div','action-list');
+  CHAPTERS.forEach((c,i)=>{
+    if(!c.tryThis)return;
+    const item=el('div','action-item');
+    const num=el('div','action-num');num.textContent=i+1;item.appendChild(num);
+    const bdy=el('div','action-body');
+    const clbl=el('div','action-chapter');clbl.textContent=`${c.icon} ${c.title}`;bdy.appendChild(clbl);
+    const txt=el('div');txt.textContent=c.tryThis;bdy.appendChild(txt);item.appendChild(bdy);list.appendChild(item);
+  });actionCard.appendChild(list);app.appendChild(actionCard);
+
+  const rulesCard=el('div','card no-print');
+  const re=el('div','eyebrow');re.textContent='The Core Principles';rulesCard.appendChild(re);
+  const rt=el('h3');rt.style.marginTop='4px';rt.style.marginBottom='16px';rt.textContent='What the research reduces to';rulesCard.appendChild(rt);
+  [
+    ['🤱','Your job is to offer; the baby\'s job is to decide','Responsive feeding in the milk phase builds caloric self-regulation that lasts into childhood. Start here. This principle runs through every phase.'],
+    ['🪟','Use the flavor window — it doesn\'t stay open','Between 6 and 12 months, the brain is maximally plastic for flavor acceptance. What you offer now determines what your toddler eats. Lead with iron. Include the bitter vegetables.'],
+    ['🥜','Early allergens, not late ones','The LEAP trial settled this. Early introduction reduces allergy risk by up to 77%. Late introduction out of fear is what caused the allergy epidemic. Start before 6 months.'],
+    ['🍽️','The family table is the method','Eat together, one food, screens off, no comments. Social modeling is the strongest lever available to parents of toddlers. Be boring about new foods. Stay boring.']
+  ].forEach(([icon,title2,desc])=>{
+    const rule=el('div','rule-item');
+    const ri=el('div','rule-icon');ri.textContent=icon;rule.appendChild(ri);
+    const rb=el('div');
+    const rTitle=el('div','rule-title');rTitle.textContent=title2;rb.appendChild(rTitle);
+    const rDesc=el('div','rule-desc');rDesc.textContent=desc;rb.appendChild(rDesc);
+    rule.appendChild(rb);rulesCard.appendChild(rule);
+  });app.appendChild(rulesCard);
+}
+
+function mkSaveNote(){const n=el('p','save-note no-print');n.textContent='✓  Progress saved automatically';return n;}
+render();
+</script>
+</body>
+</html>

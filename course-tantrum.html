@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE — Tantrum Course
+     Gated: Supabase auth required
+     Stack: Vanilla HTML/CSS/JS · Zero dependencies · No build
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+
+<title>Tantrum Course · FamilyForce</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#6E4ED6">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const _sb = supabase.createClient(
+    'https://ewjqbafaxeasyvknxmof.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+  );
+  const _preview = new URLSearchParams(location.search).get('preview') === '1';
+  if (_preview) {
+    document.documentElement.classList.add('authed');
+  } else {
+    _sb.auth.getSession().then(({ data }) => {
+      if (!data.session) window.location.href = 'sign-in.html?next=course-tantrum.html';
+      else document.documentElement.classList.add('authed');
+    });
+  }
+</script>
+
+<style>
+/* ─── TOKENS ─── */
+:root {
+  --sans:  'Outfit', system-ui, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --terra:        #6E4ED6;
+  --terra-dark:   #5B3CC4;
+  --terra-light:  #9B80FF;
+  --terra-tint:   #EDE9FB;
+  --terra-tint2:  #F5F3FF;
+  --bg:       #F8F7FF;
+  --surface:  #FFFFFF;
+  --elevated: #F3F0FF;
+  --text:     #0D0820;
+  --text-mid: #4A4560;
+  --text-dim: #8B85A8;
+  --border:       rgba(110,78,214,.12);
+  --border-light: rgba(110,78,214,.07);
+  --correct:     #22c55e;
+  --correct-bg:  #F0FDF4;
+  --correct-border: #86efac;
+  --wrong:       #ef4444;
+  --wrong-bg:    #FEF2F2;
+  --wrong-border:#fca5a5;
+  --radius-pill: 100px;
+  --radius-card: 20px;
+  --radius-sm:   12px;
+  --shadow-card: 0 2px 16px rgba(110,78,214,.08);
+  --ease:        cubic-bezier(.4,0,.2,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+html:not(.authed) body > * { visibility: hidden; }
+html:not(.authed) .auth-loading { visibility: visible; }
+
+/* ─── AUTH LOADING ─── */
+.auth-loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--bg); font-size: 14px; color: var(--text-dim); font-family: var(--sans); }
+html.authed .auth-loading { display: none; }
+
+/* ─── HEADER ─── */
+.course-header { position: sticky; top: 0; z-index: 100; background: rgba(248,247,255,.94); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-light); height: 60px; display: flex; align-items: center; }
+.header-inner { width: min(760px, 100% - 40px); margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.header-logo { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 16px; color: var(--text); text-decoration: none; flex-shrink: 0; }
+.logo-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--terra); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; }
+.header-back { font-size: 13px; font-weight: 600; color: var(--text-mid); text-decoration: none; display: flex; align-items: center; gap: 5px; transition: color .15s; flex-shrink: 0; }
+.header-back:hover { color: var(--terra); }
+.header-course-name { font-size: 13px; font-weight: 600; color: var(--text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; text-align: center; }
+@media (max-width: 480px) { .header-course-name { display: none; } }
+
+/* ─── MAIN ─── */
+.main { width: min(680px, 100% - 40px); margin-inline: auto; padding: 32px 0 80px; }
+
+/* ─── PROGRESS ─── */
+.progress-section { margin-bottom: 28px; }
+.progress-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.progress-label { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+.progress-pct { font-size: 12px; font-weight: 700; color: var(--terra); }
+.progress-bar-wrap { height: 5px; background: var(--terra-tint); border-radius: 99px; overflow: hidden; margin-bottom: 14px; }
+.progress-bar-fill { height: 100%; background: var(--terra); border-radius: 99px; transition: width .5s var(--ease); }
+.roadmap { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+.roadmap::-webkit-scrollbar { display: none; }
+.roadmap-ch { display: flex; flex-direction: column; align-items: center; gap: 5px; flex-shrink: 0; width: 64px; opacity: .35; transition: opacity .2s; }
+.roadmap-ch.done, .roadmap-ch.current { opacity: 1; }
+.roadmap-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--terra-tint); display: flex; align-items: center; justify-content: center; font-size: 17px; border: 2px solid transparent; position: relative; transition: all .2s; flex-shrink: 0; }
+.roadmap-ch.done .roadmap-icon { background: var(--correct-bg); border-color: var(--correct); }
+.roadmap-ch.done .roadmap-icon::after { content: '✓'; position: absolute; bottom: -3px; right: -3px; width: 15px; height: 15px; background: var(--correct); color: white; border-radius: 50%; font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center; line-height: 1; }
+.roadmap-ch.current .roadmap-icon { background: var(--terra-tint); border-color: var(--terra); box-shadow: 0 0 0 3px rgba(110,78,214,.15); }
+.roadmap-label { font-size: 10px; font-weight: 600; color: var(--text-dim); text-align: center; line-height: 1.3; max-width: 64px; }
+.roadmap-ch.current .roadmap-label { color: var(--terra); font-weight: 700; }
+.roadmap-ch.done .roadmap-label { color: var(--text-mid); }
+
+/* ─── CARDS ─── */
+.card { background: var(--surface); border-radius: var(--radius-card); padding: 32px; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); margin-bottom: 16px; }
+.card-sm { padding: 24px; }
+
+/* ─── TYPE ─── */
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); margin-bottom: 8px; }
+h1 { font-family: var(--serif); font-size: clamp(28px, 5vw, 36px); line-height: 1.15; color: var(--text); font-weight: 400; }
+h2 { font-family: var(--serif); font-size: clamp(22px, 4vw, 28px); line-height: 1.2; color: var(--text); font-weight: 400; margin-bottom: 6px; }
+h3 { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+p { font-size: 15px; line-height: 1.75; color: var(--text-mid); }
+p + p { margin-top: 12px; }
+.divider { height: 1px; background: var(--border-light); margin: 24px 0; }
+
+/* ─── WELCOME ─── */
+.welcome-badge { width: 72px; height: 72px; border-radius: 20px; background: var(--terra-tint); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; font-size: 36px; }
+.stat-row { display: flex; gap: 10px; margin: 24px 0; }
+.stat-box { flex: 1; background: var(--terra-tint2); border-radius: var(--radius-sm); padding: 16px 10px; text-align: center; border: 1px solid var(--border-light); }
+.stat-num { font-size: 22px; font-weight: 800; color: var(--terra); }
+.stat-lbl { font-size: 11px; color: var(--text-dim); margin-top: 3px; font-weight: 600; }
+.how-step { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; }
+.how-step + .how-step { border-top: 1px solid var(--border-light); }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--terra); color: white; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+.step-text { font-size: 15px; color: var(--text-mid); line-height: 1.55; }
+.step-text strong { color: var(--text); }
+
+/* ─── BUTTONS ─── */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--sans); font-weight: 700; font-size: 15px; border: none; border-radius: var(--radius-pill); padding: 14px 28px; cursor: pointer; width: 100%; transition: background .2s, transform .15s, opacity .15s; text-decoration: none; }
+.btn-primary { background: var(--terra); color: white; }
+@media (hover:hover) { .btn-primary:hover { background: var(--terra-dark); transform: translateY(-1px); } }
+.btn-secondary { background: transparent; color: var(--terra-dark); border: 1.5px solid var(--terra); }
+@media (hover:hover) { .btn-secondary:hover { background: var(--terra-tint); } }
+.btn-ghost { background: var(--terra-tint); color: var(--terra-dark); }
+@media (hover:hover) { .btn-ghost:hover { background: var(--elevated); } }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
+.btn + .btn { margin-top: 10px; }
+.btn-sm { font-size: 13px; padding: 10px 20px; width: auto; }
+.btn-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+
+/* ─── LESSON BLOCKS ─── */
+.story-block { border-left: 3px solid rgba(110,78,214,.3); padding: 18px 22px; margin: 22px 0; background: rgba(248,247,255,.7); border-radius: 0 12px 12px 0; }
+.story-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra-light); margin-bottom: 10px; }
+.story-block p { font-style: italic; color: var(--text); font-size: 15px; line-height: 1.8; }
+.story-block p + p { margin-top: 12px; }
+.science-block { background: var(--terra-tint); border-radius: var(--radius-sm); padding: 18px 20px; margin: 18px 0; }
+.science-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); margin-bottom: 8px; }
+.science-block p { color: var(--text); font-style: normal; }
+.takeaway { background: var(--terra); color: white; border-radius: var(--radius-sm); padding: 16px 20px; margin: 18px 0; font-size: 14px; font-weight: 600; line-height: 1.6; }
+.takeaway-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: .65; margin-bottom: 5px; }
+
+/* ─── QUESTION ─── */
+.question-card { background: var(--surface); border-radius: var(--radius-card); border-top: 3px solid var(--terra); padding: 28px; box-shadow: var(--shadow-card); border-left: 1px solid var(--border-light); border-right: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light); margin-bottom: 16px; }
+.q-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); margin-bottom: 12px; }
+.q-text { font-size: 16px; font-weight: 600; line-height: 1.55; color: var(--text); margin-bottom: 4px; }
+.options { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+.option { border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; cursor: pointer; font-size: 14px; line-height: 1.5; color: var(--text); background: var(--surface); text-align: left; transition: border-color .15s, background .15s; font-family: var(--sans); width: 100%; }
+@media (hover:hover) { .option:hover:not(:disabled) { border-color: var(--terra-light); background: var(--terra-tint); } }
+.option.selected { border-color: var(--terra); background: var(--terra-tint); color: var(--terra-dark); font-weight: 600; }
+.option.correct { border-color: var(--correct); background: var(--correct-bg); color: #15803d; font-weight: 600; }
+.option.wrong { border-color: var(--wrong); background: var(--wrong-bg); color: #b91c1c; }
+.option:disabled { cursor: default; }
+.feedback { border-radius: var(--radius-sm); padding: 16px 18px; font-size: 14px; line-height: 1.7; margin-top: 4px; }
+.feedback-correct { background: var(--correct-bg); border: 1px solid var(--correct-border); color: #166534; }
+.feedback-wrong   { background: var(--wrong-bg);   border: 1px solid var(--wrong-border);   color: #991b1b; }
+.feedback-title { font-weight: 700; margin-bottom: 4px; font-size: 15px; }
+.try-this { border: 2px solid var(--correct); border-radius: var(--radius-sm); padding: 16px 18px; margin-top: 14px; background: var(--correct-bg); }
+.try-this-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #16a34a; margin-bottom: 6px; }
+.try-this-text { font-size: 14px; line-height: 1.65; color: #166534; font-weight: 500; }
+
+/* ─── CERTIFICATE ─── */
+.cert-outer { background: white; border: 2px solid var(--terra); border-radius: 20px; padding: clamp(28px,6vw,48px) clamp(24px,6vw,48px); text-align: center; position: relative; overflow: hidden; }
+.cert-outer::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top, rgba(110,78,214,.05) 0%, transparent 60%); pointer-events: none; }
+.cert-seal { width: 80px; height: 80px; border-radius: 50%; background: var(--terra); margin: 0 auto 18px; display: flex; align-items: center; justify-content: center; font-size: 36px; color: white; box-shadow: 0 6px 24px rgba(110,78,214,.3); }
+.cert-pretitle { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+.cert-title { font-family: var(--serif); font-size: clamp(22px,4vw,30px); color: var(--text); margin-bottom: 20px; line-height: 1.2; }
+.cert-name-wrap { margin: 16px auto; max-width: 380px; }
+.cert-name-label { font-size: 12px; color: var(--text-dim); margin-bottom: 6px; font-weight: 600; }
+.cert-name-input { border: none; border-bottom: 2px solid var(--terra); background: transparent; font-family: var(--serif); font-size: 24px; color: var(--terra-dark); font-style: italic; text-align: center; width: 100%; padding: 6px 0; outline: none; }
+.cert-name-input::placeholder { color: var(--terra-tint); font-style: italic; }
+.cert-rule { width: 80px; height: 2px; background: var(--terra-tint); margin: 22px auto; border-radius: 99px; }
+.cert-body { font-size: 14px; color: var(--text-mid); line-height: 1.7; max-width: 420px; margin-inline: auto; }
+.cert-sig-row { display: flex; justify-content: center; margin-top: 32px; }
+.cert-sig { text-align: center; }
+.cert-sig-line { width: 130px; height: 1px; background: var(--border); margin: 0 auto 8px; }
+.cert-sig-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.cert-sig-role { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+.cert-date { font-size: 12px; color: var(--text-dim); margin-top: 22px; }
+
+/* ─── ACTION PLAN ─── */
+.action-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.action-item { display: flex; align-items: flex-start; gap: 12px; background: var(--correct-bg); border: 1px solid var(--correct-border); border-radius: var(--radius-sm); padding: 12px 14px; }
+.action-num { width: 24px; height: 24px; border-radius: 50%; background: var(--correct); color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.action-body { font-size: 14px; line-height: 1.55; color: #166534; }
+.action-chapter { font-size: 11px; font-weight: 700; color: #16a34a; margin-bottom: 2px; }
+
+/* ─── THREE RULES ─── */
+.rule-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; }
+.rule-item + .rule-item { border-top: 1px solid var(--border-light); }
+.rule-icon { font-size: 22px; flex-shrink: 0; line-height: 1.4; }
+.rule-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.rule-desc { font-size: 14px; color: var(--text-mid); line-height: 1.55; }
+
+/* ─── MISC ─── */
+.save-note { font-size: 12px; color: var(--text-dim); text-align: center; padding-top: 4px; }
+.fade-in { animation: fadeIn .3s var(--ease); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ─── RESPONSIVE — TABLET ─── */
+@media (max-width: 768px) {
+  .roadmap { padding: 2px 2px 6px; scroll-padding-inline: 12px; gap: 8px; }
+  .roadmap-icon { width: 40px; height: 40px; font-size: 18px; }
+  .roadmap-ch { width: 68px; }
+}
+
+/* ─── RESPONSIVE — MOBILE ─── */
+@media (max-width: 480px) {
+  .main { width: calc(100% - 32px); padding-top: 24px; padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+  .card { padding: 20px; border-radius: 16px; }
+  .card-sm { padding: 16px; border-radius: 16px; }
+  .question-card { padding: 20px; border-radius: 16px; }
+  .progress-section { margin-bottom: 20px; }
+  .welcome-badge { width: 60px; height: 60px; font-size: 28px; border-radius: 16px; margin-bottom: 16px; }
+  .stat-box { padding: 12px 8px; }
+  .stat-num { font-size: 19px; }
+  .stat-lbl { font-size: 10px; }
+  .divider { margin: 18px 0; }
+  .step-text { font-size: 14px; }
+  .story-block { padding: 14px 16px; margin: 18px 0; }
+  .story-block p { font-size: 14px; }
+  .science-block { padding: 14px 16px; }
+  .science-block p { font-size: 14px; }
+  .takeaway { padding: 14px 16px; font-size: 13px; }
+  .q-text { font-size: 15px; }
+  .options { gap: 8px; margin: 16px 0; }
+  .option { padding: 12px 14px; }
+  .feedback { padding: 14px 16px; font-size: 14px; }
+  .feedback-title { font-size: 14px; }
+  .try-this { padding: 14px 16px; }
+  .try-this-text { font-size: 13px; }
+  .btn-row { flex-direction: column; gap: 8px; }
+  .btn-row .btn { width: 100%; }
+  .btn-sm { font-size: 14px; padding: 12px 20px; }
+  .cert-name-input { font-size: 20px; }
+  .cert-body { font-size: 13px; }
+  .action-item { padding: 10px 12px; }
+  .action-body { font-size: 13px; }
+}
+
+/* ─── NARROW MOBILE ─── */
+@media (max-width: 360px) {
+  .main { width: calc(100% - 24px); }
+  .card { padding: 16px; }
+  .question-card { padding: 16px; }
+  .stat-row { flex-wrap: wrap; }
+  .stat-box { flex: 1 1 calc(50% - 6px); }
+  .stat-box:last-child { flex: 1 1 100%; padding: 10px; }
+  .stat-num { font-size: 18px; }
+  .roadmap-ch { width: 58px; }
+  .roadmap-icon { width: 36px; height: 36px; font-size: 16px; }
+  .cert-name-input { font-size: 18px; }
+  h3 { font-size: 15px; }
+}
+
+/* ─── PRINT ─── */
+@media print {
+  .no-print { display: none !important; }
+  .course-header { display: none !important; }
+  body { background: white; }
+  .main { width: 100%; padding: 0; }
+  .cert-outer::before { display: none !important; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .cert-outer { border: 2px solid #5B3CC4; box-shadow: none; padding: 40px; }
+  .cert-seal { background: #6E4ED6 !important; color: white !important; box-shadow: none; }
+  .cert-name-input { border: none !important; border-bottom: 2px solid #5B3CC4 !important; font-size: 22px !important; color: #5B3CC4 !important; }
+  .card { box-shadow: none; border: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="auth-loading">Signing you in…</div>
+
+<div id="preview-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#f59e0b;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-align:center;padding:8px;letter-spacing:.03em;">
+  ⚠️ PREVIEW MODE — Auth bypassed · Remove <code style="background:rgba(0,0,0,.2);padding:2px 6px;border-radius:4px;">?preview=1</code> before deploying
+</div>
+<script>if(new URLSearchParams(location.search).get('preview')==='1'){document.getElementById('preview-banner').style.display='block';}</script>
+
+<header class="course-header no-print">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <div class="logo-mark">F</div>
+      FamilyForce
+    </a>
+    <span class="header-course-name">Tantrum Course</span>
+    <a href="dashboard.html" class="header-back">← Dashboard</a>
+  </div>
+</header>
+
+<main class="main" id="app"></main>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// COURSE DATA
+// ═══════════════════════════════════════════════════════════
+const CHAPTERS = [
+  {
+    id: 'two_sons',
+    short: "Two Sons",
+    title: "Two Sons",
+    chapter: "Chapter 1",
+    icon: "👦",
+    story: {
+      paragraphs: [
+        "Penn Station on a Tuesday afternoon. Marble floors, four hundred people, and my two-year-old going boneless on the floor because we missed our train. Four minutes. I kept checking my watch. It felt like forty.",
+        "I tried reasoning. Bribing. Picking him up. Whispering. Threatening. Nothing worked. Most of it made things worse. He calmed down on his own, the way kids always do. We caught the next train. He fell asleep on my shoulder twenty minutes later like nothing had happened.",
+        "I thought about that afternoon for a long time. With Second Son, I had done the reading before the first major tantrum hit. Same house, same parents, same imperfect everything. The difference was information."
+      ]
+    },
+    science: "There is more rigorous research on toddler tantrums than most parents ever encounter. Potegal and Davidson at Wisconsin mapped the internal structure of hundreds of tantrums, second by second. Wakschlag at Northwestern established what counts as normal and what counts as a warning sign. Mo and colleagues published in 2023 one of the clearest studies yet: specific parental behaviors during the toddler years predict, with measurable accuracy, whether tantrums get better or worse over the following 12 months. None of this is difficult to find. It is just not packaged in a way that is useful to a parent standing in a train station.",
+    takeaway: "The difference between a hard tantrum experience and a manageable one is rarely the child. It is almost always the information the parent had going in.",
+    question: {
+      text: "A parent is preparing for their child's upcoming tantrum-prone stage. What does the research most strongly suggest they should do first?",
+      options: [
+        { text: "Wait and see how their child's tantrums develop before choosing an approach", correct: false },
+        { text: "Share this information with their co-caregiver — inconsistency between caregivers actively makes tantrums worse", correct: true },
+        { text: "Focus on discipline techniques to minimize tantrum frequency", correct: false },
+        { text: "Consult a pediatrician before any tantrum occurs", correct: false }
+      ],
+      explanation: "The research is unambiguous: inconsistency between caregivers doesn't just slow progress — it actively makes tantrums worse. Everyone regularly in the room when a tantrum happens needs to be responding the same way. Alignment before the tantrum hits is more valuable than any single technique."
+    },
+    tryThis: "Read this course with whoever else is raising your child before the next tantrum happens. A partner, a grandparent who provides regular care, a nanny. Decide today: who needs to be aligned, and are they?"
+  },
+
+  {
+    id: 'what_it_is',
+    short: "What It\nActually Is",
+    title: "What a Tantrum Actually Is",
+    chapter: "Chapter 2",
+    icon: "🧠",
+    story: {
+      paragraphs: [
+        "With First Son, I took every tantrum personally. One afternoon he wanted something from the pantry and I said no. He went from standing to floor in about one second, screaming. I crouched down and said, as calmly as I could manage: 'I understand you're upset. We don't act like this. You need to use your words.'",
+        "He screamed louder. I told him if he didn't stop, there would be consequences. Then I raised my voice. Then I threatened to cancel something he was looking forward to. Twelve minutes, start to finish. I thought the problem was that I needed a better technique. The problem was that I believed what I was watching was defiance. A power struggle he had decided to start.",
+        "With Second Son, I understood what I was actually watching: his prefrontal cortex — the part that handles reasoning — had gone temporarily offline. His amygdala had taken over. He wasn't defying me. He literally could not do otherwise. That reframe changed everything."
+      ]
+    },
+    science: "The human brain develops from the bottom up. The lower brain handles survival responses: fear, anger, alarm. Fully operational from birth. The upper brain — the prefrontal cortex — handles logic, empathy, impulse control, and self-regulation. It is the last structure to develop and under active construction until roughly age 25. In a toddler, it is barely online. Daniel Siegel describes this as the 'flipped lid': when the downstairs brain activates at full intensity, the upstairs brain disconnects. In that state, reasoning, threats, logic, and negotiation are useless — not because the child won't listen, but because the part of the brain that listens is temporarily offline. Sisterhen and Wy (2023) report that 87% of 18-to-24-month-olds have tantrums. This is the developmental norm.",
+    takeaway: "Tantrums are not defiance. They are what a brain under construction looks like when it gets overloaded. That reframe changes what you do in response.",
+    question: {
+      text: "During a full tantrum, a parent crouches down and explains clearly and calmly why their child cannot have what they want. Why won't this work?",
+      options: [
+        { text: "The child is too young to understand language", correct: false },
+        { text: "The explanation is too long — shorter sentences would work better", correct: false },
+        { text: "The prefrontal cortex — the part that receives and processes reasoning — is temporarily offline during a tantrum", correct: true },
+        { text: "Calm explanations signal to the child that the behavior is acceptable", correct: false }
+      ],
+      explanation: "The 'flipped lid' means the child's reasoning center has disconnected. You are addressing a part of the brain that is not currently available. This is why perfect calm and perfect logic both fail during Phase 1. The hardware that receives reasoning is offline. Your job is to wait for it to come back, not to talk to it while it's gone."
+    },
+    tryThis: "Next time a tantrum starts, say to yourself before you do anything: 'His upstairs brain is offline. Logic won't work right now.' Say it out loud if you need to. The sentence slows your own nervous system before you decide what to do."
+  },
+
+  {
+    id: 'the_arc',
+    short: "The Two\nPhases",
+    title: "The Arc",
+    chapter: "Chapter 3",
+    icon: "📈",
+    story: {
+      paragraphs: [
+        "When First Son lost it, my instinct was to comfort him. He was screaming, so I went to him. Got low, tried to hold him, tried to soothe him. I did what you're supposed to do when your child is distressed.",
+        "It made it worse. Every time. He would push me away, scream harder, escalate. I'd feel rejected, try harder, he'd escalate further. I thought there was something wrong with the way I was doing it. I tried softer voices, firmer voices, backing off and coming back. Nothing landed.",
+        "With Second Son, I understood before the first major tantrum that there are two phases — and that comforting during peak anger applies Phase 2 logic to a Phase 1 situation. I started waiting. Staying nearby. Staying calm. Not reaching for him until I saw the shift. It was shorter every time. Not because Second Son was more easygoing. Because I had stopped making it last longer."
+      ]
+    },
+    science: "Potegal and Davidson (2003) systematically observed hundreds of toddler tantrums, recording every behavior second by second. Their finding: every tantrum has two overlapping phases. Phase 1 is anger — hitting, kicking, screaming. The nervous system is at peak arousal. Phase 2 is distress — crying, clinging, seeking comfort. These two phases require opposite responses. During Phase 1, attempting to hug or comfort prolongs the tantrum: external stimulation, even warm stimulation, keeps arousal elevated. During Phase 2, comfort is exactly what's needed and exactly what works. Most parents comfort during Phase 1 because comforting a distressed child is the right instinct — but distress and anger are different states that respond to different things. Potegal also found most tantrums last one to five minutes. The built-in ending is there. The parent's job is largely not to delay it.",
+    takeaway: "Two phases. Opposite responses. Comfort during Phase 1 prolongs it. Comfort during Phase 2 ends it. Learning to tell the difference is the most useful skill in this course.",
+    question: {
+      text: "A toddler is in full tantrum — screaming, hitting the floor. The parent immediately gets low and opens their arms to offer comfort. Based on the research, what will most likely happen?",
+      options: [
+        { text: "The tantrum will shorten — children calm faster when they feel seen", correct: false },
+        { text: "The tantrum will prolong — external stimulation during Phase 1 keeps arousal elevated", correct: true },
+        { text: "The outcome depends entirely on the child's temperament", correct: false },
+        { text: "It works for distress but not for anger — the parent should first identify which is happening", correct: false }
+      ],
+      explanation: "This is the most counterintuitive finding in the research. Comforting during Phase 1 (anger) prolongs the tantrum because the nervous system at peak arousal responds to any stimulation — even warm stimulation — by staying elevated. The parent's instinct is right for Phase 2. Applied to Phase 1, it delays the ending. Stay nearby, stay calm, don't engage the anger directly. Then move in when you see the shift to distress."
+    },
+    tryThis: "Practice narrating the phases to yourself in real time during the next tantrum: 'That's Phase 1. I'm waiting. Now there's Phase 2.' The narration slows your own nervous system and keeps you from jumping in too early."
+  },
+
+  {
+    id: 'first_ten',
+    short: "First 10\nSeconds",
+    title: "The First 10 Seconds",
+    chapter: "Chapter 4",
+    icon: "⏱️",
+    story: {
+      paragraphs: [
+        "My first move with First Son was almost always words. 'We don't act like this.' 'Use your words.' 'You need to calm down right now.' None of it worked. I was addressing the prefrontal cortex of a child whose prefrontal cortex was temporarily unavailable. And I was doing it while my own nervous system was agitated — which meant the signal I was sending his way was not calm instruction. It was stress.",
+        "With Second Son, I developed a different first 10 seconds. Before I said a word, I took one breath. I got to eye level. I named what I saw. I said what was still true. Then I stepped back.",
+        "The tantrum still came. That wasn't the point. The point was that I wasn't part of making it worse. And over time, tantrums that started with that sequence ended faster than the ones that started with me talking."
+      ]
+    },
+    science: "Morris and colleagues (2007) established that parental emotional state is one of the strongest predictors of child emotional state in the moment. Your nervous system is contagious — physiologically, not metaphorically. 'Calm down' is actively counterproductive: it signals the child's emotional state is unacceptable, which increases shame and arousal, which prolongs the tantrum. Gottman's emotion coaching research found that naming the child's emotion — 'You are so angry right now' — activates left-brain language processing, creating a mild but real regulatory effect even in toddlers as young as two. Harvey Karp's 'Fast Food Rule': repeat back what you perceive the child is feeling in short simple phrases before doing anything else. Acknowledgment decreases arousal. Mo and colleagues (2023) found that giving in to a tantrum predicts increased frequency and severity over the following months — not just that episode, the months after. The sequence: regulate yourself. Get to eye level. Name the emotion. Hold the limit. Step back.",
+    takeaway: "Your first 10 seconds set the trajectory for the next 10 minutes. The goal isn't to stop the tantrum. It's to not make it worse.",
+    question: {
+      text: "A parent says 'calm down' to their tantruming toddler. Based on the research, what does this phrase most likely do?",
+      options: [
+        { text: "Nothing — it has no measurable effect either way", correct: false },
+        { text: "Helps slightly if delivered calmly", correct: false },
+        { text: "Increases shame and arousal, which prolongs the tantrum", correct: true },
+        { text: "Works as a co-regulation signal if the parent is calm themselves", correct: false }
+      ],
+      explanation: "'Calm down' signals to the child that their emotional state is unacceptable. That increases shame — and shame is an accelerant, not a regulator. It adds to the arousal rather than reducing it. Replace it with 'I can see you're really angry' — same intent, opposite mechanism. One dismisses the emotion. One acknowledges it, which activates language processing and creates a mild regulatory effect."
+    },
+    tryThis: "Write down your first 10-second script right now: 'Breathe. Get low. Name it. Hold it. Step back.' Put it somewhere you'll see it. When the tantrum starts, you won't have time to think. You need the sequence already in your body."
+  },
+
+  {
+    id: 'trajectory',
+    short: "Long\nGame",
+    title: "How You Respond Changes the Trajectory",
+    chapter: "Chapter 5",
+    icon: "📊",
+    story: {
+      paragraphs: [
+        "With First Son, my responses were reactive and inconsistent. Some days I stayed calm. Some days I matched his energy. Some days I gave in just to make it stop. Some days I threatened consequences I didn't follow through on. Some days I ignored the whole thing.",
+        "I wasn't doing any one thing wrong. I was doing everything inconsistently. And the research says that inconsistency — different responses to the same behavior depending on how you happen to feel that day — is worse than any single approach, even an imperfect one.",
+        "With Second Son, I picked an approach, wrote it down, and followed it. Not perfectly. But the baseline was consistent. Within about two months, I could see the trajectory changing. The tantrums weren't gone. They were shorter. Recovery was faster."
+      ]
+    },
+    science: "Mo and colleagues (2023) found that harsh parental discipline — yelling, coercive responses — was associated with measurable increases in tantrum severity over the following months. The loop: a severe tantrum produces parental frustration → harsh response → more intense tantrum next time. Each pass tightens it. But the opposite loop also holds. Consistent calm response → shorter tantrums → lower parental frustration → calmer response next time. Gottman's 20-year research program found that children whose parents practiced emotion coaching showed measurably better self-regulation, fewer behavioral problems, and stronger outcomes by school age. The tantrum years are not just something to survive. They are when emotional regulation is built. Critically: positive reinforcement of calm behavior — acknowledging the moment when your child handles frustration without exploding — reduces tantrum frequency more effectively than punishing tantrum behavior.",
+    takeaway: "How you respond to tantrums today is shaping frequency and intensity over the next six months. Consistency beats any single technique.",
+    question: {
+      text: "A parent gives in to a tantrum once to get through a difficult moment at a family dinner. Based on the 2023 Mo study, what does this predict?",
+      options: [
+        { text: "Nothing — one instance has no measurable effect on future behavior", correct: false },
+        { text: "Increased tantrum frequency and severity over the following months, not just that episode", correct: true },
+        { text: "A short-term spike followed by natural regression to baseline", correct: false },
+        { text: "The effect depends on whether the child understood why the parent gave in", correct: false }
+      ],
+      explanation: "The Mo study is clear: giving in purchases ten minutes of quiet at a significant price. The child learns a reliable equation — escalate → get the outcome. That equation repeats. The research measures this not just in the moment but in the months following. One give-in doesn't break everything, but the pattern matters more than any single incident."
+    },
+    tryThis: "Write down your one consistent approach for the next 30 days. Not a list — one clear response sequence. Inconsistency is more disruptive than any single imperfect approach. Commit to one thing and track whether the trajectory improves."
+  },
+
+  {
+    id: 'prevent',
+    short: "Prevent\nThem",
+    title: "Prevent the Ones You Can",
+    chapter: "Chapter 6",
+    icon: "🛡️",
+    story: {
+      paragraphs: [
+        "With First Son, I ran my life and brought my son along. Errands at nap time. Late lunches because we lost track of the time. Crowded grocery stores on Saturday mornings. I treated his schedule as a rough suggestion he should be able to work around. He was not able to work around it.",
+        "With Second Son, I sat down one afternoon and looked at the week. When were the tantrums happening? What had we done before them? The pattern was obvious once I looked for it: tired plus hungry plus overstimulating environment was a reliable formula. So was the gap between the car and the restaurant when he was hungry. So was the transition from park to going home — always sprung on him without warning.",
+        "I didn't eliminate tantrums. I prevented a meaningful chunk of them just by paying attention and adjusting what was adjustable."
+      ]
+    },
+    science: "The HALT framework maps directly to documented physiology. On sleep: toddlers ages 1–3 need 11–14 hours per 24 hours. Missing one nap measurably reduces amygdala regulatory capacity for the rest of the day. On hunger: glucose fluctuations impair frontal lobe function, including impulse management. Regular meals are neurological maintenance. On overstimulation: environments with high sensory input accelerate depletion of regulatory capacity. What looks like a tantrum 'out of nowhere' at the end of a big outing is rarely from nowhere — the bucket has been filling for two hours. On transitions: research shows that giving a 5-minute warning before a change significantly reduces transition-related tantrums. Language matters too: Manning and colleagues (2019) found that late talkers had 1.96 times the risk of severe tantrums compared to peers with typical language development. When a child cannot express what they need, they express it physically.",
+    takeaway: "Every tantrum you prevent is one you don't have to manage. Most toddler tantrums have a trigger. Most triggers are visible if you're watching.",
+    question: {
+      text: "A parent notices their toddler tantrums most frequently at the end of long outings. They're unsure why — the child seems fine until suddenly they're not. What's the most likely explanation?",
+      options: [
+        { text: "The child is acting out to get attention after being ignored during the outing", correct: false },
+        { text: "Regulatory capacity depletes gradually during high-stimulation environments — what looks like 'out of nowhere' has been building the whole outing", correct: true },
+        { text: "The transitions at the end of outings are the trigger, not the outing itself", correct: false },
+        { text: "The child is overtired from the outing, which is a separate cause from stimulation", correct: false }
+      ],
+      explanation: "Stimulation and overtiredness both deplete the same regulatory capacity — and they compound each other. The bucket metaphor is accurate: the child's ability to manage frustration erodes gradually across a long, stimulating outing. The last small thing — being told it's time to go, a minor disappointment — overflows a bucket that was already nearly full. Prevention means either shortening the outing, building in rest, or lowering stimulation during the window."
+    },
+    tryThis: "Map your child's danger windows this week. When do most tantrums happen? What preceded them? Write it down. The pattern is almost always visible — you just need to look for it systematically rather than case by case."
+  },
+
+  {
+    id: 'public',
+    short: "Public\nTantrums",
+    title: "Public Tantrums",
+    chapter: "Chapter 7",
+    icon: "🏪",
+    story: {
+      paragraphs: [
+        "I told you about Penn Station. I didn't tell you everything. I tried talking him down. Then bribing. Then picking him up (he went rigid, then boneless — toddlers are extraordinarily good at this). I tried whispering. I tried threatening, except I couldn't finish the sentence because I had no end to it.",
+        "The worst part wasn't the tantrum. It was that I cycled through every wrong move in sequence, in front of four hundred people, and nothing I did helped. I had no protocol. I had instinct and embarrassment — and instinct plus embarrassment is a poor combination.",
+        "With Second Son, we had a moment at an airport. He wanted something from a vending machine. I said no. He began. One breath. Got low. Named it. Moved us to a quieter corner. Waited. Phase 1 passed. He reached for me. I picked him up. Three minutes, maybe four. Then he pointed at an airplane and said 'big.' We talked about planes."
+      ]
+    },
+    science: "Public tantrums feel categorically different from private ones. They are not. The neuroscience is identical. What changes is the parent. Research on social evaluation shows that being observed during a parenting challenge activates the same stress pathways as social threat — cortisol rises, executive function decreases. The strangers in the train station weren't making my son's tantrum worse. They were making me worse, which made his tantrum worse. Morris and colleagues (2007) documented that parental anxiety during a stressful moment escalates the child's behavior. The sequence that works in public is identical to the sequence that works at home. The exit strategy is the highest-leverage move available: get out of the crowd. Not as punishment — as neurological management. Fewer inputs equals shorter Phase 1.",
+    takeaway: "A public tantrum is the same event as a private one. The only variable that changes is you. Manage yourself first.",
+    question: {
+      text: "A toddler tantrums in a crowded store. The parent's main instinct is to manage what strangers are thinking. Based on the research, what is this doing to the situation?",
+      options: [
+        { text: "Nothing — parental self-consciousness doesn't affect the child's behavior", correct: false },
+        { text: "Elevating the parent's cortisol and reducing their executive function, which makes their response worse and prolongs the tantrum", correct: true },
+        { text: "It motivates better parenting — social awareness improves performance", correct: false },
+        { text: "It's only a problem if the parent visibly shows stress in front of the child", correct: false }
+      ],
+      explanation: "The audience is a secondary stressor that activates the same biological threat response as a direct challenge. Cortisol rises, executive function drops. You become measurably less capable of the calm, regulated response you need — at exactly the moment you need it most. The strangers can't help. Releasing the audience isn't denial — it's the prerequisite for doing your job."
+    },
+    tryThis: "Develop your public tantrum mantra before you need it: 'This is not a crisis. This is a brain event. We will get through it.' Practice it out loud right now. A mantra composed during a public tantrum doesn't work. One that's already in your body does."
+  },
+
+  {
+    id: 'meltdown',
+    short: "Tantrum vs\nMeltdown",
+    title: "Tantrum or Meltdown?",
+    chapter: "Chapter 8",
+    icon: "🌊",
+    story: {
+      paragraphs: [
+        "A birthday party when First Son was around two and a half. Loud room, too many people, too much stimulation. He had been fine — and then, abruptly, he wasn't. No trigger I could identify. No thing he'd been denied. He just collapsed.",
+        "It didn't look like his usual tantrums. I tried everything. I held him. He screamed harder. I put him down. He screamed harder. I tried talking. Nothing landed. He was unreachable. It lasted close to twenty minutes.",
+        "I spent weeks assuming I had mishandled it. What I didn't know was that I had been applying tantrum logic to something that wasn't a tantrum. I was holding limits against a child who had no goal. I was reasoning with a nervous system that had completely shut down. There was no tactic that was going to work — because the problem wasn't behavioral. The problem was neurological overload."
+      ]
+    },
+    science: "A tantrum is goal-directed. The child wants something — an object, a decision reversed, attention. They retain some control over the behavior and will look for parental reaction. A meltdown is a neurological flood. The child is not pursuing a goal. They have been overwhelmed by sensory input, emotional accumulation, or a system that has exceeded its capacity. They cannot stop. The clinical signals: no identifiable trigger, or a response wildly disproportionate to the trigger; the child cannot be soothed regardless of parental response; behavior doesn't shift based on parental attention; recovery takes significantly longer than a typical tantrum; the child seems genuinely disoriented afterward. What works on tantrums — consequences, reasoning, holding firm — extends and escalates a meltdown. What works on meltdowns: reduce sensory input, maintain calm presence without demands, minimize speech, wait. The nervous system needs to reset.",
+    takeaway: "The correct response to a meltdown is the opposite of the correct response to a tantrum. Misidentifying one as the other makes things significantly worse.",
+    question: {
+      text: "A child has an intense episode with no clear trigger that lasts 22 minutes and doesn't respond to any strategy the parent tries. The parent holds their limit firmly and waits it out. Based on the research, what is most likely happening and what should they do?",
+      options: [
+        { text: "This is a severe tantrum — holding the limit is correct, just keep waiting", correct: false },
+        { text: "This matches the meltdown profile — the parent should reduce sensory input and minimize speech rather than apply tantrum strategies", correct: true },
+        { text: "The limit-holding approach is working — it just requires more time", correct: false },
+        { text: "This is separation anxiety, not a tantrum or meltdown", correct: false }
+      ],
+      explanation: "No clear trigger, 22 minutes, no response to any strategy — this matches the meltdown profile. Applying tantrum tools (holding limits, reasoning, consequences) to a meltdown extends it. The child has no goal to satisfy or deny. Their nervous system is flooded and needs to reset. The intervention is environmental: reduce stimulation, stay calm, say almost nothing, wait. The lesson, if needed, happens after full recovery — not during."
+    },
+    tryThis: "Next time an intense episode starts, ask one question before you respond: 'Is my child trying to get or avoid something?' If you genuinely can't tell, treat it as a meltdown until proven otherwise. Less harm comes from that direction than from applying tantrum logic to a flooded nervous system."
+  },
+
+  {
+    id: 'worry',
+    short: "When to\nWorry",
+    title: "When to Worry",
+    chapter: "Chapter 9",
+    icon: "🔍",
+    story: {
+      paragraphs: [
+        "With First Son, I worried about everything because I had no framework for what was normal. Was three tantrums in one day too many? Was this one too long? I didn't know what normal looked like, which meant I treated every incident as potentially significant. That's exhausting, and it isn't useful.",
+        "With Second Son, I had the research. I knew what 83% looked like. I knew the specific features that researchers had identified as clinically meaningful. I had a checklist. When I watched his episodes, I wasn't just watching. I was comparing against a standard. Most of what I saw was inside the range.",
+        "I never had to make that call to the pediatrician. But I knew exactly what it would take. That knowing reduced the baseline anxiety in a way that made me more useful in the moment."
+      ]
+    },
+    science: "Wakschlag and colleagues (2012) studied 1,490 children to establish the specific, measurable threshold for concern. 83% of 3-year-olds have tantrums. The red flags that warrant a call to your pediatrician: more than 5 tantrums per day consistently over several weeks; tantrums regularly lasting more than 25 minutes; deliberate self-injury (head-banging, biting self); no identifiable trigger, consistently; inability to be soothed by any caregiver, ever; tantrums persisting as a regular pattern after age 5; sustained targeted aggression that continues after Phase 1 ends. Belden and colleagues (2008) identified the single strongest clinical marker: unprovoked tantrums — episodes with no trigger and no context. Wiggins and colleagues (2023) documented the key distinction: pervasive irritability (a constant negative mood between episodes) is a strong predictor of later anxiety and depression. The question that matters: is your child happy between episodes?",
+    takeaway: "Most toddler tantrums, even intense ones, are normal. There is a specific, research-backed threshold for concern. Know it, and you can stop worrying about everything below it.",
+    question: {
+      text: "A parent describes their 2.5-year-old: 3–4 tantrums daily, each lasting 4–7 minutes, with clear triggers (denied requests, transitions). The child is generally cheerful and affectionate between episodes. Where does this fall on the research threshold?",
+      options: [
+        { text: "Above the threshold — 3–4 tantrums daily warrants a pediatrician call", correct: false },
+        { text: "Well within the normal range — frequency and duration are typical, triggers are clear, mood between episodes is positive", correct: true },
+        { text: "Borderline — the parent should monitor for another month before deciding", correct: false },
+        { text: "Can't determine without knowing the child's age more precisely", correct: false }
+      ],
+      explanation: "Every element here is within the Wakschlag normal range. 3–4 tantrums daily is below the 5+ threshold. 4–7 minutes is well below the 25-minute threshold. Clear triggers are diagnostically reassuring (unprovoked tantrums are the red flag). Positive mood between episodes rules out pervasive irritability. This is a typically developing toddler. The information doesn't remove the difficulty — but it removes the specific fear that something is wrong."
+    },
+    tryThis: "Write down the Wakschlag checklist: 5+ per day, 25+ minutes, deliberate self-injury, no trigger consistently, can't be soothed ever, persists past age 5. Keep it somewhere accessible. Everything below this threshold is in the normal range. Now you have a standard instead of a worry."
+  },
+
+  {
+    id: 'after_storm',
+    short: "After the\nStorm",
+    title: "After the Storm",
+    chapter: "Chapter 10",
+    icon: "🌤️",
+    story: {
+      paragraphs: [
+        "With First Son, the post-tantrum period was uncomfortable for both of us. I didn't know what to say, so I often said too much. I would re-litigate the tantrum, explaining again why he couldn't have the thing, walking him through what went wrong, repeating the lesson I thought needed repeating. He would look at me with the glazed expression of a child whose nervous system had just been through something, and I would keep talking.",
+        "Other times I went quiet and distant out of my own emotional exhaustion. We'd both be fine eventually, but the rupture was never fully repaired. We just moved on.",
+        "With Second Son, I learned to reconnect first. Physical closeness. One quiet sentence. Then I waited. The teach-a-lesson instinct still pulled at me, but I held it back. One sentence, later, when he was fully settled. The whole cycle — tantrum, recovery, repair — took less time. Not because the tantrum was shorter. Because the aftermath was more deliberate."
+      ]
+    },
+    science: "After a tantrum, the child's nervous system is depleted and their attachment system is activated. Research on attachment shows that warm reconnection after a difficult episode actually strengthens the parent-child bond. The rupture-repair cycle is a documented feature of healthy attachment relationships — completed consistently, it builds more secure bonds than relationships where ruptures never happen. What to say: 'That was really hard. I'm here.' Not a lecture. Not a recap. Acknowledgment, then presence. What not to say: 'You were so bad' or 'Look how upset you made everyone.' Shame is an accelerant, not a regulator. The teaching window is brief and late: after the child is fully calm, one sentence — 'Next time you're angry, you can tell me with words.' Repeated over months, it builds vocabulary for emotion. Van den Akker and colleagues (2022) found that trajectory matters more than any single incident: shorter duration, faster recovery, fewer incidents across a 3–6 month window is what progress looks like. Not zero tantrums.",
+    takeaway: "The tantrum is not the end of the event. The reconnection is. What happens in the 15 minutes after determines more about your child's emotional development than the tantrum itself.",
+    question: {
+      text: "A parent, after a hard tantrum, explains in detail what their child did wrong and why the limits will stay in place. The child listens quietly but seems disengaged. What does the research say about this approach?",
+      options: [
+        { text: "It's effective — the child is processing the information even if they appear disengaged", correct: false },
+        { text: "The lesson would land better with shorter sentences", correct: false },
+        { text: "The depleted post-tantrum nervous system can't process lengthy teaching — reconnection should come first, then one brief sentence when fully calm", correct: true },
+        { text: "It's fine for children over 3 who have enough language to understand the explanation", correct: false }
+      ],
+      explanation: "After a tantrum, the nervous system is depleted and the attachment system is activated — the child needs connection, not curriculum. The disengaged look is the exhausted nervous system, not inattention. Reconnection first. Then, when the child is genuinely calm and settled, one sentence: 'Next time you're angry, you can tell me.' One sentence, repeated consistently over months. That's the teaching that actually builds the skill."
+    },
+    tryThis: "Make reconnection the first move after every tantrum, before anything else. Physical closeness first. 'I'm here. That was hard.' Then wait. Then talk if they want to. Resist the urge to debrief. One sentence later, when they're fully settled. Then forward."
+  }
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const SAVE_KEY = 'ff_course_tantrum_v1';
+
+function loadState() { try { const s = localStorage.getItem(SAVE_KEY); if (s) return JSON.parse(s); } catch(e) {} return null; }
+function saveState(s) { try { localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } catch(e) {} }
+function freshState() { return { screen: 'welcome', chapterIndex: 0, completed: [], selectedOption: null, showFeedback: false }; }
+
+let STATE = loadState() || freshState();
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+function el(tag, cls) { const e = document.createElement(tag); if (cls) e.className = cls; return e; }
+function ch() { return CHAPTERS[STATE.chapterIndex]; }
+function done(id) { return STATE.completed.includes(id); }
+function totalDone() { return STATE.completed.length; }
+function pct() { return Math.round((totalDone() / CHAPTERS.length) * 100); }
+function userName() { return localStorage.getItem('ff_user_name') || ''; }
+
+// ═══════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════
+function render() {
+  saveState(STATE);
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  app.className = 'fade-in';
+  if (STATE.screen === 'chapter' || STATE.screen === 'question') renderProgress(app);
+  switch (STATE.screen) {
+    case 'welcome':  renderWelcome(app);  break;
+    case 'chapter':  renderChapter(app);  break;
+    case 'question': renderQuestion(app); break;
+    case 'complete': renderComplete(app); break;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROGRESS
+// ═══════════════════════════════════════════════════════════
+function renderProgress(app) {
+  const wrap = el('div', 'progress-section no-print');
+  const meta = el('div', 'progress-meta');
+  const lbl = el('span', 'progress-label'); lbl.textContent = `Chapter ${STATE.chapterIndex + 1} of ${CHAPTERS.length}`;
+  const pctLbl = el('span', 'progress-pct'); pctLbl.textContent = pct() + '% complete';
+  meta.appendChild(lbl); meta.appendChild(pctLbl); wrap.appendChild(meta);
+  const barWrap = el('div', 'progress-bar-wrap');
+  const fill = el('div', 'progress-bar-fill'); fill.style.width = pct() + '%';
+  barWrap.appendChild(fill); wrap.appendChild(barWrap);
+  const roadmap = el('div', 'roadmap');
+  CHAPTERS.forEach((c, i) => {
+    const isDone = done(c.id); const isCurrent = i === STATE.chapterIndex;
+    const chip = el('div', 'roadmap-ch' + (isDone ? ' done' : isCurrent ? ' current' : ''));
+    const icon = el('div', 'roadmap-icon'); icon.textContent = c.icon; chip.appendChild(icon);
+    const lbl2 = el('div', 'roadmap-label'); lbl2.textContent = (c.short || c.title).replace('\n', ' '); lbl2.title = c.title; chip.appendChild(lbl2);
+    roadmap.appendChild(chip);
+  });
+  wrap.appendChild(roadmap);
+  setTimeout(() => { const chips = roadmap.querySelectorAll('.roadmap-ch'); if (chips[STATE.chapterIndex]) chips[STATE.chapterIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); }, 60);
+  app.appendChild(wrap);
+}
+
+// ═══════════════════════════════════════════════════════════
+// WELCOME
+// ═══════════════════════════════════════════════════════════
+function renderWelcome(app) {
+  const card = el('div', 'card');
+  const badge = el('div', 'welcome-badge'); badge.textContent = '😤'; card.appendChild(badge);
+  const eyebrow = el('div', 'eyebrow'); eyebrow.textContent = 'FamilyForce · Tantrums'; card.appendChild(eyebrow);
+  const title = el('h1'); title.textContent = 'The Tantrum Playbook'; card.appendChild(title);
+  const sub = el('p'); sub.style.marginTop = '12px';
+  sub.textContent = 'A research-backed course for parents who want to understand what tantrums actually are — and what to do about them. Read each chapter, answer one question correctly, earn your certificate.';
+  card.appendChild(sub);
+  const stats = el('div', 'stat-row');
+  [['10', 'Chapters'], ['~50', 'Minutes'], ['1', 'Certificate']].forEach(([num, lbl]) => {
+    const box = el('div', 'stat-box');
+    const n = el('div', 'stat-num'); n.textContent = num; box.appendChild(n);
+    const l = el('div', 'stat-lbl'); l.textContent = lbl; box.appendChild(l);
+    stats.appendChild(box);
+  });
+  card.appendChild(stats);
+  card.appendChild(el('div', 'divider'));
+  const h = el('h3'); h.textContent = 'How each chapter works'; card.appendChild(h);
+  [["Jack's story", "A real moment from raising First Son vs. Second Son. The moment that made it real."],
+   ["The science", "What the research actually shows — specific, actionable, not a headline."],
+   ["One question", "Answer it correctly to unlock the next chapter. Get it wrong: review and try again."],
+   ["Try This", "One specific action to do before moving on."]
+  ].forEach(([title2, desc], i) => {
+    const step = el('div', 'how-step');
+    const num = el('div', 'step-num'); num.textContent = i + 1; step.appendChild(num);
+    const text = el('div', 'step-text'); text.innerHTML = `<strong>${title2}</strong> — ${desc}`; step.appendChild(text);
+    card.appendChild(step);
+  });
+  const hasProg = STATE.completed.length > 0;
+  if (hasProg) {
+    const resume = el('button', 'btn btn-primary'); resume.style.marginTop = '24px';
+    resume.textContent = `↩  Resume — Chapter ${STATE.chapterIndex + 1}`;
+    resume.onclick = () => { STATE.screen = 'chapter'; render(); }; card.appendChild(resume);
+    const restart = el('button', 'btn btn-secondary');
+    restart.textContent = '→  Start from Chapter 1';
+    restart.onclick = () => { STATE.chapterIndex = 0; STATE.screen = 'chapter'; render(); }; card.appendChild(restart);
+    const reset = el('button', 'btn btn-ghost'); reset.style.color = 'var(--text-dim)';
+    reset.textContent = '↺  Clear Progress';
+    reset.onclick = () => { if (confirm('Clear all progress and start over?')) { STATE = freshState(); render(); } }; card.appendChild(reset);
+  } else {
+    const start = el('button', 'btn btn-primary'); start.style.marginTop = '24px';
+    start.textContent = '→  Start Course';
+    start.onclick = () => { STATE.screen = 'chapter'; render(); }; card.appendChild(start);
+  }
+  app.appendChild(card);
+  app.appendChild(mkSaveNote());
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHAPTER
+// ═══════════════════════════════════════════════════════════
+function renderChapter(app) {
+  const c = ch(); const card = el('div', 'card');
+  const eyebrow = el('div', 'eyebrow'); eyebrow.textContent = `${c.chapter} · ${c.icon} ${c.title}`; card.appendChild(eyebrow);
+  const story = el('div', 'story-block');
+  const slbl = el('div', 'story-label'); slbl.textContent = "Jack's Story"; story.appendChild(slbl);
+  c.story.paragraphs.forEach(text => { const p = el('p'); p.textContent = text; story.appendChild(p); }); card.appendChild(story);
+  const sci = el('div', 'science-block');
+  const sciLbl = el('div', 'science-label'); sciLbl.textContent = 'The Science'; sci.appendChild(sciLbl);
+  const sciP = el('p'); sciP.textContent = c.science; sci.appendChild(sciP); card.appendChild(sci);
+  const kt = el('div', 'takeaway');
+  const ktLbl = el('div', 'takeaway-label'); ktLbl.textContent = '🎯  Key Takeaway'; kt.appendChild(ktLbl);
+  kt.appendChild(document.createTextNode(c.takeaway)); card.appendChild(kt);
+  const cta = el('button', 'btn btn-primary'); cta.style.marginTop = '24px';
+  cta.textContent = '→  Answer the Chapter Question';
+  cta.onclick = () => { STATE.screen = 'question'; STATE.selectedOption = null; STATE.showFeedback = false; render(); }; card.appendChild(cta);
+  if (STATE.chapterIndex > 0) {
+    const back = el('button', 'btn btn-ghost'); back.style.color = 'var(--text-dim)';
+    back.textContent = `← Chapter ${STATE.chapterIndex}`;
+    back.onclick = () => { STATE.chapterIndex--; STATE.screen = 'chapter'; render(); }; card.appendChild(back);
+  }
+  app.appendChild(card); app.appendChild(mkSaveNote());
+}
+
+// ═══════════════════════════════════════════════════════════
+// QUESTION
+// ═══════════════════════════════════════════════════════════
+function renderQuestion(app) {
+  const c = ch(); const q = c.question; const card = el('div', 'question-card');
+  const qlbl = el('div', 'q-label'); qlbl.textContent = `${c.chapter} · Check Your Understanding`; card.appendChild(qlbl);
+  const qtext = el('div', 'q-text'); qtext.textContent = q.text; card.appendChild(qtext);
+  const opts = el('div', 'options');
+  q.options.forEach((opt, i) => {
+    const btn = el('button', 'option');
+    if (STATE.showFeedback) { if (opt.correct) btn.className += ' correct'; else if (i === STATE.selectedOption) btn.className += ' wrong'; btn.disabled = true; }
+    else if (STATE.selectedOption === i) btn.className += ' selected';
+    btn.textContent = opt.text;
+    btn.onclick = () => { if (STATE.showFeedback) return; STATE.selectedOption = i; render(); };
+    opts.appendChild(btn);
+  }); card.appendChild(opts);
+
+  if (STATE.showFeedback) {
+    const isCorrect = q.options[STATE.selectedOption]?.correct;
+    const fb = el('div', `feedback feedback-${isCorrect ? 'correct' : 'wrong'}`);
+    const fbt = el('div', 'feedback-title'); fbt.textContent = isCorrect ? '✅  Correct!' : '❌  Not quite.'; fb.appendChild(fbt);
+    const fbText = el('div'); fbText.textContent = q.explanation; fb.appendChild(fbText); card.appendChild(fb);
+
+    if (isCorrect) {
+      if (!done(c.id)) STATE.completed.push(c.id); saveState(STATE);
+      if (c.tryThis) {
+        const tt = el('div', 'try-this');
+        const ttLbl = el('div', 'try-this-label'); ttLbl.textContent = '✋  Try This Before You Move On'; tt.appendChild(ttLbl);
+        const ttText = el('div', 'try-this-text'); ttText.textContent = c.tryThis; tt.appendChild(ttText); card.appendChild(tt);
+      }
+      const isLast = STATE.chapterIndex === CHAPTERS.length - 1;
+      const next = el('button', 'btn btn-primary');
+      next.textContent = isLast ? '🎓  Get My Certificate' : `→  Chapter ${STATE.chapterIndex + 2}: ${CHAPTERS[STATE.chapterIndex + 1].title}`;
+      next.onclick = () => { if (isLast) { STATE.screen = 'complete'; } else { STATE.chapterIndex++; STATE.screen = 'chapter'; STATE.selectedOption = null; STATE.showFeedback = false; } render(); };
+      card.appendChild(next);
+    } else {
+      const row = el('div', 'btn-row');
+      const retry = el('button', 'btn btn-ghost btn-sm'); retry.textContent = '↺  Try Again';
+      retry.onclick = () => { STATE.selectedOption = null; STATE.showFeedback = false; render(); }; row.appendChild(retry);
+      const review = el('button', 'btn btn-secondary btn-sm'); review.textContent = '📖  Review Chapter';
+      review.onclick = () => { STATE.screen = 'chapter'; STATE.selectedOption = null; STATE.showFeedback = false; render(); }; row.appendChild(review);
+      card.appendChild(row);
+    }
+  } else {
+    const check = el('button', 'btn btn-primary'); check.textContent = 'Check';
+    check.disabled = STATE.selectedOption === null;
+    check.onclick = () => { STATE.showFeedback = true; render(); }; card.appendChild(check);
+    const goBack = el('button', 'btn btn-ghost'); goBack.style.color = 'var(--text-dim)'; goBack.textContent = '← Review the Chapter';
+    goBack.onclick = () => { STATE.screen = 'chapter'; render(); }; card.appendChild(goBack);
+  }
+  app.appendChild(card); app.appendChild(mkSaveNote());
+}
+
+// ═══════════════════════════════════════════════════════════
+// COMPLETE
+// ═══════════════════════════════════════════════════════════
+function renderComplete(app) {
+  // Award badge
+  try {
+    const progress = JSON.parse(localStorage.getItem('ff_progress') || '{}');
+    if (!progress['tantrum']) progress['tantrum'] = {};
+    progress['tantrum'].cert = true;
+    localStorage.setItem('ff_progress', JSON.stringify(progress));
+  } catch(e) {}
+
+  const congrats = el('div', 'card no-print');
+  const ce = el('div', 'eyebrow'); ce.style.textAlign = 'center'; ce.textContent = 'Course Complete 🎉'; congrats.appendChild(ce);
+  const ct = el('h2'); ct.style.textAlign = 'center'; ct.style.marginTop = '4px'; ct.textContent = 'You finished all 10 chapters'; congrats.appendChild(ct);
+  const cs = el('p'); cs.style.textAlign = 'center'; cs.style.marginTop = '8px';
+  cs.textContent = "Here's your certificate. Type your name, then print or save it as a PDF."; congrats.appendChild(cs);
+  app.appendChild(congrats);
+
+  const certCard = el('div', 'card');
+  const certOuter = el('div', 'cert-outer');
+  const seal = el('div', 'cert-seal'); seal.textContent = '✓'; certOuter.appendChild(seal);
+  const pretitle = el('div', 'cert-pretitle'); pretitle.textContent = 'Certificate of Completion'; certOuter.appendChild(pretitle);
+  const certTitle = el('h2', 'cert-title'); certTitle.textContent = 'The Tantrum Playbook'; certOuter.appendChild(certTitle);
+  const nameWrap = el('div', 'cert-name-wrap');
+  const nameLbl = el('div', 'cert-name-label'); nameLbl.textContent = 'Awarded to'; nameWrap.appendChild(nameLbl);
+  const nameInput = el('input', 'cert-name-input'); nameInput.type = 'text'; nameInput.placeholder = 'Your name';
+  nameInput.setAttribute('spellcheck', 'false'); nameInput.value = userName(); nameWrap.appendChild(nameInput); certOuter.appendChild(nameWrap);
+  certOuter.appendChild(el('div', 'cert-rule'));
+  const body = el('div', 'cert-body');
+  body.textContent = "has successfully completed all 10 chapters of The Tantrum Playbook, demonstrating understanding of research-backed approaches to toddler tantrums and emotional regulation."; certOuter.appendChild(body);
+  const sigRow = el('div', 'cert-sig-row');
+  const sig = el('div', 'cert-sig');
+  const sigLine = el('div', 'cert-sig-line'); sig.appendChild(sigLine);
+  const sigName = el('div', 'cert-sig-name'); sigName.textContent = 'Jack Hartley'; sig.appendChild(sigName);
+  const sigRole = el('div', 'cert-sig-role'); sigRole.textContent = 'Author, The Tantrum Playbook'; sig.appendChild(sigRole);
+  sigRow.appendChild(sig); certOuter.appendChild(sigRow);
+  const dateEl = el('div', 'cert-date'); dateEl.textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }); certOuter.appendChild(dateEl);
+  certCard.appendChild(certOuter); app.appendChild(certCard);
+
+  const actions = el('div', 'card card-sm no-print');
+  const printBtn = el('button', 'btn btn-primary'); printBtn.textContent = '🖨️  Print / Save as PDF';
+  printBtn.onclick = () => window.print(); actions.appendChild(printBtn);
+  const pdfBtn = el('button', 'btn btn-secondary'); pdfBtn.textContent = '📄  Download Full Book';
+  pdfBtn.onclick = () => { const a = document.createElement('a'); a.href = 'assets/downloads/tantrum-playbook.epub'; a.download = 'Tantrum-Playbook-Jack-Hartley.epub'; a.click(); }; actions.appendChild(pdfBtn);
+  const dashBtn = el('button', 'btn btn-ghost'); dashBtn.textContent = '← Back to Dashboard';
+  dashBtn.onclick = () => { window.location.href = 'dashboard.html'; }; actions.appendChild(dashBtn);
+  app.appendChild(actions);
+
+  // Action Plan
+  const actionCard = el('div', 'card no-print');
+  const ae = el('div', 'eyebrow'); ae.textContent = 'Your Action Plan'; actionCard.appendChild(ae);
+  const at = el('h3'); at.style.marginTop = '4px'; at.textContent = '10 things to try this week'; actionCard.appendChild(at);
+  const as_ = el('p'); as_.style.fontSize = '13px'; as_.style.marginTop = '6px'; as_.style.marginBottom = '16px';
+  as_.textContent = 'One specific action from each chapter. Pick the ones that matter most for where you are right now.'; actionCard.appendChild(as_);
+  const list = el('div', 'action-list');
+  CHAPTERS.forEach((c, i) => {
+    if (!c.tryThis) return;
+    const item = el('div', 'action-item');
+    const num = el('div', 'action-num'); num.textContent = i + 1; item.appendChild(num);
+    const bdy = el('div', 'action-body');
+    const clbl = el('div', 'action-chapter'); clbl.textContent = `${c.icon} ${c.title}`; bdy.appendChild(clbl);
+    const txt = el('div'); txt.textContent = c.tryThis; bdy.appendChild(txt); item.appendChild(bdy); list.appendChild(item);
+  }); actionCard.appendChild(list); app.appendChild(actionCard);
+
+  // Key Rules
+  const rulesCard = el('div', 'card no-print');
+  const re = el('div', 'eyebrow'); re.textContent = 'The Core Principles'; rulesCard.appendChild(re);
+  const rt = el('h3'); rt.style.marginTop = '4px'; rt.style.marginBottom = '16px'; rt.textContent = 'What the research reduces to';
+  rulesCard.appendChild(rt);
+  [
+    ['🧠', 'It\'s not defiance', 'Tantrums are a neurological event, not a power struggle. The upstairs brain is offline. Logic won\'t work until it comes back.'],
+    ['📈', 'Two phases, two responses', 'Phase 1 (anger): stay nearby, stay calm, don\'t engage. Phase 2 (distress): move in and connect. Applying the wrong response to the wrong phase makes it last longer.'],
+    ['⏱️', 'First 10 seconds set the trajectory', 'Breathe. Get low. Name it. Hold the limit. Step back. Your nervous system is contagious — regulate yourself before you engage your child.'],
+    ['🌤️', 'Reconnection closes the loop', 'The tantrum is the rupture. The reconnection is the repair. Physical closeness first. One sentence later, when they\'re calm. Then forward.']
+  ].forEach(([icon, title2, desc]) => {
+    const rule = el('div', 'rule-item');
+    const ri = el('div', 'rule-icon'); ri.textContent = icon; rule.appendChild(ri);
+    const rb = el('div');
+    const rTitle = el('div', 'rule-title'); rTitle.textContent = title2; rb.appendChild(rTitle);
+    const rDesc = el('div', 'rule-desc'); rDesc.textContent = desc; rb.appendChild(rDesc);
+    rule.appendChild(rb); rulesCard.appendChild(rule);
+  }); app.appendChild(rulesCard);
+}
+
+function mkSaveNote() {
+  const n = el('p', 'save-note no-print'); n.textContent = '✓  Progress saved automatically'; return n;
+}
+
+render();
+</script>
+</body>
+</html>
