@@ -1376,11 +1376,11 @@ function renderComplete(app) {
   actions.appendChild(printBtn);
 
   const pdfBtn = el('button', 'btn btn-secondary');
-  pdfBtn.textContent = '📄  Download Full Book (PDF)';
+  pdfBtn.textContent = '📄  Download Full Book';
   pdfBtn.onclick = () => {
     const a = document.createElement('a');
-    a.href = 'assets/downloads/screen-time-playbook.pdf';
-    a.download = 'Screen-Time-Playbook-Jack-Hartley.pdf';
+    a.href = 'assets/downloads/screen-time-playbook.epub';
+    a.download = 'Screen-Time-Playbook-Jack-Hartley.epub';
     a.click();
   };
   actions.appendChild(pdfBtn);
