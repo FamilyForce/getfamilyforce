@@ -1462,6 +1462,40 @@ button { font: inherit; cursor: pointer; }
   outline: none;
   box-shadow: var(--focus-ring);
 }
+
+/* ─── Library row actions ─── */
+.lib-price-wrap { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.lib-price-original {
+  font-size: 13px; font-weight: 600; color: var(--text-ghost);
+  text-decoration: line-through;
+}
+.lib-badge {
+  font-size: 11px; font-weight: 700; letter-spacing: .05em;
+  background: #22c55e; color: #fff;
+  padding: 2px 7px; border-radius: 99px;
+}
+.lib-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 4px; }
+.lib-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 13px; font-weight: 600; font-family: var(--sans);
+  padding: 6px 12px; border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: var(--elevated); color: var(--text);
+  text-decoration: none; transition: background .15s;
+  cursor: pointer; white-space: nowrap;
+}
+@media (hover:hover) { .lib-btn:hover { background: var(--border-light); } }
+.lib-btn--course { background: var(--terra); color: #fff; border-color: transparent; }
+@media (hover:hover) { .lib-btn--course:hover { background: var(--terra-dark); } }
+.lib-btn--cert { background: #5BA88E; color: #fff; border-color: transparent; }
+@media (hover:hover) { .lib-btn--cert:hover { background: #4A9070; } }
+.lib-btn--cert-locked {
+  background: var(--elevated); color: var(--text-dim);
+  border: 1px solid var(--border-light); cursor: default; opacity: .6;
+}
+.lib-btn--pdf { }
+.lib-btn--quiz { }
+.lib-btn-stack { display: none; } /* Listen hidden globally */
 </style>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-NWDKH78LWB"></script>
@@ -1478,10 +1512,12 @@ button { font: inherit; cursor: pointer; }
       'https://ewjqbafaxeasyvknxmof.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
     );
-    // Redirect to sign-in if not authenticated
-    window._supabaseClient.auth.getSession().then(({ data }) => {
-      if (!data.session) window.location.href = 'sign-in.html';
-    });
+    // Redirect to sign-in if not authenticated (?preview=1 bypasses for local review)
+    if (new URLSearchParams(location.search).get('preview') !== '1') {
+      window._supabaseClient.auth.getSession().then(({ data }) => {
+        if (!data.session) window.location.href = 'sign-in.html';
+      });
+    }
   </script>
 </head>
 
@@ -1755,25 +1791,22 @@ button { font: inherit; cursor: pointer; }
             <span class="lib-badge">FREE</span>
           </div>
           <div class="lib-actions">
-            <a href="manuscripts/screen-time-playbook-final.pdf" class="lib-btn lib-btn--read" target="_blank" rel="noopener" aria-label="Read Screen Time Playbook PDF">
-              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-              Read
+            <a href="course-screentime.html" class="lib-btn lib-btn--course" aria-label="Take Screen Time course">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5h14M3 10h14M3 15h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Course
             </a>
-            <div class="lib-btn-stack">
-              <button class="lib-btn lib-btn--listen" disabled aria-label="Listen — coming soon">
-                <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8a7 7 0 0114 0v5a2 2 0 01-2 2h-1a2 2 0 01-2-2v-2a2 2 0 012-2h1V8A6 6 0 004 8v1h1a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-                Listen
-              </button>
-              <span class="lib-btn-sub">coming soon</span>
-            </div>
+            <a href="manuscripts/screen-time-playbook-final.pdf" class="lib-btn lib-btn--pdf" target="_blank" rel="noopener" aria-label="Download Screen Time full book PDF">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Full Book PDF
+            </a>
             <a href="quiz-intro-screentime.html" class="lib-btn lib-btn--quiz" aria-label="Take Screen Time quiz">
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
             </a>
-            <a href="certificates/certificate-screentime.html" class="lib-btn lib-btn--cert" aria-label="View Screen Time certificate">
-              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <span id="cert-screentime-btn" class="lib-btn lib-btn--cert-locked" aria-label="Certificate locked until course complete" title="Complete the course to unlock">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="5" y="9" width="10" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9V6a2 2 0 014 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Certificate
-            </a>
+            </span>
           </div>
         </article>
 
@@ -1793,13 +1826,6 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Read
             </a>
-            <div class="lib-btn-stack">
-              <button class="lib-btn lib-btn--listen" disabled aria-label="Listen — coming soon">
-                <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8a7 7 0 0114 0v5a2 2 0 01-2 2h-1a2 2 0 01-2-2v-2a2 2 0 012-2h1V8A6 6 0 004 8v1h1a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-                Listen
-              </button>
-              <span class="lib-btn-sub">coming soon</span>
-            </div>
             <a href="quiz-intro.html" class="lib-btn lib-btn--quiz" aria-label="Take Potty Training quiz">
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
@@ -1827,13 +1853,6 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Read
             </a>
-            <div class="lib-btn-stack">
-              <button class="lib-btn lib-btn--listen" disabled aria-label="Listen — coming soon">
-                <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8a7 7 0 0114 0v5a2 2 0 01-2 2h-1a2 2 0 01-2-2v-2a2 2 0 012-2h1V8A6 6 0 004 8v1h1a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-                Listen
-              </button>
-              <span class="lib-btn-sub">coming soon</span>
-            </div>
             <a href="quiz-intro-sleep.html" class="lib-btn lib-btn--quiz" aria-label="Take Sleep Training quiz">
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
@@ -1861,13 +1880,6 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Read
             </a>
-            <div class="lib-btn-stack">
-              <button class="lib-btn lib-btn--listen" disabled aria-label="Listen — coming soon">
-                <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8a7 7 0 0114 0v5a2 2 0 01-2 2h-1a2 2 0 01-2-2v-2a2 2 0 012-2h1V8A6 6 0 004 8v1h1a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-                Listen
-              </button>
-              <span class="lib-btn-sub">coming soon</span>
-            </div>
             <a href="quiz-intro-tantrum.html" class="lib-btn lib-btn--quiz" aria-label="Take Tantrums quiz">
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
@@ -1895,13 +1907,6 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 4h12v12H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M7 8h6M7 11h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Read
             </a>
-            <div class="lib-btn-stack">
-              <button class="lib-btn lib-btn--listen" disabled aria-label="Listen — coming soon">
-                <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 8a7 7 0 0114 0v5a2 2 0 01-2 2h-1a2 2 0 01-2-2v-2a2 2 0 012-2h1V8A6 6 0 004 8v1h1a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-                Listen
-              </button>
-              <span class="lib-btn-sub">coming soon</span>
-            </div>
             <a href="quiz-intro-feeding.html" class="lib-btn lib-btn--quiz" aria-label="Take Feeding quiz">
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
@@ -2104,6 +2109,24 @@ button { font: inherit; cursor: pointer; }
   } catch (_) {
     progressData = {};
   }
+
+  /* ─── SCREEN TIME COURSE CERTIFICATE UNLOCK ─── */
+  (function() {
+    const COURSE_IDS = ['guilt','contingency','content','pacifier','apps','sleep','background','your_phone','eyes','three_rules','falls_apart'];
+    const certBtn = document.getElementById('cert-screentime-btn');
+    if (!certBtn) return;
+    try {
+      const state = JSON.parse(localStorage.getItem('ff_course_screentime_v1') || '{}');
+      const completed = Array.isArray(state.completed) ? state.completed : [];
+      const allDone = COURSE_IDS.every(id => completed.includes(id));
+      if (allDone) {
+        certBtn.outerHTML = `<a href="certificates/certificate-screentime.html" class="lib-btn lib-btn--cert" aria-label="View Screen Time certificate">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Certificate
+        </a>`;
+      }
+    } catch(_) {}
+  })();
 
   /* ─── UPDATE BADGES ─── */
   (function() {

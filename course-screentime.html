@@ -484,6 +484,108 @@ p + p { margin-top: 12px; }
 .fade-in { animation: fadeIn .3s var(--ease); }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — TABLET (≤768px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Roadmap: larger touch targets */
+  .roadmap { padding: 2px 2px 6px; scroll-padding-inline: 12px; gap: 8px; }
+  .roadmap-icon { width: 40px; height: 40px; font-size: 18px; }
+  .roadmap-ch { width: 68px; }
+  .roadmap-label { font-size: 10px; max-width: 68px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE (≤480px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  /* Layout */
+  .main {
+    width: calc(100% - 32px);
+    padding-top: 24px;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Cards */
+  .card { padding: 20px; border-radius: 16px; }
+  .card-sm { padding: 16px; border-radius: 16px; }
+  .question-card { padding: 20px; border-radius: 16px; }
+
+  /* Progress */
+  .progress-section { margin-bottom: 20px; }
+
+  /* Welcome */
+  .welcome-badge { width: 60px; height: 60px; font-size: 28px; border-radius: 16px; margin-bottom: 16px; }
+  .stat-box { padding: 12px 8px; }
+  .stat-num { font-size: 19px; }
+  .stat-lbl { font-size: 10px; }
+  .divider { margin: 18px 0; }
+  .step-text { font-size: 14px; }
+
+  /* Story + Science */
+  .story-block { padding: 14px 16px; margin: 18px 0; }
+  .story-block p { font-size: 14px; line-height: 1.75; }
+  .science-block { padding: 14px 16px; }
+  .science-block p { font-size: 14px; }
+  .takeaway { padding: 14px 16px; font-size: 13px; }
+
+  /* Question */
+  .q-text { font-size: 15px; }
+  .options { gap: 8px; margin: 16px 0; }
+  .option { padding: 12px 14px; font-size: 14px; }
+
+  /* Feedback + Try This */
+  .feedback { padding: 14px 16px; font-size: 14px; }
+  .feedback-title { font-size: 14px; }
+  .try-this { padding: 14px 16px; }
+  .try-this-text { font-size: 13px; }
+
+  /* Buttons — btn-row stacks vertically */
+  .btn-row { flex-direction: column; gap: 8px; }
+  .btn-row .btn { width: 100%; }
+  .btn-sm { font-size: 14px; padding: 12px 20px; }
+
+  /* Certificate */
+  .cert-name-input { font-size: 20px; }
+  .cert-body { font-size: 13px; }
+  .cert-sig-row { margin-top: 24px; }
+
+  /* Action plan */
+  .action-item { padding: 10px 12px; }
+  .action-body { font-size: 13px; }
+  .action-chapter { font-size: 10px; }
+
+  /* Three Rules */
+  .rule-title { font-size: 14px; }
+  .rule-desc { font-size: 13px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — NARROW MOBILE (≤360px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 360px) {
+  .main { width: calc(100% - 24px); }
+  .card { padding: 16px; }
+  .question-card { padding: 16px; }
+
+  /* Stat row — stack into 2 columns at narrowest */
+  .stat-row { flex-wrap: wrap; }
+  .stat-box { flex: 1 1 calc(50% - 6px); }
+  .stat-box:last-child { flex: 1 1 100%; padding: 10px; }
+  .stat-num { font-size: 18px; }
+
+  /* Roadmap tighter */
+  .roadmap-ch { width: 58px; }
+  .roadmap-icon { width: 36px; height: 36px; font-size: 16px; }
+  .roadmap-label { font-size: 9px; max-width: 58px; }
+
+  /* Certificate name */
+  .cert-name-input { font-size: 18px; }
+
+  /* h2/h3 */
+  h3 { font-size: 15px; }
+}
+
 /* ─── PRINT ─── */
 @media print {
   .no-print { display: none !important; }
