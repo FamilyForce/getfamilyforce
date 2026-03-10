@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE — Screen Time Course
+     Gated: Supabase auth required
+     Stack: Vanilla HTML/CSS/JS · Zero dependencies · No build
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+
+<title>Screen Time Course · FamilyForce</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#6E4ED6">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // Auth gate — redirect before any content renders
+  const _sb = supabase.createClient(
+    'https://ewjqbafaxeasyvknxmof.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+  );
+  const _preview = new URLSearchParams(location.search).get('preview') === '1';
+  if (_preview) {
+    document.documentElement.classList.add('authed');
+  } else {
+    _sb.auth.getSession().then(({ data }) => {
+      if (!data.session) {
+        window.location.href = 'sign-in.html?next=course-screentime.html';
+      } else {
+        document.documentElement.classList.add('authed');
+      }
+    });
+  }
+</script>
+
+<style>
+/* ─── TOKENS (matching site exactly) ─── */
+:root {
+  --sans:  'Outfit', system-ui, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+
+  --terra:        #6E4ED6;
+  --terra-dark:   #5B3CC4;
+  --terra-light:  #9B80FF;
+  --terra-tint:   #EDE9FB;
+  --terra-tint2:  #F5F3FF;
+
+  --bg:       #F8F7FF;
+  --surface:  #FFFFFF;
+  --elevated: #F3F0FF;
+
+  --text:     #0D0820;
+  --text-mid: #4A4560;
+  --text-dim: #8B85A8;
+
+  --border:       rgba(110,78,214,.12);
+  --border-light: rgba(110,78,214,.07);
+
+  --correct:     #22c55e;
+  --correct-bg:  #F0FDF4;
+  --correct-border: #86efac;
+  --wrong:       #ef4444;
+  --wrong-bg:    #FEF2F2;
+  --wrong-border:#fca5a5;
+
+  --radius-pill: 100px;
+  --radius-card: 20px;
+  --radius-sm:   12px;
+  --shadow-card: 0 2px 16px rgba(110,78,214,.08);
+  --ease:        cubic-bezier(.4,0,.2,1);
+}
+
+/* ─── RESET ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* Hide everything until auth confirmed */
+html:not(.authed) body > * { visibility: hidden; }
+html:not(.authed) .auth-loading { visibility: visible; }
+
+/* ─── AUTH LOADING ─── */
+.auth-loading {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+  font-size: 14px; color: var(--text-dim); font-family: var(--sans);
+}
+html.authed .auth-loading { display: none; }
+
+/* ─── HEADER ─── */
+.course-header {
+  position: sticky;
+  top: 0; z-index: 100;
+  background: rgba(248,247,255,.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-light);
+  height: 60px;
+  display: flex; align-items: center;
+}
+.header-inner {
+  width: min(760px, 100% - 40px);
+  margin-inline: auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+}
+.header-logo {
+  display: flex; align-items: center; gap: 8px;
+  font-weight: 800; font-size: 16px; color: var(--text);
+  text-decoration: none; flex-shrink: 0;
+}
+.logo-mark {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--terra); color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800;
+}
+.header-back {
+  font-size: 13px; font-weight: 600; color: var(--text-mid);
+  text-decoration: none; display: flex; align-items: center; gap: 5px;
+  transition: color .15s;
+  flex-shrink: 0;
+}
+.header-back:hover { color: var(--terra); }
+.header-course-name {
+  font-size: 13px; font-weight: 600; color: var(--text-mid);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  flex: 1; text-align: center;
+}
+@media (max-width: 480px) { .header-course-name { display: none; } }
+
+/* ─── MAIN LAYOUT ─── */
+.main {
+  width: min(680px, 100% - 40px);
+  margin-inline: auto;
+  padding: 32px 0 80px;
+}
+
+/* ─── PROGRESS SECTION ─── */
+.progress-section { margin-bottom: 28px; }
+.progress-meta {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.progress-label { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+.progress-pct { font-size: 12px; font-weight: 700; color: var(--terra); }
+.progress-bar-wrap {
+  height: 5px; background: var(--terra-tint); border-radius: 99px;
+  overflow: hidden; margin-bottom: 14px;
+}
+.progress-bar-fill {
+  height: 100%; background: var(--terra); border-radius: 99px;
+  transition: width .5s var(--ease);
+}
+
+/* ─── CHAPTER ROADMAP ─── */
+.roadmap {
+  display: flex; gap: 6px;
+  overflow-x: auto; padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.roadmap::-webkit-scrollbar { display: none; }
+.roadmap-ch {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  flex-shrink: 0; width: 64px; opacity: .35; transition: opacity .2s;
+}
+.roadmap-ch.done, .roadmap-ch.current { opacity: 1; }
+.roadmap-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--terra-tint);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; border: 2px solid transparent;
+  position: relative; transition: all .2s; flex-shrink: 0;
+}
+.roadmap-ch.done .roadmap-icon {
+  background: var(--correct-bg); border-color: var(--correct);
+}
+.roadmap-ch.done .roadmap-icon::after {
+  content: '✓';
+  position: absolute; bottom: -3px; right: -3px;
+  width: 15px; height: 15px; background: var(--correct); color: white;
+  border-radius: 50%; font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.roadmap-ch.current .roadmap-icon {
+  background: var(--terra-tint); border-color: var(--terra);
+  box-shadow: 0 0 0 3px rgba(110,78,214,.15);
+}
+.roadmap-label {
+  font-size: 10px; font-weight: 600; color: var(--text-dim);
+  text-align: center; line-height: 1.3; max-width: 64px;
+}
+.roadmap-ch.current .roadmap-label { color: var(--terra); font-weight: 700; }
+.roadmap-ch.done .roadmap-label { color: var(--text-mid); }
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--surface); border-radius: var(--radius-card);
+  padding: 32px; box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
+  margin-bottom: 16px;
+}
+.card-sm { padding: 24px; }
+
+/* ─── TYPOGRAPHY ─── */
+.eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--terra); margin-bottom: 8px;
+}
+h1 {
+  font-family: var(--serif); font-size: clamp(28px, 5vw, 36px);
+  line-height: 1.15; color: var(--text); font-weight: 400;
+}
+h2 {
+  font-family: var(--serif); font-size: clamp(22px, 4vw, 28px);
+  line-height: 1.2; color: var(--text); font-weight: 400; margin-bottom: 6px;
+}
+h3 { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+p { font-size: 15px; line-height: 1.75; color: var(--text-mid); }
+p + p { margin-top: 12px; }
+
+.divider { height: 1px; background: var(--border-light); margin: 24px 0; }
+
+/* ─── WELCOME ─── */
+.welcome-badge {
+  width: 72px; height: 72px; border-radius: 20px;
+  background: var(--terra-tint); margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+}
+.stat-row { display: flex; gap: 10px; margin: 24px 0; }
+.stat-box {
+  flex: 1; background: var(--terra-tint2); border-radius: var(--radius-sm);
+  padding: 16px 10px; text-align: center;
+  border: 1px solid var(--border-light);
+}
+.stat-num { font-size: 22px; font-weight: 800; color: var(--terra); }
+.stat-lbl { font-size: 11px; color: var(--text-dim); margin-top: 3px; font-weight: 600; }
+.how-step {
+  display: flex; gap: 14px; align-items: flex-start; padding: 12px 0;
+}
+.how-step + .how-step { border-top: 1px solid var(--border-light); }
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--terra);
+  color: white; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-text { font-size: 15px; color: var(--text-mid); line-height: 1.55; }
+.step-text strong { color: var(--text); }
+
+/* ─── BUTTONS ─── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--sans); font-weight: 700; font-size: 15px;
+  border: none; border-radius: var(--radius-pill);
+  padding: 14px 28px; cursor: pointer; width: 100%;
+  transition: background .2s, transform .15s, opacity .15s;
+  text-decoration: none;
+}
+.btn-primary { background: var(--terra); color: white; }
+@media (hover:hover) { .btn-primary:hover { background: var(--terra-dark); transform: translateY(-1px); } }
+.btn-secondary {
+  background: transparent; color: var(--terra-dark);
+  border: 1.5px solid var(--terra);
+}
+@media (hover:hover) { .btn-secondary:hover { background: var(--terra-tint); } }
+.btn-ghost { background: var(--terra-tint); color: var(--terra-dark); }
+@media (hover:hover) { .btn-ghost:hover { background: var(--elevated); } }
+.btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
+.btn + .btn { margin-top: 10px; }
+.btn-sm { font-size: 13px; padding: 10px 20px; width: auto; }
+.btn-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+
+/* ─── JACK'S STORY ─── */
+.story-block {
+  border-left: 3px solid rgba(110,78,214,.3);
+  padding: 18px 22px;
+  margin: 22px 0;
+  background: rgba(248,247,255,.7);
+  border-radius: 0 12px 12px 0;
+}
+.story-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--terra-light); margin-bottom: 10px;
+}
+.story-block p {
+  font-style: italic; color: var(--text);
+  font-size: 15px; line-height: 1.8;
+}
+.story-block p + p { margin-top: 12px; }
+
+/* ─── SCIENCE BLOCK ─── */
+.science-block {
+  background: var(--terra-tint); border-radius: var(--radius-sm);
+  padding: 18px 20px; margin: 18px 0;
+}
+.science-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--terra); margin-bottom: 8px;
+}
+.science-block p { color: var(--text); font-style: normal; }
+
+/* ─── KEY TAKEAWAY ─── */
+.takeaway {
+  background: var(--terra); color: white;
+  border-radius: var(--radius-sm); padding: 16px 20px; margin: 18px 0;
+  font-size: 14px; font-weight: 600; line-height: 1.6;
+}
+.takeaway-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; opacity: .65; margin-bottom: 5px;
+}
+
+/* ─── QUESTION CARD ─── */
+.question-card {
+  background: var(--surface); border-radius: var(--radius-card);
+  border-top: 3px solid var(--terra);
+  padding: 28px; box-shadow: var(--shadow-card);
+  border-left: 1px solid var(--border-light);
+  border-right: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 16px;
+}
+.q-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--terra); margin-bottom: 12px;
+}
+.q-text {
+  font-size: 16px; font-weight: 600; line-height: 1.55;
+  color: var(--text); margin-bottom: 4px;
+}
+
+/* ─── OPTIONS ─── */
+.options { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+.option {
+  border: 2px solid var(--border); border-radius: var(--radius-sm);
+  padding: 14px 18px; cursor: pointer;
+  font-size: 14px; line-height: 1.5; color: var(--text);
+  background: var(--surface); text-align: left;
+  transition: border-color .15s, background .15s;
+  font-family: var(--sans); width: 100%;
+}
+@media (hover:hover) {
+  .option:hover:not(:disabled) {
+    border-color: var(--terra-light); background: var(--terra-tint);
+  }
+}
+.option.selected {
+  border-color: var(--terra); background: var(--terra-tint);
+  color: var(--terra-dark); font-weight: 600;
+}
+.option.correct {
+  border-color: var(--correct); background: var(--correct-bg);
+  color: #15803d; font-weight: 600;
+}
+.option.wrong {
+  border-color: var(--wrong); background: var(--wrong-bg); color: #b91c1c;
+}
+.option:disabled { cursor: default; }
+
+/* ─── FEEDBACK ─── */
+.feedback {
+  border-radius: var(--radius-sm); padding: 16px 18px;
+  font-size: 14px; line-height: 1.7; margin-top: 4px;
+}
+.feedback-correct { background: var(--correct-bg); border: 1px solid var(--correct-border); color: #166534; }
+.feedback-wrong   { background: var(--wrong-bg);   border: 1px solid var(--wrong-border);   color: #991b1b; }
+.feedback-title { font-weight: 700; margin-bottom: 4px; font-size: 15px; }
+
+/* ─── TRY THIS ─── */
+.try-this {
+  border: 2px solid var(--correct); border-radius: var(--radius-sm);
+  padding: 16px 18px; margin-top: 14px; background: var(--correct-bg);
+}
+.try-this-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: #16a34a; margin-bottom: 6px;
+}
+.try-this-text { font-size: 14px; line-height: 1.65; color: #166534; font-weight: 500; }
+
+/* ─── CERTIFICATE ─── */
+.cert-outer {
+  background: white;
+  border: 2px solid var(--terra);
+  border-radius: 20px;
+  padding: clamp(28px, 6vw, 48px) clamp(24px, 6vw, 48px);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cert-outer::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at top, rgba(110,78,214,.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.cert-seal {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: var(--terra); margin: 0 auto 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; color: white;
+  box-shadow: 0 6px 24px rgba(110,78,214,.3);
+}
+.cert-pretitle {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;
+}
+.cert-title {
+  font-family: var(--serif); font-size: clamp(22px, 4vw, 30px);
+  color: var(--text); margin-bottom: 20px; line-height: 1.2;
+}
+.cert-name-wrap { margin: 16px auto; max-width: 380px; }
+.cert-name-label {
+  font-size: 12px; color: var(--text-dim); margin-bottom: 6px; font-weight: 600;
+}
+.cert-name-input {
+  border: none; border-bottom: 2px solid var(--terra);
+  background: transparent; font-family: var(--serif);
+  font-size: 24px; color: var(--terra-dark); font-style: italic;
+  text-align: center; width: 100%; padding: 6px 0; outline: none;
+}
+.cert-name-input::placeholder { color: var(--terra-tint); font-style: italic; }
+.cert-rule { width: 80px; height: 2px; background: var(--terra-tint); margin: 22px auto; border-radius: 99px; }
+.cert-body {
+  font-size: 14px; color: var(--text-mid); line-height: 1.7;
+  max-width: 420px; margin-inline: auto;
+}
+.cert-sig-row { display: flex; justify-content: center; margin-top: 32px; }
+.cert-sig { text-align: center; }
+.cert-sig-line { width: 130px; height: 1px; background: var(--border); margin: 0 auto 8px; }
+.cert-sig-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.cert-sig-role { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+.cert-date { font-size: 12px; color: var(--text-dim); margin-top: 22px; }
+
+/* ─── ACTION PLAN ─── */
+.action-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.action-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: var(--correct-bg); border: 1px solid var(--correct-border);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+}
+.action-num {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--correct); color: white; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.action-body { font-size: 14px; line-height: 1.55; color: #166534; }
+.action-chapter { font-size: 11px; font-weight: 700; color: #16a34a; margin-bottom: 2px; }
+
+/* ─── THREE RULES ─── */
+.rule-item { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; }
+.rule-item + .rule-item { border-top: 1px solid var(--border-light); }
+.rule-icon { font-size: 22px; flex-shrink: 0; line-height: 1.4; }
+.rule-body {}
+.rule-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.rule-desc { font-size: 14px; color: var(--text-mid); line-height: 1.55; }
+
+/* ─── SAVE NOTE ─── */
+.save-note {
+  font-size: 12px; color: var(--text-dim); text-align: center;
+  padding-top: 4px;
+}
+
+/* ─── FADE IN ─── */
+.fade-in { animation: fadeIn .3s var(--ease); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ─── PRINT ─── */
+@media print {
+  .no-print { display: none !important; }
+  .course-header { display: none !important; }
+  body { background: white; }
+  .main { width: 100%; padding: 0; }
+  .cert-outer { border: 1.5px solid var(--terra); }
+}
+</style>
+</head>
+<body>
+
+<div class="auth-loading">Signing you in…</div>
+<div id="preview-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:#f59e0b;color:#fff;font-family:var(--sans);font-size:13px;font-weight:700;text-align:center;padding:8px;letter-spacing:.03em;">
+  ⚠️ PREVIEW MODE — Auth bypassed · Remove <code style="background:rgba(0,0,0,.2);padding:2px 6px;border-radius:4px;">?preview=1</code> before deploying
+</div>
+<script>if(new URLSearchParams(location.search).get('preview')==='1'){document.getElementById('preview-banner').style.display='block';}</script>
+
+<!-- ─── HEADER ─── -->
+<header class="course-header no-print">
+  <div class="header-inner">
+    <a href="index.html" class="header-logo">
+      <div class="logo-mark">F</div>
+      FamilyForce
+    </a>
+    <span class="header-course-name">Screen Time Course</span>
+    <a href="dashboard.html" class="header-back">← Dashboard</a>
+  </div>
+</header>
+
+<!-- ─── MAIN ─── -->
+<main class="main" id="app"></main>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// COURSE DATA
+// ═══════════════════════════════════════════════════════════
+
+const CHAPTERS = [
+  {
+    id: 'guilt',
+    short: "Haven't\nRuined Them",
+    title: "You Haven't Ruined Them",
+    chapter: "Chapter 1",
+    icon: "💚",
+    story: {
+      paragraphs: [
+        "My First Son was three years old. We were at a barbecue place in Dallas — the kind where you wait forty minutes and it's worth it — and he started losing his mind. Crying, going boneless, rejecting everything we offered.",
+        "Then I reached into my pocket, pulled up YouTube Kids, and handed him my phone. He was quiet in four seconds. I remember the relief. I also remember something else: the specific feeling of having solved the wrong problem. In the car on the way home, he asked for the phone again. Then at bedtime. Then first thing the next morning.",
+        "By the time Second Son arrived, I'd done the reading. Same house, same parents, same imperfect everything. The difference was information."
+      ]
+    },
+    science: "Screen time research has a reporting problem — the studies are precise, the headlines are blunt. The largest documented harms appear in a specific pattern: 4+ hours per day of passive, fast-paced content with no parental involvement. That's not most households. And a 2023 review found that parental changes to screen habits produced measurable improvements in child outcomes within weeks — not years. Guilt is the wrong response to this. Specific action is the right one.",
+    takeaway: "The next 4 years of your child's screen life matter more than the last 2. Start with one specific change.",
+    question: {
+      text: "Sarah has used the tablet with her 18-month-old for about an hour daily over the past year. She just read about screen time research and is spiraling with guilt. Based on what the research shows, what should she do?",
+      options: [
+        { text: "Accept that damage is done and focus on minimizing further harm", correct: false },
+        { text: "Make specific pattern changes starting now — research shows improvements can happen within weeks", correct: true },
+        { text: "Go cold turkey immediately — remove all screens", correct: false },
+        { text: "The research is too contradictory to act on", correct: false }
+      ],
+      explanation: "The research is clear: the largest harms are concentrated in sustained, high-volume, passive use — not the typical household. A 2023 review found measurable improvements within weeks of changing screen habits. Guilt is the wrong response. Starting now, with one specific change, is the right one."
+    },
+    tryThis: "Identify one pattern you want to change. Not five — one. Write it down right now. 'I want to stop using the phone to stop tantrums.' That's a whole chapter. Start there."
+  },
+
+  {
+    id: 'contingency',
+    short: "Screens Can't\nTeach Babies",
+    title: "Why Screens Can't Teach Babies",
+    chapter: "Chapter 2",
+    icon: "👶",
+    story: {
+      paragraphs: [
+        "When First Son was around a year old, I found a YouTube playlist of educational videos — letters, shapes, colors — and played it while he was on the floor nearby. I figured he might absorb something. I didn't understand what learning actually is at that age.",
+        "With Second Son, my mother was on FaceTime when he was around sixteen months. She held up a rubber duck. 'What's that?' He pointed at the screen and said something close to 'duck.' She lit up and held up a spoon. He responded again. She responded back.",
+        "I was sitting across the room watching my son have a real conversation — through a screen — with a person responding to him in real time. That's what the research is measuring. Not the screen. The response."
+      ]
+    },
+    science: "Learning at 12 months is contingent — it requires a real person who responds to what your child says and does. A video plays whether your child watches it, points at it, or leaves the room. Researchers call this the 'video deficit effect': children learn significantly less from 2D screens than from live interaction. A 2014 study split toddlers into three groups: live in-person, live video call, or a recording of the same session. The first two groups learned new words. The third didn't. The variable wasn't the screen — it was whether a real person could respond.",
+    takeaway: "Before 18 months: no passive screens. Video calls with real people who respond are the exception. Everything else waits.",
+    question: {
+      text: "A parent plays educational videos on repeat for their 12-month-old every morning, hoping they'll pick up new words. Based on what the research shows, what's the core problem with this approach?",
+      options: [
+        { text: "The videos aren't long enough to make an impact", correct: false },
+        { text: "At 12 months, learning requires a real person who responds — a video plays the same way whether the child watches or walks away", correct: true },
+        { text: "It's fine as long as the content is high quality and educational", correct: false },
+        { text: "The issue is total screen time duration, not the videos themselves", correct: false }
+      ],
+      explanation: "This is the video deficit effect. Learning at this age requires contingency — someone responding to what the child says and does. A video can't do that. FaceTime with a grandparent who reacts when your baby points is developmentally different from YouTube. Same screen, completely different outcome."
+    },
+    tryThis: "Set up one video call this week with a family member who will actually engage — hold up objects, ask questions, respond to what your child does. Watch what happens when a real person responds versus when a video plays."
+  },
+
+  {
+    id: 'content',
+    short: "Not All\nEqual",
+    title: "Not All Screen Time Is Equal",
+    chapter: "Chapter 3",
+    icon: "📺",
+    story: {
+      paragraphs: [
+        "When First Son was two and a half, I checked the watch history on the tablet one evening after he went to bed. I didn't recognize half of what was on the list — fast-talking hosts, toy unboxing, 'surprise egg videos.' I had been in the room. I hadn't been watching.",
+        "With Second Son, we chose every episode before it played. No autoplay. When he was two, he latched onto a Ms. Rachel episode about shapes and wanted to watch it every day for two weeks. On day twelve, he pointed at the corner of the coffee table and said 'triangle.' My wife didn't say anything. She didn't have to."
+      ]
+    },
+    science: "Pacing is the most-studied variable in children's content. A 2011 study by Lillard and Peterson showed preschoolers just 9 minutes of SpongeBob, then measured executive function — the SpongeBob group performed significantly worse immediately after. SpongeBob averages 5-6 scene changes per minute. Caillou averages about 2. Fast-paced content primes the brain for passive stimulation and makes slower cognitive tasks harder. The fastest diagnostic: count the scene changes in 60 seconds. Over 6 = too fast. Under 3 = in range. Co-viewing multiplier: a parent who watches with their child and connects what's on-screen to the real world dramatically increases the value.",
+    takeaway: "Count the scene changes in 60 seconds. Over 6 = SpongeBob territory. Under 3 = in range. Turn off autoplay on every device today.",
+    question: {
+      text: "You're choosing what to put on for your 3-year-old. What's the single most useful thing to check?",
+      options: [
+        { text: "Whether the platform labels it as educational", correct: false },
+        { text: "Whether your child has seen it before — repetition calms them", correct: false },
+        { text: "The pacing — count the scene changes in 60 seconds. Over 6 is too fast.", correct: true },
+        { text: "Whether it's animated or live-action", correct: false }
+      ],
+      explanation: "One number tells you a lot. Fast-paced content (6+ cuts per minute) primes the brain for passive stimulation and measurably impairs executive function in the hours after. Slow-paced, language-rich shows — Daniel Tiger, Ms. Rachel, Caillou — average under 3 cuts per minute. The 'educational' label means nothing. Pacing and your presence in the room are what matter."
+    },
+    tryThis: "Turn off autoplay on every device your child uses. It's a setting — find it and turn it off. Takes 30 seconds. This is the single highest-leverage action in the book."
+  },
+
+  {
+    id: 'pacifier',
+    short: "Digital\nPacifier",
+    title: "The Digital Pacifier Problem",
+    chapter: "Chapter 4",
+    icon: "😤",
+    story: {
+      paragraphs: [
+        "Here's the moment I knew something had gone wrong. First Son was two and a half. We were at a park he loved, and he scraped his knee on the slide. Not a serious fall. But instead of coming to me, instead of crying it out, he looked at me and said one word: 'Phone.' Not 'Daddy.' Phone.",
+        "I had been using screens to manage his emotions since he was eighteen months. Meltdown at a restaurant: phone. Upset in the car: phone. Refusing to get dressed: phone. It worked every time in about thirty seconds. So I stopped thinking of it as a strategy. It was just what I did.",
+        "With Second Son, the screen was never the first option. When he was upset I got on the floor, held him, named the feeling out loud — even when he was too young to respond. It felt harder in the short term. It was the actual work."
+      ]
+    },
+    science: "Using a screen to stop a tantrum is called Parental Digital Emotion Regulation (PDER). It works every time — thirty seconds flat. But what you're teaching your child is a specific equation: distress → screen → relief. Emotional regulation is a learned skill. It develops through practice. A child whose distress is consistently intercepted at the 30-second mark never builds that skill. A 2024 study found that children regularly soothed by screens showed significantly poorer frustration management at follow-up. The critical word is 'habitual' — reflexive, first-response use is the harmful pattern. Occasional last-resort use is different.",
+    takeaway: "When your child is upset, what do they reach for first — you or the device? If it's the device, the pattern is set. The sequence resets it: get on the floor → hold them → name the feeling → redirect.",
+    question: {
+      text: "A parent calms their toddler's car meltdowns by handing over a tablet — reliably, 4-5 times a week. What's the core problem with this pattern?",
+      options: [
+        { text: "The child is accumulating too much screen time overall", correct: false },
+        { text: "The child is learning: distress → screen → relief. They're never practicing tolerating or working through discomfort.", correct: true },
+        { text: "Car screen time is lower quality than at-home screen time", correct: false },
+        { text: "It's only a problem if the parent doesn't talk to the child at other times", correct: false }
+      ],
+      explanation: "Emotional regulation is a skill built through practice. A child whose distress is consistently intercepted at the 30-second mark never completes that learning cycle. The screen doesn't teach self-regulation — it teaches them to reach for a screen. The goal isn't to never use one in a hard moment. It's to make the screen the last option, not the first."
+    },
+    tryThis: "Memorize the sequence before you need it: get on the floor → hold them → name the feeling out loud → redirect. Say it right now so it's there when you're tired and in a parking lot."
+  },
+
+  {
+    id: 'apps',
+    short: "App\nDesign",
+    title: "How Apps Are Built to Hook Kids",
+    chapter: "Chapter 5",
+    icon: "📱",
+    story: {
+      paragraphs: [
+        "There is no person on the other end of the queue. When one video ends and the next one starts, nobody made that choice. A system made it — a system with one goal: keep watching. Not whether the next video is right for a tired three-year-old who should be heading to bed. Watch time.",
+        "With First Son, I let the queue run. With Second Son: no autoplay, ever. It's a setting. Takes ten seconds to change. A planned thirty-minute window stays thirty minutes when a human decides what comes next."
+      ]
+    },
+    science: "The distinction between educational and addictive apps is structural, not cosmetic. The most problematic design features: variable reward schedules (unpredictable rewards for repeated taps — the same mechanism as slot machines), autoplay, and fast-paced visual sequences. These maximize one metric: time on screen. That is not the same as learning. When you see your child tapping the same element twenty times hoping for a reward, that's not curiosity. That's the variable reward loop. An app that requires demonstrated mastery before advancing is built for learning. An app designed to maximize engagement is built for something else.",
+    takeaway: "Turn off autoplay on every device today. Then ask of any app: does it require mastery to advance, or does it just keep going?",
+    question: {
+      text: "You're choosing between two apps for your 4-year-old. App A progresses only when your child demonstrates mastery — occasionally boring. App B is full of animations, unpredictable rewards, and auto-advances. Which is better for development?",
+      options: [
+        { text: "App B — high engagement is the best sign of learning", correct: false },
+        { text: "App A — mastery-based progression builds actual skills, even if less exciting", correct: true },
+        { text: "They're equivalent — content matters more than design", correct: false },
+        { text: "It depends on how long your child uses each one", correct: false }
+      ],
+      explanation: "Engagement and learning are different things. App B uses variable rewards to maximize time on screen — not thinking. App A, which requires mastery before advancing, reflects how skills actually form. An engaging app isn't necessarily an educational one. The design, not just the content, determines which one your child is actually using."
+    },
+    tryThis: "Pick the app your child uses most. Ask: does it require them to demonstrate understanding before advancing, or does it just keep going regardless? If it just keeps going, that's the one to replace first."
+  },
+
+  {
+    id: 'sleep',
+    short: "Screens\n& Sleep",
+    title: "Screens and Sleep",
+    chapter: "Chapter 6",
+    icon: "🌙",
+    story: {
+      paragraphs: [
+        "First Son had screens most evenings before bed. We'd switched to calmer content — nature stuff, nothing fast-paced. He was still taking forty-five minutes to fall asleep. Still waking at 2am some nights.",
+        "With Second Son, we cut screens entirely in the hour before bed. Books, bath, talking. He was asleep in fifteen minutes most nights. The difference wasn't the content we'd switched to. It was removing the screen entirely."
+      ]
+    },
+    science: "The problem with screens before bed is bigger than blue light. Yes, blue light suppresses melatonin — but the more significant issue is arousal. Screens require active cognitive engagement regardless of what's playing. Even a calm nature documentary keeps the brain 'on.' The nervous system needs a transition window to downregulate before sleep. Screen content at any pace works against that transition. A hard 60-minute screen cutoff before bed — not just 'calmer content' — produces faster sleep onset and fewer night wakings in most children, typically within a week.",
+    takeaway: "Screen cutoff 60 minutes before bed. Not 'calmer content' — a hard stop. Results show up within a week.",
+    question: {
+      text: "A parent switches from fast cartoons to calm nature documentaries before bed. Their child is still taking a long time to fall asleep. What's the most likely explanation?",
+      options: [
+        { text: "The nature content is still too stimulating — try audio-only instead", correct: false },
+        { text: "Screens increase arousal regardless of content — the brain is still 'on' even with calm material", correct: true },
+        { text: "The timing is off — morning screen use is probably the real issue", correct: false },
+        { text: "The child needs more outdoor activity during the day", correct: false }
+      ],
+      explanation: "Blue light is real but not the whole story. The bigger problem is arousal — screens keep the cognitive system active regardless of what's playing. Even calm content requires processing movement, audio, and narrative. The nervous system can't downregulate while doing that. The fix isn't gentler content. It's a hard cutoff."
+    },
+    tryThis: "Set a recurring alarm on your phone 60 minutes before your child's bedtime — label it 'screens off.' Run it for one week. Notice the difference in how long they take to fall asleep."
+  },
+
+  {
+    id: 'background',
+    short: "Background\nTV",
+    title: "The Background TV Effect",
+    chapter: "Chapter 7",
+    icon: "📡",
+    story: {
+      paragraphs: [
+        "The background TV was on in our house most of the time when First Son was small. Not because anyone was watching it. It was just always on. That's what I grew up with. It felt like ambient noise.",
+        "I didn't think about what it was doing to my conversations with him — until I read the Christakis research. 770 fewer words per hour. Not the TV aimed at him. The TV on in the room. With Second Son, the TV went off during floor time. Every time. It took about four days to become a habit."
+      ]
+    },
+    science: "Background TV harms young children who aren't even watching it. When adult TV plays in a room with an infant or toddler, parents speak approximately 770 fewer words per hour to their child. Not because they're bad parents — because the TV competes for partial attention and disrupts the natural rhythm of conversation. Children playing in TV-present rooms also show shorter play episodes and reduced focused attention, even when not looking at the screen. The child doesn't have to be watching for the effect to be real.",
+    takeaway: "The TV doesn't have to be aimed at your child to affect them. Turn it off during floor time.",
+    question: {
+      text: "Your partner says leaving the TV on while your toddler plays is fine — 'she's not even watching it.' What does the research actually show?",
+      options: [
+        { text: "They're right — if the child isn't watching, there's no meaningful effect", correct: false },
+        { text: "Background TV reduces parent-child conversation by ~770 words per hour and shortens children's play episodes, even when no one is watching", correct: true },
+        { text: "It depends on the content — news is fine but loud programming isn't", correct: false },
+        { text: "Only a concern for children under 12 months", correct: false }
+      ],
+      explanation: "The TV registers as a competing stimulus even when no one is watching it. It draws micro-moments of adult attention and disrupts the conversational rhythm that language development depends on. Children in TV-present rooms also show shorter, more fragmented play. The child doesn't have to be engaged with the screen for the effect to be real."
+    },
+    tryThis: "Next time your child plays on the floor, turn the TV off for the whole session. Notice how many more times they look at you — and how much longer they stay focused on one thing."
+  },
+
+  {
+    id: 'your_phone',
+    short: "Your\nPhone",
+    title: "Your Phone",
+    chapter: "Chapter 8",
+    icon: "📲",
+    story: {
+      paragraphs: [
+        "When First Son was two and a half, he brought me a truck to show me. A small plastic dump truck, holding it at about my eye level. I was looking at my phone.",
+        "He stood there for a few seconds. Made the sound again, louder. I looked up, said 'cool truck,' and looked back down. He stood a moment longer. Then he put the truck down and walked away.",
+        "He'd tried to show me something. Twice. I'd communicated, twice, that what I was doing mattered more. I'm not telling this story for the guilt. I'm telling it because it's the story that makes the research legible."
+      ]
+    },
+    science: "Brandon McDaniel and Jenny Radesky have studied 'technoference' — technology interfering with parent-child interaction — more than any other researchers in this field. Their consistent finding: parental phone use during time with young children is negatively associated with language, emotional regulation, behavior, and attachment outcomes. The mechanism is the broken contingency loop. A child's development depends on sending a signal and having an adult respond. When the phone wins that moment, the loop breaks. A 2025 study following 1,200 families found that harm was driven by frequency, not duration. A parent who checked their phone 30 times for 30 seconds during a play session produced worse outcomes than a parent who made one uninterrupted 15-minute call in another room. Constant small interruptions are more damaging than one long break followed by repair.",
+    takeaway: "Your child is watching you more than they're watching the screen. Phone face-down, across the room, during the windows that count.",
+    question: {
+      text: "A 2025 study compared two parenting patterns during a 2-hour play session. Parent A checked their phone briefly 30 times. Parent B made one uninterrupted 15-minute call in another room, then returned fully present. What did the research find?",
+      options: [
+        { text: "Parent B — long phone calls during play sessions are most harmful", correct: false },
+        { text: "They were equal — total phone time is what matters, not frequency", correct: false },
+        { text: "Parent A — constant small interruptions break the contingency loop more damagingly than one long break followed by repair", correct: true },
+        { text: "Neither — occasional phone use during play has no measurable developmental effect", correct: false }
+      ],
+      explanation: "Frequency beats duration. Thirty brief interruptions fracture the contingency loop thirty times. Your child sends a signal — a look, a sound, a gesture — and the loop breaks thirty times. One long, uninterrupted call still allows your return and repair of the connection. The consistency of your availability matters more than the total minutes away."
+    },
+    tryThis: "Pick two daily windows when your child most often reaches for you — morning floor time, after-nap play, dinner. Phone goes face-down across the room during those windows. Not in your pocket. Across the room."
+  },
+
+  {
+    id: 'eyes',
+    short: "The\nEyes",
+    title: "The Eyes",
+    chapter: "Chapter 9",
+    icon: "👁️",
+    story: {
+      paragraphs: [
+        "My wife noticed it first. Second Son was three, watching something on the tablet, and she looked up from across the room and said 'that's too close, right?' I walked over and tried a rule I'd read about: arm bent, elbow to fingertip is the minimum viewing distance. His fingertip was practically on the screen.",
+        "I moved the tablet back. He looked annoyed for about four seconds, then forgot about it. We started calling it the Elbow Rule. By the time he was four, he'd correct himself without being asked."
+      ]
+    },
+    science: "Something is happening to children's eyes. In Singapore, South Korea, and Taiwan, myopia rates in children have reached 50 to 80 percent — rates that didn't exist a generation ago. The genetics of those populations haven't changed. What changed is how children spend their time: more close work, less outdoor light. Myopia happens when the eyeball grows too long, focusing light in front of the retina instead of on it. Two things drive that growth: too much close work, and not enough outdoor light. Daylight above 1,000 lux triggers dopamine release in the retina, which tells the eye to stop growing. Indoors, even a bright room rarely hits 500 lux. Outside, even on a cloudy day, you're at 10,000 or more. Taiwan's national intervention — 120 minutes of outdoor time daily — dropped preschool myopia rates from 15% to 8% in two years. Blue-light glasses don't prevent myopia. The evidence doesn't support them for axial elongation. Outdoor time does.",
+    takeaway: "Two hours outside most days. Elbow Rule for viewing distance. That's the actual intervention — not blue-light glasses.",
+    question: {
+      text: "Blue-light glasses are widely marketed to protect children's eyes from screen damage. What does the research actually show about their effectiveness?",
+      options: [
+        { text: "They're effective when worn consistently during screen time", correct: false },
+        { text: "Blue light is one factor — glasses help but aren't sufficient on their own", correct: false },
+        { text: "The evidence doesn't support them for preventing myopia — outdoor light is the real intervention", correct: true },
+        { text: "They help with sleep quality but don't protect against eye development issues", correct: false }
+      ],
+      explanation: "The myopia epidemic is driven by axial elongation — the eyeball growing too long. This is caused by too much close work and too little outdoor light. Blue-light glasses address neither. Outdoor light above 1,000 lux triggers retinal dopamine that tells the eye to stop growing. Any outdoor space, any weather, on most days is the evidence-based intervention. Taiwan proved it at a national scale."
+    },
+    tryThis: "Check viewing distance right now. Walk over to wherever your child watches their screen and test the Elbow Rule: arm bent, elbow to fingertip is the minimum distance. If they can touch the screen with a bent arm, move the device back. Do it today."
+  },
+
+  {
+    id: 'three_rules',
+    short: "The Three\nRules",
+    title: "The Three Rules",
+    chapter: "Chapter 10",
+    icon: "🏆",
+    story: {
+      paragraphs: [
+        "Here's what I want to leave you with. The research doesn't ask you to be perfect. It asks you to understand the mechanisms. Once you understand why something happens, you can make a different choice — even when you're tired, even when it's a holiday dinner and someone says 'just give him the phone.'",
+        "The Three Rules aren't rigid rules. They're a framework built from everything the research said. Three words that cover most of what the science is actually measuring."
+      ]
+    },
+    science: "Contingency: never use screens to stop tantrums — this builds your child's emotional regulation capacity through practice instead of bypassing it. Quality: slow-paced, language-rich content you choose in advance, ideally co-viewed — you are the algorithm, not the platform. Timing: no screens before meals, sleep, or outdoor play — these are the activities screens most commonly displace, and they're the most developmentally important. These rules are designed for the hard moments — the grocery checkout, the long flight, the family dinner where grandma says 'just give him the phone, it's fine.'",
+    takeaway: "Contingency · Quality · Timing. Three rules. Most of what the science is measuring.",
+    question: {
+      text: "A family is applying the Three Rules. Which situation represents a violation they need to address?",
+      options: [
+        { text: "They watch a slow-paced show together on weekend mornings as a family ritual", correct: false },
+        { text: "They turn off all screens 60 minutes before bed every night", correct: false },
+        { text: "They hand over the phone at the grocery checkout to stop a meltdown because other shoppers are staring", correct: true },
+        { text: "They keep the afternoon screen-free to prioritize outdoor play", correct: false }
+      ],
+      explanation: "The grocery store scenario is the Contingency rule under its hardest real-world pressure. The embarrassment is real. None of that changes what the child is learning: distress + audience = phone. The Three Rules aren't just for easy moments — they're specifically designed for this kind of situation. That's when they count most."
+    },
+    tryThis: "Identify the one situation where you're most likely to hand over the phone as a first response — the car, the grocery store, the restaurant. Name it. That's the pattern to change first. Just that one."
+  },
+
+  {
+    id: 'falls_apart',
+    short: "When It\nFalls Apart",
+    title: "When It Falls Apart",
+    chapter: "Chapter 11",
+    icon: "🔄",
+    story: {
+      paragraphs: [
+        "When Second Son was four, we moved. Three weeks of boxes and disrupted routines. He watched more than an hour of screens most days. Autoplay slipped back on. I found it running and couldn't remember turning it on.",
+        "By week three, he was having meltdowns when screens went off that I recognized from First Son. Demanding the phone when he was upset. Taking longer to fall asleep. I had been careful for four years and had slid, in three weeks, into a pattern I knew.",
+        "What I didn't do was treat it as a catastrophe. I turned off autoplay. Reinstated the sixty-minute rule. Went back to the emotional regulation sequence. Day five was better. Day ten we were largely back to baseline. The move took three weeks to break the pattern. The reset took ten days."
+      ]
+    },
+    science: "Habits don't disappear when disrupted — they're suppressed. The underlying neural pathway remains. This is discouraging in one direction: the old pattern waits for the conditions that built it — stress, exhaustion, travel, illness. It's encouraging in the other direction: rebuilding after a relapse is faster than building from scratch. You're restoring a path you already established, not creating a new one. The studies showing significant developmental harm measure sustained, high-volume, low-quality exposure over years. A three-week slide during a household move is not that. For resetting the digital pacifier pattern specifically: don't try to change everything at once. Choose one predictable high-tension moment and hold the sequence there for a week. Then expand. All-at-once resets fail because the intensity multiplied across every transition is unsustainable.",
+    takeaway: "You're not trying to be perfect. When it breaks — name it, rebuild one rule at a time. Seven to ten days gets you back.",
+    question: {
+      text: "After a disruptive few weeks, a parent notices their child's screen habits have clearly regressed. Meltdowns when screens go off, demanding the phone when upset. Based on what the research shows, what should they expect about recovery?",
+      options: [
+        { text: "They need to restart from scratch — disrupted habits require full rebuilding as if starting over", correct: false },
+        { text: "Recovery after a relapse is typically faster than the original habit formation — the pattern is suppressed, not erased", correct: true },
+        { text: "Three weeks of regression has likely caused lasting harm that will take months to undo", correct: false },
+        { text: "The disruption means the original approach wasn't strong enough and needs to be redesigned", correct: false }
+      ],
+      explanation: "Habits are suppressed by disruption, not deleted. The neural pathway you built is still there — you're restoring it, not creating it for the first time. That's why recovery is faster. A three-week slide during a move or illness is not the sustained, high-volume, years-long pattern that the harm research measures. Name the slide, pick one rule to reinstate first, and expect days 7-10 to feel meaningfully different."
+    },
+    tryThis: "Write down what caused the last time your routines slipped — travel, illness, a new baby, a work crunch. When you know the trigger, you can prepare for it next time. The slide isn't the failure. Being surprised by it twice is."
+  }
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+
+const SAVE_KEY = 'ff_course_screentime_v1';
+
+function loadState() {
+  try { const s = localStorage.getItem(SAVE_KEY); if (s) return JSON.parse(s); } catch(e) {}
+  return null;
+}
+function saveState(s) { try { localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } catch(e) {} }
+
+function freshState() {
+  return {
+    screen: 'welcome',
+    chapterIndex: 0,
+    completed: [],
+    selectedOption: null,
+    showFeedback: false,
+  };
+}
+
+let STATE = loadState() || freshState();
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+
+function el(tag, cls) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  return e;
+}
+function ch() { return CHAPTERS[STATE.chapterIndex]; }
+function done(id) { return STATE.completed.includes(id); }
+function totalDone() { return STATE.completed.length; }
+function pct() { return Math.round((totalDone() / CHAPTERS.length) * 100); }
+function userName() { return localStorage.getItem('ff_user_name') || ''; }
+
+// ═══════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════
+
+function render() {
+  saveState(STATE);
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  app.className = 'fade-in';
+
+  // Progress bar + roadmap (not on welcome or complete)
+  if (STATE.screen === 'chapter' || STATE.screen === 'question') {
+    renderProgress(app);
+  }
+
+  switch (STATE.screen) {
+    case 'welcome':  renderWelcome(app);  break;
+    case 'chapter':  renderChapter(app);  break;
+    case 'question': renderQuestion(app); break;
+    case 'complete': renderComplete(app); break;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROGRESS + ROADMAP
+// ═══════════════════════════════════════════════════════════
+
+function renderProgress(app) {
+  const wrap = el('div', 'progress-section no-print');
+
+  // Bar
+  const meta = el('div', 'progress-meta');
+  const lbl = el('span', 'progress-label');
+  lbl.textContent = `Chapter ${STATE.chapterIndex + 1} of ${CHAPTERS.length}`;
+  const pctLbl = el('span', 'progress-pct');
+  pctLbl.textContent = pct() + '% complete';
+  meta.appendChild(lbl); meta.appendChild(pctLbl);
+  wrap.appendChild(meta);
+
+  const barWrap = el('div', 'progress-bar-wrap');
+  const fill = el('div', 'progress-bar-fill');
+  fill.style.width = pct() + '%';
+  barWrap.appendChild(fill);
+  wrap.appendChild(barWrap);
+
+  // Roadmap
+  const roadmap = el('div', 'roadmap');
+  CHAPTERS.forEach((c, i) => {
+    const isDone    = done(c.id);
+    const isCurrent = i === STATE.chapterIndex;
+    const chip = el('div', 'roadmap-ch' + (isDone ? ' done' : isCurrent ? ' current' : ''));
+
+    const icon = el('div', 'roadmap-icon'); icon.textContent = c.icon;
+    chip.appendChild(icon);
+
+    const lbl = el('div', 'roadmap-label');
+    lbl.textContent = (c.short || c.title).replace('\n', ' ');
+    lbl.title = c.title;
+    chip.appendChild(lbl);
+
+    roadmap.appendChild(chip);
+  });
+  wrap.appendChild(roadmap);
+
+  // Scroll current into view
+  setTimeout(() => {
+    const chips = roadmap.querySelectorAll('.roadmap-ch');
+    if (chips[STATE.chapterIndex]) {
+      chips[STATE.chapterIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }, 60);
+
+  app.appendChild(wrap);
+}
+
+// ═══════════════════════════════════════════════════════════
+// WELCOME
+// ═══════════════════════════════════════════════════════════
+
+function renderWelcome(app) {
+  const card = el('div', 'card');
+
+  const badge = el('div', 'welcome-badge'); badge.textContent = '📱';
+  card.appendChild(badge);
+
+  const eyebrow = el('div', 'eyebrow'); eyebrow.textContent = 'FamilyForce · Screen Time';
+  card.appendChild(eyebrow);
+
+  const title = el('h1'); title.textContent = 'The Screen Time Playbook';
+  card.appendChild(title);
+
+  const sub = el('p'); sub.style.marginTop = '12px';
+  sub.textContent = 'A research-backed course for parents who want more than a quiz. Read each chapter, answer one question correctly, and earn your certificate.';
+  card.appendChild(sub);
+
+  // Stats
+  const stats = el('div', 'stat-row');
+  [['11', 'Chapters'], ['~60', 'Minutes'], ['1', 'Certificate']].forEach(([num, lbl]) => {
+    const box = el('div', 'stat-box');
+    const n = el('div', 'stat-num'); n.textContent = num; box.appendChild(n);
+    const l = el('div', 'stat-lbl'); l.textContent = lbl; box.appendChild(l);
+    stats.appendChild(box);
+  });
+  card.appendChild(stats);
+
+  // Divider + How it works
+  card.appendChild(el('div', 'divider'));
+  const h = el('h3'); h.textContent = 'How each chapter works';
+  card.appendChild(h);
+
+  [
+    ["Jack's story", "A real moment from raising First Son vs. Second Son. The moment that made it real."],
+    ["The science", "What the research actually shows — specific, actionable, not a headline."],
+    ["One question", "Answer it correctly to unlock the next chapter. Get it wrong: review and try again."],
+    ["Try This", "One specific action to do before moving on."]
+  ].forEach(([title, desc], i) => {
+    const step = el('div', 'how-step');
+    const num = el('div', 'step-num'); num.textContent = i + 1; step.appendChild(num);
+    const text = el('div', 'step-text');
+    text.innerHTML = `<strong>${title}</strong> — ${desc}`;
+    step.appendChild(text);
+    card.appendChild(step);
+  });
+
+  // Buttons
+  const hasProg = STATE.completed.length > 0;
+  if (hasProg) {
+    const resume = el('button', 'btn btn-primary');
+    resume.style.marginTop = '24px';
+    resume.textContent = `↩  Resume — Chapter ${STATE.chapterIndex + 1}`;
+    resume.onclick = () => { STATE.screen = 'chapter'; render(); };
+    card.appendChild(resume);
+
+    const restart = el('button', 'btn btn-secondary');
+    restart.textContent = '→  Start from Chapter 1';
+    restart.onclick = () => { STATE.chapterIndex = 0; STATE.screen = 'chapter'; render(); };
+    card.appendChild(restart);
+
+    const reset = el('button', 'btn btn-ghost');
+    reset.style.color = 'var(--text-dim)';
+    reset.textContent = '↺  Clear Progress';
+    reset.onclick = () => {
+      if (confirm('Clear all progress and start over?')) { STATE = freshState(); render(); }
+    };
+    card.appendChild(reset);
+  } else {
+    const start = el('button', 'btn btn-primary');
+    start.style.marginTop = '24px';
+    start.textContent = '→  Start Course';
+    start.onclick = () => { STATE.screen = 'chapter'; render(); };
+    card.appendChild(start);
+  }
+
+  app.appendChild(card);
+  app.appendChild(mkSaveNote());
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHAPTER LESSON
+// ═══════════════════════════════════════════════════════════
+
+function renderChapter(app) {
+  const c = ch();
+  const card = el('div', 'card');
+
+  // Eyebrow + title
+  const eyebrow = el('div', 'eyebrow');
+  eyebrow.textContent = `${c.chapter} · ${c.icon} ${c.title}`;
+  card.appendChild(eyebrow);
+
+  // Story
+  const story = el('div', 'story-block');
+  const slbl = el('div', 'story-label'); slbl.textContent = "Jack's Story";
+  story.appendChild(slbl);
+  c.story.paragraphs.forEach(text => {
+    const p = el('p'); p.textContent = text; story.appendChild(p);
+  });
+  card.appendChild(story);
+
+  // Science
+  const sci = el('div', 'science-block');
+  const sciLbl = el('div', 'science-label'); sciLbl.textContent = 'The Science';
+  sci.appendChild(sciLbl);
+  const sciP = el('p'); sciP.textContent = c.science; sci.appendChild(sciP);
+  card.appendChild(sci);
+
+  // Takeaway
+  const kt = el('div', 'takeaway');
+  const ktLbl = el('div', 'takeaway-label'); ktLbl.textContent = '🎯  Key Takeaway';
+  kt.appendChild(ktLbl);
+  const ktText = document.createTextNode(c.takeaway);
+  kt.appendChild(ktText);
+  card.appendChild(kt);
+
+  // CTA
+  const cta = el('button', 'btn btn-primary');
+  cta.style.marginTop = '24px';
+  cta.textContent = `→  Answer the Chapter Question`;
+  cta.onclick = () => {
+    STATE.screen = 'question';
+    STATE.selectedOption = null;
+    STATE.showFeedback = false;
+    render();
+  };
+  card.appendChild(cta);
+
+  if (STATE.chapterIndex > 0) {
+    const back = el('button', 'btn btn-ghost');
+    back.style.color = 'var(--text-dim)';
+    back.textContent = `← Chapter ${STATE.chapterIndex}`;
+    back.onclick = () => { STATE.chapterIndex--; STATE.screen = 'chapter'; render(); };
+    card.appendChild(back);
+  }
+
+  app.appendChild(card);
+  app.appendChild(mkSaveNote());
+}
+
+// ═══════════════════════════════════════════════════════════
+// QUESTION
+// ═══════════════════════════════════════════════════════════
+
+function renderQuestion(app) {
+  const c = ch();
+  const q = c.question;
+
+  const card = el('div', 'question-card');
+
+  const qlbl = el('div', 'q-label');
+  qlbl.textContent = `${c.chapter} · Check Your Understanding`;
+  card.appendChild(qlbl);
+
+  const qtext = el('div', 'q-text'); qtext.textContent = q.text;
+  card.appendChild(qtext);
+
+  // Options
+  const opts = el('div', 'options');
+  q.options.forEach((opt, i) => {
+    const btn = el('button', 'option');
+    if (STATE.showFeedback) {
+      if (opt.correct) btn.className += ' correct';
+      else if (i === STATE.selectedOption) btn.className += ' wrong';
+      btn.disabled = true;
+    } else if (STATE.selectedOption === i) {
+      btn.className += ' selected';
+    }
+    btn.textContent = opt.text;
+    btn.onclick = () => {
+      if (STATE.showFeedback) return;
+      STATE.selectedOption = i;
+      render();
+    };
+    opts.appendChild(btn);
+  });
+  card.appendChild(opts);
+
+  if (STATE.showFeedback) {
+    const isCorrect = q.options[STATE.selectedOption]?.correct;
+
+    // Feedback
+    const fb = el('div', `feedback feedback-${isCorrect ? 'correct' : 'wrong'}`);
+    const fbt = el('div', 'feedback-title');
+    fbt.textContent = isCorrect ? '✅  Correct!' : '❌  Not quite.';
+    fb.appendChild(fbt);
+    const fbText = el('div'); fbText.textContent = q.explanation;
+    fb.appendChild(fbText);
+    card.appendChild(fb);
+
+    if (isCorrect) {
+      // Mark complete
+      if (!done(c.id)) STATE.completed.push(c.id);
+      saveState(STATE);
+
+      // Try This
+      if (c.tryThis) {
+        const tt = el('div', 'try-this');
+        const ttLbl = el('div', 'try-this-label'); ttLbl.textContent = '✋  Try This Before You Move On';
+        tt.appendChild(ttLbl);
+        const ttText = el('div', 'try-this-text'); ttText.textContent = c.tryThis;
+        tt.appendChild(ttText);
+        card.appendChild(tt);
+      }
+
+      const isLast = STATE.chapterIndex === CHAPTERS.length - 1;
+      const next = el('button', 'btn btn-primary');
+      next.textContent = isLast
+        ? '🎓  Get My Certificate'
+        : `→  Chapter ${STATE.chapterIndex + 2}: ${CHAPTERS[STATE.chapterIndex + 1].title}`;
+      next.onclick = () => {
+        if (isLast) {
+          STATE.screen = 'complete';
+        } else {
+          STATE.chapterIndex++;
+          STATE.screen = 'chapter';
+          STATE.selectedOption = null;
+          STATE.showFeedback = false;
+        }
+        render();
+      };
+      card.appendChild(next);
+
+    } else {
+      // Wrong — retry or review
+      const row = el('div', 'btn-row');
+
+      const retry = el('button', 'btn btn-ghost btn-sm');
+      retry.textContent = '↺  Try Again';
+      retry.onclick = () => { STATE.selectedOption = null; STATE.showFeedback = false; render(); };
+      row.appendChild(retry);
+
+      const review = el('button', 'btn btn-secondary btn-sm');
+      review.textContent = '📖  Review Chapter';
+      review.onclick = () => { STATE.screen = 'chapter'; STATE.selectedOption = null; STATE.showFeedback = false; render(); };
+      row.appendChild(review);
+
+      card.appendChild(row);
+    }
+
+  } else {
+    // Check button
+    const check = el('button', 'btn btn-primary');
+    check.textContent = 'Check';
+    check.disabled = STATE.selectedOption === null;
+    check.onclick = () => { STATE.showFeedback = true; render(); };
+    card.appendChild(check);
+
+    const goBack = el('button', 'btn btn-ghost');
+    goBack.style.color = 'var(--text-dim)';
+    goBack.textContent = '← Review the Chapter';
+    goBack.onclick = () => { STATE.screen = 'chapter'; render(); };
+    card.appendChild(goBack);
+  }
+
+  app.appendChild(card);
+  app.appendChild(mkSaveNote());
+}
+
+// ═══════════════════════════════════════════════════════════
+// COMPLETE + CERTIFICATE
+// ═══════════════════════════════════════════════════════════
+
+function renderComplete(app) {
+  // Congrats card
+  const congrats = el('div', 'card no-print');
+  const ce = el('div', 'eyebrow'); ce.style.textAlign = 'center'; ce.textContent = 'Course Complete 🎉';
+  congrats.appendChild(ce);
+  const ct = el('h2'); ct.style.textAlign = 'center'; ct.style.marginTop = '4px';
+  ct.textContent = 'You finished all 11 chapters';
+  congrats.appendChild(ct);
+  const cs = el('p'); cs.style.textAlign = 'center'; cs.style.marginTop = '8px';
+  cs.textContent = "Here's your certificate. Type your name, then print or save it as a PDF.";
+  congrats.appendChild(cs);
+  app.appendChild(congrats);
+
+  // Certificate
+  const certCard = el('div', 'card');
+  const certOuter = el('div', 'cert-outer');
+
+  const seal = el('div', 'cert-seal'); seal.textContent = '✓';
+  certOuter.appendChild(seal);
+
+  const pretitle = el('div', 'cert-pretitle'); pretitle.textContent = 'Certificate of Completion';
+  certOuter.appendChild(pretitle);
+
+  const certTitle = el('h2', 'cert-title'); certTitle.textContent = 'The Screen Time Playbook';
+  certOuter.appendChild(certTitle);
+
+  const nameWrap = el('div', 'cert-name-wrap');
+  const nameLbl = el('div', 'cert-name-label'); nameLbl.textContent = 'Awarded to';
+  nameWrap.appendChild(nameLbl);
+  const nameInput = el('input', 'cert-name-input');
+  nameInput.type = 'text';
+  nameInput.placeholder = 'Your name';
+  nameInput.setAttribute('spellcheck', 'false');
+  nameInput.value = userName();
+  nameWrap.appendChild(nameInput);
+  certOuter.appendChild(nameWrap);
+
+  const rule = el('div', 'cert-rule');
+  certOuter.appendChild(rule);
+
+  const body = el('div', 'cert-body');
+  body.textContent = "has successfully completed all 11 chapters of The Screen Time Playbook, demonstrating understanding of research-backed approaches to children's screen time.";
+  certOuter.appendChild(body);
+
+  const sigRow = el('div', 'cert-sig-row');
+  const sig = el('div', 'cert-sig');
+  const sigLine = el('div', 'cert-sig-line'); sig.appendChild(sigLine);
+  const sigName = el('div', 'cert-sig-name'); sigName.textContent = 'Jack Hartley'; sig.appendChild(sigName);
+  const sigRole = el('div', 'cert-sig-role'); sigRole.textContent = 'Author, The Screen Time Playbook'; sig.appendChild(sigRole);
+  sigRow.appendChild(sig);
+  certOuter.appendChild(sigRow);
+
+  const dateEl = el('div', 'cert-date');
+  dateEl.textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  certOuter.appendChild(dateEl);
+
+  certCard.appendChild(certOuter);
+  app.appendChild(certCard);
+
+  // Print + PDF actions
+  const actions = el('div', 'card card-sm no-print');
+
+  const printBtn = el('button', 'btn btn-primary');
+  printBtn.textContent = '🖨️  Print / Save as PDF';
+  printBtn.onclick = () => window.print();
+  actions.appendChild(printBtn);
+
+  const pdfBtn = el('button', 'btn btn-secondary');
+  pdfBtn.textContent = '📄  Download Full Book (PDF)';
+  pdfBtn.onclick = () => {
+    const a = document.createElement('a');
+    a.href = 'assets/downloads/screen-time-playbook.pdf';
+    a.download = 'Screen-Time-Playbook-Jack-Hartley.pdf';
+    a.click();
+  };
+  actions.appendChild(pdfBtn);
+
+  const dashBtn = el('button', 'btn btn-ghost');
+  dashBtn.textContent = '← Back to Dashboard';
+  dashBtn.onclick = () => { window.location.href = 'dashboard.html'; };
+  actions.appendChild(dashBtn);
+
+  app.appendChild(actions);
+
+  // Action Plan
+  const actionCard = el('div', 'card no-print');
+  const ae = el('div', 'eyebrow'); ae.textContent = 'Your Action Plan';
+  actionCard.appendChild(ae);
+  const at = el('h3'); at.style.marginTop = '4px'; at.textContent = '11 things to try this week';
+  actionCard.appendChild(at);
+  const as_ = el('p'); as_.style.fontSize = '13px'; as_.style.marginTop = '6px'; as_.style.marginBottom = '16px';
+  as_.textContent = 'One specific action from each chapter. Pick the ones that matter most for where you are right now.';
+  actionCard.appendChild(as_);
+
+  const list = el('div', 'action-list');
+  CHAPTERS.forEach((c, i) => {
+    if (!c.tryThis) return;
+    const item = el('div', 'action-item');
+    const num = el('div', 'action-num'); num.textContent = i + 1; item.appendChild(num);
+    const body = el('div', 'action-body');
+    const clbl = el('div', 'action-chapter'); clbl.textContent = `${c.icon} ${c.title}`; body.appendChild(clbl);
+    const txt = el('div'); txt.textContent = c.tryThis; body.appendChild(txt);
+    item.appendChild(body);
+    list.appendChild(item);
+  });
+  actionCard.appendChild(list);
+  app.appendChild(actionCard);
+
+  // Three Rules
+  const rulesCard = el('div', 'card no-print');
+  const re = el('div', 'eyebrow'); re.textContent = 'The Three Rules';
+  rulesCard.appendChild(re);
+  const rt = el('h3'); rt.style.marginTop = '4px'; rt.style.marginBottom = '16px';
+  rt.textContent = 'The framework behind everything in this course';
+  rulesCard.appendChild(rt);
+
+  [
+    ['🚫', 'Contingency', 'Never use screens to stop tantrums. Build the emotional regulation skill instead of bypassing it.'],
+    ['📺', 'Quality', 'Slow-paced, language-rich content. Under 3 scene cuts per minute. You choose it. You watch it with them.'],
+    ['⏰', 'Timing', "No screens before meals, sleep, or outdoor play. These are what screens displace — and they're what matter most."]
+  ].forEach(([icon, title, desc]) => {
+    const rule = el('div', 'rule-item');
+    const ri = el('div', 'rule-icon'); ri.textContent = icon; rule.appendChild(ri);
+    const rb = el('div', 'rule-body');
+    const rTitle = el('div', 'rule-title'); rTitle.textContent = title; rb.appendChild(rTitle);
+    const rDesc = el('div', 'rule-desc'); rDesc.textContent = desc; rb.appendChild(rDesc);
+    rule.appendChild(rb);
+    rulesCard.appendChild(rule);
+  });
+  app.appendChild(rulesCard);
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+
+function mkSaveNote() {
+  const n = el('p', 'save-note no-print');
+  n.textContent = '✓  Progress saved automatically';
+  return n;
+}
+
+// ═══════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════
+render();
+</script>
+</body>
+</html>
