@@ -1488,6 +1488,10 @@ button { font: inherit; cursor: pointer; }
 .lib-btn--course { background: var(--terra); color: #fff; border-color: transparent; }
 @media (hover:hover) { .lib-btn--course:hover { background: var(--terra-dark); } }
 .lib-btn--course-locked { background: var(--elevated); color: var(--text-dim); border: 1px solid var(--border-light); cursor: default; opacity: .5; }
+.lib-btn--course-done { background: #2E7D5E; color: #fff; border-color: transparent; gap: 5px; }
+@media (hover:hover) { .lib-btn--course-done:hover { background: #256650; } }
+.lib-row--completed { border-color: rgba(46,125,94,.2); background: linear-gradient(to right, rgba(46,125,94,.04), transparent 60%); }
+.lib-row--completed .lib-accent { background: #2E7D5E !important; }
 .lib-btn--cert { background: #5BA88E; color: #fff; border-color: transparent; }
 @media (hover:hover) { .lib-btn--cert:hover { background: #4A9070; } }
 .lib-btn--cert-locked {
@@ -2144,10 +2148,21 @@ button { font: inherit; cursor: pointer; }
       const quiz = data.quiz || 0;
       const quizPassed = quiz >= 80;
       const quizTried  = quiz > 0 && !quizPassed;
+      const courseCompleted = data.cert === true;
       const primaryBtn = row.querySelector('.lib-primary-btn');
+      const courseBtn  = row.querySelector('.lib-btn--course, .lib-btn--course-locked');
+
+      // Mark course button as completed
+      if (courseCompleted && courseBtn) {
+        courseBtn.classList.remove('lib-btn--course', 'lib-btn--course-locked');
+        courseBtn.classList.add('lib-btn--course-done');
+        courseBtn.setAttribute('aria-label', courseBtn.getAttribute('aria-label').replace('Take ', 'Revisit '));
+        courseBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Completed';
+        row.classList.add('lib-row--completed');
+        completedCount++;
+      }
 
       if (quizPassed) {
-        completedCount++;
         // Update primary CTA → View Certificate
         if (primaryBtn) {
           primaryBtn.textContent = '✓ View Certificate';
@@ -2155,7 +2170,7 @@ button { font: inherit; cursor: pointer; }
           primaryBtn.href = primaryBtn.dataset.cert;
           primaryBtn.removeAttribute('target');
         }
-        completedTable.appendChild(row);
+        if (!courseCompleted) completedTable.appendChild(row);
       } else if (quizTried) {
         // Failed quiz → retake
         if (primaryBtn) {
