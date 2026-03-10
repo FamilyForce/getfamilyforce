@@ -1374,12 +1374,9 @@ function renderComplete(app) {
   const nameWrap = el('div', 'cert-name-wrap');
   const nameLbl = el('div', 'cert-name-label'); nameLbl.textContent = 'Awarded to';
   nameWrap.appendChild(nameLbl);
-  const nameInput = el('input', 'cert-name-input');
-  nameInput.type = 'text';
-  nameInput.placeholder = 'Your name';
-  nameInput.setAttribute('spellcheck', 'false');
-  nameInput.value = userName();
-  nameWrap.appendChild(nameInput);
+  const nameDisplay = el('div', 'cert-name-input'); nameDisplay.style.cursor = 'default';
+  nameDisplay.textContent = userName() || 'Your Name';
+  nameWrap.appendChild(nameDisplay);
   certOuter.appendChild(nameWrap);
 
   const rule = el('div', 'cert-rule');

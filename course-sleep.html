@@ -672,8 +672,8 @@ function renderComplete(app){
   const certTitle=el('h2','cert-title');certTitle.textContent='The Sleep Training Playbook';certOuter.appendChild(certTitle);
   const nameWrap=el('div','cert-name-wrap');
   const nameLbl=el('div','cert-name-label');nameLbl.textContent='Awarded to';nameWrap.appendChild(nameLbl);
-  const nameInput=el('input','cert-name-input');nameInput.type='text';nameInput.placeholder='Your name';
-  nameInput.setAttribute('spellcheck','false');nameInput.value=userName();nameWrap.appendChild(nameInput);certOuter.appendChild(nameWrap);
+  const nameDisplay=el('div','cert-name-input');nameDisplay.style.cursor='default';
+  nameDisplay.textContent=userName()||'Your Name';nameWrap.appendChild(nameDisplay);certOuter.appendChild(nameWrap);
   certOuter.appendChild(el('div','cert-rule'));
   const body=el('div','cert-body');
   body.textContent="has successfully completed all 13 chapters of The Sleep Training Playbook, demonstrating understanding of research-backed approaches to infant and toddler sleep.";certOuter.appendChild(body);

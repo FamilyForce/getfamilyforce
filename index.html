@@ -413,14 +413,65 @@ a { color: inherit; }
   align-items: center;
   justify-content: center;
 }
+/* ─── PRODUCT MOCKUP (replaces hero photo) ─── */
+.hero-mockup {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(110,78,214,.18), 0 4px 16px rgba(0,0,0,.08);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-light);
+}
+.mockup-chrome {
+  background: #F3F0FF;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+.mockup-dots { display: flex; gap: 5px; }
+.mockup-dots span { width: 10px; height: 10px; border-radius: 50%; display: block; }
+.mockup-dots span:nth-child(1) { background: #FF5F57; }
+.mockup-dots span:nth-child(2) { background: #FFBD2E; }
+.mockup-dots span:nth-child(3) { background: #28CA41; }
+.mockup-url { font-size: 11px; font-weight: 600; color: var(--text-dim); background: rgba(255,255,255,.7); padding: 4px 10px; border-radius: 6px; flex: 1; text-align: center; letter-spacing: .01em; }
+.mockup-body { flex: 1; overflow: hidden; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; background: #F8F7FF; }
+.mkp-progress-meta { display: flex; justify-content: space-between; font-size: 10px; font-weight: 600; color: var(--text-dim); margin-bottom: 4px; }
+.mkp-bar { height: 4px; background: var(--terra-tint); border-radius: 99px; overflow: hidden; margin-bottom: 8px; }
+.mkp-bar-fill { height: 100%; background: var(--terra); border-radius: 99px; }
+.mkp-roadmap { display: flex; gap: 5px; margin-bottom: 2px; }
+.mkp-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--terra-tint); font-size: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1.5px solid transparent; }
+.mkp-dot.done { background: #F0FDF4; border-color: #86efac; font-size: 8px; }
+.mkp-dot.current { background: var(--terra-tint); border-color: var(--terra); box-shadow: 0 0 0 2px rgba(110,78,214,.15); }
+.mkp-card { background: #fff; border-radius: 12px; padding: 12px 14px; flex: 1; border: 1px solid var(--border-light); box-shadow: 0 1px 6px rgba(110,78,214,.06); display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+.mkp-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); }
+.mkp-story { border-left: 2px solid rgba(110,78,214,.25); padding: 6px 10px; background: rgba(248,247,255,.8); border-radius: 0 6px 6px 0; }
+.mkp-story p { font-size: 10px; line-height: 1.6; color: var(--text); font-style: italic; margin: 0; }
+.mkp-science { background: var(--terra-tint); border-radius: 6px; padding: 7px 10px; }
+.mkp-science p { font-size: 10px; line-height: 1.55; color: var(--text); margin: 0; }
+.mkp-science-lbl { font-size: 8px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); margin-bottom: 3px; }
+.mkp-question { border-top: 1px solid var(--border-light); padding-top: 8px; margin-top: auto; }
+.mkp-q-lbl { font-size: 8px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); margin-bottom: 5px; }
+.mkp-q-text { font-size: 10px; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 6px; }
+.mkp-option { font-size: 10px; padding: 5px 8px; border-radius: 5px; border: 1.5px solid var(--border); color: var(--text); margin-bottom: 4px; line-height: 1.4; }
+.mkp-option.correct { border-color: #86efac; background: #F0FDF4; color: #166534; font-weight: 600; }
+.mkp-try { background: #F0FDF4; border: 1.5px solid #86efac; border-radius: 6px; padding: 6px 8px; }
+.mkp-try-lbl { font-size: 8px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #16a34a; margin-bottom: 2px; }
+.mkp-try-text { font-size: 9px; color: #166534; font-weight: 500; line-height: 1.4; }
+
 .hero-photo-wrap {
   width: 380px;
   height: 480px;
   border-radius: 24px;
-  background: #1a0f3a;
+  background: transparent;
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 32px 80px rgba(110,78,214,.25);
+  overflow: visible;
+  box-shadow: none;
 }
 /* Hero photo */
 .hero-photo-img {
@@ -987,6 +1038,7 @@ a { color: inherit; }
   inset: 0;
   opacity: 0;
   transition: opacity .2s;
+  pointer-events: none;
 }
 .audience-card.primary::before { background: linear-gradient(160deg, rgba(110,78,214,.04), transparent); }
 @media (hover:hover) { .audience-card:hover { box-shadow: 0 12px 40px rgba(110,78,214,.1); } .audience-card:hover::before { opacity: 1; } }
@@ -1690,14 +1742,68 @@ a { color: inherit; }
     <!-- Right: Jack photo + floating badges -->
     <div class="hero-visual" data-reveal data-d="2" aria-hidden="true">
       <div class="hero-photo-wrap">
-        <img
-          src="images/hero-dad.jpg"
-          alt="Jack Hartley, FamilyForce"
-          class="hero-photo-img"
-          loading="eager"
-          decoding="async"
-        />
-        <div class="hero-photo-overlay"></div>
+        <div class="hero-mockup" aria-label="FamilyForce course preview">
+
+          <!-- Browser chrome -->
+          <div class="mockup-chrome">
+            <div class="mockup-dots"><span></span><span></span><span></span></div>
+            <div class="mockup-url">getfamilyforce.com/course</div>
+          </div>
+
+          <!-- Course body -->
+          <div class="mockup-body">
+
+            <!-- Progress -->
+            <div>
+              <div class="mkp-progress-meta"><span>Chapter 6 of 13</span><span style="color:var(--terra);font-weight:700;">46% complete</span></div>
+              <div class="mkp-bar"><div class="mkp-bar-fill" style="width:46%"></div></div>
+              <div class="mkp-roadmap">
+                <div class="mkp-dot done">✓</div>
+                <div class="mkp-dot done">✓</div>
+                <div class="mkp-dot done">✓</div>
+                <div class="mkp-dot done">✓</div>
+                <div class="mkp-dot done">✓</div>
+                <div class="mkp-dot current">🌙</div>
+                <div class="mkp-dot">🤝</div>
+                <div class="mkp-dot">🍼</div>
+                <div class="mkp-dot">⛅</div>
+                <div class="mkp-dot">🛏️</div>
+                <div class="mkp-dot">📉</div>
+                <div class="mkp-dot">🚶</div>
+                <div class="mkp-dot">🌅</div>
+              </div>
+            </div>
+
+            <!-- Chapter card -->
+            <div class="mkp-card">
+              <div class="mkp-eyebrow">Chapter 6 · 🌙 Game Night</div>
+
+              <div class="mkp-story">
+                <p>"Night one. Bath at 6:40. Books. 'I love you, it's time to sleep.' Put him in the crib. He looked at me. I walked out and closed the door."</p>
+              </div>
+
+              <div class="mkp-science">
+                <div class="mkp-science-lbl">The Science</div>
+                <p>Over 80% of children show significant improvement within the first week. Night two being harder than night one is the documented low point — and the strongest predictor that night three drops sharply.</p>
+              </div>
+
+              <!-- Question -->
+              <div class="mkp-question">
+                <div class="mkp-q-lbl">Check Your Understanding</div>
+                <div class="mkp-q-text">Night two is harder than night one. What does the research say this means?</div>
+                <div class="mkp-option correct">✓ It's the extinction burst — night three will almost certainly be shorter</div>
+                <div class="mkp-option">The method isn't working — switch approaches now</div>
+              </div>
+
+              <!-- Try This -->
+              <div class="mkp-try">
+                <div class="mkp-try-lbl">✋ Try This</div>
+                <div class="mkp-try-text">Set timers on your phone for check-in intervals: 3 min, 5 min, then 10 min. Label them "Check in — do not pick up."</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
 
       <!-- Floating cert badge -->
@@ -1710,7 +1816,7 @@ a { color: inherit; }
         </div>
         <div class="hero-cert-text">
           <strong>Certificate earned!</strong>
-          <span>Screen Time Playbook</span>
+          <span>Sleep Training Playbook</span>
         </div>
       </div>
 
@@ -1782,8 +1888,8 @@ a { color: inherit; }
             <path d="M4 6h16M4 10h12M4 14h8" stroke="#6E4ED6" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
         </div>
-        <p class="step-title">Read</p>
-        <p class="step-body">Pick a topic. Read the whole thing. Don't skim. (There's a quiz at the end.)</p>
+        <p class="step-title">Choose a Topic</p>
+        <p class="step-body">Pick the thing that's hard. Sleep, tantrums, potty, feeding, screen time. Start wherever you are.</p>
       </div>
 
       <div class="step-card">
@@ -1796,8 +1902,8 @@ a { color: inherit; }
             <path d="M16.5 18l1 1 2-2" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <p class="step-title">Certificate</p>
-        <p class="step-body">Your name on a certificate. Text it to your partner. (People have framed it. Just saying.)</p>
+        <p class="step-title">Do the Course</p>
+        <p class="step-body">Evidence-backed research. Chapter by chapter. Earn your certificate.</p>
       </div>
 
       <div class="step-card">
@@ -1807,8 +1913,8 @@ a { color: inherit; }
             <path d="M12 3l1.8 5.4H19l-4.9 3.5 1.9 5.6L12 14l-4.9 3.5 1.9-5.6L4 8.4h5.2z" stroke="#6E4ED6" stroke-width="1.5" stroke-linejoin="round"/>
           </svg>
         </div>
-        <p class="step-title">Level Up</p>
-        <p class="step-body">Perfect doesn't exist. Knowledge won't stop the chaos — it just means you're not guessing when it hits. (It will hit.)</p>
+        <p class="step-title">Know What You're Doing</p>
+        <p class="step-body">The hard moments don't go away. You just know what to do when they show up.</p>
       </div>
 
     </div>
@@ -1937,8 +2043,8 @@ a { color: inherit; }
   <div class="wrap">
     <div style="max-width:640px;margin:0 auto;text-align:center" data-reveal>
       <p class="label" style="margin-bottom:16px">The Library</p>
-      <h2 class="heading" style="margin-bottom:16px">Five topics. Five badges. One hour each.</h2>
-      <p class="body-text" style="font-size:17px">One hour of research-backed reading, a quiz, and a certificate. We add new topics regularly based on what parents are asking for. Start with the free one.</p>
+      <h2 class="heading" style="margin-bottom:16px">Ready to Level Up</h2>
+      <p class="body-text" style="font-size:17px">One hour of research-backed reading, a quiz, and a certificate. We add new topics regularly based on what parents are asking for.</p>
     </div>
 
     <!-- Age picker -->
@@ -2081,7 +2187,7 @@ a { color: inherit; }
         <p class="audience-also">Most moms read it too. Not just their partners.</p>
         <div class="audience-cta">
           <a href="#library" class="btn-secondary" style="font-size:14px;padding:10px 24px">Send it with zero context →</a>
-          <button class="share-copy-btn" onclick="copyShareText(this)" style="font-size:13px;color:var(--terra-dark);background:none;border:none;cursor:pointer;text-align:left;padding:4px 0;font-family:var(--sans)">
+          <button class="share-copy-btn" onclick="copyShareText(this)" style="font-size:13px;color:var(--terra-dark);background:var(--terra-tint);border:1.5px solid rgba(110,78,214,.2);border-radius:8px;cursor:pointer;padding:8px 14px;font-family:var(--sans);font-weight:600;display:inline-flex;align-items:center;gap:6px;">
             📋 Copy message to send your partner
           </button>
         </div>
@@ -2219,26 +2325,6 @@ a { color: inherit; }
 
       <div class="testimonial-card">
         <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
-        <span class="testimonial-tag">Dad</span>
-        <p class="testimonial-quote">Finished the sleep one. Bought the tantrum one before I even closed the tab. My wife thinks I have a problem. I think I have a system.</p>
-        <div>
-          <p class="testimonial-author">Tom H.</p>
-          <p class="testimonial-role">Father of three. Seattle, WA.</p>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
-        <span class="testimonial-tag">Grandparent</span>
-        <p class="testimonial-quote">Bought the feeding playbook for my son before the baby arrived. He called me three days later to say thank you. First time he has called me voluntarily in six months.</p>
-        <div>
-          <p class="testimonial-author">Robert J.</p>
-          <p class="testimonial-role">Grandfather of one. Edinburgh, UK.</p>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
         <span class="testimonial-tag">Expecting Dad</span>
         <p class="testimonial-quote">Read Sleep Training and Feeding before our son arrived. The first month was still hard. I wasn't figuring it out as we went. We had a plan. That felt completely different.</p>
         <div>
@@ -2303,7 +2389,6 @@ a { color: inherit; }
         <a href="terms.html" class="footer-link">Terms</a>
       </nav>
     </div>
-    <div class="divider" style="width:100%;margin-bottom:20px" aria-hidden="true"></div>
     <div class="footer-bottom">
       <small>&#169; 2026 FamilyForce Inc.</small>
       <small>getfamilyforce.com</small>
@@ -2484,7 +2569,7 @@ function pickAge(btn, stage) {
 
 /* ─── SHARE COPY ─── */
 function copyShareText(btn) {
-  const msg = "Hey, found this parenting thing. Screen Time Playbook is free. Read it, take a quiz, get a certificate. Took me under an hour. getfamilyforce.com";
+  const msg = "Hey, found this. Free parenting courses — sleep training, potty training, tantrums, feeding, screen time. About an hour each. You get a certificate at the end. getfamilyforce.com";
   navigator.clipboard.writeText(msg).then(() => {
     btn.textContent = '✓ Copied! Now send it.';
     btn.style.color = 'var(--terra)';
