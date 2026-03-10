@@ -1836,10 +1836,10 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
             </a>
-            <a href="certificates/certificate.html" class="lib-btn lib-btn--cert" aria-label="View Potty Training certificate">
-              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <span id="cert-potty-btn" class="lib-btn lib-btn--cert-locked" aria-label="Certificate locked until course complete" title="Complete the course to unlock">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="5" y="9" width="10" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9V6a2 2 0 014 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Certificate
-            </a>
+            </span>
           </div>
         </article>
 
@@ -1867,10 +1867,10 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
             </a>
-            <a href="certificates/certificate-sleep.html" class="lib-btn lib-btn--cert" aria-label="View Sleep Training certificate">
-              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <span id="cert-sleep-btn" class="lib-btn lib-btn--cert-locked" aria-label="Certificate locked until course complete" title="Complete the course to unlock">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="5" y="9" width="10" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9V6a2 2 0 014 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Certificate
-            </a>
+            </span>
           </div>
         </article>
 
@@ -1898,10 +1898,10 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
             </a>
-            <a href="certificates/certificate-tantrum.html" class="lib-btn lib-btn--cert" aria-label="View Tantrums certificate">
-              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <span id="cert-tantrum-btn" class="lib-btn lib-btn--cert-locked" aria-label="Certificate locked until course complete" title="Complete the course to unlock">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="5" y="9" width="10" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9V6a2 2 0 014 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Certificate
-            </a>
+            </span>
           </div>
         </article>
 
@@ -1929,10 +1929,10 @@ button { font: inherit; cursor: pointer; }
               <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Quiz
             </a>
-            <a href="certificates/certificate-feeding.html" class="lib-btn lib-btn--cert" aria-label="View Feeding certificate">
-              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            <span id="cert-feeding-btn" class="lib-btn lib-btn--cert-locked" aria-label="Certificate locked until course complete" title="Complete the course to unlock">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="5" y="9" width="10" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9V6a2 2 0 014 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Certificate
-            </a>
+            </span>
           </div>
         </article>
 
@@ -2139,6 +2139,78 @@ button { font: inherit; cursor: pointer; }
       const allDone = COURSE_IDS.every(id => completed.includes(id));
       if (allDone) {
         certBtn.outerHTML = `<a href="certificates/certificate-screentime.html" class="lib-btn lib-btn--cert" aria-label="View Screen Time certificate">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Certificate
+        </a>`;
+      }
+    } catch(_) {}
+  })();
+
+  /* ─── POTTY TRAINING COURSE CERTIFICATE UNLOCK ─── */
+  (function() {
+    const COURSE_IDS = ['two_sons','ready','prepare','method','three_days','poop','regression','outside','nighttime','boys_girls','rewards','done'];
+    const certBtn = document.getElementById('cert-potty-btn');
+    if (!certBtn) return;
+    try {
+      const state = JSON.parse(localStorage.getItem('ff_course_potty_v1') || '{}');
+      const completed = Array.isArray(state.completed) ? state.completed : [];
+      const allDone = COURSE_IDS.every(id => completed.includes(id));
+      if (allDone) {
+        certBtn.outerHTML = `<a href="certificates/certificate-potty.html" class="lib-btn lib-btn--cert" aria-label="View Potty Training certificate">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Certificate
+        </a>`;
+      }
+    } catch(_) {}
+  })();
+
+  /* ─── SLEEP TRAINING COURSE CERTIFICATE UNLOCK ─── */
+  (function() {
+    const COURSE_IDS = ['deficit','biology','safe_sleep','newborn','method','game_night','team','feeding','naps','cosleep','regressions','toddler','after_game'];
+    const certBtn = document.getElementById('cert-sleep-btn');
+    if (!certBtn) return;
+    try {
+      const state = JSON.parse(localStorage.getItem('ff_course_sleep_v1') || '{}');
+      const completed = Array.isArray(state.completed) ? state.completed : [];
+      const allDone = COURSE_IDS.every(id => completed.includes(id));
+      if (allDone) {
+        certBtn.outerHTML = `<a href="certificates/certificate-sleep.html" class="lib-btn lib-btn--cert" aria-label="View Sleep Training certificate">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Certificate
+        </a>`;
+      }
+    } catch(_) {}
+  })();
+
+  /* ─── TANTRUM COURSE CERTIFICATE UNLOCK ─── */
+  (function() {
+    const COURSE_IDS = ['two_sons','what_it_is','the_arc','first_ten','trajectory','prevent','public','meltdown','worry','after_storm'];
+    const certBtn = document.getElementById('cert-tantrum-btn');
+    if (!certBtn) return;
+    try {
+      const state = JSON.parse(localStorage.getItem('ff_course_tantrum_v1') || '{}');
+      const completed = Array.isArray(state.completed) ? state.completed : [];
+      const allDone = COURSE_IDS.every(id => completed.includes(id));
+      if (allDone) {
+        certBtn.outerHTML = `<a href="certificates/certificate-tantrum.html" class="lib-btn lib-btn--cert" aria-label="View Tantrums certificate">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+          Certificate
+        </a>`;
+      }
+    } catch(_) {}
+  })();
+
+  /* ─── FEEDING COURSE CERTIFICATE UNLOCK ─── */
+  (function() {
+    const COURSE_IDS = ['remote','responsive','vitamin_d','fed','window','iron','allergen','hands_first','pouch','table','refusals','milk','done'];
+    const certBtn = document.getElementById('cert-feeding-btn');
+    if (!certBtn) return;
+    try {
+      const state = JSON.parse(localStorage.getItem('ff_course_feeding_v1') || '{}');
+      const completed = Array.isArray(state.completed) ? state.completed : [];
+      const allDone = COURSE_IDS.every(id => completed.includes(id));
+      if (allDone) {
+        certBtn.outerHTML = `<a href="certificates/certificate-feeding.html" class="lib-btn lib-btn--cert" aria-label="View Feeding certificate">
           <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2l1.8 5.4H18l-4.9 3.6 1.8 5.4L10 13l-4.9 3.4 1.8-5.4L2 7.4h6.2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
           Certificate
         </a>`;
