@@ -35,6 +35,7 @@
       if (!data.session) {
         window.location.href = 'sign-in.html?next=course-screentime.html';
       } else {
+        window._sbUserEmail = data.session.user.email || '';
         document.documentElement.classList.add('authed');
       }
     });
@@ -994,7 +995,7 @@ function ch() { return CHAPTERS[STATE.chapterIndex]; }
 function done(id) { return STATE.completed.includes(id); }
 function totalDone() { return STATE.completed.length; }
 function pct() { return Math.round((totalDone() / CHAPTERS.length) * 100); }
-function userName() { return localStorage.getItem('ff_user_name') || ''; }
+function userName() { return localStorage.getItem('ff_user_name') || window._sbUserEmail || ''; }
 
 // ═══════════════════════════════════════════════════════════
 // RENDER
@@ -1354,7 +1355,7 @@ function renderComplete(app) {
   ct.textContent = 'You finished all 11 chapters';
   congrats.appendChild(ct);
   const cs = el('p'); cs.style.textAlign = 'center'; cs.style.marginTop = '8px';
-  cs.textContent = "Here's your certificate. Type your name, then print or save it as a PDF.";
+  cs.textContent = "Here's your certificate. Print or save it as a PDF.";
   congrats.appendChild(cs);
   app.appendChild(congrats);
 

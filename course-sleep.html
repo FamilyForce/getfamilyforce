@@ -24,7 +24,7 @@
   );
   const _preview = new URLSearchParams(location.search).get('preview') === '1';
   if (_preview) { document.documentElement.classList.add('authed'); }
-  else { _sb.auth.getSession().then(({ data }) => { if (!data.session) window.location.href = 'sign-in.html?next=course-sleep.html'; else document.documentElement.classList.add('authed'); }); }
+  else { _sb.auth.getSession().then(({ data }) => { if (!data.session) window.location.href = 'sign-in.html?next=course-sleep.html'; else { window._sbUserEmail = data.session.user.email || ''; document.documentElement.classList.add('authed'); } }); }
 </script>
 <style>
 :root {
@@ -497,7 +497,7 @@ function el(tag,cls){const e=document.createElement(tag);if(cls)e.className=cls;
 function ch(){return CHAPTERS[STATE.chapterIndex];}
 function done(id){return STATE.completed.includes(id);}
 function pct(){return Math.round((STATE.completed.length/CHAPTERS.length)*100);}
-function userName(){return localStorage.getItem('ff_user_name')||'';}
+function userName(){return localStorage.getItem('ff_user_name')||window._sbUserEmail||'';}
 
 // ═══════════════════════════════════════════════════════════
 // RENDER
@@ -662,7 +662,7 @@ function renderComplete(app){
   const ce=el('div','eyebrow');ce.style.textAlign='center';ce.textContent='Course Complete 🎉';congrats.appendChild(ce);
   const ct=el('h2');ct.style.textAlign='center';ct.style.marginTop='4px';ct.textContent='You finished all 13 chapters';congrats.appendChild(ct);
   const cs=el('p');cs.style.textAlign='center';cs.style.marginTop='8px';
-  cs.textContent="Here's your certificate. Type your name, then print or save it as a PDF.";congrats.appendChild(cs);
+  cs.textContent="Here's your certificate. Print or save it as a PDF.";congrats.appendChild(cs);
   app.appendChild(congrats);
 
   const certCard=el('div','card');
