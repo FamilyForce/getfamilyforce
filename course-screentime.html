@@ -127,12 +127,9 @@ html.authed .auth-loading { display: none; }
   font-weight: 800; font-size: 16px; color: var(--text);
   text-decoration: none; flex-shrink: 0;
 }
-.logo-mark {
-  width: 28px; height: 28px; border-radius: 8px;
-  background: var(--terra); color: white;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 800;
-}
+.logo-chevron { flex-shrink: 0; }
+.logo-f { color: var(--text); font-weight: 600; letter-spacing: -0.02em; }
+.logo-s { color: var(--terra); font-weight: 600; letter-spacing: -0.02em; }
 .header-back {
   font-size: 13px; font-weight: 600; color: var(--text-mid);
   text-decoration: none; display: flex; align-items: center; gap: 5px;
@@ -678,8 +675,10 @@ p + p { margin-top: 12px; }
 <header class="course-header no-print">
   <div class="header-inner">
     <a href="index.html" class="header-logo">
-      <div class="logo-mark">F</div>
-      FamilyForce
+      <svg class="logo-chevron" width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-f">Family</span><span class="logo-s">Force</span>
     </a>
     <span class="header-course-name">Screen Time Course</span>
     <a href="dashboard.html" class="header-back">← Dashboard</a>
