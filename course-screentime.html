@@ -216,6 +216,10 @@ html.authed .auth-loading { display: none; }
   border: 1px solid var(--border-light);
   margin-bottom: 16px;
 }
+.cert-card-wrap {
+  background: transparent; border: none; box-shadow: none;
+  padding: 8px 0 0; margin-bottom: 16px;
+}
 .card-sm { padding: 24px; }
 
 /* ─── TYPOGRAPHY ─── */
@@ -400,10 +404,12 @@ p + p { margin-top: 12px; }
   background: white;
   border: 2px solid var(--terra);
   border-radius: 20px;
-  padding: clamp(28px, 6vw, 48px) clamp(24px, 6vw, 48px);
+  padding: 44px 48px 36px;
   text-align: center;
   position: relative;
   overflow: hidden;
+  max-width: 460px;    /* constrained for social sharing */
+  margin: 0 auto;
 }
 .cert-outer::before {
   content: '';
@@ -440,7 +446,7 @@ p + p { margin-top: 12px; }
 .cert-rule { width: 80px; height: 2px; background: var(--terra-tint); margin: 22px auto; border-radius: 99px; }
 .cert-body {
   font-size: 14px; color: var(--text-mid); line-height: 1.7;
-  max-width: 420px; margin-inline: auto;
+  max-width: 340px; margin-inline: auto;
 }
 .cert-sig-row { display: flex; justify-content: center; margin-top: 32px; }
 .cert-sig { text-align: center; }
@@ -1453,7 +1459,7 @@ function renderComplete(app) {
   app.appendChild(shareLabel);
 
     // Certificate
-  const certCard = el('div', 'card');
+  const certCard = el('div', 'cert-card-wrap');
   const certOuter = el('div', 'cert-outer');
 
   const seal = el('div', 'cert-seal'); seal.textContent = '✓';

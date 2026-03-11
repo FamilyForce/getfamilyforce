@@ -111,6 +111,7 @@ html.authed .auth-loading { display: none; }
 
 /* ─── CARDS ─── */
 .card { background: var(--surface); border-radius: var(--radius-card); padding: 32px; box-shadow: var(--shadow-card); border: 1px solid var(--border-light); margin-bottom: 16px; }
+.cert-card-wrap { background: transparent; border: none; box-shadow: none; padding: 8px 0 0; margin-bottom: 16px; }
 .card-sm { padding: 24px; }
 
 /* ─── TYPE ─── */
@@ -178,7 +179,7 @@ p + p { margin-top: 12px; }
 .try-this-text { font-size: 14px; line-height: 1.65; color: #166534; font-weight: 500; }
 
 /* ─── CERTIFICATE ─── */
-.cert-outer { background: white; border: 2px solid var(--terra); border-radius: 20px; padding: clamp(28px,6vw,48px) clamp(24px,6vw,48px); text-align: center; position: relative; overflow: hidden; }
+.cert-outer { background: white; border: 2px solid var(--terra); border-radius: 20px; padding: 44px 48px 36px; text-align: center; position: relative; overflow: hidden; max-width: 460px; margin: 0 auto; }
 .cert-outer::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at top, rgba(110,78,214,.05) 0%, transparent 60%); pointer-events: none; }
 .cert-seal { width: 80px; height: 80px; border-radius: 50%; background: var(--terra); margin: 0 auto 18px; display: flex; align-items: center; justify-content: center; font-size: 36px; color: white; box-shadow: 0 6px 24px rgba(110,78,214,.3); }
 .cert-pretitle { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
@@ -188,7 +189,7 @@ p + p { margin-top: 12px; }
 .cert-name-input { border: none; border-bottom: 2px solid var(--terra); background: transparent; font-family: var(--serif); font-size: 24px; color: var(--terra-dark); font-style: italic; text-align: center; width: 100%; padding: 6px 0; outline: none; }
 .cert-name-input::placeholder { color: var(--terra-tint); font-style: italic; }
 .cert-rule { width: 80px; height: 2px; background: var(--terra-tint); margin: 22px auto; border-radius: 99px; }
-.cert-body { font-size: 14px; color: var(--text-mid); line-height: 1.7; max-width: 420px; margin-inline: auto; }
+.cert-body { font-size: 14px; color: var(--text-mid); line-height: 1.7; max-width: 340px; margin-inline: auto; }
 .cert-sig-row { display: flex; justify-content: center; margin-top: 32px; }
 .cert-sig { text-align: center; }
 .cert-sig-line { width: 130px; height: 1px; background: var(--border); margin: 0 auto 8px; }
@@ -906,7 +907,7 @@ function renderComplete(app) {
   shareLabel.textContent = 'Share Your Achievement';
   app.appendChild(shareLabel);
 
-  const certCard = el('div', 'card');
+  const certCard = el('div', 'cert-card-wrap');
   const certOuter = el('div', 'cert-outer');
   const seal = el('div', 'cert-seal'); seal.textContent = '✓'; certOuter.appendChild(seal);
   const pretitle = el('div', 'cert-pretitle'); pretitle.textContent = 'Certificate of Completion'; certOuter.appendChild(pretitle);
