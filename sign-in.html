@@ -900,6 +900,18 @@ button { font: inherit; cursor: pointer; }
     window._supabaseClient.auth.getSession().then(({ data }) => {
       if (data.session) window.location.replace('dashboard.html');
     });
+
+    // Returning user detection — if they've signed in on this device before,
+    // show "Welcome back" instead of "Create your free account"
+    (function() {
+      var hasAccount = localStorage.getItem('ff_user_id') || localStorage.getItem('ff_user_email');
+      if (hasAccount) {
+        var h = document.getElementById('signin-heading');
+        var s = document.getElementById('signin-subtext');
+        if (h) h.textContent = 'Welcome back';
+        if (s) s.textContent = 'Enter your email and we\'ll send you a sign-in link.';
+      }
+    })();
   </script>
 </head>
 
@@ -980,9 +992,9 @@ button { font: inherit; cursor: pointer; }
         </span>
       </div>
 
-      <!-- Heading + subtext -->
-      <h1 class="signin-heading">Welcome back</h1>
-      <p class="signin-subtext">Enter your email and we'll send you a sign-in link.</p>
+      <!-- Heading + subtext — adapts for new vs returning users -->
+      <h1 class="signin-heading" id="signin-heading">Create your free account</h1>
+      <p class="signin-subtext" id="signin-subtext">Enter your email to get started — it's free.</p>
 
       <!-- Sign-in form -->
       <form
