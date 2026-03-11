@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero Mockup Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --terra:#6E4ED6; --terra-dark:#5B3CC4; --terra-tint:#EDE9FB; --terra-tint2:#F5F3FF;
+    --text:#0D0820; --text-mid:#4A4560; --text-dim:#8B85A8;
+    --border:rgba(110,78,214,.12); --border-light:rgba(110,78,214,.07);
+    --surface:#fff; --bg:#F8F7FF;
+    --correct:#22c55e; --correct-bg:#F0FDF4; --correct-border:#86efac;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Outfit', sans-serif; background: #c4b5fd; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 40px; }
+  .wrap { width: 380px; }
+
+  .hero-mockup { background:#fff; border-radius:16px; overflow:hidden; box-shadow:0 24px 64px rgba(110,78,214,.25),0 4px 16px rgba(0,0,0,.08); display:flex; flex-direction:column; border:1px solid var(--border-light); height:480px; }
+  .mockup-chrome { background:#F3F0FF; padding:10px 14px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border-light); flex-shrink:0; }
+  .mockup-dots { display:flex; gap:5px; }
+  .mockup-dots span { width:10px; height:10px; border-radius:50%; display:block; }
+  .mockup-dots span:nth-child(1) { background:#FF5F57; }
+  .mockup-dots span:nth-child(2) { background:#FFBD2E; }
+  .mockup-dots span:nth-child(3) { background:#28CA41; }
+  .mockup-url { font-size:11px; font-weight:600; color:var(--text-dim); background:rgba(255,255,255,.7); padding:4px 10px; border-radius:6px; flex:1; text-align:center; }
+  .mockup-body { flex:1; overflow:hidden; padding:14px 16px; display:flex; flex-direction:column; gap:10px; background:#F8F7FF; }
+  .mkp-progress-meta { display:flex; justify-content:space-between; font-size:10px; font-weight:600; color:var(--text-dim); margin-bottom:4px; }
+  .mkp-bar { height:4px; background:var(--terra-tint); border-radius:99px; overflow:hidden; margin-bottom:8px; }
+  .mkp-bar-fill { height:100%; background:var(--terra); border-radius:99px; }
+  .mkp-roadmap { display:flex; gap:5px; margin-bottom:2px; }
+  .mkp-dot { width:22px; height:22px; border-radius:50%; background:var(--terra-tint); font-size:10px; display:flex; align-items:center; justify-content:center; flex-shrink:0; border:1.5px solid transparent; opacity:.35; }
+  .mkp-dot.done { background:var(--correct-bg); border-color:var(--correct-border); font-size:8px; opacity:1; }
+  .mkp-dot.current { background:var(--terra-tint); border-color:var(--terra); box-shadow:0 0 0 2px rgba(110,78,214,.15); opacity:1; }
+  .mkp-card { background:#fff; border-radius:12px; padding:12px 14px; flex:1; border:1px solid var(--border-light); box-shadow:0 1px 6px rgba(110,78,214,.06); display:flex; flex-direction:column; gap:8px; overflow:hidden; }
+  .mkp-eyebrow { font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--terra); }
+  .mkp-story { border-left:2px solid rgba(110,78,214,.25); padding:6px 10px; background:rgba(248,247,255,.8); border-radius:0 6px 6px 0; }
+  .mkp-story p { font-size:10px; line-height:1.6; color:var(--text); font-style:italic; }
+  .mkp-science { background:var(--terra-tint); border-radius:6px; padding:7px 10px; }
+  .mkp-science-lbl { font-size:8px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--terra); margin-bottom:3px; }
+  .mkp-science p { font-size:10px; line-height:1.55; color:var(--text); }
+  .mkp-question { border-top:1px solid var(--border-light); padding-top:8px; margin-top:auto; }
+  .mkp-q-lbl { font-size:8px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--terra); margin-bottom:5px; }
+  .mkp-q-text { font-size:10px; font-weight:600; color:var(--text); line-height:1.4; margin-bottom:6px; }
+  .mkp-option { font-size:10px; padding:5px 8px; border-radius:5px; border:1.5px solid var(--border); color:var(--text); margin-bottom:4px; line-height:1.4; }
+  .mkp-option.correct { border-color:var(--correct-border); background:var(--correct-bg); color:#166534; font-weight:600; }
+  .mkp-try { background:var(--correct-bg); border:1.5px solid var(--correct-border); border-radius:6px; padding:6px 8px; }
+  .mkp-try-lbl { font-size:8px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#16a34a; margin-bottom:2px; }
+  .mkp-try-text { font-size:9px; color:#166534; font-weight:500; line-height:1.4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero-mockup">
+    <div class="mockup-chrome">
+      <div class="mockup-dots"><span></span><span></span><span></span></div>
+      <div class="mockup-url">getfamilyforce.com/course</div>
+    </div>
+    <div class="mockup-body">
+      <div>
+        <div class="mkp-progress-meta">
+          <span>Chapter 6 of 13</span>
+          <span style="color:var(--terra);font-weight:700;">46% complete</span>
+        </div>
+        <div class="mkp-bar"><div class="mkp-bar-fill" style="width:46%"></div></div>
+        <div class="mkp-roadmap">
+          <div class="mkp-dot done">✓</div>
+          <div class="mkp-dot done">✓</div>
+          <div class="mkp-dot done">✓</div>
+          <div class="mkp-dot done">✓</div>
+          <div class="mkp-dot done">✓</div>
+          <div class="mkp-dot current">🌙</div>
+          <div class="mkp-dot">🤝</div>
+          <div class="mkp-dot">🍼</div>
+          <div class="mkp-dot">⛅</div>
+          <div class="mkp-dot">🛏️</div>
+          <div class="mkp-dot">📉</div>
+          <div class="mkp-dot">🚶</div>
+          <div class="mkp-dot">🌅</div>
+        </div>
+      </div>
+      <div class="mkp-card">
+        <div class="mkp-eyebrow">Chapter 6 · 🌙 Game Night</div>
+        <div class="mkp-story">
+          <p>"Night one. Bath at 6:40. Books. 'I love you, it's time to sleep.' Put him in the crib. He looked at me. I walked out and closed the door."</p>
+        </div>
+        <div class="mkp-science">
+          <div class="mkp-science-lbl">The Science</div>
+          <p>Over 80% of children show significant improvement within the first week. Night two being harder is the documented low point — and the strongest predictor night three drops sharply.</p>
+        </div>
+        <div class="mkp-question">
+          <div class="mkp-q-lbl">Check Your Understanding</div>
+          <div class="mkp-q-text">Night two is harder than night one. What does the research say this means?</div>
+          <div class="mkp-option correct">✓ It's the extinction burst — night three will almost certainly be shorter</div>
+          <div class="mkp-option">The method isn't working — switch approaches now</div>
+        </div>
+        <div class="mkp-try">
+          <div class="mkp-try-lbl">✋ Try This</div>
+          <div class="mkp-try-text">Set timers for check-in intervals: 3 min, 5 min, then 10 min. Label them "Check in — do not pick up."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

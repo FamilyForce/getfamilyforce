@@ -1551,6 +1551,280 @@ button { font: inherit; cursor: pointer; }
 .lib-btn--pdf { }
 .lib-btn--quiz { }
 .lib-btn-stack { display: none; } /* Listen hidden globally */
+
+/* ═══════════════════════════════════════════════════════════
+   FAMILY SECTION
+   ═══════════════════════════════════════════════════════════ */
+.family-section {
+  padding: 56px 0;
+  border-top: 1px solid var(--border-light);
+}
+.family-heading-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 4px;
+}
+.family-heading {
+  font-size: 22px; font-weight: 700; color: var(--text);
+  letter-spacing: -0.01em;
+}
+.family-rename-btn {
+  font-size: 12px; font-weight: 600; color: var(--terra);
+  background: none; border: none; cursor: pointer; padding: 2px 0;
+  font-family: var(--sans);
+  text-decoration: underline; text-decoration-color: rgba(110,78,214,.3);
+}
+@media (hover:hover) { .family-rename-btn:hover { color: var(--terra-dark); } }
+.family-rename-form {
+  display: flex; gap: 8px; align-items: center;
+  margin-bottom: 4px;
+}
+.family-rename-input {
+  font-family: var(--sans); font-size: 18px; font-weight: 700;
+  color: var(--text); border: none; border-bottom: 2px solid var(--terra);
+  background: transparent; outline: none; padding: 2px 0;
+  min-width: 0; flex: 1; max-width: 280px;
+}
+.family-rename-save {
+  font-size: 12px; font-weight: 700; color: var(--terra);
+  background: none; border: none; cursor: pointer; font-family: var(--sans);
+}
+.family-subtext {
+  font-size: 13px; color: var(--text-dim); margin-bottom: 28px;
+}
+
+/* Code row */
+.family-code-card {
+  background: var(--elevated); border-radius: 14px;
+  padding: 18px 20px; margin-bottom: 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  flex-wrap: wrap;
+}
+.family-code-left {}
+.family-code-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px;
+}
+.family-code-value {
+  font-size: 26px; font-weight: 800; letter-spacing: 0.08em;
+  color: var(--terra); font-family: var(--sans);
+}
+.family-code-hint {
+  font-size: 12px; color: var(--text-dim); margin-top: 4px;
+}
+.family-code-copy {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 20px; border-radius: 100px;
+  border: 1.5px solid var(--border); background: var(--surface);
+  font-size: 13px; font-weight: 600; color: var(--text);
+  cursor: pointer; font-family: var(--sans); white-space: nowrap;
+  transition: border-color .2s, color .2s;
+  flex-shrink: 0;
+}
+@media (hover:hover) { .family-code-copy:hover { border-color: var(--terra); color: var(--terra); } }
+
+/* Members */
+.family-members-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px;
+}
+.family-member-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border-light);
+}
+.family-member-row:last-child { border-bottom: none; }
+.family-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--terra); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700; flex-shrink: 0;
+}
+.family-member-info { flex: 1; min-width: 0; }
+.family-member-name {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  display: flex; align-items: center; gap: 6px;
+}
+.family-you-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-dim);
+  background: var(--border-light); border-radius: 4px; padding: 1px 5px;
+}
+.family-member-badges {
+  display: flex; gap: 5px; margin-top: 5px; flex-wrap: wrap;
+}
+.family-mini-badge {
+  width: 24px; height: 24px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+}
+.family-no-badges {
+  font-size: 12px; color: var(--text-ghost); margin-top: 4px;
+}
+.family-remove-btn {
+  font-size: 12px; color: var(--text-dim); background: none; border: none;
+  cursor: pointer; font-family: var(--sans); padding: 4px 8px;
+  border-radius: 6px; transition: color .2s, background .2s; flex-shrink: 0;
+}
+@media (hover:hover) { .family-remove-btn:hover { color: #e53935; background: rgba(229,57,53,.06); } }
+.family-empty {
+  font-size: 14px; color: var(--text-dim); padding: 16px 0 8px;
+}
+
+/* Joined families */
+.family-joined-section { margin-top: 28px; }
+.family-joined-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px;
+}
+.family-joined-card {
+  background: var(--surface); border: 1px solid var(--border-light);
+  border-radius: 14px; padding: 16px 20px; margin-bottom: 12px;
+}
+.family-joined-name {
+  font-size: 15px; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.family-leave-btn {
+  font-size: 12px; color: var(--text-dim); background: none; border: none;
+  cursor: pointer; font-family: var(--sans); padding: 3px 8px;
+  border-radius: 6px; transition: color .2s;
+}
+@media (hover:hover) { .family-leave-btn:hover { color: #e53935; } }
+
+/* Join form */
+.family-join-section { margin-top: 28px; }
+.family-join-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
+}
+.family-join-row {
+  display: flex; gap: 8px; align-items: stretch;
+}
+.family-join-input {
+  flex: 1; font-family: var(--sans); font-size: 15px; font-weight: 600;
+  color: var(--text); letter-spacing: 0.06em; text-transform: uppercase;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 11px 16px; background: var(--surface); outline: none;
+  transition: border-color .2s;
+}
+.family-join-input:focus { border-color: var(--terra); }
+.family-join-input::placeholder { text-transform: none; letter-spacing: 0; color: var(--text-ghost); font-weight: 400; }
+.family-join-btn {
+  padding: 11px 22px; background: var(--terra); color: #fff;
+  border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: var(--sans); white-space: nowrap;
+  transition: background .2s;
+}
+@media (hover:hover) { .family-join-btn:hover { background: var(--terra-dark); } }
+.family-join-error {
+  font-size: 12px; color: #e53935; margin-top: 7px; font-weight: 500;
+}
+.family-join-success {
+  font-size: 12px; color: #16a34a; margin-top: 7px; font-weight: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SHARE ACHIEVEMENTS CARD (off-screen, captured by html2canvas)
+   ═══════════════════════════════════════════════════════════ */
+#share-achievement-card {
+  position: fixed;
+  left: -9999px; top: -9999px;
+  width: 480px;
+  background: linear-gradient(145deg, #0e0525 0%, #1e0d48 55%, #0d1a3a 100%);
+  border-radius: 24px;
+  padding: 44px 40px 40px;
+  font-family: 'Outfit', system-ui, sans-serif;
+  text-align: center;
+  color: #fff;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+#share-achievement-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% -10%, rgba(110,78,214,.5) 0%, transparent 65%);
+  pointer-events: none;
+}
+.sac-logo {
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px; margin-bottom: 32px;
+  font-size: 15px; font-weight: 700; letter-spacing: -0.01em;
+  color: rgba(255,255,255,.9);
+  position: relative;
+}
+.sac-name {
+  font-size: 28px; font-weight: 800; letter-spacing: -0.02em;
+  color: #fff; margin-bottom: 6px; position: relative;
+}
+.sac-subtitle {
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,.5);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  margin-bottom: 36px; position: relative;
+}
+.sac-badges {
+  display: flex; justify-content: center; gap: 16px;
+  margin-bottom: 36px; position: relative;
+}
+.sac-badge {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  width: 72px;
+}
+.sac-badge-circle {
+  width: 72px; height: 72px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; position: relative;
+  transition: all .2s;
+}
+.sac-badge-circle.earned {
+  box-shadow: 0 0 0 3px rgba(255,255,255,.2), 0 8px 24px rgba(110,78,214,.5);
+}
+.sac-badge-circle.earned::after {
+  content: '✓';
+  position: absolute; bottom: -3px; right: -3px;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #22c55e; border: 2px solid #0e0525;
+  font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+}
+.sac-badge-circle.locked {
+  background: rgba(255,255,255,.08) !important;
+  box-shadow: none;
+  filter: grayscale(1);
+  opacity: 0.35;
+}
+.sac-badge-name {
+  font-size: 10px; font-weight: 600; color: rgba(255,255,255,.7);
+  text-align: center; line-height: 1.3; letter-spacing: 0.01em;
+}
+.sac-badge-name.locked { color: rgba(255,255,255,.3); }
+.sac-count {
+  font-size: 13px; color: rgba(255,255,255,.5);
+  margin-bottom: 28px; position: relative;
+}
+.sac-count strong { color: rgba(255,255,255,.85); }
+.sac-url {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+  color: rgba(255,255,255,.35); text-transform: lowercase;
+  position: relative;
+}
+
+/* Button — rename */
+.share-achievements-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 11px 22px;
+  background: var(--surface);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: border-color .2s, color .2s, background .2s;
+  font-family: var(--sans);
+}
+.share-achievements-btn:hover {
+  border-color: var(--terra); color: var(--terra);
+  background: rgba(110,78,214,.04);
+}
 </style>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-NWDKH78LWB"></script>
@@ -1563,6 +1837,7 @@ button { font: inherit; cursor: pointer; }
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/ff-sync.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
     window._supabaseClient = supabase.createClient(
       'https://ewjqbafaxeasyvknxmof.supabase.co',
@@ -1831,15 +2106,69 @@ button { font: inherit; cursor: pointer; }
 
       <!-- Share profile — appears once a badge is earned -->
       <div id="share-profile-wrap" style="display:none;margin-top:20px;text-align:center;">
-        <button class="share-profile-btn" id="share-profile-btn" onclick="shareProfile()">
+        <button class="share-achievements-btn" id="share-profile-btn" onclick="shareAchievements()">
           <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <circle cx="15" cy="4" r="2.5" stroke="currentColor" stroke-width="1.5"/>
-            <circle cx="15" cy="16" r="2.5" stroke="currentColor" stroke-width="1.5"/>
-            <circle cx="5" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M12.7 5.3L7.3 8.7M12.7 14.7L7.3 11.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="3" y="3" width="6" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M9 6h8M9 10h6M9 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           </svg>
-          Share my profile
+          Share my achievements
         </button>
+      </div>
+
+    </div><!-- /wrap -->
+  </section>
+
+  <!-- ─── FAMILY ─── -->
+  <section class="family-section" id="family-section">
+    <div class="wrap">
+
+      <!-- Heading + rename -->
+      <div class="family-heading-row" id="family-heading-row">
+        <h2 class="family-heading" id="family-heading-display">My Family</h2>
+        <button class="family-rename-btn" id="family-rename-btn" onclick="startFamilyRename()">Rename</button>
+      </div>
+      <form class="family-rename-form" id="family-rename-form" style="display:none" onsubmit="saveFamilyName(event)">
+        <input class="family-rename-input" id="family-rename-input" type="text" maxlength="40" placeholder="Family name…" autocomplete="off">
+        <button type="submit" class="family-rename-save">Save</button>
+        <button type="button" class="family-rename-save" onclick="cancelFamilyRename()" style="color:var(--text-dim)">Cancel</button>
+      </form>
+      <p class="family-subtext">Connect with your co-parents and caregivers to track progress together.</p>
+
+      <!-- Your code card -->
+      <div class="family-code-card">
+        <div class="family-code-left">
+          <div class="family-code-label">Your family code</div>
+          <div class="family-code-value" id="family-code-display">FF-····</div>
+          <div class="family-code-hint">Share this code so others can join your family</div>
+        </div>
+        <button class="family-code-copy" id="family-code-copy-btn" onclick="copyFamilyCode()">
+          <svg width="13" height="13" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <rect x="6" y="6" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M4 12H3a1 1 0 01-1-1V3a1 1 0 011-1h8a1 1 0 011 1v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Copy code
+        </button>
+      </div>
+
+      <!-- Members in your family -->
+      <div class="family-members-label">Members</div>
+      <div id="family-members-list">
+        <!-- populated by JS -->
+      </div>
+
+      <!-- Families you've joined -->
+      <div id="family-joined-wrap"></div>
+
+      <!-- Join a family -->
+      <div class="family-join-section">
+        <div class="family-join-label">Join someone's family</div>
+        <div class="family-join-row">
+          <input class="family-join-input" id="family-join-input" type="text"
+            placeholder="Enter family code (e.g. FF-A3K9)" maxlength="7" autocomplete="off"
+            oninput="this.value = this.value.toUpperCase()">
+          <button class="family-join-btn" id="family-join-btn" onclick="joinFamily()">Join →</button>
+        </div>
+        <div id="family-join-msg" style="display:none" class="family-join-error"></div>
       </div>
 
     </div><!-- /wrap -->
@@ -2102,6 +2431,9 @@ button { font: inherit; cursor: pointer; }
         if (!profile?.name) window.ffSync.saveProfile(session.user.id, { name: localName });
       });
     }
+
+    // Load family section (fire-and-forget)
+    initFamilySection(session.user.id);
   }
 
   const certName     = localStorage.getItem('ff_user_name') || '';
@@ -2555,25 +2887,293 @@ button { font: inherit; cursor: pointer; }
 
 })();
 
-function shareProfile() {
-  const name    = localStorage.getItem('ff_user_name') || '';
-  let progress  = {};
+async function shareAchievements() {
+  const btn = document.getElementById('share-profile-btn');
+  const BADGES_META = [
+    { key: 'screen-time',    emoji: '📱', name: 'Digital Guardian',  bg: 'linear-gradient(135deg,#9B80FF,#6E4ED6)' },
+    { key: 'potty-training', emoji: '🚽', name: 'Potty Pro',         bg: 'linear-gradient(135deg,#6E4ED6,#5B3CC4)' },
+    { key: 'sleep-training', emoji: '🌙', name: 'Sleep Champion',    bg: 'linear-gradient(135deg,#5B7BB5,#4A6A9F)' },
+    { key: 'tantrum',        emoji: '⚡', name: 'Tantrum Tamer',     bg: 'linear-gradient(135deg,#7C5CFC,#6E4ED6)' },
+    { key: 'feeding',        emoji: '🥦', name: 'Good Eater Guide',  bg: 'linear-gradient(135deg,#5BA88E,#4A9070)' },
+  ];
+
+  const name = localStorage.getItem('ff_user_name') || 'A FamilyForce Parent';
+  let progress = {};
   try { progress = JSON.parse(localStorage.getItem('ff_progress') || '{}'); } catch(_) {}
-  const earned  = ['screen-time','potty-training','sleep-training','tantrum','feeding']
-    .filter(k => progress[k] && progress[k].cert === true);
-  const params  = new URLSearchParams();
-  if (name)          params.set('n', name);
-  if (earned.length) params.set('b', earned.join(','));
-  const url  = 'https://getfamilyforce.com/profile?' + params.toString();
-  const text = (name ? name + "'s" : 'My') + ' FamilyForce achievement profile — ' + earned.length + ' of 5 badges earned. ' + url;
-  if (navigator.share) {
-    navigator.share({ title: 'My FamilyForce Achievements', text, url }).catch(() => {});
-  } else {
-    navigator.clipboard.writeText(url).catch(() => {});
-    const btn = document.getElementById('share-profile-btn');
-    if (btn) { btn.textContent = '✓ Link copied!'; setTimeout(() => { btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="15" cy="4" r="2.5" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="16" r="2.5" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M12.7 5.3L7.3 8.7M12.7 14.7L7.3 11.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Share my profile'; }, 2000); }
+  const earnedKeys = BADGES_META.filter(b => progress[b.key]?.cert === true).map(b => b.key);
+  const earnedCount = earnedKeys.length;
+
+  // Populate the off-screen card
+  document.getElementById('sac-name').textContent = name;
+  document.getElementById('sac-count').innerHTML =
+    '<strong>' + earnedCount + '</strong> of 5 badge' + (earnedCount !== 1 ? 's' : '') + ' earned';
+
+  // Only show earned badges — 2 earned looks like a flex, not a partial progress bar
+  const earnedBadges = BADGES_META.filter(b => earnedKeys.includes(b.key));
+  // Scale up circles when fewer badges so they fill the space
+  const circleSize = earnedCount <= 2 ? 96 : earnedCount <= 3 ? 84 : 72;
+  const fontSize   = earnedCount <= 2 ? 42 : earnedCount <= 3 ? 36 : 30;
+
+  const badgesEl = document.getElementById('sac-badges');
+  badgesEl.innerHTML = '';
+  earnedBadges.forEach(b => {
+    const wrap = document.createElement('div');
+    wrap.className = 'sac-badge';
+    wrap.style.width = circleSize + 'px';
+    wrap.innerHTML =
+      '<div class="sac-badge-circle earned" style="background:' + b.bg + ';width:' + circleSize + 'px;height:' + circleSize + 'px">' +
+        '<span style="font-size:' + fontSize + 'px;line-height:1">' + b.emoji + '</span>' +
+      '</div>' +
+      '<div class="sac-badge-name">' + b.name + '</div>';
+    badgesEl.appendChild(wrap);
+  });
+
+  // Render with html2canvas
+  btn.textContent = 'Generating…';
+  btn.disabled = true;
+
+  try {
+    const card = document.getElementById('share-achievement-card');
+    const canvas = await html2canvas(card, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+      logging: false,
+      width: 480,
+    });
+
+    canvas.toBlob(async function(blob) {
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        btn.textContent = '✓ Image copied!';
+      } catch (e) {
+        // Clipboard blocked — download instead
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'familyforce-achievements.png';
+        a.click();
+        btn.textContent = '✓ Image saved!';
+      }
+      setTimeout(() => {
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="3" y="3" width="6" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M9 6h8M9 10h6M9 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Share my achievements';
+        btn.disabled = false;
+      }, 2500);
+    }, 'image/png');
+  } catch(e) {
+    btn.textContent = 'Try again';
+    btn.disabled = false;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   FAMILY SECTION
+   ═══════════════════════════════════════════════════════════ */
+
+let _familyData   = null;
+let _familyUserId = null;
+let _familyCode   = null;
+
+const FAMILY_BADGE_META = [
+  { key: 'screen-time',    emoji: '📱', bg: '#9B80FF' },
+  { key: 'potty-training', emoji: '🚽', bg: '#6E4ED6' },
+  { key: 'sleep-training', emoji: '🌙', bg: '#5B7BB5' },
+  { key: 'tantrum',        emoji: '⚡', bg: '#7C5CFC' },
+  { key: 'feeding',        emoji: '🥦', bg: '#5BA88E' },
+];
+
+function familyBadges(earnedCourses) {
+  if (!earnedCourses || earnedCourses.length === 0) {
+    return '<span class="family-no-badges">No badges yet</span>';
+  }
+  return FAMILY_BADGE_META
+    .filter(b => earnedCourses.includes(b.key))
+    .map(b =>
+      `<div class="family-mini-badge" style="background:${b.bg}" title="${b.key}">
+         <span style="font-size:11px">${b.emoji}</span>
+       </div>`
+    ).join('');
+}
+
+function familyInitial(name) {
+  return (name || '?').trim().charAt(0).toUpperCase();
+}
+
+function renderFamilyMemberRow(member, isYou, canRemove) {
+  const badges = familyBadges(member.earnedCourses);
+  return `
+    <div class="family-member-row" data-uid="${member.userId || ''}">
+      <div class="family-avatar">${familyInitial(member.name)}</div>
+      <div class="family-member-info">
+        <div class="family-member-name">
+          ${member.name}
+          ${isYou ? '<span class="family-you-tag">You</span>' : ''}
+        </div>
+        <div class="family-member-badges">${badges}</div>
+      </div>
+      ${canRemove
+        ? `<button class="family-remove-btn" onclick="removeFamilyMember('${member.userId}', '${(member.name||'').replace(/'/g,'\\\'')}')" title="Remove from family">Remove</button>`
+        : ''}
+    </div>`;
+}
+
+async function initFamilySection(userId) {
+  _familyUserId = userId;
+
+  /* Ensure user has a code */
+  _familyCode = await window.ffSync.ensureCircleCode(userId);
+  const codeEl = document.getElementById('family-code-display');
+  if (codeEl && _familyCode) codeEl.textContent = _familyCode;
+
+  /* Load family data */
+  _familyData = await window.ffSync.loadFamilyData(userId);
+  if (!_familyData) return;
+
+  /* Update family name heading */
+  const myName = localStorage.getItem('ff_user_name') || '';
+  const defaultName = myName ? myName.split(' ')[0] + "'s Family" : 'My Family';
+  const displayName = _familyData.myFamilyName || defaultName;
+  const headingEl = document.getElementById('family-heading-display');
+  if (headingEl) headingEl.textContent = displayName;
+
+  /* Render MY members */
+  const membersList = document.getElementById('family-members-list');
+  if (membersList) {
+    let html = '';
+    /* Always show "you" first */
+    const myProgress = JSON.parse(localStorage.getItem('ff_progress') || '{}');
+    const myEarned = FAMILY_BADGE_META.filter(b => myProgress[b.key]?.cert).map(b => b.key);
+    html += renderFamilyMemberRow(
+      { userId, name: myName || 'You', earnedCourses: myEarned }, true, false
+    );
+    if (_familyData.myMembers.length === 0) {
+      html += `<div class="family-empty">No one has joined yet — share your code to get started.</div>`;
+    } else {
+      _familyData.myMembers.forEach(m => {
+        html += renderFamilyMemberRow(m, false, true);
+      });
+    }
+    membersList.innerHTML = html;
+  }
+
+  /* Render joined families */
+  const joinedWrap = document.getElementById('family-joined-wrap');
+  if (joinedWrap && _familyData.joinedFamilies.length > 0) {
+    let html = '';
+    _familyData.joinedFamilies.forEach(fam => {
+      const famName = fam.familyName || (fam.ownerName.split(' ')[0] + "'s Family");
+      html += `<div class="family-joined-section">
+        <div class="family-joined-label">Family you joined</div>
+        <div class="family-joined-card">
+          <div class="family-joined-name">
+            ${famName}
+            <button class="family-leave-btn" onclick="leaveFamily('${fam.ownerId}', '${famName.replace(/'/g,'\\\'')}')" title="Leave family">Leave</button>
+          </div>`;
+      /* Owner row */
+      html += renderFamilyMemberRow(
+        { userId: fam.ownerId, name: fam.ownerName, earnedCourses: fam.ownerCerts }, false, false
+      );
+      /* Other co-members */
+      fam.coMembers.forEach(m => {
+        html += renderFamilyMemberRow(m, false, false);
+      });
+      /* You */
+      const myProgress2 = JSON.parse(localStorage.getItem('ff_progress') || '{}');
+      const myEarned2 = FAMILY_BADGE_META.filter(b => myProgress2[b.key]?.cert).map(b => b.key);
+      html += renderFamilyMemberRow({ userId, name: myName || 'You', earnedCourses: myEarned2 }, true, false);
+      html += `</div></div>`;
+    });
+    joinedWrap.innerHTML = html;
+  }
+}
+
+function copyFamilyCode() {
+  if (!_familyCode) return;
+  navigator.clipboard.writeText(_familyCode).catch(() => {});
+  const btn = document.getElementById('family-code-copy-btn');
+  if (btn) {
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 18 18" fill="none"><rect x="6" y="6" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M4 12H3a1 1 0 01-1-1V3a1 1 0 011-1h8a1 1 0 011 1v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Copy code'; }, 2000);
+  }
+}
+
+async function joinFamily() {
+  const input = document.getElementById('family-join-input');
+  const btn   = document.getElementById('family-join-btn');
+  const msg   = document.getElementById('family-join-msg');
+  const code  = (input.value || '').trim().toUpperCase();
+
+  if (!code || code.length < 4) {
+    showFamilyMsg('Please enter a valid family code.', 'error'); return;
+  }
+  btn.textContent = 'Joining…'; btn.disabled = true;
+
+  const result = await window.ffSync.joinFamilyByCode(code);
+
+  btn.textContent = 'Join →'; btn.disabled = false;
+
+  if (result.error) {
+    showFamilyMsg(result.error, 'error');
+  } else {
+    const famName = result.familyName || (result.ownerName.split(' ')[0] + "'s Family");
+    showFamilyMsg(`✓ Joined ${famName}!`, 'success');
+    input.value = '';
+    /* Re-init family section to show the new family */
+    if (_familyUserId) await initFamilySection(_familyUserId);
+  }
+}
+
+function showFamilyMsg(text, type) {
+  const el = document.getElementById('family-join-msg');
+  if (!el) return;
+  el.textContent = text;
+  el.className = type === 'success' ? 'family-join-success' : 'family-join-error';
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+async function removeFamilyMember(memberUserId, memberName) {
+  if (!confirm(`Remove ${memberName} from your family?`)) return;
+  await window.ffSync.removeFamilyMember(memberUserId);
+  if (_familyUserId) await initFamilySection(_familyUserId);
+}
+
+async function leaveFamily(ownerUserId, famName) {
+  if (!confirm(`Leave ${famName}?`)) return;
+  await window.ffSync.leaveFamilyOf(ownerUserId);
+  if (_familyUserId) await initFamilySection(_familyUserId);
+}
+
+function startFamilyRename() {
+  const heading = document.getElementById('family-heading-display');
+  const form    = document.getElementById('family-rename-form');
+  const input   = document.getElementById('family-rename-input');
+  const row     = document.getElementById('family-heading-row');
+  if (!form) return;
+  input.value = heading.textContent;
+  row.style.display  = 'none';
+  form.style.display = 'flex';
+  input.focus(); input.select();
+}
+
+function cancelFamilyRename() {
+  document.getElementById('family-heading-row').style.display  = 'flex';
+  document.getElementById('family-rename-form').style.display  = 'none';
+}
+
+async function saveFamilyName(e) {
+  e.preventDefault();
+  const name = document.getElementById('family-rename-input').value.trim();
+  if (!name) return;
+  document.getElementById('family-heading-display').textContent = name;
+  cancelFamilyRename();
+  await window.ffSync.updateFamilyName(name);
+}
+
+/* Wire up Enter key on join input */
+document.addEventListener('DOMContentLoaded', () => {
+  const joinInput = document.getElementById('family-join-input');
+  if (joinInput) joinInput.addEventListener('keydown', e => { if (e.key === 'Enter') joinFamily(); });
+});
 
 function dismissPartnerNudge() {
   localStorage.setItem('ff_partner_nudge_dismissed', '1');
@@ -2596,6 +3196,25 @@ function openPartnerInvite() {
   dismissPartnerNudge();
 }
 </script>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SHARE ACHIEVEMENTS CARD — off-screen, captured by html2canvas
+     Populated dynamically by shareAchievements() before capture.
+     ═══════════════════════════════════════════════════════════ -->
+<div id="share-achievement-card" aria-hidden="true">
+  <!-- Glow overlay handled by ::before pseudo -->
+  <div class="sac-logo">
+    <svg width="11" height="13" viewBox="0 0 14 16" fill="none">
+      <path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    FamilyForce
+  </div>
+  <div class="sac-name" id="sac-name">Your Name</div>
+  <div class="sac-subtitle">Parenting Achievements</div>
+  <div class="sac-badges" id="sac-badges"></div>
+  <div class="sac-count" id="sac-count" style="display:none"></div>
+  <div class="sac-url">getfamilyforce.com</div>
+</div>
 
 </body>
 </html>

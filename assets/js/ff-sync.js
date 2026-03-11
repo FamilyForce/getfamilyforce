@@ -299,6 +299,252 @@
   }
 
   /* ════════════════════════════════════════════════════════════
+     FAMILY
+     ════════════════════════════════════════════════════════════ */
+
+  const BADGE_META = [
+    { key: 'screen-time',    emoji: '📱', color: '#9B80FF' },
+    { key: 'potty-training', emoji: '🚽', color: '#6E4ED6' },
+    { key: 'sleep-training', emoji: '🌙', color: '#5B7BB5' },
+    { key: 'tantrum',        emoji: '⚡', color: '#7C5CFC' },
+    { key: 'feeding',        emoji: '🥦', color: '#5BA88E' },
+  ];
+
+  /**
+   * Generate a circle code client-side (FF-XXXX).
+   * Used as fallback if Supabase trigger didn't assign one yet.
+   */
+  function _generateCircleCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let code = 'FF-';
+    for (let i = 0; i < 4; i++) code += chars[Math.floor(Math.random() * chars.length)];
+    return code;
+  }
+
+  /**
+   * Ensure the current user has a circle code.
+   * Returns the code (existing or newly generated).
+   */
+  async function ensureCircleCode(userId) {
+    const sb = getSb();
+    if (!sb || !userId) return null;
+    try {
+      const { data } = await sb.from('profiles').select('circle_code').eq('id', userId).maybeSingle();
+      if (data?.circle_code) return data.circle_code;
+      // Generate and save
+      const code = _generateCircleCode();
+      await sb.from('profiles').upsert({ id: userId, circle_code: code }, { onConflict: 'id' });
+      return code;
+    } catch (_) { return null; }
+  }
+
+  /**
+   * Load full family data for the dashboard.
+   * Returns:
+   *   myCode        — user's own circle code
+   *   myFamilyName  — user's family name (nullable)
+   *   myMembers     — array of { userId, name, earnedCourses[] } who joined my code
+   *   joinedFamilies — array of { ownerId, ownerName, familyName, members[] } I've joined
+   */
+  async function loadFamilyData(userId) {
+    const sb = getSb();
+    if (!sb || !userId) return null;
+    try {
+      /* My profile */
+      const { data: myProfile } = await sb
+        .from('profiles')
+        .select('circle_code, circle_name, name')
+        .eq('id', userId)
+        .maybeSingle();
+
+      /* Members who joined MY code */
+      const { data: myMemberRows } = await sb
+        .from('family_members')
+        .select('member_user_id, joined_at')
+        .eq('owner_user_id', userId);
+
+      /* Families I've joined */
+      const { data: joinedRows } = await sb
+        .from('family_members')
+        .select('owner_user_id, joined_at')
+        .eq('member_user_id', userId);
+
+      /* Collect all user IDs we need profiles + progress for */
+      const memberIds  = (myMemberRows  || []).map(r => r.member_user_id);
+      const ownerIds   = (joinedRows    || []).map(r => r.owner_user_id);
+      const allIds     = [...new Set([...memberIds, ...ownerIds])];
+
+      let profiles = {}, certsByUser = {};
+
+      if (allIds.length > 0) {
+        const { data: profileRows } = await sb
+          .from('profiles')
+          .select('id, name, circle_code, circle_name')
+          .in('id', allIds);
+        (profileRows || []).forEach(p => { profiles[p.id] = p; });
+
+        const { data: progressRows } = await sb
+          .from('user_progress')
+          .select('user_id, course_key')
+          .in('user_id', allIds)
+          .eq('cert_earned', true);
+        (progressRows || []).forEach(p => {
+          if (!certsByUser[p.user_id]) certsByUser[p.user_id] = [];
+          certsByUser[p.user_id].push(p.course_key);
+        });
+
+        /* Also load members-of-joined-families so we show the full circle */
+        if (ownerIds.length > 0) {
+          const { data: coMemberRows } = await sb
+            .from('family_members')
+            .select('owner_user_id, member_user_id')
+            .in('owner_user_id', ownerIds);
+
+          const coMemberIds = (coMemberRows || [])
+            .map(r => r.member_user_id)
+            .filter(id => id !== userId && !allIds.includes(id));
+
+          if (coMemberIds.length > 0) {
+            const { data: coProfiles } = await sb
+              .from('profiles').select('id, name').in('id', coMemberIds);
+            (coProfiles || []).forEach(p => { profiles[p.id] = p; });
+
+            const { data: coProgress } = await sb
+              .from('user_progress').select('user_id, course_key')
+              .in('user_id', coMemberIds).eq('cert_earned', true);
+            (coProgress || []).forEach(p => {
+              if (!certsByUser[p.user_id]) certsByUser[p.user_id] = [];
+              certsByUser[p.user_id].push(p.course_key);
+            });
+
+            /* Attach co-members to their family */
+            const coMembersByOwner = {};
+            (coMemberRows || []).forEach(r => {
+              if (!coMembersByOwner[r.owner_user_id]) coMembersByOwner[r.owner_user_id] = [];
+              if (r.member_user_id !== userId) coMembersByOwner[r.owner_user_id].push(r.member_user_id);
+            });
+            ownerIds.forEach(oid => { profiles[oid]._coMemberIds = coMembersByOwner[oid] || []; });
+          }
+        }
+      }
+
+      return {
+        myCode:       myProfile?.circle_code || null,
+        myFamilyName: myProfile?.circle_name || null,
+        myMembers: (myMemberRows || []).map(r => ({
+          userId:       r.member_user_id,
+          name:         profiles[r.member_user_id]?.name || 'Family Member',
+          earnedCourses: certsByUser[r.member_user_id] || [],
+          joinedAt:     r.joined_at,
+        })),
+        joinedFamilies: (joinedRows || []).map(r => {
+          const owner = profiles[r.owner_user_id] || {};
+          const coIds = owner._coMemberIds || [];
+          return {
+            ownerId:    r.owner_user_id,
+            ownerName:  owner.name || 'Family Member',
+            familyName: owner.circle_name || null,
+            ownerCerts: certsByUser[r.owner_user_id] || [],
+            coMembers:  coIds.map(id => ({
+              userId:       id,
+              name:         profiles[id]?.name || 'Family Member',
+              earnedCourses: certsByUser[id] || [],
+            })),
+          };
+        }),
+        BADGE_META,
+      };
+    } catch (e) {
+      console.warn('[ffSync] loadFamilyData error:', e);
+      return null;
+    }
+  }
+
+  /**
+   * Join a family by entering the owner's circle code.
+   * Uses the safe lookup_family_by_code RPC to avoid exposing user emails.
+   * Returns { success, ownerName, familyName } or { error }
+   */
+  async function joinFamilyByCode(code) {
+    const sb = getSb();
+    if (!sb) return { error: 'Not connected' };
+    const userId = await getUserId();
+    if (!userId) return { error: 'Not signed in' };
+
+    try {
+      /* Look up the owner via the secure RPC */
+      const { data, error: rpcErr } = await sb.rpc('lookup_family_by_code', { code: code.toUpperCase() });
+      if (rpcErr || !data || data.length === 0) {
+        return { error: 'Family code not found. Check the code and try again.' };
+      }
+      const { owner_id, owner_name, family_name } = data[0];
+
+      /* Check not already a member */
+      const { data: existing } = await sb
+        .from('family_members')
+        .select('id')
+        .eq('owner_user_id', owner_id)
+        .eq('member_user_id', userId)
+        .maybeSingle();
+      if (existing) return { error: "You're already in this family." };
+
+      /* Insert */
+      const { error: insertErr } = await sb.from('family_members').insert({
+        owner_user_id:  owner_id,
+        member_user_id: userId,
+      });
+      if (insertErr) return { error: 'Could not join. Try again.' };
+
+      return { success: true, ownerName: owner_name || 'Your family member', familyName: family_name };
+    } catch (_) { return { error: 'Something went wrong. Try again.' }; }
+  }
+
+  /**
+   * Remove a member from your family (you are the owner).
+   */
+  async function removeFamilyMember(memberUserId) {
+    const sb = getSb();
+    if (!sb) return;
+    const userId = await getUserId();
+    if (!userId) return;
+    try {
+      await sb.from('family_members')
+        .delete()
+        .eq('owner_user_id', userId)
+        .eq('member_user_id', memberUserId);
+    } catch (_) {}
+  }
+
+  /**
+   * Leave a family you joined (you are a member, not the owner).
+   */
+  async function leaveFamilyOf(ownerUserId) {
+    const sb = getSb();
+    if (!sb) return;
+    const userId = await getUserId();
+    if (!userId) return;
+    try {
+      await sb.from('family_members')
+        .delete()
+        .eq('owner_user_id', ownerUserId)
+        .eq('member_user_id', userId);
+    } catch (_) {}
+  }
+
+  /**
+   * Rename your family.
+   */
+  async function updateFamilyName(name) {
+    const sb = getSb();
+    if (!sb) return;
+    const userId = await getUserId();
+    if (!userId) return;
+    try {
+      await sb.from('profiles').upsert({ id: userId, circle_name: name }, { onConflict: 'id' });
+    } catch (_) {}
+  }
+
+  /* ════════════════════════════════════════════════════════════
      EXPORT
      ════════════════════════════════════════════════════════════ */
   window.ffSync = {
@@ -318,6 +564,14 @@
     mergeProgressIntoLocal,
     /* Lifecycle */
     onSignIn,
+    /* Family */
+    ensureCircleCode,
+    loadFamilyData,
+    joinFamilyByCode,
+    removeFamilyMember,
+    leaveFamilyOf,
+    updateFamilyName,
+    BADGE_META,
     /* Reference */
     COURSE_SAVE_KEYS,
   };

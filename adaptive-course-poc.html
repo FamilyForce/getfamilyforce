@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screen Time Playbook — Adaptive Course (PoC)</title>
+<style>
+  :root {
+    --purple: #6E4ED6;
+    --purple-dark: #5B3CC4;
+    --purple-light: #EDE9FB;
+    --purple-mid: #9B82E8;
+    --bg: #F5F3FF;
+    --card: #FFFFFF;
+    --text: #1A1030;
+    --text-soft: #5A4E7A;
+    --correct: #22c55e;
+    --correct-bg: #F0FDF4;
+    --wrong: #ef4444;
+    --wrong-bg: #FEF2F2;
+    --shadow: 0 2px 12px rgba(110,78,214,0.10);
+    --radius: 14px;
+    --font: 'Outfit', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px 80px;
+  }
+  .app { width: 100%; max-width: 600px; }
+
+  .top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .brand { font-size: 13px; font-weight: 700; color: var(--purple); letter-spacing: 0.04em; text-transform: uppercase; }
+  .xp-pill { background: var(--purple); color: white; font-size: 13px; font-weight: 700; padding: 5px 12px; border-radius: 999px; }
+
+  .card { background: var(--card); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); margin-bottom: 16px; }
+
+  .progress-wrap { margin-bottom: 20px; }
+  .progress-label { font-size: 12px; color: var(--text-soft); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .progress-bar { height: 8px; background: var(--purple-light); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--purple); border-radius: 99px; transition: width 0.4s ease; }
+
+  h1 { font-size: 26px; font-weight: 800; line-height: 1.2; margin-bottom: 10px; }
+  h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+  p { font-size: 15px; line-height: 1.65; color: var(--text-soft); }
+  p + p { margin-top: 10px; }
+  .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--purple); margin-bottom: 8px; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border: none; border-radius: 10px; font-family: var(--font); font-weight: 700;
+    font-size: 15px; cursor: pointer; padding: 14px 24px; transition: all 0.15s;
+    width: 100%; margin-top: 12px;
+  }
+  .btn-primary { background: var(--purple); color: white; }
+  .btn-primary:hover { background: var(--purple-dark); transform: translateY(-1px); }
+  .btn-secondary { background: var(--purple-light); color: var(--purple-dark); }
+  .btn-secondary:hover { background: #DDD5FA; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+  .option {
+    border: 2px solid #E8E2F8; border-radius: 10px; padding: 14px 16px;
+    cursor: pointer; font-size: 14px; line-height: 1.5; color: var(--text);
+    background: white; text-align: left; transition: all 0.15s; font-family: var(--font); width: 100%;
+  }
+  .option:hover:not(:disabled) { border-color: var(--purple-mid); background: var(--purple-light); }
+  .option.selected { border-color: var(--purple); background: var(--purple-light); color: var(--purple-dark); font-weight: 600; }
+  .option.correct { border-color: var(--correct); background: var(--correct-bg); color: #15803d; font-weight: 600; }
+  .option.wrong { border-color: var(--wrong); background: var(--wrong-bg); color: #b91c1c; }
+  .option:disabled { cursor: default; }
+
+  .feedback-box { border-radius: 10px; padding: 16px; margin-top: 16px; font-size: 14px; line-height: 1.6; }
+  .feedback-correct { background: var(--correct-bg); border: 1px solid #86efac; color: #166534; }
+  .feedback-wrong { background: var(--wrong-bg); border: 1px solid #fca5a5; color: #991b1b; }
+  .feedback-icon { font-size: 18px; margin-bottom: 6px; display: block; }
+  .feedback-title { font-weight: 700; margin-bottom: 4px; }
+
+  /* Jack's story block */
+  .story-block {
+    background: #FDFCFF;
+    border-left: 4px solid var(--purple-mid);
+    border-radius: 0 10px 10px 0;
+    padding: 18px 20px;
+    margin: 16px 0;
+    font-style: italic;
+    position: relative;
+  }
+  .story-block p { color: var(--text); font-size: 15px; line-height: 1.7; }
+  .story-block p + p { margin-top: 12px; }
+  .story-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--purple-mid); margin-bottom: 10px;
+    font-style: normal;
+  }
+
+  /* Concept block */
+  .lesson-concept {
+    background: var(--purple-light);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 16px 0;
+  }
+  .lesson-concept p { color: var(--text); font-size: 15px; font-style: normal; }
+  .concept-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--purple); margin-bottom: 8px;
+  }
+
+  /* Key takeaway */
+  .key-takeaway {
+    background: var(--purple);
+    color: white;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .key-takeaway-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; opacity: 0.75; margin-bottom: 4px;
+  }
+
+  /* Unit map cards */
+  .unit-grid { display: flex; flex-direction: column; gap: 10px; }
+  .unit-card {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: white; border: 2px solid #E8E2F8; border-radius: 12px;
+    padding: 14px 16px; cursor: pointer; transition: all 0.15s;
+    text-align: left; font-family: var(--font); width: 100%;
+  }
+  .unit-card:hover:not(:disabled) { border-color: var(--purple); transform: translateY(-1px); box-shadow: var(--shadow); }
+  .unit-card.completed { border-color: var(--correct); background: var(--correct-bg); }
+  .unit-card.gap { border-color: var(--purple); }
+  .unit-card.locked { opacity: 0.5; cursor: not-allowed; }
+  .unit-card:disabled { cursor: not-allowed; transform: none; }
+  .unit-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--purple-light); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .unit-card.gap .unit-icon { background: var(--purple); }
+  .unit-card.completed .unit-icon { background: var(--correct-bg); }
+  .unit-meta { flex: 1; }
+  .unit-title { font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 3px; }
+  .unit-sub { font-size: 12px; color: var(--text-soft); }
+  .unit-badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; }
+  .badge-gap { background: var(--purple); color: white; }
+  .badge-review { background: var(--purple-light); color: var(--purple-dark); border: 1px solid var(--purple-mid); }
+  .badge-done { background: var(--correct-bg); color: #166534; border: 1px solid #86efac; }
+  .badge-locked { background: #f1f0f5; color: #aaa; }
+
+  /* XP */
+  .xp-burst { text-align: center; padding: 20px 0 10px; }
+  .xp-big { font-size: 48px; font-weight: 800; color: var(--purple); display: block; }
+  .xp-label { font-size: 14px; color: var(--text-soft); margin-top: 4px; }
+
+  /* Welcome */
+  .hero-icon { font-size: 48px; text-align: center; margin-bottom: 16px; }
+  .stats-row { display: flex; gap: 12px; margin: 20px 0; }
+  .stat-box { flex: 1; background: var(--purple-light); border-radius: 10px; padding: 14px 10px; text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 800; color: var(--purple); }
+  .stat-label { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
+
+  .chip { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 99px; background: var(--purple-light); color: var(--purple-dark); margin: 2px; }
+  .divider { height: 1px; background: #EDE9FB; margin: 16px 0; }
+  .dot-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 20px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--purple-light); }
+  .dot.active { background: var(--purple); }
+  .dot.done { background: var(--purple-mid); }
+
+  /* Step tracker */
+  .step-track { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+  .step { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--text-soft); }
+  .step.active { color: var(--purple); }
+  .step.done { color: var(--correct); }
+  .step-circle { width: 24px; height: 24px; border-radius: 50%; background: var(--purple-light); color: var(--purple); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+  .step.active .step-circle { background: var(--purple); color: white; }
+  .step.done .step-circle { background: var(--correct); color: white; }
+  .step-connector { flex: 1; height: 1px; background: #E8E2F8; }
+
+  /* Save indicator */
+  .save-note { font-size: 12px; color: var(--text-soft); text-align: center; margin-bottom: 8px; }
+
+  .debug-bar { background: #1a1030; color: #aaa; font-size: 11px; padding: 8px 12px; border-radius: 8px; margin-bottom: 16px; font-family: monospace; }
+  .debug-bar strong { color: #9B82E8; }
+  .trophy { font-size: 64px; text-align: center; margin: 16px 0; }
+  .complete-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  .complete-stat { background: var(--purple-light); border-radius: 10px; padding: 16px; text-align: center; }
+  .complete-stat-num { font-size: 28px; font-weight: 800; color: var(--purple); }
+  .complete-stat-label { font-size: 12px; color: var(--text-soft); margin-top: 4px; }
+
+  .fade-in { animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const UNITS = [
+  {
+    id: 'guilt',
+    title: "You Haven't Ruined Them",
+    chapter: "Chapter 1",
+    icon: "💚",
+    xp: 80,
+    diagnosticKey: null,
+    lesson: {
+      story: {
+        label: "Jack's Story",
+        paragraphs: [
+          "My First Son was three years old. We were at a barbecue place in Dallas — the kind where you wait forty minutes and it's worth it — and he started losing his mind. Crying, going boneless, rejecting everything we offered. The booth next to us had gone quiet.",
+          "Then I reached into my pocket, pulled up YouTube Kids, and handed him my phone. He was quiet in four seconds. I remember the relief. I also remember something else I couldn't name at the time: the specific feeling of having solved the wrong problem. In the car on the way home, he asked for the phone again. Then at bedtime. Then first thing the next morning.",
+          "I had taught him something in that restaurant booth. Not what I meant to teach him. By the time Second Son arrived, I'd done the reading. Same house, same parents, same imperfect everything. The difference was information."
+        ]
+      },
+      concept: "Screen time research has a reporting problem. The studies are precise; the headlines are blunt. The largest documented harms appear in a specific pattern: 4+ hours per day of passive, fast-paced content with no parental involvement. That's not most households. More importantly, the research shows that parental changes produce measurable improvements in child outcomes within weeks — not years. Guilt is the wrong response to this information. Specific action is the right one.",
+      keyTakeaway: "The next 4 years of your child's screen life matter more than the last 2. Start with one specific change."
+    },
+    questions: [
+      {
+        scenario: "Sarah has been letting her 18-month-old use the tablet for 1-2 hours daily for the past year. She just read about screen time research and is spiraling with guilt. Based on what the research actually shows, what should she do?",
+        options: [
+          { text: "Accept that damage is done and focus on minimizing further harm", correct: false },
+          { text: "Make specific pattern changes starting now — research shows measurable improvements within weeks, not years", correct: true },
+          { text: "Go cold turkey immediately and remove all screens", correct: false },
+          { text: "The research is too contradictory to act on confidently", correct: false }
+        ],
+        explanation: "A 2023 review found that parental changes to screen habits produced measurable improvements within weeks. The largest documented harms are concentrated in sustained, high-volume, passive, unsupported use. A parent who just read a book and is ready to change is not that parent. Guilt is the wrong response — specific action is the right one."
+      },
+      {
+        scenario: "The research documents the largest negative outcomes in children with which screen use pattern?",
+        options: [
+          { text: "Any child watching more than 1 hour per day", correct: false },
+          { text: "Children watching 4+ hours per day of passive, fast-paced content with no parental involvement", correct: true },
+          { text: "Children under age 2 who watch any TV at all", correct: false },
+          { text: "Children whose parents use smartphones regularly in their presence", correct: false }
+        ],
+        explanation: "The Madigan et al. (2019) study in JAMA Pediatrics followed 2,500 children. The effect was dose-dependent and context-dependent — concentrated in high-volume, passive, unsupported viewing. Children at 1-2 hours of quality content showed much weaker associations."
+      }
+    ]
+  },
+
+  {
+    id: 'contingency',
+    title: "Why Screens Can't Teach Babies",
+    chapter: "Chapter 2",
+    icon: "👶",
+    xp: 100,
+    diagnosticKey: 'contingency',
+    lesson: {
+      story: {
+        label: "Jack's Story",
+        paragraphs: [
+          "When First Son was around a year old, I found a YouTube playlist of educational videos — letters, shapes, colors — and played it while he was on the floor nearby. I figured he might absorb something. I didn't understand what learning actually is at that age.",
+          "With Second Son, my mother was on FaceTime when he was around sixteen months. She held up a rubber duck. 'What's that?' He pointed at the screen and said something close to 'duck.' She lit up and held up a spoon. He responded again. She responded back. I was sitting across the room watching my son have a conversation — through a screen — with a person who was responding to him in real time.",
+          "That's what the research is measuring. Not the screen. The response."
+        ]
+      },
+      concept: "Learning at 12 months is contingent — it requires a real person who responds to what your child says and does. A video plays whether your child watches it, points at it, or leaves the room. It can't respond. Researchers call this the 'video deficit effect': children learn significantly less from 2D screens than from the same content delivered live. The gap is largest before age 2 and mostly resolves around age 3. The one exception: live video calls, where a real person actually responds in real time.",
+      keyTakeaway: "Before 18 months: no passive screens. Video calls with real people who respond are the exception. Everything else waits."
+    },
+    questions: [
+      {
+        scenario: "Your neighbor says their 10-month-old is 'learning so much' from educational videos she plays on repeat. Based on what the research shows, how would you respond?",
+        options: [
+          { text: "That's great — high-quality educational content is beneficial at any age", correct: false },
+          { text: "It might help a little — depends on the content quality", correct: false },
+          { text: "At 10 months, real learning requires a real human who responds to the child. The video plays whether she watches or leaves the room.", correct: true },
+          { text: "It's only a problem if she's watching more than 30 minutes a day", correct: false }
+        ],
+        explanation: "This is the video deficit effect. Learning from a screen requires representational thinking — connecting a flat image to three-dimensional reality — that the brain is still building before age 2. The deficit is largest at 12 months. The critical variable isn't content quality. It's whether a real person responds to what the child does."
+      },
+      {
+        scenario: "A 2014 study divided toddlers into: live in-person interaction, live video call, or a recording of that same interaction. Which groups learned new vocabulary words?",
+        options: [
+          { text: "All three groups learned equally — screens are effective with quality content", correct: false },
+          { text: "Only the in-person group — any screen, even live, doesn't work before age 2", correct: false },
+          { text: "The in-person and live video call groups — the recording group didn't learn the words", correct: true },
+          { text: "Only the recording group, because repetition reinforces learning", correct: false }
+        ],
+        explanation: "The variable was contingency — whether a real person could respond in real time. FaceTime works because grandma responds when your child points and babbles. YouTube plays the same way whether the child is engaged, distracted, or out of the room. Same screen, completely different developmental outcome."
+      }
+    ]
+  },
+
+  {
+    id: 'content',
+    title: "Not All Screen Time Is Equal",
+    chapter: "Chapter 3",
+    icon: "📺",
+    xp: 100,
+    diagnosticKey: 'content',
+    lesson: {
+      story: {
+        label: "Jack's Story",
+        paragraphs: [
+          "When First Son was two and a half, I checked the watch history on the tablet one evening after he went to bed. I didn't recognize half of what was on the list — fast-talking hosts, toy unboxing, something called 'surprise egg videos.' I had been in the room. I hadn't been watching.",
+          "With Second Son, my wife and I chose every episode before it played. No autoplay. When he was two, he latched onto a Ms. Rachel episode about shapes and wanted to watch it every day for two weeks. On day twelve, he pointed at the corner of the coffee table and said 'triangle.' My wife didn't say anything. She didn't have to."
+        ]
+      },
+      concept: "Pacing is the most-studied variable in children's content. Fast-paced content — 6 or more scene changes per minute — primes the brain for passive stimulation and measurably impairs executive function in the hours after viewing. Slow-paced, language-rich content (under 3 cuts per minute) builds vocabulary and attention. The fastest diagnostic: count the scene changes in 60 seconds. More than 6 = SpongeBob territory. Under 3 = in range. The co-viewing multiplier: a parent who watches with their child and connects on-screen content to the real world dramatically increases its value.",
+      keyTakeaway: "Count the scene changes in 60 seconds. Over 6 = fast-paced. Under 3 = in range. And turn off autoplay on every device today."
+    },
+    questions: [
+      {
+        scenario: "You have 30 minutes for your 3-year-old's screen time. Which choice is most developmentally beneficial?",
+        options: [
+          { text: "YouTube Kids — lots of educational-labeled content", correct: false },
+          { text: "A fast-paced cartoon they absolutely love", correct: false },
+          { text: "A slow-paced, language-rich show like Daniel Tiger that you watch together and discuss", correct: true },
+          { text: "Any interactive app — interactive is always better than passive", correct: false }
+        ],
+        explanation: "The co-viewing multiplier is real: a parent who watches and connects on-screen concepts to the real world dramatically increases value. 10 engaged minutes with a slow-paced show beats 60 passive ones. The 'educational' label means nothing — what matters is pacing (under 3 cuts/minute) and whether you're in the room."
+      },
+      {
+        scenario: "How can you quickly assess whether a show is too fast-paced for your young child?",
+        options: [
+          { text: "Check whether it's rated educational by the platform", correct: false },
+          { text: "Count the scene changes in 60 seconds — more than 6 cuts is SpongeBob territory; fewer than 3 is in range", correct: true },
+          { text: "Ask whether your child stays focused and engaged throughout", correct: false },
+          { text: "Check whether the characters speak in full sentences", correct: false }
+        ],
+        explanation: "One number tells you a lot. SpongeBob averages 5-6 cuts per minute. Caillou averages ~2. Fast-paced content primes the brain for passive stimulation and makes deliberate tasks harder afterward. Engagement is not the test — a child can be highly engaged with content that is actively harmful."
+      }
+    ]
+  },
+
+  {
+    id: 'pacifier',
+    title: "The Digital Pacifier Problem",
+    chapter: "Chapter 4",
+    icon: "😤",
+    xp: 110,
+    diagnosticKey: 'pacifier',
+    lesson: {
+      story: {
+        label: "Jack's Story",
+        paragraphs: [
+          "Here's the moment I knew something had gone wrong. First Son was two and a half. We were at a park he loved, and he scraped his knee on the slide. Not a serious fall. But instead of coming to me, instead of crying it out, he looked at me and said one word: 'Phone.' Not 'Daddy.' Phone.",
+          "I had been using screens to manage his emotions since he was around eighteen months. Meltdown at a restaurant: phone. Upset in the car: phone. Refusing to get dressed: phone. It worked every time in about thirty seconds. So I stopped thinking of it as a strategy. It was just what I did.",
+          "With Second Son, the screen was never the first option. When he was upset I got on the floor with him, held him, said the feeling out loud — even when he couldn't confirm it or respond. It felt harder in the short term. It was the actual work."
+        ]
+      },
+      concept: "Using a screen to stop a tantrum is called Parental Digital Emotion Regulation (PDER). It works every time — thirty seconds flat. But what you're teaching your child is a specific equation: distress → screen → relief. Emotional regulation is a learned skill. It develops through practice. A child whose distress is consistently intercepted at the 30-second mark never completes that learning cycle. The critical word is 'habitual' — reflexive, first-response use is the harmful pattern. Occasional last-resort use, after real comfort strategies have failed, is different.",
+      keyTakeaway: "The test: when your child is upset, what do they reach for first — you or the device? If it's the device, the pattern is set. The sequence resets it: get on the floor → hold them → name the feeling → redirect."
+    },
+    questions: [
+      {
+        scenario: "Every time Marcus (age 2) starts crying in the car, his dad hands over the tablet and Marcus calms down in 30 seconds. This works reliably, 4-5 times a week. What pattern is being established?",
+        options: [
+          { text: "A healthy coping tool — effective emotion management at this age", correct: false },
+          { text: "Marcus is learning: distress → screen → relief. He's not learning to tolerate or work through discomfort.", correct: true },
+          { text: "Normal soothing behavior — all young children need external help with emotions", correct: false },
+          { text: "Only a concern if total daily screen time exceeds AAP guidelines", correct: false }
+        ],
+        explanation: "A 2024 Frontiers in Psychology study found that children whose distress was routinely interrupted by a screen showed significantly poorer anger and frustration management at follow-up. Emotional regulation is a skill built through practice. A child whose distress is consistently intercepted at the 30-second mark never completes that learning. You never build a skill you don't practice."
+      },
+      {
+        scenario: "Jack is at a playground and his 2-year-old scrapes his knee. Instead of running to his dad, the child looks up and says 'Phone.' What does this signal?",
+        options: [
+          { text: "Nothing unusual — toddlers fixate on screens and this is developmentally normal", correct: false },
+          { text: "The screen has displaced the parent as the primary comfort source — the association is already set", correct: true },
+          { text: "The child has too much screen time but no meaningful emotional harm has occurred yet", correct: false },
+          { text: "The child needs more structured activities to redirect from screens", correct: false }
+        ],
+        explanation: "This is the diagnostic test from the book: when my child is upset, what do they reach for first — me or the device? When it's the device, the pattern is already set. The sequence to reset it: get on the floor, hold them, name the feeling out loud, then redirect. The goal isn't perfection — it's making the screen the last option, not the first."
+      }
+    ]
+  },
+
+  {
+    id: 'apps',
+    title: "How Apps Are Built to Hook Kids",
+    chapter: "Chapter 5",
+    icon: "📱",
+    xp: 100,
+    diagnosticKey: 'apps',
+    lesson: {
+      story: {
+        label: "Jack's Story",
+        paragraphs: [
+          "There is no person on the other end of the queue. When one video ends and the next one starts, nobody made that choice. A system made it — a system with one goal: keep watching. Not whether the next video is appropriate for a tired three-year-old who should be heading to bed. Watch time.",
+          "With First Son, I let the queue run. I told myself I'd redirect if something inappropriate appeared. I wasn't present enough. Nobody is. The queue moved faster than my attention. With Second Son: no autoplay, ever. It's a device setting. Takes ten seconds to change. A planned thirty-minute window stays thirty minutes when a human controls what comes next."
+        ]
+      },
+      concept: "The distinction between educational and addictive apps is structural, not cosmetic. The most problematic design features: variable reward schedules (unpredictable rewards for repeated actions — the same mechanism as slot machines), autoplay (removes the natural stopping point), and fast-paced visual sequences. These maximize one metric: time on screen. That metric is not the same as learning. An app that requires demonstrated mastery before advancing is built for learning. An app that maximizes engagement is built for something else.",
+      keyTakeaway: "Turn off autoplay on every device today — 30 seconds, biggest return. Then ask of any app: does it require mastery to advance, or does it just keep going?"
+    },
+    questions: [
+      {
+        scenario: "You're choosing between two apps for your 4-year-old. App A: progresses based on mastery, waits for input, occasionally boring. App B: constant animations, unpredictable rewards, always exciting, auto-advances. Which is developmentally better?",
+        options: [
+          { text: "App B — sustained engagement is the best signal of learning", correct: false },
+          { text: "App A — mastery-based progression, even if less exciting, builds actual skills", correct: true },
+          { text: "It depends entirely on how long they use each one", correct: false },
+          { text: "They're equivalent — content matters, not design features", correct: false }
+        ],
+        explanation: "Engagement and learning are different things. App B uses variable rewards to maximize time on screen — not thinking. App A, which requires mastery before advancing, mirrors how skills actually form: effortful, sequential, building on demonstrated competence. App B is built to be used. App A is built to teach."
+      },
+      {
+        scenario: "Variable reward schedules in children's apps are particularly problematic because:",
+        options: [
+          { text: "Young children can't understand probability, making rewards confusing", correct: false },
+          { text: "They mirror the neurological mechanism of slot machines — compelling repeated action without learning", correct: true },
+          { text: "They cause children to lose interest quickly due to frustration", correct: false },
+          { text: "They only affect children under age 3 who can't regulate attention", correct: false }
+        ],
+        explanation: "Variable rewards create compulsive engagement — the same mechanism that makes gambling addictive. Unpredictable rewards for repeated actions drive behavior independent of meaning or learning. When a child taps the same thing 20 times hoping for a reward, they're not learning content. The loop is the point. This works on adults too."
+      }
+    ]
+  },
+
+  {
+    id: 'sleep',
+    title: "Screens and Sleep",
+    chapter: "Chapter 6",
+    icon: "🌙",
+    xp: 90,
+    diagnosticKey: 'sleep',
+    lesson: {
+      story: {
+        label: "Jack's Story",
+        paragraphs: [
+          "First Son had an hour of screen time most evenings before bed. We thought we were doing fine — we'd switched to calmer content, nature stuff, nothing fast-paced. He was still taking forty-five minutes to fall asleep. Still waking up at 2am some nights.",
+          "With Second Son, we cut screens entirely in the hour before bed. No content at all — books, bath, talking. He was asleep in fifteen minutes most nights. The difference wasn't the content we'd switched to. It was removing the screen entirely."
+        ]
+      },
+      concept: "The problem with screens before bed is bigger than blue light. Yes, blue light suppresses melatonin — but the more significant issue is arousal. Screens require active cognitive engagement regardless of what's playing. Even a calm nature documentary keeps the brain 'on.' The nervous system needs a transition window to downregulate before sleep. Screen content at any pace works against that transition. A hard 60-minute screen cutoff before bed — not just 'calmer content' — produces faster sleep onset and fewer night wakings in most children.",
+      keyTakeaway: "Screen cutoff 60 minutes before bed. Not 'calmer content' — a hard stop. Results show up within a week."
+    },
+    questions: [
+      {
+        scenario: "You cut your 3-year-old's pre-bedtime screens but switched to calm nature documentaries instead of cartoons. They're still having trouble settling. Why?",
+        options: [
+          { text: "The nature content is still too cognitively stimulating", correct: false },
+          { text: "Blue light from the screen is still the primary issue regardless of content", correct: false },
+          { text: "Screens increase arousal regardless of content — the brain is still 'on,' making wind-down harder even with calm material", correct: true },
+          { text: "30 minutes of calm content should be fine; the problem is likely something else", correct: false }
+        ],
+        explanation: "Blue light is real but not the whole story. The bigger issue is arousal — screens keep the cognitive system active regardless of what's playing. Even calm content requires processing: following movement, audio cues, visual sequences. The nervous system needs to downregulate. Screen content at any pace interrupts that. The answer is a hard cutoff, not gentler content."
+      },
+      {
+        scenario: "Eliminating screen use in the final hour before bed typically produces which outcome in young children?",
+        options: [
+          { text: "No significant change in sleep quality for most children", correct: false },
+          { text: "Benefits only in children who already had pre-existing sleep problems", correct: false },
+          { text: "Faster sleep onset, fewer night wakings, and better sleep quality — typically within a week", correct: true },
+          { text: "Improvements only when combined with other sleep hygiene changes", correct: false }
+        ],
+        explanation: "The pre-bed screen cutoff is one of the highest-yield single changes in the book. A hard 60-minute cutoff, held consistently, produces measurable improvements in sleep onset and quality in most children — usually within a week. Before accounting for the downstream effects on mood and regulation the following day."
+      }
+    ]
+  },
+
+  {
+    id: 'background',
+    title: "The Background TV Effect",
+    chapter: "Chapter 7",
+    icon: "📡",
+    xp: 90,
+    diagnosticKey: 'background',
+    lesson: {
+      story: {
+        label: "Jack's Story",
+        paragraphs: [
+          "The background TV was on in our house most of the time when First Son was small. Not because anyone was watching it. Just because it was always on. That's what I grew up with. It felt like ambient noise.",
+          "I didn't think about what it was doing to my conversations with him. It was only when I read the Christakis research — 770 fewer words per hour — that I understood what 'ambient noise' was actually costing us. Not the TV aimed at him. The TV on in the room. With Second Son, the TV went off during floor time. Every time. It took about four days to become a habit."
+        ]
+      },
+      concept: "Background TV harms young children who aren't even watching it. When adult TV plays in a room with an infant or toddler, parents speak approximately 770 fewer words per hour to their child — not because they're bad parents, but because the TV competes for partial attention and disrupts the natural rhythm of conversation. The child doesn't have to watch for the effect to be real. Children playing in TV-present rooms also show shorter play episodes and reduced focused attention, even when not looking at the screen.",
+      keyTakeaway: "The TV doesn't have to be aimed at your child to affect them. Turn it off during floor time."
+    },
+    questions: [
+      {
+        scenario: "Your partner says having the TV on while your 18-month-old plays is fine — 'she's not even watching it.' How would you respond?",
+        options: [
+          { text: "They're right — what matters is whether the child is actually paying attention to the TV", correct: false },
+          { text: "Background TV reduces parent-child conversation by up to 770 words per hour and fragments child attention, even when no one is watching", correct: true },
+          { text: "Fine as long as total daily TV doesn't exceed 2 hours", correct: false },
+          { text: "Only a problem if the content is adult programming the child might imitate", correct: false }
+        ],
+        explanation: "Christakis and colleagues found background TV reduced parent speech to children by approximately 770 words per hour. The mechanism: the TV competes for partial adult attention, breaking the rhythm of conversation and responsive interaction. The child doesn't have to watch. Language development depends on the quantity and quality of parent speech — and background TV quietly drains both."
+      },
+      {
+        scenario: "Studies comparing children playing in TV-present rooms vs. no-TV rooms found:",
+        options: [
+          { text: "No measurable difference in play quality or attention", correct: false },
+          { text: "More independent play in the TV room, which benefits development", correct: false },
+          { text: "Shorter play episodes and reduced focused attention in the TV-present rooms, even when children weren't watching the TV", correct: true },
+          { text: "Benefits from ambient audio stimulation outweighed the attention costs", correct: false }
+        ],
+        explanation: "Even when children aren't directing attention at a TV, it registers as a competing stimulus. Play episodes were shorter and less focused in TV-present rooms. For an 18-month-old learning through sustained, exploratory play, this is the core cost. The screen doesn't have to be engaging your child to be fragmenting them."
+      }
+    ]
+  },
+
+  {
+    id: 'three_rules',
+    title: "The Three Rules",
+    chapter: "Chapter 10 — Capstone",
+    icon: "🏆",
+    xp: 150,
+    diagnosticKey: null,
+    lesson: {
+      story: {
+        label: "Jack's Story",
+        paragraphs: [
+          "Here's what I want to leave you with. The research doesn't ask you to be perfect. It asks you to understand the mechanisms. Once you understand why something happens, you can make a different choice — even when you're tired, even when it's a holiday, even when grandma is watching.",
+          "The Three Rules aren't rigid rules. They're a framework I built from everything the research said. Contingency. Quality. Timing. Three words that cover most of what the science is measuring. They work because they address the mechanisms, not just the behaviors."
+        ]
+      },
+      concept: "The entire book reduces to three actionable rules. Contingency: never use screens to stop tantrums — this builds your child's emotional regulation capacity instead of bypassing it. Quality: slow-paced, language-rich content you choose in advance, ideally co-viewed — you are the algorithm. Timing: no screens before meals, sleep, or outdoor play — these are the activities screens most commonly displace, and they're the most developmentally important. These rules are designed for hard moments — the grocery checkout, the long flight, the holiday dinner where someone says 'just give him the phone.'",
+      keyTakeaway: "Three Rules: Contingency (screens never stop tantrums) · Quality (slow-paced, you choose it) · Timing (not before meals, sleep, or outdoor play)."
+    },
+    questions: [
+      {
+        scenario: "You're explaining your family's screen approach to a new co-parent. Which set of principles best captures the research-backed framework?",
+        options: [
+          { text: "Limit total hours, choose educational content, always supervise when possible", correct: false },
+          { text: "No screens before 18 months, strict 1-hour limit after, phones off at dinner", correct: false },
+          { text: "Contingency: never use screens to stop tantrums. Quality: slow-paced, language-rich, chosen in advance. Timing: not before meals, sleep, or outdoor play.", correct: true },
+          { text: "Follow AAP guidelines exactly, then adjust based on your child's reaction", correct: false }
+        ],
+        explanation: "The Three Rules synthesize what the research is actually measuring into principles that apply in real moments. Contingency addresses the pacifier pattern. Quality addresses content and co-viewing. Timing addresses displacement — screens instead of meals, sleep, and outdoor play is what underlies most of the documented harms."
+      },
+      {
+        scenario: "A family is applying the Three Rules. Which situation represents a violation?",
+        options: [
+          { text: "They watch quality content together on weekend mornings as a family ritual", correct: false },
+          { text: "They cut all screens 60 minutes before bed consistently each night", correct: false },
+          { text: "They hand over the phone at the grocery checkout because the toddler is melting down and other shoppers are staring", correct: true },
+          { text: "They prioritize outdoor play and meals over screen time in the afternoon", correct: false }
+        ],
+        explanation: "The grocery store scenario is the Contingency rule under its hardest real-world pressure. The embarrassment is real. The stares are real. None of that changes what the child learns in that moment. The Three Rules aren't for easy moments — they're for exactly this kind of situation. That's when they count most."
+      }
+    ]
+  }
+];
+
+// ============================================================
+// DIAGNOSTIC
+// ============================================================
+
+const DIAGNOSTIC_QUESTIONS = [
+  {
+    key: 'pacifier',
+    question: "Your toddler starts melting down in a restaurant. You hand over your phone and they go quiet in seconds. Which best describes what just happened?",
+    options: [
+      { text: "I solved the problem effectively", score: 0 },
+      { text: "I calmed the environment temporarily", score: 0 },
+      { text: "I solved the wrong problem — I taught them that phones stop feelings", score: 1 },
+      { text: "It depends on how often I do it", score: 0 }
+    ]
+  },
+  {
+    key: 'contingency',
+    question: "Can a 12-month-old effectively learn new words from an educational video played on repeat?",
+    options: [
+      { text: "Yes, especially if it's high-quality and labeled educational", score: 0 },
+      { text: "Not effectively — learning at that age requires a real human who responds to the child", score: 1 },
+      { text: "Only if a parent watches alongside them", score: 0 },
+      { text: "Yes, but it takes longer than in-person learning", score: 0 }
+    ]
+  },
+  {
+    key: 'background',
+    question: "The TV is on in the background while your toddler plays nearby. Nobody is watching it. This is:",
+    options: [
+      { text: "Neutral — they're not paying attention to it", score: 0 },
+      { text: "Harmful — it reduces parent-child conversation and fragments child attention", score: 1 },
+      { text: "Fine depending on what's playing", score: 0 },
+      { text: "Fine as long as total TV is under 2 hours", score: 0 }
+    ]
+  },
+  {
+    key: 'sleep',
+    question: "Why is screen use in the hour before bed problematic for young children?",
+    options: [
+      { text: "Blue light suppresses melatonin production", score: 0 },
+      { text: "It's not just blue light — screens increase arousal regardless of content, making wind-down harder", score: 1 },
+      { text: "It overstimulates their visual system", score: 0 },
+      { text: "It trains them to expect screens as part of the bedtime routine", score: 0 }
+    ]
+  },
+  {
+    key: 'apps',
+    question: "What primarily makes some apps more problematic than others for toddlers?",
+    options: [
+      { text: "The amount of violence or adult content present", score: 0 },
+      { text: "Whether it requires a subscription or in-app purchases", score: 0 },
+      { text: "Fast pacing, variable reward loops, and autoplay — features that maximize engagement over learning", score: 1 },
+      { text: "Screen brightness and color intensity", score: 0 }
+    ]
+  },
+  {
+    key: 'content',
+    question: "What's the most important factor when choosing what your 3-year-old watches?",
+    options: [
+      { text: "Whether the platform labels it as educational", score: 0 },
+      { text: "Pacing (scene cuts per minute) and whether you watch and discuss it together", score: 1 },
+      { text: "Whether they stay engaged and interested throughout", score: 0 },
+      { text: "Whether it features age-appropriate characters", score: 0 }
+    ]
+  }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+
+const SAVE_KEY = 'ff_adaptive_poc_v3';
+
+function loadState() {
+  try { const s = localStorage.getItem(SAVE_KEY); if (s) return JSON.parse(s); } catch(e) {}
+  return null;
+}
+function saveState(s) { try { localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } catch(e) {} }
+
+function freshState() {
+  return {
+    screen: 'welcome',
+    xp: 0,
+    diagnosticIndex: 0,
+    diagnosticScores: {},
+    learningPath: [],
+    unitProgress: {},   // unitId → { lessonRead, q1Done, mastered }
+    currentUnitId: null,
+    currentQ: 1,
+    selectedOption: null,
+    showFeedback: false,
+  };
+}
+
+let STATE = loadState() || freshState();
+
+// ============================================================
+// HELPERS
+// ============================================================
+
+function getUnit(id) { return UNITS.find(u => u.id === id); }
+
+function buildLearningPath(scores) {
+  const middle = UNITS.filter(u => u.id !== 'guilt' && u.id !== 'three_rules');
+  middle.sort((a, b) => {
+    const sA = a.diagnosticKey ? (scores[a.diagnosticKey] || 0) : 0;
+    const sB = b.diagnosticKey ? (scores[b.diagnosticKey] || 0) : 0;
+    return sA - sB;
+  });
+  return ['guilt', ...middle.map(u => u.id), 'three_rules'];
+}
+
+function isUnitAvailable(unitId) {
+  const path = STATE.learningPath;
+  const idx = path.indexOf(unitId);
+  if (idx === 0) return true;
+  return STATE.unitProgress[path[idx - 1]]?.mastered === true;
+}
+
+function unitStatus(unitId) {
+  const prog = STATE.unitProgress[unitId];
+  if (prog?.mastered) return 'completed';
+  if (!isUnitAvailable(unitId)) return 'locked';
+  const unit = getUnit(unitId);
+  const score = unit.diagnosticKey ? (STATE.diagnosticScores[unit.diagnosticKey] || 0) : 0;
+  return score === 0 ? 'gap' : 'review';
+}
+
+function totalXpPossible() { return UNITS.reduce((s, u) => s + u.xp, 0); }
+
+// ============================================================
+// RENDER
+// ============================================================
+
+function el(tag, cls) { const e = document.createElement(tag); if (cls) e.className = cls; return e; }
+
+function render() {
+  saveState(STATE);
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  app.className = 'app fade-in';
+
+  const topBar = el('div', 'top-bar');
+  topBar.innerHTML = `<span class="brand">📱 Screen Time Course</span><span class="xp-pill">⚡ ${STATE.xp} XP</span>`;
+  app.appendChild(topBar);
+
+  if (!['welcome','diagnostic'].includes(STATE.screen)) {
+    const debug = el('div', 'debug-bar');
+    debug.innerHTML = `<strong>PoC</strong> · screen: <strong>${STATE.screen}</strong> · xp: <strong>${STATE.xp}</strong> · path: <strong>[${STATE.learningPath.join(' → ')}]</strong>`;
+    app.appendChild(debug);
+  }
+
+  switch(STATE.screen) {
+    case 'welcome':       renderWelcome(app); break;
+    case 'diagnostic':    renderDiagnostic(app); break;
+    case 'results':       renderResults(app); break;
+    case 'map':           renderMap(app); break;
+    case 'unit_lesson':   renderUnitLesson(app); break;
+    case 'unit':          renderUnit(app); break;
+    case 'unit_complete': renderUnitComplete(app); break;
+    case 'complete':      renderComplete(app); break;
+    default:              renderWelcome(app);
+  }
+}
+
+// ============================================================
+// WELCOME
+// ============================================================
+
+function renderWelcome(app) {
+  const card = el('div', 'card');
+  card.innerHTML = `
+    <div class="hero-icon">📱</div>
+    <div class="eyebrow">Adaptive Learning — Proof of Concept</div>
+    <h1>Screen Time Playbook</h1>
+    <p>A short adaptive course built from the research in Jack's book. Learn what actually matters — in the order you most need it.</p>
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num">8</div><div class="stat-label">Lessons</div></div>
+      <div class="stat-box"><div class="stat-num">~60</div><div class="stat-label">Minutes</div></div>
+      <div class="stat-box"><div class="stat-num">${totalXpPossible()}</div><div class="stat-label">Total XP</div></div>
+    </div>
+    <div class="divider"></div>
+    <h3>How each lesson works</h3>
+    <p style="margin-top:8px">1. <strong>Jack's story</strong> — First Son vs. Second Son. The moment that made it real.</p>
+    <p>2. <strong>The concept</strong> — what the research actually shows</p>
+    <p>3. <strong>Two questions</strong> — you need 2/2 correct to advance</p>
+    <div class="divider"></div>
+    <h3>Adaptive path</h3>
+    <p style="margin-top:8px">A quick diagnostic runs first. Your knowledge gaps get prioritized. Familiar topics go last. Your progress saves automatically — pick up where you left off any time.</p>
+  `;
+
+  const btn = el('button', 'btn btn-primary');
+  btn.textContent = '→ Start Diagnostic';
+  btn.onclick = () => { STATE.screen = 'diagnostic'; STATE.diagnosticIndex = 0; render(); };
+  card.appendChild(btn);
+
+  const hasProg = Object.keys(STATE.unitProgress).length > 0;
+  if (hasProg) {
+    const resumeBtn = el('button', 'btn btn-secondary');
+    resumeBtn.style.marginTop = '8px';
+    resumeBtn.textContent = '↩ Resume Where I Left Off';
+    resumeBtn.onclick = () => { STATE.screen = 'map'; render(); };
+    card.appendChild(resumeBtn);
+
+    const resetBtn = el('button', 'btn btn-secondary');
+    resetBtn.style.marginTop = '8px';
+    resetBtn.style.color = '#aaa';
+    resetBtn.textContent = '↺ Start Over';
+    resetBtn.onclick = () => {
+      if (confirm('Clear all progress and start over?')) { STATE = freshState(); render(); }
+    };
+    card.appendChild(resetBtn);
+  }
+
+  app.appendChild(card);
+}
+
+// ============================================================
+// DIAGNOSTIC
+// ============================================================
+
+function renderDiagnostic(app) {
+  const q = DIAGNOSTIC_QUESTIONS[STATE.diagnosticIndex];
+  const total = DIAGNOSTIC_QUESTIONS.length;
+
+  const dotRow = el('div', 'dot-row');
+  for (let i = 0; i < total; i++) {
+    const dot = el('div', 'dot' + (i === STATE.diagnosticIndex ? ' active' : i < STATE.diagnosticIndex ? ' done' : ''));
+    dotRow.appendChild(dot);
+  }
+  app.appendChild(dotRow);
+
+  const card = el('div', 'card');
+  card.innerHTML = `
+    <div class="eyebrow">Diagnostic · ${STATE.diagnosticIndex + 1} of ${total}</div>
+    <h2>${q.question}</h2>
+    <p style="font-size:12px;margin-top:4px">No feedback here — answers shape your learning path.</p>
+  `;
+
+  const opts = el('div', 'options');
+  q.options.forEach(opt => {
+    const btn = el('button', 'option');
+    btn.textContent = opt.text;
+    btn.onclick = () => {
+      STATE.diagnosticScores[q.key] = opt.score;
+      STATE.diagnosticIndex++;
+      if (STATE.diagnosticIndex >= DIAGNOSTIC_QUESTIONS.length) {
+        STATE.learningPath = buildLearningPath(STATE.diagnosticScores);
+        STATE.screen = 'results';
+      }
+      render();
+    };
+    opts.appendChild(btn);
+  });
+
+  card.appendChild(opts);
+  app.appendChild(card);
+}
+
+// ============================================================
+// RESULTS
+// ============================================================
+
+function renderResults(app) {
+  const gaps = DIAGNOSTIC_QUESTIONS.filter(q => STATE.diagnosticScores[q.key] === 0);
+  const knows = DIAGNOSTIC_QUESTIONS.filter(q => STATE.diagnosticScores[q.key] === 1);
+
+  const card = el('div', 'card');
+  card.innerHTML = `
+    <div class="eyebrow">Diagnostic Complete</div>
+    <h2>Your Learning Path Is Ready</h2>
+    <p>${gaps.length} gap${gaps.length !== 1 ? 's' : ''} detected · ${knows.length} familiar area${knows.length !== 1 ? 's' : ''}. Your path is ordered accordingly.</p>
+    <div class="divider"></div>
+  `;
+
+  if (gaps.length > 0) {
+    const t = el('p'); t.innerHTML = '<strong>Prioritized first:</strong>'; t.style.marginBottom = '6px'; card.appendChild(t);
+    const chips = el('div'); chips.style.marginBottom = '12px';
+    gaps.forEach(q => {
+      const unit = UNITS.find(u => u.diagnosticKey === q.key);
+      if (unit) { const c = el('span', 'chip'); c.style.background = 'var(--purple)'; c.style.color = 'white'; c.textContent = `${unit.icon} ${unit.title}`; chips.appendChild(c); }
+    });
+    card.appendChild(chips);
+  }
+
+  if (knows.length > 0) {
+    const t = el('p'); t.innerHTML = '<strong>Shown last (looks familiar):</strong>'; t.style.marginBottom = '6px'; card.appendChild(t);
+    const chips = el('div'); chips.style.marginBottom = '12px';
+    knows.forEach(q => {
+      const unit = UNITS.find(u => u.diagnosticKey === q.key);
+      if (unit) { const c = el('span', 'chip'); c.textContent = `${unit.icon} ${unit.title}`; chips.appendChild(c); }
+    });
+    card.appendChild(chips);
+  }
+
+  const note = el('p'); note.style.fontSize = '13px'; note.style.marginTop = '8px';
+  note.innerHTML = '<em>All units still require reading + 2/2 correct. Familiar topics are shown last, not skipped.</em>';
+  card.appendChild(note);
+
+  const btn = el('button', 'btn btn-primary');
+  btn.textContent = '→ View My Learning Path';
+  btn.onclick = () => { STATE.screen = 'map'; render(); };
+  card.appendChild(btn);
+  app.appendChild(card);
+}
+
+// ============================================================
+// MAP
+// ============================================================
+
+function renderMap(app) {
+  const mastered = STATE.learningPath.filter(id => STATE.unitProgress[id]?.mastered).length;
+  const total = STATE.learningPath.length;
+  const pct = Math.round((mastered / total) * 100);
+
+  const progCard = el('div', 'card');
+  progCard.innerHTML = `
+    <h2>Your Learning Path</h2>
+    <p style="margin-top:4px">${mastered} of ${total} lessons complete · ${STATE.xp} XP</p>
+    <div class="progress-wrap" style="margin-top:16px">
+      <div class="progress-label"><span>Course Progress</span><span>${pct}%</span></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>
+  `;
+  app.appendChild(progCard);
+
+  const listCard = el('div', 'card');
+  listCard.innerHTML = '<div class="eyebrow">Lessons — Your Adaptive Order</div>';
+
+  const grid = el('div', 'unit-grid');
+  grid.style.marginTop = '12px';
+
+  STATE.learningPath.forEach((unitId, idx) => {
+    const unit = getUnit(unitId);
+    const status = unitStatus(unitId);
+    const prog = STATE.unitProgress[unitId] || {};
+    const isAvail = isUnitAvailable(unitId);
+
+    const btn = el('button', `unit-card ${status}`);
+    if (!isAvail) btn.disabled = true;
+
+    let badge = '';
+    if (status === 'completed')  badge = `<span class="unit-badge badge-done">✓ Done</span>`;
+    else if (status === 'gap')   badge = `<span class="unit-badge badge-gap">Gap</span>`;
+    else if (status === 'review') badge = `<span class="unit-badge badge-review">Familiar</span>`;
+    else                         badge = `<span class="unit-badge badge-locked">🔒</span>`;
+
+    let stepNote = '';
+    if (isAvail && status !== 'completed') {
+      if (!prog.lessonRead) stepNote = ' · Start: Read lesson';
+      else if (!prog.q1Done) stepNote = ' · Next: Q1';
+      else stepNote = ' · Next: Mastery check (Q2)';
+    }
+
+    btn.innerHTML = `
+      <div class="unit-icon">${unit.icon}</div>
+      <div class="unit-meta">
+        <div class="unit-title">${idx + 1}. ${unit.title}</div>
+        <div class="unit-sub">${unit.chapter}${stepNote}</div>
+      </div>
+      ${badge}
+    `;
+
+    btn.onclick = () => {
+      if (!isAvail) return;
+      STATE.currentUnitId = unitId;
+      STATE.selectedOption = null;
+      STATE.showFeedback = false;
+      const p = STATE.unitProgress[unitId] || {};
+      if (!p.lessonRead) { STATE.screen = 'unit_lesson'; }
+      else { STATE.currentQ = p.q1Done ? 2 : 1; STATE.screen = 'unit'; }
+      render();
+    };
+
+    grid.appendChild(btn);
+  });
+
+  listCard.appendChild(grid);
+  app.appendChild(listCard);
+
+  const saveNote = el('p', 'save-note');
+  saveNote.textContent = '✓ Progress saved automatically';
+  app.appendChild(saveNote);
+}
+
+// ============================================================
+// LESSON — story → concept → key takeaway
+// ============================================================
+
+function renderUnitLesson(app) {
+  const unit = getUnit(STATE.currentUnitId);
+  const { lesson } = unit;
+
+  renderStepTracker(app, 'lesson');
+
+  const card = el('div', 'card');
+
+  const eyebrow = el('div', 'eyebrow');
+  eyebrow.textContent = `${unit.chapter} · ${unit.icon} ${unit.title}`;
+  card.appendChild(eyebrow);
+
+  // Jack's story block
+  const storyBlock = el('div', 'story-block');
+  const storyLabel = el('div', 'story-label');
+  storyLabel.textContent = lesson.story.label;
+  storyBlock.appendChild(storyLabel);
+  lesson.story.paragraphs.forEach(text => {
+    const p = el('p'); p.textContent = text; storyBlock.appendChild(p);
+  });
+  card.appendChild(storyBlock);
+
+  // Concept block
+  const conceptBlock = el('div', 'lesson-concept');
+  const conceptLabel = el('div', 'concept-label');
+  conceptLabel.textContent = 'The Science';
+  conceptBlock.appendChild(conceptLabel);
+  const conceptP = el('p'); conceptP.textContent = lesson.concept;
+  conceptBlock.appendChild(conceptP);
+  card.appendChild(conceptBlock);
+
+  // Key takeaway
+  const kt = el('div', 'key-takeaway');
+  const ktLabel = el('div', 'key-takeaway-label'); ktLabel.textContent = '🎯 Key Takeaway';
+  kt.appendChild(ktLabel);
+  const ktText = el('div'); ktText.textContent = lesson.keyTakeaway;
+  kt.appendChild(ktText);
+  card.appendChild(kt);
+
+  const xpNote = el('p');
+  xpNote.style.fontSize = '13px'; xpNote.style.marginTop = '12px';
+  xpNote.innerHTML = `<em>Answer both questions correctly to earn <strong>${unit.xp} XP</strong> and unlock the next lesson.</em>`;
+  card.appendChild(xpNote);
+
+  const btn = el('button', 'btn btn-primary');
+  btn.textContent = '→ Test My Understanding (Q1 of 2)';
+  btn.onclick = () => {
+    STATE.unitProgress[STATE.currentUnitId] = { ...(STATE.unitProgress[STATE.currentUnitId] || {}), lessonRead: true };
+    STATE.currentQ = 1;
+    STATE.selectedOption = null;
+    STATE.showFeedback = false;
+    STATE.screen = 'unit';
+    render();
+  };
+  card.appendChild(btn);
+
+  const backBtn = el('button', 'btn btn-secondary');
+  backBtn.style.marginTop = '8px';
+  backBtn.textContent = '← Back to Map';
+  backBtn.onclick = () => { STATE.screen = 'map'; render(); };
+  card.appendChild(backBtn);
+
+  app.appendChild(card);
+}
+
+// ============================================================
+// QUESTION
+// ============================================================
+
+function renderUnit(app) {
+  const unit = getUnit(STATE.currentUnitId);
+  const q = unit.questions[STATE.currentQ - 1];
+  const isQ2 = STATE.currentQ === 2;
+
+  renderStepTracker(app, isQ2 ? 'q2' : 'q1');
+
+  const card = el('div', 'card');
+
+  const eyebrow = el('div', 'eyebrow');
+  eyebrow.textContent = `${unit.chapter} · ${unit.icon} ${unit.title}`;
+  card.appendChild(eyebrow);
+
+  if (isQ2 && !STATE.showFeedback) {
+    const gate = el('div');
+    gate.style.cssText = 'background:var(--purple-light);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:var(--purple-dark)';
+    gate.innerHTML = `🎯 <strong>Mastery gate</strong> — get this right to earn ${unit.xp} XP and unlock the next lesson.`;
+    card.appendChild(gate);
+  }
+
+  const scenLabel = el('div', 'eyebrow'); scenLabel.style.marginBottom = '8px'; scenLabel.textContent = 'Scenario';
+  card.appendChild(scenLabel);
+
+  const scenText = el('div');
+  scenText.style.cssText = 'font-size:16px;font-weight:600;line-height:1.55;color:var(--text);margin-bottom:4px';
+  scenText.textContent = q.scenario;
+  card.appendChild(scenText);
+
+  const opts = el('div', 'options');
+  q.options.forEach((opt, i) => {
+    const btn = el('button', 'option');
+    if (STATE.showFeedback) {
+      if (opt.correct) btn.className += ' correct';
+      else if (i === STATE.selectedOption) btn.className += ' wrong';
+      btn.disabled = true;
+    } else if (STATE.selectedOption === i) {
+      btn.className += ' selected';
+    }
+    btn.textContent = opt.text;
+    btn.onclick = () => { if (STATE.showFeedback) return; STATE.selectedOption = i; render(); };
+    opts.appendChild(btn);
+  });
+  card.appendChild(opts);
+
+  if (STATE.showFeedback) {
+    const isCorrect = q.options[STATE.selectedOption]?.correct;
+    const fb = el('div', `feedback-box feedback-${isCorrect ? 'correct' : 'wrong'}`);
+    fb.innerHTML = `<span class="feedback-icon">${isCorrect ? '✅' : '❌'}</span><div class="feedback-title">${isCorrect ? 'Correct!' : 'Not quite.'}</div><div>${q.explanation}</div>`;
+    card.appendChild(fb);
+
+    const nextBtn = el('button', `btn ${isCorrect ? 'btn-primary' : 'btn-secondary'}`);
+    if (isCorrect) {
+      if (isQ2) {
+        nextBtn.textContent = `🏆 Claim ${unit.xp} XP →`;
+        nextBtn.onclick = () => {
+          STATE.xp += unit.xp;
+          STATE.unitProgress[STATE.currentUnitId] = { lessonRead: true, q1Done: true, mastered: true };
+          STATE.screen = 'unit_complete';
+          render();
+        };
+      } else {
+        nextBtn.textContent = '→ Mastery Check (Q2 of 2)';
+        nextBtn.onclick = () => {
+          STATE.unitProgress[STATE.currentUnitId] = { ...(STATE.unitProgress[STATE.currentUnitId] || {}), q1Done: true };
+          STATE.currentQ = 2; STATE.selectedOption = null; STATE.showFeedback = false;
+          render();
+        };
+      }
+    } else {
+      nextBtn.textContent = '↺ Try Again';
+      nextBtn.onclick = () => { STATE.selectedOption = null; STATE.showFeedback = false; render(); };
+
+      const reviewBtn = el('button', 'btn btn-secondary');
+      reviewBtn.style.marginTop = '8px';
+      reviewBtn.textContent = '📖 Re-read the Lesson';
+      reviewBtn.onclick = () => { STATE.screen = 'unit_lesson'; STATE.selectedOption = null; STATE.showFeedback = false; render(); };
+      card.appendChild(nextBtn);
+      card.appendChild(reviewBtn);
+      app.appendChild(card);
+      return;
+    }
+    card.appendChild(nextBtn);
+
+  } else {
+    const commitBtn = el('button', 'btn btn-primary');
+    commitBtn.textContent = 'Commit to Answer';
+    commitBtn.disabled = STATE.selectedOption === null;
+    commitBtn.onclick = () => { STATE.showFeedback = true; render(); };
+    card.appendChild(commitBtn);
+
+    const backBtn = el('button', 'btn btn-secondary');
+    backBtn.style.marginTop = '8px';
+    backBtn.textContent = '← Back to Map';
+    backBtn.onclick = () => { STATE.screen = 'map'; render(); };
+    card.appendChild(backBtn);
+  }
+
+  app.appendChild(card);
+}
+
+// ============================================================
+// STEP TRACKER
+// ============================================================
+
+function renderStepTracker(app, active) {
+  const steps = [{ key: 'lesson', label: 'Read' }, { key: 'q1', label: 'Q1' }, { key: 'q2', label: 'Q2 (Mastery)' }];
+  const order = ['lesson', 'q1', 'q2'];
+  const activeIdx = order.indexOf(active);
+  const track = el('div', 'step-track');
+  steps.forEach((step, i) => {
+    const isDone = i < activeIdx;
+    const isActive = i === activeIdx;
+    const s = el('div', 'step' + (isActive ? ' active' : isDone ? ' done' : ''));
+    const circle = el('div', 'step-circle'); circle.textContent = isDone ? '✓' : i + 1;
+    s.appendChild(circle);
+    const label = el('span'); label.textContent = step.label; s.appendChild(label);
+    track.appendChild(s);
+    if (i < steps.length - 1) { track.appendChild(el('div', 'step-connector')); }
+  });
+  app.appendChild(track);
+}
+
+// ============================================================
+// UNIT COMPLETE
+// ============================================================
+
+function renderUnitComplete(app) {
+  const unit = getUnit(STATE.currentUnitId);
+  const allDone = STATE.learningPath.every(id => STATE.unitProgress[id]?.mastered);
+
+  const card = el('div', 'card');
+  card.innerHTML = `
+    <div class="eyebrow" style="text-align:center">Lesson Complete 🎉</div>
+    <h2 style="text-align:center;margin-top:4px">${unit.icon} ${unit.title}</h2>
+  `;
+
+  const burst = el('div', 'xp-burst');
+  burst.innerHTML = `<span class="xp-big">+${unit.xp}</span><div class="xp-label">XP Earned · Total: ${STATE.xp} / ${totalXpPossible()} XP</div>`;
+  card.appendChild(burst);
+
+  card.appendChild(el('div', 'divider'));
+
+  // Overall progress bar
+  const mastered = STATE.learningPath.filter(id => STATE.unitProgress[id]?.mastered).length;
+  const pct = Math.round((mastered / STATE.learningPath.length) * 100);
+  const progWrap = el('div', 'progress-wrap');
+  progWrap.innerHTML = `<div class="progress-label"><span>Course Progress</span><span>${pct}% · ${mastered} of ${STATE.learningPath.length} done</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>`;
+  card.appendChild(progWrap);
+
+  const btn = el('button', 'btn btn-primary');
+  if (allDone) {
+    btn.textContent = '🏆 See Final Results';
+    btn.onclick = () => { STATE.screen = 'complete'; render(); };
+  } else {
+    const nextId = STATE.learningPath.find(id => !STATE.unitProgress[id]?.mastered);
+    const nextUnit = nextId ? getUnit(nextId) : null;
+    btn.textContent = nextUnit ? `→ Next: ${nextUnit.icon} ${nextUnit.title}` : '→ Back to Map';
+    btn.onclick = () => {
+      if (nextId) { STATE.currentUnitId = nextId; STATE.selectedOption = null; STATE.showFeedback = false; STATE.screen = 'unit_lesson'; }
+      else { STATE.screen = 'map'; }
+      render();
+    };
+  }
+  card.appendChild(btn);
+
+  const mapBtn = el('button', 'btn btn-secondary');
+  mapBtn.style.marginTop = '8px';
+  mapBtn.textContent = '⊞ View Map';
+  mapBtn.onclick = () => { STATE.screen = 'map'; render(); };
+  card.appendChild(mapBtn);
+
+  app.appendChild(card);
+}
+
+// ============================================================
+// COMPLETE
+// ============================================================
+
+function renderComplete(app) {
+  const card = el('div', 'card');
+  card.innerHTML = `
+    <div class="trophy">🏆</div>
+    <div class="eyebrow" style="text-align:center">Course Complete</div>
+    <h1 style="text-align:center;font-size:22px">You've Mastered the Screen Time Playbook</h1>
+    <p style="text-align:center;margin-top:8px">8 lessons. 2/2 mastery on every one. ${STATE.xp} XP.</p>
+    <div class="divider"></div>
+    <h3>The Three Rules — Your Takeaway</h3>
+  `;
+  [
+    '🚫 Contingency: Never use screens to stop tantrums. Build the emotional regulation skill instead.',
+    '📺 Quality: Slow-paced, language-rich content. Under 3 scene cuts per minute. You choose it. You watch it with them.',
+    "⏰ Timing: No screens before meals, sleep, or outdoor play. These are what screens displace — and they're what matter most."
+  ].forEach(rule => {
+    const p = el('p'); p.style.marginTop = '10px'; p.innerHTML = rule; card.appendChild(p);
+  });
+
+  const btn = el('button', 'btn btn-primary');
+  btn.style.marginTop = '20px'; btn.textContent = '↩ Back to Map'; btn.onclick = () => { STATE.screen = 'map'; render(); };
+  card.appendChild(btn);
+  app.appendChild(card);
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+render();
+</script>
+</body>
+</html>
