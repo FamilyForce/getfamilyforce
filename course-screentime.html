@@ -451,6 +451,7 @@ p + p { margin-top: 12px; }
 .cert-sig-name { font-size: 15px; font-weight: 700; color: var(--text); }
 .cert-sig-role { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
 .cert-date { font-size: 12px; color: var(--text-dim); margin-top: 22px; }
+.cert-site-url { font-size: 11px; color: var(--text-ghost); margin-top: 8px; letter-spacing: 0.04em; }
 
 /* ─── ACTION PLAN ─── */
 .action-list { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
@@ -663,6 +664,7 @@ p + p { margin-top: 12px; }
 @media print{.achievement-hero,.share-moment{display:none!important;}}
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -1447,33 +1449,6 @@ function renderComplete(app) {
   hs.innerHTML='<span>11 chapters</span><span class="stat-dot">·</span><span>100%</span><span class="stat-dot">·</span><span>'+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</span>';
   hero.appendChild(hs);app.appendChild(hero);
 
-  // Share moment
-  var sm=el('div','share-moment no-print');
-  var sml=el('div','share-moment-label');sml.textContent='Share your achievement';sm.appendChild(sml);
-  var sv=el('div','share-card-visual');
-  var uname=userName()||'Course Complete';
-  var dstr=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  sv.innerHTML='<div class="sc-logo"><svg width="9" height="11" viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>&nbsp;FamilyForce</div><div class="sc-badge">📱</div><div class="sc-course">The Screen Time Playbook</div><div class="sc-sub">Certificate of Completion</div><div class="sc-name">'+uname+'</div><div class="sc-date">'+dstr+'</div><div class="sc-url">getfamilyforce.com</div>';
-  sm.appendChild(sv);
-  var sh=el('p','share-hint');sh.textContent='👆 Screenshot this card and share it';sm.appendChild(sh);
-  var sbtns=el('div','share-btns');
-  var sbtn=el('button','btn btn-primary');sbtn.innerHTML='&#8599; Share Achievement';
-  sbtn.onclick=function(){
-    var nm=userName();
-    var txt=(nm?nm+' just':'Just')+' completed The Screen Time Playbook on FamilyForce 🏅\n\nResearch-backed parenting. Free courses with a certificate.\ngetfamilyforce.com';
-    if(navigator.share){navigator.share({title:'FamilyForce Achievement',text:txt,url:'https://getfamilyforce.com'}).catch(function(){});}
-    else{navigator.clipboard.writeText(txt).catch(function(){});sbtn.textContent='✓ Copied!';setTimeout(function(){sbtn.innerHTML='&#8599; Share Achievement';},2000);}
-  };
-  sbtns.appendChild(sbtn);
-  var cbtn=el('button','btn btn-secondary');cbtn.id='copy-caption-btn';cbtn.textContent='Copy Caption';
-  cbtn.onclick=function(){
-    var nm=userName();
-    var txt=(nm?nm+' just':'Just')+' completed The Screen Time Playbook on FamilyForce 🏅 Research-backed parenting. Free courses with a certificate. getfamilyforce.com';
-    navigator.clipboard.writeText(txt).catch(function(){});
-    cbtn.textContent='✓ Copied!';setTimeout(function(){cbtn.textContent='Copy Caption';},2000);
-  };
-  sbtns.appendChild(cbtn);sm.appendChild(sbtns);app.appendChild(sm);
-
   // Certificate
   const certCard = el('div', 'card');
   const certOuter = el('div', 'cert-outer');
@@ -1514,16 +1489,53 @@ function renderComplete(app) {
   dateEl.textContent = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   certOuter.appendChild(dateEl);
 
+  const siteUrl = el('div', 'cert-site-url');
+  siteUrl.textContent = 'getfamilyforce.com';
+  certOuter.appendChild(siteUrl);
+
   certCard.appendChild(certOuter);
   app.appendChild(certCard);
 
   // Print + PDF actions
   const actions = el('div', 'card card-sm no-print');
 
-  const printBtn = el('button', 'btn btn-primary');
-  printBtn.textContent = '🖨️  Print / Save as PDF';
-  printBtn.onclick = () => window.print();
-  actions.appendChild(printBtn);
+  const copyBtn = el('button', 'btn btn-primary');
+  copyBtn.textContent = '📋  Copy Certificate';
+  copyBtn.onclick = async function() {
+    const certEl = document.querySelector('.cert-outer');
+    if (!certEl) return;
+    copyBtn.textContent = 'Copying…';
+    copyBtn.disabled = true;
+    try {
+      const canvas = await html2canvas(certEl, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+      });
+      canvas.toBlob(async function(blob) {
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+          copyBtn.textContent = '✓ Copied!';
+        } catch (e) {
+          // Clipboard write blocked (Firefox, non-HTTPS) — fallback to download
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'familyforce-certificate.png';
+          a.click();
+          copyBtn.textContent = '✓ Saved!';
+        }
+        setTimeout(function() {
+          copyBtn.textContent = '📋  Copy Certificate';
+          copyBtn.disabled = false;
+        }, 2500);
+      }, 'image/png');
+    } catch(e) {
+      copyBtn.textContent = 'Try again';
+      copyBtn.disabled = false;
+    }
+  };
+  actions.appendChild(copyBtn);
 
   const pdfBtn = el('button', 'btn btn-secondary');
   pdfBtn.textContent = '📄  Download Full Book';
