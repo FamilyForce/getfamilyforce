@@ -1449,7 +1449,11 @@ function renderComplete(app) {
   hs.innerHTML='<span>11 chapters</span><span class="stat-dot">·</span><span>100%</span><span class="stat-dot">·</span><span>'+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</span>';
   hero.appendChild(hs);app.appendChild(hero);
 
-  // Certificate
+  const shareLabel = el('div', 'share-moment-label no-print');
+  shareLabel.textContent = 'Share Your Achievement';
+  app.appendChild(shareLabel);
+
+    // Certificate
   const certCard = el('div', 'card');
   const certOuter = el('div', 'cert-outer');
 
