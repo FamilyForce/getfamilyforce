@@ -317,8 +317,9 @@
       const name = localStorage.getItem('ff_user_name') || 'Someone';
       const subject = encodeURIComponent(`${name} invited you to FamilyForce`);
       const body = encodeURIComponent(getInviteText(partnerEmail));
-      const mailto = `mailto:${encodeURIComponent(partnerEmail)}?subject=${subject}&body=${body}`;
-      window.location.href = mailto;
+      // Note: the email address must NOT be encodeURIComponent'd — only subject/body are encoded
+      const mailto = `mailto:${partnerEmail}?subject=${subject}&body=${body}`;
+      window.open(mailto, '_blank') || (window.location.href = mailto);
       localStorage.setItem('ff_partner_invited', '1');
       document.getElementById('success-msg').style.display = 'block';
       setTimeout(finish, 2500);
