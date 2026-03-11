@@ -25,7 +25,7 @@
   );
   const _preview = new URLSearchParams(location.search).get('preview') === '1';
   if (_preview) { document.documentElement.classList.add('authed'); }
-  else { _sb.auth.getSession().then(({ data }) => { if (!data.session) window.location.href = 'sign-in.html?next=course-sleep.html'; else { window._sbUserEmail = data.session.user.email || ''; document.documentElement.classList.add('authed'); } }); }
+  else { window._supabaseClient.auth.getSession().then(({ data }) => { if (!data.session) window.location.href = 'sign-in.html?next=course-sleep.html'; else { window._sbUserEmail = data.session.user.email || ''; document.documentElement.classList.add('authed'); } }); }
 </script>
 <style>
 :root {

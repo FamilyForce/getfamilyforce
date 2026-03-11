@@ -30,7 +30,7 @@
   if (_preview) {
     document.documentElement.classList.add('authed');
   } else {
-    _sb.auth.getSession().then(({ data }) => {
+    window._supabaseClient.auth.getSession().then(({ data }) => {
       if (!data.session) window.location.href = 'sign-in.html?next=course-tantrum.html';
       else document.documentElement.classList.add('authed');
     });
