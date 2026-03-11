@@ -1154,98 +1154,100 @@ button { font: inherit; cursor: pointer; }
   border-bottom: 1px solid var(--border-light);
 }
 
+/* Achievement card container */
+.achievements-card {
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  padding: 28px 28px 0;
+  box-shadow: 0 2px 16px rgba(0,0,0,.04);
+  overflow: hidden;
+}
 .badges-heading {
   font-family: var(--sans);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text);
-  margin-bottom: 6px;
+  font-size: 18px; font-weight: 700;
+  letter-spacing: -0.01em; color: var(--text);
+  margin-bottom: 4px;
 }
 .badges-subhead {
-  font-size: 13px; color: var(--text-dim); margin-bottom: 28px;
+  font-size: 13px; color: var(--text-dim); margin-bottom: 24px;
 }
 
-/* Grid: flex so earned can be larger, locked shrink to dots */
+/* All 5 badges same size — earned glow, locked greyed */
 .badges-grid {
   display: flex;
-  gap: 20px;
+  gap: 8px;
   flex-wrap: wrap;
-  align-items: flex-end;
+  margin-bottom: 24px;
 }
-
-/* ── Earned badge — full size, glowing ── */
 .badge-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  width: 88px;
-  transition: opacity .3s;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  flex: 1; min-width: 68px; max-width: 108px;
+  cursor: pointer;
 }
-
 .badge-circle {
-  width: 80px; height: 80px;
+  width: 72px; height: 72px;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   position: relative;
   transition: transform .2s, box-shadow .2s;
   flex-shrink: 0;
 }
-
 .badge-circle.badge-earned {
-  filter: none; opacity: 1;
-  box-shadow: 0 4px 24px rgba(110,78,214,.28);
+  box-shadow: 0 4px 20px rgba(110,78,214,.28);
 }
 @media (hover: hover) {
   .badge-circle.badge-earned:hover {
     transform: scale(1.06);
-    box-shadow: 0 6px 32px rgba(110,78,214,.35);
+    box-shadow: 0 6px 28px rgba(110,78,214,.35);
   }
 }
-
-/* ── Locked badge — tiny grey dot, step back ── */
-.badge-item:not(.badge-item--earned) {
-  width: 44px; opacity: 1;
-}
+/* Locked — same size, greyed, icon dimmed */
 .badge-circle.badge-locked {
-  width: 40px !important; height: 40px !important;
-  background: var(--border-light) !important;
-  filter: none; opacity: 1;
+  background: #ECEAF4 !important;
+  box-shadow: none;
 }
-/* Hide icon and lock overlay on locked badges */
 .badge-circle.badge-locked svg,
-.badge-circle.badge-locked .badge-lock-overlay { display: none; }
-/* Show a faint emoji only */
-.badge-circle.badge-locked::after {
-  content: attr(data-emoji);
-  font-size: 16px; opacity: .3;
-}
-/* Hide name for locked */
-.badge-item:not(.badge-item--earned) .badge-name { display: none; }
-
-.badge-lock-overlay { display: none; } /* hidden globally — replaced by CSS above */
+.badge-circle.badge-locked > span { opacity: 0.28; }
+.badge-lock-overlay { display: none; }
 
 .badge-name {
+  font-size: 11px; font-weight: 600;
+  color: var(--text-mid); text-align: center; line-height: 1.3;
   font-family: var(--sans);
-  font-size: 12px; font-weight: 600;
-  color: var(--text); text-align: center; line-height: 1.3;
 }
+.badge-item:not(.badge-item--earned) .badge-name { color: var(--text-ghost); }
 
 .badge-earned-check {
-  position: absolute; bottom: 2px; right: 2px;
-  width: 22px; height: 22px;
+  position: absolute; bottom: 1px; right: 1px;
+  width: 20px; height: 20px;
   background: #22c55e; border-radius: 50%;
   border: 2.5px solid var(--surface);
   display: flex; align-items: center; justify-content: center;
 }
 
-@media (max-width: 480px) {
-  .badges-grid { gap: 14px; }
-  .badge-item { width: 76px; }
-  .badge-circle { width: 70px; height: 70px; }
-  .badge-item:not(.badge-item--earned) { width: 38px; }
-  .badge-circle.badge-locked { width: 34px !important; height: 34px !important; }
+/* Share row — full-width strip at bottom of card */
+.achievements-share-row {
+  display: flex; align-items: center; gap: 20px;
+  border-top: 1px solid var(--border-light);
+  padding: 20px 28px;
+  margin: 0 -28px;
+}
+.achievements-share-cta { flex: 1; min-width: 0; }
+.achievements-share-label {
+  font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px;
+}
+.achievements-share-sub {
+  font-size: 12px; color: var(--text-dim); margin-bottom: 12px;
+}
+
+@media (max-width: 540px) {
+  .achievements-card { padding: 20px 20px 0; }
+  .badges-grid { gap: 6px; }
+  .badge-item { min-width: 52px; }
+  .badge-circle { width: 58px; height: 58px; }
+  .achievements-share-row { flex-direction: column; align-items: flex-start; padding: 16px 20px; margin: 0 -20px; }
 }
 
 /* ─── Badge Modal ─── */
@@ -2151,87 +2153,92 @@ button { font: inherit; cursor: pointer; }
   <!-- ─── BADGES ─── -->
   <section class="badges-section" aria-labelledby="badges-heading">
     <div class="wrap">
-      <p class="badges-heading" id="badges-heading">Your Achievements</p>
-      <p class="badges-subhead">Complete a playbook to earn a badge.</p>
-      <div class="badges-grid">
+      <div class="achievements-card">
 
-        <!-- Screen Time: Digital Guardian -->
-        <div class="badge-item" data-cert="screen-time" aria-label="Digital Guardian badge — locked">
-          <div class="badge-circle badge-locked" data-emoji="📱" style="background:linear-gradient(135deg,#9B80FF,#6E4ED6)">
-            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
-              <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
-              <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
-              <path d="M14 17.5h7M17.5 14v7" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <p class="badge-name">Digital Guardian</p>
-        </div>
+        <!-- Heading -->
+        <p class="badges-heading" id="badges-heading">Your Achievements</p>
+        <p class="badges-subhead">Complete a playbook to earn a badge.</p>
 
-        <!-- Potty Training: Potty Pro -->
-        <div class="badge-item" data-cert="potty-training" aria-label="Potty Pro badge — locked">
-          <div class="badge-circle badge-locked" data-emoji="🚽" style="background:linear-gradient(135deg,#6E4ED6,#5B3CC4)">
-            <span style="font-size:34px" aria-hidden="true">🚽</span>
-          </div>
-          <p class="badge-name">Potty Pro</p>
-        </div>
+        <!-- Badge grid — all 5, same size -->
+        <div class="badges-grid">
 
-        <!-- Sleep Training: Sleep Champion -->
-        <div class="badge-item" data-cert="sleep-training" aria-label="Sleep Champion badge — locked">
-          <div class="badge-circle badge-locked" data-emoji="🌙" style="background:linear-gradient(135deg,#5B7BB5,#4A6A9F)">
-            <span style="font-size:34px" aria-hidden="true">🌙</span>
-          </div>
-          <p class="badge-name">Sleep Champion</p>
-        </div>
-
-        <!-- Tantrums: Tantrum Tamer -->
-        <div class="badge-item" data-cert="tantrum" aria-label="Tantrum Tamer badge — locked">
-          <div class="badge-circle badge-locked" data-emoji="⚡" style="background:linear-gradient(135deg,#7C5CFC,#6E4ED6)">
-            <span style="font-size:34px" aria-hidden="true">⚡</span>
-          </div>
-          <p class="badge-name">Tantrum Tamer</p>
-        </div>
-
-        <!-- Feeding: Good Eater Guide -->
-        <div class="badge-item" data-cert="feeding" aria-label="Good Eater Guide badge — locked">
-          <div class="badge-circle badge-locked" data-emoji="🥦" style="background:linear-gradient(135deg,#5BA88E,#4A9070)">
-            <span style="font-size:34px" aria-hidden="true">🥦</span>
-          </div>
-          <p class="badge-name">Good Eater Guide</p>
-        </div>
-
-      </div><!-- /badges-grid -->
-
-      <!-- Share profile — appears once a badge is earned -->
-      <div id="share-profile-wrap" style="display:none">
-        <div class="share-section-wrap">
-
-          <!-- Button -->
-          <button class="share-achievements-btn" id="share-profile-btn" onclick="shareAchievements()">
-            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <rect x="3" y="3" width="6" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M9 6h8M9 10h6M9 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            Share my achievements
-          </button>
-
-          <!-- Live mini preview of the card -->
-          <div class="sac-preview" id="sac-preview-card" aria-hidden="true">
-            <div class="sac-preview-logo">
-              <svg width="7" height="9" viewBox="0 0 14 16" fill="none">
-                <path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <div class="badge-item" data-cert="screen-time" aria-label="Digital Guardian badge — locked">
+            <div class="badge-circle badge-locked" data-emoji="📱" style="background:linear-gradient(135deg,#9B80FF,#6E4ED6)">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
+                <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
+                <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
+                <path d="M14 17.5h7M17.5 14v7" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
               </svg>
-              FamilyForce
             </div>
-            <div class="sac-preview-name" id="sac-preview-name">Your Name</div>
-            <div class="sac-preview-sub">Parenting Achievements</div>
-            <div class="sac-preview-badges" id="sac-preview-badges"></div>
-            <div class="sac-preview-url">getfamilyforce.com</div>
+            <p class="badge-name">Digital Guardian</p>
           </div>
 
-        </div>
-      </div>
+          <div class="badge-item" data-cert="potty-training" aria-label="Potty Pro badge — locked">
+            <div class="badge-circle badge-locked" data-emoji="🚽" style="background:linear-gradient(135deg,#6E4ED6,#5B3CC4)">
+              <span style="font-size:30px" aria-hidden="true">🚽</span>
+            </div>
+            <p class="badge-name">Potty Pro</p>
+          </div>
 
+          <div class="badge-item" data-cert="sleep-training" aria-label="Sleep Champion badge — locked">
+            <div class="badge-circle badge-locked" data-emoji="🌙" style="background:linear-gradient(135deg,#5B7BB5,#4A6A9F)">
+              <span style="font-size:30px" aria-hidden="true">🌙</span>
+            </div>
+            <p class="badge-name">Sleep Champion</p>
+          </div>
+
+          <div class="badge-item" data-cert="tantrum" aria-label="Tantrum Tamer badge — locked">
+            <div class="badge-circle badge-locked" data-emoji="⚡" style="background:linear-gradient(135deg,#7C5CFC,#6E4ED6)">
+              <span style="font-size:30px" aria-hidden="true">⚡</span>
+            </div>
+            <p class="badge-name">Tantrum Tamer</p>
+          </div>
+
+          <div class="badge-item" data-cert="feeding" aria-label="Good Eater Guide badge — locked">
+            <div class="badge-circle badge-locked" data-emoji="🥦" style="background:linear-gradient(135deg,#5BA88E,#4A9070)">
+              <span style="font-size:30px" aria-hidden="true">🥦</span>
+            </div>
+            <p class="badge-name">Good Eater Guide</p>
+          </div>
+
+        </div><!-- /badges-grid -->
+
+        <!-- Share row — inside card, shown once a badge is earned -->
+        <div id="share-profile-wrap" style="display:none">
+          <div class="achievements-share-row">
+
+            <!-- Mini preview card -->
+            <div class="sac-preview" id="sac-preview-card" aria-hidden="true">
+              <div class="sac-preview-logo">
+                <svg width="7" height="9" viewBox="0 0 14 16" fill="none">
+                  <path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                FamilyForce
+              </div>
+              <div class="sac-preview-name" id="sac-preview-name">Your Name</div>
+              <div class="sac-preview-sub">Parenting Achievements</div>
+              <div class="sac-preview-badges" id="sac-preview-badges"></div>
+              <div class="sac-preview-url">getfamilyforce.com</div>
+            </div>
+
+            <!-- CTA text + button -->
+            <div class="achievements-share-cta">
+              <p class="achievements-share-label">Your achievement card</p>
+              <p class="achievements-share-sub">Copy as an image and share anywhere.</p>
+              <button class="share-achievements-btn" id="share-profile-btn" onclick="shareAchievements()">
+                <svg width="13" height="13" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <rect x="3" y="3" width="6" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M9 6h8M9 10h6M9 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                Share my achievements
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /achievements-card -->
     </div><!-- /wrap -->
   </section>
 
@@ -3358,8 +3365,7 @@ function dismissPartnerNudge() {
 
 function openPartnerInvite() {
   const name = localStorage.getItem('ff_user_name') || '';
-  const from = name ? ` from ${name}` : '';
-  const text = `Hey — I just signed up for FamilyForce${from}. It's free parenting courses on sleep training, potty training, tantrums, feeding, and screen time. About an hour each. You get a certificate at the end. I thought you'd want to join me.\n\nSign up free: https://getfamilyforce.com`;
+  const text = `Hey — I just signed up for FamilyForce. It's free parenting courses on sleep training, potty training, tantrums, feeding, and screen time. About an hour each. You get a certificate at the end. I thought you'd want to join me.\n\nSign up free: https://getfamilyforce.com`;
   const subject = encodeURIComponent((name ? name + ' invited' : 'Join me on') + ' FamilyForce');
   const body    = encodeURIComponent(text);
   if (navigator.share) {

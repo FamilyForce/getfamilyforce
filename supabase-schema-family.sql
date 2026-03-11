@@ -90,7 +90,11 @@ create policy "Owner manages family"
   using  (auth.uid() = owner_user_id)
   with check (auth.uid() = owner_user_id);
 
--- Members: can see families they're in, can leave (delete own row)
+-- Members: can join (insert own row), see families they're in, leave (delete own row)
+create policy "Member can join a family"
+  on family_members for insert
+  with check (auth.uid() = member_user_id);
+
 create policy "Member can view memberships"
   on family_members for select
   using (auth.uid() = member_user_id);

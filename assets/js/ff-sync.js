@@ -479,14 +479,13 @@
       }
       const { owner_id, owner_name, family_name } = data[0];
 
-      /* Check not already a member */
+      /* Check not already a member of ANY family (one family per user) */
       const { data: existing } = await sb
         .from('family_members')
         .select('id')
-        .eq('owner_user_id', owner_id)
         .eq('member_user_id', userId)
         .maybeSingle();
-      if (existing) return { error: "You're already in this family." };
+      if (existing) return { error: "You're already in a family. Leave it first to join a different one." };
 
       /* Insert */
       const { error: insertErr } = await sb.from('family_members').insert({

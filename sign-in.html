@@ -901,11 +901,15 @@ button { font: inherit; cursor: pointer; }
       if (data.session) window.location.replace('dashboard.html');
     });
 
-    // Returning user detection — if they've signed in on this device before,
-    // show "Welcome back" instead of "Create your free account"
+    // Heading logic:
+    // ?mode=signin  → always "Welcome back" (user clicked Sign In nav link)
+    // ?mode=signup  → always "Create your free account"
+    // no param      → check localStorage; returning user = "Welcome back"
     (function() {
+      var mode = new URLSearchParams(window.location.search).get('mode');
       var hasAccount = localStorage.getItem('ff_user_id') || localStorage.getItem('ff_user_email');
-      if (hasAccount) {
+      var isReturning = mode === 'signin' || (!mode && hasAccount);
+      if (isReturning) {
         var h = document.getElementById('signin-heading');
         var s = document.getElementById('signin-subtext');
         if (h) h.textContent = 'Welcome back';

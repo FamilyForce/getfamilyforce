@@ -236,7 +236,7 @@
 
       <div class="invite-preview" id="invite-preview">
         <strong>Your invite will say:</strong><br><br>
-        "Hey — I just signed up for FamilyForce. It's free parenting courses on sleep training, potty training, tantrums, feeding, and screen time. About an hour each. You get a certificate at the end. I thought you'd want to check it out. getfamilyforce.com"
+        "Hey — I just signed up for FamilyForce. It's free parenting courses on sleep training, potty training, tantrums, feeding, and screen time. About an hour each. You get a certificate at the end. I thought you'd want to join me. getfamilyforce.com"
       </div>
 
       <div class="send-options">
@@ -306,9 +306,7 @@
 
     // ── Step 2: Invite ──
     function getInviteText(partnerEmail) {
-      const name = localStorage.getItem('ff_user_name') || '';
-      const from = name ? ` from ${name}` : '';
-      return `Hey — I just signed up for FamilyForce${from}. It's free parenting courses on sleep training, potty training, tantrums, feeding, and screen time. About an hour each. You get a certificate at the end. I thought you'd want to join me.\n\nSign up free: https://getfamilyforce.com`;
+      return `Hey — I just signed up for FamilyForce. It's free parenting courses on sleep training, potty training, tantrums, feeding, and screen time. About an hour each. You get a certificate at the end. I thought you'd want to join me.\n\nSign up free: https://getfamilyforce.com`;
     }
 
     function sendViaEmail(e) {
