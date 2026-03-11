@@ -710,18 +710,20 @@ button { font: inherit; cursor: pointer; }
    10. DASHBOARD — GREETING SECTION
    ═══════════════════════════════════════════════════════════ */
 .dash-greeting {
-  padding-top: calc(72px + 56px); /* nav height + breathing room */
-  padding-bottom: 8px;
+  padding-top: calc(72px + 48px);
+  padding-bottom: 40px;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 0;
 }
 
 .dash-heading {
   font-family: var(--sans);
-  font-size: clamp(36px, 5vw, 52px);
-  font-weight: 600;
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.1;
   color: var(--text);
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .dash-sub {
@@ -729,6 +731,58 @@ button { font: inherit; cursor: pointer; }
   color: var(--text-dim);
   font-weight: 400;
   letter-spacing: 0.01em;
+  margin-bottom: 20px;
+}
+
+/* Progress stat pill row */
+.dash-stat-row {
+  display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap;
+}
+.dash-stat-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--elevated); border-radius: 100px;
+  padding: 7px 14px;
+  font-size: 13px; font-weight: 600; color: var(--text-mid);
+  white-space: nowrap;
+}
+.dash-stat-pill .pip {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--terra); flex-shrink: 0;
+}
+.dash-stat-pill .pip.pip--gold { background: #f59e0b; }
+.dash-stat-pill .pip.pip--green { background: #22c55e; }
+
+/* Cert name — tiny inline edit, not a banner */
+.cnb-inline {
+  margin-top: 14px;
+  font-size: 13px; color: var(--text-dim);
+  display: flex; align-items: center; gap: 6px;
+}
+.cnb-inline-name { font-weight: 600; color: var(--text-mid); }
+.cnb-inline-edit {
+  font-size: 12px; font-weight: 600; color: var(--terra);
+  background: none; border: none; cursor: pointer;
+  font-family: var(--sans); padding: 0;
+  text-decoration: underline; text-decoration-color: rgba(110,78,214,.3);
+}
+.cnb-inline-form {
+  display: flex; gap: 8px; align-items: center; margin-top: 14px;
+}
+.cnb-inline-input {
+  font-family: var(--sans); font-size: 14px; font-weight: 500;
+  color: var(--text); border: 1.5px solid var(--terra);
+  border-radius: 8px; padding: 6px 12px; background: var(--surface);
+  outline: none; width: 220px; max-width: 100%;
+}
+.cnb-inline-save {
+  padding: 6px 16px; background: var(--terra); color: #fff;
+  border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: var(--sans);
+}
+.cnb-inline-cancel {
+  background: none; border: none; font-size: 13px; color: var(--text-dim);
+  cursor: pointer; font-family: var(--sans);
 }
 
 
@@ -1096,105 +1150,102 @@ button { font: inherit; cursor: pointer; }
    13b. BADGES SECTION
    ═══════════════════════════════════════════════════════════ */
 .badges-section {
-  padding: 0 0 72px;
+  padding: 48px 0 56px;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .badges-heading {
   font-family: var(--sans);
-  font-size: 11px;
+  font-size: 18px;
   font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.badges-subhead {
+  font-size: 13px; color: var(--text-dim); margin-bottom: 28px;
 }
 
+/* Grid: flex so earned can be larger, locked shrink to dots */
 .badges-grid {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   flex-wrap: wrap;
+  align-items: flex-end;
 }
 
+/* ── Earned badge — full size, glowing ── */
 .badge-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
   width: 88px;
+  transition: opacity .3s;
 }
 
 .badge-circle {
-  width: 80px;
-  height: 80px;
+  width: 80px; height: 80px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   position: relative;
   transition: transform .2s, box-shadow .2s;
   flex-shrink: 0;
 }
 
-.badge-circle.badge-locked {
-  filter: grayscale(1);
-  opacity: .35;
-}
-
 .badge-circle.badge-earned {
-  filter: none;
-  opacity: 1;
-  box-shadow: 0 4px 20px rgba(110,78,214,.25);
+  filter: none; opacity: 1;
+  box-shadow: 0 4px 24px rgba(110,78,214,.28);
 }
 @media (hover: hover) {
   .badge-circle.badge-earned:hover {
     transform: scale(1.06);
-    box-shadow: 0 6px 28px rgba(110,78,214,.3);
+    box-shadow: 0 6px 32px rgba(110,78,214,.35);
   }
 }
 
-.badge-lock-overlay {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 22px;
-  height: 22px;
-  background: rgba(0,0,0,.5);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* ── Locked badge — tiny grey dot, step back ── */
+.badge-item:not(.badge-item--earned) {
+  width: 44px; opacity: 1;
 }
+.badge-circle.badge-locked {
+  width: 40px !important; height: 40px !important;
+  background: var(--border-light) !important;
+  filter: none; opacity: 1;
+}
+/* Hide icon and lock overlay on locked badges */
+.badge-circle.badge-locked svg,
+.badge-circle.badge-locked .badge-lock-overlay { display: none; }
+/* Show a faint emoji only */
+.badge-circle.badge-locked::after {
+  content: attr(data-emoji);
+  font-size: 16px; opacity: .3;
+}
+/* Hide name for locked */
+.badge-item:not(.badge-item--earned) .badge-name { display: none; }
+
+.badge-lock-overlay { display: none; } /* hidden globally — replaced by CSS above */
 
 .badge-name {
   font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-mid);
-  text-align: center;
-  line-height: 1.3;
-}
-
-.badge-item.badge-item--earned .badge-name {
-  color: var(--text);
+  font-size: 12px; font-weight: 600;
+  color: var(--text); text-align: center; line-height: 1.3;
 }
 
 .badge-earned-check {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 22px;
-  height: 22px;
-  background: #5BA88E;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: absolute; bottom: 2px; right: 2px;
+  width: 22px; height: 22px;
+  background: #22c55e; border-radius: 50%;
+  border: 2.5px solid var(--surface);
+  display: flex; align-items: center; justify-content: center;
 }
 
 @media (max-width: 480px) {
-  .badges-grid { gap: 16px; }
-  .badge-item { width: 72px; }
-  .badge-circle { width: 68px; height: 68px; }
+  .badges-grid { gap: 14px; }
+  .badge-item { width: 76px; }
+  .badge-circle { width: 70px; height: 70px; }
+  .badge-item:not(.badge-item--earned) { width: 38px; }
+  .badge-circle.badge-locked { width: 34px !important; height: 34px !important; }
 }
 
 /* ─── Badge Modal ─── */
@@ -1601,8 +1652,8 @@ button { font: inherit; cursor: pointer; }
 }
 .family-code-left {}
 .family-code-label {
-  font-size: 11px; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0;
+  color: var(--text-dim); margin-bottom: 4px;
 }
 .family-code-value {
   font-size: 26px; font-weight: 800; letter-spacing: 0.08em;
@@ -1624,8 +1675,7 @@ button { font: inherit; cursor: pointer; }
 
 /* Members */
 .family-members-label {
-  font-size: 11px; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px;
+  font-size: 12px; font-weight: 600; color: var(--text-dim); margin-bottom: 12px;
 }
 .family-member-row {
   display: flex; align-items: center; gap: 12px;
@@ -1694,8 +1744,7 @@ button { font: inherit; cursor: pointer; }
 /* Join form */
 .family-join-section { margin-top: 28px; }
 .family-join-label {
-  font-size: 11px; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
+  font-size: 13px; font-weight: 500; color: var(--text-dim); margin-bottom: 10px;
 }
 .family-join-row {
   display: flex; gap: 8px; align-items: stretch;
@@ -1750,8 +1799,9 @@ button { font: inherit; cursor: pointer; }
   gap: 6px; margin-bottom: 32px;
   font-size: 15px; font-weight: 700; letter-spacing: -0.01em;
   color: rgba(255,255,255,.9);
-  position: relative;
+  position: relative; line-height: 1;
 }
+.sac-logo svg { display: block; flex-shrink: 0; }
 .sac-name {
   font-size: 28px; font-weight: 800; letter-spacing: -0.02em;
   color: #fff; margin-bottom: 6px; position: relative;
@@ -1778,12 +1828,11 @@ button { font: inherit; cursor: pointer; }
 .sac-badge-circle.earned {
   box-shadow: 0 0 0 3px rgba(255,255,255,.2), 0 8px 24px rgba(110,78,214,.5);
 }
-.sac-badge-circle.earned::after {
-  content: '✓';
-  position: absolute; bottom: -3px; right: -3px;
-  width: 22px; height: 22px; border-radius: 50%;
-  background: #22c55e; border: 2px solid #0e0525;
-  font-size: 11px; font-weight: 800;
+.sac-checkmark {
+  position: absolute; bottom: 2px; right: 2px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #22c55e; border: 2.5px solid #0e0525;
+  font-size: 10px; font-weight: 800; line-height: 1;
   display: flex; align-items: center; justify-content: center;
   color: #fff;
 }
@@ -1807,6 +1856,67 @@ button { font: inherit; cursor: pointer; }
   font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
   color: rgba(255,255,255,.35); text-transform: lowercase;
   position: relative;
+}
+
+/* ── Share section: button + live preview side-by-side ── */
+.share-section-wrap {
+  display: flex; align-items: center; gap: 20px;
+  margin-top: 20px; flex-wrap: wrap;
+}
+/* Mini preview card */
+.sac-preview {
+  width: 150px; flex-shrink: 0;
+  background: linear-gradient(145deg, #0e0525 0%, #1e0d48 55%, #0d1a3a 100%);
+  border-radius: 12px; padding: 14px 12px 12px;
+  font-family: 'Outfit', system-ui, sans-serif;
+  text-align: center; color: #fff;
+  position: relative; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(14,5,37,.5);
+}
+.sac-preview::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% -20%, rgba(110,78,214,.55) 0%, transparent 70%);
+  pointer-events: none;
+}
+.sac-preview-logo {
+  display: flex; align-items: center; justify-content: center;
+  gap: 4px; font-size: 9px; font-weight: 700; letter-spacing: -0.01em;
+  color: rgba(255,255,255,.85); margin-bottom: 8px; position: relative; line-height: 1;
+}
+.sac-preview-logo svg { display: block; flex-shrink: 0; }
+.sac-preview-name {
+  font-size: 13px; font-weight: 800; letter-spacing: -0.02em;
+  color: #fff; margin-bottom: 2px; position: relative;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sac-preview-sub {
+  font-size: 7px; font-weight: 600; letter-spacing: .07em;
+  text-transform: uppercase; color: rgba(255,255,255,.45);
+  margin-bottom: 10px; position: relative;
+}
+.sac-preview-badges {
+  display: flex; justify-content: center; gap: 5px;
+  flex-wrap: wrap; margin-bottom: 10px; position: relative;
+}
+.sac-preview-badge {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 0 0 2px rgba(255,255,255,.15);
+  position: relative;
+}
+.sac-preview-check {
+  position: absolute; bottom: 0; right: 0;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: #22c55e; border: 1.5px solid #0e0525;
+  font-size: 6px; font-weight: 800; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+}
+.sac-preview-url {
+  font-size: 7px; font-weight: 600; letter-spacing: .07em;
+  color: rgba(255,255,255,.3); position: relative;
 }
 
 /* Button — rename */
@@ -1980,51 +2090,53 @@ button { font: inherit; cursor: pointer; }
   <div class="dash-greeting">
     <div class="wrap">
       <h1 class="dash-heading" id="greeting">Hi there.</h1>
-      <p class="dash-sub" id="dash-sub">Your library · 5 playbooks · all free</p>
-      <p class="dash-progress-summary" id="dash-progress-summary" hidden></p>
-    </div>
-  </div>
+      <p class="dash-sub" id="dash-sub">5 playbooks · all free</p>
 
-  <!-- ─── CERTIFICATE NAME ─── -->
-  <div class="cert-name-banner" id="cert-name-banner">
-    <div class="wrap">
-
-      <!-- View state: name is set -->
-      <div class="cnb-saved" id="cnb-saved" hidden>
-        <div class="cnb-saved-info">
-          <span class="cnb-label">Certificate name —</span>
-          <strong class="cnb-name-display" id="cnb-name-display"></strong>
+      <!-- Progress stat pills — shown once at least 1 course started -->
+      <div class="dash-stat-row" id="dash-stat-row" style="display:none">
+        <div class="dash-stat-pill" id="dash-stat-completed">
+          <span class="pip"></span>
+          <span id="dash-stat-completed-txt">0 of 5 complete</span>
         </div>
-        <button class="cnb-edit-btn" id="cnb-edit-btn" aria-label="Edit certificate name">
-          <svg width="11" height="11" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M14.5 2.5a2.121 2.121 0 013 3L6 17H2v-4L14.5 2.5z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Edit
-        </button>
+        <div class="dash-stat-pill" id="dash-stat-badges" style="display:none">
+          <span class="pip pip--gold"></span>
+          <span id="dash-stat-badges-txt">0 badges earned</span>
+        </div>
       </div>
 
-      <!-- Input state: name not set or editing -->
-      <div class="cnb-form" id="cnb-form">
-        <label class="cnb-form-label" for="cnb-input">Your name on the certificate</label>
-        <div class="cnb-form-row">
-          <input
-            type="text"
-            id="cnb-input"
-            class="cnb-input"
-            placeholder="e.g. Sarah Johnson"
-            autocomplete="name"
-            maxlength="60"
-            aria-describedby="cnb-input-err"
-          >
-          <button class="cnb-save-btn" id="cnb-save-btn">Save name</button>
-        </div>
-        <p class="cnb-input-err" id="cnb-input-err" role="alert" hidden>Please enter your name.</p>
+      <!-- Certificate name — inline, minimal -->
+      <div class="cnb-inline" id="cnb-inline" style="display:none">
+        <span>Certificate name:</span>
+        <span class="cnb-inline-name" id="cnb-inline-name"></span>
+        <button class="cnb-inline-edit" id="cnb-inline-edit-btn" onclick="cnbInlineEdit()">Edit</button>
+      </div>
+      <form class="cnb-inline-form" id="cnb-inline-form" style="display:none" onsubmit="cnbInlineSave(event)">
+        <input class="cnb-inline-input" id="cnb-input" type="text" placeholder="Your name on certificate" maxlength="60" autocomplete="name">
+        <button type="submit" class="cnb-inline-save">Save</button>
+        <button type="button" class="cnb-inline-cancel" onclick="cnbInlineCancel()">Cancel</button>
+      </form>
+      <!-- Hidden prompt for users with no name yet -->
+      <div id="cnb-no-name-prompt" style="display:none; margin-top:14px;">
+        <button class="cnb-inline-edit" onclick="cnbInlineEdit()" style="font-size:13px">+ Add your name to certificates</button>
       </div>
 
+      <!-- Legacy hidden elements (keep for JS compatibility) -->
+      <div id="cert-name-banner" style="display:none" aria-hidden="true">
+        <div id="cnb-saved" hidden></div>
+        <div id="cnb-form" hidden>
+          <input type="text" id="cnb-input-legacy" style="display:none">
+          <button id="cnb-save-btn" style="display:none"></button>
+          <button id="cnb-edit-btn" style="display:none"></button>
+          <strong id="cnb-name-display"></strong>
+          <p id="cnb-input-err" hidden></p>
+        </div>
+      </div>
     </div>
   </div>
 
 
   <!-- ─── PARTNER INVITE NUDGE ─── -->
-  <div id="partner-nudge-wrap" class="wrap" style="display:none">
+  <div id="partner-nudge-wrap" class="wrap" style="display:none" aria-hidden="true">
     <div class="partner-nudge" role="complementary" aria-label="Invite your partner">
       <button class="partner-nudge-dismiss" onclick="dismissPartnerNudge()" aria-label="Dismiss">×</button>
       <div class="partner-nudge-icon">💌</div>
@@ -2039,65 +2151,51 @@ button { font: inherit; cursor: pointer; }
   <!-- ─── BADGES ─── -->
   <section class="badges-section" aria-labelledby="badges-heading">
     <div class="wrap">
-      <p class="badges-heading" id="badges-heading">My Badges</p>
+      <p class="badges-heading" id="badges-heading">Your Achievements</p>
+      <p class="badges-subhead">Complete a playbook to earn a badge.</p>
       <div class="badges-grid">
 
         <!-- Screen Time: Digital Guardian -->
         <div class="badge-item" data-cert="screen-time" aria-label="Digital Guardian badge — locked">
-          <div class="badge-circle badge-locked" style="background:linear-gradient(135deg,#9B80FF,#6E4ED6)">
+          <div class="badge-circle badge-locked" data-emoji="📱" style="background:linear-gradient(135deg,#9B80FF,#6E4ED6)">
             <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
               <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
               <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
               <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
               <path d="M14 17.5h7M17.5 14v7" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            <div class="badge-lock-overlay" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </div>
           </div>
           <p class="badge-name">Digital Guardian</p>
         </div>
 
         <!-- Potty Training: Potty Pro -->
         <div class="badge-item" data-cert="potty-training" aria-label="Potty Pro badge — locked">
-          <div class="badge-circle badge-locked" style="background:linear-gradient(135deg,#6E4ED6,#5B3CC4)">
+          <div class="badge-circle badge-locked" data-emoji="🚽" style="background:linear-gradient(135deg,#6E4ED6,#5B3CC4)">
             <span style="font-size:34px" aria-hidden="true">🚽</span>
-            <div class="badge-lock-overlay" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </div>
           </div>
           <p class="badge-name">Potty Pro</p>
         </div>
 
         <!-- Sleep Training: Sleep Champion -->
         <div class="badge-item" data-cert="sleep-training" aria-label="Sleep Champion badge — locked">
-          <div class="badge-circle badge-locked" style="background:linear-gradient(135deg,#5B7BB5,#4A6A9F)">
+          <div class="badge-circle badge-locked" data-emoji="🌙" style="background:linear-gradient(135deg,#5B7BB5,#4A6A9F)">
             <span style="font-size:34px" aria-hidden="true">🌙</span>
-            <div class="badge-lock-overlay" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </div>
           </div>
           <p class="badge-name">Sleep Champion</p>
         </div>
 
         <!-- Tantrums: Tantrum Tamer -->
         <div class="badge-item" data-cert="tantrum" aria-label="Tantrum Tamer badge — locked">
-          <div class="badge-circle badge-locked" style="background:linear-gradient(135deg,#7C5CFC,#6E4ED6)">
+          <div class="badge-circle badge-locked" data-emoji="⚡" style="background:linear-gradient(135deg,#7C5CFC,#6E4ED6)">
             <span style="font-size:34px" aria-hidden="true">⚡</span>
-            <div class="badge-lock-overlay" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </div>
           </div>
           <p class="badge-name">Tantrum Tamer</p>
         </div>
 
         <!-- Feeding: Good Eater Guide -->
         <div class="badge-item" data-cert="feeding" aria-label="Good Eater Guide badge — locked">
-          <div class="badge-circle badge-locked" style="background:linear-gradient(135deg,#5BA88E,#4A9070)">
+          <div class="badge-circle badge-locked" data-emoji="🥦" style="background:linear-gradient(135deg,#5BA88E,#4A9070)">
             <span style="font-size:34px" aria-hidden="true">🥦</span>
-            <div class="badge-lock-overlay" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="4" y="9" width="12" height="9" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
-            </div>
           </div>
           <p class="badge-name">Good Eater Guide</p>
         </div>
@@ -2105,14 +2203,33 @@ button { font: inherit; cursor: pointer; }
       </div><!-- /badges-grid -->
 
       <!-- Share profile — appears once a badge is earned -->
-      <div id="share-profile-wrap" style="display:none;margin-top:20px;text-align:center;">
-        <button class="share-achievements-btn" id="share-profile-btn" onclick="shareAchievements()">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <rect x="3" y="3" width="6" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M9 6h8M9 10h6M9 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          Share my achievements
-        </button>
+      <div id="share-profile-wrap" style="display:none">
+        <div class="share-section-wrap">
+
+          <!-- Button -->
+          <button class="share-achievements-btn" id="share-profile-btn" onclick="shareAchievements()">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="3" y="3" width="6" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M9 6h8M9 10h6M9 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            Share my achievements
+          </button>
+
+          <!-- Live mini preview of the card -->
+          <div class="sac-preview" id="sac-preview-card" aria-hidden="true">
+            <div class="sac-preview-logo">
+              <svg width="7" height="9" viewBox="0 0 14 16" fill="none">
+                <path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              FamilyForce
+            </div>
+            <div class="sac-preview-name" id="sac-preview-name">Your Name</div>
+            <div class="sac-preview-sub">Parenting Achievements</div>
+            <div class="sac-preview-badges" id="sac-preview-badges"></div>
+            <div class="sac-preview-url">getfamilyforce.com</div>
+          </div>
+
+        </div>
       </div>
 
     </div><!-- /wrap -->
@@ -2137,9 +2254,9 @@ button { font: inherit; cursor: pointer; }
       <!-- Your code card -->
       <div class="family-code-card">
         <div class="family-code-left">
-          <div class="family-code-label">Your family code</div>
+          <div class="family-code-label">Invite code</div>
           <div class="family-code-value" id="family-code-display">FF-····</div>
-          <div class="family-code-hint">Share this code so others can join your family</div>
+          <div class="family-code-hint">Share this with a co-parent, grandparent, or caregiver</div>
         </div>
         <button class="family-code-copy" id="family-code-copy-btn" onclick="copyFamilyCode()">
           <svg width="13" height="13" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -2151,7 +2268,7 @@ button { font: inherit; cursor: pointer; }
       </div>
 
       <!-- Members in your family -->
-      <div class="family-members-label">Members</div>
+      <div class="family-members-label">In your family</div>
       <div id="family-members-list">
         <!-- populated by JS -->
       </div>
@@ -2161,7 +2278,7 @@ button { font: inherit; cursor: pointer; }
 
       <!-- Join a family -->
       <div class="family-join-section">
-        <div class="family-join-label">Join someone's family</div>
+        <div class="family-join-label">Have someone else's code? Join their family</div>
         <div class="family-join-row">
           <input class="family-join-input" id="family-join-input" type="text"
             placeholder="Enter family code (e.g. FF-A3K9)" maxlength="7" autocomplete="off"
@@ -2466,61 +2583,27 @@ button { font: inherit; cursor: pointer; }
   mobileUserName.textContent  = userName  || 'Your Account';
   mobileUserEmail.textContent = userEmail || '';
 
-    /* ─── CERTIFICATE NAME BANNER ─── */
+    /* ─── CERTIFICATE NAME — inline in hero ─── */
   (function() {
-    const banner   = document.getElementById('cert-name-banner');
-    const savedDiv = document.getElementById('cnb-saved');
-    const formDiv  = document.getElementById('cnb-form');
-    const display  = document.getElementById('cnb-name-display');
-    const editBtn  = document.getElementById('cnb-edit-btn');
-    const input    = document.getElementById('cnb-input');
-    const saveBtn  = document.getElementById('cnb-save-btn');
-    const errMsg   = document.getElementById('cnb-input-err');
-    if (!banner) return;
+    const inlineWrap  = document.getElementById('cnb-inline');
+    const inlineName  = document.getElementById('cnb-inline-name');
+    const inlineForm  = document.getElementById('cnb-inline-form');
+    const noNamePrompt= document.getElementById('cnb-no-name-prompt');
+    const input       = document.getElementById('cnb-input');
 
-    function showSaved(name) {
-      display.textContent = name;
-      savedDiv.removeAttribute('hidden');
-      formDiv.setAttribute('hidden', '');
-    }
-
-    function showForm(prefill) {
-      if (prefill) input.value = prefill;
-      savedDiv.setAttribute('hidden', '');
-      formDiv.removeAttribute('hidden');
-      input.focus();
-    }
-
-    function saveName() {
-      const val = input.value.trim();
-      if (!val) {
-        errMsg.removeAttribute('hidden');
-        input.style.borderColor = '#e74c3c';
-        input.focus();
-        return;
+    function refreshInline() {
+      const name = localStorage.getItem('ff_user_name') || '';
+      if (name) {
+        if (inlineWrap)   { inlineName.textContent = name; inlineWrap.style.display = 'flex'; }
+        if (noNamePrompt) noNamePrompt.style.display = 'none';
+      } else {
+        if (inlineWrap)   inlineWrap.style.display = 'none';
+        if (noNamePrompt) noNamePrompt.style.display = 'block';
       }
-      errMsg.setAttribute('hidden', '');
-      input.style.borderColor = '';
-      localStorage.setItem('ff_user_name', val);
-      showSaved(val);
-      if (window._ffUpdateGreeting) window._ffUpdateGreeting();
-      // Sync updated name to Supabase
-      window.ffSync.getUserId().then(uid => {
-        if (uid) window.ffSync.saveProfile(uid, { name: val });
-      });
+      if (inlineForm) inlineForm.style.display = 'none';
     }
-
-    // Init
-    const existing = localStorage.getItem('ff_user_name') || '';
-    if (existing) {
-      showSaved(existing);
-    } else {
-      showForm('');
-    }
-
-    saveBtn.addEventListener('click', saveName);
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
-    editBtn.addEventListener('click', () => showForm(localStorage.getItem('ff_user_name') || ''));
+    refreshInline();
+    window._cnbRefresh = refreshInline;
   })();
 
 
@@ -2559,23 +2642,38 @@ button { font: inherit; cursor: pointer; }
       }
     });
 
-    /* ── PROGRESS SUMMARY ── */
-    const summaryEl = document.getElementById('dash-progress-summary');
-    if (summaryEl) {
+    /* ── PROGRESS STAT PILLS ── */
+    {
       let completed = 0, badgesEarned = 0;
       ['screen-time','potty-training','sleep-training','tantrum','feeding'].forEach(k => {
         const d = progressData[k] || {};
-        if ((d.quiz || 0) >= 80) completed++;
-        if (d.cert === true) badgesEarned++;
+        // Count as "completed" if they have a cert or significant progress
+        if (d.cert === true) { completed++; badgesEarned++; }
+        else if (d.chapters && d.chapters.length > 0) completed++;
       });
-      if (completed > 0) {
-        summaryEl.innerHTML = `<strong>${completed} of 5</strong> playbooks completed · <strong>${badgesEarned}</strong> badge${badgesEarned !== 1 ? 's' : ''} earned`;
-        summaryEl.removeAttribute('hidden');
+
+      const statRow      = document.getElementById('dash-stat-row');
+      const statComplete = document.getElementById('dash-stat-completed-txt');
+      const statBadges   = document.getElementById('dash-stat-badges');
+      const statBadgeTxt = document.getElementById('dash-stat-badges-txt');
+
+      if (statRow && (completed > 0 || badgesEarned > 0)) {
+        statRow.style.display = 'flex';
+        if (statComplete) statComplete.textContent = completed + ' of 5 complete';
+        if (badgesEarned > 0 && statBadges) {
+          statBadges.style.display = 'inline-flex';
+          if (statBadgeTxt) statBadgeTxt.textContent = badgesEarned + ' badge' + (badgesEarned !== 1 ? 's' : '') + ' earned';
+        }
       }
+
+      // Also update dash-sub when there's progress
+      const dashSub = document.getElementById('dash-sub');
+      if (dashSub && completed > 0) dashSub.style.display = 'none';
     }
   }
 
   renderProgress();
+  renderSharePreview();
 
 
   /* ─── UPDATE LIBRARY ROWS WITH PROGRESS ─── */
@@ -2878,7 +2976,7 @@ button { font: inherit; cursor: pointer; }
   /* ─── PARTNER INVITE NUDGE ─── */
   (function() {
     const invited  = localStorage.getItem('ff_partner_invited');
-    const dismissed = localStorage.getItem('ff_partner_nudge_dismissed');
+    const dismissed = '1'; // Partner nudge retired — family section handles this
     if (!invited && !dismissed) {
       const wrap = document.getElementById('partner-nudge-wrap');
       if (wrap) wrap.style.display = 'block';
@@ -2886,6 +2984,66 @@ button { font: inherit; cursor: pointer; }
   })();
 
 })();
+
+/* ── Cert name inline edit ── */
+function cnbInlineEdit() {
+  const wrap  = document.getElementById('cnb-inline');
+  const form  = document.getElementById('cnb-inline-form');
+  const input = document.getElementById('cnb-input');
+  const noName= document.getElementById('cnb-no-name-prompt');
+  if (wrap)   wrap.style.display   = 'none';
+  if (noName) noName.style.display = 'none';
+  if (form)   { form.style.display = 'flex'; input.value = localStorage.getItem('ff_user_name') || ''; input.focus(); }
+}
+function cnbInlineCancel() {
+  if (window._cnbRefresh) window._cnbRefresh();
+}
+function cnbInlineSave(e) {
+  e.preventDefault();
+  const input = document.getElementById('cnb-input');
+  const val = input.value.trim();
+  if (!val) { input.focus(); return; }
+  localStorage.setItem('ff_user_name', val);
+  if (window._ffUpdateGreeting) window._ffUpdateGreeting();
+  if (window._cnbRefresh) window._cnbRefresh();
+  renderSharePreview();
+  window.ffSync.getUserId().then(uid => {
+    if (uid) window.ffSync.saveProfile(uid, { name: val });
+  });
+}
+
+function renderSharePreview() {
+  const BADGES_META = [
+    { key: 'screen-time',    emoji: '📱', bg: 'linear-gradient(135deg,#9B80FF,#6E4ED6)' },
+    { key: 'potty-training', emoji: '🚽', bg: 'linear-gradient(135deg,#6E4ED6,#5B3CC4)' },
+    { key: 'sleep-training', emoji: '🌙', bg: 'linear-gradient(135deg,#5B7BB5,#4A6A9F)' },
+    { key: 'tantrum',        emoji: '⚡', bg: 'linear-gradient(135deg,#7C5CFC,#6E4ED6)' },
+    { key: 'feeding',        emoji: '🥦', bg: 'linear-gradient(135deg,#5BA88E,#4A9070)' },
+  ];
+  const name = localStorage.getItem('ff_user_name') || 'A FamilyForce Parent';
+  let progress = {};
+  try { progress = JSON.parse(localStorage.getItem('ff_progress') || '{}'); } catch(_) {}
+  const earned = BADGES_META.filter(b => progress[b.key]?.cert === true);
+
+  const nameEl    = document.getElementById('sac-preview-name');
+  const badgesEl  = document.getElementById('sac-preview-badges');
+  const wrapEl    = document.getElementById('share-profile-wrap');
+
+  if (!nameEl || !badgesEl) return;
+  if (earned.length === 0) { if (wrapEl) wrapEl.style.display = 'none'; return; }
+
+  nameEl.textContent = name;
+  badgesEl.innerHTML = '';
+  earned.forEach(b => {
+    const div = document.createElement('div');
+    div.className = 'sac-preview-badge';
+    div.style.background = b.bg;
+    div.innerHTML = b.emoji + '<span class="sac-preview-check">✓</span>';
+    badgesEl.appendChild(div);
+  });
+
+  if (wrapEl) wrapEl.style.display = 'block';
+}
 
 async function shareAchievements() {
   const btn = document.getElementById('share-profile-btn');
@@ -2920,11 +3078,28 @@ async function shareAchievements() {
     const wrap = document.createElement('div');
     wrap.className = 'sac-badge';
     wrap.style.width = circleSize + 'px';
-    wrap.innerHTML =
-      '<div class="sac-badge-circle earned" style="background:' + b.bg + ';width:' + circleSize + 'px;height:' + circleSize + 'px">' +
-        '<span style="font-size:' + fontSize + 'px;line-height:1">' + b.emoji + '</span>' +
-      '</div>' +
-      '<div class="sac-badge-name">' + b.name + '</div>';
+
+    const circle = document.createElement('div');
+    circle.className = 'sac-badge-circle earned';
+    circle.style.cssText = 'background:' + b.bg + ';width:' + circleSize + 'px;height:' + circleSize + 'px';
+
+    const emoji = document.createElement('span');
+    emoji.style.cssText = 'font-size:' + fontSize + 'px;line-height:1';
+    emoji.textContent = b.emoji;
+    circle.appendChild(emoji);
+
+    // Real DOM checkmark — html2canvas handles this reliably vs ::after pseudo-element
+    const check = document.createElement('span');
+    check.className = 'sac-checkmark';
+    check.textContent = '✓';
+    circle.appendChild(check);
+
+    const label = document.createElement('div');
+    label.className = 'sac-badge-name';
+    label.textContent = b.name;
+
+    wrap.appendChild(circle);
+    wrap.appendChild(label);
     badgesEl.appendChild(wrap);
   });
 
@@ -3046,7 +3221,7 @@ async function initFamilySection(userId) {
       { userId, name: myName || 'You', earnedCourses: myEarned }, true, false
     );
     if (_familyData.myMembers.length === 0) {
-      html += `<div class="family-empty">No one has joined yet — share your code to get started.</div>`;
+      html += `<div class="family-empty">Share your invite code with a co-parent or grandparent to get started.</div>`;
     } else {
       _familyData.myMembers.forEach(m => {
         html += renderFamilyMemberRow(m, false, true);
