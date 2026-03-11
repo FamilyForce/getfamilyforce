@@ -48,12 +48,13 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/ff-sync.js"></script>
   <script>
     const SUPABASE_URL  = 'https://ewjqbafaxeasyvknxmof.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ';
 
-    const { createClient } = supabase;
-    const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
+    window._supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    const sb = window._supabaseClient;
 
     async function handleCallback() {
       try {
@@ -62,15 +63,21 @@
         if (error) throw error;
 
         if (data.session) {
-          const user = data.session.user;
-          // Store basics for UI
-          localStorage.setItem('ff_user_email', user.email || '');
-          localStorage.setItem('ff_user_id',    user.id   || '');
+          // Pull profile + progress from Supabase → merge into localStorage
+          // (ff-sync.js also writes ff_user_id and ff_user_email)
+          await window.ffSync.onSignIn(data.session);
 
-          // Redirect to dashboard (or ?next param)
-          const next = sessionStorage.getItem('ff_signin_next') || '../dashboard.html';
-          sessionStorage.removeItem('ff_signin_next');
-          window.location.href = next;
+          // New users (no ff_onboarded flag) go through onboarding first
+          const onboarded = localStorage.getItem('ff_onboarded');
+          if (!onboarded) {
+            // Pass along any ?next so onboarding can redirect correctly after
+            window.location.href = '../onboarding.html';
+          } else {
+            // Returning user — straight to dashboard (or ?next param)
+            const next = sessionStorage.getItem('ff_signin_next') || '../dashboard.html';
+            sessionStorage.removeItem('ff_signin_next');
+            window.location.href = next;
+          }
         } else {
           throw new Error('No session found');
         }

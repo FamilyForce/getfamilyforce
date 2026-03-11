@@ -17,8 +17,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/ff-sync.js"></script>
 <script>
-  const _sb = supabase.createClient(
+  window._supabaseClient = supabase.createClient(
     'https://ewjqbafaxeasyvknxmof.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
   );
@@ -185,6 +186,43 @@ p+p{margin-top:12px;}
   .cert-name-input{border:none!important;border-bottom:2px solid #5B3CC4!important;font-size:22px!important;color:#5B3CC4!important;}
   .card{box-shadow:none;border:none;}
 }
+
+/* ─── CELEBRATION OVERLAY ─── */
+.celebration-overlay{position:fixed;inset:0;z-index:9999;background:rgba(16,8,40,0.94);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+.confetti-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+.celebration-inner{position:relative;text-align:center;color:#fff;}
+.celebration-check{width:88px;height:88px;border-radius:50%;background:var(--terra);display:flex;align-items:center;justify-content:center;font-size:40px;font-weight:700;margin:0 auto 20px;animation:cel-pop .45s cubic-bezier(.175,.885,.32,1.275) forwards;}
+.celebration-title{font-size:22px;font-weight:700;letter-spacing:.06em;font-family:var(--sans);}
+@keyframes cel-pop{0%{transform:scale(0)}100%{transform:scale(1)}}
+
+/* ─── ACHIEVEMENT HERO ─── */
+.achievement-hero{text-align:center;padding:44px 32px 36px;animation:fade-up .6s ease forwards;}
+.achievement-badge-icon{font-size:64px;display:block;margin-bottom:18px;animation:badge-drop .5s .15s cubic-bezier(.175,.885,.32,1.275) both;}
+@keyframes badge-drop{0%{transform:scale(0) rotate(-12deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+.achievement-headline{font-size:28px;font-weight:800;line-height:1.25;margin-bottom:14px;color:var(--text);}
+.achievement-headline span{color:var(--terra);}
+.achievement-stats{display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;color:var(--text-dim);font-weight:500;}
+.achievement-stats .stat-dot{color:var(--border);}
+@keyframes fade-up{0%{opacity:0;transform:translateY(18px)}100%{opacity:1;transform:translateY(0)}}
+@media(max-width:480px){.achievement-headline{font-size:22px;}}
+
+/* ─── SHARE MOMENT ─── */
+.share-moment{padding:28px;}
+.share-moment-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-ghost);margin-bottom:16px;}
+.share-card-visual{background:linear-gradient(135deg,#120830 0%,#2a1060 100%);border-radius:16px;padding:28px 24px;text-align:center;margin-bottom:14px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(110,78,214,.3);}
+.share-card-visual::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(110,78,214,.35),transparent 70%);pointer-events:none;}
+.sc-logo{position:relative;font-size:11px;font-weight:700;color:rgba(255,255,255,.55);margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:5px;letter-spacing:.06em;}
+.sc-badge{position:relative;font-size:52px;margin-bottom:14px;display:block;}
+.sc-course{position:relative;font-size:17px;font-weight:700;color:#fff;margin-bottom:4px;font-family:var(--serif);}
+.sc-sub{position:relative;font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.1em;margin-bottom:18px;}
+.sc-name{position:relative;font-size:22px;font-style:italic;font-family:var(--serif);color:#fff;margin-bottom:6px;}
+.sc-date{position:relative;font-size:11px;color:rgba(255,255,255,.45);margin-bottom:18px;}
+.sc-url{position:relative;font-size:10px;color:rgba(255,255,255,.28);letter-spacing:.08em;text-transform:uppercase;}
+.share-hint{font-size:12px;color:var(--text-dim);text-align:center;margin-bottom:16px;}
+.share-btns{display:flex;gap:10px;flex-wrap:wrap;}
+.share-btns .btn{flex:1;min-width:130px;}
+@media print{.achievement-hero,.share-moment{display:none!important;}}
+
 </style>
 </head>
 <body>
@@ -486,7 +524,10 @@ const CHAPTERS = [
 // ═══════════════════════════════════════════════════════════
 const SAVE_KEY='ff_course_sleep_v1';
 function loadState(){try{const s=localStorage.getItem(SAVE_KEY);if(s)return JSON.parse(s);}catch(e){}return null;}
-function saveState(s){try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));}catch(e){}}
+function saveState(s){
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));}catch(e){}
+  if(window.ffSync){window.ffSync.getUserId().then(uid=>{if(uid)window.ffSync.syncState(uid,'sleep-training',s);});}
+}
 function freshState(){return{screen:'welcome',chapterIndex:0,completed:[],selectedOption:null,showFeedback:false};}
 let STATE=loadState()||freshState();
 
@@ -649,6 +690,43 @@ function renderQuestion(app){
   app.appendChild(card);app.appendChild(mkSaveNote());
 }
 
+
+function launchCelebration(){
+  var ov=document.createElement('div');ov.className='celebration-overlay';
+  var cv=document.createElement('canvas');cv.className='confetti-canvas';ov.appendChild(cv);
+  var inn=document.createElement('div');inn.className='celebration-inner';
+  inn.innerHTML='<div class="celebration-check">✓</div><div class="celebration-title">Course Complete</div>';
+  ov.appendChild(inn);document.body.appendChild(ov);
+  requestAnimationFrame(function(){ov.style.opacity='1';});
+  cv.width=window.innerWidth;cv.height=window.innerHeight;
+  var ctx=cv.getContext('2d');
+  var cols=['#6E4ED6','#fff','#F5A623','#5BA88E','#7C5CFC','#E8D5FF','#FFC6D3'];
+  var pts=Array.from({length:160},function(){return{
+    x:Math.random()*cv.width,y:-20-Math.random()*200,
+    rx:5+Math.random()*8,ry:2+Math.random()*5,
+    d:1.5+Math.random()*2.5,color:cols[Math.floor(Math.random()*cols.length)],
+    tilt:Math.random()*Math.PI*2,ts:.05+Math.random()*.12,spin:Math.random()*.4-.2
+  };});
+  var t0=performance.now(),raf;
+  function draw(now){
+    if(now-t0>3200){cancelAnimationFrame(raf);ctx.clearRect(0,0,cv.width,cv.height);return;}
+    ctx.clearRect(0,0,cv.width,cv.height);
+    pts.forEach(function(p){
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.tilt);
+      ctx.beginPath();ctx.ellipse(0,0,p.rx,p.ry,0,0,Math.PI*2);
+      ctx.fillStyle=p.color;ctx.fill();ctx.restore();
+      p.y+=p.d;p.tilt+=p.ts;p.x+=p.spin;
+      if(p.y>cv.height+20){p.y=-20;p.x=Math.random()*cv.width;}
+    });
+    raf=requestAnimationFrame(draw);
+  }
+  raf=requestAnimationFrame(draw);
+  setTimeout(function(){
+    ov.style.transition='opacity .65s ease';ov.style.opacity='0';
+    setTimeout(function(){if(ov.parentNode)ov.parentNode.removeChild(ov);},700);
+  },2500);
+}
+
 function renderComplete(app){
   // Award badge
   try{
@@ -656,14 +734,46 @@ function renderComplete(app){
     if(!progress['sleep-training'])progress['sleep-training']={};
     progress['sleep-training'].cert=true;
     localStorage.setItem('ff_progress',JSON.stringify(progress));
+    if(window.ffSync){window.ffSync.getUserId().then(uid=>{if(uid)window.ffSync.syncCert(uid,'sleep-training',STATE.completed);});}
   }catch(e){}
 
-  const congrats=el('div','card no-print');
-  const ce=el('div','eyebrow');ce.style.textAlign='center';ce.textContent='Course Complete 🎉';congrats.appendChild(ce);
-  const ct=el('h2');ct.style.textAlign='center';ct.style.marginTop='4px';ct.textContent='You finished all 13 chapters';congrats.appendChild(ct);
-  const cs=el('p');cs.style.textAlign='center';cs.style.marginTop='8px';
-  cs.textContent="Here's your certificate. Print or save it as a PDF.";congrats.appendChild(cs);
-  app.appendChild(congrats);
+  // ── Celebration + achievement moment
+  launchCelebration();
+
+  // Achievement hero
+  var hero=el('div','achievement-hero no-print');
+  var hbi=el('div');hbi.className='achievement-badge-icon';hbi.textContent='🌙';hero.appendChild(hbi);
+  var hh=el('h2','achievement-headline');hh.innerHTML='You did the reading.<br><span>Most parents don\'t.</span>';hero.appendChild(hh);
+  var hs=el('div','achievement-stats');
+  hs.innerHTML='<span>13 chapters</span><span class="stat-dot">·</span><span>100%</span><span class="stat-dot">·</span><span>'+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</span>';
+  hero.appendChild(hs);app.appendChild(hero);
+
+  // Share moment
+  var sm=el('div','share-moment no-print');
+  var sml=el('div','share-moment-label');sml.textContent='Share your achievement';sm.appendChild(sml);
+  var sv=el('div','share-card-visual');
+  var uname=userName()||'Course Complete';
+  var dstr=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  sv.innerHTML='<div class="sc-logo"><svg width="9" height="11" viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>&nbsp;FamilyForce</div><div class="sc-badge">🌙</div><div class="sc-course">The Sleep Training Playbook</div><div class="sc-sub">Certificate of Completion</div><div class="sc-name">'+uname+'</div><div class="sc-date">'+dstr+'</div><div class="sc-url">getfamilyforce.com</div>';
+  sm.appendChild(sv);
+  var sh=el('p','share-hint');sh.textContent='👆 Screenshot this card and share it';sm.appendChild(sh);
+  var sbtns=el('div','share-btns');
+  var sbtn=el('button','btn btn-primary');sbtn.innerHTML='&#8599; Share Achievement';
+  sbtn.onclick=function(){
+    var nm=userName();
+    var txt=(nm?nm+' just':'Just')+' completed The Sleep Training Playbook on FamilyForce 🏅\n\nResearch-backed parenting. Free courses with a certificate.\ngetfamilyforce.com';
+    if(navigator.share){navigator.share({title:'FamilyForce Achievement',text:txt,url:'https://getfamilyforce.com'}).catch(function(){});}
+    else{navigator.clipboard.writeText(txt).catch(function(){});sbtn.textContent='✓ Copied!';setTimeout(function(){sbtn.innerHTML='&#8599; Share Achievement';},2000);}
+  };
+  sbtns.appendChild(sbtn);
+  var cbtn=el('button','btn btn-secondary');cbtn.id='copy-caption-btn';cbtn.textContent='Copy Caption';
+  cbtn.onclick=function(){
+    var nm=userName();
+    var txt=(nm?nm+' just':'Just')+' completed The Sleep Training Playbook on FamilyForce 🏅 Research-backed parenting. Free courses with a certificate. getfamilyforce.com';
+    navigator.clipboard.writeText(txt).catch(function(){});
+    cbtn.textContent='✓ Copied!';setTimeout(function(){cbtn.textContent='Copy Caption';},2000);
+  };
+  sbtns.appendChild(cbtn);sm.appendChild(sbtns);app.appendChild(sm);
 
   const certCard=el('div','card');
   const certOuter=el('div','cert-outer');

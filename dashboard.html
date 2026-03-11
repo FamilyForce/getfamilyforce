@@ -741,6 +741,56 @@ button { font: inherit; cursor: pointer; }
   padding: 0 0 28px;
 }
 
+/* ─── SHARE PROFILE BUTTON ─── */
+.share-profile-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: none; border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 9px 18px;
+  font-family: var(--sans); font-size: 13px; font-weight: 600;
+  color: var(--text-mid); cursor: pointer;
+  transition: border-color .2s, color .2s, background .2s;
+}
+.share-profile-btn:hover { border-color: var(--terra); color: var(--terra); background: rgba(110,78,214,.04); }
+
+/* ─── PARTNER INVITE NUDGE ─── */
+.partner-nudge {
+  background: linear-gradient(135deg, #F0EAFF 0%, #E8F5F0 100%);
+  border: 1px solid rgba(110,78,214,.15);
+  border-radius: 14px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+  position: relative;
+  cursor: default;
+}
+.partner-nudge-icon { font-size: 28px; flex-shrink: 0; }
+.partner-nudge-body { flex: 1; min-width: 0; }
+.partner-nudge-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.partner-nudge-sub { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+.partner-nudge-btn {
+  flex-shrink: 0;
+  background: var(--terra); color: #fff;
+  border: none; border-radius: 8px;
+  padding: 9px 16px; font-size: 13px; font-weight: 700;
+  font-family: var(--sans); cursor: pointer;
+  text-decoration: none; white-space: nowrap;
+  transition: background .2s;
+}
+.partner-nudge-btn:hover { background: var(--terra-dark); }
+.partner-nudge-dismiss {
+  position: absolute; top: 10px; right: 12px;
+  background: none; border: none; font-size: 16px;
+  color: var(--text-ghost); cursor: pointer; padding: 2px 4px;
+  line-height: 1;
+}
+.partner-nudge-dismiss:hover { color: var(--text-dim); }
+@media (max-width: 540px) {
+  .partner-nudge { flex-wrap: wrap; }
+  .partner-nudge-btn { width: 100%; text-align: center; }
+}
+
 .cnb-saved {
   display: inline-flex;
   align-items: center;
@@ -1512,6 +1562,7 @@ button { font: inherit; cursor: pointer; }
   </script>
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/ff-sync.js"></script>
   <script>
     window._supabaseClient = supabase.createClient(
       'https://ewjqbafaxeasyvknxmof.supabase.co',
@@ -1697,6 +1748,19 @@ button { font: inherit; cursor: pointer; }
   </div>
 
 
+  <!-- ─── PARTNER INVITE NUDGE ─── -->
+  <div id="partner-nudge-wrap" class="wrap" style="display:none">
+    <div class="partner-nudge" role="complementary" aria-label="Invite your partner">
+      <button class="partner-nudge-dismiss" onclick="dismissPartnerNudge()" aria-label="Dismiss">×</button>
+      <div class="partner-nudge-icon">💌</div>
+      <div class="partner-nudge-body">
+        <div class="partner-nudge-title">Invite your partner</div>
+        <div class="partner-nudge-sub">Share the playbooks with your partner. See each other's achievements.</div>
+      </div>
+      <button class="partner-nudge-btn" onclick="openPartnerInvite()">Send Invite</button>
+    </div>
+  </div>
+
   <!-- ─── BADGES ─── -->
   <section class="badges-section" aria-labelledby="badges-heading">
     <div class="wrap">
@@ -1764,6 +1828,20 @@ button { font: inherit; cursor: pointer; }
         </div>
 
       </div><!-- /badges-grid -->
+
+      <!-- Share profile — appears once a badge is earned -->
+      <div id="share-profile-wrap" style="display:none;margin-top:20px;text-align:center;">
+        <button class="share-profile-btn" id="share-profile-btn" onclick="shareProfile()">
+          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="15" cy="4" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="15" cy="16" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+            <circle cx="5" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M12.7 5.3L7.3 8.7M12.7 14.7L7.3 11.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Share my profile
+        </button>
+      </div>
+
     </div><!-- /wrap -->
   </section>
 
@@ -2000,6 +2078,32 @@ button { font: inherit; cursor: pointer; }
   // Pull from Supabase session
   const { data: { session } } = await window._supabaseClient.auth.getSession();
   const userEmail    = session?.user?.email || localStorage.getItem('ff_user_email') || '';
+
+  // Sync local progress to Supabase (backfill) + pull remote certs → merge into localStorage.
+  // Fire-and-forget: runs async, never blocks the UI render.
+  if (session?.user?.id) {
+    window.ffSync.loadProgress(session.user.id).then(remoteRows => {
+      if (remoteRows && remoteRows.length) {
+        const localBefore = localStorage.getItem('ff_progress');
+        window.ffSync.mergeProgressIntoLocal(remoteRows);
+        // Re-render if Supabase returned new cert data (cross-device sync)
+        if (localStorage.getItem('ff_progress') !== localBefore) {
+          renderProgress();
+        }
+      } else {
+        // No remote data yet → push local progress up (backfill for existing users)
+        window.ffSync.syncProgressFromLocal(session.user.id);
+      }
+    });
+    // Sync name to Supabase if set locally but not yet synced
+    const localName = localStorage.getItem('ff_user_name');
+    if (localName) {
+      window.ffSync.loadProfile(session.user.id).then(profile => {
+        if (!profile?.name) window.ffSync.saveProfile(session.user.id, { name: localName });
+      });
+    }
+  }
+
   const certName     = localStorage.getItem('ff_user_name') || '';
   const emailFallback = userEmail.split('@')[0] || '';
   const userName     = certName || emailFallback;
@@ -2068,6 +2172,10 @@ button { font: inherit; cursor: pointer; }
       localStorage.setItem('ff_user_name', val);
       showSaved(val);
       if (window._ffUpdateGreeting) window._ffUpdateGreeting();
+      // Sync updated name to Supabase
+      window.ffSync.getUserId().then(uid => {
+        if (uid) window.ffSync.saveProfile(uid, { name: val });
+      });
     }
 
     // Init
@@ -2086,14 +2194,20 @@ button { font: inherit; cursor: pointer; }
 
   /* ─── READ PROGRESS DATA ─── */
   let progressData = {};
-  try {
-    progressData = JSON.parse(localStorage.getItem('ff_progress') || '{}');
-  } catch (_) {
-    progressData = {};
+  function reloadProgressData() {
+    try { progressData = JSON.parse(localStorage.getItem('ff_progress') || '{}'); }
+    catch (_) { progressData = {}; }
   }
+  reloadProgressData();
 
-  /* ─── UPDATE BADGES ─── */
-  (function() {
+  /* ─── RENDER PROGRESS (badges + summary + library rows) ─────────────────────
+     Called once on load and again if Supabase sync returns new data.
+     Safe to call multiple times — only updates DOM elements that need it.
+     ─────────────────────────────────────────────────────────────────────────── */
+  function renderProgress() {
+    reloadProgressData();
+
+    /* ── UPDATE BADGES ── */
     const items = document.querySelectorAll('.badge-item[data-cert]');
     items.forEach(item => {
       const key    = item.getAttribute('data-cert');
@@ -2101,36 +2215,35 @@ button { font: inherit; cursor: pointer; }
       const earned = data.cert === true;
       const circle = item.querySelector('.badge-circle');
       const lock   = item.querySelector('.badge-lock-overlay');
-      if (earned) {
+      if (earned && !circle.classList.contains('badge-earned')) {
         circle.classList.remove('badge-locked');
         circle.classList.add('badge-earned');
         item.classList.add('badge-item--earned');
         item.setAttribute('aria-label', item.getAttribute('aria-label').replace('— locked', '— earned'));
-        // Replace lock icon with checkmark
         if (lock) {
           lock.className = 'badge-earned-check';
           lock.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
         }
       }
     });
-  })();
 
-
-  /* ─── PROGRESS SUMMARY ─── */
-  (function() {
+    /* ── PROGRESS SUMMARY ── */
     const summaryEl = document.getElementById('dash-progress-summary');
-    if (!summaryEl) return;
-    let completed = 0, badgesEarned = 0;
-    ['screen-time','potty-training','sleep-training','tantrum','feeding'].forEach(k => {
-      const d = progressData[k] || {};
-      if ((d.quiz || 0) >= 80) completed++;
-      if (d.cert === true) badgesEarned++;
-    });
-    if (completed > 0) {
-      summaryEl.innerHTML = `<strong>${completed} of 5</strong> playbooks completed · <strong>${badgesEarned}</strong> badge${badgesEarned !== 1 ? 's' : ''} earned`;
-      summaryEl.removeAttribute('hidden');
+    if (summaryEl) {
+      let completed = 0, badgesEarned = 0;
+      ['screen-time','potty-training','sleep-training','tantrum','feeding'].forEach(k => {
+        const d = progressData[k] || {};
+        if ((d.quiz || 0) >= 80) completed++;
+        if (d.cert === true) badgesEarned++;
+      });
+      if (completed > 0) {
+        summaryEl.innerHTML = `<strong>${completed} of 5</strong> playbooks completed · <strong>${badgesEarned}</strong> badge${badgesEarned !== 1 ? 's' : ''} earned`;
+        summaryEl.removeAttribute('hidden');
+      }
     }
-  })();
+  }
+
+  renderProgress();
 
 
   /* ─── UPDATE LIBRARY ROWS WITH PROGRESS ─── */
@@ -2227,6 +2340,16 @@ button { font: inherit; cursor: pointer; }
     const items = Array.from(grid.querySelectorAll('.badge-item'));
     items.sort((a, b) => (a.classList.contains('badge-item--earned') ? 0 : 1) - (b.classList.contains('badge-item--earned') ? 0 : 1));
     items.forEach(item => grid.appendChild(item));
+  })();
+
+  /* ─── SHOW SHARE PROFILE BUTTON if any badge earned ─── */
+  (function() {
+    const anyEarned = ['screen-time','potty-training','sleep-training','tantrum','feeding']
+      .some(k => progressData[k] && progressData[k].cert === true);
+    if (anyEarned) {
+      const wrap = document.getElementById('share-profile-wrap');
+      if (wrap) wrap.style.display = 'block';
+    }
   })();
 
 
@@ -2420,7 +2543,58 @@ button { font: inherit; cursor: pointer; }
   /* ─── NAV SCROLL SOLIDIFY (already solid on dashboard, but keep consistent) ─── */
   /* Nav is always solid on dashboard — no action needed. */
 
+  /* ─── PARTNER INVITE NUDGE ─── */
+  (function() {
+    const invited  = localStorage.getItem('ff_partner_invited');
+    const dismissed = localStorage.getItem('ff_partner_nudge_dismissed');
+    if (!invited && !dismissed) {
+      const wrap = document.getElementById('partner-nudge-wrap');
+      if (wrap) wrap.style.display = 'block';
+    }
+  })();
+
 })();
+
+function shareProfile() {
+  const name    = localStorage.getItem('ff_user_name') || '';
+  let progress  = {};
+  try { progress = JSON.parse(localStorage.getItem('ff_progress') || '{}'); } catch(_) {}
+  const earned  = ['screen-time','potty-training','sleep-training','tantrum','feeding']
+    .filter(k => progress[k] && progress[k].cert === true);
+  const params  = new URLSearchParams();
+  if (name)          params.set('n', name);
+  if (earned.length) params.set('b', earned.join(','));
+  const url  = 'https://getfamilyforce.com/profile?' + params.toString();
+  const text = (name ? name + "'s" : 'My') + ' FamilyForce achievement profile — ' + earned.length + ' of 5 badges earned. ' + url;
+  if (navigator.share) {
+    navigator.share({ title: 'My FamilyForce Achievements', text, url }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(url).catch(() => {});
+    const btn = document.getElementById('share-profile-btn');
+    if (btn) { btn.textContent = '✓ Link copied!'; setTimeout(() => { btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="15" cy="4" r="2.5" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="16" r="2.5" stroke="currentColor" stroke-width="1.5"/><circle cx="5" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M12.7 5.3L7.3 8.7M12.7 14.7L7.3 11.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Share my profile'; }, 2000); }
+  }
+}
+
+function dismissPartnerNudge() {
+  localStorage.setItem('ff_partner_nudge_dismissed', '1');
+  const wrap = document.getElementById('partner-nudge-wrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+function openPartnerInvite() {
+  const name = localStorage.getItem('ff_user_name') || '';
+  const from = name ? ` from ${name}` : '';
+  const text = `Hey — I just signed up for FamilyForce${from}. It's free parenting courses on sleep training, potty training, tantrums, feeding, and screen time. About an hour each. You get a certificate at the end. I thought you'd want to join me.\n\nSign up free: https://getfamilyforce.com`;
+  const subject = encodeURIComponent((name ? name + ' invited' : 'Join me on') + ' FamilyForce');
+  const body    = encodeURIComponent(text);
+  if (navigator.share) {
+    navigator.share({ title: 'FamilyForce', text, url: 'https://getfamilyforce.com' }).catch(() => {});
+  } else {
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  }
+  localStorage.setItem('ff_partner_invited', '1');
+  dismissPartnerNudge();
+}
 </script>
 
 </body>

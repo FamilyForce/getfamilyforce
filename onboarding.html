@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to FamilyForce</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --terra: #6E4ED6;
+      --terra-dark: #5B3CC4;
+      --surface: #ffffff;
+      --bg: #F7F5FF;
+      --text: #1a1025;
+      --text-mid: #4a3f6b;
+      --text-dim: #7a6e9a;
+      --text-ghost: #a89cc8;
+      --border: #E0D8F8;
+      --radius: 16px;
+      --sans: 'Outfit', system-ui, sans-serif;
+      --serif: 'Instrument Serif', Georgia, serif;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: var(--sans);
+      color: var(--text);
+    }
+
+    /* ── Layout ── */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+    }
+
+    /* ── Logo ── */
+    .logo {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 20px; font-weight: 800; text-decoration: none;
+      color: var(--text); margin-bottom: 40px;
+    }
+    .logo span { color: var(--terra); margin-left: 1px; }
+
+    /* ── Progress dots ── */
+    .progress-dots {
+      display: flex; gap: 8px; margin-bottom: 36px;
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--border); transition: background .3s, transform .3s;
+    }
+    .dot.active { background: var(--terra); transform: scale(1.25); }
+    .dot.done { background: #5BA88E; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 40px 36px;
+      width: 100%; max-width: 460px;
+      box-shadow: 0 4px 24px rgba(110,78,214,.08);
+      animation: card-in .45s ease forwards;
+    }
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-icon { font-size: 40px; margin-bottom: 16px; display: block; }
+    .card-title { font-size: 24px; font-weight: 800; line-height: 1.25; margin-bottom: 8px; }
+    .card-sub { font-size: 15px; color: var(--text-mid); line-height: 1.6; margin-bottom: 28px; }
+    .card-sub strong { color: var(--text); }
+
+    /* ── Form ── */
+    label {
+      display: block; font-size: 12px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--text-ghost); margin-bottom: 8px;
+    }
+    input[type="text"], input[type="email"] {
+      width: 100%; padding: 14px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: var(--sans); font-size: 16px; color: var(--text);
+      background: #fff; outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    input:focus { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(110,78,214,.12); }
+    input::placeholder { color: var(--text-ghost); }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 15px;
+      background: var(--terra); color: #fff;
+      border: none; border-radius: 10px;
+      font-family: var(--sans); font-size: 16px; font-weight: 700;
+      cursor: pointer; transition: background .2s, transform .1s;
+      margin-top: 20px; text-decoration: none;
+    }
+    .btn-primary:hover { background: var(--terra-dark); }
+    .btn-primary:active { transform: scale(.98); }
+    .btn-primary:disabled { opacity: .5; cursor: default; }
+
+    .btn-skip {
+      display: block; width: 100%; text-align: center;
+      padding: 12px; margin-top: 10px;
+      font-size: 14px; color: var(--text-dim);
+      background: none; border: none;
+      font-family: var(--sans); cursor: pointer;
+      transition: color .2s;
+    }
+    .btn-skip:hover { color: var(--text-mid); }
+
+    /* ── Invite preview ── */
+    .invite-preview {
+      background: #F7F5FF;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13px; color: var(--text-dim);
+      line-height: 1.65; margin-top: 12px;
+      font-style: italic;
+    }
+    .invite-preview strong { color: var(--text-mid); font-style: normal; }
+
+    /* ── Step 2 options ── */
+    .send-options {
+      display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;
+    }
+    .btn-email {
+      flex: 1; min-width: 140px; padding: 14px 16px;
+      background: var(--terra); color: #fff;
+      border: none; border-radius: 10px;
+      font-family: var(--sans); font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background .2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      text-decoration: none;
+    }
+    .btn-email:hover { background: var(--terra-dark); }
+    .btn-copy {
+      flex: 1; min-width: 140px; padding: 14px 16px;
+      background: #fff; color: var(--terra);
+      border: 1.5px solid var(--terra); border-radius: 10px;
+      font-family: var(--sans); font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background .2s, color .2s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .btn-copy:hover { background: #F0EAFF; }
+
+    /* ── Success state ── */
+    .success-msg {
+      display: none; text-align: center;
+      padding: 16px; background: rgba(91,168,142,.1);
+      border: 1px solid rgba(91,168,142,.25);
+      border-radius: 10px; margin-top: 16px;
+      font-size: 14px; color: #2E7D5E; font-weight: 600;
+    }
+
+    /* ── Hint text ── */
+    .hint {
+      font-size: 12px; color: var(--text-ghost);
+      margin-top: 8px; line-height: 1.5;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .card { padding: 28px 20px; }
+      .card-title { font-size: 20px; }
+      .send-options { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page">
+    <a class="logo" href="index.html">
+      <svg width="12" height="14" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Family<span>Force</span>
+    </a>
+
+    <div class="progress-dots" id="progress-dots">
+      <div class="dot active" id="dot-1"></div>
+      <div class="dot" id="dot-2"></div>
+    </div>
+
+    <!-- ── Step 1: Name ── -->
+    <div class="card" id="step-1">
+      <span class="card-icon">👋</span>
+      <h1 class="card-title">What should we call you?</h1>
+      <p class="card-sub">Your name will appear on your <strong>certificates</strong> when you complete a course. You can change it any time from your dashboard.</p>
+
+      <label for="name-input">Your name</label>
+      <input
+        type="text"
+        id="name-input"
+        placeholder="e.g. James"
+        autocomplete="given-name"
+        autocorrect="off"
+        spellcheck="false"
+        maxlength="60"
+      />
+      <p class="hint">First name is enough.</p>
+
+      <button class="btn-primary" id="name-next-btn" onclick="submitName()" disabled>
+        Continue →
+      </button>
+    </div>
+
+    <!-- ── Step 2: Invite partner ── -->
+    <div class="card" id="step-2" style="display:none">
+      <span class="card-icon">💌</span>
+      <h1 class="card-title">Invite your partner</h1>
+      <p class="card-sub">Parenting is a team sport. Send your partner an invite so you can share the same playbooks — and see each other's progress.</p>
+
+      <label for="partner-email">Partner's email</label>
+      <input
+        type="email"
+        id="partner-email"
+        placeholder="partner@email.com"
+        autocomplete="email"
+        autocorrect="off"
+        autocapitalize="none"
+      />
+
+      <div class="invite-preview" id="invite-preview">
+        <strong>Your invite will say:</strong><br><br>
+        "Hey — I just signed up for FamilyForce. It's free parenting courses on sleep training, potty training, tantrums, feeding, and screen time. About an hour each. You get a certificate at the end. I thought you'd want to check it out. getfamilyforce.com"
+      </div>
+
+      <div class="send-options">
+        <a class="btn-email" id="email-link" href="#" onclick="sendViaEmail(event)">
+          ✉ Send via Email
+        </a>
+        <button class="btn-copy" id="copy-btn" onclick="copyInvite()">
+          📋 Copy Invite
+        </button>
+      </div>
+
+      <div class="success-msg" id="success-msg">
+        ✓ Invite ready — check your email app or paste and send!
+      </div>
+
+      <button class="btn-skip" onclick="finish()">Skip for now →</button>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/ff-sync.js"></script>
+  <script>
+    window._supabaseClient = supabase.createClient(
+      'https://ewjqbafaxeasyvknxmof.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+    );
+    const _sb = window._supabaseClient;
+
+    // ── Auth guard ──
+    _sb.auth.getSession().then(({ data }) => {
+      if (!data.session) window.location.replace('sign-in.html');
+    });
+
+    // ── Step 1: Name ──
+    const nameInput = document.getElementById('name-input');
+    const nameNextBtn = document.getElementById('name-next-btn');
+
+    nameInput.addEventListener('input', () => {
+      nameNextBtn.disabled = nameInput.value.trim().length < 1;
+    });
+    nameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !nameNextBtn.disabled) submitName();
+    });
+
+    function submitName() {
+      const name = nameInput.value.trim();
+      if (!name) return;
+      localStorage.setItem('ff_user_name', name);
+      // Sync name to Supabase (fire-and-forget)
+      window.ffSync.getUserId().then(uid => {
+        if (uid) window.ffSync.saveProfile(uid, { name });
+      });
+
+      // Transition to step 2
+      document.getElementById('step-1').style.display = 'none';
+      const s2 = document.getElementById('step-2');
+      s2.style.display = 'block';
+      s2.style.animation = 'card-in .45s ease forwards';
+
+      document.getElementById('dot-1').classList.remove('active');
+      document.getElementById('dot-1').classList.add('done');
+      document.getElementById('dot-2').classList.add('active');
+
+      document.getElementById('partner-email').focus();
+    }
+
+    // ── Step 2: Invite ──
+    function getInviteText(partnerEmail) {
+      const name = localStorage.getItem('ff_user_name') || '';
+      const from = name ? ` from ${name}` : '';
+      return `Hey — I just signed up for FamilyForce${from}. It's free parenting courses on sleep training, potty training, tantrums, feeding, and screen time. About an hour each. You get a certificate at the end. I thought you'd want to join me.\n\nSign up free: https://getfamilyforce.com`;
+    }
+
+    function sendViaEmail(e) {
+      e.preventDefault();
+      const partnerEmail = document.getElementById('partner-email').value.trim();
+      const name = localStorage.getItem('ff_user_name') || 'Someone';
+      const subject = encodeURIComponent(`${name} invited you to FamilyForce`);
+      const body = encodeURIComponent(getInviteText(partnerEmail));
+      const mailto = `mailto:${encodeURIComponent(partnerEmail)}?subject=${subject}&body=${body}`;
+      window.location.href = mailto;
+      localStorage.setItem('ff_partner_invited', '1');
+      document.getElementById('success-msg').style.display = 'block';
+      setTimeout(finish, 2500);
+    }
+
+    function copyInvite() {
+      const text = getInviteText('');
+      navigator.clipboard.writeText(text).catch(() => {
+        // fallback
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy');
+        document.body.removeChild(ta);
+      });
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = '✓ Copied!';
+      localStorage.setItem('ff_partner_invited', '1');
+      document.getElementById('success-msg').style.display = 'block';
+      setTimeout(() => { btn.innerHTML = '📋 Copy Invite'; }, 2000);
+      setTimeout(finish, 2800);
+    }
+
+    function finish() {
+      const now = new Date().toISOString();
+      localStorage.setItem('ff_onboarded', '1');
+      // Sync onboarded_at to Supabase (fire-and-forget)
+      window.ffSync.getUserId().then(uid => {
+        if (uid) window.ffSync.saveProfile(uid, { onboarded_at: now });
+      });
+      const next = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+      sessionStorage.removeItem('ff_signin_next');
+      window.location.href = next;
+    }
+  </script>
+</body>
+</html>
