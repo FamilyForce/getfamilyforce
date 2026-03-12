@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FamilyForce — Development Advisor Wireframe v2</title>
+<style>
+  :root {
+    --purple: #6E4ED6;
+    --purple-dk: #5B3CC4;
+    --purple-lt: #F0EDFB;
+    --purple-mid: #E4E0F8;
+    --amber: #D48F00;
+    --amber-lt: #FFFBF0;
+    --red: #E8490F;
+    --red-lt: #FFF4F0;
+    --green: #38A169;
+    --green-lt: #F0FFF4;
+    --text: #1A1A2E;
+    --text-mid: #4A4A6A;
+    --text-dim: #888;
+    --border: #DDD;
+    --surface: #FAFAFA;
+    --elevated: #F3F3F8;
+    --white: #FFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'Outfit', BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #E8E8E8;
+    color: var(--text);
+  }
+
+  /* ─── Page Header ─── */
+  .page-header {
+    background: var(--text);
+    color: #fff;
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .page-header h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+  .page-header p { font-size: 12.5px; color: #aaa; }
+  .version-badge {
+    background: var(--purple);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-left: auto;
+  }
+  .change-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px 40px 16px;
+    background: var(--text);
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  .change-pill {
+    background: rgba(110,78,214,.5);
+    color: #E4E0F8;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+
+  /* ─── Section Labels ─── */
+  .flow-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    padding: 28px 0 10px;
+    text-align: center;
+  }
+  .flow-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 28px 20px;
+  }
+  .flow-divider::before, .flow-divider::after {
+    content: ''; flex: 1; height: 1px; background: #C8C8C8;
+  }
+  .flow-divider span {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #999; white-space: nowrap;
+  }
+
+  /* ─── Screen Grid ─── */
+  .screen-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    padding: 16px 28px 44px;
+    justify-content: flex-start;
+  }
+  .screen-block {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .screen-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: #555; text-align: center; max-width: 375px;
+  }
+  .screen-sublabel {
+    font-size: 11px; color: #999; text-align: center; max-width: 375px;
+    margin-top: -5px; line-height: 1.4;
+  }
+  .new-tag {
+    background: #E8F5E9; color: #2E7D32; font-size: 10px; font-weight: 700;
+    padding: 1px 7px; border-radius: 100px; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .updated-tag {
+    background: #FFF8E1; color: #E65100; font-size: 10px; font-weight: 700;
+    padding: 1px 7px; border-radius: 100px; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+
+  /* ─── Phone Frame ─── */
+  .phone {
+    width: 375px; min-height: 760px;
+    background: var(--white);
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 4px 28px rgba(0,0,0,.14), 0 0 0 8px #2A2A2A;
+    display: flex; flex-direction: column;
+  }
+  .phone-status {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 20px 4px; font-size: 11px; font-weight: 700;
+    color: var(--text); background: var(--white); flex-shrink: 0;
+  }
+  .phone-notch {
+    width: 96px; height: 13px; background: #1A1A2E;
+    border-radius: 100px; margin: 0 auto;
+  }
+
+  /* ─── Logo ─── */
+  .ff-logo {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 15px; font-weight: 800; color: var(--purple); letter-spacing: -0.02em;
+  }
+  .ff-logo-icon { flex-shrink: 0; }
+
+  /* ─── Nav Bar ─── */
+  .nav-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 18px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(248,247,255,.96);
+    backdrop-filter: blur(12px);
+    flex-shrink: 0;
+  }
+  .nav-back { font-size: 12px; font-weight: 600; color: var(--purple); cursor: pointer; }
+  .nav-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--purple-lt); display: flex; align-items: center; justify-content: center; font-size: 13px;
+  }
+
+  /* ─── Tab Bar ─── */
+  .tab-bar {
+    display: flex; border-bottom: 1px solid var(--border);
+    background: rgba(248,247,255,.96); flex-shrink: 0;
+  }
+  .tab-btn {
+    flex: 1; padding: 11px 8px 10px; font-size: 11.5px; font-weight: 600;
+    color: var(--text-dim); border: none; border-bottom: 2px solid transparent;
+    background: none; text-align: center; display: flex; align-items: center;
+    justify-content: center; gap: 4px;
+  }
+  .tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
+  .tab-btn.locked { color: #C0C0C0; }
+
+  /* ─── Scroll Area ─── */
+  .scroll-area { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 36px; }
+
+  /* ─── Upsell ─── */
+  .upsell-hero {
+    background: linear-gradient(135deg, #6E4ED6 0%, #9575CD 100%);
+    padding: 28px 22px 24px; text-align: center; color: #fff;
+  }
+  .upsell-emoji { font-size: 40px; margin-bottom: 10px; }
+  .upsell-h1 { font-size: 19px; font-weight: 800; line-height: 1.2; margin-bottom: 7px; }
+  .upsell-sub { font-size: 12.5px; opacity: 0.85; line-height: 1.5; }
+
+  /* Pricing toggle */
+  .pricing-toggle-wrap {
+    padding: 18px 20px 4px;
+  }
+  .pricing-toggle-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
+  }
+  .pricing-toggle {
+    display: flex; background: var(--elevated); border-radius: 12px; padding: 4px; gap: 4px;
+  }
+  .pricing-opt {
+    flex: 1; padding: 10px 8px; border-radius: 9px; cursor: pointer;
+    text-align: center;
+  }
+  .pricing-opt.selected { background: var(--white); box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+  .pricing-opt-price {
+    font-size: 15px; font-weight: 800; color: var(--text); line-height: 1.1;
+  }
+  .pricing-opt.selected .pricing-opt-price { color: var(--purple); }
+  .pricing-opt-label { font-size: 10.5px; color: var(--text-dim); margin-top: 2px; }
+  .pricing-save-badge {
+    display: inline-block; background: #E8F5E9; color: #2E7D32;
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px;
+    margin-top: 4px; letter-spacing: 0.04em;
+  }
+
+  /* Gift code entry */
+  .gift-code-link {
+    text-align: center; padding: 12px 20px 4px;
+    font-size: 12.5px; color: var(--purple); font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+
+  .upsell-preview {
+    padding: 14px 20px 0; display: flex; flex-direction: column; gap: 10px;
+  }
+  .upsell-preview-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 2px;
+  }
+  .upsell-peek-card {
+    background: var(--elevated); border-radius: 12px; padding: 13px 15px;
+    position: relative; overflow: hidden;
+  }
+  .upsell-peek-title { font-size: 12.5px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .upsell-peek-body { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+  .upsell-peek-blur {
+    position: absolute; inset: 0;
+    background: linear-gradient(to right, transparent 25%, rgba(243,243,248,.97) 65%);
+    display: flex; align-items: center; justify-content: flex-end; padding-right: 14px;
+  }
+  .upsell-lock-tag {
+    font-size: 11px; font-weight: 700; color: var(--purple);
+    background: var(--purple-lt); border: 1.5px solid var(--purple-mid);
+    border-radius: 100px; padding: 4px 11px;
+  }
+
+  /* Family access banner */
+  .family-access-banner {
+    margin: 14px 20px 0;
+    background: var(--purple-lt);
+    border: 1.5px solid var(--purple-mid);
+    border-radius: 12px;
+    padding: 13px 15px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .fab-icon { font-size: 18px; flex-shrink: 0; }
+  .fab-text { font-size: 12px; line-height: 1.45; color: var(--text-mid); }
+  .fab-text strong { color: var(--text); }
+
+  .upsell-value-list {
+    padding: 14px 20px 0; display: flex; flex-direction: column; gap: 9px;
+  }
+  .upsell-value-item { display: flex; gap: 11px; align-items: flex-start; }
+  .uv-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+  .uv-text { font-size: 12px; line-height: 1.4; color: var(--text-mid); }
+  .uv-text strong { color: var(--text); font-weight: 700; }
+
+  .upsell-cta-bar { padding: 16px 20px 0; display: flex; flex-direction: column; gap: 8px; }
+  .btn-primary {
+    display: block; width: 100%; padding: 14px; background: var(--purple); color: #fff;
+    border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
+    text-align: center; cursor: pointer;
+  }
+  .btn-secondary {
+    display: block; width: 100%; padding: 12px; background: var(--elevated);
+    color: var(--text-mid); border: none; border-radius: 12px; font-size: 13px;
+    font-weight: 600; text-align: center; cursor: pointer;
+  }
+  .upsell-social-proof {
+    margin: 14px 20px 0;
+    background: var(--elevated); border-radius: 12px; padding: 13px 15px;
+    font-size: 12px; line-height: 1.5; color: var(--text-mid); font-style: italic;
+  }
+  .upsell-social-proof .quote-name {
+    font-weight: 700; color: var(--text-mid); margin-top: 5px;
+    font-size: 11px; font-style: normal;
+  }
+
+  /* ─── Gift Code Screen ─── */
+  .gift-hero {
+    background: linear-gradient(135deg, #6E4ED6 0%, #9575CD 100%);
+    padding: 32px 24px 28px; text-align: center; color: #fff;
+  }
+  .gift-emoji { font-size: 44px; margin-bottom: 10px; }
+  .gift-h1 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .gift-sub { font-size: 12.5px; opacity: .85; line-height: 1.5; }
+
+  /* ─── Onboarding ─── */
+  .onboard-header { padding: 22px 20px 14px; border-bottom: 1px solid var(--border); }
+  .step-dots { display: flex; gap: 5px; margin-bottom: 11px; }
+  .step-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+  .step-dot.active { background: var(--purple); width: 18px; border-radius: 3px; }
+  .step-dot.done { background: var(--green); }
+  .onboard-h1 {
+    font-size: 19px; font-weight: 800; color: var(--text);
+    letter-spacing: -0.01em; margin-bottom: 5px;
+  }
+  .onboard-sub { font-size: 12.5px; color: var(--text-dim); line-height: 1.45; }
+  .onboard-body { padding: 22px 20px; }
+  .form-label {
+    display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;
+  }
+  .form-input {
+    display: block; width: 100%; padding: 11px 14px;
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 10px; font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 16px;
+  }
+  .form-input.focused { border-color: var(--purple); }
+  .toggle-row {
+    display: flex; background: var(--elevated); border-radius: 10px;
+    padding: 3px; gap: 3px; margin-bottom: 16px;
+  }
+  .toggle-opt {
+    flex: 1; padding: 9px; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+    text-align: center; color: var(--text-dim); cursor: pointer;
+  }
+  .toggle-opt.on { background: var(--white); color: var(--purple); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .emoji-picker { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+  .emoji-opt {
+    width: 42px; height: 42px; border-radius: 50%; background: var(--elevated);
+    display: flex; align-items: center; justify-content: center; font-size: 19px; cursor: pointer;
+  }
+  .emoji-opt.on { background: var(--purple-lt); border: 2px solid var(--purple); }
+
+  /* Confirm screen */
+  .onboard-confirm {
+    background: var(--purple-lt); border-radius: 14px; padding: 18px;
+    margin-bottom: 20px; text-align: center;
+  }
+  .oc-emoji { font-size: 34px; margin-bottom: 7px; }
+  .oc-name { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .oc-age { font-size: 12.5px; color: var(--text-dim); }
+  .peek-label {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--purple); margin-bottom: 9px;
+  }
+  .mini-row {
+    display: flex; align-items: center; gap: 9px;
+    padding: 9px 0; border-bottom: 1px solid var(--border);
+  }
+  .mini-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .mini-dot.red { background: var(--red); }
+  .mini-dot.amber { background: var(--amber); }
+  .mini-dot.purple { background: var(--purple); }
+  .mini-text { font-size: 12.5px; color: var(--text); font-weight: 500; }
+
+  /* ─── Main Advisor ─── */
+  .child-switcher {
+    display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+    padding: 16px 18px 10px;
+  }
+  .child-pill {
+    padding: 5px 14px; border-radius: 100px; border: 1.5px solid var(--border);
+    font-size: 12px; font-weight: 600; color: var(--text-mid); background: var(--white);
+    cursor: pointer; display: flex; align-items: center; gap: 5px;
+  }
+  .child-pill.active { background: var(--purple); border-color: var(--purple); color: #fff; }
+  .child-pill-add {
+    padding: 5px 12px; border-radius: 100px; border: 1.5px dashed var(--border);
+    font-size: 12px; font-weight: 600; color: var(--text-dim); background: transparent; cursor: pointer;
+  }
+
+  /* Family circle indicator */
+  .family-access-row {
+    margin: 0 18px 4px;
+    padding: 9px 12px;
+    background: var(--purple-lt);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    color: var(--text-mid);
+  }
+  .fa-avatars { display: flex; gap: -4px; }
+  .fa-avatar {
+    width: 20px; height: 20px; border-radius: 50%; background: var(--purple-mid);
+    border: 1.5px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 10px;
+    margin-left: -4px;
+  }
+  .fa-avatar:first-child { margin-left: 0; }
+
+  .child-hero {
+    margin: 0 18px 4px;
+    background: var(--purple-lt); border-radius: 16px; padding: 16px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .ch-name { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.01em; }
+  .ch-age { font-size: 12.5px; color: var(--text-mid); margin-top: 2px; }
+  .ch-phase {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--purple); margin-top: 7px;
+  }
+  .ch-emoji { font-size: 38px; }
+  .phase-wrap { padding: 10px 18px 2px; }
+  .phase-labels {
+    display: flex; justify-content: space-between;
+    font-size: 10.5px; color: var(--text-dim); font-weight: 600; margin-bottom: 5px;
+  }
+  .phase-bar { height: 4px; background: var(--purple-mid); border-radius: 2px; overflow: hidden; }
+  .phase-fill { height: 100%; background: var(--purple); border-radius: 2px; }
+
+  /* Section headers */
+  .sec-head {
+    padding: 14px 18px 7px; display: flex; align-items: center; gap: 6px;
+  }
+  .sec-icon { font-size: 14px; }
+  .sec-title {
+    font-size: 11.5px; font-weight: 700; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--text-mid);
+  }
+  .sec-count {
+    font-size: 10px; background: var(--elevated); color: var(--text-dim);
+    padding: 2px 7px; border-radius: 100px; font-weight: 700; margin-left: auto;
+  }
+
+  /* Urgent banner */
+  .urgent-banner {
+    margin: 10px 18px 2px;
+    background: var(--red-lt); border: 1.5px solid #FFCBB8;
+    border-radius: 14px; padding: 13px 15px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .ub-icon { font-size: 19px; flex-shrink: 0; }
+  .ub-text { font-size: 12.5px; color: var(--text-mid); line-height: 1.4; }
+  .ub-text strong { color: var(--text); font-size: 13px; display: block; margin-bottom: 2px; }
+
+  /* To-do block */
+  .todos-block {
+    margin: 2px 18px 8px;
+    background: var(--elevated); border-radius: 13px; padding: 13px 15px;
+  }
+  .todos-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 9px; }
+  .todo-row {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 4px 0; font-size: 12.5px; color: var(--text-mid);
+  }
+  .todo-box {
+    width: 15px; height: 15px; border-radius: 4px; border: 1.5px solid var(--border);
+    flex-shrink: 0; margin-top: 2px; background: var(--white);
+  }
+  .todo-box.done { background: var(--purple); border-color: var(--purple); }
+  .todo-text.done { text-decoration: line-through; color: var(--text-dim); }
+
+  /* Milestone cards */
+  .m-card {
+    margin: 0 18px 9px; border-radius: 13px;
+    border: 1.5px solid var(--border); overflow: hidden;
+  }
+  .m-card-inner { padding: 13px 15px; }
+  .m-card-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 5px; gap: 7px;
+  }
+  .m-section-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-dim);
+  }
+  .badge {
+    font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 100px;
+    flex-shrink: 0; letter-spacing: 0.03em;
+  }
+  .badge-urgent { background: var(--red); color: #fff; }
+  .badge-next { background: var(--amber); color: #fff; }
+  .badge-mastered { background: var(--green); color: #fff; }
+  .m-title {
+    font-size: 13.5px; font-weight: 700; color: var(--text);
+    margin-bottom: 5px; line-height: 1.3;
+  }
+  .m-body { font-size: 12px; color: var(--text-mid); line-height: 1.5; margin-bottom: 9px; }
+  .fm-block {
+    background: var(--purple-lt); border-left: 3px solid var(--purple);
+    border-radius: 0 8px 8px 0; padding: 8px 11px; margin-bottom: 9px;
+  }
+  .fm-label {
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--purple); margin-bottom: 3px;
+  }
+  .fm-text { font-size: 11.5px; color: var(--text-mid); font-style: italic; line-height: 1.4; }
+  .m-card-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 15px; border-top: 1px solid var(--border); background: var(--surface);
+  }
+  .playbook-link { font-size: 11.5px; font-weight: 700; color: var(--purple); }
+  .dismiss-btn {
+    font-size: 11px; color: var(--text-dim); background: none;
+    border: none; cursor: pointer; font-weight: 600;
+  }
+  .skip-btn {
+    font-size: 11px; color: var(--text-dim); background: var(--elevated);
+    border: 1px solid var(--border); border-radius: 100px; padding: 3px 11px;
+    cursor: pointer; font-weight: 600;
+  }
+  .share-btn {
+    font-size: 11.5px; font-weight: 700; color: var(--purple);
+    background: var(--purple-lt); border: none; border-radius: 100px;
+    padding: 4px 12px; cursor: pointer;
+  }
+
+  /* Collapsed section */
+  .collapsed {
+    margin: 2px 18px 8px; border: 1.5px solid var(--border);
+    border-radius: 13px; overflow: hidden;
+  }
+  .collapsed-head {
+    padding: 11px 15px; display: flex; align-items: center;
+    justify-content: space-between; background: var(--surface); cursor: pointer;
+  }
+  .collapsed-text { font-size: 13px; font-weight: 600; color: var(--text-mid); }
+  .collapsed-chev { color: var(--text-dim); font-size: 11px; }
+
+  /* Wins */
+  .wins-head { padding: 22px 18px 6px; display: flex; align-items: center; gap: 8px; }
+  .wins-title { font-size: 12px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--green); }
+  .wins-sub { padding: 0 18px 9px; font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+  .win-card {
+    margin: 0 18px 9px; border-radius: 13px;
+    border: 1.5px solid #C6F6D5; background: var(--green-lt); padding: 13px 15px;
+  }
+
+  /* Dismissed */
+  .dismissed-sec { padding: 14px 18px 4px; }
+  .dismissed-title { font-size: 11px; font-weight: 700; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .dismissed-pill {
+    display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px;
+    border-radius: 100px; background: var(--elevated); font-size: 11px;
+    color: var(--text-dim); margin: 3px 3px 3px 0; cursor: pointer; border: 1px solid var(--border);
+  }
+  .dismissed-restore { color: var(--purple); font-weight: 700; }
+
+  /* ─── Share Card Screen ─── */
+  .share-preview-card {
+    margin: 18px; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 4px 20px rgba(110,78,214,.18);
+  }
+  .spc-hero {
+    background: linear-gradient(135deg, #6E4ED6 0%, #9575CD 100%);
+    padding: 26px 22px 22px; text-align: center; color: #fff;
+  }
+  .spc-emoji { font-size: 44px; margin-bottom: 9px; }
+  .spc-child { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.8; margin-bottom: 7px; }
+  .spc-milestone { font-size: 17px; font-weight: 800; line-height: 1.25; margin-bottom: 7px; }
+  .spc-moment { font-size: 12.5px; opacity: 0.9; font-style: italic; line-height: 1.4; }
+  .spc-body { background: var(--white); padding: 16px 18px; }
+  .spc-brand { font-size: 12px; color: var(--text-dim); text-align: center; margin-bottom: 10px; }
+  .spc-qr-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .spc-qr {
+    width: 56px; height: 56px; background: var(--elevated); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--text-dim); text-align: center; line-height: 1.3; flex-shrink: 0;
+  }
+  .spc-qr-label { font-size: 12px; color: var(--text-mid); line-height: 1.45; }
+  .spc-qr-label strong { color: var(--text); }
+  .spc-copy-btn {
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    width: 100%; padding: 13px; background: var(--purple); color: #fff;
+    border: none; border-radius: 11px; font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+
+  /* ─── Settings ─── */
+  .settings-head { padding: 18px 18px 14px; border-bottom: 1px solid var(--border); }
+  .settings-h1 { font-size: 17px; font-weight: 800; color: var(--text); }
+  .settings-sub { font-size: 12px; color: var(--text-dim); margin-top: 3px; }
+  .child-row {
+    display: flex; align-items: center; gap: 13px;
+    padding: 15px 18px; border-bottom: 1px solid var(--border);
+  }
+  .cr-emoji { font-size: 26px; }
+  .cr-info { flex: 1; }
+  .cr-name { font-size: 13.5px; font-weight: 700; color: var(--text); }
+  .cr-age { font-size: 11.5px; color: var(--text-dim); margin-top: 2px; }
+  .cr-actions { display: flex; gap: 5px; }
+  .cr-btn {
+    font-size: 11px; font-weight: 600; padding: 5px 11px; border-radius: 100px;
+    border: 1.5px solid var(--border); background: var(--white); color: var(--text-mid); cursor: pointer;
+  }
+  .cr-btn-danger { color: var(--red); border-color: #FFCBB8; }
+  .sub-info-box {
+    margin: 16px 18px; background: var(--purple-lt);
+    border-radius: 13px; padding: 15px;
+  }
+  .sub-info-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+  .sub-info-body { font-size: 12px; color: var(--text-mid); line-height: 1.45; margin-bottom: 10px; }
+  .sub-manage-link { font-size: 12px; color: var(--purple); font-weight: 700; cursor: pointer; }
+
+  /* ─── Notes Footer ─── */
+  .notes-bar {
+    background: #1A1A2E; color: #eee; padding: 28px 32px 40px;
+  }
+  .notes-bar h2 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 18px; letter-spacing: -0.01em; }
+  .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+  .note-card { background: rgba(255,255,255,.07); border-radius: 10px; padding: 14px; }
+  .note-screen { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9370DB; margin-bottom: 5px; }
+  .note-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 7px; }
+  .note-card ul { list-style: none; }
+  .note-card li { font-size: 12px; color: #CCC; line-height: 1.5; padding: 3px 0 3px 14px; position: relative; }
+  .note-card li::before { content: '→'; position: absolute; left: 0; color: #9370DB; }
+  .note-card li.changed { color: #FFE082; }
+  .note-card li.changed::before { content: '✦'; }
+</style>
+</head>
+<body>
+
+<!-- Page Header -->
+<div class="page-header">
+  <svg width="26" height="26" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    <rect width="32" height="32" rx="8" fill="#6E4ED6"/>
+    <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  </svg>
+  <div>
+    <h1>FamilyForce — Development Advisor Wireframe</h1>
+    <p>UX Architecture · v2 · Incorporating review feedback</p>
+  </div>
+  <div class="version-badge">v2 · For Review</div>
+</div>
+<div class="change-pills">
+  <span class="change-pill">✦ Real FF logo</span>
+  <span class="change-pill">✦ No free trial</span>
+  <span class="change-pill">✦ $9.99/mo or $79.99/yr pricing</span>
+  <span class="change-pill">✦ Gift code flow (baby shower)</span>
+  <span class="change-pill">✦ 3-child limit</span>
+  <span class="change-pill">✦ Family circle access</span>
+  <span class="change-pill">✦ QR = referral code</span>
+  <span class="change-pill">✦ Share = Copy Image only</span>
+  <span class="change-pill">✦ CPR has Skip option</span>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     FLOW 1 — NON-PAID / UPSELL
+══════════════════════════════════════════════════════ -->
+<div class="flow-label">FLOW 1 — NON-PAID USER</div>
+<div class="flow-divider"><span>Locked tab → upsell → pricing toggle → gift code alternative</span></div>
+
+<div class="screen-grid">
+
+  <!-- 1A: Dashboard tab locked -->
+  <div class="screen-block">
+    <div class="screen-label">1A — Dashboard (tab locked)</div>
+    <div class="screen-sublabel">Tab always visible. Teaser banner in Progress tab.</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="ff-logo">
+          <svg class="ff-logo-icon" width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6E4ED6"/>
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          FamilyForce
+        </div>
+        <div class="nav-avatar">👤</div>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn active">📚 My Progress</button>
+        <button class="tab-btn locked">🌱 Advisor 🔒</button>
+      </div>
+      <div class="scroll-area" style="padding:18px;">
+        <div style="font-size:13px; font-weight:700; color:var(--text); margin-bottom:10px;">Your Playbooks</div>
+        <div style="background:var(--elevated); border-radius:12px; padding:13px; margin-bottom:9px;">
+          <div style="font-size:12.5px; font-weight:700; color:var(--text); margin-bottom:2px;">🚽 The Potty Training Playbook</div>
+          <div style="font-size:11.5px; color:var(--text-dim);">100% complete · Certificate earned</div>
+        </div>
+        <div style="background:var(--elevated); border-radius:12px; padding:13px; margin-bottom:22px;">
+          <div style="font-size:12.5px; font-weight:700; color:var(--text); margin-bottom:2px;">😴 The Sleep Playbook</div>
+          <div style="font-size:11.5px; color:var(--text-dim);">Chapter 3 of 8 in progress</div>
+        </div>
+        <!-- Advisor teaser banner -->
+        <div style="background:linear-gradient(135deg,#6E4ED6,#9575CD); border-radius:16px; padding:20px; color:#fff; text-align:center;">
+          <div style="font-size:22px; margin-bottom:7px;">🌱</div>
+          <div style="font-size:14px; font-weight:800; margin-bottom:5px; line-height:1.2;">Know exactly what to do, week by week.</div>
+          <div style="font-size:11.5px; opacity:.85; margin-bottom:13px; line-height:1.4;">Personalised milestones from birth to age 10. Built on 100+ peer-reviewed sources.</div>
+          <div style="background:rgba(255,255,255,.9); color:var(--purple); font-size:13px; font-weight:700; border-radius:10px; padding:10px;">Unlock Development Advisor →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1B: Upsell screen with pricing toggle -->
+  <div class="screen-block">
+    <div class="screen-label">1B — Upsell Screen <span class="updated-tag">Updated</span></div>
+    <div class="screen-sublabel">Pricing toggle (monthly vs annual). No free trial. Gift code link.</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="ff-logo">
+          <svg class="ff-logo-icon" width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6E4ED6"/>
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          FamilyForce
+        </div>
+        <div style="font-size:12px; color:var(--text-dim); cursor:pointer;">✕</div>
+      </div>
+      <div class="scroll-area">
+        <div class="upsell-hero">
+          <div class="upsell-emoji">🌱</div>
+          <div class="upsell-h1">Know exactly what to do, week by week.</div>
+          <div class="upsell-sub">Personalised milestone tracking from birth to age 10, backed by 100+ peer-reviewed sources.</div>
+        </div>
+
+        <!-- Pricing toggle — new in v2 -->
+        <div class="pricing-toggle-wrap">
+          <div class="pricing-toggle-label">Choose your plan</div>
+          <div class="pricing-toggle">
+            <div class="pricing-opt" style="text-align:center;">
+              <div class="pricing-opt-price">$9.99</div>
+              <div class="pricing-opt-label">per month</div>
+            </div>
+            <div class="pricing-opt selected" style="text-align:center;">
+              <div class="pricing-opt-price">$79.99</div>
+              <div class="pricing-opt-label">per year</div>
+              <div class="pricing-save-badge">Save $39 · Best value</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Blurred preview cards -->
+        <div class="upsell-preview">
+          <div class="upsell-preview-label">Your child's current milestones</div>
+          <div class="upsell-peek-card">
+            <div class="upsell-peek-title">🥜 Peanut window closes at 11 months</div>
+            <div class="upsell-peek-body">One spoonful of peanut butter in a puree. Possibly a lifetime without a peanut allergy.</div>
+            <div class="upsell-peek-blur"><div class="upsell-lock-tag">🔒 Unlock</div></div>
+          </div>
+          <div class="upsell-peek-card">
+            <div class="upsell-peek-title">😴 Sleep training window: 6–9 months</div>
+            <div class="upsell-peek-body">Old enough to self-soothe. Young enough habits haven't hardened.</div>
+            <div class="upsell-peek-blur"><div class="upsell-lock-tag">🔒 Unlock</div></div>
+          </div>
+        </div>
+
+        <!-- Family access banner — new in v2 -->
+        <div class="family-access-banner">
+          <div class="fab-icon">👨‍👩‍👧</div>
+          <div class="fab-text"><strong>One purchase. Whole family included.</strong> Everyone in your Family Circle — partner, grandparents, caregivers — gets access automatically. No separate accounts needed.</div>
+        </div>
+
+        <!-- Value bullets -->
+        <div class="upsell-value-list">
+          <div class="upsell-value-item"><div class="uv-icon">📅</div><div class="uv-text"><strong>Age-locked milestones.</strong> Only the stuff relevant to where your child is right now.</div></div>
+          <div class="upsell-value-item"><div class="uv-icon">🚨</div><div class="uv-text"><strong>Real clinical thresholds.</strong> Know when to act, when to watch, when to mention it at the next visit.</div></div>
+          <div class="upsell-value-item"><div class="uv-icon">🏆</div><div class="uv-text"><strong>Celebrate your wins.</strong> See everything your child has already mastered.</div></div>
+          <div class="upsell-value-item"><div class="uv-icon">👶</div><div class="uv-text"><strong>Up to 3 children.</strong> One account covers the whole family, birth through age 10.</div></div>
+        </div>
+
+        <!-- Social proof -->
+        <div class="upsell-social-proof">
+          "I've never felt so prepared at a pediatrician visit. I knew exactly what to ask about — and my doctor was impressed."
+          <div class="quote-name">— Sarah M., mom of two</div>
+        </div>
+
+        <!-- CTA -->
+        <div class="upsell-cta-bar">
+          <div class="btn-primary">Get Development Advisor — $79.99/yr</div>
+        </div>
+
+        <!-- Gift code link — new in v2 -->
+        <div class="gift-code-link">🎁 Have a gift code? Redeem it here</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1C: Gift Code flow — new in v2 -->
+  <div class="screen-block">
+    <div class="screen-label">1C — Gift Code Redemption <span class="new-tag">New</span></div>
+    <div class="screen-sublabel">Grandmother bought it as a baby shower gift. They enter the code here.</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="nav-back">← Back</div>
+        <div class="ff-logo">
+          <svg class="ff-logo-icon" width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6E4ED6"/>
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          FamilyForce
+        </div>
+        <div style="width:32px;"></div>
+      </div>
+      <div class="scroll-area">
+        <div class="gift-hero">
+          <div class="gift-emoji">🎁</div>
+          <div class="gift-h1">You've received a gift!</div>
+          <div class="gift-sub">Someone who loves you purchased the Development Advisor on your behalf. Enter your code below to activate it.</div>
+        </div>
+
+        <div class="onboard-body">
+          <label class="form-label">Your gift code</label>
+          <div class="form-input focused" style="font-family:monospace; font-size:18px; font-weight:700; letter-spacing:0.12em; color:var(--purple); text-align:center;">FF-BABY-2026</div>
+
+          <div style="background:var(--green-lt); border:1.5px solid #C6F6D5; border-radius:11px; padding:13px 15px; margin-bottom:18px;">
+            <div style="font-size:12.5px; font-weight:700; color:var(--green); margin-bottom:4px;">✓ Valid gift code</div>
+            <div style="font-size:12px; color:var(--text-mid); line-height:1.45;">
+              <strong>1-year Development Advisor</strong><br>
+              Gifted by: Grandma Linda 💜<br>
+              Valid for: 12 months from activation
+            </div>
+          </div>
+
+          <!-- What's included -->
+          <div style="margin-bottom:18px;">
+            <div style="font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:9px;">What's included</div>
+            <div class="upsell-value-item" style="margin-bottom:7px;"><div class="uv-icon">📅</div><div class="uv-text">Age-locked milestones from birth to age 10</div></div>
+            <div class="upsell-value-item" style="margin-bottom:7px;"><div class="uv-icon">👨‍👩‍👧</div><div class="uv-text">All Family Circle members get access automatically</div></div>
+            <div class="upsell-value-item"><div class="uv-icon">👶</div><div class="uv-text">Track up to 3 children</div></div>
+          </div>
+
+          <div class="btn-primary">Activate Gift — 1 Year Free 🎉</div>
+          <div style="text-align:center; margin-top:11px; font-size:12px; color:var(--text-dim);">No payment info required.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     FLOW 2 — ONBOARDING
+══════════════════════════════════════════════════════ -->
+<div class="flow-label">FLOW 2 — ONBOARDING</div>
+<div class="flow-divider"><span>After unlock · 3 steps · Under 60 seconds</span></div>
+
+<div class="screen-grid">
+
+  <!-- 2A: Name + emoji -->
+  <div class="screen-block">
+    <div class="screen-label">2A — Who are we tracking?</div>
+    <div class="screen-sublabel">Step 1 of 3</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="ff-logo">
+          <svg class="ff-logo-icon" width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6E4ED6"/>
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          FamilyForce
+        </div>
+        <div class="nav-avatar">👤</div>
+      </div>
+      <div class="onboard-header">
+        <div class="step-dots">
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+        </div>
+        <div class="onboard-h1">Who are we tracking? 👶</div>
+        <div class="onboard-sub">Tell us about your child so we know which milestones matter right now.</div>
+      </div>
+      <div class="onboard-body">
+        <label class="form-label">Child's name</label>
+        <div class="form-input focused" style="color:var(--text-dim);">Olivia <span style="color:var(--purple);">|</span></div>
+        <label class="form-label">Choose an emoji (optional)</label>
+        <div class="emoji-picker">
+          <div class="emoji-opt on">🌸</div>
+          <div class="emoji-opt">⭐</div>
+          <div class="emoji-opt">🐣</div>
+          <div class="emoji-opt">🌟</div>
+          <div class="emoji-opt">🦁</div>
+          <div class="emoji-opt">🐻</div>
+          <div class="emoji-opt">🎈</div>
+          <div class="emoji-opt">🚀</div>
+        </div>
+        <div class="btn-primary">Continue →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2B: Birthday / expecting -->
+  <div class="screen-block">
+    <div class="screen-label">2B — Birthday or due date?</div>
+    <div class="screen-sublabel">Step 2 of 3 · Born or expecting toggle</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="nav-back">← Back</div>
+        <div class="ff-logo">
+          <svg class="ff-logo-icon" width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6E4ED6"/>
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          FamilyForce
+        </div>
+        <div style="width:40px;"></div>
+      </div>
+      <div class="onboard-header">
+        <div class="step-dots">
+          <div class="step-dot done"></div>
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+        </div>
+        <div class="onboard-h1">When was Olivia born? 🌸</div>
+        <div class="onboard-sub">This is how we know which milestones are relevant right now.</div>
+      </div>
+      <div class="onboard-body">
+        <label class="form-label">Status</label>
+        <div class="toggle-row">
+          <div class="toggle-opt on">Already born</div>
+          <div class="toggle-opt">Expecting</div>
+        </div>
+        <label class="form-label">Date of birth</label>
+        <div class="form-input" style="color:var(--text);">November 12, 2025</div>
+        <div style="background:var(--amber-lt); border:1.5px solid #FFE5A0; border-radius:10px; padding:11px 13px; margin-bottom:18px;">
+          <div style="font-size:11px; font-weight:700; color:var(--amber); margin-bottom:3px;">🍼 PREMATURE BIRTH?</div>
+          <div style="font-size:12px; color:var(--text-mid); line-height:1.4;">All milestones assume a full-term birth. If Olivia arrived early, correct for adjusted age when reading the guidelines.</div>
+        </div>
+        <div class="btn-primary">Continue →</div>
+        <div style="text-align:center; margin-top:9px; font-size:11.5px; color:var(--text-dim);">Your child's data is stored only on your device.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2C: Done! First peek -->
+  <div class="screen-block">
+    <div class="screen-label">2C — Setup complete · First peek</div>
+    <div class="screen-sublabel">Step 3 of 3 · Immediate value payoff</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="ff-logo">
+          <svg class="ff-logo-icon" width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6E4ED6"/>
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          FamilyForce
+        </div>
+        <div style="font-size:12px; color:var(--purple); font-weight:700; cursor:pointer;">Done</div>
+      </div>
+      <div class="onboard-header">
+        <div class="step-dots">
+          <div class="step-dot done"></div>
+          <div class="step-dot done"></div>
+          <div class="step-dot active"></div>
+        </div>
+        <div class="onboard-h1">Olivia's digest is ready 🎉</div>
+        <div class="onboard-sub">Here's what's relevant at 4 months old. Your whole Family Circle can now see this too.</div>
+      </div>
+      <div class="onboard-body">
+        <div class="onboard-confirm">
+          <div class="oc-emoji">🌸</div>
+          <div class="oc-name">Olivia</div>
+          <div class="oc-age">4 months, 2 weeks old · Infant phase</div>
+        </div>
+        <div class="peek-label">A PREVIEW OF HER CURRENT MILESTONES</div>
+        <div class="mini-row"><div class="mini-dot red"></div><div class="mini-text">⚠️ Peanut introduction window (4–11 months)</div></div>
+        <div class="mini-row"><div class="mini-dot red"></div><div class="mini-text">🌡️ Fever under 3 months = ER (critical)</div></div>
+        <div class="mini-row"><div class="mini-dot amber"></div><div class="mini-text">😴 Sleep training window opens at 6 months</div></div>
+        <div class="mini-row"><div class="mini-dot amber"></div><div class="mini-text">💊 Iron drops if breastfeeding — start now</div></div>
+        <div class="mini-row"><div class="mini-dot purple"></div><div class="mini-text">💪 Build to 30 min tummy time per day</div></div>
+        <div style="font-size:11px; color:var(--text-dim); padding-top:8px;">+ 12 more milestones for her age range</div>
+        <div class="btn-primary" style="margin-top:18px;">See Olivia's Full Digest →</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     FLOW 3 — MAIN ADVISOR VIEW
+══════════════════════════════════════════════════════ -->
+<div class="flow-label">FLOW 3 — MAIN ADVISOR VIEW</div>
+<div class="flow-divider"><span>The core experience · Family Circle aware · Personalised by child + age</span></div>
+
+<div class="screen-grid">
+
+  <!-- 3A: Main digest — top -->
+  <div class="screen-block">
+    <div class="screen-label">3A — Main Digest (top) <span class="updated-tag">Updated</span></div>
+    <div class="screen-sublabel">Family Circle indicator · Child switcher · Phase bar</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="ff-logo">
+          <svg class="ff-logo-icon" width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6E4ED6"/>
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          FamilyForce
+        </div>
+        <div class="nav-avatar">👤</div>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn">📚 My Progress</button>
+        <button class="tab-btn active">🌱 Advisor</button>
+      </div>
+      <div class="scroll-area">
+
+        <!-- Child switcher (up to 3 children) -->
+        <div class="child-switcher">
+          <div class="child-pill active">🌸 Olivia</div>
+          <div class="child-pill">⭐ Liam</div>
+          <div class="child-pill-add">+ Add</div>
+        </div>
+
+        <!-- Family Circle access indicator — new in v2 -->
+        <div class="family-access-row">
+          <div style="font-size:14px;">👨‍👩‍👧</div>
+          <div class="fa-avatars">
+            <div class="fa-avatar">👨</div>
+            <div class="fa-avatar">👩</div>
+            <div class="fa-avatar">👴</div>
+          </div>
+          <div style="flex:1; font-size:11.5px; color:var(--text-mid);">
+            <strong style="color:var(--text);">Dad, Mom, Grandpa</strong> can see this digest too
+          </div>
+          <div style="font-size:11px; color:var(--purple); font-weight:700; cursor:pointer;">Manage</div>
+        </div>
+
+        <!-- Child hero card -->
+        <div class="child-hero" style="margin-top:8px;">
+          <div>
+            <div class="ch-name">Olivia</div>
+            <div class="ch-age">4 months, 2 weeks old</div>
+            <div class="ch-phase">🍼 INFANT PHASE</div>
+          </div>
+          <div class="ch-emoji">🌸</div>
+        </div>
+
+        <!-- Phase bar -->
+        <div class="phase-wrap">
+          <div class="phase-labels">
+            <span>Newborn</span>
+            <span style="color:var(--purple); font-weight:700;">Infant · Month 4</span>
+            <span>Toddler</span>
+          </div>
+          <div class="phase-bar"><div class="phase-fill" style="width:27%"></div></div>
+        </div>
+
+        <!-- Urgent banner -->
+        <div class="urgent-banner">
+          <div class="ub-icon">🥜</div>
+          <div class="ub-text">
+            <strong>Peanut window closes in ~7 months</strong>
+            Introducing peanuts now cuts allergy risk by up to 86%. One spoonful. This week.
+          </div>
+        </div>
+
+        <!-- This Month's To-Dos -->
+        <div class="sec-head">
+          <div class="sec-icon">📋</div>
+          <div class="sec-title">This Month's To-Dos</div>
+          <div class="sec-count">5 items</div>
+        </div>
+        <div class="todos-block">
+          <div class="todo-row"><div class="todo-box done"></div><span class="todo-text done">Start Vitamin D drops (400 IU/day)</span></div>
+          <div class="todo-row"><div class="todo-box"></div><span>Book 4-month well-child visit</span></div>
+          <div class="todo-row"><div class="todo-box"></div><span>Ask about iron drops if breastfeeding</span></div>
+          <div class="todo-row"><div class="todo-box"></div><span>Introduce peanut butter in puree this week</span></div>
+          <div class="todo-row"><div class="todo-box"></div><span>Build to 30 min tummy time/day by end of month</span></div>
+        </div>
+
+        <!-- Important -->
+        <div class="sec-head">
+          <div class="sec-icon">🚨</div>
+          <div class="sec-title" style="color:#E8490F;">Important — Act Now</div>
+          <div class="sec-count">2</div>
+        </div>
+        <div class="m-card" style="border-color:#FFCBB8;">
+          <div class="m-card-inner" style="background:#FFF4F0;">
+            <div class="m-card-head">
+              <span class="m-section-tag">🥜 Feeding</span>
+              <span class="badge badge-urgent">Urgent</span>
+            </div>
+            <div class="m-title">⚠️ Peanut introduction window: 4–11 months</div>
+            <div class="m-body">The LEAP Study showed early introduction cuts allergy risk by up to 86%. Mix 1/4 tsp smooth peanut butter into any puree.</div>
+            <div class="fm-block">
+              <div class="fm-label">Family Moment</div>
+              <div class="fm-text">One small spoonful. Possibly a lifetime without a peanut allergy.</div>
+            </div>
+          </div>
+          <div class="m-card-footer">
+            <span class="playbook-link">Open Feeding Playbook →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3B: Next Steps cards + CPR with Skip -->
+  <div class="screen-block">
+    <div class="screen-label">3B — Next Steps <span class="updated-tag">Updated: CPR Skip</span></div>
+    <div class="screen-sublabel">Milestone cards · CPR has skip option · Dismiss on normal items</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="ff-logo">
+          <svg class="ff-logo-icon" width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6E4ED6"/>
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          FamilyForce
+        </div>
+        <div class="nav-avatar">👤</div>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn">📚 My Progress</button>
+        <button class="tab-btn active">🌱 Advisor</button>
+      </div>
+      <div class="scroll-area" style="padding-top:6px;">
+
+        <div class="sec-head">
+          <div class="sec-icon">🚀</div>
+          <div class="sec-title">Next Steps</div>
+          <div class="sec-count">8</div>
+        </div>
+
+        <!-- High card: Sleep training -->
+        <div class="m-card" style="border-color:#FFE5A0;">
+          <div class="m-card-inner" style="background:#FFFBF0;">
+            <div class="m-card-head">
+              <span class="m-section-tag">😴 Sleep</span>
+              <span class="badge badge-next">Next Step</span>
+            </div>
+            <div class="m-title">Sleep training window opens at 6 months</div>
+            <div class="m-body">Old enough to self-soothe. Young enough that habits haven't hardened. Waiting past 9 months doesn't make it easier.</div>
+            <div class="fm-block">
+              <div class="fm-label">Family Moment</div>
+              <div class="fm-text">The first night they put themselves to sleep. You'll cry in the hallway.</div>
+            </div>
+            <div class="todo-row" style="padding:3px 0;"><div class="todo-box"></div><span>Choose your method before the window opens</span></div>
+            <div class="todo-row" style="padding:3px 0;"><div class="todo-box"></div><span>Get aligned with your partner first</span></div>
+          </div>
+          <div class="m-card-footer">
+            <span class="playbook-link">Open Sleep Playbook →</span>
+            <span class="share-btn">↑ Share</span>
+          </div>
+        </div>
+
+        <!-- CPR card — with Skip option — new in v2 -->
+        <div class="m-card" style="border-color:#FFE5A0;">
+          <div class="m-card-inner" style="background:#FFFBF0;">
+            <div class="m-card-head">
+              <span class="m-section-tag">🫀 Health</span>
+              <span class="badge badge-next">Next Step</span>
+            </div>
+            <div class="m-title">Take an infant CPR class</div>
+            <div class="m-body">Two hours. Most parents never use it. All of them are glad they know it. The Red Cross and most hospitals offer free sessions.</div>
+            <div class="fm-block">
+              <div class="fm-label">Family Moment</div>
+              <div class="fm-text">The confidence that comes from knowing what to do if the worst happens.</div>
+            </div>
+            <div class="todo-row" style="padding:3px 0;"><div class="todo-box done"></div><span class="todo-text done" style="text-decoration:line-through; color:var(--text-dim);">Book the class (Red Cross or local hospital)</span></div>
+          </div>
+          <div class="m-card-footer" style="gap:8px; flex-wrap:wrap;">
+            <span style="font-size:11.5px; color:var(--text-dim);">🫀 Before Baby Arrives</span>
+            <span class="skip-btn">Already done · Skip ✓</span>
+          </div>
+        </div>
+        <!-- Note about skip -->
+        <div style="margin:-4px 18px 8px; font-size:11px; color:var(--text-dim); line-height:1.4; padding-left:4px;">
+          ↑ "Skip" removes a milestone for tasks that don't apply — like CPR if you're already certified. <strong style="color:var(--text);">It won't come back.</strong>
+        </div>
+
+        <!-- Normal card with dismiss -->
+        <div class="m-card" style="border-color:#E4E0F8;">
+          <div class="m-card-inner" style="background:#F8F7FF;">
+            <div class="m-card-head"><span class="m-section-tag">💪 Motor</span></div>
+            <div class="m-title">Batting at things — first cause and effect</div>
+            <div class="m-body">That swipe at a hanging toy is your baby discovering: I move, things move.</div>
+            <div class="fm-block">
+              <div class="fm-label">Family Moment</div>
+              <div class="fm-text">Watch their face when they make something swing. Pure surprise at themselves.</div>
+            </div>
+          </div>
+          <div class="m-card-footer">
+            <span style="font-size:11.5px; color:var(--text-dim);">Motor · Week 14–20</span>
+            <span class="dismiss-btn">Dismiss</span>
+          </div>
+        </div>
+
+        <!-- Collapsed ongoing -->
+        <div class="collapsed">
+          <div class="collapsed-head">
+            <span class="collapsed-text">📂 Ongoing Reminders (14)</span>
+            <span class="collapsed-chev">▼</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 3C: Wins section -->
+  <div class="screen-block">
+    <div class="screen-label">3C — Wins Section</div>
+    <div class="screen-sublabel">Celebrates recently passed milestones. Skipped + dismissed are visible below.</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="ff-logo">
+          <svg class="ff-logo-icon" width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6E4ED6"/>
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          FamilyForce
+        </div>
+        <div class="nav-avatar">👤</div>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn">📚 My Progress</button>
+        <button class="tab-btn active">🌱 Advisor</button>
+      </div>
+      <div class="scroll-area">
+        <div class="wins-head">
+          <span style="font-size:17px;">🏆</span>
+          <div class="wins-title">Olivia's Wins</div>
+        </div>
+        <div class="wins-sub">Recently mastered milestones. Look how far you've come.</div>
+
+        <div class="win-card">
+          <div class="m-card-head" style="margin-bottom:5px;">
+            <span class="m-section-tag">😊 Social</span>
+            <span class="badge badge-mastered">Mastered! 🎉</span>
+          </div>
+          <div class="m-title">The social smile (6–8 weeks)</div>
+          <div class="m-body">Not gas. This is your baby saying: I know you.</div>
+          <div class="fm-block" style="background:rgba(56,161,105,.08); border-left-color:var(--green); margin-bottom:9px;">
+            <div class="fm-label" style="color:var(--green);">Family Moment</div>
+            <div class="fm-text">You will remember exactly where you were the first time this happened.</div>
+          </div>
+          <button style="width:100%; padding:9px; background:var(--green); color:#fff; border:none; border-radius:8px; font-size:12.5px; font-weight:700; cursor:pointer;">📸 Share this win</button>
+        </div>
+
+        <div class="win-card">
+          <div class="m-card-head" style="margin-bottom:5px;">
+            <span class="m-section-tag">🎶 Language</span>
+            <span class="badge badge-mastered">Mastered! 🎉</span>
+          </div>
+          <div class="m-title">Cooing — their first attempt at conversation</div>
+          <div class="m-body">They're trying to respond to you. That's how language gets built.</div>
+          <div class="fm-block" style="background:rgba(56,161,105,.08); border-left-color:var(--green);">
+            <div class="fm-label" style="color:var(--green);">Family Moment</div>
+            <div class="fm-text">The first time they made a sound that sounded like they meant it.</div>
+          </div>
+        </div>
+
+        <!-- Dismissed + skipped items -->
+        <div class="dismissed-sec">
+          <div class="dismissed-title">Dismissed &amp; Skipped (3)</div>
+          <div class="dismissed-pill">🌳 Outdoor time <span class="dismissed-restore">Restore</span></div>
+          <div class="dismissed-pill">📖 Read aloud <span class="dismissed-restore">Restore</span></div>
+          <div class="dismissed-pill">🫀 Infant CPR <span style="color:var(--text-dim);">Skipped</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     FLOW 4 — SHARE CARD + SETTINGS
+══════════════════════════════════════════════════════ -->
+<div class="flow-label">FLOW 4 — SHARE CARD &amp; SETTINGS</div>
+<div class="flow-divider"><span>Referral mechanic · Family management · Child limit</span></div>
+
+<div class="screen-grid">
+
+  <!-- 4A: Share Card — updated: copy image only, QR = referral -->
+  <div class="screen-block">
+    <div class="screen-label">4A — Share Card <span class="updated-tag">Updated</span></div>
+    <div class="screen-sublabel">Copy Image only. QR code is the referral link. No social icons.</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="nav-back">← Back</div>
+        <div style="font-size:13px; font-weight:700; color:var(--text);">Share Milestone</div>
+        <div style="width:40px;"></div>
+      </div>
+      <div class="scroll-area">
+        <div style="padding:14px 18px 6px; font-size:12.5px; color:var(--text-mid);">Your shareable card is ready. Copy the image and post it anywhere.</div>
+
+        <!-- Card preview -->
+        <div class="share-preview-card">
+          <div class="spc-hero">
+            <div class="spc-emoji">😊</div>
+            <div class="spc-child">OLIVIA · 4 MONTHS</div>
+            <div class="spc-milestone">She smiled back at me for the first time.</div>
+            <div class="spc-moment">"You will remember exactly where you were the first time this happens."</div>
+          </div>
+          <div class="spc-body">
+            <div class="spc-brand">
+              <span style="display:inline-flex; align-items:center; gap:5px;">
+                <svg width="14" height="14" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#6E4ED6"/><path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
+                FamilyForce · getfamilyforce.com
+              </span>
+            </div>
+            <!-- QR = referral code — clarified in v2 -->
+            <div class="spc-qr-row">
+              <div class="spc-qr">QR<br>Code</div>
+              <div class="spc-qr-label">
+                <strong>Your referral link</strong><br>
+                Anyone who scans this gets linked to FamilyForce. If they subscribe, you'll earn credit toward your next renewal.
+              </div>
+            </div>
+            <button class="spc-copy-btn">📋 Copy Image to Clipboard</button>
+          </div>
+        </div>
+
+        <div style="padding:14px 18px 0; font-size:12px; color:var(--text-dim); line-height:1.5; text-align:center;">
+          Paste into Instagram, WhatsApp, or anywhere you share with your family.
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 4B: Expecting parents view -->
+  <div class="screen-block">
+    <div class="screen-label">4B — Expecting Parents</div>
+    <div class="screen-sublabel">Before Baby Arrives. Transitions to full digest at birth.</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="ff-logo">
+          <svg class="ff-logo-icon" width="22" height="22" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6E4ED6"/>
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          </svg>
+          FamilyForce
+        </div>
+        <div class="nav-avatar">👤</div>
+      </div>
+      <div class="tab-bar">
+        <button class="tab-btn">📚 My Progress</button>
+        <button class="tab-btn active">🌱 Advisor</button>
+      </div>
+      <div class="scroll-area">
+        <div class="child-switcher">
+          <div class="child-pill active">🤰 Baby Hartley</div>
+          <div class="child-pill-add">+ Add</div>
+        </div>
+        <div class="child-hero" style="background:linear-gradient(135deg,#FFF4F0,#FFF0E6);">
+          <div>
+            <div class="ch-name">Baby Hartley</div>
+            <div class="ch-age">Due in 6 weeks</div>
+            <div class="ch-phase" style="color:#E8490F;">🤰 ARRIVING SOON</div>
+          </div>
+          <div class="ch-emoji">🤰</div>
+        </div>
+        <div class="sec-head" style="margin-top:8px;">
+          <div class="sec-icon">🤰</div>
+          <div class="sec-title">Before Baby Arrives</div>
+          <div class="sec-count">5 items</div>
+        </div>
+        <div style="padding:0 18px 8px; font-size:12px; color:var(--text-dim); line-height:1.4;">Get these in place before you're in the thick of it.</div>
+
+        <div class="m-card" style="border-color:#FFE5A0;">
+          <div class="m-card-inner" style="background:#FFFBF0;">
+            <div class="m-card-head">
+              <span class="m-section-tag">🩺 Health</span>
+              <span class="badge badge-next">Next Step</span>
+            </div>
+            <div class="m-title">Choose your pediatrician before the birth</div>
+            <div class="m-body">You want this relationship established before you're exhausted and Googling "is this normal" at 3am.</div>
+            <div class="fm-block">
+              <div class="fm-label">Family Moment</div>
+              <div class="fm-text">Finding the right pediatrician feels small. It's not.</div>
+            </div>
+            <div class="todo-row"><div class="todo-box done"></div><span class="todo-text done" style="text-decoration:line-through; color:var(--text-dim);">Research pediatricians in your area</span></div>
+            <div class="todo-row"><div class="todo-box"></div><span>Schedule a prenatal meet-and-greet</span></div>
+          </div>
+          <div class="m-card-footer"><span></span><span></span></div>
+        </div>
+
+        <div class="m-card" style="border-color:#FFE5A0;">
+          <div class="m-card-inner" style="background:#FFFBF0;">
+            <div class="m-card-head">
+              <span class="m-section-tag">🫀 Health</span>
+              <span class="badge badge-next">Next Step</span>
+            </div>
+            <div class="m-title">Take an infant CPR class</div>
+            <div class="m-body">Two hours. Most parents never use it. All of them are glad they know it.</div>
+            <div class="fm-block">
+              <div class="fm-label">Family Moment</div>
+              <div class="fm-text">The confidence that comes from knowing what to do if the worst happens.</div>
+            </div>
+          </div>
+          <div class="m-card-footer">
+            <span></span>
+            <span class="skip-btn">Already done · Skip ✓</span>
+          </div>
+        </div>
+
+        <div style="padding:14px 18px; font-size:12px; color:var(--text-dim); font-style:italic; line-height:1.5; border-top:1px solid var(--border); margin-top:6px;">
+          Baby Hartley's full milestone digest unlocks automatically when you add their birth date. 🌱
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4C: Manage Children + sub (3-child limit) -->
+  <div class="screen-block">
+    <div class="screen-label">4C — Settings <span class="updated-tag">Updated: 3 children, family</span></div>
+    <div class="screen-sublabel">3-child limit. Family Circle access visible. Subscription plan shown.</div>
+    <div class="phone">
+      <div class="phone-status"><span>9:41</span><div class="phone-notch"></div><span>●●●</span></div>
+      <div class="nav-bar">
+        <div class="nav-back">← Back</div>
+        <div style="font-size:14px; font-weight:700; color:var(--text);">Settings</div>
+        <div style="width:32px;"></div>
+      </div>
+      <div class="scroll-area">
+        <div class="settings-head">
+          <div class="settings-h1">Development Advisor</div>
+          <div class="settings-sub">Active · Annual plan · Renews April 12, 2027</div>
+        </div>
+
+        <!-- Children section -->
+        <div style="padding:14px 18px 6px; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim);">Children (2 of 3)</div>
+
+        <div class="child-row">
+          <div class="cr-emoji">🌸</div>
+          <div class="cr-info">
+            <div class="cr-name">Olivia</div>
+            <div class="cr-age">4 months, 2 weeks · born Nov 12, 2025</div>
+          </div>
+          <div class="cr-actions">
+            <button class="cr-btn">Edit</button>
+            <button class="cr-btn cr-btn-danger">Remove</button>
+          </div>
+        </div>
+
+        <div class="child-row">
+          <div class="cr-emoji">⭐</div>
+          <div class="cr-info">
+            <div class="cr-name">Liam</div>
+            <div class="cr-age">2 years, 4 months · born Oct 3, 2023</div>
+          </div>
+          <div class="cr-actions">
+            <button class="cr-btn">Edit</button>
+            <button class="cr-btn cr-btn-danger">Remove</button>
+          </div>
+        </div>
+
+        <div style="padding:14px 18px;">
+          <div class="btn-secondary">+ Add Third Child</div>
+          <div style="font-size:11.5px; color:var(--text-dim); text-align:center; margin-top:7px;">1 slot remaining · Need more? <span style="color:var(--purple); font-weight:700; cursor:pointer;">Contact us</span></div>
+        </div>
+
+        <!-- Family access section — new in v2 -->
+        <div style="padding:6px 18px 6px; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim);">Family Circle Access</div>
+        <div style="margin:0 18px 16px; background:var(--purple-lt); border-radius:13px; padding:14px 15px;">
+          <div style="font-size:12.5px; font-weight:700; color:var(--text); margin-bottom:5px;">👨‍👩‍👧 3 members have access</div>
+          <div style="font-size:12px; color:var(--text-mid); line-height:1.45; margin-bottom:10px;">Everyone in your Family Circle can view and track the Development Advisor. No extra charge. They join through the Family Circle code in your account.</div>
+          <div style="font-size:12px; color:var(--purple); font-weight:700; cursor:pointer;">Manage Family Circle →</div>
+        </div>
+
+        <!-- Subscription box -->
+        <div class="sub-info-box">
+          <div class="sub-info-title">📅 Annual Plan · $79.99/yr</div>
+          <div class="sub-info-body">Active · Renews April 12, 2027<br>Purchased with gift code · FF-BABY-2026</div>
+          <div class="sub-manage-link">Manage subscription →</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     DESIGN NOTES
+══════════════════════════════════════════════════════ -->
+<div class="notes-bar">
+  <h2>📐 Design Notes — v2 Changes &amp; Rationale</h2>
+  <div class="notes-grid">
+
+    <div class="note-card">
+      <div class="note-screen">Screens 1A–1B — Upsell</div>
+      <div class="note-title">Pricing &amp; Trial Changes</div>
+      <ul>
+        <li class="changed">Removed 7-day free trial — cleaner conversion funnel</li>
+        <li class="changed">Monthly vs Annual toggle on upsell screen</li>
+        <li class="changed">Annual plan defaults to selected (savings highlighted in green badge)</li>
+        <li>$9.99/mo or $79.99/yr (~$6.67/mo effective) — $39 savings</li>
+        <li>CTA button dynamically shows selected plan price</li>
+        <li>No annual vs. monthly complexity elsewhere in the app</li>
+      </ul>
+    </div>
+
+    <div class="note-card">
+      <div class="note-screen">Screen 1C — Gift Code</div>
+      <div class="note-title">Gift Flow (Baby Shower Use Case)</div>
+      <ul>
+        <li class="changed">New screen: "Have a gift code? Redeem it here" link on upsell</li>
+        <li>Gift purchaser buys from a separate gift page (to be designed)</li>
+        <li>Recipient enters the code (e.g., FF-BABY-2026) — validates instantly</li>
+        <li>Shows gifter's name if available: "Gifted by: Grandma Linda 💜"</li>
+        <li>No payment info required to activate</li>
+        <li>Unlocks the same 1-year annual plan as a paid subscriber</li>
+        <li>Opportunity: gift page = referral vector and gifting occasion</li>
+      </ul>
+    </div>
+
+    <div class="note-card">
+      <div class="note-screen">All Screens — Logo</div>
+      <div class="note-title">FamilyForce Logo</div>
+      <ul>
+        <li class="changed">Replaced text-only "FamilyForce" with hex icon + wordmark</li>
+        <li>SVG inline — no external asset dependency (consistent with zero-dep policy)</li>
+        <li>Icon: purple rounded rectangle + white chevron/crossbar (matches favicon.svg)</li>
+        <li>Used consistently in all nav bars, share cards, and branded surfaces</li>
+      </ul>
+    </div>
+
+    <div class="note-card">
+      <div class="note-screen">Screens 3A — Main Digest</div>
+      <div class="note-title">Family Circle Access</div>
+      <ul>
+        <li class="changed">Family Circle indicator below child switcher — shows linked members</li>
+        <li class="changed">Onboarding completion screen mentions family access</li>
+        <li>Shared read access: all circle members see the same digest</li>
+        <li>Shared write: to-do checkboxes sync across family members (future consideration)</li>
+        <li>Access managed via existing Family Circle code system (FF-XXXX)</li>
+        <li>No extra charge for family members — emphasised in upsell</li>
+      </ul>
+    </div>
+
+    <div class="note-card">
+      <div class="note-screen">Settings — 4C</div>
+      <div class="note-title">3-Child Limit</div>
+      <ul>
+        <li class="changed">Limit changed from 5 → 3 children</li>
+        <li>"Need more? Contact us" link — no hard wall, manual exception path</li>
+        <li>Slot counter shown: "2 of 3 children"</li>
+        <li>Rationale: 3 children covers the large majority of families; edge cases handled manually</li>
+      </ul>
+    </div>
+
+    <div class="note-card">
+      <div class="note-screen">Screen 4A — Share Card</div>
+      <div class="note-title">Share UX &amp; Referral QR</div>
+      <ul>
+        <li class="changed">Removed all social platform icons (WhatsApp, Instagram, Facebook)</li>
+        <li class="changed">Single action: "Copy Image to Clipboard" — user pastes wherever they want</li>
+        <li class="changed">QR code explicitly labelled as referral link (not just decoration)</li>
+        <li>Referral mechanic: if a scanned user subscribes, purchaser earns renewal credit</li>
+        <li>Card includes FF logo + website — brand-consistent even off-platform</li>
+        <li>Copy Image uses html2canvas (already approved as the one exception)</li>
+      </ul>
+    </div>
+
+    <div class="note-card">
+      <div class="note-screen">Screen 3B — Cards</div>
+      <div class="note-title">CPR Skip / Already Done Option</div>
+      <ul>
+        <li class="changed">CPR milestone has "Already done · Skip ✓" button in card footer</li>
+        <li class="changed">Skip is permanent (unlike Dismiss) — shown in grey in Dismissed section</li>
+        <li>Skip applies to any milestone that may not be relevant (CPR, car seat check if already done, etc.)</li>
+        <li>UX note: "Skip" is different from "Dismiss" — Dismiss is hidden until restored; Skip implies completion</li>
+        <li>Both appear recoverable at the bottom of the Wins section</li>
+      </ul>
+    </div>
+
+    <div class="note-card">
+      <div class="note-screen">Open Questions</div>
+      <div class="note-title">Things to Confirm Before Build</div>
+      <ul>
+        <li>Does to-do checkbox state sync across Family Circle? (e.g. dad checks it, mom sees it checked)</li>
+        <li>Does the gift code live in Supabase? What table? (suggest: gift_codes table)</li>
+        <li>Referral QR — is there a referral program, or is this just brand awareness?</li>
+        <li>Monthly plan: does it exist in Stripe? Or annual only?</li>
+        <li>Family Circle access: read-only for members, or full control for members too?</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FamilyForce — Referral Section Wireframe</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #FAFAFA; --white: #fff;
+    --terra: #6E4ED6; --terra-dark: #5B3CC4; --terra-bright: #7C5CFC;
+    --terra-glow: rgba(110,78,214,.07);
+    --text: #1D1D1F; --text-mid: #5C5960; --text-dim: #8A879A; --text-ghost: #C2BFD0;
+    --border: #E5E2EC; --border-light: #EDEBF2;
+    --elevated: #F4F2F9;
+    --green: #38A169; --green-bg: #F0FFF4; --green-border: #C6F6D5;
+    --amber: #D97706; --amber-bg: #FFFBEB; --amber-border: #FDE68A;
+    --blue: #2563EB; --blue-bg: #EFF6FF; --blue-border: #BFDBFE;
+    --red: #DC2626; --red-bg: #FEF2F2; --red-border: #FECACA;
+    --sans: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+  body { background: var(--bg); font-family: var(--sans); color: var(--text); }
+  .page { max-width: 680px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  /* ── Section chrome ── */
+  .section-label {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--text-dim); padding: 0 2px; margin-bottom: 10px; margin-top: 28px;
+  }
+  .card {
+    background: var(--white); border: 1.5px solid var(--border-light);
+    border-radius: 14px; overflow: hidden;
+  }
+
+  /* ── Stat grid ── */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .stat-card {
+    background: var(--white); border: 1.5px solid var(--border-light);
+    border-radius: 12px; padding: 14px 16px;
+  }
+  .stat-label { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+  .stat-value { font-size: 22px; font-weight: 800; color: var(--text); line-height: 1.1; }
+  .stat-value.green { color: var(--green); }
+  .stat-value.purple { color: var(--terra-dark); }
+  .stat-sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+
+  /* ── Referral code card ── */
+  .code-card {
+    background: var(--terra-glow); border: 1.5px solid var(--border-light);
+    border-radius: 14px; padding: 16px 18px; display: flex; align-items: center;
+    gap: 14px; margin-bottom: 12px;
+  }
+  .code-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--terra-dark); margin-bottom: 4px; }
+  .code-value { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: .05em; }
+  .code-sub { font-size: 11.5px; color: var(--text-dim); margin-top: 3px; }
+  .code-actions { display: flex; flex-direction: column; gap: 8px; margin-left: auto; flex-shrink: 0; }
+  .btn-copy {
+    padding: 8px 16px; background: var(--terra); color: #fff; border: none;
+    border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
+    font-family: var(--sans); white-space: nowrap; transition: background .15s;
+  }
+  .btn-copy:hover { background: var(--terra-dark); }
+  .btn-copy.copied { background: var(--green); }
+  .btn-share {
+    padding: 8px 16px; background: transparent; color: var(--terra-dark);
+    border: 1.5px solid var(--border); border-radius: 8px; font-size: 12px;
+    font-weight: 700; cursor: pointer; font-family: var(--sans); white-space: nowrap; transition: background .15s;
+  }
+  .btn-share:hover { background: var(--elevated); }
+
+  /* ── Payout method ── */
+  .payout-method {
+    background: var(--white); border: 1.5px solid var(--border-light);
+    border-radius: 14px; padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+  }
+  .pm-icon { font-size: 22px; }
+  .pm-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-dim); }
+  .pm-value { font-size: 14px; font-weight: 700; color: var(--text); margin-top: 2px; }
+  .pm-sub { font-size: 11.5px; color: var(--text-dim); }
+  .pm-change { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--terra-dark); cursor: pointer; background: none; border: none; font-family: var(--sans); }
+  .pm-change:hover { text-decoration: underline; }
+
+  /* ── Collapsible table section ── */
+  .collapsible-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 18px; cursor: pointer; user-select: none;
+    background: var(--white); border-bottom: 1.5px solid var(--border-light);
+  }
+  .collapsible-header:last-child { border-bottom: none; }
+  .col-title { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+  .col-count {
+    background: var(--terra-glow); color: var(--terra-dark); border-radius: 20px;
+    padding: 2px 8px; font-size: 11px; font-weight: 700;
+  }
+  .col-arrow {
+    font-size: 12px; color: var(--text-dim); transition: transform .2s;
+    display: inline-block;
+  }
+  .col-arrow.open { transform: rotate(90deg); }
+  .col-body { border-top: 1.5px solid var(--border-light); }
+
+  /* ── Table ── */
+  .ref-table { width: 100%; border-collapse: collapse; }
+  .ref-table th {
+    text-align: left; padding: 10px 18px; font-size: 10px; font-weight: 700;
+    letter-spacing: .07em; text-transform: uppercase; color: var(--text-dim);
+    border-bottom: 1.5px solid var(--border-light); background: var(--bg);
+  }
+  .ref-table td { padding: 11px 18px; font-size: 13px; color: var(--text-mid); border-bottom: 1px solid var(--border-light); vertical-align: middle; }
+  .ref-table tr:last-child td { border-bottom: none; }
+  .ref-table td.name { color: var(--text); font-weight: 600; }
+  .ref-table td.amount { font-weight: 700; color: var(--text); text-align: right; }
+  .ref-table td.amount.earned { color: var(--green); }
+
+  /* ── Status badges ── */
+  .badge {
+    display: inline-block; padding: 2px 9px; border-radius: 20px;
+    font-size: 10.5px; font-weight: 700; white-space: nowrap;
+  }
+  .badge.cleared  { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-border); }
+  .badge.pending  { background: var(--amber-bg);  color: var(--amber);  border: 1px solid var(--amber-border); }
+  .badge.paid     { background: var(--blue-bg);   color: var(--blue);   border: 1px solid var(--blue-border); }
+  .badge.processing { background: var(--terra-glow); color: var(--terra-dark); border: 1px solid var(--border); }
+  .badge.expired  { background: var(--bg);        color: var(--text-dim); border: 1px solid var(--border); }
+  .badge.completed { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+
+  /* ── Next payout row ── */
+  .next-payout-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 18px; background: var(--elevated); border-radius: 10px; margin-bottom: 12px;
+  }
+  .np-label { font-size: 11px; color: var(--text-dim); font-weight: 600; text-transform: uppercase; letter-spacing: .07em; }
+  .np-date  { font-size: 14px; font-weight: 800; color: var(--text); margin-top: 2px; }
+  .np-badge { background: var(--terra-glow); color: var(--terra-dark); border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 700; }
+
+  /* ── Page title ── */
+  .page-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+  .page-sub { font-size: 13px; color: var(--text-dim); }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px);
+    background: #1D1D1F; color: #fff; padding: 10px 20px; border-radius: 24px;
+    font-size: 13px; font-weight: 600; transition: transform .25s ease; white-space: nowrap;
+    pointer-events: none; z-index: 999;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 480px) {
+    .stat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .stat-value { font-size: 19px; }
+    .ref-table th, .ref-table td { padding: 9px 12px; font-size: 12px; }
+    .code-card { flex-wrap: wrap; }
+    .code-actions { flex-direction: row; margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useCallback } = React;
+
+const REFERRALS = [
+  { id:1, name:'Alex M.',   plan:'Annual',  price:79.99, date:'Feb 28, 2026', status:'cleared',    earned:20.00 },
+  { id:2, name:'Sam T.',    plan:'Monthly', price:9.99,  date:'Mar 3, 2026',  status:'pending',    earned:2.50  },
+  { id:3, name:'Priya K.',  plan:'Monthly', price:9.99,  date:'Mar 10, 2026', status:'pending',    earned:2.50  },
+  { id:4, name:'Jordan L.', plan:'Annual',  price:79.99, date:'Jan 15, 2026', status:'paid',       earned:20.00 },
+  { id:5, name:'Casey R.',  plan:'Monthly', price:9.99,  date:'Jan 22, 2026', status:'paid',       earned:2.50  },
+  { id:6, name:'Morgan W.', plan:'Monthly', price:9.99,  date:'Dec 5, 2025',  status:'expired',    earned:0.00  },
+];
+
+const PAYOUTS = [
+  { id:1, date:'Mar 15, 2026', amount:22.50, method:'PayPal', status:'processing' },
+  { id:2, date:'Feb 15, 2026', amount:45.00, method:'PayPal', status:'completed'  },
+  { id:3, date:'Jan 15, 2026', amount:62.50, method:'PayPal', status:'completed'  },
+];
+
+const STATUS_LABEL = {
+  cleared:'Cleared', pending:'Pending', paid:'Paid Out',
+  expired:'Expired', processing:'Processing', completed:'Completed',
+};
+
+function Badge({ status }) {
+  return <span className={`badge ${status}`}>{STATUS_LABEL[status]}</span>;
+}
+
+function Collapsible({ title, count, countColor, children, defaultOpen = false }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="card" style={{ marginBottom: 12 }}>
+      <div className="collapsible-header" onClick={() => setOpen(o => !o)}>
+        <div className="col-title">
+          {title}
+          <span className="col-count" style={countColor ? { background: 'transparent', color: countColor } : {}}>
+            {count}
+          </span>
+        </div>
+        <span className={`col-arrow ${open ? 'open' : ''}`}>▶</span>
+      </div>
+      {open && <div className="col-body">{children}</div>}
+    </div>
+  );
+}
+
+function Toast({ msg }) {
+  return <div className={`toast ${msg ? 'show' : ''}`}>{msg}</div>;
+}
+
+function ReferralSection() {
+  const [codeCopied, setCodeCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [toast, setToast]           = useState('');
+
+  const showToast = (msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(''), 2000);
+  };
+
+  const copyCode = () => {
+    navigator.clipboard?.writeText('FF-WXYZ').catch(()=>{});
+    setCodeCopied(true);
+    showToast('Referral code copied!');
+    setTimeout(() => setCodeCopied(false), 2000);
+  };
+
+  const copyLink = () => {
+    navigator.clipboard?.writeText('https://getfamilyforce.com?ref=FF-WXYZ').catch(()=>{});
+    setLinkCopied(true);
+    showToast('Referral link copied!');
+    setTimeout(() => setLinkCopied(false), 2000);
+  };
+
+  const totalEarned    = REFERRALS.reduce((s, r) => s + (r.status !== 'expired' ? r.earned : 0), 0);
+  const pendingAmt     = REFERRALS.filter(r => r.status === 'pending').reduce((s, r) => s + r.earned, 0);
+  const clearedAmt     = REFERRALS.filter(r => r.status === 'cleared').reduce((s, r) => s + r.earned, 0);
+  const available      = clearedAmt;
+
+  const fmt = (n) => '$' + n.toFixed(2);
+
+  return (
+    <div className="page">
+      <div className="page-title">Referral Program</div>
+      <div className="page-sub">Earn 25% cash back for every friend who subscribes.</div>
+
+      {/* ── Stat cards ── */}
+      <div className="section-label" style={{ marginTop: 20 }}>Your earnings</div>
+      <div className="stat-grid">
+        <div className="stat-card">
+          <div className="stat-label">Total Earned</div>
+          <div className="stat-value purple">{fmt(totalEarned)}</div>
+          <div className="stat-sub">All time</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">Pending Clearance</div>
+          <div className="stat-value" style={{ color: '#D97706' }}>{fmt(pendingAmt)}</div>
+          <div className="stat-sub">After 30-day return window</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">Available Balance</div>
+          <div className="stat-value green">{fmt(available)}</div>
+          <div className="stat-sub">Ready for payout</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-label">Next Payout</div>
+          <div className="stat-value" style={{ fontSize: 16, marginTop: 2, fontWeight: 800 }}>Apr 15, 2026</div>
+          <div className="stat-sub">Auto-payout on 15th</div>
+        </div>
+      </div>
+
+      {/* ── Next payout highlight ── */}
+      <div className="next-payout-row">
+        <div>
+          <div className="np-label">Scheduled payout</div>
+          <div className="np-date">April 15, 2026 · {fmt(available)} to PayPal</div>
+        </div>
+        <div className="np-badge">In 34 days</div>
+      </div>
+
+      {/* ── Referral code ── */}
+      <div className="section-label">Your referral code</div>
+      <div className="code-card">
+        <div>
+          <div className="code-label">Referral code</div>
+          <div className="code-value">FF-WXYZ</div>
+          <div className="code-sub">Friends get 25% off · You get 25% cash back</div>
+        </div>
+        <div className="code-actions">
+          <button className={`btn-copy ${codeCopied ? 'copied' : ''}`} onClick={copyCode}>
+            {codeCopied ? '✓ Copied' : 'Copy code'}
+          </button>
+          <button className="btn-share" onClick={copyLink}>
+            {linkCopied ? '✓ Link copied' : '🔗 Copy link'}
+          </button>
+        </div>
+      </div>
+
+      {/* ── Payout method ── */}
+      <div className="section-label">Payout method</div>
+      <div className="payout-method" style={{ marginBottom: 12 }}>
+        <div className="pm-icon">💳</div>
+        <div>
+          <div className="pm-label">Stripe</div>
+          <div className="pm-value">jack@getfamilyforce.com</div>
+          <div className="pm-sub">Payouts on the 15th of each month</div>
+        </div>
+        <button className="pm-change">Change</button>
+      </div>
+
+      {/* ── Recent referrals ── */}
+      <div className="section-label">Activity</div>
+      <Collapsible title="Recent Referrals" count={`${REFERRALS.length} referrals`} defaultOpen={true}>
+        <table className="ref-table">
+          <thead>
+            <tr>
+              <th>Friend</th>
+              <th>Plan</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th style={{ textAlign:'right' }}>Earned</th>
+            </tr>
+          </thead>
+          <tbody>
+            {REFERRALS.map(r => (
+              <tr key={r.id}>
+                <td className="name">{r.name}</td>
+                <td>{r.plan}<br/><span style={{ fontSize:11, color:'var(--text-dim)' }}>{fmt(r.price)}</span></td>
+                <td style={{ whiteSpace:'nowrap' }}>{r.date}</td>
+                <td><Badge status={r.status} /></td>
+                <td className={`amount ${r.earned > 0 ? 'earned' : ''}`}>
+                  {r.earned > 0 ? fmt(r.earned) : '—'}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Collapsible>
+
+      {/* ── Payout history ── */}
+      <Collapsible title="Payout History" count={`${PAYOUTS.length} payouts`} defaultOpen={true}>
+        <table className="ref-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Method</th>
+              <th>Status</th>
+              <th style={{ textAlign:'right' }}>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {PAYOUTS.map(p => (
+              <tr key={p.id}>
+                <td style={{ whiteSpace:'nowrap', color:'var(--text)', fontWeight:600 }}>{p.date}</td>
+                <td>{p.method}</td>
+                <td><Badge status={p.status} /></td>
+                <td className="amount earned">{fmt(p.amount)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Collapsible>
+
+      {/* ── How it works ── */}
+      <Collapsible title="How it works" count="3 steps">
+        <div style={{ padding:'16px 18px', display:'flex', flexDirection:'column', gap:12 }}>
+          {[
+            ['🔗','Share your link','Send your referral code or link to a friend who could use the Development Advisor.'],
+            ['💳','Friend subscribes','They get 25% off their first year. The discount applies automatically at checkout.'],
+            ['💸','You get paid','After their 30-day return window clears, your cash back moves to Available Balance and pays out on the 15th.'],
+          ].map(([icon, title, body]) => (
+            <div key={title} style={{ display:'flex', gap:12, alignItems:'flex-start' }}>
+              <div style={{ fontSize:20, flexShrink:0 }}>{icon}</div>
+              <div>
+                <div style={{ fontWeight:700, fontSize:13, color:'var(--text)', marginBottom:2 }}>{title}</div>
+                <div style={{ fontSize:12.5, color:'var(--text-dim)', lineHeight:1.5 }}>{body}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Collapsible>
+
+      <Toast msg={toast} />
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<ReferralSection />);
+</script>
+</body>
+</html>

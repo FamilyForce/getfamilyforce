@@ -1753,6 +1753,27 @@ button { font: inherit; cursor: pointer; }
 }
 .acc-edit-input:focus { border-color: var(--terra); background: var(--white); }
 .acc-edit-hint  { font-size: 12px; color: var(--text-dim); margin-top: 7px; line-height: 1.5; }
+/* iOS-style notification toggles */
+.notif-toggle {
+  position: relative; display: inline-block;
+  width: 44px; height: 26px; flex-shrink: 0; cursor: pointer;
+}
+.notif-toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.notif-slider {
+  position: absolute; inset: 0; border-radius: 13px;
+  background: var(--border); transition: background .2s;
+}
+.notif-slider::before {
+  content: ''; position: absolute;
+  width: 20px; height: 20px; border-radius: 50%;
+  left: 3px; top: 3px; background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  transition: transform .2s;
+}
+.notif-toggle input:checked + .notif-slider { background: var(--terra); }
+.notif-toggle input:checked + .notif-slider::before { transform: translateX(18px); }
+.notif-toggle input:disabled + .notif-slider { opacity: .4; cursor: not-allowed; }
+
 .acc-edit-save  {
   display: block; width: calc(100% - 40px); margin: 20px;
   padding: 14px; background: var(--terra); color: #fff; border: none;
@@ -3916,14 +3937,14 @@ button { font: inherit; cursor: pointer; }
     <div class="acc-group">
       <div class="acc-group-label">Settings</div>
       <div class="acc-group-card">
-        <div class="acc-cell tappable" onclick="stNotifications()">
+        <div class="acc-cell tappable" onclick="accShowView('acc-notifications')">
           <span class="acc-cell-icon">🔔</span>
           <div class="acc-cell-body"><div class="acc-cell-label">Notifications</div></div>
           <span class="acc-cell-chevron">›</span>
         </div>
-        <div class="acc-cell tappable" onclick="stPrivacy()">
+        <div class="acc-cell tappable" onclick="window.open('privacy.html','_blank')">
           <span class="acc-cell-icon">🛡️</span>
-          <div class="acc-cell-body"><div class="acc-cell-label">Privacy & your data</div></div>
+          <div class="acc-cell-body"><div class="acc-cell-label">Privacy Policy</div></div>
           <span class="acc-cell-chevron">›</span>
         </div>
       </div>
@@ -4085,6 +4106,68 @@ button { font: inherit; cursor: pointer; }
     </div>
 
   </div><!-- /acc-earn -->
+
+  <!-- ══ NOTIFICATIONS ══ -->
+  <div class="acc-subview" id="acc-notifications">
+    <div class="acc-sub-header">
+      <button class="acc-back-btn" onclick="accHideView('acc-notifications')">‹ Settings</button>
+      <div class="acc-sub-title">Notifications</div>
+    </div>
+
+    <!-- General -->
+    <div class="acc-group">
+      <div class="acc-group-label">Email Notifications</div>
+      <div class="acc-group-card">
+        <div class="acc-cell">
+          <span class="acc-cell-icon">🎓</span>
+          <div class="acc-cell-body">
+            <div class="acc-cell-label">Course reminders</div>
+            <div class="acc-cell-value">Nudge if you started a course but didn't finish</div>
+          </div>
+          <label class="notif-toggle" aria-label="Course reminders">
+            <input type="checkbox" id="notif-course-reminder" onchange="accSaveNotifPref('course_reminder', this.checked)">
+            <span class="notif-slider"></span>
+          </label>
+        </div>
+        <div class="acc-cell">
+          <span class="acc-cell-icon">👨‍👩‍👧</span>
+          <div class="acc-cell-body">
+            <div class="acc-cell-label">Family Circle activity</div>
+            <div class="acc-cell-value">When someone joins your Family Circle</div>
+          </div>
+          <label class="notif-toggle" aria-label="Family Circle activity">
+            <input type="checkbox" id="notif-family-joined" onchange="accSaveNotifPref('family_joined', this.checked)">
+            <span class="notif-slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advisor (locked for free users) -->
+    <div class="acc-group" id="notif-advisor-group">
+      <div class="acc-group-label">Advisor <span id="notif-advisor-lock" style="font-size:10px;color:var(--text-ghost);font-weight:400;letter-spacing:0;text-transform:none;margin-left:4px">· Subscribers only</span></div>
+      <div class="acc-group-card">
+        <div class="acc-cell" id="notif-milestone-cell">
+          <span class="acc-cell-icon">🌱</span>
+          <div class="acc-cell-body">
+            <div class="acc-cell-label">New milestones unlocked</div>
+            <div class="acc-cell-value">When your child enters a new development window</div>
+          </div>
+          <label class="notif-toggle" aria-label="New milestones">
+            <input type="checkbox" id="notif-milestone-unlocked" onchange="accSaveNotifPref('milestone_unlocked', this.checked)">
+            <span class="notif-slider"></span>
+          </label>
+        </div>
+
+      </div>
+    </div>
+
+    <p style="font-size:12px;color:var(--text-dim);text-align:center;padding:8px 20px 32px;line-height:1.6">
+      Email notifications are sent to your account email address.<br>
+      You can unsubscribe from any email by updating your preferences above.
+    </p>
+
+  </div><!-- /acc-notifications -->
 
 </div><!-- /acc-wrap -->
 </div><!-- /tab-settings -->
@@ -4512,6 +4595,7 @@ button { font: inherit; cursor: pointer; }
           lock.className = 'badge-earned-check';
           lock.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
         }
+
       }
     });
 
@@ -4546,6 +4630,8 @@ button { font: inherit; cursor: pointer; }
   }
 
   renderProgress();
+  checkCourseReminders();
+  checkMilestoneNotifications();
   renderSharePreview();
 
 
@@ -5166,6 +5252,14 @@ async function joinFamily() {
     const famName = result.familyName || (result.ownerName.split(' ')[0] + "'s Family");
     showFamilyMsg(`✓ Joined ${famName}!`, 'success');
     input.value = '';
+    // Notify the circle owner that someone joined
+    if (result.ownerEmail) {
+      sendNotifEmail('family_joined', {
+        email:      result.ownerEmail,
+        name:       result.ownerName || '',
+        joinerName: localStorage.getItem('ff_user_name') || 'Someone',
+      });
+    }
     /* Re-init family section to show the new family */
     if (_familyUserId) await initFamilySection(_familyUserId);
   }
@@ -5716,11 +5810,12 @@ function accShowView(viewId) {
   document.getElementById(viewId).classList.add('active');
   _accScrollTop();
   requestAnimationFrame(_accScrollTop); // belt-and-suspenders for iOS Safari
-  if (viewId === 'acc-earn')     accInitEarn();
-  if (viewId === 'acc-cert')     { document.getElementById('acc-cert-input').value = localStorage.getItem('ff_user_name') || ''; }
-  if (viewId === 'acc-family')   accInitFamily();
-  if (viewId === 'acc-children') accInitChildren();
-  if (viewId === 'acc-edit')     accInitEdit();
+  if (viewId === 'acc-earn')          accInitEarn();
+  if (viewId === 'acc-cert')          { document.getElementById('acc-cert-input').value = localStorage.getItem('ff_user_name') || ''; }
+  if (viewId === 'acc-family')        accInitFamily();
+  if (viewId === 'acc-children')      accInitChildren();
+  if (viewId === 'acc-edit')          accInitEdit();
+  if (viewId === 'acc-notifications') accInitNotifications();
 }
 function accHideView(viewId) {
   document.getElementById(viewId).classList.remove('active');
@@ -5910,8 +6005,175 @@ function stCancelSubscription() {
     stToast('Cancellation request sent. Stripe will confirm via email.');
   }
 }
-function stNotifications() { stToast('Notification preferences — coming soon.'); }
-function stPrivacy()        { stToast('Privacy & data — coming soon.'); }
+/* ══════════════════════════════════════════════════════════
+   NOTIFICATIONS
+   ══════════════════════════════════════════════════════════ */
+const NOTIF_KEY      = 'ff_notif_prefs';
+const NOTIF_DEFAULTS = { course_reminder:true, family_joined:true, milestone_unlocked:true };
+const NOTIF_IDS      = { course_reminder:'notif-course-reminder', family_joined:'notif-family-joined', milestone_unlocked:'notif-milestone-unlocked' };
+
+function getNotifPrefs() {
+  try { return Object.assign({}, NOTIF_DEFAULTS, JSON.parse(localStorage.getItem(NOTIF_KEY)||'{}')); }
+  catch(_) { return Object.assign({}, NOTIF_DEFAULTS); }
+}
+
+function accInitNotifications() {
+  const prefs = getNotifPrefs();
+  const isAdvisor = isAdvisorUnlocked();
+  Object.keys(NOTIF_IDS).forEach(function(key) {
+    const el = document.getElementById(NOTIF_IDS[key]);
+    if (!el) return;
+    el.checked = prefs[key] !== false;
+    if (key === 'milestone_unlocked' && !isAdvisor) {
+      el.disabled = true; el.checked = false;
+    }
+  });
+  const lockEl = document.getElementById('notif-advisor-lock');
+  if (lockEl) lockEl.style.display = isAdvisor ? 'none' : 'inline';
+}
+
+function accSaveNotifPref(key, value) {
+  const prefs = getNotifPrefs();
+  prefs[key] = value;
+  localStorage.setItem(NOTIF_KEY, JSON.stringify(prefs));
+  window.ffSync && window.ffSync.getUserId && window.ffSync.getUserId().then(function(uid) {
+    if (uid) window.ffSync.saveProfile(uid, { notif_prefs: prefs });
+  });
+  stToast(value ? 'Notification enabled ✓' : 'Notification disabled');
+}
+
+/* Check each in-progress course — fire reminder email once after 24h.
+   Dynamically loops all ff_progress keys — new courses included automatically. */
+function checkCourseReminders() {
+  const MS_24H = 24 * 60 * 60 * 1000;
+
+  // Known course metadata — add new entries here as courses are published.
+  // Any key NOT listed falls back to sensible defaults (title from key, /dashboard.html).
+  const COURSE_META = {
+    'potty-training': { title: 'The Potty Training Playbook',  url: '/course-potty.html',        totalChapters: 12 },
+    'sleep-training': { title: 'The Sleep Training Playbook',  url: '/playbook-sleep-v1.html',   totalChapters: 10 },
+    'screen-time':    { title: 'The Screen Time Playbook',     url: '/course-screentime.html',   totalChapters: 10 },
+    'tantrum':        { title: 'The Tantrums Playbook',        url: '/playbook-tantrum-v1.html', totalChapters: 10 },
+    'feeding':        { title: 'The Feeding Playbook',         url: '/playbook-feeding-v1.html', totalChapters: 13 },
+  };
+
+  let progress = {};
+  try { progress = JSON.parse(localStorage.getItem('ff_progress') || '{}'); } catch(_) {}
+
+  // Iterate all courses in progress — works for current 5 and any future additions
+  Object.keys(progress).forEach(function(key) {
+    const data = progress[key] || {};
+    if (!data.chapters || data.chapters.length === 0) return; // not started
+    if (data.cert === true) return; // already completed
+
+    const startedKey  = 'ff_course_started_' + key;
+    const remindedKey = 'ff_course_reminded_' + key;
+    if (localStorage.getItem(remindedKey)) return; // already reminded
+
+    const startedAt = localStorage.getItem(startedKey);
+    if (!startedAt) {
+      // First time we see this course in-progress — start the 24h clock
+      localStorage.setItem(startedKey, Date.now().toString());
+      return;
+    }
+
+    if (Date.now() - parseInt(startedAt, 10) < MS_24H) return; // < 24h, not yet
+
+    // 24h passed and not completed — fire once
+    localStorage.setItem(remindedKey, '1');
+
+    // Use known metadata or fall back gracefully for future courses
+    const meta         = COURSE_META[key] || {};
+    const title        = meta.title        || (key.replace(/-/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); }) + ' Playbook');
+    const url          = meta.url          || '/dashboard.html';
+    const totalChaps   = meta.totalChapters || 10;
+    const pct          = Math.min(Math.round((data.chapters.length / totalChaps) * 100), 95);
+
+    sendNotifEmail('course_reminder', {
+      name:          localStorage.getItem('ff_user_name') || '',
+      playbookTitle: title,
+      playbookUrl:   'https://getfamilyforce.com' + url,
+      progress:      pct,
+    });
+  });
+}
+
+/* Check each child — fire milestone-unlocked email at most once per 30 days,
+   only if new milestones have unlocked since the last notification. */
+function checkMilestoneNotifications() {
+  if (!isAdvisorUnlocked()) return;           // Advisor subscribers only
+  if (!window.ffAdvisor) return;              // advisor JS not loaded
+
+  const MS_30D = 30 * 24 * 60 * 60 * 1000;
+  const allMilestones = (window.ffAdvisor.MILESTONES || []).filter(function(m) { return !m.prenatal; });
+  if (!allMilestones.length) return;
+
+  const children = window.ffAdvisor.loadChildren ? window.ffAdvisor.loadChildren() : [];
+  if (!children.length) return;
+
+  const email = localStorage.getItem('ff_user_email') || '';
+  if (!email) return;
+
+  children.forEach(function(child) {
+    if (!child.dob) return;
+
+    const ageWeeks = Math.floor((Date.now() - new Date(child.dob).getTime()) / (7 * 24 * 60 * 60 * 1000));
+    if (ageWeeks < 0) return; // not born yet
+
+    const tsKey     = 'ff_mnotif_ts_'    + child.id;
+    const weeksKey  = 'ff_mnotif_weeks_' + child.id;
+    const lastTs    = parseInt(localStorage.getItem(tsKey)    || '0', 10);
+    const lastWeeks = parseInt(localStorage.getItem(weeksKey) || '-1', 10);
+
+    // Enforce 30-day cap
+    if (lastTs && (Date.now() - lastTs) < MS_30D) return;
+
+    // Count milestones that have newly unlocked since last notification
+    const newlyUnlocked = allMilestones.filter(function(m) {
+      return m.ageStart <= ageWeeks && m.ageStart > lastWeeks;
+    });
+    if (!newlyUnlocked.length) return;
+
+    // Determine phase name for email copy
+    const PHASES = [
+      { label: 'Newborn',     max:  12 },
+      { label: 'Infant',      max:  52 },
+      { label: 'Toddler',     max: 156 },
+      { label: 'Preschool',   max: 260 },
+      { label: 'School Age',  max: Infinity },
+    ];
+    const phase = (PHASES.find(function(p) { return ageWeeks <= p.max; }) || PHASES[PHASES.length - 1]).label;
+
+    // Update timestamps before firing (prevent double-send on re-render)
+    localStorage.setItem(tsKey,    Date.now().toString());
+    localStorage.setItem(weeksKey, ageWeeks.toString());
+
+    sendNotifEmail('milestone_unlocked', {
+      email:          email,
+      name:           localStorage.getItem('ff_user_name') || '',
+      childName:      child.name || 'your child',
+      phase:          phase,
+      milestoneCount: newlyUnlocked.length,
+      dashboardUrl:   'https://getfamilyforce.com/dashboard.html',
+    });
+  });
+}
+
+async function sendNotifEmail(type, payload) {
+  const prefs = getNotifPrefs();
+  if (!prefs[type]) return;
+  const email = (payload && payload.email) || localStorage.getItem('ff_user_email') || '';
+  if (!email) return;
+  try {
+    await fetch('/api/notify/' + type.replace(/_/g,'-'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(Object.assign({ email }, payload || {})),
+    });
+  } catch(_) {}
+}
+
+function stNotifications() { accShowView('acc-notifications'); }
 function stDeleteAccount() {
   if (confirm('Delete your account? This permanently removes all your data and cannot be undone.')) {
     if (confirm('Are you absolutely sure?')) {
@@ -6237,8 +6499,6 @@ function stToggleCollapsible(bodyId, header) {
 }
 
 /* ── More ── */
-function stNotifications() { stToast('Notification preferences — coming soon.'); }
-function stPrivacy()        { stToast('Privacy & data — coming soon.'); }
 function stDeleteAccount() {
   if (confirm('Delete your account? This permanently removes all your data and cannot be undone.')) {
     if (confirm('Are you absolutely sure?')) {

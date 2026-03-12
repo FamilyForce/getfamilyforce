@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Email Previews — FamilyForce</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #E8E4F5; font-family: 'Outfit', sans-serif; padding: 40px 20px; }
+  h1 { text-align: center; font-size: 22px; font-weight: 800; color: #3D20B0; margin-bottom: 8px; }
+  .subtitle { text-align: center; font-size: 14px; color: #8A879A; margin-bottom: 48px; }
+  .email-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #8A879A; text-align: center; margin-bottom: 12px; }
+  .email-wrap { max-width: 560px; margin: 0 auto 60px; }
+
+  /* ── Email shell ── */
+  .email { background: #FAFAFA; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 40px rgba(61,32,176,.15); }
+  .email-header { background: #fff; padding: 18px 22px; border-bottom: 1px solid #E5E2EC; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .email-meta { margin-left: auto; text-align: right; }
+  .email-subject { font-size: 13px; font-weight: 600; color: #1D1D1F; }
+  .email-from    { font-size: 11px; color: #8A879A; margin-top: 2px; }
+
+  /* ── Email body ── */
+  .email-body { padding: 40px 28px; }
+  .logo-row { text-align: center; margin-bottom: 28px; font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #1D1D1F; }
+  .logo-row span { color: #6E4ED6; }
+  .hero-emoji { font-size: 56px; display: block; text-align: center; margin-bottom: 16px; }
+  .email-h1 { font-size: 23px; font-weight: 800; color: #1D1D1F; text-align: center; margin-bottom: 10px; line-height: 1.25; }
+  .email-p  { font-size: 15px; color: #5C5960; line-height: 1.65; text-align: center; margin-bottom: 28px; }
+  .email-card { background: #fff; border-radius: 14px; padding: 24px; text-align: center; border: 1px solid #E5E2EC; margin-bottom: 24px; }
+  .email-card p { font-size: 13.5px; color: #5C5960; margin-bottom: 16px; line-height: 1.5; }
+  .email-btn { display: inline-block; background: #6E4ED6; color: #fff; font-weight: 700; font-size: 14px; padding: 14px 28px; border-radius: 100px; text-decoration: none; }
+  .progress-bar-wrap { background: #F0EBFF; border-radius: 100px; height: 8px; margin-bottom: 20px; overflow: hidden; }
+  .progress-bar-fill { background: #6E4ED6; height: 8px; border-radius: 100px; }
+  .divider { height: 1px; background: #E5E2EC; margin: 20px 0; }
+  .email-footer { font-size: 11.5px; color: #8A879A; text-align: center; line-height: 1.7; }
+  .email-footer a { color: #6E4ED6; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<h1>FamilyForce — Email Notifications</h1>
+<p class="subtitle">3 transactional emails</p>
+
+<!-- ── 1. Milestones Unlocked ── -->
+<div class="email-wrap">
+  <div class="email-label">1 of 3 — New Milestones Unlocked (Advisor)</div>
+  <div class="email">
+    <div class="email-header">
+      <div class="dot" style="background:#EA4335"></div>
+      <div class="dot" style="background:#FBBC05"></div>
+      <div class="dot" style="background:#34A853"></div>
+      <div class="email-meta">
+        <div class="email-subject">🌱 New milestones unlocked for Liam</div>
+        <div class="email-from">From: FamilyForce &lt;support@getfamilyforce.com&gt;</div>
+      </div>
+    </div>
+    <div class="email-body">
+      <div class="logo-row">Family<span>Force</span></div>
+      <span class="hero-emoji">🌱</span>
+      <h2 class="email-h1">Liam just entered a new phase, Sarah</h2>
+      <p class="email-p"><strong>8 new milestones</strong> have unlocked for the <strong>Toddler</strong> stage. Your Advisor has been updated.</p>
+      <div class="email-card">
+        <p>Open your Advisor to see what's coming up and mark milestones as you hit them.</p>
+        <a class="email-btn" href="#">Open Advisor →</a>
+      </div>
+      <div class="divider"></div>
+      <p class="email-footer">
+        You're receiving this because you enabled milestone notifications in FamilyForce.<br>
+        <a href="#">Manage notification preferences</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ── 2. Course Reminder ── -->
+<div class="email-wrap">
+  <div class="email-label">2 of 3 — Course Reminder</div>
+  <div class="email">
+    <div class="email-header">
+      <div class="dot" style="background:#EA4335"></div>
+      <div class="dot" style="background:#FBBC05"></div>
+      <div class="dot" style="background:#34A853"></div>
+      <div class="email-meta">
+        <div class="email-subject">You're 60% through Sleep Training — finish it today</div>
+        <div class="email-from">From: FamilyForce &lt;support@getfamilyforce.com&gt;</div>
+      </div>
+    </div>
+    <div class="email-body">
+      <div class="logo-row">Family<span>Force</span></div>
+      <span class="hero-emoji">📖</span>
+      <h2 class="email-h1">You've got unfinished business, Sarah</h2>
+      <p class="email-p">You're <strong>60% through <em>Sleep Training</em></strong>. The badge and certificate are waiting — it only takes a few more minutes.</p>
+      <div class="email-card">
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" style="width:60%"></div>
+        </div>
+        <a class="email-btn" href="#">Continue reading →</a>
+      </div>
+      <div class="divider"></div>
+      <p class="email-footer">
+        You're receiving this because you enabled course reminders in FamilyForce.<br>
+        <a href="#">Manage notification preferences</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ── 2. Family Circle Joined ── -->
+<div class="email-wrap">
+  <div class="email-label">3 of 3 — Family Circle Activity</div>
+  <div class="email">
+    <div class="email-header">
+      <div class="dot" style="background:#EA4335"></div>
+      <div class="dot" style="background:#FBBC05"></div>
+      <div class="dot" style="background:#34A853"></div>
+      <div class="email-meta">
+        <div class="email-subject">Mike joined your Family Circle 👨‍👩‍👧</div>
+        <div class="email-from">From: FamilyForce &lt;support@getfamilyforce.com&gt;</div>
+      </div>
+    </div>
+    <div class="email-body">
+      <div class="logo-row">Family<span>Force</span></div>
+      <span class="hero-emoji">👨‍👩‍👧</span>
+      <h2 class="email-h1">Your circle just got bigger, Sarah</h2>
+      <p class="email-p"><strong>Mike</strong> has joined your Family Circle.</p>
+      <div class="email-card">
+        <p>View your Family Circle and manage members anytime.</p>
+        <a class="email-btn" href="#">View Family Circle →</a>
+      </div>
+      <div class="divider"></div>
+      <p class="email-footer">
+        You're receiving this because you enabled Family Circle notifications in FamilyForce.<br>
+        <a href="#">Manage notification preferences</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -9,8 +9,9 @@
 -- 1. ADD FAMILY COLUMNS TO PROFILES
 -- ───────────────────────────────────────────────────────────────
 alter table profiles
-  add column if not exists circle_code  text unique,
-  add column if not exists circle_name  text;
+  add column if not exists circle_code   text unique,
+  add column if not exists circle_name   text,
+  add column if not exists children_json text;  -- Development Advisor: stores child DOB/name as JSON
 
 
 -- ───────────────────────────────────────────────────────────────

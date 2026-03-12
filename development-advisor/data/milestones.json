@@ -1,0 +1,215 @@
+{
+  "_note": "Age in weeks. Each milestone has: id, age_weeks_start, age_weeks_end, title, body, urgency (normal|high|critical), playbook (feeding|sleep|potty-training|tantrum|screen-time), todos[]",
+
+  "milestones": [
+
+    {
+      "id": "feeding-solids-window",
+      "age_weeks_start": 16,
+      "age_weeks_end": 26,
+      "title": "Solid foods window is opening",
+      "body": "Between 4–6 months most babies show readiness for first foods. Breast milk or formula is still 90% of nutrition — solids are practice. Start with single-ingredient purees: sweet potato, peas, butternut squash. One new food every 3–4 days so you can spot reactions.",
+      "urgency": "normal",
+      "playbook": "feeding",
+      "todos": [
+        "Try one single-ingredient puree this week",
+        "Introduce one new food every 3–4 days",
+        "Never start before 4 months or after 6 months"
+      ]
+    },
+
+    {
+      "id": "feeding-peanut-window",
+      "age_weeks_start": 17,
+      "age_weeks_end": 47,
+      "title": "⚠️ Peanut introduction window — closes at 11 months",
+      "body": "The LEAP study (New England Journal of Medicine) found that introducing peanuts between 4–11 months reduces peanut allergy risk by up to 80%. This is one of the most impactful things you can do for your child's long-term health. The window closes at 11 months. Mix a small amount of smooth peanut butter into puree. Check with your pediatrician first if there's family history of allergies.",
+      "urgency": "critical",
+      "playbook": "feeding",
+      "todos": [
+        "Check with pediatrician if family allergy history exists",
+        "Mix 1/4 tsp smooth peanut butter into fruit or vegetable puree",
+        "Watch for 20 minutes after first introduction",
+        "Introduce 3x/week to maintain tolerance"
+      ]
+    },
+
+    {
+      "id": "feeding-allergens",
+      "age_weeks_start": 24,
+      "age_weeks_end": 39,
+      "title": "Introduce the top allergens now",
+      "body": "6–9 months is the window to introduce the 9 major allergens: peanuts, tree nuts, eggs, milk, wheat, soy, fish, shellfish, sesame. Introducing them early, while the immune system is still developing, significantly reduces lifetime allergy risk. One at a time, 3–4 days apart.",
+      "urgency": "high",
+      "playbook": "feeding",
+      "todos": [
+        "Introduce eggs (well-cooked scrambled or puree)",
+        "Introduce tree nuts (almond/cashew butter thinned in puree)",
+        "Introduce fish (pureed salmon or cod)",
+        "Introduce wheat (well-cooked pasta or bread)",
+        "Keep a food diary — note any reactions"
+      ]
+    },
+
+    {
+      "id": "feeding-cows-milk",
+      "age_weeks_start": 52,
+      "age_weeks_end": 56,
+      "title": "Switch to whole cow's milk at 12 months",
+      "body": "At 12 months, your baby can transition from formula or breast milk to whole cow's milk. Whole milk (not skim or 2%) provides the fat needed for brain development through age 2. Target: 16–24 oz per day. Do not give cow's milk before 12 months — the kidneys can't handle the protein load.",
+      "urgency": "normal",
+      "playbook": "feeding",
+      "todos": [
+        "Begin mixing whole milk with formula (3/4 formula, 1/4 milk) for one week",
+        "Gradually shift ratio over 2 weeks",
+        "Cap at 24 oz/day — more displaces solid food",
+        "No honey until 12 months (botulism risk)"
+      ]
+    },
+
+    {
+      "id": "sleep-4month-regression",
+      "age_weeks_start": 14,
+      "age_weeks_end": 20,
+      "title": "4-month sleep regression — it's coming",
+      "body": "Around 4 months, your baby's sleep architecture permanently changes to match adult sleep cycles. This causes more frequent night wakings. It's not a setback — it's brain development. It typically lasts 2–6 weeks. This is also a signal that sleep training is approaching.",
+      "urgency": "normal",
+      "playbook": "sleep",
+      "todos": [
+        "Expect more night wakings — this is normal and temporary",
+        "Avoid creating new sleep associations during this window (feeding to sleep, rocking)",
+        "Prioritize your own rest — sleep when baby sleeps if possible",
+        "Start thinking about sleep training approach (we'll send a full guide at 6 months)"
+      ]
+    },
+
+    {
+      "id": "sleep-training-window",
+      "age_weeks_start": 24,
+      "age_weeks_end": 36,
+      "title": "⚠️ Sleep training window is open",
+      "body": "6 months is when most pediatricians and sleep researchers greenlight sleep training. Before 6 months, babies genuinely need night feeds. After 6 months, most don't — but the habit is there. The window from 6–9 months is ideal: old enough to self-soothe, young enough that habits haven't fully calcified. Waiting makes it harder, not easier.",
+      "urgency": "critical",
+      "playbook": "sleep",
+      "todos": [
+        "Choose your method: Ferber, Fading, Chair, or Pick-Up-Put-Down (playbook covers all 4)",
+        "Pick a 2-week window with no travel or disruptions",
+        "Establish a consistent bedtime routine (bath, book, bed)",
+        "Target bedtime: 7–8pm for most babies this age",
+        "Brief your partner — consistency is everything"
+      ]
+    },
+
+    {
+      "id": "sleep-2nap-transition",
+      "age_weeks_start": 34,
+      "age_weeks_end": 44,
+      "title": "Watch for the 3-to-2 nap transition",
+      "body": "Between 8–10 months, most babies are ready to drop from 3 naps to 2. Signs: third nap becomes a fight, bedtime gets harder, or the third nap is pushing bedtime past 8:30pm. Don't rush it — follow your baby's lead. The transition usually takes 2–4 weeks.",
+      "urgency": "normal",
+      "playbook": "sleep",
+      "todos": [
+        "Watch for short or refused third nap as the signal",
+        "Shift to 2 naps gradually — extend wake windows by 15 min/day",
+        "Protect morning nap (usually drops last)",
+        "Expect some overtiredness during the transition — it's temporary"
+      ]
+    },
+
+    {
+      "id": "sleep-1nap-transition",
+      "age_weeks_start": 60,
+      "age_weeks_end": 78,
+      "title": "The 2-to-1 nap transition is coming",
+      "body": "Between 15–18 months, most toddlers transition from 2 naps to 1. This is one of the most disruptive sleep transitions. The one-nap day is longer (1.5–3 hours at midday). The transition often causes temporary overtiredness and earlier bedtimes.",
+      "urgency": "normal",
+      "playbook": "sleep",
+      "todos": [
+        "Sign: baby refuses or delays one of the two naps consistently for 2+ weeks",
+        "Shift nap to midday (11:30am–12pm start)",
+        "Move bedtime earlier during transition (6:30–7pm temporarily)",
+        "Give it 4–6 weeks to stabilize"
+      ]
+    },
+
+    {
+      "id": "potty-readiness-window",
+      "age_weeks_start": 78,
+      "age_weeks_end": 130,
+      "title": "Potty training readiness window is opening",
+      "body": "The optimal window for potty training is 18–24 months. Starting in this window correlates with faster training (average 3–5 days using evidence-based methods), fewer accidents, and less regression. Starting too early (before 18 months) is usually ineffective. Starting too late (after 3 years) is harder because independent behaviors are more entrenched.",
+      "urgency": "high",
+      "playbook": "potty-training",
+      "todos": [
+        "Watch for readiness signs: staying dry 2+ hours, interest in toilet, hiding to poop",
+        "Introduce the potty as a concept (let them sit on it clothed first)",
+        "Read the Potty Training Playbook — it covers the 3-day method in detail",
+        "Clear your calendar for a 3-day training weekend"
+      ]
+    },
+
+    {
+      "id": "tantrum-peak",
+      "age_weeks_start": 78,
+      "age_weeks_end": 156,
+      "title": "Tantrum peak is starting",
+      "body": "18 months to 3 years is peak tantrum territory. This isn't bad parenting — it's brain development. The prefrontal cortex (emotional regulation) is nowhere near developed. Your child genuinely cannot control these emotions yet. But how you respond now sets patterns that last for years.",
+      "urgency": "normal",
+      "playbook": "tantrum",
+      "todos": [
+        "Learn the difference between a meltdown (overwhelmed) and a tantrum (testing limits) — responses differ",
+        "Practice the CALM method: Connect → Acknowledge → Limit → Move on",
+        "Remove the audience — tantrums escalate when they get a reaction",
+        "Never negotiate during a tantrum — wait for the storm to pass"
+      ]
+    },
+
+    {
+      "id": "screentime-zero",
+      "age_weeks_start": 0,
+      "age_weeks_end": 78,
+      "title": "Zero screens — the rule that matters most right now",
+      "body": "The American Academy of Pediatrics recommends no screen time before 18–24 months except video calls. This isn't about the content — it's about what screens displace. Every minute of screen time is a minute not spent in face-to-face interaction, which is irreplaceable for language and social development. Background TV counts.",
+      "urgency": "normal",
+      "playbook": "screen-time",
+      "todos": [
+        "Video calls (FaceTime, Zoom) are the only screen exception",
+        "Background TV counts — turn it off when baby is in the room",
+        "Your screen time matters too — babies watch your face, not your phone"
+      ]
+    },
+
+    {
+      "id": "screentime-transition",
+      "age_weeks_start": 78,
+      "age_weeks_end": 104,
+      "title": "Approaching the screen time transition",
+      "body": "At 18–24 months, the AAP allows limited high-quality screen time (1 hour/day max). But 'high quality' means: educational, co-viewed with a parent, and interactive. At this age, toddlers still can't transfer what they see on screen to real life without a parent bridging it. Watch with them. Talk about it.",
+      "urgency": "normal",
+      "playbook": "screen-time",
+      "todos": [
+        "If introducing screens, start with co-viewing only (you watch together)",
+        "Choose programs with slow pacing and repetition (not fast cuts)",
+        "Avoid screens during meals and 1 hour before bed",
+        "Keep total screen time under 1 hour/day"
+      ]
+    },
+
+    {
+      "id": "screentime-habits",
+      "age_weeks_start": 104,
+      "age_weeks_end": 208,
+      "title": "Screen time habits form permanently now",
+      "body": "Ages 2–4 are when screen time habits calcify. The patterns you establish now — what they watch, how long, when, and whether you're present — will be much harder to change at age 5, 6, or 7. This is the window to build healthy digital habits intentionally.",
+      "urgency": "high",
+      "playbook": "screen-time",
+      "todos": [
+        "Set a consistent daily limit and stick to it (1 hour max for under 5s)",
+        "Create screen-free zones: bedrooms, dinner table",
+        "Use screens as a planned activity, not a pacifier",
+        "Have a 'screen-off' routine — transition activity when time is up"
+      ]
+    }
+
+  ]
+}
