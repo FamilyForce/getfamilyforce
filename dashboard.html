@@ -5650,7 +5650,8 @@ function accRenderMain() {
   document.getElementById('acc-avatar').textContent      = initials;
   document.getElementById('acc-name').textContent        = name;
   document.getElementById('acc-email-display').textContent = email || 'No email on file';
-  document.getElementById('acc-email-preview').textContent = email || '—';
+  const emailPreviewEl = document.getElementById('acc-email-preview');
+  if (emailPreviewEl) emailPreviewEl.textContent = email || '—';
   document.getElementById('acc-cert-preview').textContent  = name || 'Not set';
   // Children preview
   const children = window.ffAdvisor ? window.ffAdvisor.loadChildren() : [];
