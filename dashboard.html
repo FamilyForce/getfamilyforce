@@ -734,6 +734,17 @@ button { font: inherit; cursor: pointer; }
   margin-bottom: 20px;
 }
 
+/* Set-name nudge */
+.dash-set-name-nudge {
+  display: inline-flex; align-items: center;
+  font-size: 13px; font-weight: 600; color: var(--terra-dark);
+  background: var(--terra-glow); border: 1px solid rgba(110,78,214,.15);
+  border-radius: 20px; padding: 6px 14px; margin-bottom: 16px;
+  cursor: pointer; font-family: var(--sans);
+  transition: background .15s;
+}
+.dash-set-name-nudge:hover { background: rgba(110,78,214,.12); }
+
 /* Progress stat pill row */
 .dash-stat-row {
   display: flex; align-items: center; gap: 12px;
@@ -3233,6 +3244,7 @@ button { font: inherit; cursor: pointer; }
     <div class="wrap">
       <h1 class="dash-heading" id="greeting">Hi there.</h1>
       <p class="dash-sub" id="dash-sub">5 playbooks · all free</p>
+      <button class="dash-set-name-nudge" id="dash-set-name-nudge" style="display:none" onclick="switchTab('settings');accShowView('acc-edit')">Add your name →</button>
 
       <!-- Progress stat pills — shown once at least 1 course started -->
       <div class="dash-stat-row" id="dash-stat-row" style="display:none">
@@ -4419,22 +4431,27 @@ button { font: inherit; cursor: pointer; }
   const emailFallback = userEmail.split('@')[0] || '';
   const userName     = certName || emailFallback;
 
-  // Greeting — uses cert name (first name only) if available
+  // Greeting — uses cert name only (set in Settings → Certificate name)
   function updateGreeting() {
-    const name = localStorage.getItem('ff_user_name') || emailFallback;
-    const firstName = name.trim().split(/\s+/)[0] || '';
+    const certName  = localStorage.getItem('ff_user_name') || '';
+    const firstName = certName.trim().split(/\s+/)[0] || '';
     greetingEl.textContent = firstName ? 'Hi, ' + firstName + '.' : 'Hi there.';
 
-    // Avatar initials
-    const parts = name.trim().split(/\s+/);
-    const initials = name
+    // Show nudge if no cert name set
+    const nudge = document.getElementById('dash-set-name-nudge');
+    if (nudge) nudge.style.display = certName ? 'none' : 'inline-flex';
+
+    // Avatar initials — falls back to email prefix for the icon only
+    const displayName = certName || emailFallback;
+    const parts = displayName.trim().split(/\s+/);
+    const initials = displayName
       ? (parts.length >= 2
           ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
           : parts[0].slice(0, 2).toUpperCase())
       : '?';
     avatarInitials.textContent = initials;
-    avatarBtn.setAttribute('aria-label', 'Account menu' + (name ? ' for ' + name : ''));
-    dropdownNameEl.textContent = name || 'Your Account';
+    avatarBtn.setAttribute('aria-label', 'Account menu' + (displayName ? ' for ' + displayName : ''));
+    dropdownNameEl.textContent = displayName || 'Your Account';
   }
   updateGreeting();
   window._ffUpdateGreeting = updateGreeting; // expose for name banner
