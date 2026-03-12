@@ -23,7 +23,14 @@
 /* ═══════════════════════════════════════════════════════════
    MILESTONE DATABASE
    ═══════════════════════════════════════════════════════════ */
-const MILESTONES = [
+/* ─── Milestone data ────────────────────────────────────────────
+   MILESTONES_FALLBACK is the hardcoded array shipped with the JS.
+   MILESTONES is the live reference — starts as the fallback, then
+   gets replaced by loadMilestonesFromSupabase() if Supabase is
+   available. All internal functions reference MILESTONES so they
+   automatically pick up live data after the async load.
+   ────────────────────────────────────────────────────────────── */
+const MILESTONES_FALLBACK = [
 
   /* ─── BEFORE BABY ARRIVES ─── */
   {
@@ -377,6 +384,26 @@ const MILESTONES = [
     familyMoment: 'The face they make the first time food isn\'t milk. The confusion is priceless.',
     todos: ['Wait for the three readiness signs', 'Start with iron-rich purees', 'One new food every 3–4 days'],
     playbookKey: 'feeding',
+  },
+  {
+    id: 'feet-discovery',
+    ageStart: 14, ageEnd: 22,
+    urgency: 'normal', icon: '🦶', section: 'Motor',
+    title: 'Feet discovery: the best toys they\'ll ever have',
+    body: 'Around 4 months, babies find their feet and are completely fascinated. They\'ll grab them, pull them to their mouth, and chew on them. This isn\'t random — it\'s core strength, hip flexibility, body awareness, and sensory exploration all happening at once. No batteries required.',
+    familyMoment: 'The moment they grab their feet for the first time and their face says: wait, these were mine the whole time?',
+    todos: ['Let them go barefoot during floor time so feet are easy to grab', 'Try holding a toy near their feet to encourage reaching across the midline'],
+    playbookKey: null,
+  },
+  {
+    id: 'four-month-sleep-regression',
+    ageStart: 14, ageEnd: 20,
+    urgency: 'high', icon: '😴', section: 'Sleep',
+    title: 'The 4-month sleep regression — it\'s real, and it\'s biology',
+    body: 'Around 3–4 months, your baby\'s sleep architecture permanently changes to cycle through light and deep sleep like adults do. The naps that used to last 2 hours are now 30–45 minutes. Night wake-ups increase. This isn\'t a regression — it\'s a maturation. It doesn\'t mean you did anything wrong, and it doesn\'t last forever. Consistent bedtime routine + full feeds during the day help the most.',
+    familyMoment: 'Every parent hits this wall and thinks they broke something. You didn\'t. Your baby is just growing a grown-up brain.',
+    todos: ['Establish a short, consistent bedtime routine (bath → feed → song → sleep)', 'Aim for full daytime feeds to prevent hunger-driven night waking', 'Consider wake windows: at 4 months, 1.5–2 hours awake is usually the limit before overtiredness'],
+    playbookKey: 'sleep',
   },
   {
     id: 'rolling',
@@ -1582,6 +1609,71 @@ const MILESTONES = [
 
 ];
 
+// Live reference — replaced by Supabase data when available
+let MILESTONES = MILESTONES_FALLBACK;
+
+/* ─── Supabase milestone loader ─────────────────────────────────
+   Fetches active milestones from the `milestones` table and caches
+   them in localStorage for 1 hour. Falls back to MILESTONES_FALLBACK
+   silently if Supabase is unavailable or the user is offline.
+   ────────────────────────────────────────────────────────────── */
+const MILESTONES_CACHE_KEY = 'ff_adv_milestones_cache';
+const MILESTONES_CACHE_TTL = 60 * 60 * 1000; // 1 hour
+
+async function loadMilestonesFromSupabase() {
+  // 1 — Serve from fresh cache if available
+  try {
+    const cached = JSON.parse(localStorage.getItem(MILESTONES_CACHE_KEY) || 'null');
+    if (cached && Array.isArray(cached.data) && cached.data.length > 0
+        && (Date.now() - (cached.fetchedAt || 0)) < MILESTONES_CACHE_TTL) {
+      MILESTONES = cached.data;
+      return;
+    }
+  } catch(_) {}
+
+  // 2 — Fetch from Supabase
+  try {
+    const sb = window._supabaseClient;
+    if (!sb) return; // no client — stay on fallback
+    const { data, error } = await sb
+      .from('milestones')
+      .select('id,age_start,age_end,urgency,icon,section,title,body,family_moment,todos,playbook_key,prenatal')
+      .eq('active', true)
+      .order('sort_order', { ascending: true });
+    if (error || !data || data.length === 0) return;
+
+    // Map snake_case → camelCase to match the rest of the codebase
+    const mapped = data.map(m => ({
+      id:           m.id,
+      ageStart:     m.age_start,
+      ageEnd:       m.age_end,
+      urgency:      m.urgency,
+      icon:         m.icon,
+      section:      m.section,
+      title:        m.title,
+      body:         m.body,
+      familyMoment: m.family_moment  || null,
+      todos:        Array.isArray(m.todos) ? m.todos : [],
+      playbookKey:  m.playbook_key   || null,
+      prenatal:     m.prenatal       || false,
+    }));
+
+    MILESTONES = mapped;
+    localStorage.setItem(MILESTONES_CACHE_KEY, JSON.stringify({ data: mapped, fetchedAt: Date.now() }));
+
+    // Re-render digest if the advisor is already showing
+    if (window.ffRefreshAdvisor) window.ffRefreshAdvisor();
+  } catch(e) {
+    console.warn('[Advisor] Supabase milestone fetch failed — using built-in data:', e.message);
+  }
+}
+
+/* Force-clear the cache and reload from Supabase (call from admin/dev tools) */
+function invalidateMilestonesCache() {
+  localStorage.removeItem(MILESTONES_CACHE_KEY);
+  return loadMilestonesFromSupabase();
+}
+
 /* ════════════════════════════════════════════════════════════
    STORAGE & DISMISSAL
    ════════════════════════════════════════════════════════════ */
@@ -1612,13 +1704,119 @@ function restoreMilestone(childId, milestoneId) {
   }
 }
 
-function addChild(name, dob, emoji) {
+/* ─── Completed store ─── */
+/* ─── Completed store ───────────────────────────────────────
+   Structure: { childId: { milestoneId: { by, date } } }
+   ────────────────────────────────────────────────────────── */
+const COMPLETED_KEY = 'ff_adv_completed';
+function loadCompleted() {
+  try { return JSON.parse(localStorage.getItem(COMPLETED_KEY) || '{}'); } catch (_) { return {}; }
+}
+function getCompletedIds(childId) {
+  const store = loadCompleted();
+  if (!store[childId]) return [];
+  if (Array.isArray(store[childId])) return store[childId]; // backward compat with old format
+  return Object.keys(store[childId]);
+}
+function getCompletionMeta(childId, milestoneId) {
+  const store = loadCompleted();
+  return (store[childId] && store[childId][milestoneId]) ? store[childId][milestoneId] : null;
+}
+function markComplete(childId, milestoneId, completedBy, completedDate) {
+  const store = loadCompleted();
+  // Migrate old array format → new object format
+  if (!store[childId] || Array.isArray(store[childId])) store[childId] = {};
+  store[childId][milestoneId] = {
+    by:   completedBy  || '',
+    date: completedDate || new Date().toISOString().split('T')[0],
+  };
+  localStorage.setItem(COMPLETED_KEY, JSON.stringify(store));
+  if (window.ffRefreshAdvisor) window.ffRefreshAdvisor();
+}
+function unmarkComplete(childId, milestoneId) {
+  const store = loadCompleted();
+  if (store[childId]) {
+    delete store[childId][milestoneId];
+    localStorage.setItem(COMPLETED_KEY, JSON.stringify(store));
+  }
+  if (window.ffRefreshAdvisor) window.ffRefreshAdvisor();
+}
+function formatCompletionDate(dateStr) {
+  try {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  } catch(_) { return dateStr; }
+}
+function getMilestoneById(id) {
+  return MILESTONES.find(m => m.id === id) || null;
+}
+
+/* ─── Last Visit Tracking ─────────────────────────────────────
+   Store: { childId: { ageWeeks, ts } }
+   ─────────────────────────────────────────────────────────── */
+const LAST_VISIT_KEY = 'ff_adv_last_visit';
+function loadLastVisit(childId) {
+  try {
+    const store = JSON.parse(localStorage.getItem(LAST_VISIT_KEY) || '{}');
+    return store[childId] || null;
+  } catch(_) { return null; }
+}
+function saveLastVisit(childId, ageWeeks) {
+  try {
+    const store = JSON.parse(localStorage.getItem(LAST_VISIT_KEY) || '{}');
+    store[childId] = { ageWeeks, ts: Date.now() };
+    localStorage.setItem(LAST_VISIT_KEY, JSON.stringify(store));
+  } catch(_) {}
+}
+function countNewSinceLastVisit(child, lastVisit) {
+  if (!lastVisit) return 0;
+  const ageWeeks     = getAgeWeeks(child.dob);
+  const lastAgeWeeks = lastVisit.ageWeeks || 0;
+  if (ageWeeks <= lastAgeWeeks) return 0;
+  const completedIds = getCompletedIds(child.id);
+  const dismissed    = loadDismissed()[child.id] || [];
+  return MILESTONES.filter(m => {
+    if (m.prenatal)     return false;
+    if (m.ageEnd > 500) return false;
+    if (completedIds.includes(m.id)) return false;
+    if (dismissed.includes(m.id))   return false;
+    return m.ageStart > lastAgeWeeks && m.ageStart <= ageWeeks;
+  }).length;
+}
+function getNextMilestoneDate(child) {
+  const ageWeeks     = getAgeWeeks(child.dob);
+  const completedIds = getCompletedIds(child.id);
+  const dismissed    = loadDismissed()[child.id] || [];
+  const upcoming = MILESTONES
+    .filter(m => {
+      if (m.prenatal)     return false;
+      if (m.ageEnd > 500) return false;
+      if (completedIds.includes(m.id)) return false;
+      if (dismissed.includes(m.id))   return false;
+      return m.ageStart > ageWeeks;
+    })
+    .sort((a, b) => a.ageStart - b.ageStart);
+  if (upcoming.length === 0) return null;
+  const next = upcoming[0];
+  try {
+    const dob      = new Date(child.dob + 'T00:00:00');
+    const nextDate = new Date(dob.getTime() + next.ageStart * 7 * 24 * 60 * 60 * 1000);
+    const daysUntil = Math.max(0, Math.round((nextDate - Date.now()) / (24 * 60 * 60 * 1000)));
+    return {
+      dateStr:  nextDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }),
+      daysUntil,
+    };
+  } catch(_) { return null; }
+}
+
+function addChild(name, dob, emoji, gender) {
   const children = loadChildren();
   if (children.length >= MAX_CHILDREN) return { error: 'Maximum 3 children allowed.' };
   const child = {
     id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Date.now() + '-' + Math.random(),
     name: name.trim(), dob,
     emoji: emoji || '👶',
+    gender: gender || null,   // 'boy' | 'girl' | null
   };
   children.push(child);
   saveChildren(children);
@@ -1629,6 +1827,13 @@ function removeChild(id) {
 }
 function updateChildName(id, name) {
   saveChildren(loadChildren().map(c => c.id === id ? { ...c, name } : c));
+}
+function updateChildGender(id, gender) {
+  saveChildren(loadChildren().map(c => c.id === id ? { ...c, gender } : c));
+}
+function updateChild(id, fields) {
+  // Merge any subset of { name, dob, gender, emoji } onto the child
+  saveChildren(loadChildren().map(c => c.id === id ? { ...c, ...fields } : c));
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1659,29 +1864,43 @@ function formatAge(dob) {
    MILESTONE ENGINE
    ════════════════════════════════════════════════════════════ */
 function getMilestonesForChild(child) {
-  const ageWeeks = getAgeWeeks(child.dob);
-  const dismissed = loadDismissed()[child.id] || [];
-  
-  const ORDER = { critical: 0, high: 1, normal: 2 };
-  
+  const ageWeeks      = getAgeWeeks(child.dob);
+  const dismissed     = loadDismissed()[child.id] || [];
+  const completedIds  = getCompletedIds(child.id);
+  const ORDER         = { critical: 0, high: 1, normal: 2 };
+
   return MILESTONES
     .filter(m => {
-      if (dismissed.includes(m.id)) return false;
-      if (m.prenatal && ageWeeks < 4) return true;
+      if (dismissed.includes(m.id))    return false;
+      if (completedIds.includes(m.id)) return false;
+      if (m.prenatal && ageWeeks < 4)  return true;
       return ageWeeks >= m.ageStart && ageWeeks <= m.ageEnd;
     })
     .sort((a, b) => ORDER[a.urgency] - ORDER[b.urgency]);
 }
 
 function getWinsForChild(child) {
-  const ageWeeks = getAgeWeeks(child.dob);
-  if (ageWeeks < 4) return [];
-  // Show milestones that ended in the last 12 weeks
-  return MILESTONES.filter(m => {
-    if (m.prenatal) return false;
-    if (m.ageEnd > 500) return false; // Exclude universal/long-term
-    return m.ageEnd >= (ageWeeks - 12) && m.ageEnd < ageWeeks;
-  }).slice(0, 5);
+  const completedIds = getCompletedIds(child.id);
+  if (completedIds.length === 0) return [];
+  return MILESTONES
+    .filter(m => completedIds.includes(m.id))
+    .map(m => ({ ...m, _completion: getCompletionMeta(child.id, m.id) }));
+}
+
+function getProgressForChild(child) {
+  const ageWeeks     = getAgeWeeks(child.dob);
+  const completedIds = getCompletedIds(child.id);
+  // Before birth: count prenatal milestones as the current window
+  const windowMilestones = ageWeeks < 0
+    ? MILESTONES.filter(m => m.prenatal)
+    : MILESTONES.filter(m => {
+        if (m.prenatal)     return false;
+        if (m.ageEnd > 500) return false;
+        return m.ageStart <= ageWeeks && m.ageEnd >= (ageWeeks - 8);
+      });
+  const total = windowMilestones.length;
+  const done  = windowMilestones.filter(m => completedIds.includes(m.id)).length;
+  return { done, total, pct: total > 0 ? Math.round((done / total) * 100) : 0 };
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1703,10 +1922,19 @@ const URGENCY_STYLE = {
 function _e(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\"/g, '&quot;');
 }
-function renderTodos(todos) {
-  return todos.map(t =>
-    `<label class="adv-todo"><input type="checkbox" class="adv-todo-check"><span>${_e(t)}</span></label>`
-  ).join('');
+function renderTodos(todos, childId) {
+  const storageKey = childId ? `ff_adv_todos_${childId}` : null;
+  let checked = [];
+  if (storageKey) {
+    try { checked = JSON.parse(localStorage.getItem(storageKey) || '[]'); } catch(_) {}
+  }
+  return todos.map(t => {
+    const isChecked = checked.includes(t);
+    const persist = storageKey
+      ? `data-key="${_e(storageKey)}" data-text="${_e(t)}" onchange="window._ffSaveTodo(this)"`
+      : '';
+    return `<label class="adv-todo"><input type="checkbox" class="adv-todo-check"${isChecked ? ' checked' : ''} ${persist}><span>${_e(t)}</span></label>`;
+  }).join('');
 }
 function renderCard(m, childId, isWin = false) {
   const s = URGENCY_STYLE[m.urgency];
@@ -1722,6 +1950,21 @@ function renderCard(m, childId, isWin = false) {
     ? `<button class="adv-win-share-btn" onclick="${shareCall}">📸 Share this win</button>`
     : '';
 
+  const markDoneBtn = !isWin
+    ? `<button class="adv-mark-done-btn" onclick="advShowCompleteModal('${_e(childId)}','${_e(m.id)}')">✓ Mark as done</button>`
+    : '';
+
+  const completionMeta = isWin && m._completion
+    ? `<div class="adv-completion-meta">
+        Completed by <strong>${_e(m._completion.by || 'Unknown')}</strong>${m._completion.date ? ` · ${formatCompletionDate(m._completion.date)}` : ''}
+        <button class="adv-completion-edit" onclick="advShowCompleteModal('${_e(childId)}','${_e(m.id)}',true)">Edit</button>
+       </div>`
+    : '';
+
+  const undoBtn = isWin
+    ? `<button class="adv-not-yet-btn" onclick="window.ffAdvisor.unmarkComplete('${_e(childId)}','${_e(m.id)}')">↩ Not done yet</button>`
+    : '';
+
   const highShareBtn = !isWin && m.urgency === 'high' && m.familyMoment
     ? `<button class="adv-share-btn" onclick="${shareCall}">↑ Share</button>`
     : '';
@@ -1735,8 +1978,11 @@ function renderCard(m, childId, isWin = false) {
       <h4 class="adv-milestone-title">${_e(m.title)}</h4>
       <p class="adv-milestone-body">${_e(m.body)}</p>
       ${m.familyMoment ? `<div class="adv-family-moment"><div class="adv-family-moment-label">Family Moment</div><div class="adv-family-moment-text">${_e(m.familyMoment)}</div></div>` : ''}
-      ${!isWin && m.todos && m.todos.length > 0 ? `<div class="adv-todos">${renderTodos(m.todos)}</div><div class="adv-todos-hint">Checked items are marked as completed. This card stays until the window closes.</div>` : ''}
+      ${!isWin && m.todos && m.todos.length > 0 ? `<div class="adv-todos">${renderTodos(m.todos, childId)}</div><div class="adv-todos-hint">Tap to mark done. Progress saves automatically.</div>` : ''}
+      ${completionMeta}
       ${winShareBtn}
+      ${markDoneBtn}
+      ${undoBtn}
     </div>
     <div class="adv-card-footer">
       ${link ? `<a href="${_e(link)}" class="adv-playbook-link">Open ${_e(m.section)} Playbook →</a>` : '<span></span>'}
@@ -1749,65 +1995,146 @@ function renderCard(m, childId, isWin = false) {
   </div>`;
 }
 
-function renderDigest(child) {
-  const ageWeeks = getAgeWeeks(child.dob);
+function renderDigest(child, newCount = 0) {
+  const ageWeeks   = getAgeWeeks(child.dob);
   const milestones = getMilestonesForChild(child);
-  const wins = getWinsForChild(child);
+  const wins       = getWinsForChild(child);
 
-  const critical = milestones.filter(m => m.urgency === 'critical');
-  const high     = milestones.filter(m => m.urgency === 'high');
-  const normal   = milestones.filter(m => m.urgency === 'normal');
   const prenatal = milestones.filter(m => m.prenatal);
+  const active   = milestones.filter(m => !m.prenatal);
+  const critical = active.filter(m => m.urgency === 'critical');
+  const high     = active.filter(m => m.urgency === 'high');
+  const normal   = active.filter(m => m.urgency === 'normal');
 
-  const activeMilestones = milestones.filter(m => !m.prenatal);
-  const todos = [...critical, ...high].flatMap(m => m.todos).slice(0, 10);
+  const progress = getProgressForChild(child);
 
   let html = `
     <div class="adv-age-line">${_e(child.name)} is <strong>${formatAge(child.dob)}</strong></div>
-    <p class="adv-disclaimer">* Guidelines assume a typically developing child born at full term. Correct for age if premature.</p>`;
+    <div class="adv-progress-wrap">
+      <div class="adv-progress-header">
+        <span>Current window</span>
+        <span><strong>${progress.done}</strong> / ${progress.total} milestones complete</span>
+      </div>
+      <div class="adv-progress-bar">
+        <div class="adv-progress-fill" style="width:${progress.pct}%"></div>
+      </div>
+      ${progress.done > 0 && progress.done === progress.total
+        ? `<div class="adv-progress-complete">🎉 All current milestones done. Check back as ${_e(child.name)} grows.</div>`
+        : ''}
+    </div>
+    <p class="adv-disclaimer">* Guidelines assume a typically developing child born at full term. Correct for age if premature.</p>
+    ${newCount > 0 ? `<div class="adv-new-banner">👋 <strong>${newCount} new ${newCount === 1 ? 'milestone' : 'milestones'}</strong> since your last visit</div>` : ''}`;
 
+  /* ── Before Baby Arrives ── */
   if (prenatal.length > 0 && ageWeeks < 4) {
-    html += `<div class="adv-section-label" style="margin-top:24px">🤰 Before Baby Arrives</div>
-             <div class="adv-prenatal-intro">Get these foundational pieces in place before you're in the thick of it.</div>
-             ${prenatal.map(m => renderCard(m, child.id)).join('')}`;
+    html += `<details class="adv-section-details">
+      <summary class="adv-section-summary">
+        <span class="adv-sec-icon">🤰</span>Before Baby Arrives<em class="adv-sec-count">${prenatal.length}</em>
+      </summary>
+      <div class="adv-section-body">
+        <div class="adv-prenatal-intro">Get these foundational pieces in place before you're in the thick of it.</div>
+        ${prenatal.map(m => renderCard(m, child.id)).join('')}
+      </div>
+    </details>`;
   }
 
-  if (todos.length > 0) {
-    html += `<div class="adv-this-month"><div class="adv-section-label">📋 This Month's To-Dos</div><div class="adv-todos">${renderTodos(todos)}</div></div>`;
+  /* ── Critical ── always shown, even if zero */
+  if (critical.length === 0) {
+    html += `<details class="adv-section-details">
+      <summary class="adv-section-summary">
+        <span class="adv-sec-icon">🚨</span><span class="urgent">Critical</span><em class="adv-sec-count">0</em>
+      </summary>
+      <div class="adv-section-body">
+        <div class="adv-zero-state">Nothing critical right now. You're on top of it.</div>
+      </div>
+    </details>`;
+  } else {
+    html += `<details class="adv-section-details">
+      <summary class="adv-section-summary">
+        <span class="adv-sec-icon">🚨</span><span class="urgent">Critical</span><em class="adv-sec-count">${critical.length}</em>
+      </summary>
+      <div class="adv-section-body">${critical.map(m => renderCard(m, child.id)).join('')}</div>
+    </details>`;
   }
 
-  if (critical.length > 0) {
-    html += `<div class="adv-section-label"><span class="adv-sec-icon">🚨</span><span class="urgent">Important — Act Now</span><em class="adv-sec-count">${critical.length}</em></div>${critical.map(m => renderCard(m, child.id)).join('')}`;
-  }
-
+  /* ── High Priority ── */
   if (high.length > 0) {
-    html += `<div class="adv-section-label"><span class="adv-sec-icon">🚀</span>Next Steps<em class="adv-sec-count">${high.length}</em></div>${high.map(m => renderCard(m, child.id)).join('')}`;
+    html += `<details class="adv-section-details">
+      <summary class="adv-section-summary">
+        <span class="adv-sec-icon">🔶</span>High Priority<em class="adv-sec-count">${high.length}</em>
+      </summary>
+      <div class="adv-section-body">${high.map(m => renderCard(m, child.id)).join('')}</div>
+    </details>`;
   }
 
+  /* ── Regular Priority ── */
   if (normal.length > 0) {
-    html += `<details class="adv-ongoing"><summary class="adv-ongoing-summary">📂 Ongoing Reminders (${normal.length}) ▾</summary><div class="adv-ongoing-inner">${normal.map(m => renderCard(m, child.id)).join('')}</div></details>`;
+    html += `<details class="adv-section-details">
+      <summary class="adv-section-summary">
+        <span class="adv-sec-icon">📌</span>Regular Priority<em class="adv-sec-count">${normal.length}</em>
+      </summary>
+      <div class="adv-section-body">${normal.map(m => renderCard(m, child.id)).join('')}</div>
+    </details>`;
   }
 
-  if (wins.length > 0) {
-    html += `<div class="adv-wins-section"><div class="adv-wins-header"><span style="font-size:18px">🏆</span><span class="adv-wins-title">You've Nailed These!</span></div><div class="adv-wins-intro">Recently passed milestones. Look how far you've come.</div>${wins.map(m => renderCard(m, child.id, true)).join('')}</div>`;
-  }
+  /* ── Wins ── always shown */
+  html += `<details class="adv-section-details">
+    <summary class="adv-section-summary">
+      <span class="adv-sec-icon">🏆</span>Wins<em class="adv-sec-count">${wins.length}</em>
+    </summary>
+    <div class="adv-section-body">
+      ${wins.length === 0
+        ? `<div class="adv-zero-state">No wins yet — tap "✓ Mark as done" on any milestone to record it here.</div>`
+        : `<div class="adv-wins-intro">Milestones you've confirmed as done. Tap "↩ Not done yet" to move one back.</div>${wins.map(m => renderCard(m, child.id, true)).join('')}`
+      }
+    </div>
+  </details>`;
 
-  if (activeMilestones.length === 0 && prenatal.length === 0) {
-    html += `<p class="adv-empty">No active milestones right now. Check back next month.</p>`;
-  }
-
-  // Dismissed/skipped pills
+  /* ── Skipped / Dismissed ── always shown */
   try {
-    const dismissed = JSON.parse(localStorage.getItem('ff_dismissed_milestones') || '{}')[child.id] || [];
-    if (dismissed.length > 0) {
-      const pills = dismissed.map(id => {
-        const m = MILESTONES.find(x => x.id === id);
-        const label = m ? m.icon + ' ' + m.title.split(':')[0].substring(0,40) : id;
-        return '<span class="adv-dismissed-pill">' + _e(label) + ' <button class="adv-restore-btn" onclick="window.ffAdvisor.restore(\'' + _e(child.id) + '\',\'' + _e(id) + '\')">Restore</button></span>';
-      }).join('');
-      html += '<div class="adv-dismissed-section"><div class="adv-dismissed-title">Dismissed &amp; Skipped (' + dismissed.length + ')</div>' + pills + '</div>';
-    }
+    const dismissed = loadDismissed()[child.id] || [];
+    const pills = dismissed.map(id => {
+      const m = MILESTONES.find(x => x.id === id);
+      const label = m ? m.icon + ' ' + m.title.split(':')[0].substring(0, 40) : id;
+      return `<span class="adv-dismissed-pill">${_e(label)} <button class="adv-restore-btn" onclick="window.ffAdvisor.restore('${_e(child.id)}','${_e(id)}')">Restore</button></span>`;
+    }).join('');
+    html += `<details class="adv-section-details">
+      <summary class="adv-section-summary">
+        <span class="adv-sec-icon">📂</span>Skipped<em class="adv-sec-count">${dismissed.length}</em>
+      </summary>
+      <div class="adv-section-body">
+        ${dismissed.length === 0
+          ? `<div class="adv-zero-state" style="color:var(--text-dim);background:var(--elevated);border-color:var(--border-light)">Nothing skipped yet. Dismissed items will appear here.</div>`
+          : `<div style="font-size:11.5px;color:var(--text-dim);margin-bottom:8px">Items you dismissed. Restore any time.</div>${pills}`
+        }
+      </div>
+    </details>`;
   } catch(e) {}
+
+  /* ── Next Milestone footer ── */
+  const nextDate = getNextMilestoneDate(child);
+  if (nextDate) {
+    // Only show the day count if it's close — large numbers are alarming, not helpful
+    const dayLabel = nextDate.daysUntil <= 30
+      ? ` · ${nextDate.daysUntil} day${nextDate.daysUntil === 1 ? '' : 's'} from now`
+      : '';
+    const subText = nextDate.daysUntil <= 30
+      ? `Check back then for ${_e(child.name)}'s next updates.`
+      : `You're well set for now. New milestones open around ${nextDate.dateStr} — we'll have them ready.`;
+    html += `<div class="adv-next-milestone">
+        <span class="adv-next-icon">📅</span>
+        <div>
+          <div class="adv-next-label">Next milestone window</div>
+          <div class="adv-next-date">Around ${nextDate.dateStr}${dayLabel}</div>
+          <div class="adv-next-sub">${subText}</div>
+        </div>
+      </div>`;
+  } else {
+    html += `<div class="adv-next-milestone" style="text-align:center">
+        <div class="adv-next-label">🎓 You're all caught up</div>
+        <div class="adv-next-sub">No upcoming milestones in the database — keep doing what you're doing.</div>
+      </div>`;
+  }
 
   return html;
 }
@@ -1816,8 +2143,12 @@ function renderDigest(child) {
    PUBLIC API
    ════════════════════════════════════════════════════════════ */
 window.ffAdvisor = {
-  loadChildren, saveChildren, addChild, removeChild, updateChildName,
-  getAgeWeeks, formatAge, getMilestonesForChild, renderDigest,
+  loadChildren, saveChildren, addChild, removeChild, updateChildName, updateChildGender,
+  updateChild,
+  markComplete, unmarkComplete, getCompletionMeta, getMilestoneById,
+  loadLastVisit, saveLastVisit, countNewSinceLastVisit, getNextMilestoneDate,
+  loadMilestonesFromSupabase, invalidateMilestonesCache,
+  getAgeWeeks, formatAge, getMilestonesForChild, getProgressForChild, renderDigest,
   dismiss: (childId, milestoneId) => {
     dismissMilestone(childId, milestoneId);
     if (window.ffRefreshAdvisor) window.ffRefreshAdvisor();
