@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <!-- ═══════════════════════════════════════════════════════════
-     FAMILYFORCE — Sign In (Magic Link / Passwordless)
+     FAMILYFORCE — Sign In (Email + Password)
      Stack: Vanilla HTML/CSS/JS (zero dependencies, no build step)
      Accessibility: WCAG 2.1 AA compliant
      Screen #15 in 17-Screen Architecture
@@ -14,13 +14,13 @@
 
 <!-- ─── SEO META ─── -->
 <title>Sign In — FamilyForce</title>
-<meta name="description" content="Sign in to your FamilyForce account with a magic link — no password needed. Enter your email and we'll send you a sign-in link.">
+<meta name="description" content="Sign in to your FamilyForce account. Enter your email and password to access your dashboard.">
 <link rel="canonical" href="https://getfamilyforce.com/sign-in">
 
 <!-- ─── OPEN GRAPH ─── -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Sign In — FamilyForce">
-<meta property="og:description" content="Sign in to FamilyForce — no password needed.">
+<meta property="og:description" content="Sign in to your FamilyForce account.">
 <meta property="og:url" content="https://getfamilyforce.com/sign-in">
 <meta property="og:site_name" content="FamilyForce">
 
@@ -596,14 +596,42 @@ button { font: inherit; cursor: pointer; }
   /* Inherits all .btn-primary styles */
 }
 
-/* "No password needed." ghost text */
-.signin-hint {
-  font-size: 12px;
-  color: var(--text-ghost);
-  font-weight: 400;
-  text-align: center;
-  margin-bottom: 24px;
-  letter-spacing: 0.01em;
+/* Password field wrapper */
+.signin-pw-wrap {
+  position: relative;
+}
+.signin-pw-wrap .signin-input {
+  padding-right: 44px;
+}
+.signin-pw-toggle {
+  position: absolute; right: 12px; top: 50%;
+  transform: translateY(-50%);
+  background: none; border: none; cursor: pointer;
+  padding: 4px; color: var(--text-dim);
+  display: flex; align-items: center;
+  transition: color .15s;
+}
+.signin-pw-toggle:hover { color: var(--terra); }
+
+/* Forgot password link */
+.signin-forgot-link {
+  display: inline-block; margin-top: 6px;
+  font-size: 12px; font-weight: 600; color: var(--terra-dark);
+  background: none; border: none; padding: 0; cursor: pointer;
+  font-family: var(--sans); text-decoration: none;
+}
+.signin-forgot-link:hover { text-decoration: underline; }
+
+/* Banner (error / success) */
+.signin-banner {
+  background: #FEF2F2; color: #DC2626;
+  border: 1px solid #FECACA; border-radius: 10px;
+  padding: 11px 14px; font-size: 13.5px; font-weight: 500;
+  margin-bottom: 16px; line-height: 1.45;
+}
+.signin-banner-success {
+  background: #F0FFF4; color: #276749;
+  border-color: #C6F6D5;
 }
 
 /* Divider with label */
@@ -620,6 +648,25 @@ button { font: inherit; cursor: pointer; }
   flex: 1;
   height: 1px;
   background: var(--border);
+}
+
+/* Google button */
+.signin-google-btn {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; padding: 13px 20px;
+  background: #fff; border: 1.5px solid var(--border);
+  border-radius: var(--radius-input); font-size: 15px; font-weight: 600;
+  color: var(--text); font-family: var(--sans); cursor: pointer;
+  transition: background .15s, box-shadow .15s;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.signin-google-btn:hover { background: #f8f8f8; box-shadow: 0 2px 8px rgba(0,0,0,.10); }
+.signin-google-btn:active { background: #f0f0f0; }
+
+.signin-divider-text {
+  font-size: 12px; font-weight: 600; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: .06em; white-space: nowrap;
 }
 
 /* "Don't have an account?" link */
@@ -996,63 +1043,88 @@ button { font: inherit; cursor: pointer; }
         </span>
       </div>
 
-      <!-- Heading + subtext — adapts for new vs returning users -->
-      <h1 class="signin-heading" id="signin-heading">Create your free account</h1>
-      <p class="signin-subtext" id="signin-subtext">Enter your email to get started — it's free.</p>
+      <!-- Heading + subtext — changes by mode -->
+      <h1 class="signin-heading" id="signin-heading">Welcome back</h1>
+      <p class="signin-subtext" id="signin-subtext">Sign in to your FamilyForce account.</p>
 
-      <!-- Sign-in form -->
-      <form
-        class="signin-form"
-        id="signin-form"
-        novalidate
-        aria-label="Sign in with magic link"
-      >
+      <!-- Global error banner -->
+      <div class="signin-banner" id="signin-banner" role="alert" aria-live="polite" style="display:none"></div>
+      <!-- Success banner (e.g. reset link sent) -->
+      <div class="signin-banner signin-banner-success" id="signin-success-banner" role="status" aria-live="polite" style="display:none"></div>
+
+      <!-- Google sign-in — hidden in forgot-password mode -->
+      <div id="signin-google-wrap">
+        <button type="button" class="signin-google-btn" id="signin-google-btn" onclick="signinWithGoogle()">
+          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+          Continue with Google
+        </button>
+        <div class="signin-divider" role="separator">
+          <span class="signin-divider-text">or</span>
+        </div>
+      </div>
+
+      <!-- Sign-in / Create Account form -->
+      <form class="signin-form" id="signin-form" novalidate aria-label="Sign in">
+
+        <!-- Email -->
         <div class="signin-form-group">
           <label for="signin-email" class="signin-label">Email address</label>
           <input
-            type="email"
-            id="signin-email"
-            name="email"
-            class="signin-input"
-            placeholder="you@example.com"
-            autocomplete="email"
-            inputmode="email"
-            spellcheck="false"
-            autocapitalize="none"
-            autocorrect="off"
-            required
-            aria-required="true"
-            aria-describedby="signin-email-error"
+            type="email" id="signin-email" name="email"
+            class="signin-input" placeholder="you@example.com"
+            autocomplete="email" inputmode="email"
+            spellcheck="false" autocapitalize="none" autocorrect="off"
+            required aria-required="true" aria-describedby="signin-email-error"
           >
-          <span
-            id="signin-email-error"
-            class="signin-error-msg"
-            role="alert"
-            aria-live="polite"
-          >Please enter a valid email address.</span>
+          <span id="signin-email-error" class="signin-error-msg" role="alert" aria-live="polite"></span>
+        </div>
+
+        <!-- Password -->
+        <div class="signin-form-group" id="signin-pw-group">
+          <label for="signin-password" class="signin-label">Password</label>
+          <div class="signin-pw-wrap">
+            <input
+              type="password" id="signin-password" name="password"
+              class="signin-input" placeholder="Your password"
+              autocomplete="current-password" minlength="8"
+              required aria-required="true" aria-describedby="signin-pw-error"
+            >
+            <button type="button" class="signin-pw-toggle" id="signin-pw-toggle" aria-label="Show password" onclick="signinTogglePw('signin-password','signin-pw-toggle')">
+              <svg id="signin-pw-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span id="signin-pw-error" class="signin-error-msg" role="alert" aria-live="polite"></span>
+          <!-- Forgot password — sign-in mode only -->
+          <button type="button" class="signin-forgot-link" id="signin-forgot-btn" onclick="signinSwitchMode('forgot')">Forgot password?</button>
+        </div>
+
+        <!-- Confirm password — create-account mode only -->
+        <div class="signin-form-group" id="signin-confirm-group" style="display:none">
+          <label for="signin-confirm" class="signin-label">Confirm password</label>
+          <div class="signin-pw-wrap">
+            <input
+              type="password" id="signin-confirm" name="confirm"
+              class="signin-input" placeholder="Confirm your password"
+              autocomplete="new-password"
+              aria-describedby="signin-confirm-error"
+            >
+            <button type="button" class="signin-pw-toggle" aria-label="Show confirm password" onclick="signinTogglePw('signin-confirm',this)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span id="signin-confirm-error" class="signin-error-msg" role="alert" aria-live="polite"></span>
         </div>
 
         <!-- Primary CTA -->
-        <button
-          type="submit"
-          class="btn-primary signin-btn"
-          id="signin-submit-btn"
-          aria-label="Send magic link to your email"
-        >
-          Send Magic Link →
+        <button type="submit" class="btn-primary signin-btn" id="signin-submit-btn">
+          Sign In →
         </button>
-
-        <!-- Ghost hint text -->
-        <p class="signin-hint" aria-live="polite">No password needed.</p>
 
       </form>
 
-      <!-- Divider -->
-      <div class="signin-divider" role="separator" aria-hidden="true"></div>
-
-      <!-- Don't have an account? -->
-      <p class="signin-account-link">
-        Don't have an account?&nbsp;<a href="playbook-potty-training.html">Get a free playbook →</a>
+      <!-- Mode toggle -->
+      <p class="signin-account-link" id="signin-mode-toggle">
+        New here?&nbsp;<a href="#" onclick="signinSwitchMode('create');return false">Create a free account →</a>
       </p>
 
     </div><!-- /.signin-card -->
@@ -1187,93 +1259,225 @@ button { font: inherit; cursor: pointer; }
 }());
 
 
-/* ─── SIGN-IN FORM ─── */
+/* ─── SIGN-IN FORM (email + password) ─── */
 (function () {
-  var form      = document.getElementById('signin-form');
-  var emailEl   = document.getElementById('signin-email');
-  var errorEl   = document.getElementById('signin-email-error');
-  var submitBtn = document.getElementById('signin-submit-btn');
 
-  /* Basic email regex */
+  /* ── State ── */
+  var mode = 'sign-in'; // 'sign-in' | 'create-account' | 'forgot'
+
+  /* ── Refs ── */
+  var form          = document.getElementById('signin-form');
+  var headingEl     = document.getElementById('signin-heading');
+  var subtextEl     = document.getElementById('signin-subtext');
+  var emailEl       = document.getElementById('signin-email');
+  var pwEl          = document.getElementById('signin-password');
+  var pwGroup       = document.getElementById('signin-pw-group');
+  var confirmEl     = document.getElementById('signin-confirm');
+  var confirmGroup  = document.getElementById('signin-confirm-group');
+  var forgotBtn     = document.getElementById('signin-forgot-btn');
+  var submitBtn     = document.getElementById('signin-submit-btn');
+  var modeToggle    = document.getElementById('signin-mode-toggle');
+  var bannerEl      = document.getElementById('signin-banner');
+  var successBanner = document.getElementById('signin-success-banner');
+
+  /* ── Helpers ── */
   function isValidEmail(v) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
   }
-
-  function setError(msg) {
-    emailEl.classList.add('error');
-    emailEl.setAttribute('aria-invalid', 'true');
-    errorEl.textContent = msg;
-    errorEl.classList.add('visible');
+  function fieldError(id, msg) {
+    var el = document.getElementById(id);
+    el.textContent = msg;
+    el.classList.toggle('visible', !!msg);
+    var input = el.previousElementSibling || el.parentElement.querySelector('input');
+    if (input && input.tagName === 'INPUT') {
+      input.classList.toggle('error', !!msg);
+      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    }
+  }
+  function clearAll() {
+    ['signin-email-error','signin-pw-error','signin-confirm-error'].forEach(function(id){fieldError(id,'');});
+    bannerEl.style.display = 'none';
+    successBanner.style.display = 'none';
+  }
+  function showBanner(msg) {
+    bannerEl.textContent = msg;
+    bannerEl.style.display = 'block';
+    successBanner.style.display = 'none';
+  }
+  function showSuccess(msg) {
+    successBanner.textContent = msg;
+    successBanner.style.display = 'block';
+    bannerEl.style.display = 'none';
+  }
+  function setLoading(text) {
+    submitBtn.setAttribute('disabled','true');
+    submitBtn.setAttribute('aria-disabled','true');
+    submitBtn.textContent = text;
+  }
+  function clearLoading(text) {
+    submitBtn.removeAttribute('disabled');
+    submitBtn.removeAttribute('aria-disabled');
+    submitBtn.textContent = text;
   }
 
-  function clearError() {
-    emailEl.classList.remove('error');
-    emailEl.removeAttribute('aria-invalid');
-    errorEl.classList.remove('visible');
-  }
+  /* ── Mode switching ── */
+  window.signinSwitchMode = function(newMode) {
+    clearAll();
+    mode = newMode;
+    if (mode === 'sign-in') {
+      headingEl.textContent  = 'Welcome back';
+      subtextEl.textContent  = 'Sign in to your FamilyForce account.';
+      pwGroup.style.display  = 'block';
+      confirmGroup.style.display = 'none';
+      forgotBtn.style.display = 'inline-block';
+      pwEl.setAttribute('autocomplete','current-password');
+      submitBtn.textContent  = 'Sign In →';
+      modeToggle.innerHTML   = 'New here?&nbsp;<a href="#" onclick="signinSwitchMode(\'create\');return false">Create a free account →</a>';
+    } else if (mode === 'create') {
+      headingEl.textContent  = 'Create your free account';
+      subtextEl.textContent  = 'Join thousands of parents getting ahead.';
+      pwGroup.style.display  = 'block';
+      confirmGroup.style.display = 'block';
+      forgotBtn.style.display = 'none';
+      pwEl.setAttribute('autocomplete','new-password');
+      pwEl.placeholder       = 'Choose a password (8+ characters)';
+      submitBtn.textContent  = 'Create account →';
+      modeToggle.innerHTML   = 'Already have an account?&nbsp;<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">Sign in →</a>';
+    } else if (mode === 'forgot') {
+      headingEl.textContent  = 'Reset your password';
+      subtextEl.textContent  = 'Enter your email and we\'ll send you a reset link.';
+      pwGroup.style.display  = 'none';
+      confirmGroup.style.display = 'none';
+      submitBtn.textContent  = 'Send reset link →';
+      modeToggle.innerHTML   = '<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">← Back to sign in</a>';
+    }
+    // Google button only makes sense on sign-in and create-account modes
+    var googleWrap = document.getElementById('signin-google-wrap');
+    if (googleWrap) googleWrap.style.display = mode === 'forgot' ? 'none' : 'block';
+  };
 
-  /* Clear error on input */
-  emailEl.addEventListener('input', clearError);
+  /* ── Google OAuth ── */
+  window.signinWithGoogle = function() {
+    var sb = window._supabaseClient;
+    if (!sb) { alert('Auth not ready. Please refresh.'); return; }
+    var redirectTo = sessionStorage.getItem('ff_signin_next') || 'https://getfamilyforce.com/dashboard.html';
+    // Ensure absolute URL
+    if (redirectTo.indexOf('http') !== 0) redirectTo = 'https://getfamilyforce.com/' + redirectTo;
+    var btn = document.getElementById('signin-google-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Redirecting…'; }
+    sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: redirectTo }
+    }).then(function(res) {
+      if (res.error) {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg> Continue with Google'; }
+        showBanner(res.error.message || 'Google sign-in failed. Please try again.');
+      }
+      // On success Supabase redirects automatically — no action needed
+    });
+  };
 
-  /* Form submission */
+  /* ── Toggle password visibility ── */
+  window.signinTogglePw = function(inputId, btn) {
+    var input = document.getElementById(inputId);
+    var show  = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    if (btn && btn.setAttribute) {
+      btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    }
+  };
+
+  /* ── Persist ?next param ── */
+  var params = new URLSearchParams(window.location.search);
+  var next = params.get('next');
+  if (next) sessionStorage.setItem('ff_signin_next', next);
+
+  /* ── Detect returning user mode from ?mode= param ── */
+  var modeParam = params.get('mode');
+  if (modeParam === 'create') signinSwitchMode('create');
+
+  /* ── Form submission ── */
   form.addEventListener('submit', function (e) {
     e.preventDefault();
+    clearAll();
 
     var email = emailEl.value.trim();
+    if (!email)            { fieldError('signin-email-error','Please enter your email address.'); emailEl.focus(); return; }
+    if (!isValidEmail(email)) { fieldError('signin-email-error','Please enter a valid email address.'); emailEl.focus(); return; }
 
-    if (!email) {
-      setError('Please enter your email address.');
-      emailEl.focus();
-      return;
-    }
-
-    if (!isValidEmail(email)) {
-      setError('Please enter a valid email address.');
-      emailEl.focus();
-      return;
-    }
-
-    clearError();
-
-    /* Save to localStorage */
-    try {
-      localStorage.setItem('ff_user_email', email);
-    } catch (err) {
-      /* localStorage unavailable (private browsing, quota, etc.) — non-fatal */
-    }
-
-    /* Disable button to prevent double-submit */
-    submitBtn.setAttribute('disabled', 'true');
-    submitBtn.setAttribute('aria-disabled', 'true');
-    submitBtn.textContent = 'Sending…';
-
-    /* Persist ?next param */
-    var params = new URLSearchParams(window.location.search);
-    var next = params.get('next');
-    if (next) sessionStorage.setItem('ff_signin_next', next);
-
-    /* Send magic link via Supabase */
-    var SUPABASE_URL  = 'https://ewjqbafaxeasyvknxmof.supabase.co';
-    var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ';
     var sb = window._supabaseClient;
 
-    sb.auth.signInWithOtp({
-      email: email,
-      options: {
-        emailRedirectTo: 'https://getfamilyforce.com/auth/callback'
+    /* ── Forgot password mode ── */
+    if (mode === 'forgot') {
+      setLoading('Sending…');
+      sb.auth.resetPasswordForEmail(email, {
+        redirectTo: 'https://getfamilyforce.com/auth/callback?type=recovery'
+      }).then(function(res) {
+        clearLoading('Send reset link →');
+        if (res.error) { showBanner('Something went wrong. Please try again.'); return; }
+        showSuccess('Reset link sent! Check your inbox (and spam folder).');
+      });
+      return;
+    }
+
+    /* ── Password validation ── */
+    var pw = pwEl.value;
+    if (!pw)              { fieldError('signin-pw-error','Please enter your password.'); pwEl.focus(); return; }
+    if (pw.length < 8)    { fieldError('signin-pw-error','Password must be at least 8 characters.'); pwEl.focus(); return; }
+
+    /* ── Create account mode ── */
+    if (mode === 'create') {
+      var confirm = confirmEl.value;
+      if (pw !== confirm) { fieldError('signin-confirm-error','Passwords don\'t match.'); confirmEl.focus(); return; }
+      setLoading('Creating account…');
+      sb.auth.signUp({ email: email, password: pw }).then(function(res) {
+        if (res.error) {
+          clearLoading('Create account →');
+          if (res.error.message.toLowerCase().includes('already')) {
+            showBanner('An account with that email already exists. Sign in instead.');
+          } else {
+            showBanner(res.error.message || 'Something went wrong. Please try again.');
+          }
+          return;
+        }
+        try { localStorage.setItem('ff_user_email', email); } catch(_) {}
+        /* If email confirmation is required, Supabase returns a user but no session */
+        if (res.data && res.data.session) {
+          window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+        } else {
+          showSuccess('Account created! Check your email to confirm, then sign in.');
+          signinSwitchMode('sign-in');
+          emailEl.value = email;
+        }
+      });
+      return;
+    }
+
+    /* ── Sign in mode ── */
+    setLoading('Signing in…');
+    sb.auth.signInWithPassword({ email: email, password: pw }).then(function(res) {
+      if (res.error) {
+        clearLoading('Sign In →');
+        var msg = res.error.message || '';
+        if (msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('credentials')) {
+          showBanner('Incorrect email or password. Try again, or reset your password below.');
+        } else if (msg.toLowerCase().includes('email not confirmed')) {
+          showBanner('Please confirm your email first — check your inbox.');
+        } else {
+          showBanner(msg || 'Something went wrong. Please try again.');
+        }
+        return;
       }
-    }).then(function(result) {
-      if (result.error) {
-        submitBtn.removeAttribute('disabled');
-        submitBtn.removeAttribute('aria-disabled');
-        submitBtn.textContent = 'Send my link';
-        setError('Something went wrong. Please try again.');
-      } else {
-        localStorage.setItem('ff_user_email', email);
-        window.location.href = 'sign-in-sent.html';
-      }
+      try { localStorage.setItem('ff_user_email', email); } catch(_) {}
+      window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
     });
   });
+
+  /* ── Clear field errors on input ── */
+  emailEl.addEventListener('input',   function() { fieldError('signin-email-error',''); });
+  pwEl.addEventListener('input',      function() { fieldError('signin-pw-error',''); });
+  confirmEl.addEventListener('input', function() { fieldError('signin-confirm-error',''); });
+
 }());
 </script>
 
