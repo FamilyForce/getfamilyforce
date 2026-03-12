@@ -5067,6 +5067,7 @@ async function initFamilySection(userId) {
 
   /* Ensure user has a code */
   _familyCode = await window.ffSync.ensureCircleCode(userId);
+  if (_familyCode) localStorage.setItem('ff_family_code', _familyCode); // cache for Settings sub-view
   const codeEl = document.getElementById('family-code-display');
   if (codeEl && _familyCode) codeEl.textContent = _familyCode;
 
@@ -5785,7 +5786,9 @@ function accSaveCertName() {
 
 /* Family Circle */
 function accInitFamily() {
-  const code = localStorage.getItem('ff_family_code') || '';
+  // Prefer the live _familyCode (loaded from Supabase), fall back to localStorage cache
+  const code = _familyCode || localStorage.getItem('ff_family_code') || '';
+  if (code) localStorage.setItem('ff_family_code', code); // cache for next time
   document.getElementById('acc-family-code').textContent = code || 'FF-····';
   const members = [];
   try { JSON.parse(localStorage.getItem('ff_family_members')||'[]').forEach(m=>members.push(m)); } catch(_) {}
