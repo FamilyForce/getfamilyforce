@@ -4358,6 +4358,20 @@ document.addEventListener('DOMContentLoaded', () => {
   if (joinInput) joinInput.addEventListener('keydown', e => { if (e.key === 'Enter') joinFamily(); });
 });
 
+/* ─── bfcache fix ───────────────────────────────────────────
+   When the browser restores this page from the back-forward
+   cache, DOMContentLoaded does NOT fire again. The tab button
+   state is preserved but advisorInit() was never re-called,
+   leaving the advisor tab blank. pageshow(persisted) fixes it.
+   ─────────────────────────────────────────────────────────── */
+window.addEventListener('pageshow', function (event) {
+  if (event.persisted) {
+    const isAdvisorActive = document.getElementById('tab-btn-advisor')
+      && document.getElementById('tab-btn-advisor').classList.contains('active');
+    if (isAdvisorActive) advisorInit();
+  }
+});
+
 /* ═══════════════════════════════════════════════════════════
    TAB SWITCHING
    ═══════════════════════════════════════════════════════════ */
