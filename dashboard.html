@@ -4242,7 +4242,6 @@ button { font: inherit; cursor: pointer; }
         <div style="display:flex;gap:10px;margin-bottom:18px">
           <button class="adv-gender-btn" id="adv-edit-gender-boy"  onclick="advEditSelectGender('boy')" >👦 Boy</button>
           <button class="adv-gender-btn" id="adv-edit-gender-girl" onclick="advEditSelectGender('girl')">👧 Girl</button>
-          <button class="adv-gender-btn" id="adv-edit-gender-none" onclick="advEditSelectGender(null)">Skip</button>
         </div>
 
         <div id="adv-edit-err" style="font-size:12px;color:#e53935;margin-bottom:10px;display:none"></div>
@@ -5450,7 +5449,11 @@ function advPurchase() {
   // Generate referral code on first purchase
   getAdvisorReferralCode();
   advisorInit();
-  advShowOnboarding();
+  // If child was already added via Settings, skip onboarding wizard
+  const existing = window.ffAdvisor ? window.ffAdvisor.loadChildren() : [];
+  if (existing.length === 0) {
+    advShowOnboarding();
+  }
 }
 
 /* ─── Gift code ─── */
@@ -5505,17 +5508,23 @@ function advRedeemGiftCode() {
 
 /* ─── Onboarding wizard ─── */
 function advShowOnboarding() {
-  // Reset form state
-  document.getElementById('adv-ob-name').value = '';
-  document.getElementById('adv-ob-dob').value = '';
-  _advObEmoji = '👶';
+  // Pre-fill from existing child if exactly one is already saved (e.g. added via Settings)
+  const existing = window.ffAdvisor ? window.ffAdvisor.loadChildren() : [];
+  const prefill  = existing.length === 1 ? existing[0] : null;
+
+  document.getElementById('adv-ob-name').value = prefill ? prefill.name : '';
+  document.getElementById('adv-ob-dob').value  = prefill ? prefill.dob  : '';
+  _advObEmoji      = prefill?.emoji  || '👶';
   _advObBornStatus = 'born';
-  _advObGender = null;
-  document.querySelectorAll('.adv-emoji-opt').forEach(b => b.classList.remove('on'));
+  _advObGender     = prefill?.gender || null;
+
+  document.querySelectorAll('.adv-emoji-opt').forEach(b => {
+    b.classList.toggle('on', b.textContent === _advObEmoji);
+  });
   document.getElementById('adv-born-btn').classList.add('on');
   document.getElementById('adv-expecting-btn').classList.remove('on');
-  document.getElementById('adv-gender-boy').classList.remove('on');
-  document.getElementById('adv-gender-girl').classList.remove('on');
+  document.getElementById('adv-gender-boy').classList.toggle('on',  _advObGender === 'boy');
+  document.getElementById('adv-gender-girl').classList.toggle('on', _advObGender === 'girl');
   document.getElementById('adv-ob-err-1').style.display = 'none';
   document.getElementById('adv-ob-err-2').style.display = 'none';
   // Show step 1
@@ -5595,9 +5604,16 @@ function advObFinish() {
   const dob    = document.getElementById('adv-ob-dob').value;
   const emoji  = _advObEmoji;
   const gender = _advObGender;
-  const result = window.ffAdvisor.addChild(name, dob, emoji, gender);
-  if (result.error) { alert(result.error); return; }
-  _advActiveChildId = result.child.id;
+  // If we pre-filled from a single existing child, update rather than duplicate
+  const existing = window.ffAdvisor ? window.ffAdvisor.loadChildren() : [];
+  if (existing.length === 1) {
+    window.ffAdvisor.updateChild(existing[0].id, { name, dob, emoji, gender });
+    _advActiveChildId = existing[0].id;
+  } else {
+    const result = window.ffAdvisor.addChild(name, dob, emoji, gender);
+    if (result.error) { alert(result.error); return; }
+    _advActiveChildId = result.child.id;
+  }
   advHideOnboarding();
   advisorInit();
   advisorSyncChildren();
@@ -6260,17 +6276,17 @@ function advEditSelectGender(g) {
   _advEditGenderRefresh();
 }
 function _advEditGenderRefresh() {
-  ['boy','girl','none'].forEach(g => {
-    const active = (g === 'none' ? null : g) === _advEditGender;
-    document.getElementById('adv-edit-gender-' + g).classList.toggle('selected', active);
+  ['boy','girl'].forEach(g => {
+    document.getElementById('adv-edit-gender-' + g).classList.toggle('selected', g === _advEditGender);
   });
 }
 function advSaveEditChild() {
   const name = document.getElementById('adv-edit-name').value.trim();
   const dob  = document.getElementById('adv-edit-dob').value;
   const err  = document.getElementById('adv-edit-err');
-  if (!name) { err.textContent = 'Please enter a name.';           err.style.display = 'block'; return; }
-  if (!dob)  { err.textContent = 'Please enter a date of birth.';  err.style.display = 'block'; return; }
+  if (!name)         { err.textContent = 'Please enter a name.';          err.style.display = 'block'; return; }
+  if (!dob)          { err.textContent = 'Please enter a date of birth.'; err.style.display = 'block'; return; }
+  if (!_advEditGender) { err.textContent = 'Please select boy or girl.'; err.style.display = 'block'; return; }
   window.ffAdvisor.updateChild(_advEditChildId, { name, dob, emoji: _advEditEmoji, gender: _advEditGender });
   advHideEditChild();
   advShowSettings(); // re-open settings so parent sees updated row
