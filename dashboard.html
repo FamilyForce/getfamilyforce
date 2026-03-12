@@ -5764,6 +5764,7 @@ function accSaveProfile() {
       return;
     }
   }
+  if (window._ffUpdateGreeting) window._ffUpdateGreeting();
   stToast('Profile updated ✓');
   accHideView('acc-edit');
 }
@@ -5774,6 +5775,7 @@ function accSaveCertName() {
   if (!val) return;
   localStorage.setItem('ff_user_name', val);
   window.ffSync?.getUserId && window.ffSync.getUserId().then(uid => { if(uid) window.ffSync.saveProfile(uid, {name:val}); });
+  if (window._ffUpdateGreeting) window._ffUpdateGreeting();
   stToast('Certificate name updated ✓');
   accHideView('acc-cert');
 }
