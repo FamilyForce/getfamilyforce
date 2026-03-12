@@ -1996,9 +1996,11 @@ button { font: inherit; cursor: pointer; }
 /* ── Advisor tab hero header ── */
 .adv-tab-hero {
   background: linear-gradient(135deg, #3D20B0 0%, #7C5CFC 100%);
-  padding: calc(72px + 24px) 24px 32px;
+  padding: calc(72px + 20px) 24px 24px;
   text-align: center;
-  position: relative;
+  position: sticky;
+  top: 72px;
+  z-index: 50;
   overflow: hidden;
 }
 .adv-tab-hero::before {
@@ -2012,7 +2014,7 @@ button { font: inherit; cursor: pointer; }
 .adv-tab-hero-sub   { font-size: 13px; color: rgba(255,255,255,.72); line-height: 1.5; }
 
 @media (max-width: 480px) {
-  .adv-tab-hero { padding-top: calc(64px + 20px); padding-bottom: 24px; }
+  .adv-tab-hero { padding-top: calc(64px + 16px); padding-bottom: 20px; top: 64px; }
   .adv-tab-hero-title { font-size: 19px; }
   .adv-tab-hero-emoji { font-size: 34px; }
   .acc-wrap { padding-top: 64px; }
