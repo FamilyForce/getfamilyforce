@@ -1606,6 +1606,579 @@ button { font: inherit; cursor: pointer; }
 .lib-btn-stack { display: none; } /* Listen hidden globally */
 
 /* ═══════════════════════════════════════════════════════════
+   DASHBOARD TABS
+   ═══════════════════════════════════════════════════════════ */
+.dash-tab-bar {
+  background: rgba(248,247,255,.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky; top: 64px; z-index: 90;
+}
+.dash-tab-inner {
+  width: min(600px, 100% - 40px);
+  margin-inline: auto;
+  display: flex; gap: 0;
+}
+.dash-tab-btn {
+  padding: 13px 20px 11px;
+  font-size: 13px; font-weight: 600;
+  color: var(--text-dim); background: none; border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer; font-family: var(--sans);
+  transition: color .15s, border-color .15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.dash-tab-btn.active {
+  color: var(--terra); border-bottom-color: var(--terra);
+}
+@media (hover:hover) { .dash-tab-btn:not(.active):hover { color: var(--text); } }
+
+/* ═══════════════════════════════════════════════════════════
+   DEVELOPMENT ADVISOR TAB
+   ═══════════════════════════════════════════════════════════ */
+#tab-advisor { display: none; }
+
+.adv-wrap {
+  width: min(600px, 100% - 40px);
+  margin-inline: auto;
+  padding: 32px 0 80px;
+}
+
+/* ── Paywall / Locked state ── */
+.adv-locked-wrap {
+  text-align: center;
+  padding: 48px 20px 60px;
+}
+.adv-locked-icon { font-size: 44px; margin-bottom: 14px; }
+.adv-locked-title { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -.01em; margin-bottom: 8px; }
+.adv-locked-sub { font-size: 14px; color: var(--text-dim); line-height: 1.6; max-width: 360px; margin-inline: auto; margin-bottom: 24px; }
+.adv-teaser-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; text-align: left; }
+.adv-teaser-card {
+  background: var(--elevated); border-radius: 12px; padding: 14px 16px;
+  position: relative; overflow: hidden;
+}
+.adv-teaser-card-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.adv-teaser-card-body { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+.adv-teaser-blur {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, transparent 25%, rgba(248,247,255,.97) 65%);
+  display: flex; align-items: center; justify-content: flex-end; padding-right: 14px;
+}
+.adv-lock-tag {
+  font-size: 11px; font-weight: 700; color: var(--terra);
+  background: rgba(110,78,214,.1); border: 1.5px solid rgba(110,78,214,.2);
+  border-radius: 100px; padding: 4px 12px;
+}
+.adv-unlock-btn {
+  display: block; width: 100%;
+  padding: 14px; background: var(--terra); color: #fff;
+  border: none; border-radius: 12px; font-size: 15px; font-weight: 700;
+  cursor: pointer; font-family: var(--sans); margin-bottom: 12px;
+  transition: opacity .15s;
+}
+@media (hover:hover) { .adv-unlock-btn:hover { opacity: .9; } }
+.adv-gift-link {
+  font-size: 13px; font-weight: 700; color: var(--terra);
+  background: none; border: none; cursor: pointer; font-family: var(--sans);
+  display: flex; align-items: center; justify-content: center; gap: 5px; width: 100%;
+  padding: 6px 0;
+}
+
+/* ── Modal overlay (shared: upsell, onboarding, share, settings) ── */
+.adv-modal-overlay {
+  position: fixed; inset: 0; z-index: 800;
+  background: rgba(26,26,46,.55);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: flex-end; justify-content: center;
+}
+@media (min-width: 560px) { .adv-modal-overlay { align-items: center; } }
+.adv-modal-sheet {
+  background: var(--surface); width: 100%;
+  max-width: 520px; max-height: 92dvh;
+  border-radius: 24px 24px 0 0; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+@media (min-width: 560px) { .adv-modal-sheet { border-radius: 20px; max-height: 90dvh; } }
+.adv-modal-handle {
+  width: 36px; height: 4px; background: var(--border);
+  border-radius: 2px; margin: 10px auto 0; flex-shrink: 0;
+}
+.adv-modal-scroll { flex: 1; overflow-y: auto; }
+.adv-modal-close-bar {
+  display: flex; justify-content: flex-end; padding: 12px 18px 4px; flex-shrink: 0;
+}
+.adv-modal-close {
+  background: var(--elevated); border: none; border-radius: 50%;
+  width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 12px; color: var(--text-dim); font-family: var(--sans);
+}
+
+/* ── Upsell modal content ── */
+.adv-upsell-hero {
+  background: linear-gradient(135deg, var(--terra) 0%, #9575CD 100%);
+  padding: 28px 24px 24px; text-align: center; color: #fff;
+}
+.adv-upsell-emoji { font-size: 40px; margin-bottom: 10px; }
+.adv-upsell-h1 { font-size: 19px; font-weight: 800; line-height: 1.2; margin-bottom: 7px; }
+.adv-upsell-sub { font-size: 12.5px; opacity: .87; line-height: 1.5; }
+.adv-pricing-toggle-wrap { padding: 18px 20px 4px; }
+.adv-pricing-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.adv-pricing-toggle {
+  display: flex; background: var(--elevated); border-radius: 12px; padding: 4px; gap: 4px;
+}
+.adv-pricing-opt {
+  flex: 1; padding: 10px 8px; border-radius: 9px; cursor: pointer;
+  text-align: center; font-family: var(--sans); border: none; background: transparent;
+  transition: box-shadow .15s, background .15s;
+}
+.adv-pricing-opt.sel { background: var(--white); box-shadow: 0 1px 6px rgba(0,0,0,.1); }
+.adv-price-amount { font-size: 16px; font-weight: 800; color: var(--text-dim); line-height: 1.1; }
+.adv-pricing-opt.sel .adv-price-amount { color: var(--terra); }
+.adv-price-period { font-size: 10.5px; color: var(--text-dim); margin-top: 2px; }
+.adv-save-badge { display: inline-block; background: #E8F5E9; color: #2E7D32; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; margin-top: 4px; }
+.adv-family-access-note {
+  margin: 14px 20px 0; background: rgba(110,78,214,.08); border: 1.5px solid rgba(110,78,214,.18);
+  border-radius: 12px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start;
+}
+.adv-fan-icon { font-size: 17px; flex-shrink: 0; }
+.adv-fan-text { font-size: 12px; line-height: 1.45; color: var(--text-mid); }
+.adv-fan-text strong { color: var(--text); }
+.adv-value-list { padding: 14px 20px 0; display: flex; flex-direction: column; gap: 9px; }
+.adv-value-item { display: flex; gap: 10px; align-items: flex-start; }
+.adv-val-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.adv-val-text { font-size: 12px; line-height: 1.4; color: var(--text-mid); }
+.adv-val-text strong { color: var(--text); font-weight: 700; }
+.adv-social-proof {
+  margin: 14px 20px 0; background: var(--elevated); border-radius: 12px;
+  padding: 13px 15px; font-size: 12px; line-height: 1.5; color: var(--text-mid); font-style: italic;
+}
+.adv-social-proof-name { font-weight: 700; color: var(--text-mid); font-style: normal; margin-top: 5px; font-size: 11px; }
+.adv-upsell-cta { padding: 16px 20px 20px; }
+.adv-upsell-submit {
+  display: block; width: 100%; padding: 14px; background: var(--terra); color: #fff;
+  border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: var(--sans); margin-bottom: 10px; transition: opacity .15s;
+}
+@media (hover:hover) { .adv-upsell-submit:hover { opacity: .9; } }
+.adv-gift-code-btn {
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  width: 100%; padding: 8px 0; background: none; border: none;
+  font-size: 13px; font-weight: 700; color: var(--terra); cursor: pointer; font-family: var(--sans);
+}
+
+/* ── Gift code modal ── */
+.adv-gift-hero {
+  background: linear-gradient(135deg, var(--terra) 0%, #9575CD 100%);
+  padding: 30px 24px 26px; text-align: center; color: #fff;
+}
+.adv-gift-emoji { font-size: 44px; margin-bottom: 10px; }
+.adv-gift-h1 { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
+.adv-gift-sub { font-size: 12.5px; opacity: .87; line-height: 1.5; }
+.adv-gift-body { padding: 22px 20px; }
+.adv-gift-input {
+  display: block; width: 100%; font-family: 'Courier New', monospace;
+  font-size: 18px; font-weight: 700; letter-spacing: .1em; color: var(--terra);
+  text-align: center; padding: 14px; background: var(--surface);
+  border: 1.5px solid var(--border); border-radius: 10px; margin-bottom: 14px;
+  outline: none; text-transform: uppercase;
+}
+.adv-gift-input:focus { border-color: var(--terra); }
+.adv-gift-valid {
+  background: #E8F5E9; border: 1.5px solid #A5D6A7; border-radius: 11px;
+  padding: 12px 15px; margin-bottom: 16px; display: none;
+}
+.adv-gift-valid-title { font-size: 12.5px; font-weight: 700; color: #2E7D32; margin-bottom: 4px; }
+.adv-gift-valid-detail { font-size: 12px; color: var(--text-mid); line-height: 1.45; }
+.adv-gift-err { font-size: 12px; color: #e53935; margin-top: -8px; margin-bottom: 10px; font-weight: 500; display: none; }
+.adv-gift-submit {
+  display: block; width: 100%; padding: 14px; background: var(--terra); color: #fff;
+  border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: var(--sans);
+}
+
+/* ── Onboarding wizard ── */
+.adv-ob-header { padding: 20px 20px 14px; border-bottom: 1px solid var(--border-light); }
+.adv-ob-dots { display: flex; gap: 5px; margin-bottom: 10px; }
+.adv-ob-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+.adv-ob-dot.active { background: var(--terra); width: 18px; border-radius: 3px; }
+.adv-ob-dot.done { background: #38A169; }
+.adv-ob-h1 { font-size: 19px; font-weight: 800; color: var(--text); letter-spacing: -.01em; margin-bottom: 5px; }
+.adv-ob-sub { font-size: 12.5px; color: var(--text-dim); line-height: 1.45; }
+.adv-ob-body { padding: 20px; }
+.adv-ob-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+.adv-ob-input {
+  display: block; width: 100%; padding: 11px 14px;
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px;
+  font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 16px;
+  font-family: var(--sans); outline: none; transition: border-color .2s;
+}
+.adv-ob-input:focus { border-color: var(--terra); }
+.adv-ob-toggle { display: flex; background: var(--elevated); border-radius: 10px; padding: 3px; gap: 3px; margin-bottom: 16px; }
+.adv-ob-toggle-btn {
+  flex: 1; padding: 9px; border-radius: 8px; font-size: 12.5px; font-weight: 600;
+  text-align: center; color: var(--text-dim); cursor: pointer; font-family: var(--sans);
+  background: transparent; border: none; transition: all .15s;
+}
+.adv-ob-toggle-btn.on { background: var(--white); color: var(--terra); box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+.adv-emoji-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.adv-emoji-opt {
+  width: 42px; height: 42px; border-radius: 50%; background: var(--elevated);
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+  cursor: pointer; border: 2px solid transparent; transition: border-color .15s, background .15s;
+}
+.adv-emoji-opt.on { background: rgba(110,78,214,.1); border-color: var(--terra); }
+.adv-premie-note {
+  background: #FFFBF0; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 11px 13px; margin-bottom: 16px;
+}
+.adv-premie-note-title { font-size: 11px; font-weight: 700; color: #D48F00; margin-bottom: 3px; }
+.adv-premie-note-body { font-size: 12px; color: var(--text-mid); line-height: 1.4; }
+.adv-ob-confirm {
+  background: rgba(110,78,214,.08); border-radius: 14px; padding: 18px;
+  margin-bottom: 20px; text-align: center;
+}
+.adv-ob-confirm-emoji { font-size: 36px; margin-bottom: 8px; }
+.adv-ob-confirm-name { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.adv-ob-confirm-age { font-size: 12.5px; color: var(--text-dim); }
+.adv-ob-peek-label { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--terra); margin-bottom: 9px; }
+.adv-ob-mini-row { display: flex; align-items: center; gap: 9px; padding: 9px 0; border-bottom: 1px solid var(--border-light); }
+.adv-ob-mini-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.adv-ob-mini-text { font-size: 12.5px; color: var(--text); font-weight: 500; }
+.adv-ob-next {
+  display: block; width: 100%; padding: 13px; background: var(--terra); color: #fff;
+  border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: var(--sans); transition: opacity .15s;
+}
+@media (hover:hover) { .adv-ob-next:hover { opacity: .9; } }
+
+/* ── Child switcher + hero ── */
+.adv-child-switcher {
+  display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin-bottom: 10px;
+}
+.adv-child-pill {
+  padding: 5px 14px; border-radius: 100px; border: 1.5px solid var(--border);
+  font-size: 12.5px; font-weight: 600; color: var(--text-mid); background: var(--surface);
+  cursor: pointer; font-family: var(--sans); transition: all .15s;
+}
+.adv-child-pill.active { background: var(--terra); border-color: var(--terra); color: #fff; }
+@media (hover:hover) { .adv-child-pill:not(.active):hover { border-color: var(--terra); color: var(--terra); } }
+.adv-add-child-btn {
+  padding: 5px 12px; border-radius: 100px; border: 1.5px dashed var(--border);
+  font-size: 12.5px; font-weight: 600; color: var(--text-dim);
+  background: transparent; cursor: pointer; font-family: var(--sans); transition: all .15s;
+}
+@media (hover:hover) { .adv-add-child-btn:hover { border-color: var(--terra); color: var(--terra); } }
+
+/* Family circle row */
+.adv-family-row {
+  display: flex; align-items: center; gap: 9px; padding: 9px 12px;
+  background: rgba(110,78,214,.07); border-radius: 10px; margin-bottom: 10px;
+  font-size: 12px; color: var(--text-mid);
+}
+.adv-family-row strong { color: var(--text); }
+.adv-family-row a { font-size: 11.5px; font-weight: 700; color: var(--terra); margin-left: auto; cursor: pointer; }
+
+/* Child hero */
+.adv-child-hero {
+  background: rgba(110,78,214,.07); border-radius: 16px; padding: 16px 18px;
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;
+}
+.adv-hero-name { font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -.01em; }
+.adv-hero-age { font-size: 13px; color: var(--text-mid); margin-top: 2px; }
+.adv-hero-phase { font-size: 10.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--terra); margin-top: 7px; }
+.adv-hero-emoji { font-size: 38px; }
+
+/* Phase progress bar */
+.adv-phase-wrap { margin-bottom: 12px; }
+.adv-phase-labels { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--text-dim); font-weight: 600; margin-bottom: 5px; }
+.adv-phase-cur { color: var(--terra); font-weight: 700; }
+.adv-phase-bar { height: 4px; background: rgba(110,78,214,.15); border-radius: 2px; overflow: hidden; }
+.adv-phase-fill { height: 100%; background: var(--terra); border-radius: 2px; transition: width .4s ease; }
+
+/* Urgent banner */
+.adv-urgent-banner {
+  background: #FFF4F0; border: 1.5px solid #FFCBB8; border-radius: 14px;
+  padding: 13px 15px; margin-bottom: 8px; display: flex; gap: 10px; align-items: flex-start;
+}
+.adv-ub-icon { font-size: 19px; flex-shrink: 0; }
+.adv-ub-text { font-size: 12.5px; color: var(--text-mid); line-height: 1.4; }
+.adv-ub-text strong { color: var(--text); font-size: 13px; display: block; margin-bottom: 2px; }
+
+/* This Month's To-Dos block */
+.adv-this-month { background: var(--elevated); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; }
+.adv-this-month-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+
+/* Section labels */
+.adv-section-label {
+  font-size: 11.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--text-mid); display: flex; align-items: center; gap: 6px;
+  margin: 16px 0 8px;
+}
+.adv-section-label .adv-sec-icon { font-size: 14px; }
+.adv-section-label .adv-sec-count {
+  font-size: 10px; background: var(--elevated); color: var(--text-dim);
+  padding: 2px 7px; border-radius: 100px; font-weight: 700; margin-left: auto; font-style: normal;
+}
+.adv-section-label.urgent { color: #E8490F; }
+
+/* Milestone cards */
+.adv-milestone-card {
+  border-radius: 14px; border: 1.5px solid var(--border-light); overflow: hidden; margin-bottom: 10px;
+}
+.adv-milestone-head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 5px; gap: 7px; }
+.adv-milestone-section { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text-dim); }
+.adv-urgency-badge { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 100px; flex-shrink: 0; letter-spacing: .03em; }
+.adv-milestone-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 5px; line-height: 1.3; }
+.adv-milestone-body { font-size: 12.5px; color: var(--text-mid); line-height: 1.5; margin-bottom: 8px; }
+
+/* Family Moment block */
+.adv-family-moment {
+  background: rgba(110,78,214,.07); border-left: 3px solid var(--terra);
+  border-radius: 0 8px 8px 0; padding: 9px 12px; margin-bottom: 10px;
+}
+.adv-family-moment-label { font-size: 9.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); margin-bottom: 3px; }
+.adv-family-moment-text { font-size: 12px; color: var(--text-mid); font-style: italic; line-height: 1.4; }
+
+/* Card inner padding */
+.adv-card-inner { padding: 14px 16px; }
+
+/* Disclaimer */
+.adv-disclaimer { font-size: 11px; color: var(--text-ghost); line-height: 1.5; margin-top: -4px; margin-bottom: 16px; }
+
+/* Prenatal intro */
+.adv-prenatal-intro { font-size: 12.5px; color: var(--text-dim); line-height: 1.4; margin-top: -4px; margin-bottom: 8px; }
+
+/* Age line */
+.adv-age-line { font-size: 14px; color: var(--text-mid); margin-bottom: 4px; }
+.adv-age-line strong { color: var(--text); font-weight: 700; }
+
+/* Todos */
+.adv-todos { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
+.adv-todo { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--text-mid); cursor: pointer; }
+.adv-todo-check { width: 15px; height: 15px; flex-shrink: 0; margin-top: 2px; cursor: pointer; accent-color: var(--terra); }
+.adv-todo:has(.adv-todo-check:checked) span { text-decoration: line-through; color: var(--text-ghost); }
+.adv-todos-hint {
+  font-size: 11px; color: var(--text-dim); line-height: 1.45;
+  margin-top: -4px; padding-top: 2px;
+}
+
+/* Card footer */
+.adv-card-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 16px; border-top: 1px solid var(--border-light); background: var(--elevated);
+}
+.adv-playbook-link { font-size: 12px; font-weight: 700; color: var(--terra); text-decoration: none; }
+@media (hover:hover) { .adv-playbook-link:hover { text-decoration: underline; } }
+.adv-dismiss-btn, .adv-skip-btn {
+  font-size: 11px; font-weight: 600; color: var(--text-dim);
+  background: none; border: none; cursor: pointer; font-family: var(--sans);
+}
+.adv-skip-btn {
+  background: var(--elevated); border: 1px solid var(--border); border-radius: 100px; padding: 3px 11px;
+}
+.adv-share-btn {
+  font-size: 12px; font-weight: 700; color: var(--terra); background: rgba(110,78,214,.1);
+  border: none; border-radius: 100px; padding: 4px 12px; cursor: pointer; font-family: var(--sans);
+}
+
+/* Ongoing (collapsed) */
+.adv-ongoing { margin-top: 8px; margin-bottom: 10px; border: 1.5px solid var(--border-light); border-radius: 14px; overflow: hidden; }
+.adv-ongoing-summary {
+  padding: 12px 16px; font-size: 13px; font-weight: 600; color: var(--text-mid);
+  cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between;
+  background: var(--elevated);
+}
+.adv-ongoing-summary::-webkit-details-marker { display: none; }
+.adv-ongoing-inner { padding: 10px 0 4px; }
+
+/* Wins section */
+.adv-wins-section { margin-top: 28px; }
+.adv-wins-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.adv-wins-title { font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #38A169; }
+.adv-wins-intro { font-size: 12.5px; color: var(--text-dim); line-height: 1.4; margin-bottom: 10px; }
+.adv-win-card {
+  border-radius: 14px; border: 1.5px solid #C6F6D5; background: #F0FFF4;
+  padding: 14px 16px; margin-bottom: 10px;
+}
+.adv-win-share-btn {
+  display: block; width: 100%; padding: 9px; background: #38A169; color: #fff;
+  border: none; border-radius: 8px; font-size: 12.5px; font-weight: 700;
+  cursor: pointer; font-family: var(--sans); margin-top: 10px; transition: opacity .15s;
+}
+@media (hover:hover) { .adv-win-share-btn:hover { opacity: .9; } }
+
+/* Dismissed pills */
+.adv-dismissed-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-light); }
+.adv-dismissed-title { font-size: 11px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.adv-dismissed-pill {
+  display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px;
+  border-radius: 100px; background: var(--elevated); font-size: 11px; color: var(--text-dim);
+  margin: 3px 3px 3px 0; cursor: pointer; border: 1px solid var(--border);
+}
+.adv-restore-btn { color: var(--terra); font-weight: 700; background: none; border: none; cursor: pointer; font-family: var(--sans); font-size: 11px; }
+
+/* Empty */
+.adv-empty { font-size: 14px; color: var(--text-dim); text-align: center; padding: 32px 0; }
+
+/* Share card modal */
+.adv-share-modal-card {
+  margin: 18px; border-radius: 20px; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(110,78,214,.18);
+}
+.adv-smc-hero {
+  background: linear-gradient(135deg, var(--terra) 0%, #9575CD 100%);
+  padding: 26px 22px 22px; text-align: center; color: #fff;
+}
+.adv-smc-emoji { font-size: 44px; margin-bottom: 9px; }
+.adv-smc-child { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: .82; margin-bottom: 7px; }
+.adv-smc-milestone { font-size: 18px; font-weight: 800; line-height: 1.25; margin-bottom: 7px; }
+.adv-smc-moment { font-size: 12.5px; opacity: .9; font-style: italic; line-height: 1.4; }
+.adv-smc-body { background: var(--white); padding: 16px 18px; }
+.adv-smc-brand { font-size: 12px; color: var(--text-dim); text-align: center; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+.adv-smc-referral-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; background: var(--elevated); border-radius: 10px; padding: 10px 12px; }
+.adv-smc-qr { width: 52px; height: 52px; background: var(--border); border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-dim); text-align: center; }
+.adv-smc-referral-text { font-size: 12px; color: var(--text-mid); line-height: 1.45; }
+.adv-smc-referral-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+.adv-smc-copy-btn {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%; padding: 13px; background: var(--terra); color: #fff;
+  border: none; border-radius: 11px; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: var(--sans); transition: opacity .15s;
+}
+@media (hover:hover) { .adv-smc-copy-btn:hover { opacity: .9; } }
+.adv-smc-copy-hint { text-align: center; font-size: 12px; color: var(--text-dim); margin-top: 10px; }
+
+/* Settings modal */
+.adv-settings-head { padding: 20px 20px 16px; border-bottom: 1px solid var(--border-light); }
+.adv-settings-h1 { font-size: 18px; font-weight: 800; color: var(--text); }
+.adv-settings-sub { font-size: 12.5px; color: var(--text-dim); margin-top: 3px; }
+.adv-settings-section-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); padding: 14px 20px 6px; }
+.adv-child-mgmt-row {
+  display: flex; align-items: center; gap: 12px; padding: 13px 20px;
+  border-bottom: 1px solid var(--border-light);
+}
+.adv-cmr-emoji { font-size: 24px; }
+.adv-cmr-info { flex: 1; }
+.adv-cmr-name { font-size: 13.5px; font-weight: 700; color: var(--text); }
+.adv-cmr-age { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+.adv-cmr-actions { display: flex; gap: 6px; }
+.adv-cmr-btn { font-size: 11px; font-weight: 600; padding: 5px 11px; border-radius: 100px; border: 1.5px solid var(--border); background: var(--white); color: var(--text-mid); cursor: pointer; font-family: var(--sans); }
+.adv-cmr-danger { color: #e53935; border-color: #FFCBB8; }
+.adv-sub-info-box { margin: 12px 20px; background: rgba(110,78,214,.07); border-radius: 13px; padding: 14px; }
+.adv-sub-info-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.adv-sub-info-body { font-size: 12px; color: var(--text-mid); line-height: 1.45; margin-bottom: 9px; }
+.adv-referral-box { margin: 0 20px 12px; background: var(--elevated); border-radius: 13px; padding: 14px; }
+.adv-referral-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.adv-referral-code-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.adv-referral-code {
+  flex: 1; font-family: 'Courier New', monospace; font-size: 16px; font-weight: 700;
+  color: var(--terra); background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 8px; padding: 9px 12px; letter-spacing: .05em; text-align: center;
+}
+.adv-copy-code-btn {
+  padding: 9px 16px; background: var(--terra); color: #fff; border: none;
+  border-radius: 8px; font-size: 12.5px; font-weight: 700; cursor: pointer; font-family: var(--sans);
+}
+.adv-referral-note { font-size: 11.5px; color: var(--text-dim); line-height: 1.4; margin-top: 8px; }
+
+/* Empty state (original) */
+.adv-empty-state { text-align: center; padding: 60px 20px; }
+.adv-empty-icon { font-size: 48px; margin-bottom: 16px; }
+.adv-empty-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.adv-empty-body { font-size: 14px; color: var(--text-dim); margin-bottom: 24px; max-width: 320px; margin-inline: auto; margin-bottom: 24px; }
+.adv-empty-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 12px 28px; background: var(--terra); color: #fff;
+  border: none; border-radius: 100px; font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: var(--sans);
+}
+
+/* Digest */
+.adv-age-line {
+  font-size: 15px; color: var(--text-dim); margin-bottom: 24px;
+}
+.adv-age-line strong { color: var(--text); font-weight: 700; }
+
+.adv-this-month {
+  background: var(--elevated); border-radius: 16px;
+  padding: 20px; margin-bottom: 28px;
+}
+.adv-section-label {
+  font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px;
+}
+.adv-milestone-card {
+  border-radius: 14px; border: 1.5px solid;
+  padding: 18px; margin-bottom: 12px;
+}
+.adv-milestone-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 6px;
+}
+.adv-milestone-section {
+  font-size: 11px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--text-dim);
+}
+.adv-urgency-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; border-radius: 100px; padding: 2px 8px;
+}
+.adv-milestone-title {
+  font-size: 15px; font-weight: 700; color: var(--text);
+  margin-bottom: 8px; line-height: 1.3;
+}
+.adv-milestone-body {
+  font-size: 13px; color: var(--text-mid); line-height: 1.6; margin-bottom: 14px;
+}
+.adv-todos { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.adv-todo {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; color: var(--text-mid); cursor: pointer; line-height: 1.4;
+}
+.adv-todo-check {
+  flex-shrink: 0; width: 16px; height: 16px; margin-top: 1px;
+  accent-color: var(--terra); cursor: pointer;
+}
+.adv-todo:has(.adv-todo-check:checked) span { text-decoration: line-through; color: var(--text-ghost); }
+.adv-playbook-link {
+  display: inline-flex; align-items: center;
+  font-size: 13px; font-weight: 600; color: var(--terra);
+  text-decoration: none;
+}
+@media (hover:hover) { .adv-playbook-link:hover { text-decoration: underline; } }
+
+.adv-ongoing { margin-top: 24px; }
+.adv-ongoing-summary {
+  font-size: 13px; font-weight: 600; color: var(--text-dim);
+  cursor: pointer; list-style: none; padding: 10px 0;
+  border-top: 1px solid var(--border-light);
+}
+.adv-ongoing-summary::-webkit-details-marker { display: none; }
+
+.adv-empty {
+  font-size: 14px; color: var(--text-dim); padding: 20px 0;
+}
+
+/* Child name edit */
+.adv-child-name-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+}
+.adv-child-edit-btn {
+  font-size: 12px; color: var(--text-dim); background: none; border: none;
+  cursor: pointer; font-family: var(--sans); padding: 2px 6px;
+  text-decoration: underline;
+}
+.adv-child-remove {
+  font-size: 12px; color: #e53935; background: none; border: none;
+  cursor: pointer; font-family: var(--sans); padding: 2px 6px;
+}
+@media (max-width: 480px) {
+  .adv-form-row { flex-direction: column; }
+  .adv-form-save { width: 100%; text-align: center; }
+}
+
+/* ═══════════════════════════════════════════════════════════
    FAMILY SECTION
    ═══════════════════════════════════════════════════════════ */
 .family-section {
@@ -1949,6 +2522,7 @@ button { font: inherit; cursor: pointer; }
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/js/ff-sync.js"></script>
+  <script src="assets/js/ff-advisor.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
     window._supabaseClient = supabase.createClient(
@@ -2086,7 +2660,20 @@ button { font: inherit; cursor: pointer; }
 <!-- ═══════════════════════════════════════════════════════════
      MAIN CONTENT
      ═══════════════════════════════════════════════════════════ -->
+<!-- Tab bar -->
+<div class="dash-tab-bar" id="dash-tab-bar">
+  <div class="dash-tab-inner">
+    <button class="dash-tab-btn active" id="tab-btn-progress" onclick="switchTab('progress')">
+      📊 Progress
+    </button>
+    <button class="dash-tab-btn" id="tab-btn-advisor" onclick="switchTab('advisor')">
+      🌱 Development Advisor
+    </button>
+  </div>
+</div>
+
 <main id="main-content">
+<div id="tab-progress">
 
   <!-- ─── GREETING ─── -->
   <div class="dash-greeting">
@@ -2436,6 +3023,318 @@ button { font: inherit; cursor: pointer; }
     </div><!-- /wrap -->
   </section>
 
+
+</div><!-- /tab-progress -->
+
+<!-- ─── DEVELOPMENT ADVISOR TAB ─── -->
+<div id="tab-advisor">
+  <div class="adv-wrap">
+
+    <!-- Locked state (non-paid) -->
+    <div id="adv-locked" style="display:none">
+      <div class="adv-locked-wrap">
+        <div class="adv-locked-icon">🌱</div>
+        <div class="adv-locked-title">Know exactly what to do, right now, for your child's age.</div>
+        <p class="adv-locked-sub">Personalised milestones from birth to age 10, backed by 100+ peer-reviewed sources. One purchase covers your whole Family Circle.</p>
+        <div class="adv-teaser-cards">
+          <div class="adv-teaser-card">
+            <div class="adv-teaser-card-title">🤱 First 24 hours: what to do, what to ask, what's normal</div>
+            <div class="adv-teaser-card-body">The hospital sends you home. Here's the checklist every new parent needs before they walk out the door.</div>
+            <div class="adv-teaser-blur"><div class="adv-lock-tag">🔒 Unlock</div></div>
+          </div>
+          <div class="adv-teaser-card">
+            <div class="adv-teaser-card-title">🥜 Peanut introduction window: 4–11 months</div>
+            <div class="adv-teaser-card-body">One spoonful of peanut butter in a puree. Possibly a lifetime without a peanut allergy.</div>
+            <div class="adv-teaser-blur"><div class="adv-lock-tag">🔒 Unlock</div></div>
+          </div>
+          <div class="adv-teaser-card">
+            <div class="adv-teaser-card-title">😴 Sleep training window: 6–9 months</div>
+            <div class="adv-teaser-card-body">Old enough to self-soothe. Young enough that habits haven't hardened yet.</div>
+            <div class="adv-teaser-blur"><div class="adv-lock-tag">🔒 Unlock</div></div>
+          </div>
+        </div>
+        <button class="adv-unlock-btn" onclick="advShowUpsell()">Try Free for 7 Days</button>
+        <div style="text-align:center;font-size:11.5px;color:var(--text-dim);margin-top:6px;margin-bottom:4px">No card required. Cancel anytime.</div>
+        <button class="adv-gift-link" onclick="advShowGiftCode()">🎁 Have a gift code? Redeem it here</button>
+      </div>
+    </div>
+
+    <!-- Active advisor content (paid) -->
+    <div id="adv-active" style="display:none">
+      <!-- Child switcher -->
+      <div class="adv-child-switcher" id="adv-child-switcher"></div>
+      <!-- Family Circle row -->
+      <div class="adv-family-row" id="adv-family-row" style="display:none">
+        <span style="font-size:14px">👨‍👩‍👧</span>
+        <span id="adv-family-row-text"></span>
+        <a onclick="advShowSettings()">Manage</a>
+      </div>
+      <!-- Digest -->
+      <div id="adv-digest"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Upsell Modal ── -->
+<div class="adv-modal-overlay" id="adv-upsell-modal" style="display:none" onclick="if(event.target===this)advHideUpsell()">
+  <div class="adv-modal-sheet" role="dialog" aria-label="Unlock Development Advisor">
+    <div class="adv-modal-handle"></div>
+    <div class="adv-modal-close-bar"><button class="adv-modal-close" onclick="advHideUpsell()">✕</button></div>
+    <div class="adv-modal-scroll">
+      <div class="adv-upsell-hero">
+        <div class="adv-upsell-emoji">🌱</div>
+        <div class="adv-upsell-h1">Know exactly what to do, right now, for your child's age.</div>
+        <div class="adv-upsell-sub">Personalised milestone tracking from birth to age 10, backed by 100+ peer-reviewed sources. Start before they arrive — third trimester prep milestones included.</div>
+      </div>
+      <div class="adv-pricing-toggle-wrap">
+        <div class="adv-pricing-label">7-day free trial · Choose your plan after</div>
+        <div class="adv-pricing-toggle">
+          <button class="adv-pricing-opt" id="adv-plan-monthly" onclick="advSelectPlan('monthly')">
+            <div class="adv-price-amount">$9.99</div>
+            <div class="adv-price-period">per month</div>
+            <div class="adv-save-badge" style="background:#EDE7F6;color:#5B3CC4;">Cancel anytime</div>
+          </button>
+          <button class="adv-pricing-opt sel" id="adv-plan-annual" onclick="advSelectPlan('annual')">
+            <div class="adv-price-amount">$79.99</div>
+            <div class="adv-price-period">per year</div>
+            <div class="adv-save-badge">Save $39 · Best value</div>
+          </button>
+        </div>
+        <div style="text-align:center;font-size:11.5px;color:var(--text-dim);margin-top:8px">No card required during your free trial.</div>
+      </div>
+      <div class="adv-family-access-note">
+        <div class="adv-fan-icon">👨‍👩‍👧</div>
+        <div class="adv-fan-text"><strong>One purchase. Whole Family Circle included.</strong> Partner, grandparents, caregivers — everyone linked to your circle gets access automatically.</div>
+      </div>
+      <div class="adv-value-list">
+        <div class="adv-value-item"><div class="adv-val-icon">📅</div><div class="adv-val-text"><strong>Age-locked milestones.</strong> Only the stuff relevant to where your child is right now.</div></div>
+        <div class="adv-value-item"><div class="adv-val-icon">🚨</div><div class="adv-val-text"><strong>Real clinical thresholds.</strong> Know when to act, when to watch, when to mention it at the next visit.</div></div>
+        <div class="adv-value-item"><div class="adv-val-icon">🏆</div><div class="adv-val-text"><strong>Celebrate your wins.</strong> See everything your child has already mastered.</div></div>
+        <div class="adv-value-item"><div class="adv-val-icon">👶</div><div class="adv-val-text"><strong>Up to 3 children.</strong> One account covers the whole family, birth through age 10.</div></div>
+      </div>
+      <div class="adv-social-proof">
+        "I was 4 months in and barely functioning. This was the first thing that told me what actually mattered this week."
+        <div class="adv-social-proof-name">— Jamie K., first-time mom. Austin, TX.</div>
+      </div>
+      <div class="adv-social-proof" style="margin-top:10px">
+        "I've never felt so prepared at a pediatrician visit. I knew exactly what to ask — and my doctor was impressed."
+        <div class="adv-social-proof-name">— Sarah M., mom of two</div>
+      </div>
+      <div class="adv-upsell-cta">
+        <button class="adv-upsell-submit" id="adv-upsell-submit" onclick="advPurchase()">Start 7-Day Free Trial — then $79.99/yr</button>
+        <div style="text-align:center;font-size:11.5px;color:var(--text-dim);margin-top:6px;margin-bottom:14px">No card required. Cancel anytime within 7 days.</div>
+      </div>
+      <div style="background:rgba(110,78,214,.07);border-radius:14px;padding:16px 18px;margin:0 0 12px;text-align:center">
+        <div style="font-size:20px;margin-bottom:6px">🎁</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">Perfect as a baby shower gift.</div>
+        <div style="font-size:12px;color:var(--text-mid);margin-bottom:10px;line-height:1.5">Give new or expecting parents a year of guided milestone tracking. They'll use it from day one.</div>
+        <button class="adv-gift-code-btn" onclick="advHideUpsell(); advShowGiftCode();" style="width:100%;margin:0">Redeem a gift code →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Gift Code Modal ── -->
+<div class="adv-modal-overlay" id="adv-gift-modal" style="display:none" onclick="if(event.target===this)advHideGiftCode()">
+  <div class="adv-modal-sheet" role="dialog" aria-label="Redeem gift code">
+    <div class="adv-modal-handle"></div>
+    <div class="adv-modal-close-bar"><button class="adv-modal-close" onclick="advHideGiftCode()">✕</button></div>
+    <div class="adv-modal-scroll">
+      <div class="adv-gift-hero">
+        <div class="adv-gift-emoji">🎁</div>
+        <div class="adv-gift-h1">You've received a gift!</div>
+        <div class="adv-gift-sub">Someone who loves you purchased the Development Advisor as a gift. Enter your code below to activate it.</div>
+      </div>
+      <div class="adv-gift-body">
+        <label class="adv-ob-label" for="adv-gift-input">Your gift code</label>
+        <input class="adv-gift-input" id="adv-gift-input" type="text" placeholder="FF-XXXX-XXXX" maxlength="20" oninput="advValidateGiftCode(this.value)" autocomplete="off" spellcheck="false">
+        <div class="adv-gift-valid" id="adv-gift-valid">
+          <div class="adv-gift-valid-title">✓ Valid gift code</div>
+          <div class="adv-gift-valid-detail" id="adv-gift-valid-detail"></div>
+        </div>
+        <div class="adv-gift-err" id="adv-gift-err"></div>
+        <div style="margin-bottom:18px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:9px">What's included</div>
+          <div class="adv-value-item" style="margin-bottom:7px"><div class="adv-val-icon">📅</div><div class="adv-val-text">Age-locked milestones, birth to age 10</div></div>
+          <div class="adv-value-item" style="margin-bottom:7px"><div class="adv-val-icon">👨‍👩‍👧</div><div class="adv-val-text">All Family Circle members get access automatically</div></div>
+          <div class="adv-value-item"><div class="adv-val-icon">👶</div><div class="adv-val-text">Track up to 3 children</div></div>
+        </div>
+        <button class="adv-gift-submit" id="adv-gift-submit" onclick="advRedeemGiftCode()" disabled>Validate Code First</button>
+        <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim)">No payment info required.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Onboarding Modal ── -->
+<div class="adv-modal-overlay" id="adv-ob-modal" style="display:none">
+  <div class="adv-modal-sheet" role="dialog" aria-label="Set up your child profile">
+    <div class="adv-modal-handle"></div>
+    <div class="adv-modal-scroll">
+      <!-- Step 1 -->
+      <div id="adv-ob-step-1">
+        <div class="adv-ob-header">
+          <div class="adv-ob-dots">
+            <div class="adv-ob-dot active" id="adv-dot-0"></div>
+            <div class="adv-ob-dot" id="adv-dot-1"></div>
+            <div class="adv-ob-dot" id="adv-dot-2"></div>
+          </div>
+          <div class="adv-ob-h1">Who are we tracking? 👶</div>
+          <div class="adv-ob-sub">Tell us about your child so we know which milestones matter right now.</div>
+        </div>
+        <div class="adv-ob-body">
+          <label class="adv-ob-label" for="adv-ob-name">Child's name</label>
+          <input class="adv-ob-input" id="adv-ob-name" type="text" placeholder="e.g. Olivia" maxlength="30" autocomplete="off">
+          <label class="adv-ob-label">Choose an emoji (optional)</label>
+          <div class="adv-emoji-grid" id="adv-emoji-grid">
+            <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'🌸')">🌸</button>
+            <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'⭐')">⭐</button>
+            <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'🐣')">🐣</button>
+            <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'🌟')">🌟</button>
+            <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'🦁')">🦁</button>
+            <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'🐻')">🐻</button>
+            <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'🎈')">🎈</button>
+            <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'🚀')">🚀</button>
+            <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'🌈')">🌈</button>
+            <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'💫')">💫</button>
+          </div>
+          <div id="adv-ob-err-1" style="font-size:12px;color:#e53935;margin-bottom:10px;display:none"></div>
+          <button class="adv-ob-next" onclick="advObStep1Next()">Continue →</button>
+        </div>
+      </div>
+      <!-- Step 2 -->
+      <div id="adv-ob-step-2" style="display:none">
+        <div class="adv-ob-header">
+          <div class="adv-ob-dots">
+            <div class="adv-ob-dot done" id="adv-dot2-0"></div>
+            <div class="adv-ob-dot active" id="adv-dot2-1"></div>
+            <div class="adv-ob-dot" id="adv-dot2-2"></div>
+          </div>
+          <div class="adv-ob-h1" id="adv-ob-step2-title">When was she born? 🌸</div>
+          <div class="adv-ob-sub">This is how we know which milestones are relevant right now.</div>
+        </div>
+        <div class="adv-ob-body">
+          <label class="adv-ob-label">Status</label>
+          <div class="adv-ob-toggle">
+            <button class="adv-ob-toggle-btn on" id="adv-born-btn" onclick="advSetBornStatus('born')">Already born</button>
+            <button class="adv-ob-toggle-btn" id="adv-expecting-btn" onclick="advSetBornStatus('expecting')">Expecting</button>
+          </div>
+          <label class="adv-ob-label" id="adv-dob-label">Date of birth</label>
+          <input class="adv-ob-input" id="adv-ob-dob" type="date">
+          <div class="adv-premie-note">
+            <div class="adv-premie-note-title">🍼 PREMATURE BIRTH?</div>
+            <div class="adv-premie-note-body">All milestones assume a full-term birth. If your child arrived early, correct for adjusted age when reading the guidelines.</div>
+          </div>
+          <div id="adv-ob-err-2" style="font-size:12px;color:#e53935;margin-bottom:10px;display:none"></div>
+          <button class="adv-ob-next" onclick="advObStep2Next()">Continue →</button>
+          <div style="text-align:center;margin-top:9px;font-size:11.5px;color:var(--text-dim)">Your child's data is stored only on your device.</div>
+        </div>
+      </div>
+      <!-- Step 3 -->
+      <div id="adv-ob-step-3" style="display:none">
+        <div class="adv-ob-header">
+          <div class="adv-ob-dots">
+            <div class="adv-ob-dot done"></div>
+            <div class="adv-ob-dot done"></div>
+            <div class="adv-ob-dot active"></div>
+          </div>
+          <div class="adv-ob-h1" id="adv-ob-step3-title">Olivia's digest is ready 🎉</div>
+          <div class="adv-ob-sub">Here's what's relevant right now. Your whole Family Circle can see this too.</div>
+        </div>
+        <div class="adv-ob-body">
+          <div class="adv-ob-confirm">
+            <div class="adv-ob-confirm-emoji" id="adv-ob-confirm-emoji">🌸</div>
+            <div class="adv-ob-confirm-name" id="adv-ob-confirm-name">Olivia</div>
+            <div class="adv-ob-confirm-age" id="adv-ob-confirm-age"></div>
+          </div>
+          <div class="adv-ob-peek-label">A PREVIEW OF HER CURRENT MILESTONES</div>
+          <div id="adv-ob-peek-rows"></div>
+          <div style="font-size:11px;color:var(--text-dim);padding-top:8px;margin-bottom:20px" id="adv-ob-peek-more"></div>
+          <button class="adv-ob-next" onclick="advObFinish()">See Full Digest →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Share Card Modal ── -->
+<div class="adv-modal-overlay" id="adv-share-modal" style="display:none" onclick="if(event.target===this)advHideShareCard()">
+  <div class="adv-modal-sheet" role="dialog" aria-label="Share milestone">
+    <div class="adv-modal-handle"></div>
+    <div class="adv-modal-close-bar"><button class="adv-modal-close" onclick="advHideShareCard()">✕</button></div>
+    <div class="adv-modal-scroll">
+      <div style="padding:14px 20px 6px;font-size:13px;color:var(--text-mid)">Your shareable card is ready. Copy it and post it anywhere.</div>
+      <div class="adv-share-modal-card" id="adv-share-card-preview">
+        <div class="adv-smc-hero">
+          <div class="adv-smc-emoji" id="adv-share-emoji">🎉</div>
+          <div class="adv-smc-child" id="adv-share-child-label"></div>
+          <div class="adv-smc-milestone" id="adv-share-milestone"></div>
+          <div class="adv-smc-moment" id="adv-share-moment"></div>
+        </div>
+        <div class="adv-smc-body">
+          <div class="adv-smc-brand">
+            <svg width="14" height="14" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#6E4ED6"/><path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
+            FamilyForce · getfamilyforce.com
+          </div>
+          <div class="adv-smc-referral-row">
+            <div class="adv-smc-qr" id="adv-share-qr">QR</div>
+            <div class="adv-smc-referral-text">
+              <strong>Your referral link</strong>
+              Friends who subscribe using your code get 25% off.
+            </div>
+          </div>
+          <button class="adv-smc-copy-btn" onclick="advCopyShareImage()">📋 Copy Image to Clipboard</button>
+          <div class="adv-smc-copy-hint">Then paste into Instagram, WhatsApp, or anywhere you share.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Settings Modal ── -->
+<div class="adv-modal-overlay" id="adv-settings-modal" style="display:none" onclick="if(event.target===this)advHideSettings()">
+  <div class="adv-modal-sheet" role="dialog" aria-label="Development Advisor settings">
+    <div class="adv-modal-handle"></div>
+    <div class="adv-modal-close-bar"><button class="adv-modal-close" onclick="advHideSettings()">✕</button></div>
+    <div class="adv-modal-scroll">
+      <div class="adv-settings-head">
+        <div class="adv-settings-h1">Development Advisor</div>
+        <div class="adv-settings-sub" id="adv-settings-plan-label">Active subscription</div>
+      </div>
+      <div class="adv-settings-section-label">Children (<span id="adv-child-count">0</span> of 3)</div>
+      <div id="adv-settings-children-list"></div>
+      <div style="padding:12px 20px">
+        <button class="adv-ob-next" id="adv-settings-add-btn" onclick="advShowOnboarding()" style="font-size:13px;padding:11px">+ Add Child</button>
+        <div style="text-align:center;margin-top:7px;font-size:11.5px;color:var(--text-dim)">Need more than 3 children? <a href="contact.html" style="color:var(--terra);font-weight:700">Contact us</a></div>
+      </div>
+      <div class="adv-settings-section-label">Family Circle Access</div>
+      <div style="padding:0 20px 12px">
+        <div style="background:rgba(110,78,214,.07);border-radius:12px;padding:13px 14px">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px">👨‍👩‍👧 Everyone in your circle has access</div>
+          <div style="font-size:12px;color:var(--text-mid);line-height:1.45;margin-bottom:9px">All linked family members can view and interact with the Development Advisor. No extra charge. They join through your Family Circle code.</div>
+          <a href="profile.html#family" style="font-size:12px;color:var(--terra);font-weight:700">Manage Family Circle →</a>
+        </div>
+      </div>
+      <div class="adv-settings-section-label">Your Referral Code</div>
+      <div class="adv-referral-box">
+        <div class="adv-referral-title">Share this code with friends and family</div>
+        <div style="font-size:12px;color:var(--text-dim);line-height:1.4;margin-top:2px">Friends get <strong>25% off</strong> their first year. You get <strong>25% cash back</strong> when they subscribe.</div>
+        <div class="adv-referral-code-row">
+          <div class="adv-referral-code" id="adv-referral-code-display">FF-XXXX</div>
+          <button class="adv-copy-code-btn" onclick="advCopyReferralCode()">Copy</button>
+        </div>
+        <div class="adv-referral-note" id="adv-referral-earnings"></div>
+      </div>
+      <div class="adv-settings-section-label">Subscription</div>
+      <div class="adv-sub-info-box">
+        <div class="adv-sub-info-title" id="adv-settings-sub-title">Development Advisor</div>
+        <div class="adv-sub-info-body" id="adv-settings-sub-body"></div>
+        <a href="mailto:support@getfamilyforce.com" style="font-size:12px;color:var(--terra);font-weight:700">Manage subscription →</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 </main><!-- /main-content -->
 
@@ -3356,6 +4255,445 @@ document.addEventListener('DOMContentLoaded', () => {
   const joinInput = document.getElementById('family-join-input');
   if (joinInput) joinInput.addEventListener('keydown', e => { if (e.key === 'Enter') joinFamily(); });
 });
+
+/* ═══════════════════════════════════════════════════════════
+   TAB SWITCHING
+   ═══════════════════════════════════════════════════════════ */
+function switchTab(tab) {
+  const isAdvisor = tab === 'advisor';
+  document.getElementById('tab-progress').style.display = isAdvisor ? 'none' : 'block';
+  document.getElementById('tab-advisor').style.display  = isAdvisor ? 'block' : 'none';
+  document.getElementById('tab-btn-progress').classList.toggle('active', !isAdvisor);
+  document.getElementById('tab-btn-advisor').classList.toggle('active',  isAdvisor);
+  if (isAdvisor) advisorInit();
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DEVELOPMENT ADVISOR v2
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── State ─── */
+let _advActiveChildId = null;
+let _advPlanSelected  = 'annual';  // 'monthly' | 'annual'
+let _advObEmoji       = '👶';
+let _advObBornStatus  = 'born';    // 'born' | 'expecting'
+let _advShareData     = null;
+
+const ADV_PLAN_KEY    = 'ff_advisor_plan';   // 'none' | 'monthly' | 'annual' | 'gift'
+const ADV_REFERRAL_KEY = 'ff_advisor_referral';
+const MAX_ADV_CHILDREN = 3;
+
+/* ─── Paywall check ─── */
+function isAdvisorUnlocked() {
+  const plan = localStorage.getItem(ADV_PLAN_KEY);
+  return plan && plan !== 'none';
+}
+
+function getAdvisorReferralCode() {
+  let code = localStorage.getItem(ADV_REFERRAL_KEY);
+  if (!code) {
+    // Generate deterministic-looking code from timestamp
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    code = 'FF-' + Array.from({length: 4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+    localStorage.setItem(ADV_REFERRAL_KEY, code);
+  }
+  return code;
+}
+
+/* ─── Init ─── */
+function advisorInit() {
+  // Set refresh hook for dismiss/skip
+  window.ffRefreshAdvisor = advisorRefreshDigest;
+
+  if (!isAdvisorUnlocked()) {
+    document.getElementById('adv-locked').style.display = 'block';
+    document.getElementById('adv-active').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('adv-locked').style.display = 'none';
+  document.getElementById('adv-active').style.display = 'block';
+
+  const children = window.ffAdvisor.loadChildren();
+
+  if (children.length === 0) {
+    document.getElementById('adv-child-switcher').innerHTML = '';
+    document.getElementById('adv-digest').innerHTML = `
+      <div class="adv-empty-state" style="text-align:center;padding:48px 20px">
+        <div class="adv-empty-icon">🌱</div>
+        <div class="adv-empty-title" style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px">Add your first child to get started</div>
+        <p style="font-size:14px;color:var(--text-dim);margin-bottom:20px;max-width:320px;margin-inline:auto">We'll build a personalised monthly digest based on your child's exact age.</p>
+        <button class="adv-unlock-btn" style="max-width:280px;margin-inline:auto" onclick="advShowOnboarding()">+ Add Your Child</button>
+      </div>`;
+    return;
+  }
+
+  // Default active child
+  if (!_advActiveChildId || !children.find(c => c.id === _advActiveChildId)) {
+    _advActiveChildId = children[0].id;
+  }
+
+  // Render child switcher
+  const canAdd = children.length < MAX_ADV_CHILDREN;
+  document.getElementById('adv-child-switcher').innerHTML =
+    children.map(c => {
+      const emoji = c.emoji || '👶';
+      return `<button class="adv-child-pill${c.id === _advActiveChildId ? ' active' : ''}" onclick="advisorSelectChild('${c.id}')">${emoji} ${_e(c.name)}</button>`;
+    }).join('') +
+    (canAdd ? `<button class="adv-add-child-btn" onclick="advShowOnboarding()">+ Add</button>` : '') +
+    `<button class="adv-add-child-btn" style="margin-left:auto" onclick="advShowSettings()">⚙️</button>`;
+
+  // Family circle indicator
+  const circleMembers = _advGetCircleMembers();
+  const familyRow = document.getElementById('adv-family-row');
+  if (circleMembers.length > 0) {
+    familyRow.style.display = 'flex';
+    document.getElementById('adv-family-row-text').innerHTML =
+      `<strong>${circleMembers.join(', ')}</strong> can see this digest too`;
+  } else {
+    familyRow.style.display = 'none';
+  }
+
+  // Render digest
+  advisorRefreshDigest();
+}
+
+function _advGetCircleMembers() {
+  // Read family members from localStorage (set by family-circle feature)
+  try {
+    const members = JSON.parse(localStorage.getItem('ff_family_members') || '[]');
+    return members.slice(0, 3).map(m => m.name || 'Family member');
+  } catch (_) { return []; }
+}
+
+function advisorRefreshDigest() {
+  const children = window.ffAdvisor.loadChildren();
+  const child = children.find(c => c.id === _advActiveChildId);
+  if (!child) return;
+  document.getElementById('adv-digest').innerHTML = window.ffAdvisor.renderDigest(child);
+  // Wire up to-do persistence
+  document.querySelectorAll('.adv-todo-check').forEach(cb => {
+    const milestoneCard = cb.closest('[data-milestone-id]');
+    const key = milestoneCard ? 'adv_todo_' + (milestoneCard.dataset.milestoneId || '') + '_' + cb.dataset.idx : null;
+    if (key) {
+      cb.checked = localStorage.getItem(key) === '1';
+      cb.addEventListener('change', () => localStorage.setItem(key, cb.checked ? '1' : '0'));
+    }
+  });
+  // Sync todo state across Family Circle (fire-and-forget)
+  _advSyncTodos();
+}
+
+function advisorSelectChild(id) {
+  _advActiveChildId = id;
+  advisorInit();
+}
+
+function _advSyncTodos() {
+  // Sync checked todos to Supabase profile — fire-and-forget
+  window.ffSync && window.ffSync.getUserId && window.ffSync.getUserId().then(uid => {
+    if (!uid) return;
+    const sb = window.ffSync.getSb && window.ffSync.getSb();
+    if (!sb) return;
+    // Collect all checked todos
+    const todos = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('adv_todo_')) todos[k] = localStorage.getItem(k);
+    }
+    sb.from('profiles').upsert(
+      { id: uid, advisor_todos_json: JSON.stringify(todos) },
+      { onConflict: 'id' }
+    ).then(() => {});
+  });
+}
+
+function advisorSyncChildren() {
+  window.ffSync && window.ffSync.getUserId && window.ffSync.getUserId().then(uid => {
+    if (!uid) return;
+    const sb = window.ffSync.getSb && window.ffSync.getSb();
+    if (!sb) return;
+    sb.from('profiles').upsert(
+      { id: uid, children_json: JSON.stringify(window.ffAdvisor.loadChildren()) },
+      { onConflict: 'id' }
+    ).then(() => {});
+  });
+}
+
+/* ─── Upsell ─── */
+function advShowUpsell() {
+  document.getElementById('adv-upsell-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function advHideUpsell() {
+  document.getElementById('adv-upsell-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function advSelectPlan(plan) {
+  _advPlanSelected = plan;
+  document.getElementById('adv-plan-monthly').classList.toggle('sel', plan === 'monthly');
+  document.getElementById('adv-plan-annual').classList.toggle('sel',  plan === 'annual');
+  const btn = document.getElementById('adv-upsell-submit');
+  btn.textContent = plan === 'annual'
+    ? 'Start 7-Day Free Trial — then $79.99/yr'
+    : 'Start 7-Day Free Trial — then $9.99/mo';
+}
+function advPurchase() {
+  // TODO: Wire to Stripe checkout. For now, activate locally for dev preview.
+  localStorage.setItem(ADV_PLAN_KEY, _advPlanSelected);
+  advHideUpsell();
+  // Generate referral code on first purchase
+  getAdvisorReferralCode();
+  advisorInit();
+  advShowOnboarding();
+}
+
+/* ─── Gift code ─── */
+// For demo/dev: valid codes are "FF-GIFT-2026" and "FF-BABY-2026"
+const _DEMO_GIFT_CODES = {
+  'FF-GIFT-2026': { duration: '1 year', gifter: 'your family' },
+  'FF-BABY-2026': { duration: '1 year', gifter: 'Grandma' },
+};
+function advShowGiftCode() {
+  document.getElementById('adv-gift-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('adv-gift-input').focus(), 100);
+}
+function advHideGiftCode() {
+  document.getElementById('adv-gift-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function advValidateGiftCode(raw) {
+  const code = raw.toUpperCase().trim();
+  const valid = document.getElementById('adv-gift-valid');
+  const err   = document.getElementById('adv-gift-err');
+  const submit= document.getElementById('adv-gift-submit');
+  valid.style.display = 'none'; err.style.display = 'none';
+
+  if (code.length < 5) { submit.disabled = true; submit.textContent = 'Validate Code First'; return; }
+  const gift = _DEMO_GIFT_CODES[code];
+  if (gift) {
+    document.getElementById('adv-gift-valid-detail').innerHTML =
+      `<strong>${gift.duration} Development Advisor</strong><br>Gifted by: ${gift.gifter} 💜<br>Valid for 12 months from activation.`;
+    valid.style.display = 'block';
+    submit.disabled = false;
+    submit.textContent = 'Activate Gift — 1 Year Free 🎉';
+  } else {
+    err.textContent = 'That code doesn\'t look right. Check the card and try again.';
+    err.style.display = 'block';
+    submit.disabled = true;
+    submit.textContent = 'Validate Code First';
+  }
+}
+function advRedeemGiftCode() {
+  const code = document.getElementById('adv-gift-input').value.toUpperCase().trim();
+  const gift = _DEMO_GIFT_CODES[code];
+  if (!gift) return;
+  localStorage.setItem(ADV_PLAN_KEY, 'gift');
+  localStorage.setItem('ff_advisor_gift_code', code);
+  localStorage.setItem('ff_advisor_gift_duration', gift.duration);
+  getAdvisorReferralCode();
+  advHideGiftCode();
+  advisorInit();
+  advShowOnboarding();
+}
+
+/* ─── Onboarding wizard ─── */
+function advShowOnboarding() {
+  // Reset form state
+  document.getElementById('adv-ob-name').value = '';
+  document.getElementById('adv-ob-dob').value = '';
+  _advObEmoji = '👶';
+  _advObBornStatus = 'born';
+  document.querySelectorAll('.adv-emoji-opt').forEach(b => b.classList.remove('on'));
+  document.getElementById('adv-born-btn').classList.add('on');
+  document.getElementById('adv-expecting-btn').classList.remove('on');
+  document.getElementById('adv-ob-err-1').style.display = 'none';
+  document.getElementById('adv-ob-err-2').style.display = 'none';
+  // Show step 1
+  document.getElementById('adv-ob-step-1').style.display = 'block';
+  document.getElementById('adv-ob-step-2').style.display = 'none';
+  document.getElementById('adv-ob-step-3').style.display = 'none';
+  document.getElementById('adv-ob-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('adv-ob-name').focus(), 150);
+}
+function advHideOnboarding() {
+  document.getElementById('adv-ob-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function advSelectEmoji(btn, emoji) {
+  document.querySelectorAll('.adv-emoji-opt').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  _advObEmoji = emoji;
+}
+function advSetBornStatus(status) {
+  _advObBornStatus = status;
+  document.getElementById('adv-born-btn').classList.toggle('on', status === 'born');
+  document.getElementById('adv-expecting-btn').classList.toggle('on', status === 'expecting');
+  document.getElementById('adv-dob-label').textContent = status === 'born' ? 'Date of birth' : 'Due date';
+  const dob = document.getElementById('adv-ob-dob');
+  if (status === 'born') { dob.max = new Date().toISOString().split('T')[0]; dob.removeAttribute('min'); }
+  else { dob.removeAttribute('max'); dob.min = new Date().toISOString().split('T')[0]; }
+}
+function advObStep1Next() {
+  const name = document.getElementById('adv-ob-name').value.trim();
+  const err  = document.getElementById('adv-ob-err-1');
+  if (!name) { err.textContent = 'Please enter the child\'s name.'; err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  // Update step 2 heading with name + emoji
+  const display = _advObEmoji !== '👶' ? name + ' ' + _advObEmoji : name;
+  document.getElementById('adv-ob-step2-title').textContent = 'When was ' + name + ' born?';
+  document.getElementById('adv-ob-step-1').style.display = 'none';
+  document.getElementById('adv-ob-step-2').style.display = 'block';
+}
+function advObStep2Next() {
+  const dob = document.getElementById('adv-ob-dob').value;
+  const err = document.getElementById('adv-ob-err-2');
+  if (!dob) { err.textContent = 'Please enter a ' + (_advObBornStatus === 'born' ? 'date of birth' : 'due date') + '.'; err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  const name  = document.getElementById('adv-ob-name').value.trim();
+  const emoji = _advObEmoji;
+  const ageStr = window.ffAdvisor.formatAge(dob);
+  // Build confirm screen
+  document.getElementById('adv-ob-confirm-emoji').textContent = emoji !== '👶' ? emoji : '🌱';
+  document.getElementById('adv-ob-confirm-name').textContent = name;
+  document.getElementById('adv-ob-confirm-age').textContent = ageStr;
+  document.getElementById('adv-ob-step3-title').textContent = name + "'s digest is ready 🎉";
+  // Build peek rows
+  const tmpChild = { id: 'tmp', name, dob, emoji };
+  const milestones = window.ffAdvisor.getMilestonesForChild(tmpChild).slice(0, 5);
+  const dotClass = { critical: 'red', high: 'amber', normal: 'purple' };
+  const dotColor = { red: '#E8490F', amber: '#D48F00', purple: '#6E4ED6' };
+  document.getElementById('adv-ob-peek-rows').innerHTML = milestones.map(m => `
+    <div class="adv-ob-mini-row">
+      <div class="adv-ob-mini-dot" style="background:${dotColor[dotClass[m.urgency]] || '#6E4ED6'}"></div>
+      <div class="adv-ob-mini-text">${m.icon} ${_e(m.title)}</div>
+    </div>`).join('');
+  const total = window.ffAdvisor.getMilestonesForChild(tmpChild).length;
+  document.getElementById('adv-ob-peek-more').textContent = total > 5 ? `+ ${total - 5} more milestones for their age range` : '';
+  document.getElementById('adv-ob-step-2').style.display = 'none';
+  document.getElementById('adv-ob-step-3').style.display = 'block';
+}
+function advObFinish() {
+  const name  = document.getElementById('adv-ob-name').value.trim();
+  const dob   = document.getElementById('adv-ob-dob').value;
+  const emoji = _advObEmoji;
+  const result = window.ffAdvisor.addChild(name, dob, emoji);
+  if (result.error) { alert(result.error); return; }
+  _advActiveChildId = result.child.id;
+  advHideOnboarding();
+  advisorInit();
+  advisorSyncChildren();
+}
+
+function _e(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ─── Share card ─── */
+function advShowShareCard(emoji, childLabel, milestone, moment) {
+  _advShareData = { emoji, childLabel, milestone, moment };
+  document.getElementById('adv-share-emoji').textContent   = emoji;
+  document.getElementById('adv-share-child-label').textContent = childLabel;
+  document.getElementById('adv-share-milestone').textContent = milestone;
+  document.getElementById('adv-share-moment').textContent  = moment;
+  // Referral QR placeholder — in production replace with real QR code image
+  const code = getAdvisorReferralCode();
+  document.getElementById('adv-share-qr').textContent = code;
+  document.getElementById('adv-share-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function advHideShareCard() {
+  document.getElementById('adv-share-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function advCopyShareImage() {
+  const card = document.getElementById('adv-share-card-preview');
+  if (typeof html2canvas === 'undefined') {
+    alert('Image copy not available in this preview. Will work on the live site.');
+    return;
+  }
+  html2canvas(card, { scale: 2, useCORS: true, backgroundColor: null }).then(canvas => {
+    canvas.toBlob(blob => {
+      if (!blob) return;
+      navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]).then(() => {
+        const btn = document.querySelector('.adv-smc-copy-btn');
+        if (btn) { btn.textContent = '✓ Copied! Paste anywhere.'; setTimeout(() => btn.textContent = '📋 Copy Image to Clipboard', 2500); }
+      }).catch(() => {
+        // Fallback: open in new tab
+        window.open(canvas.toDataURL(), '_blank');
+      });
+    });
+  });
+}
+
+/* ─── Settings ─── */
+function advShowSettings() {
+  const children = window.ffAdvisor.loadChildren();
+  document.getElementById('adv-child-count').textContent = children.length;
+  document.getElementById('adv-settings-add-btn').style.display = children.length < MAX_ADV_CHILDREN ? 'block' : 'none';
+
+  // Plan label
+  const plan = localStorage.getItem(ADV_PLAN_KEY);
+  const giftCode = localStorage.getItem('ff_advisor_gift_code');
+  let planLabel = 'Active subscription';
+  let subTitle  = 'Development Advisor';
+  let subBody   = '';
+  if (plan === 'annual')  { planLabel = 'Annual plan · $79.99/yr'; subTitle = 'Annual Plan · $79.99/yr'; subBody = 'Renews automatically. To cancel, contact support.'; }
+  if (plan === 'monthly') { planLabel = 'Monthly plan · $9.99/mo'; subTitle = 'Monthly Plan · $9.99/mo'; subBody = 'Renews monthly. To cancel, contact support.'; }
+  if (plan === 'gift')    { planLabel = 'Gift activation'; subTitle = 'Gift — 1 Year'; subBody = giftCode ? 'Activated with code: ' + giftCode : 'Active gift subscription.'; }
+  document.getElementById('adv-settings-plan-label').textContent = planLabel;
+  document.getElementById('adv-settings-sub-title').textContent  = subTitle;
+  document.getElementById('adv-settings-sub-body').textContent   = subBody;
+
+  // Referral code
+  const refCode = getAdvisorReferralCode();
+  document.getElementById('adv-referral-code-display').textContent = refCode;
+  document.getElementById('adv-referral-earnings').textContent = 'Share with friends: they get 25% off, you get 25% cash back.';
+
+  // Children list
+  document.getElementById('adv-settings-children-list').innerHTML = children.length === 0
+    ? '<div style="padding:10px 20px;font-size:13px;color:var(--text-dim)">No children added yet.</div>'
+    : children.map(c => `
+      <div class="adv-child-mgmt-row">
+        <div class="adv-cmr-emoji">${c.emoji || '👶'}</div>
+        <div class="adv-cmr-info">
+          <div class="adv-cmr-name">${_e(c.name)}</div>
+          <div class="adv-cmr-age">${window.ffAdvisor.formatAge(c.dob)}</div>
+        </div>
+        <div class="adv-cmr-actions">
+          <button class="adv-cmr-btn adv-cmr-danger" onclick="advRemoveChild('${c.id}','${c.name.replace(/'/g,"\\'")}')">Remove</button>
+        </div>
+      </div>`).join('');
+
+  document.getElementById('adv-settings-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function advHideSettings() {
+  document.getElementById('adv-settings-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function advRemoveChild(id, name) {
+  if (!confirm('Remove ' + name + '?')) return;
+  window.ffAdvisor.removeChild(id);
+  if (_advActiveChildId === id) _advActiveChildId = null;
+  advHideSettings();
+  advisorInit();
+  advisorSyncChildren();
+}
+function advCopyReferralCode() {
+  const code = getAdvisorReferralCode();
+  navigator.clipboard.writeText('https://getfamilyforce.com/?ref=' + code).then(() => {
+    const btn = document.querySelector('.adv-copy-code-btn');
+    if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 2000); }
+  });
+}
+
+/* ─── DEV PREVIEW: unlock for ?preview=1 ─── */
+if (new URLSearchParams(location.search).get('preview') === '1') {
+  if (!localStorage.getItem(ADV_PLAN_KEY)) {
+    localStorage.setItem(ADV_PLAN_KEY, 'annual');
+  }
+}
 
 function dismissPartnerNudge() {
   localStorage.setItem('ff_partner_nudge_dismissed', '1');
