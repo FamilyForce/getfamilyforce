@@ -2178,6 +2178,112 @@ button { font: inherit; cursor: pointer; }
   .adv-form-save { width: 100%; text-align: center; }
 }
 
+/* ─────────────────────────────────────────────
+   DEVELOPMENT ADVISOR — RESPONSIVE
+   Tablet: 600–899px  |  Small mobile: ≤374px
+   ───────────────────────────────────────────── */
+
+/* Modal max-width constraint — prevents full-bleed on tablet */
+@media (min-width: 560px) {
+  .adv-modal-sheet { max-width: 440px; width: 100%; }
+}
+@media (min-width: 900px) {
+  .adv-modal-sheet { max-width: 480px; }
+}
+
+/* Locked state: 2-column teaser cards on tablet */
+@media (min-width: 600px) {
+  .adv-locked-wrap { max-width: 480px; }
+  .adv-teaser-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .adv-teaser-cards .adv-teaser-card:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Locked state: 3-column teaser cards on desktop */
+@media (min-width: 900px) {
+  .adv-locked-wrap { max-width: 560px; }
+  .adv-locked-title { font-size: 24px; }
+  .adv-locked-icon { font-size: 48px; }
+  .adv-teaser-cards { grid-template-columns: repeat(3, 1fr); }
+  .adv-teaser-cards .adv-teaser-card:last-child { grid-column: auto; }
+}
+
+/* Digest max reading width on desktop */
+@media (min-width: 900px) {
+  #adv-digest { max-width: 680px; }
+  .adv-milestone-title { font-size: 16px; }
+}
+
+/* Milestone cards — more breathing room on tablet+ */
+@media (min-width: 600px) {
+  .adv-milestone-card { padding: 20px 22px; }
+  .adv-milestone-body { font-size: 13.5px; line-height: 1.65; }
+}
+
+/* Touch target fixes */
+.adv-pricing-opt { min-height: 64px; }
+.adv-dismiss-btn { padding: 10px 12px; }
+.adv-emoji-opt { width: 40px; height: 40px; }
+.adv-modal-close { min-width: 44px; min-height: 44px; }
+
+/* iOS input zoom prevention — font-size must be ≥16px */
+@media (max-width: 599px) {
+  .adv-gift-input,
+  .adv-ob-input { font-size: 16px; }
+}
+
+/* Card footer: stack on small screens */
+@media (max-width: 420px) {
+  .adv-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 11px 14px;
+  }
+  .adv-card-footer > :last-child { align-self: flex-end; }
+}
+
+/* Settings: child row wraps on small screens */
+@media (max-width: 420px) {
+  .adv-child-mgmt-row { flex-wrap: wrap; }
+  .adv-cmr-actions {
+    flex-basis: 100%;
+    padding-top: 8px;
+    border-top: 1px solid var(--border-light);
+    margin-top: 4px;
+  }
+}
+
+/* Small mobile: 320–374px */
+@media (max-width: 374px) {
+  .adv-locked-title { font-size: 18px; }
+  .adv-locked-icon { font-size: 36px; margin-bottom: 10px; }
+  .adv-teaser-card-title { font-size: 12px; }
+
+  .adv-pricing-toggle { flex-direction: column; gap: 8px; }
+  .adv-pricing-opt { width: 100%; }
+  .adv-price-amount { font-size: 18px; }
+
+  .adv-hero-name { font-size: 17px; }
+  .adv-hero-emoji { font-size: 30px; }
+  .adv-child-hero { padding: 13px 14px; }
+
+  .adv-ub-icon { font-size: 16px; }
+  .adv-ub-text { font-size: 12px; }
+
+  .adv-share-modal-card { margin: 12px; }
+  .adv-smc-referral-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .adv-smc-emoji { font-size: 36px; }
+  .adv-smc-milestone { font-size: 16px; }
+
+  .adv-emoji-opt { width: 38px; height: 38px; font-size: 18px; }
+}
+
 /* ═══════════════════════════════════════════════════════════
    FAMILY SECTION
    ═══════════════════════════════════════════════════════════ */
