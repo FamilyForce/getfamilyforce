@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <!-- ═══════════════════════════════════════════════════════════
-     FAMILYFORCE — Dashboard / My Library (Logged-in)
+     FAMILYFORCE — Dashboard / My Account (Logged-in)
      Stack: Vanilla HTML/CSS/JS (zero dependencies, no build step)
      Accessibility: WCAG 2.1 AA compliant
      ═══════════════════════════════════════════════════════════ -->
@@ -12,13 +12,13 @@
 <meta name="color-scheme" content="light">
 
 <!-- ─── SEO META ─── -->
-<title>My Library — FamilyForce</title>
-<meta name="description" content="Your FamilyForce library — track your playbook progress and access your certificates.">
+<title>My Account — FamilyForce</title>
+<meta name="description" content="Your FamilyForce account — track your playbook progress and access your certificates.">
 <link rel="canonical" href="https://getfamilyforce.com/dashboard">
 
 <!-- ─── OPEN GRAPH ─── -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="My Library — FamilyForce">
+<meta property="og:title" content="My Account — FamilyForce">
 <meta property="og:description" content="Track your playbook progress and access your FamilyForce certificates.">
 <meta property="og:url" content="https://getfamilyforce.com/dashboard">
 <meta property="og:site_name" content="FamilyForce">
@@ -1608,50 +1608,417 @@ button { font: inherit; cursor: pointer; }
 /* ═══════════════════════════════════════════════════════════
    DASHBOARD TABS
    ═══════════════════════════════════════════════════════════ */
-.dash-tab-bar {
-  background: rgba(248,247,255,.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-light);
-  position: sticky; top: 64px; z-index: 90;
+.dash-tab-bar { display: none !important; }
+
+/* ═══════════════════════════════════════════════════════════
+   BOTTOM NAVIGATION
+   ═══════════════════════════════════════════════════════════ */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  background: rgba(250,250,250,.96);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid var(--border-light);
+  display: flex; align-items: flex-start;
+  z-index: 200;
 }
-.dash-tab-inner {
-  width: min(600px, 100% - 40px);
-  margin-inline: auto;
-  display: flex; gap: 0;
+.bnav-btn {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  gap: 4px; border: none; background: none;
+  color: var(--text-dim); cursor: pointer;
+  font-family: var(--sans); padding: 11px 0 0;
+  transition: color .15s;
 }
-.dash-tab-btn {
-  padding: 13px 20px 11px;
-  font-size: 13px; font-weight: 600;
-  color: var(--text-dim); background: none; border: none;
-  border-bottom: 2px solid transparent;
+.bnav-btn.active { color: var(--terra); }
+@media (hover:hover) { .bnav-btn:hover { color: var(--text); } }
+.bnav-label { font-size: 10px; font-weight: 600; letter-spacing: .02em; }
+
+/* Main content bottom padding for nav */
+#main-content { padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+
+/* ═══════════════════════════════════════════════════════════
+   ACCOUNT TAB
+   ═══════════════════════════════════════════════════════════ */
+#tab-settings  { display: none; }
+#tab-referrals { display: none !important; }
+
+.acc-wrap { max-width: 600px; margin: 0 auto; padding-top: 72px; }
+.acc-subview { display: none; }
+.acc-subview.active { display: block; }
+
+/* Profile header */
+.acc-profile {
+  background: var(--white); border-bottom: 1px solid var(--border-light);
+  padding: 32px 20px 24px; display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 8px;
+}
+.acc-avatar {
+  width: 70px; height: 70px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--terra) 0%, var(--terra-bright) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 800; color: #fff;
+  box-shadow: 0 4px 18px rgba(110,78,214,.28); margin-bottom: 4px;
+}
+.acc-display-name  { font-size: 20px; font-weight: 800; color: var(--text); }
+.acc-display-email { font-size: 13px; color: var(--text-dim); }
+.acc-edit-profile-btn {
+  font-size: 12px; font-weight: 700; color: var(--terra-dark);
+  background: var(--terra-glow); border: none; border-radius: 20px;
+  padding: 6px 16px; margin-top: 4px; cursor: pointer; font-family: var(--sans);
+  transition: background .15s;
+}
+.acc-edit-profile-btn:hover { background: rgba(110,78,214,.12); }
+
+/* Subscription hero */
+.acc-sub-hero {
+  margin: 16px; border-radius: 16px;
+  background: linear-gradient(135deg, #4B2EBC 0%, var(--terra-bright) 100%);
+  padding: 20px; color: #fff;
+  box-shadow: 0 6px 24px rgba(110,78,214,.28);
+}
+.acc-sub-badge  { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; opacity: .75; margin-bottom: 5px; }
+.acc-sub-name   { font-size: 17px; font-weight: 800; margin-bottom: 3px; }
+.acc-sub-detail { font-size: 12.5px; opacity: .8; line-height: 1.5; }
+.acc-sub-actions { display: flex; gap: 8px; margin-top: 16px; }
+.acc-sub-btn { padding: 9px 18px; border-radius: 9px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: var(--sans); border: none; }
+.acc-sub-btn.manage { background: rgba(255,255,255,.18); color: #fff; border: 1.5px solid rgba(255,255,255,.35); }
+.acc-sub-btn.cancel { background: transparent; color: rgba(255,255,255,.65); border: 1.5px solid rgba(255,255,255,.2); }
+
+/* Free plan CTA */
+.acc-sub-free {
+  margin: 16px; border-radius: 16px;
+  border: 1.5px dashed var(--border); padding: 22px; text-align: center;
+}
+.acc-sub-free-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+.acc-sub-free-sub   { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; line-height: 1.5; }
+
+/* Grouped list (iOS inset style) */
+.acc-group { margin: 0 16px 4px; }
+.acc-group-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--text-dim); padding: 16px 4px 8px;
+}
+.acc-group-card { background: var(--white); border-radius: 14px; overflow: hidden; border: 1.5px solid var(--border-light); }
+.acc-cell {
+  display: flex; align-items: center; padding: 14px 16px;
+  border-bottom: 1px solid var(--border-light); gap: 12px;
+  transition: background .12s; min-height: 52px;
+}
+.acc-cell:last-child { border-bottom: none; }
+.acc-cell.tappable { cursor: pointer; }
+@media (hover:hover) { .acc-cell.tappable:hover { background: var(--elevated); } }
+.acc-cell-icon  { font-size: 17px; width: 28px; text-align: center; flex-shrink: 0; }
+.acc-cell-body  { flex: 1; min-width: 0; }
+.acc-cell-label { font-size: 14.5px; font-weight: 500; color: var(--text); }
+.acc-cell-value { font-size: 12px; color: var(--text-dim); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.acc-cell-chevron { font-size: 18px; color: var(--text-ghost); font-weight: 300; flex-shrink: 0; }
+.acc-cell.danger .acc-cell-label { color: #DC2626; }
+
+/* Sub-view header */
+.acc-sub-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 18px; border-bottom: 1px solid var(--border-light);
+  background: var(--white); position: sticky; top: 64px; z-index: 10;
+}
+.acc-back-btn {
+  display: flex; align-items: center; gap: 2px;
+  font-size: 15px; font-weight: 600; color: var(--terra-dark);
+  background: none; border: none; cursor: pointer;
+  font-family: var(--sans); padding: 4px 0; flex-shrink: 0;
+}
+.acc-sub-title { font-size: 16px; font-weight: 800; color: var(--text); }
+
+/* Edit fields */
+.acc-edit-field { padding: 16px 20px; border-bottom: 1px solid var(--border-light); }
+.acc-edit-field:last-of-type { border-bottom: none; }
+.acc-edit-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-dim); margin-bottom: 8px; }
+.acc-edit-input {
+  width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 11px 14px; font-size: 15px; font-family: var(--sans);
+  color: var(--text); background: var(--bg); outline: none; box-sizing: border-box;
+}
+.acc-edit-input:focus { border-color: var(--terra); background: var(--white); }
+.acc-edit-hint  { font-size: 12px; color: var(--text-dim); margin-top: 7px; line-height: 1.5; }
+.acc-edit-save  {
+  display: block; width: calc(100% - 40px); margin: 20px;
+  padding: 14px; background: var(--terra); color: #fff; border: none;
+  border-radius: 12px; font-size: 15px; font-weight: 700;
   cursor: pointer; font-family: var(--sans);
-  transition: color .15s, border-color .15s;
-  display: flex; align-items: center; gap: 6px;
 }
-.dash-tab-btn.active {
-  color: var(--terra); border-bottom-color: var(--terra);
+.acc-edit-save:hover { background: var(--terra-dark); }
+.acc-edit-save.secondary { background: var(--elevated); color: var(--terra-dark); border: 1.5px solid var(--border); }
+
+/* Earn sub-view */
+.earn-code-card {
+  margin: 16px; border-radius: 16px;
+  background: linear-gradient(135deg, var(--terra-glow), rgba(124,92,252,.07));
+  border: 1.5px solid var(--border-light); padding: 20px;
 }
-@media (hover:hover) { .dash-tab-btn:not(.active):hover { color: var(--text); } }
+.earn-code-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--terra-dark); margin-bottom: 6px; }
+.earn-code-value { font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: .06em; margin-bottom: 4px; }
+.earn-code-sub   { font-size: 12px; color: var(--text-dim); margin-bottom: 16px; }
+.earn-code-btns  { display: flex; gap: 8px; }
+.earn-btn-primary   { flex: 1; padding: 11px; background: var(--terra); color: #fff; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--sans); }
+.earn-btn-secondary { flex: 1; padding: 11px; background: var(--white); color: var(--terra-dark); border: 1.5px solid var(--border); border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--sans); }
+
+/* Earnings strip */
+.earn-strip {
+  display: flex; margin: 0 16px 8px;
+  background: var(--white); border-radius: 14px;
+  border: 1.5px solid var(--border-light); overflow: hidden;
+}
+.earn-strip-item { flex: 1; padding: 13px 14px; border-right: 1px solid var(--border-light); }
+.earn-strip-item:last-child { border-right: none; }
+.earn-strip-label { font-size: 9.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.earn-strip-value { font-size: 17px; font-weight: 800; color: var(--text); }
+.earn-strip-value.green { color: #38A169; }
+
+/* Activity feed */
+.earn-feed-row {
+  display: flex; align-items: center; padding: 12px 16px;
+  border-bottom: 1px solid var(--border-light); gap: 12px;
+}
+.earn-feed-row:last-child { border-bottom: none; }
+.earn-feed-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--elevated); display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: var(--text-mid); flex-shrink: 0;
+}
+.earn-feed-name   { font-size: 14px; font-weight: 600; color: var(--text); }
+.earn-feed-meta   { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+.earn-feed-right  { margin-left: auto; text-align: right; flex-shrink: 0; }
+.earn-feed-earned { font-size: 14px; font-weight: 700; }
+.earn-feed-status { font-size: 11px; font-weight: 600; margin-top: 2px; }
 
 /* ═══════════════════════════════════════════════════════════
    DEVELOPMENT ADVISOR TAB
    ═══════════════════════════════════════════════════════════ */
-#tab-advisor { display: none; }
+#tab-advisor  { display: none; }
+
+/* ═══════════════════════════════════════════════════════════
+   ACCOUNT TAB
+   ═══════════════════════════════════════════════════════════ */
+#tab-settings { display: none; }
+.st-wrap { width: min(600px, 100% - 40px); margin-inline: auto; padding: 24px 0 80px; }
+.st-page-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.st-page-sub { font-size: 13px; color: var(--text-dim); margin-bottom: 24px; }
+.st-section-label {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-dim); margin: 24px 0 10px 2px;
+}
+.st-card {
+  background: var(--white); border: 1.5px solid var(--border-light);
+  border-radius: 14px; overflow: hidden; margin-bottom: 10px;
+}
+
+/* Account */
+.st-account-row {
+  display: flex; align-items: center; gap: 14px; padding: 16px 18px;
+  border-bottom: 1px solid var(--border-light);
+}
+.st-avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--terra-glow); border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 800; color: var(--terra-dark); flex-shrink: 0;
+}
+.st-account-name  { font-size: 15px; font-weight: 700; color: var(--text); }
+.st-account-email { font-size: 12.5px; color: var(--text-dim); margin-top: 2px; }
+.st-account-actions { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 18px; }
+
+/* Generic action row */
+.st-action-row {
+  display: flex; align-items: center; padding: 13px 18px;
+  border-bottom: 1px solid var(--border-light); cursor: pointer; gap: 10px;
+  transition: background .12s;
+}
+.st-action-row:last-child { border-bottom: none; }
+@media (hover:hover) { .st-action-row:hover { background: var(--elevated); } }
+.st-action-icon  { font-size: 16px; width: 24px; flex-shrink: 0; }
+.st-action-label { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+.st-action-sub   { font-size: 12px; color: var(--text-dim); margin-top: 1px; }
+.st-action-chevron { font-size: 11px; color: var(--text-ghost); margin-left: auto; }
+.st-action-row.danger .st-action-label { color: #DC2626; }
+
+/* Inline text button */
+.st-text-btn {
+  font-size: 12px; font-weight: 700; color: var(--terra-dark);
+  background: none; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 6px 12px; cursor: pointer; font-family: var(--sans); transition: background .15s;
+}
+.st-text-btn:hover { background: var(--elevated); }
+.st-text-btn.primary { background: var(--terra); color: #fff; border-color: var(--terra); }
+.st-text-btn.primary:hover { background: var(--terra-dark); border-color: var(--terra-dark); }
+.st-text-btn.danger { color: #DC2626; border-color: #FECACA; }
+
+/* Inline edit row */
+.st-inline-edit { display: none; gap: 8px; padding: 0 18px 14px; }
+.st-inline-edit.open { display: flex; }
+.st-inline-input {
+  flex: 1; border: 1.5px solid var(--border); border-radius: 9px;
+  padding: 9px 12px; font-size: 14px; font-family: var(--sans); color: var(--text);
+  outline: none; background: var(--bg);
+}
+.st-inline-input:focus { border-color: var(--terra); background: #fff; }
+
+/* Plan card */
+.st-plan-card { padding: 16px 18px; }
+.st-plan-badge {
+  display: inline-block; background: var(--terra-glow); color: var(--terra-dark);
+  border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; margin-bottom: 8px;
+}
+.st-plan-name   { font-size: 16px; font-weight: 800; color: var(--text); }
+.st-plan-detail { font-size: 12.5px; color: var(--text-dim); margin-top: 4px; line-height: 1.6; }
+.st-plan-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+
+/* Stat grid (referral) */
+.st-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.st-stat-card {
+  background: var(--white); border: 1.5px solid var(--border-light);
+  border-radius: 12px; padding: 14px 16px;
+}
+.st-stat-label { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.st-stat-value { font-size: 21px; font-weight: 800; color: var(--text); line-height: 1.1; }
+.st-stat-value.green  { color: #38A169; }
+.st-stat-value.amber  { color: #D97706; }
+.st-stat-value.purple { color: var(--terra-dark); }
+.st-stat-sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+
+/* Next payout strip */
+.st-next-payout {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; background: var(--elevated); border-radius: 12px; margin-bottom: 12px;
+}
+.st-np-label { font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px; }
+.st-np-date  { font-size: 13.5px; font-weight: 800; color: var(--text); }
+.st-np-badge { background: var(--terra-glow); color: var(--terra-dark); border-radius: 20px; padding: 5px 13px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+
+/* Code card */
+.st-code-card {
+  background: var(--terra-glow); border: 1.5px solid var(--border-light);
+  border-radius: 14px; padding: 16px 18px; display: flex; align-items: center;
+  gap: 14px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.st-code-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--terra-dark); margin-bottom: 4px; }
+.st-code-value { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: .05em; }
+.st-code-sub   { font-size: 11.5px; color: var(--text-dim); margin-top: 2px; }
+.st-code-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* Payout method */
+.st-payout-method {
+  background: var(--white); border: 1.5px solid var(--border-light);
+  border-radius: 14px; padding: 14px 18px; display: flex; align-items: center;
+  gap: 12px; margin-bottom: 12px;
+}
+.st-pm-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--text-dim); }
+.st-pm-value { font-size: 14px; font-weight: 700; color: var(--text); margin-top: 2px; }
+.st-pm-sub   { font-size: 11.5px; color: var(--text-dim); }
+
+/* Collapsible */
+.st-collapsible {
+  background: var(--white); border: 1.5px solid var(--border-light);
+  border-radius: 14px; overflow: hidden; margin-bottom: 10px;
+}
+.st-col-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; cursor: pointer; user-select: none;
+}
+@media (hover:hover) { .st-col-header:hover { background: var(--elevated); } }
+.st-col-title { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.st-col-badge {
+  background: var(--terra-glow); color: var(--terra-dark);
+  border-radius: 20px; padding: 2px 8px; font-size: 11px; font-weight: 700;
+}
+.st-col-arrow { font-size: 11px; color: var(--text-dim); transition: transform .2s; }
+.st-col-body  { border-top: 1.5px solid var(--border-light); display: none; }
+.st-col-body.open { display: block; }
+
+/* Table */
+.st-table { width: 100%; border-collapse: collapse; }
+.st-table th {
+  text-align: left; padding: 9px 18px; font-size: 10px; font-weight: 700;
+  letter-spacing: .07em; text-transform: uppercase; color: var(--text-dim);
+  border-bottom: 1.5px solid var(--border-light); background: var(--bg);
+}
+.st-table td { padding: 11px 18px; font-size: 13px; color: var(--text-mid); border-bottom: 1px solid var(--border-light); vertical-align: middle; }
+.st-table tr:last-child td { border-bottom: none; }
+.st-td-name   { color: var(--text) !important; font-weight: 600; }
+.st-td-right  { text-align: right !important; font-weight: 700; color: var(--text) !important; }
+.st-td-green  { color: #38A169 !important; font-weight: 700 !important; }
+
+/* Status badges */
+.st-badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 700; white-space: nowrap; border: 1px solid transparent; }
+.st-badge.cleared    { background: #F0FFF4; color: #38A169; border-color: #C6F6D5; }
+.st-badge.pending    { background: #FFFBEB; color: #D97706; border-color: #FDE68A; }
+.st-badge.paid       { background: #EFF6FF; color: #2563EB; border-color: #BFDBFE; }
+.st-badge.expired    { background: var(--bg); color: var(--text-dim); border-color: var(--border); }
+.st-badge.processing { background: var(--terra-glow); color: var(--terra-dark); border-color: var(--border); }
+.st-badge.completed  { background: #F0FFF4; color: #38A169; border-color: #C6F6D5; }
+
+/* How it works */
+.st-step { display: flex; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--border-light); }
+.st-step:last-child { border-bottom: none; }
+.st-step-icon  { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.st-step-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.st-step-body  { font-size: 12.5px; color: var(--text-dim); line-height: 1.5; }
+
+/* Toast */
+.st-toast {
+  position: fixed; bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: #1D1D1F; color: #fff; padding: 10px 20px; border-radius: 24px;
+  font-size: 13px; font-weight: 600; transition: transform .25s ease;
+  white-space: nowrap; pointer-events: none; z-index: 9999;
+}
+.st-toast.show { transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 480px) {
+  .st-stat-grid { gap: 8px; }
+  .st-stat-value { font-size: 17px; }
+  .st-table th, .st-table td { padding: 9px 12px; font-size: 12px; }
+  .st-code-actions { width: 100%; }
+}
+
+/* ── Advisor tab hero header ── */
+.adv-tab-hero {
+  background: linear-gradient(135deg, #3D20B0 0%, #7C5CFC 100%);
+  padding: calc(72px + 24px) 24px 32px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.adv-tab-hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 0%, rgba(255,255,255,.10) 0%, transparent 60%);
+  pointer-events: none;
+}
+.adv-tab-hero-emoji { font-size: 40px; display: block; margin-bottom: 10px; }
+.adv-tab-hero-title { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -.02em; margin-bottom: 5px; }
+.adv-tab-hero-sub   { font-size: 13px; color: rgba(255,255,255,.72); line-height: 1.5; }
+
+@media (max-width: 480px) {
+  .adv-tab-hero { padding-top: calc(64px + 20px); padding-bottom: 24px; }
+  .adv-tab-hero-title { font-size: 19px; }
+  .adv-tab-hero-emoji { font-size: 34px; }
+  .acc-wrap { padding-top: 64px; }
+}
 
 .adv-wrap {
   width: min(600px, 100% - 40px);
   margin-inline: auto;
-  padding: 32px 0 80px;
+  padding: 24px 0 80px;
 }
 
 /* ── Paywall / Locked state ── */
 .adv-locked-wrap {
   text-align: center;
-  padding: 48px 20px 60px;
+  padding: 32px 20px 60px;
 }
 .adv-locked-icon { font-size: 44px; margin-bottom: 14px; }
-.adv-locked-title { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -.01em; margin-bottom: 8px; }
+.adv-locked-title { font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -.01em; margin-bottom: 8px; line-height: 1.35; }
 .adv-locked-sub { font-size: 14px; color: var(--text-dim); line-height: 1.6; max-width: 360px; margin-inline: auto; margin-bottom: 24px; }
 .adv-teaser-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; text-align: left; }
 .adv-teaser-card {
@@ -1896,6 +2263,25 @@ button { font: inherit; cursor: pointer; }
 .adv-phase-bar { height: 4px; background: rgba(110,78,214,.15); border-radius: 2px; overflow: hidden; }
 .adv-phase-fill { height: 100%; background: var(--terra); border-radius: 2px; transition: width .4s ease; }
 
+/* Milestone progress bar */
+.adv-progress-wrap { margin: 4px 0 18px; }
+.adv-progress-header {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: var(--text-dim); margin-bottom: 7px;
+}
+.adv-progress-header strong { color: var(--terra); }
+.adv-progress-bar {
+  height: 7px; background: rgba(110,78,214,.12); border-radius: 4px; overflow: hidden;
+}
+.adv-progress-fill {
+  height: 100%; background: var(--terra); border-radius: 4px;
+  transition: width .5s ease;
+}
+.adv-progress-complete {
+  font-size: 12px; color: #38A169; font-weight: 600;
+  margin-top: 7px; text-align: center;
+}
+
 /* Urgent banner */
 .adv-urgent-banner {
   background: #FFF4F0; border: 1.5px solid #FFCBB8; border-radius: 14px;
@@ -1962,6 +2348,10 @@ button { font: inherit; cursor: pointer; }
   font-size: 11px; color: var(--text-dim); line-height: 1.45;
   margin-top: -4px; padding-top: 2px;
 }
+.adv-todos-instruction {
+  font-size: 12px; color: var(--text-dim); line-height: 1.4;
+  margin-bottom: 10px; margin-top: -2px;
+}
 
 /* Card footer */
 .adv-card-footer {
@@ -1982,7 +2372,7 @@ button { font: inherit; cursor: pointer; }
   border: none; border-radius: 100px; padding: 4px 12px; cursor: pointer; font-family: var(--sans);
 }
 
-/* Ongoing (collapsed) */
+/* Ongoing (collapsed) — legacy, kept for safety */
 .adv-ongoing { margin-top: 8px; margin-bottom: 10px; border: 1.5px solid var(--border-light); border-radius: 14px; overflow: hidden; }
 .adv-ongoing-summary {
   padding: 12px 16px; font-size: 13px; font-weight: 600; color: var(--text-mid);
@@ -1991,6 +2381,28 @@ button { font: inherit; cursor: pointer; }
 }
 .adv-ongoing-summary::-webkit-details-marker { display: none; }
 .adv-ongoing-inner { padding: 10px 0 4px; }
+
+/* Collapsible digest sections */
+.adv-section-details {
+  border: 1.5px solid var(--border-light); border-radius: 14px;
+  margin-bottom: 10px; overflow: hidden;
+}
+.adv-section-summary {
+  display: flex; align-items: center; gap: 7px;
+  padding: 13px 16px; font-size: 13px; font-weight: 700; color: var(--text);
+  cursor: pointer; list-style: none; background: var(--elevated);
+  user-select: none;
+}
+.adv-section-summary::-webkit-details-marker { display: none; }
+.adv-section-summary::after {
+  content: '▸'; margin-left: auto; font-size: 11px; color: var(--text-dim);
+  transition: transform .2s;
+}
+.adv-section-details[open] > .adv-section-summary::after { transform: rotate(90deg); }
+.adv-section-details[open] > .adv-section-summary { border-bottom: 1px solid var(--border-light); }
+.adv-section-summary .urgent { color: #E8490F; }
+.adv-section-body { padding: 12px 14px 8px; }
+@media (hover:hover) { .adv-section-summary:hover { background: var(--border-light); } }
 
 /* Wins section */
 .adv-wins-section { margin-top: 28px; }
@@ -2007,6 +2419,48 @@ button { font: inherit; cursor: pointer; }
   cursor: pointer; font-family: var(--sans); margin-top: 10px; transition: opacity .15s;
 }
 @media (hover:hover) { .adv-win-share-btn:hover { opacity: .9; } }
+.adv-mark-done-btn {
+  display: block; width: 100%; padding: 10px; background: var(--terra); color: #fff !important;
+  border: none; border-radius: 8px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: var(--sans); margin-top: 12px; transition: opacity .15s;
+}
+@media (hover:hover) { .adv-mark-done-btn:hover { opacity: .9; } }
+.adv-not-yet-btn {
+  display: block; width: 100%; padding: 9px; background: transparent;
+  border: 1.5px solid #C6F6D5; border-radius: 8px; font-size: 12px; font-weight: 600;
+  color: #38A169; cursor: pointer; font-family: var(--sans); margin-top: 8px;
+  transition: background .15s;
+}
+@media (hover:hover) { .adv-not-yet-btn:hover { background: rgba(56,161,105,.08); } }
+/* ── New-since-last-visit banner ── */
+.adv-new-banner {
+  display: flex; align-items: center; gap: 8px;
+  background: #EBF8FF; border: 1.5px solid #BEE3F8; border-radius: 10px;
+  padding: 10px 14px; font-size: 13px; color: #2B6CB0; margin-bottom: 16px;
+}
+/* ── Next milestone footer ── */
+.adv-next-milestone {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: var(--elevated); border: 1.5px solid var(--border-light);
+  border-radius: 12px; padding: 14px 16px; margin-top: 20px;
+}
+.adv-next-icon { font-size: 22px; line-height: 1; flex-shrink: 0; }
+.adv-next-label { font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .04em; color: var(--text-dim); margin-bottom: 3px; }
+.adv-next-date { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+.adv-next-sub  { font-size: 12px; color: var(--text-dim); }
+
+.adv-completion-meta {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 11.5px; color: var(--text-dim); background: rgba(56,161,105,.07);
+  border-radius: 8px; padding: 7px 10px; margin-bottom: 10px; line-height: 1.4;
+}
+.adv-completion-meta strong { color: var(--text); }
+.adv-completion-edit {
+  margin-left: auto; font-size: 11px; font-weight: 700; color: var(--terra);
+  background: none; border: none; cursor: pointer; font-family: var(--sans);
+  text-decoration: underline; padding: 0;
+}
 
 /* Dismissed pills */
 .adv-dismissed-section { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-light); }
@@ -2020,6 +2474,11 @@ button { font: inherit; cursor: pointer; }
 
 /* Empty */
 .adv-empty { font-size: 14px; color: var(--text-dim); text-align: center; padding: 32px 0; }
+/* Critical zero state */
+.adv-zero-state {
+  font-size: 13px; color: #38A169; background: #F0FFF4; border: 1.5px solid #C6F6D5;
+  border-radius: 12px; padding: 11px 14px; margin-bottom: 16px; font-weight: 500;
+}
 
 /* Share card modal */
 .adv-share-modal-card {
@@ -2652,7 +3111,7 @@ button { font: inherit; cursor: pointer; }
 
 <!-- ═══════════════════════════════════════════════════════════
      NAVIGATION — LOGGED-IN
-     Logo left | Playbooks + My Library (active) | Avatar right
+     Logo left | Playbooks + My Account (active) | Avatar right
      ═══════════════════════════════════════════════════════════ -->
 <nav class="nav" id="nav" aria-label="Main navigation">
   <div class="nav-inner">
@@ -2667,7 +3126,7 @@ button { font: inherit; cursor: pointer; }
 
     <!-- Desktop nav links -->
     <ul class="nav-links" role="list">
-      <li><a href="dashboard.html" class="active" aria-current="page">My Library</a></li>
+      <li><a href="dashboard.html" class="active" aria-current="page">My Account</a></li>
     </ul>
 
     <!-- Right: Avatar + Hamburger -->
@@ -2702,7 +3161,7 @@ button { font: inherit; cursor: pointer; }
           <div class="dropdown-divider" role="separator"></div>
 
           <!-- Menu items -->
-          <a href="dashboard.html" class="dropdown-item dropdown-item--active" role="menuitem" aria-current="page">My Library</a>
+          <a href="dashboard.html" class="dropdown-item dropdown-item--active" role="menuitem" aria-current="page">My Account</a>
 
           <div class="dropdown-divider" role="separator"></div>
 
@@ -2756,7 +3215,7 @@ button { font: inherit; cursor: pointer; }
         <div class="mobile-user-email" id="mobile-user-email"></div>
       </div>
     </li>
-    <li><a href="dashboard.html" class="active" aria-current="page">My Library</a></li>
+    <li><a href="dashboard.html" class="active" aria-current="page">My Account</a></li>
     <li class="divider-li" style="border-top:1px solid var(--border-light);padding-top:4px"></li>
     <li><button id="mobile-signout-btn">Sign Out</button></li>
   </ul>
@@ -2766,18 +3225,6 @@ button { font: inherit; cursor: pointer; }
 <!-- ═══════════════════════════════════════════════════════════
      MAIN CONTENT
      ═══════════════════════════════════════════════════════════ -->
-<!-- Tab bar -->
-<div class="dash-tab-bar" id="dash-tab-bar">
-  <div class="dash-tab-inner">
-    <button class="dash-tab-btn active" id="tab-btn-progress" onclick="switchTab('progress')">
-      📊 Progress
-    </button>
-    <button class="dash-tab-btn" id="tab-btn-advisor" onclick="switchTab('advisor')">
-      🌱 Development Advisor
-    </button>
-  </div>
-</div>
-
 <main id="main-content">
 <div id="tab-progress">
 
@@ -2799,25 +3246,13 @@ button { font: inherit; cursor: pointer; }
         </div>
       </div>
 
-      <!-- Certificate name — inline, minimal -->
-      <div class="cnb-inline" id="cnb-inline" style="display:none">
-        <span>Certificate name:</span>
-        <span class="cnb-inline-name" id="cnb-inline-name"></span>
-        <button class="cnb-inline-edit" id="cnb-inline-edit-btn" onclick="cnbInlineEdit()">Edit</button>
-      </div>
-      <form class="cnb-inline-form" id="cnb-inline-form" style="display:none" onsubmit="cnbInlineSave(event)">
-        <input class="cnb-inline-input" id="cnb-input" type="text" placeholder="Your name on certificate" maxlength="60" autocomplete="name">
-        <button type="submit" class="cnb-inline-save">Save</button>
-        <button type="button" class="cnb-inline-cancel" onclick="cnbInlineCancel()">Cancel</button>
-      </form>
-      <!-- Hidden prompt for users with no name yet -->
-      <div id="cnb-no-name-prompt" style="display:none; margin-top:14px;">
-        <button class="cnb-inline-edit" onclick="cnbInlineEdit()" style="font-size:13px">+ Add your name to certificates</button>
-      </div>
-
       <!-- Legacy hidden elements (keep for JS compatibility) -->
       <div id="cert-name-banner" style="display:none" aria-hidden="true">
         <div id="cnb-saved" hidden></div>
+        <div id="cnb-inline" style="display:none"></div>
+        <div id="cnb-inline-name" style="display:none"></div>
+        <div id="cnb-no-name-prompt" style="display:none"></div>
+        <form id="cnb-inline-form" style="display:none"><input id="cnb-input" style="display:none"></form>
         <div id="cnb-form" hidden>
           <input type="text" id="cnb-input-legacy" style="display:none">
           <button id="cnb-save-btn" style="display:none"></button>
@@ -2936,61 +3371,6 @@ button { font: inherit; cursor: pointer; }
   </section>
 
   <!-- ─── FAMILY ─── -->
-  <section class="family-section" id="family-section">
-    <div class="wrap">
-
-      <!-- Heading + rename -->
-      <div class="family-heading-row" id="family-heading-row">
-        <h2 class="family-heading" id="family-heading-display">My Family</h2>
-        <button class="family-rename-btn" id="family-rename-btn" onclick="startFamilyRename()">Rename</button>
-      </div>
-      <form class="family-rename-form" id="family-rename-form" style="display:none" onsubmit="saveFamilyName(event)">
-        <input class="family-rename-input" id="family-rename-input" type="text" maxlength="40" placeholder="Family name…" autocomplete="off">
-        <button type="submit" class="family-rename-save">Save</button>
-        <button type="button" class="family-rename-save" onclick="cancelFamilyRename()" style="color:var(--text-dim)">Cancel</button>
-      </form>
-      <p class="family-subtext">Connect with your co-parents and caregivers to track progress together.</p>
-
-      <!-- Your code card -->
-      <div class="family-code-card">
-        <div class="family-code-left">
-          <div class="family-code-label">Invite code</div>
-          <div class="family-code-value" id="family-code-display">FF-····</div>
-          <div class="family-code-hint">Share this with a co-parent, grandparent, or caregiver</div>
-        </div>
-        <button class="family-code-copy" id="family-code-copy-btn" onclick="copyFamilyCode()">
-          <svg width="13" height="13" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-            <rect x="6" y="6" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M4 12H3a1 1 0 01-1-1V3a1 1 0 011-1h8a1 1 0 011 1v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          Copy code
-        </button>
-      </div>
-
-      <!-- Members in your family -->
-      <div class="family-members-label">In your family</div>
-      <div id="family-members-list">
-        <!-- populated by JS -->
-      </div>
-
-      <!-- Families you've joined -->
-      <div id="family-joined-wrap"></div>
-
-      <!-- Join a family -->
-      <div class="family-join-section">
-        <div class="family-join-label">Have someone else's code? Join their family</div>
-        <div class="family-join-row">
-          <input class="family-join-input" id="family-join-input" type="text"
-            placeholder="Enter family code (e.g. FF-A3K9)" maxlength="7" autocomplete="off"
-            oninput="this.value = this.value.toUpperCase()">
-          <button class="family-join-btn" id="family-join-btn" onclick="joinFamily()">Join →</button>
-        </div>
-        <div id="family-join-msg" style="display:none" class="family-join-error"></div>
-      </div>
-
-    </div><!-- /wrap -->
-  </section>
-
   <!-- ─── COMPLETED PLAYBOOKS ─── -->
   <section class="completed-section" id="completed-section" hidden aria-labelledby="completed-heading">
     <div class="wrap">
@@ -3134,13 +3514,20 @@ button { font: inherit; cursor: pointer; }
 
 <!-- ─── DEVELOPMENT ADVISOR TAB ─── -->
 <div id="tab-advisor">
+
+  <!-- Hero header — always visible -->
+  <div class="adv-tab-hero">
+    <span class="adv-tab-hero-emoji">🌱</span>
+    <h2 class="adv-tab-hero-title">Development Advisor</h2>
+    <p class="adv-tab-hero-sub">Personalised milestones. Right on time.</p>
+  </div>
+
   <div class="adv-wrap">
 
     <!-- Locked state (non-paid) -->
     <div id="adv-locked" style="display:none">
       <div class="adv-locked-wrap">
-        <div class="adv-locked-icon">🌱</div>
-        <div class="adv-locked-title">Know exactly what to do, right now, for your child's age.</div>
+        <div class="adv-locked-title">Know exactly what to do,<br>right now, for your child's age.</div>
         <p class="adv-locked-sub">Personalised milestones from birth to age 10, backed by 100+ peer-reviewed sources. One purchase covers your whole Family Circle.</p>
         <div class="adv-teaser-cards">
           <div class="adv-teaser-card">
@@ -3301,6 +3688,11 @@ button { font: inherit; cursor: pointer; }
             <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'🌈')">🌈</button>
             <button class="adv-emoji-opt" onclick="advSelectEmoji(this,'💫')">💫</button>
           </div>
+          <label class="adv-ob-label">Boy or girl?</label>
+          <div class="adv-ob-toggle" id="adv-gender-toggle">
+            <button class="adv-ob-toggle-btn" id="adv-gender-boy" onclick="advSelectGender('boy')">👦 Boy</button>
+            <button class="adv-ob-toggle-btn" id="adv-gender-girl" onclick="advSelectGender('girl')">👧 Girl</button>
+          </div>
           <div id="adv-ob-err-1" style="font-size:12px;color:#e53935;margin-bottom:10px;display:none"></div>
           <button class="adv-ob-next" onclick="advObStep1Next()">Continue →</button>
         </div>
@@ -3350,7 +3742,7 @@ button { font: inherit; cursor: pointer; }
             <div class="adv-ob-confirm-name" id="adv-ob-confirm-name">Olivia</div>
             <div class="adv-ob-confirm-age" id="adv-ob-confirm-age"></div>
           </div>
-          <div class="adv-ob-peek-label">A PREVIEW OF HER CURRENT MILESTONES</div>
+          <div class="adv-ob-peek-label" id="adv-ob-peek-label">A PREVIEW OF THEIR CURRENT MILESTONES</div>
           <div id="adv-ob-peek-rows"></div>
           <div style="font-size:11px;color:var(--text-dim);padding-top:8px;margin-bottom:20px" id="adv-ob-peek-more"></div>
           <button class="adv-ob-next" onclick="advObFinish()">See Full Digest →</button>
@@ -3438,7 +3830,469 @@ button { font: inherit; cursor: pointer; }
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════
+     SETTINGS TAB
+     ══════════════════════════════════════════════════════════ -->
+<div id="tab-settings">
+<div class="acc-wrap">
+
+  <!-- ══ MAIN VIEW ══ -->
+  <div class="acc-subview active" id="acc-main">
+
+    <!-- Profile -->
+    <div class="acc-profile">
+      <div class="acc-avatar" id="acc-avatar">JH</div>
+      <div class="acc-display-name"  id="acc-name">—</div>
+      <div class="acc-display-email" id="acc-email-display">—</div>
+      <button class="acc-edit-profile-btn" onclick="accShowView('acc-edit')">Edit profile</button>
+    </div>
+
+    <!-- Subscription hero -->
+    <div id="acc-sub-hero-wrap"><!-- filled by JS --></div>
+
+    <!-- Content -->
+    <div class="acc-group">
+      <div class="acc-group-label">Content</div>
+      <div class="acc-group-card">
+        <div class="acc-cell tappable" onclick="accShowView('acc-cert')">
+          <span class="acc-cell-icon">🎓</span>
+          <div class="acc-cell-body">
+            <div class="acc-cell-label">Certificate name</div>
+            <div class="acc-cell-value" id="acc-cert-preview">Not set</div>
+          </div>
+          <span class="acc-cell-chevron">›</span>
+        </div>
+        <div class="acc-cell tappable" onclick="accShowView('acc-family')">
+          <span class="acc-cell-icon">👪</span>
+          <div class="acc-cell-body">
+            <div class="acc-cell-label">Family Circle</div>
+            <div class="acc-cell-value" id="acc-family-preview">Share access with co-parents</div>
+          </div>
+          <span class="acc-cell-chevron">›</span>
+        </div>
+        <div class="acc-cell tappable" onclick="accShowView('acc-children')">
+          <span class="acc-cell-icon">👶</span>
+          <div class="acc-cell-body">
+            <div class="acc-cell-label">Children</div>
+            <div class="acc-cell-value" id="acc-children-preview">No children added yet</div>
+          </div>
+          <span class="acc-cell-chevron">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Earn -->
+    <div class="acc-group">
+      <div class="acc-group-label">Earn</div>
+      <div class="acc-group-card">
+        <div class="acc-cell tappable" onclick="accShowView('acc-earn')">
+          <span class="acc-cell-icon">💸</span>
+          <div class="acc-cell-body">
+            <div class="acc-cell-label">Refer friends</div>
+            <div class="acc-cell-value" id="acc-earn-preview">Invite friends · earn 25% cash back</div>
+          </div>
+          <span class="acc-cell-chevron">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account -->
+    <div class="acc-group">
+      <div class="acc-group-label">Settings</div>
+      <div class="acc-group-card">
+        <div class="acc-cell tappable" onclick="accShowView('acc-edit')">
+          <span class="acc-cell-icon">🔒</span>
+          <div class="acc-cell-body"><div class="acc-cell-label">Password</div></div>
+          <span class="acc-cell-chevron">›</span>
+        </div>
+        <div class="acc-cell tappable" onclick="accShowView('acc-edit')">
+          <span class="acc-cell-icon">✉️</span>
+          <div class="acc-cell-body">
+            <div class="acc-cell-label">Email address</div>
+            <div class="acc-cell-value" id="acc-email-preview">—</div>
+          </div>
+          <span class="acc-cell-chevron">›</span>
+        </div>
+        <div class="acc-cell tappable" onclick="stNotifications()">
+          <span class="acc-cell-icon">🔔</span>
+          <div class="acc-cell-body"><div class="acc-cell-label">Notifications</div></div>
+          <span class="acc-cell-chevron">›</span>
+        </div>
+        <div class="acc-cell tappable" onclick="stPrivacy()">
+          <span class="acc-cell-icon">🛡️</span>
+          <div class="acc-cell-body"><div class="acc-cell-label">Privacy & your data</div></div>
+          <span class="acc-cell-chevron">›</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sign out / delete -->
+    <div class="acc-group" style="margin-bottom:20px">
+      <div class="acc-group-card">
+        <div class="acc-cell tappable" onclick="doSignOut()">
+          <div class="acc-cell-body"><div class="acc-cell-label">Sign out</div></div>
+        </div>
+        <div class="acc-cell tappable danger" onclick="stDeleteAccount()">
+          <div class="acc-cell-body">
+            <div class="acc-cell-label">Delete account</div>
+            <div class="acc-cell-value">Permanent — cannot be undone</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /acc-main -->
+
+  <!-- ══ EDIT PROFILE ══ -->
+  <div class="acc-subview" id="acc-edit">
+    <div class="acc-sub-header">
+      <button class="acc-back-btn" onclick="accHideView('acc-edit')">‹ Settings</button>
+      <div class="acc-sub-title">Edit Profile</div>
+    </div>
+    <div class="acc-edit-field">
+      <div class="acc-edit-label">Display name</div>
+      <input class="acc-edit-input" id="ae-name" type="text" maxlength="40" autocomplete="name" placeholder="Your name">
+    </div>
+    <div class="acc-edit-field">
+      <div class="acc-edit-label">New password</div>
+      <input class="acc-edit-input" id="ae-pw" type="password" placeholder="Leave blank to keep current" autocomplete="new-password">
+    </div>
+    <div class="acc-edit-field" id="ae-confirm-group" style="display:none">
+      <div class="acc-edit-label">Confirm new password</div>
+      <input class="acc-edit-input" id="ae-pw-confirm" type="password" autocomplete="new-password">
+    </div>
+    <div class="acc-edit-field">
+      <div class="acc-edit-label">Email address</div>
+      <input class="acc-edit-input" id="ae-email" type="email" autocomplete="email">
+      <div class="acc-edit-hint">Changing your email sends a confirmation to the new address.</div>
+    </div>
+    <div id="ae-msg" style="padding:0 20px 4px;font-size:12.5px;color:#DC2626;display:none"></div>
+    <button class="acc-edit-save" onclick="accSaveProfile()">Save changes</button>
+  </div>
+
+  <!-- ══ CERTIFICATE NAME ══ -->
+  <div class="acc-subview" id="acc-cert">
+    <div class="acc-sub-header">
+      <button class="acc-back-btn" onclick="accHideView('acc-cert')">‹ Settings</button>
+      <div class="acc-sub-title">Certificate Name</div>
+    </div>
+    <div class="acc-edit-field">
+      <div class="acc-edit-label">Name on certificates</div>
+      <input class="acc-edit-input" id="acc-cert-input" type="text" maxlength="60" placeholder="Your full name" autocomplete="name">
+      <div class="acc-edit-hint">This is the name printed on your completion certificates for all FamilyForce playbooks.</div>
+    </div>
+    <button class="acc-edit-save" onclick="accSaveCertName()">Save</button>
+  </div>
+
+  <!-- ══ FAMILY CIRCLE ══ -->
+  <div class="acc-subview" id="acc-family">
+    <div class="acc-sub-header">
+      <button class="acc-back-btn" onclick="accHideView('acc-family')">‹ Settings</button>
+      <div class="acc-sub-title">Family Circle</div>
+    </div>
+    <div style="padding:16px">
+      <div class="acc-group-label" style="padding-top:0">Your invite code</div>
+      <div class="acc-group-card" style="margin-bottom:10px">
+        <div class="acc-cell">
+          <div class="acc-cell-body">
+            <div style="font-size:22px;font-weight:800;color:var(--text);letter-spacing:.05em" id="acc-family-code">FF-····</div>
+            <div class="acc-cell-value">Share with co-parents and caregivers</div>
+          </div>
+          <button class="acc-edit-save secondary" style="width:auto;margin:0;padding:9px 16px;font-size:13px" id="acc-family-copy-btn" onclick="accCopyFamilyCode()">Copy</button>
+        </div>
+      </div>
+      <div class="acc-group-label">Members</div>
+      <div class="acc-group-card" id="acc-family-members" style="margin-bottom:16px"><!-- filled by JS --></div>
+      <div class="acc-group-label">Join a family</div>
+      <div style="display:flex;gap:8px">
+        <input class="acc-edit-input" id="family-join-input" type="text" placeholder="Enter code — e.g. FF-A3K9" maxlength="7" oninput="this.value=this.value.toUpperCase()" style="flex:1">
+        <button class="earn-btn-primary" style="white-space:nowrap;flex:0;padding:11px 18px" onclick="joinFamily()">Join →</button>
+      </div>
+      <div id="family-join-msg" style="font-size:12.5px;color:#DC2626;margin-top:8px;display:none"></div>
+    </div>
+  </div>
+
+  <!-- ══ CHILDREN ══ -->
+  <div class="acc-subview" id="acc-children">
+    <div class="acc-sub-header">
+      <button class="acc-back-btn" onclick="accHideView('acc-children')">‹ Settings</button>
+      <div class="acc-sub-title">Children</div>
+    </div>
+    <div style="padding:16px">
+      <div class="acc-group-card" id="acc-children-list" style="margin-bottom:12px"><!-- filled by JS --></div>
+      <button class="acc-edit-save secondary" id="acc-add-child-btn" onclick="advShowOnboarding()">+ Add child</button>
+    </div>
+  </div>
+
+  <!-- ══ EARN ══ -->
+  <div class="acc-subview" id="acc-earn">
+    <div class="acc-sub-header">
+      <button class="acc-back-btn" onclick="accHideView('acc-earn')">‹ Settings</button>
+      <div class="acc-sub-title">Earn</div>
+    </div>
+
+    <!-- Code card -->
+    <div class="earn-code-card">
+      <div class="earn-code-label">Your referral code</div>
+      <div class="earn-code-value" id="earn-code">FF-····</div>
+      <div class="earn-code-sub">Friends get 25% off · You earn 25% cash back</div>
+      <div class="earn-code-btns">
+        <button class="earn-btn-primary"   id="earn-copy-code-btn" onclick="earnCopyCode()">Copy code</button>
+        <button class="earn-btn-secondary" id="earn-copy-link-btn" onclick="earnCopyLink()">Share link</button>
+      </div>
+    </div>
+
+    <!-- Earnings strip -->
+    <div class="earn-strip">
+      <div class="earn-strip-item">
+        <div class="earn-strip-label">Available</div>
+        <div class="earn-strip-value green" id="earn-available">$0</div>
+      </div>
+      <div class="earn-strip-item">
+        <div class="earn-strip-label">Pending</div>
+        <div class="earn-strip-value" id="earn-pending">$0</div>
+      </div>
+      <div class="earn-strip-item">
+        <div class="earn-strip-label">All time</div>
+        <div class="earn-strip-value" id="earn-total">$0</div>
+      </div>
+    </div>
+    <div style="padding:8px 20px 4px;font-size:12px;color:var(--text-dim)">
+      Next payout <strong style="color:var(--text)">April 15, 2026</strong> · Stripe
+    </div>
+
+    <!-- Activity feed -->
+    <div class="acc-group">
+      <div class="acc-group-label">Activity</div>
+      <div class="acc-group-card" id="earn-feed"><!-- filled by JS --></div>
+    </div>
+
+    <!-- How it works -->
+    <div class="acc-group" style="margin-bottom:20px">
+      <div class="acc-group-label">How it works</div>
+      <div class="acc-group-card">
+        <div class="acc-cell"><span class="acc-cell-icon">🔗</span><div class="acc-cell-body"><div class="acc-cell-label">Share your link</div><div class="acc-cell-value">Send your code to anyone who could use the Advisor</div></div></div>
+        <div class="acc-cell"><span class="acc-cell-icon">💳</span><div class="acc-cell-body"><div class="acc-cell-label">Friend subscribes</div><div class="acc-cell-value">They get 25% off — applied automatically at checkout</div></div></div>
+        <div class="acc-cell"><span class="acc-cell-icon">💸</span><div class="acc-cell-body"><div class="acc-cell-label">You get paid</div><div class="acc-cell-value">Cash back clears after 30 days and pays out on the 15th</div></div></div>
+      </div>
+    </div>
+
+  </div><!-- /acc-earn -->
+
+</div><!-- /acc-wrap -->
+</div><!-- /tab-settings -->
+
+<!-- ── Toast ── -->
+<div class="st-toast" id="st-toast"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     REFERRALS TAB
+     ══════════════════════════════════════════════════════════ -->
+<div id="tab-referrals" style="display:none">
+  <div class="st-wrap">
+    <div class="st-page-title">Referral Program</div>
+    <div class="st-page-sub">Earn 25% cash back for every friend who subscribes.</div>
+
+    <!-- Stat grid -->
+    <div class="st-section-label" style="margin-top:4px">Your earnings</div>
+    <div class="st-stat-grid">
+      <div class="st-stat-card">
+        <div class="st-stat-label">Total Earned</div>
+        <div class="st-stat-value purple" id="rf-total">$0.00</div>
+        <div class="st-stat-sub">All time</div>
+      </div>
+      <div class="st-stat-card">
+        <div class="st-stat-label">Pending Clearance</div>
+        <div class="st-stat-value amber" id="rf-pending">$0.00</div>
+        <div class="st-stat-sub">After 30-day return window</div>
+      </div>
+      <div class="st-stat-card">
+        <div class="st-stat-label">Available Balance</div>
+        <div class="st-stat-value green" id="rf-available">$0.00</div>
+        <div class="st-stat-sub">Ready for payout</div>
+      </div>
+      <div class="st-stat-card">
+        <div class="st-stat-label">Next Payout</div>
+        <div class="st-stat-value" style="font-size:15px;margin-top:2px" id="rf-next-date">Apr 15, 2026</div>
+        <div class="st-stat-sub">Auto-payout on the 15th</div>
+      </div>
+    </div>
+
+    <!-- Next payout strip -->
+    <div class="st-next-payout" id="rf-next-strip">
+      <div>
+        <div class="st-np-label">Scheduled payout</div>
+        <div class="st-np-date" id="rf-np-detail">—</div>
+      </div>
+      <div class="st-np-badge" id="rf-np-countdown">—</div>
+    </div>
+
+    <!-- Referral code -->
+    <div class="st-section-label">Your referral code</div>
+    <div class="st-code-card">
+      <div style="flex:1">
+        <div class="st-code-label">Referral code</div>
+        <div class="st-code-value" id="rf-code">FF-····</div>
+        <div class="st-code-sub">Friends get 25% off · You get 25% cash back</div>
+      </div>
+      <div class="st-code-actions">
+        <button class="st-text-btn primary" id="rf-copy-code-btn" onclick="rfCopyCode()">Copy code</button>
+        <button class="st-text-btn"         id="rf-copy-link-btn" onclick="rfCopyLink()">🔗 Copy link</button>
+      </div>
+    </div>
+
+    <!-- Payout method -->
+    <div class="st-section-label">Payout method</div>
+    <div class="st-payout-method">
+      <div style="font-size:22px">💳</div>
+      <div style="flex:1">
+        <div class="st-pm-label">Stripe</div>
+        <div class="st-pm-value" id="rf-payout-email">jack@getfamilyforce.com</div>
+        <div class="st-pm-sub">Payouts on the 15th of each month</div>
+      </div>
+      <button class="st-text-btn" onclick="stToast('Payout method — coming soon.')">Change</button>
+    </div>
+
+    <!-- Recent Referrals -->
+    <div class="st-section-label">Activity</div>
+    <div class="st-collapsible">
+      <div class="st-col-header" onclick="stToggleCollapsible('rf-referrals-body', this)">
+        <div class="st-col-title">Recent Referrals <span class="st-col-badge" id="rf-referrals-badge">0</span></div>
+        <span class="st-col-arrow" style="transform:rotate(90deg)">▶</span>
+      </div>
+      <div class="st-col-body open" id="rf-referrals-body">
+        <table class="st-table">
+          <thead><tr>
+            <th>Friend</th><th>Plan</th><th>Date</th><th>Status</th><th style="text-align:right">Earned</th>
+          </tr></thead>
+          <tbody id="rf-referrals-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Payout History -->
+    <div class="st-collapsible">
+      <div class="st-col-header" onclick="stToggleCollapsible('rf-payouts-body', this)">
+        <div class="st-col-title">Payout History <span class="st-col-badge" id="rf-payouts-badge">0</span></div>
+        <span class="st-col-arrow" style="transform:rotate(90deg)">▶</span>
+      </div>
+      <div class="st-col-body open" id="rf-payouts-body">
+        <table class="st-table">
+          <thead><tr>
+            <th>Date</th><th>Method</th><th>Status</th><th style="text-align:right">Amount</th>
+          </tr></thead>
+          <tbody id="rf-payouts-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <div class="st-collapsible">
+      <div class="st-col-header" onclick="stToggleCollapsible('rf-howit-body', this)">
+        <div class="st-col-title">How it works</div>
+        <span class="st-col-arrow">▶</span>
+      </div>
+      <div class="st-col-body" id="rf-howit-body">
+        <div class="st-step"><div class="st-step-icon">🔗</div><div><div class="st-step-title">Share your link</div><div class="st-step-body">Send your referral code or link to a friend who could use the Development Advisor.</div></div></div>
+        <div class="st-step"><div class="st-step-icon">💳</div><div><div class="st-step-title">Friend subscribes</div><div class="st-step-body">They get 25% off their first year. The discount applies automatically at checkout.</div></div></div>
+        <div class="st-step"><div class="st-step-icon">💸</div><div><div class="st-step-title">You get paid</div><div class="st-step-body">After their 30-day return window clears, your cash back moves to Available Balance and pays out on the 15th of each month.</div></div></div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /tab-referrals -->
+
+<!-- ── Edit Child Modal ── -->
+<div class="adv-modal-overlay" id="adv-edit-child-modal" style="display:none" onclick="if(event.target===this)advHideEditChild()">
+  <div class="adv-modal-sheet" role="dialog" aria-label="Edit child">
+    <div class="adv-modal-handle"></div>
+    <div class="adv-modal-close-bar"><button class="adv-modal-close" onclick="advHideEditChild()">✕</button></div>
+    <div class="adv-modal-scroll">
+      <div class="adv-ob-header">
+        <div class="adv-ob-h1">Edit child</div>
+      </div>
+      <div class="adv-ob-body">
+
+        <!-- Emoji picker -->
+        <label class="adv-ob-label">Emoji</label>
+        <div class="adv-emoji-grid" id="adv-edit-emoji-grid"></div>
+
+        <!-- Name -->
+        <label class="adv-ob-label" for="adv-edit-name">Name</label>
+        <input class="adv-ob-input" id="adv-edit-name" type="text" maxlength="40" autocomplete="off" placeholder="Child's name">
+
+        <!-- Date of birth -->
+        <label class="adv-ob-label" for="adv-edit-dob">Date of birth</label>
+        <input class="adv-ob-input" id="adv-edit-dob" type="date">
+
+        <!-- Gender -->
+        <label class="adv-ob-label">Gender <span style="font-weight:400;color:var(--text-dim)">(optional)</span></label>
+        <div style="display:flex;gap:10px;margin-bottom:18px">
+          <button class="adv-gender-btn" id="adv-edit-gender-boy"  onclick="advEditSelectGender('boy')" >👦 Boy</button>
+          <button class="adv-gender-btn" id="adv-edit-gender-girl" onclick="advEditSelectGender('girl')">👧 Girl</button>
+          <button class="adv-gender-btn" id="adv-edit-gender-none" onclick="advEditSelectGender(null)">Skip</button>
+        </div>
+
+        <div id="adv-edit-err" style="font-size:12px;color:#e53935;margin-bottom:10px;display:none"></div>
+        <button class="adv-ob-next" onclick="advSaveEditChild()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Mark Complete Modal ── -->
+<div class="adv-modal-overlay" id="adv-complete-modal" style="display:none" onclick="if(event.target===this)advHideCompleteModal()">
+  <div class="adv-modal-sheet" role="dialog" aria-label="Mark milestone complete">
+    <div class="adv-modal-handle"></div>
+    <div class="adv-modal-close-bar"><button class="adv-modal-close" onclick="advHideCompleteModal()">✕</button></div>
+    <div class="adv-modal-scroll">
+      <div class="adv-ob-header">
+        <div class="adv-ob-h1">Mark as done ✓</div>
+        <div class="adv-ob-sub" id="adv-complete-milestone-name"></div>
+      </div>
+      <div class="adv-ob-body">
+        <label class="adv-ob-label" for="adv-complete-by">Who completed this?</label>
+        <select class="adv-ob-input" id="adv-complete-by" style="cursor:pointer"></select>
+        <label class="adv-ob-label" for="adv-complete-date">When?</label>
+        <input class="adv-ob-input" id="adv-complete-date" type="date">
+        <div style="font-size:11.5px;color:var(--text-dim);margin-top:-8px;margin-bottom:14px">You can enter a past date if you're catching up.</div>
+        <div style="font-size:11.5px;color:var(--text-dim);margin-top:-4px;margin-bottom:14px">To add family members, visit your <strong>Family</strong> tab on the dashboard.</div>
+        <div id="adv-complete-err" style="font-size:12px;color:#e53935;margin-bottom:10px;display:none"></div>
+        <button class="adv-mark-done-btn" style="margin-top:0" onclick="advConfirmComplete()">Confirm ✓</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </main><!-- /main-content -->
+
+<!-- ══════════════════════════════════════════════════════════
+     BOTTOM NAVIGATION
+     ══════════════════════════════════════════════════════════ -->
+<nav class="bottom-nav" aria-label="Main navigation">
+
+  <button class="bnav-btn active" id="bnav-library" onclick="switchTab('progress')" aria-label="Library">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
+    </svg>
+    <span class="bnav-label">Library</span>
+  </button>
+
+  <button class="bnav-btn" id="bnav-advisor" onclick="switchTab('advisor')" aria-label="Advisor">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 22V12"/><path d="M12 12C12 7 7 4 3 5c0 5 3 9 9 7"/><path d="M12 12c0-5 5-8 9-7-1 5-4 9-9 7"/>
+    </svg>
+    <span class="bnav-label">Advisor</span>
+  </button>
+
+  <button class="bnav-btn" id="bnav-account" onclick="switchTab('settings')" aria-label="Settings">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
+    </svg>
+    <span class="bnav-label">Settings</span>
+  </button>
+
+</nav>
 
 <!-- ─── BADGE MODAL ─── -->
 <div class="badge-modal-overlay" id="badge-modal-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="badge-modal-title">
@@ -4354,8 +5208,8 @@ async function saveFamilyName(e) {
 
 /* Wire up Enter key on join input */
 document.addEventListener('DOMContentLoaded', () => {
-  const joinInput = document.getElementById('family-join-input');
-  if (joinInput) joinInput.addEventListener('keydown', e => { if (e.key === 'Enter') joinFamily(); });
+  // Library is the default tab — already visible, no init needed
+  // family-join-input now lives in acc-family sub-view, bound on open
 });
 
 /* ─── bfcache fix ───────────────────────────────────────────
@@ -4376,12 +5230,17 @@ window.addEventListener('pageshow', function (event) {
    TAB SWITCHING
    ═══════════════════════════════════════════════════════════ */
 function switchTab(tab) {
-  const isAdvisor = tab === 'advisor';
-  document.getElementById('tab-progress').style.display = isAdvisor ? 'none' : 'block';
-  document.getElementById('tab-advisor').style.display  = isAdvisor ? 'block' : 'none';
-  document.getElementById('tab-btn-progress').classList.toggle('active', !isAdvisor);
-  document.getElementById('tab-btn-advisor').classList.toggle('active',  isAdvisor);
-  if (isAdvisor) advisorInit();
+  // Map tab names to div IDs
+  const TAB_DIVS = { progress: 'tab-progress', advisor: 'tab-advisor', settings: 'tab-settings' };
+  const NAV_IDS  = { progress: 'bnav-library',  advisor: 'bnav-advisor', settings: 'bnav-account' };
+  Object.keys(TAB_DIVS).forEach(t => {
+    document.getElementById(TAB_DIVS[t]).style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
+  const navBtn = document.getElementById(NAV_IDS[tab]);
+  if (navBtn) navBtn.classList.add('active');
+  if (tab === 'advisor')  advisorInit();
+  if (tab === 'settings') settingsInit();
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -4389,10 +5248,12 @@ function switchTab(tab) {
    ═══════════════════════════════════════════════════════════ */
 
 /* ─── State ─── */
-let _advActiveChildId = null;
+let _advActiveChildId     = null;
+let _advNewMilestoneCount = 0; // set in advisorInit, consumed + cleared in advisorRefreshDigest
 let _advPlanSelected  = 'annual';  // 'monthly' | 'annual'
 let _advObEmoji       = '👶';
 let _advObBornStatus  = 'born';    // 'born' | 'expecting'
+let _advObGender      = null;      // 'boy' | 'girl' | null
 let _advShareData     = null;
 
 const ADV_PLAN_KEY    = 'ff_advisor_plan';   // 'none' | 'monthly' | 'annual' | 'gift'
@@ -4420,6 +5281,11 @@ function getAdvisorReferralCode() {
 function advisorInit() {
   // Set refresh hook for dismiss/skip
   window.ffRefreshAdvisor = advisorRefreshDigest;
+
+  // Load milestones from Supabase (async — falls back to built-in data silently)
+  // Fire-and-forget: digest renders immediately with fallback, then re-renders if
+  // Supabase returns fresher data. Cache TTL = 1 hour.
+  window.ffAdvisor.loadMilestonesFromSupabase();
 
   if (!isAdvisorUnlocked()) {
     document.getElementById('adv-locked').style.display = 'block';
@@ -4470,7 +5336,15 @@ function advisorInit() {
     familyRow.style.display = 'none';
   }
 
-  // Render digest
+  // Compute "new since last visit" count BEFORE saving the new lastVisit timestamp
+  const activeChild = children.find(c => c.id === _advActiveChildId);
+  if (activeChild) {
+    const lastVisit = window.ffAdvisor.loadLastVisit(activeChild.id);
+    _advNewMilestoneCount = window.ffAdvisor.countNewSinceLastVisit(activeChild, lastVisit);
+    window.ffAdvisor.saveLastVisit(activeChild.id, window.ffAdvisor.getAgeWeeks(activeChild.dob));
+  }
+
+  // Render digest (passes newCount, then clears it so re-renders don't re-show the banner)
   advisorRefreshDigest();
 }
 
@@ -4485,18 +5359,18 @@ function _advGetCircleMembers() {
 function advisorRefreshDigest() {
   const children = window.ffAdvisor.loadChildren();
   const child = children.find(c => c.id === _advActiveChildId);
-  if (!child) return;
-  document.getElementById('adv-digest').innerHTML = window.ffAdvisor.renderDigest(child);
-  // Wire up to-do persistence
-  document.querySelectorAll('.adv-todo-check').forEach(cb => {
-    const milestoneCard = cb.closest('[data-milestone-id]');
-    const key = milestoneCard ? 'adv_todo_' + (milestoneCard.dataset.milestoneId || '') + '_' + cb.dataset.idx : null;
-    if (key) {
-      cb.checked = localStorage.getItem(key) === '1';
-      cb.addEventListener('change', () => localStorage.setItem(key, cb.checked ? '1' : '0'));
-    }
-  });
-  // Sync todo state across Family Circle (fire-and-forget)
+  if (!child) {
+    console.warn('[Advisor] advisorRefreshDigest: no child found for _advActiveChildId=', _advActiveChildId, '| children=', children);
+    return;
+  }
+  try {
+    const newCount = _advNewMilestoneCount;
+    _advNewMilestoneCount = 0; // clear after first render so re-renders don't re-show
+    document.getElementById('adv-digest').innerHTML = window.ffAdvisor.renderDigest(child, newCount);
+  } catch(e) {
+    console.error('[Advisor] renderDigest threw:', e);
+    document.getElementById('adv-digest').innerHTML = `<div style="padding:16px;color:#e53935;font-size:13px">⚠️ Error rendering digest: ${e.message}</div>`;
+  }
   _advSyncTodos();
 }
 
@@ -4621,9 +5495,12 @@ function advShowOnboarding() {
   document.getElementById('adv-ob-dob').value = '';
   _advObEmoji = '👶';
   _advObBornStatus = 'born';
+  _advObGender = null;
   document.querySelectorAll('.adv-emoji-opt').forEach(b => b.classList.remove('on'));
   document.getElementById('adv-born-btn').classList.add('on');
   document.getElementById('adv-expecting-btn').classList.remove('on');
+  document.getElementById('adv-gender-boy').classList.remove('on');
+  document.getElementById('adv-gender-girl').classList.remove('on');
   document.getElementById('adv-ob-err-1').style.display = 'none';
   document.getElementById('adv-ob-err-2').style.display = 'none';
   // Show step 1
@@ -4652,13 +5529,17 @@ function advSetBornStatus(status) {
   if (status === 'born') { dob.max = new Date().toISOString().split('T')[0]; dob.removeAttribute('min'); }
   else { dob.removeAttribute('max'); dob.min = new Date().toISOString().split('T')[0]; }
 }
+function advSelectGender(gender) {
+  _advObGender = gender;
+  document.getElementById('adv-gender-boy').classList.toggle('on',  gender === 'boy');
+  document.getElementById('adv-gender-girl').classList.toggle('on', gender === 'girl');
+}
 function advObStep1Next() {
   const name = document.getElementById('adv-ob-name').value.trim();
   const err  = document.getElementById('adv-ob-err-1');
   if (!name) { err.textContent = 'Please enter the child\'s name.'; err.style.display = 'block'; return; }
+  if (!_advObGender) { err.textContent = 'Please select boy or girl.'; err.style.display = 'block'; return; }
   err.style.display = 'none';
-  // Update step 2 heading with name + emoji
-  const display = _advObEmoji !== '👶' ? name + ' ' + _advObEmoji : name;
   document.getElementById('adv-ob-step2-title').textContent = 'When was ' + name + ' born?';
   document.getElementById('adv-ob-step-1').style.display = 'none';
   document.getElementById('adv-ob-step-2').style.display = 'block';
@@ -4688,14 +5569,18 @@ function advObStep2Next() {
     </div>`).join('');
   const total = window.ffAdvisor.getMilestonesForChild(tmpChild).length;
   document.getElementById('adv-ob-peek-more').textContent = total > 5 ? `+ ${total - 5} more milestones for their age range` : '';
+  // Set gender-correct preview label
+  const possessive = _advObGender === 'boy' ? 'HIS' : _advObGender === 'girl' ? 'HER' : 'THEIR';
+  document.getElementById('adv-ob-peek-label').textContent = `A PREVIEW OF ${possessive} CURRENT MILESTONES`;
   document.getElementById('adv-ob-step-2').style.display = 'none';
   document.getElementById('adv-ob-step-3').style.display = 'block';
 }
 function advObFinish() {
-  const name  = document.getElementById('adv-ob-name').value.trim();
-  const dob   = document.getElementById('adv-ob-dob').value;
-  const emoji = _advObEmoji;
-  const result = window.ffAdvisor.addChild(name, dob, emoji);
+  const name   = document.getElementById('adv-ob-name').value.trim();
+  const dob    = document.getElementById('adv-ob-dob').value;
+  const emoji  = _advObEmoji;
+  const gender = _advObGender;
+  const result = window.ffAdvisor.addChild(name, dob, emoji, gender);
   if (result.error) { alert(result.error); return; }
   _advActiveChildId = result.child.id;
   advHideOnboarding();
@@ -4704,6 +5589,772 @@ function advObFinish() {
 }
 
 function _e(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ══════════════════════════════════════════════════════════
+   SETTINGS TAB
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Demo referral data (replace with Supabase query when backend is ready) ── */
+const ST_REFERRALS = [
+  { name:'Alex M.',   plan:'Annual',  price:79.99, date:'Feb 28, 2026', status:'cleared',    earned:20.00 },
+  { name:'Sam T.',    plan:'Monthly', price:9.99,  date:'Mar 3, 2026',  status:'pending',    earned:2.50  },
+  { name:'Priya K.',  plan:'Monthly', price:9.99,  date:'Mar 10, 2026', status:'pending',    earned:2.50  },
+  { name:'Jordan L.', plan:'Annual',  price:79.99, date:'Jan 15, 2026', status:'paid',       earned:20.00 },
+  { name:'Casey R.',  plan:'Monthly', price:9.99,  date:'Jan 22, 2026', status:'paid',       earned:2.50  },
+  { name:'Morgan W.', plan:'Monthly', price:9.99,  date:'Dec 5, 2025',  status:'expired',    earned:0.00  },
+];
+const ST_PAYOUTS = [
+  { date:'Mar 15, 2026', amount:22.50, method:'Stripe', status:'processing' },
+  { date:'Feb 15, 2026', amount:45.00, method:'Stripe', status:'completed'  },
+  { date:'Jan 15, 2026', amount:62.50, method:'Stripe', status:'completed'  },
+];
+const ST_STATUS_LABELS = {
+  cleared:'Cleared', pending:'Pending', paid:'Paid Out',
+  expired:'Expired', processing:'Processing', completed:'Completed',
+};
+
+/* ══════════════════════════════════════════════════════════
+   ACCOUNT TAB v2
+   ══════════════════════════════════════════════════════════ */
+
+function settingsInit() { accRenderMain(); }
+
+function accRenderMain() {
+  const name  = localStorage.getItem('ff_user_name')  || 'FamilyForce Parent';
+  const email = localStorage.getItem('ff_user_email') || '';
+  const initials = name.trim().split(/\s+/).map(w=>w[0]).join('').toUpperCase().slice(0,2) || 'FF';
+  document.getElementById('acc-avatar').textContent      = initials;
+  document.getElementById('acc-name').textContent        = name;
+  document.getElementById('acc-email-display').textContent = email || 'No email on file';
+  document.getElementById('acc-email-preview').textContent = email || '—';
+  document.getElementById('acc-cert-preview').textContent  = name || 'Not set';
+  // Children preview
+  const children = window.ffAdvisor ? window.ffAdvisor.loadChildren() : [];
+  document.getElementById('acc-children-preview').textContent =
+    children.length === 0 ? 'No children added yet' :
+    children.length === 1 ? children[0].name :
+    children.map(c=>c.name).join(', ');
+  // Family preview
+  try {
+    const members = JSON.parse(localStorage.getItem('ff_family_members')||'[]');
+    document.getElementById('acc-family-preview').textContent =
+      members.length <= 1 ? 'Share access with co-parents' : members.length + ' members';
+  } catch(_) {}
+  // Earn preview
+  const total = ST_REFERRALS.reduce((s,r) => s + (r.status!=='expired' ? r.earned : 0), 0);
+  document.getElementById('acc-earn-preview').textContent =
+    total > 0 ? '$' + total.toFixed(2) + ' earned · invite more friends' : 'Invite friends · earn 25% cash back';
+  accRenderSubscription();
+}
+
+function accRenderSubscription() {
+  const plan = localStorage.getItem('ff_advisor_plan') || 'none';
+  const el   = document.getElementById('acc-sub-hero-wrap');
+  const PLANS = {
+    annual:  { badge:'Annual Plan',  price:'$79.99 / year', detail:'Saves $39.89 vs monthly · Renews March 1, 2027' },
+    monthly: { badge:'Monthly Plan', price:'$9.99 / month', detail:'Cancel anytime · Next billing: April 1, 2026' },
+    gift:    { badge:'Gift Access',  price:'Gifted',        detail:'Valid until redemption period ends' },
+  };
+  const p = PLANS[plan];
+  if (!p) {
+    el.innerHTML = `<div class="acc-sub-free">
+      <div class="acc-sub-free-title">Unlock the Advisor</div>
+      <div class="acc-sub-free-sub">Week-by-week milestones and expert-backed guidance for your child's first 8 years.</div>
+      <button class="earn-btn-primary" style="width:100%;padding:13px;font-size:14px" onclick="switchTab('advisor');advShowUpsell()">Try Free for 7 Days →</button>
+    </div>`;
+    return;
+  }
+  el.innerHTML = `<div class="acc-sub-hero">
+    <div class="acc-sub-badge">${p.badge}</div>
+    <div class="acc-sub-name">Paid Plan: Development Advisor</div>
+    <div class="acc-sub-detail">${p.price} · ${p.detail}</div>
+    <div class="acc-sub-actions">
+      <button class="acc-sub-btn manage">Manage</button>
+      <button class="acc-sub-btn cancel" onclick="stCancelSubscription()">Cancel</button>
+    </div>
+  </div>`;
+}
+
+/* Sub-view navigation */
+function accShowView(viewId) {
+  document.querySelectorAll('#tab-settings .acc-subview').forEach(el => el.classList.remove('active'));
+  document.getElementById(viewId).classList.add('active');
+  if (viewId === 'acc-earn')     accInitEarn();
+  if (viewId === 'acc-cert')     { document.getElementById('acc-cert-input').value = localStorage.getItem('ff_user_name') || ''; }
+  if (viewId === 'acc-family')   accInitFamily();
+  if (viewId === 'acc-children') accInitChildren();
+  if (viewId === 'acc-edit')     accInitEdit();
+}
+function accHideView(viewId) {
+  document.getElementById(viewId).classList.remove('active');
+  document.getElementById('acc-main').classList.add('active');
+  accRenderMain();
+}
+
+/* Edit profile */
+function accInitEdit() {
+  document.getElementById('ae-name').value  = localStorage.getItem('ff_user_name') || '';
+  document.getElementById('ae-email').value = localStorage.getItem('ff_user_email') || '';
+  document.getElementById('ae-pw').value    = '';
+  document.getElementById('ae-pw-confirm').value = '';
+  document.getElementById('ae-msg').style.display = 'none';
+  document.getElementById('ae-confirm-group').style.display = 'none';
+  document.getElementById('ae-pw').oninput = function() {
+    document.getElementById('ae-confirm-group').style.display = this.value ? 'block' : 'none';
+  };
+}
+function accSaveProfile() {
+  const name  = document.getElementById('ae-name').value.trim();
+  const email = document.getElementById('ae-email').value.trim();
+  const pw    = document.getElementById('ae-pw').value;
+  const pw2   = document.getElementById('ae-pw-confirm').value;
+  const msg   = document.getElementById('ae-msg');
+  msg.style.display = 'none';
+  if (name) {
+    localStorage.setItem('ff_user_name', name);
+    window.ffSync?.getUserId && window.ffSync.getUserId().then(uid => { if(uid) window.ffSync.saveProfile(uid, {name}); });
+  }
+  const currentEmail = localStorage.getItem('ff_user_email') || '';
+  if (email && email !== currentEmail && window._supabaseClient) {
+    window._supabaseClient.auth.updateUser({ email }).then(res => {
+      if (!res.error) { localStorage.setItem('ff_user_email', email); stToast('Confirmation sent to ' + email); }
+      else { stToast(res.error.message || 'Email update failed'); }
+    });
+  }
+  if (pw) {
+    if (pw.length < 8) { msg.textContent = 'Password must be at least 8 characters.'; msg.style.display='block'; return; }
+    if (pw !== pw2)    { msg.textContent = "Passwords don't match."; msg.style.display='block'; return; }
+    if (window._supabaseClient) {
+      window._supabaseClient.auth.updateUser({ password: pw }).then(res => {
+        if (res.error) { msg.textContent = res.error.message || 'Password update failed'; msg.style.display='block'; return; }
+        stToast('Profile updated ✓');
+        accHideView('acc-edit');
+      });
+      return;
+    }
+  }
+  stToast('Profile updated ✓');
+  accHideView('acc-edit');
+}
+
+/* Certificate name */
+function accSaveCertName() {
+  const val = document.getElementById('acc-cert-input').value.trim();
+  if (!val) return;
+  localStorage.setItem('ff_user_name', val);
+  window.ffSync?.getUserId && window.ffSync.getUserId().then(uid => { if(uid) window.ffSync.saveProfile(uid, {name:val}); });
+  stToast('Certificate name updated ✓');
+  accHideView('acc-cert');
+}
+
+/* Family Circle */
+function accInitFamily() {
+  const code = localStorage.getItem('ff_family_code') || '';
+  document.getElementById('acc-family-code').textContent = code || 'FF-····';
+  const members = [];
+  try { JSON.parse(localStorage.getItem('ff_family_members')||'[]').forEach(m=>members.push(m)); } catch(_) {}
+  const myId  = localStorage.getItem('ff_user_id') || '';
+  const listEl = document.getElementById('acc-family-members');
+  if (members.length === 0) {
+    listEl.innerHTML = '<div class="acc-cell"><div class="acc-cell-body"><div class="acc-cell-value">No members yet. Share your invite code.</div></div></div>';
+    return;
+  }
+  listEl.innerHTML = members.map(m => {
+    const init = (m.name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const isMe = m.userId === myId;
+    return `<div class="acc-cell">
+      <div class="acc-cell-icon" style="width:34px;height:34px;border-radius:50%;background:var(--elevated);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-mid)">${init}</div>
+      <div class="acc-cell-body">
+        <div class="acc-cell-label">${_e(m.name||'Family member')}${isMe?' <span style="color:var(--text-dim);font-weight:400">(You)</span>':''}</div>
+        <div class="acc-cell-value">${m.role||'Member'}</div>
+      </div>
+      ${!isMe?`<button class="st-text-btn danger" style="font-size:11px;padding:4px 10px;flex-shrink:0" onclick="accRemoveMember('${m.userId}','${(m.name||'').replace(/'/g,"\\'")}')">Remove</button>`:''}
+    </div>`;
+  }).join('');
+}
+function accCopyFamilyCode() {
+  const code = document.getElementById('acc-family-code').textContent;
+  navigator.clipboard?.writeText(code).catch(()=>{});
+  const btn = document.getElementById('acc-family-copy-btn');
+  const prev = btn.textContent; btn.textContent = 'Copied ✓'; btn.style.color = '#38A169';
+  setTimeout(() => { btn.textContent = prev; btn.style.color = ''; }, 2000);
+  stToast('Invite code copied!');
+}
+function accRemoveMember(userId, name) {
+  if (!confirm('Remove ' + name + ' from your family?')) return;
+  window.ffSync?.removeFamilyMember && window.ffSync.removeFamilyMember(userId).then(() => {
+    accInitFamily(); stToast(name + ' removed.');
+  });
+}
+
+/* Children */
+function accInitChildren() {
+  const children = window.ffAdvisor ? window.ffAdvisor.loadChildren() : [];
+  const listEl   = document.getElementById('acc-children-list');
+  const addBtn   = document.getElementById('acc-add-child-btn');
+  addBtn.style.display = children.length < 3 ? 'block' : 'none';
+  if (children.length === 0) {
+    listEl.innerHTML = '<div class="acc-cell"><div class="acc-cell-body"><div class="acc-cell-value">No children added yet. Add one to unlock the Advisor.</div></div></div>';
+    return;
+  }
+  listEl.innerHTML = children.map(c => `
+    <div class="acc-cell">
+      <span class="acc-cell-icon">${c.emoji||'👶'}</span>
+      <div class="acc-cell-body">
+        <div class="acc-cell-label">${_e(c.name)}</div>
+        <div class="acc-cell-value">${window.ffAdvisor.formatAge(c.dob)}${c.gender?' · '+(c.gender==='boy'?'Boy':'Girl'):''}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="st-text-btn" style="font-size:11px;padding:4px 10px" onclick="advShowEditChild('${c.id}')">Edit</button>
+        <button class="st-text-btn danger" style="font-size:11px;padding:4px 10px" onclick="accRemoveChild('${c.id}','${c.name.replace(/'/g,"\\'")}')">Remove</button>
+      </div>
+    </div>`).join('');
+}
+function accRemoveChild(id, name) {
+  if (!confirm('Remove ' + name + '?')) return;
+  window.ffAdvisor.removeChild(id);
+  accInitChildren(); stToast(name + ' removed.');
+}
+
+/* Earn */
+function accInitEarn() {
+  const fmt  = n => '$' + n.toFixed(2);
+  const code = localStorage.getItem('ff_advisor_referral') || getAdvisorReferralCode();
+  document.getElementById('earn-code').textContent = code;
+  const total     = ST_REFERRALS.reduce((s,r) => s + (r.status!=='expired'?r.earned:0), 0);
+  const pending   = ST_REFERRALS.filter(r=>r.status==='pending').reduce((s,r)=>s+r.earned,0);
+  const available = ST_REFERRALS.filter(r=>r.status==='cleared').reduce((s,r)=>s+r.earned,0);
+  document.getElementById('earn-total').textContent     = fmt(total);
+  document.getElementById('earn-pending').textContent   = fmt(pending);
+  document.getElementById('earn-available').textContent = fmt(available);
+  const STATUS_COLOR = { cleared:'#38A169', pending:'#D97706', paid:'#2563EB', expired:'var(--text-dim)' };
+  document.getElementById('earn-feed').innerHTML = ST_REFERRALS.map(r => {
+    const init = r.name.split(' ').map(w=>w[0]).join('').toUpperCase();
+    return `<div class="earn-feed-row">
+      <div class="earn-feed-avatar">${init}</div>
+      <div style="flex:1;min-width:0">
+        <div class="earn-feed-name">${_e(r.name)}</div>
+        <div class="earn-feed-meta">${r.plan} · ${r.date}</div>
+      </div>
+      <div class="earn-feed-right">
+        <div class="earn-feed-earned" style="color:${r.earned>0?'#38A169':'var(--text-dim)'}">${r.earned>0?'+'+fmt(r.earned):'—'}</div>
+        <div class="earn-feed-status" style="color:${STATUS_COLOR[r.status]||'var(--text-dim)'}">${ST_STATUS_LABELS[r.status]||r.status}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function earnCopyCode() {
+  const code = document.getElementById('earn-code').textContent;
+  navigator.clipboard?.writeText(code).catch(()=>{});
+  const btn = document.getElementById('earn-copy-code-btn');
+  btn.textContent = 'Copied ✓'; setTimeout(()=>{ btn.textContent='Copy code'; }, 2000);
+  stToast('Referral code copied!');
+}
+function earnCopyLink() {
+  const code = document.getElementById('earn-code').textContent;
+  navigator.clipboard?.writeText('https://getfamilyforce.com?ref='+code).catch(()=>{});
+  const btn = document.getElementById('earn-copy-link-btn');
+  btn.textContent = 'Copied ✓'; setTimeout(()=>{ btn.textContent='Share link'; }, 2000);
+  stToast('Referral link copied!');
+}
+
+/* Kept for backwards compat / other callers */
+function stCancelSubscription() {
+  if (confirm('Are you sure? You\'ll keep access until the end of your billing period.')) {
+    stToast('Cancellation request sent. Stripe will confirm via email.');
+  }
+}
+function stNotifications() { stToast('Notification preferences — coming soon.'); }
+function stPrivacy()        { stToast('Privacy & data — coming soon.'); }
+function stDeleteAccount() {
+  if (confirm('Delete your account? This permanently removes all your data and cannot be undone.')) {
+    if (confirm('Are you absolutely sure?')) {
+      stToast('Account deletion requested. You\'ll receive a confirmation email.');
+    }
+  }
+}
+
+/* ── Toast ── */
+let _stToastTimer = null;
+function stToast(msg) {
+  const el = document.getElementById('st-toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(_stToastTimer);
+  _stToastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+/* Legacy stubs (kept so old refs don't throw) */
+function _stRenderAccount() { accRenderMain(); }
+function _stRenderSubscription() {}
+function _stRenderFamilyCircle() {}
+function _stRenderChildren() {}
+function _stRenderReferral() {}
+function referralsInit() {}
+function rfCopyCode() {}
+function rfCopyLink() {}
+function stRemoveMember(userId, name) { accRemoveMember(userId, name); }
+function stRemoveChild(id, name) { accRemoveChild(id, name); }
+function stToggleCollapsible() {}
+
+/* ─── Edit Child Modal ─── */
+/* placeholder removed — see below */
+function _unused_placeholder() {
+  const name  = localStorage.getItem('ff_user_name')  || 'FamilyForce Parent';
+  const email = localStorage.getItem('ff_user_email') || '';
+  const initials = name.trim().split(/\s+/).map(w => w[0]).join('').toUpperCase().slice(0, 2) || 'FF';
+  document.getElementById('st-avatar').textContent        = initials;
+  document.getElementById('st-display-name').textContent  = name;
+  document.getElementById('st-display-email').textContent = email || 'No email on file';
+  const certName = localStorage.getItem('ff_user_name') || '';
+  document.getElementById('st-cert-name-display').textContent = certName || 'Not set — add your name for certificates';
+}
+function stToggleEditCertName() {
+  const row = document.getElementById('st-cert-name-edit-row');
+  const open = row.classList.toggle('open');
+  if (open) {
+    document.getElementById('st-cert-name-input').value = localStorage.getItem('ff_user_name') || '';
+    setTimeout(() => document.getElementById('st-cert-name-input').focus(), 80);
+    // Close other inline rows
+    document.getElementById('st-name-edit-row').classList.remove('open');
+    document.getElementById('st-pw-edit-row').classList.remove('open');
+    document.getElementById('st-email-edit-row').classList.remove('open');
+  }
+}
+function stSaveCertName() {
+  const val = document.getElementById('st-cert-name-input').value.trim();
+  if (!val) return;
+  localStorage.setItem('ff_user_name', val);
+  window.ffSync && window.ffSync.getUserId && window.ffSync.getUserId().then(uid => {
+    if (uid) window.ffSync.saveProfile(uid, { name: val });
+  });
+  document.getElementById('st-cert-name-edit-row').classList.remove('open');
+  _stRenderAccount();
+  stToast('Certificate name updated ✓');
+}
+function stToggleEditName() {
+  const row = document.getElementById('st-name-edit-row');
+  const open = row.classList.toggle('open');
+  if (open) {
+    document.getElementById('st-name-input').value = localStorage.getItem('ff_user_name') || '';
+    setTimeout(() => document.getElementById('st-name-input').focus(), 100);
+  }
+}
+function stSaveName() {
+  const val = document.getElementById('st-name-input').value.trim();
+  if (!val) return;
+  localStorage.setItem('ff_user_name', val);
+  window.ffSync && window.ffSync.getUserId && window.ffSync.getUserId().then(uid => {
+    if (uid) window.ffSync.saveProfile(uid, { name: val });
+  });
+  stToggleEditName();
+  _stRenderAccount();
+  stToast('Name updated ✓');
+}
+function stChangePassword() {
+  document.getElementById('st-pw-edit-row').classList.toggle('open');
+  document.getElementById('st-email-edit-row').classList.remove('open');
+  document.getElementById('st-name-edit-row').classList.remove('open');
+  if (document.getElementById('st-pw-edit-row').classList.contains('open')) {
+    setTimeout(() => document.getElementById('st-pw-new').focus(), 80);
+  }
+}
+function stToggleEditPassword() {
+  document.getElementById('st-pw-edit-row').classList.remove('open');
+  document.getElementById('st-pw-new').value = '';
+  document.getElementById('st-pw-confirm').value = '';
+  document.getElementById('st-pw-msg').style.display = 'none';
+}
+function stSavePassword() {
+  const pw  = document.getElementById('st-pw-new').value;
+  const pw2 = document.getElementById('st-pw-confirm').value;
+  const msg = document.getElementById('st-pw-msg');
+  msg.style.display = 'none';
+  if (pw.length < 8) { msg.textContent = 'Password must be at least 8 characters.'; msg.style.display = 'block'; return; }
+  if (pw !== pw2)    { msg.textContent = 'Passwords don\'t match.'; msg.style.display = 'block'; return; }
+  if (!window._supabaseClient) { stToast('Not signed in.'); return; }
+  window._supabaseClient.auth.updateUser({ password: pw }).then(res => {
+    if (res.error) { msg.textContent = res.error.message || 'Error updating password.'; msg.style.display = 'block'; return; }
+    stToggleEditPassword();
+    stToast('Password updated ✓');
+  });
+}
+function stChangeEmail() {
+  document.getElementById('st-email-edit-row').classList.toggle('open');
+  document.getElementById('st-pw-edit-row').classList.remove('open');
+  document.getElementById('st-name-edit-row').classList.remove('open');
+  if (document.getElementById('st-email-edit-row').classList.contains('open')) {
+    document.getElementById('st-email-input').value = localStorage.getItem('ff_user_email') || '';
+    setTimeout(() => document.getElementById('st-email-input').focus(), 80);
+  }
+}
+function stToggleEditEmail() {
+  document.getElementById('st-email-edit-row').classList.remove('open');
+}
+function stSaveEmail() {
+  const newEmail = document.getElementById('st-email-input').value.trim();
+  if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) { stToast('Please enter a valid email address.'); return; }
+  if (!window._supabaseClient) { stToast('Not signed in.'); return; }
+  window._supabaseClient.auth.updateUser({ email: newEmail }).then(res => {
+    if (res.error) { stToast(res.error.message || 'Error updating email.'); return; }
+    localStorage.setItem('ff_user_email', newEmail);
+    stToggleEditEmail();
+    _stRenderAccount();
+    stToast('Confirmation sent to ' + newEmail + ' — check your inbox.');
+  });
+}
+
+/* ── Subscription ── */
+function _stRenderSubscription() {
+  const plan = localStorage.getItem('ff_advisor_plan') || 'none';
+  const el   = document.getElementById('st-plan-body');
+  const PLANS = {
+    annual:  { badge:'Annual plan',  name:'Paid Plan: Development Advisor', price:'$79.99 / year', detail:'Saves $39.89 vs monthly<br>Renews March 1, 2027' },
+    monthly: { badge:'Monthly plan', name:'Paid Plan: Development Advisor', price:'$9.99 / month', detail:'Cancel anytime<br>Next billing: April 1, 2026' },
+    gift:    { badge:'Gift access',  name:'Paid Plan: Development Advisor', price:'Gifted access', detail:'Valid until redemption period ends' },
+    none:    null,
+  };
+  const p = PLANS[plan];
+  if (!p) {
+    el.innerHTML = `
+      <div class="st-plan-badge">Free plan</div>
+      <div class="st-plan-name">FamilyForce Free</div>
+      <div class="st-plan-detail">Access to courses only.<br>Upgrade to unlock the Development Advisor.</div>
+      <div class="st-plan-actions">
+        <button class="st-text-btn primary" onclick="switchTab('advisor');advShowUpsell()">Try 7 days free →</button>
+      </div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="st-plan-badge">${p.badge}</div>
+    <div class="st-plan-name">${p.name}</div>
+    <div class="st-plan-detail">${p.price}<br>${p.detail}</div>
+    <div class="st-plan-actions">
+      <button class="st-text-btn">Manage</button>
+      <button class="st-text-btn danger" onclick="stCancelSubscription()">Cancel</button>
+    </div>`;
+}
+function stCancelSubscription() {
+  if (confirm('Are you sure you want to cancel? You\'ll keep access until the end of your billing period.')) {
+    stToast('Cancellation request sent. Stripe will confirm via email.');
+    // TODO: wire Stripe cancel subscription API
+  }
+}
+
+/* ── Family Circle ── */
+function _stRenderFamilyCircle() {
+  // Reuse existing family data (loaded by familyInit in Progress tab)
+  const fname = localStorage.getItem('ff_family_name') || 'My Family';
+  document.getElementById('st-family-name').textContent = fname;
+
+  // Code
+  const code = localStorage.getItem('ff_family_code') || '';
+  document.getElementById('st-family-code').textContent = code || 'FF-····';
+
+  // Members
+  const members = [];
+  try {
+    const raw = JSON.parse(localStorage.getItem('ff_family_members') || '[]');
+    raw.forEach(m => members.push(m));
+  } catch(_) {}
+  const myUserId = localStorage.getItem('ff_user_id') || '';
+  const listEl = document.getElementById('st-family-members-list');
+  if (members.length === 0) {
+    listEl.innerHTML = '<div style="font-size:13px;color:var(--text-dim);padding:4px 0 12px">No members yet. Share your invite code to get started.</div>';
+    return;
+  }
+  listEl.innerHTML = members.map(m => {
+    const initials = (m.name || '?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const isMe = m.userId === myUserId;
+    return `<div class="adv-child-mgmt-row" style="padding:8px 0">
+      <div class="st-avatar" style="width:36px;height:36px;font-size:12px">${initials}</div>
+      <div class="adv-cmr-info">
+        <div class="adv-cmr-name">${_e(m.name || 'Family member')}${isMe ? ' <span style="color:var(--text-dim);font-weight:400">(You)</span>' : ''}</div>
+        <div class="adv-cmr-age">${m.role || 'Member'}</div>
+      </div>
+      ${!isMe ? `<div class="adv-cmr-actions"><button class="adv-cmr-btn adv-cmr-danger" onclick="stRemoveMember('${m.userId}','${(m.name||'').replace(/'/g,"\\'")}')">Remove</button></div>` : ''}
+    </div>`;
+  }).join('');
+}
+function stCopyFamilyCode() {
+  const code = document.getElementById('st-family-code').textContent;
+  navigator.clipboard?.writeText(code).catch(()=>{});
+  const btn = document.getElementById('st-family-copy-btn');
+  btn.textContent = 'Copied ✓'; btn.style.color = '#38A169';
+  setTimeout(() => { btn.textContent = 'Copy code'; btn.style.color = ''; }, 2000);
+  stToast('Invite code copied!');
+}
+function stRemoveMember(userId, name) {
+  if (!confirm('Remove ' + name + ' from your family?')) return;
+  window.ffSync && window.ffSync.removeFamilyMember && window.ffSync.removeFamilyMember(userId).then(() => {
+    _stRenderFamilyCircle();
+    stToast(name + ' removed.');
+  });
+}
+function stShowJoinFamily() {
+  // Reuse existing join family modal from Progress tab
+  document.getElementById('family-join-modal') && (document.getElementById('family-join-modal').style.display = 'flex');
+}
+
+/* ── Children ── */
+function _stRenderChildren() {
+  const children = window.ffAdvisor.loadChildren();
+  const listEl   = document.getElementById('st-children-list');
+  const addBtn   = document.getElementById('st-add-child-btn');
+  addBtn.style.display = children.length < 3 ? 'inline-block' : 'none';
+  if (children.length === 0) {
+    listEl.innerHTML = '<div style="font-size:13px;color:var(--text-dim);padding:12px 18px">No children added yet. Add one to unlock the Development Advisor.</div>';
+    return;
+  }
+  listEl.innerHTML = children.map(c => `
+    <div class="adv-child-mgmt-row">
+      <div class="adv-cmr-emoji">${c.emoji || '👶'}</div>
+      <div class="adv-cmr-info">
+        <div class="adv-cmr-name">${_e(c.name)}</div>
+        <div class="adv-cmr-age">${window.ffAdvisor.formatAge(c.dob)}${c.gender ? ' · ' + (c.gender === 'boy' ? 'Boy' : 'Girl') : ''}</div>
+      </div>
+      <div class="adv-cmr-actions">
+        <button class="adv-cmr-btn" onclick="advHideSettings();advShowEditChild('${c.id}')">Edit</button>
+        <button class="adv-cmr-btn adv-cmr-danger" onclick="stRemoveChild('${c.id}','${c.name.replace(/'/g,"\\'")}')">Remove</button>
+      </div>
+    </div>`).join('');
+}
+function stRemoveChild(id, name) {
+  if (!confirm('Remove ' + name + '?')) return;
+  window.ffAdvisor.removeChild(id);
+  _stRenderChildren();
+  stToast(name + ' removed.');
+}
+
+/* ── Referrals tab ── */
+function referralsInit() {
+  const fmt  = n => '$' + n.toFixed(2);
+  const code = localStorage.getItem('ff_advisor_referral') || getAdvisorReferralCode();
+
+  document.getElementById('rf-code').textContent = code;
+
+  const email = localStorage.getItem('ff_user_email') || '';
+  if (email) document.getElementById('rf-payout-email').textContent = email;
+
+  const total     = ST_REFERRALS.reduce((s, r) => s + (r.status !== 'expired' ? r.earned : 0), 0);
+  const pending   = ST_REFERRALS.filter(r => r.status === 'pending').reduce((s, r) => s + r.earned, 0);
+  const available = ST_REFERRALS.filter(r => r.status === 'cleared').reduce((s, r) => s + r.earned, 0);
+
+  document.getElementById('rf-total').textContent     = fmt(total);
+  document.getElementById('rf-pending').textContent   = fmt(pending);
+  document.getElementById('rf-available').textContent = fmt(available);
+
+  const strip = document.getElementById('rf-next-strip');
+  strip.style.display = available > 0 ? 'flex' : 'none';
+  document.getElementById('rf-np-detail').textContent    = `April 15, 2026 · ${fmt(available)} to Stripe`;
+  document.getElementById('rf-np-countdown').textContent = 'In 34 days';
+
+  document.getElementById('rf-referrals-badge').textContent = ST_REFERRALS.length;
+  document.getElementById('rf-referrals-tbody').innerHTML = ST_REFERRALS.map(r => `
+    <tr>
+      <td class="st-td-name">${_e(r.name)}</td>
+      <td>${r.plan}<br><span style="font-size:11px;color:var(--text-dim)">${fmt(r.price)}</span></td>
+      <td style="white-space:nowrap">${_e(r.date)}</td>
+      <td><span class="st-badge ${r.status}">${ST_STATUS_LABELS[r.status]||r.status}</span></td>
+      <td class="st-td-right ${r.earned > 0 ? 'st-td-green' : ''}">${r.earned > 0 ? fmt(r.earned) : '—'}</td>
+    </tr>`).join('');
+
+  document.getElementById('rf-payouts-badge').textContent = ST_PAYOUTS.length;
+  document.getElementById('rf-payouts-tbody').innerHTML = ST_PAYOUTS.map(p => `
+    <tr>
+      <td class="st-td-name" style="white-space:nowrap">${_e(p.date)}</td>
+      <td>${_e(p.method)}</td>
+      <td><span class="st-badge ${p.status}">${ST_STATUS_LABELS[p.status]||p.status}</span></td>
+      <td class="st-td-right st-td-green">${fmt(p.amount)}</td>
+    </tr>`).join('');
+}
+function rfCopyCode() {
+  const code = document.getElementById('rf-code').textContent;
+  navigator.clipboard?.writeText(code).catch(()=>{});
+  const btn = document.getElementById('rf-copy-code-btn');
+  btn.textContent = 'Copied ✓'; setTimeout(() => { btn.textContent = 'Copy code'; }, 2000);
+  stToast('Referral code copied!');
+}
+function rfCopyLink() {
+  const code = document.getElementById('rf-code').textContent;
+  navigator.clipboard?.writeText('https://getfamilyforce.com?ref=' + code).catch(()=>{});
+  const btn = document.getElementById('rf-copy-link-btn');
+  btn.textContent = '✓ Copied'; setTimeout(() => { btn.textContent = '🔗 Copy link'; }, 2000);
+  stToast('Referral link copied!');
+}
+
+/* ── Collapsible ── */
+function stToggleCollapsible(bodyId, header) {
+  const body  = document.getElementById(bodyId);
+  const arrow = header.querySelector('.st-col-arrow');
+  const open  = body.classList.toggle('open');
+  arrow.style.transform = open ? 'rotate(90deg)' : '';
+}
+
+/* ── More ── */
+function stNotifications() { stToast('Notification preferences — coming soon.'); }
+function stPrivacy()        { stToast('Privacy & data — coming soon.'); }
+function stDeleteAccount() {
+  if (confirm('Delete your account? This permanently removes all your data and cannot be undone.')) {
+    if (confirm('Are you absolutely sure?')) {
+      stToast('Account deletion requested. You\'ll receive a confirmation email.');
+      // TODO: wire Supabase admin delete + Stripe cancel
+    }
+  }
+}
+
+/* ─── Edit Child Modal ─── */
+let _advEditChildId   = null;
+let _advEditEmoji     = '👶';
+let _advEditGender    = null;
+const ADV_EDIT_EMOJIS = ['👶','🧒','👦','👧','🧑','🦁','🐨','🦊','🐸','🐧','🌟','🌈','🦋','🚀','⚽'];
+
+function advShowEditChild(childId) {
+  const child = window.ffAdvisor.loadChildren().find(c => c.id === childId);
+  if (!child) return;
+  _advEditChildId = childId;
+  _advEditEmoji   = child.emoji  || '👶';
+  _advEditGender  = child.gender || null;
+
+  // Build emoji grid
+  document.getElementById('adv-edit-emoji-grid').innerHTML = ADV_EDIT_EMOJIS.map(e =>
+    `<button class="adv-emoji-btn${e === _advEditEmoji ? ' selected' : ''}" onclick="advEditPickEmoji('${e}')">${e}</button>`
+  ).join('');
+
+  document.getElementById('adv-edit-name').value = child.name || '';
+  document.getElementById('adv-edit-dob').value  = child.dob  || '';
+  document.getElementById('adv-edit-dob').max    = new Date().toISOString().split('T')[0];
+  document.getElementById('adv-edit-err').style.display = 'none';
+  _advEditGenderRefresh();
+
+  document.getElementById('adv-edit-child-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => document.getElementById('adv-edit-name').focus(), 150);
+}
+function advHideEditChild() {
+  document.getElementById('adv-edit-child-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function advEditPickEmoji(e) {
+  _advEditEmoji = e;
+  document.querySelectorAll('#adv-edit-emoji-grid .adv-emoji-btn').forEach(btn => {
+    btn.classList.toggle('selected', btn.textContent === e);
+  });
+}
+function advEditSelectGender(g) {
+  _advEditGender = g;
+  _advEditGenderRefresh();
+}
+function _advEditGenderRefresh() {
+  ['boy','girl','none'].forEach(g => {
+    const active = (g === 'none' ? null : g) === _advEditGender;
+    document.getElementById('adv-edit-gender-' + g).classList.toggle('selected', active);
+  });
+}
+function advSaveEditChild() {
+  const name = document.getElementById('adv-edit-name').value.trim();
+  const dob  = document.getElementById('adv-edit-dob').value;
+  const err  = document.getElementById('adv-edit-err');
+  if (!name) { err.textContent = 'Please enter a name.';           err.style.display = 'block'; return; }
+  if (!dob)  { err.textContent = 'Please enter a date of birth.';  err.style.display = 'block'; return; }
+  window.ffAdvisor.updateChild(_advEditChildId, { name, dob, emoji: _advEditEmoji, gender: _advEditGender });
+  advHideEditChild();
+  advShowSettings(); // re-open settings so parent sees updated row
+  advisorInit();     // refresh digest + switcher pills
+}
+
+/* ─── Mark Complete Modal ─── */
+let _advCompleteChildId     = null;
+let _advCompleteMilestoneId = null;
+
+function advShowCompleteModal(childId, milestoneId, isEdit = false) {
+  _advCompleteChildId     = childId;
+  _advCompleteMilestoneId = milestoneId;
+
+  // Populate milestone name
+  const m = window.ffAdvisor.getMilestoneById(milestoneId);
+  document.getElementById('adv-complete-milestone-name').textContent = m ? m.icon + ' ' + m.title : '';
+
+  // Build member list: current user + family circle members (deduplicated by name)
+  const currentUserName = localStorage.getItem('ff_user_name') || '';
+  let familyNames = [];
+  try {
+    const members = JSON.parse(localStorage.getItem('ff_family_members') || '[]');
+    familyNames = members.map(fm => fm.name || '').filter(Boolean);
+  } catch(_) {}
+
+  // Merge: current user first, then family members, deduplicated
+  const allNames = [];
+  if (currentUserName) allNames.push(currentUserName);
+  familyNames.forEach(n => { if (!allNames.includes(n)) allNames.push(n); });
+  if (allNames.length === 0) allNames.push('Me'); // fallback
+
+  // Build dropdown
+  const sel = document.getElementById('adv-complete-by');
+  const existing = window.ffAdvisor.getCompletionMeta(childId, milestoneId);
+  const preselect = existing ? existing.by : (allNames[0] || '');
+
+  sel.innerHTML = allNames.map(name =>
+    `<option value="${name.replace(/"/g,'&quot;')}"${name === preselect ? ' selected' : ''}>${name}</option>`
+  ).join('');
+
+  // If only one person, no need for a dropdown — disable it visually
+  if (allNames.length === 1) {
+    sel.setAttribute('disabled', 'disabled');
+    sel.style.color = 'var(--text)';
+    sel.style.background = 'var(--elevated)';
+  } else {
+    sel.removeAttribute('disabled');
+    sel.style.color = '';
+    sel.style.background = '';
+  }
+
+  // Date
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('adv-complete-date').value = existing ? existing.date : today;
+  document.getElementById('adv-complete-date').max   = today;
+  document.getElementById('adv-complete-err').style.display = 'none';
+
+  document.getElementById('adv-complete-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function advHideCompleteModal() {
+  document.getElementById('adv-complete-modal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+function advConfirmComplete() {
+  const by   = document.getElementById('adv-complete-by').value.trim();
+  const date = document.getElementById('adv-complete-date').value;
+  const err  = document.getElementById('adv-complete-err');
+  console.log('[Advisor] advConfirmComplete: by=', by, 'date=', date, 'childId=', _advCompleteChildId, 'milestoneId=', _advCompleteMilestoneId);
+  if (!by)   { err.textContent = 'Please enter who completed this.'; err.style.display = 'block'; return; }
+  if (!date) { err.textContent = 'Please enter a date.';             err.style.display = 'block'; return; }
+  try {
+    window.ffAdvisor.markComplete(_advCompleteChildId, _advCompleteMilestoneId, by, date);
+    console.log('[Advisor] markComplete OK — refreshing digest');
+    console.log('[Advisor] completed store now:', localStorage.getItem('ff_adv_completed'));
+    console.log('[Advisor] ffAdvisor exports:', Object.keys(window.ffAdvisor || {}));
+  } catch(e) {
+    console.error('[Advisor] markComplete threw:', e);
+    err.textContent = 'Error saving: ' + e.message;
+    err.style.display = 'block';
+    return;
+  }
+  advHideCompleteModal();
+  advisorRefreshDigest();
+  console.log('[Advisor] digest re-rendered, active child:', _advActiveChildId);
+}
+
+/* ─── Todo persistence ─── */
+window._ffSaveTodo = function(el) {
+  const key  = el.dataset.key;
+  const text = el.dataset.text;
+  if (!key || !text) return;
+  let arr = [];
+  try { arr = JSON.parse(localStorage.getItem(key) || '[]'); } catch(_) {}
+  if (el.checked) { if (!arr.includes(text)) arr.push(text); }
+  else            { arr = arr.filter(t => t !== text); }
+  localStorage.setItem(key, JSON.stringify(arr));
+};
 
 /* ─── Share card ─── */
 function advShowShareCard(emoji, childLabel, milestone, moment) {
@@ -4777,6 +6428,7 @@ function advShowSettings() {
           <div class="adv-cmr-age">${window.ffAdvisor.formatAge(c.dob)}</div>
         </div>
         <div class="adv-cmr-actions">
+          <button class="adv-cmr-btn" onclick="advHideSettings();advShowEditChild('${c.id}')">Edit</button>
           <button class="adv-cmr-btn adv-cmr-danger" onclick="advRemoveChild('${c.id}','${c.name.replace(/'/g,"\\'")}')">Remove</button>
         </div>
       </div>`).join('');
