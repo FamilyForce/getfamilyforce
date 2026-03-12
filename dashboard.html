@@ -5613,6 +5613,8 @@ function advObFinish() {
   advHideOnboarding();
   advisorInit();
   advisorSyncChildren();
+  // Refresh Settings → Children list if it's open
+  accInitChildren();
 }
 
 function _e(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
