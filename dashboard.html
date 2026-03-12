@@ -5321,9 +5321,7 @@ function advisorInit() {
     children.map(c => {
       const emoji = c.emoji || '👶';
       return `<button class="adv-child-pill${c.id === _advActiveChildId ? ' active' : ''}" onclick="advisorSelectChild('${c.id}')">${emoji} ${_e(c.name)}</button>`;
-    }).join('') +
-    (canAdd ? `<button class="adv-add-child-btn" onclick="advShowOnboarding()">+ Add</button>` : '') +
-    `<button class="adv-add-child-btn" style="margin-left:auto" onclick="advShowSettings()">⚙️</button>`;
+    }).join('');
 
   // Family circle indicator
   const circleMembers = _advGetCircleMembers();
