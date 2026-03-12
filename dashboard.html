@@ -4022,6 +4022,10 @@ button { font: inherit; cursor: pointer; }
     <div style="padding:16px">
       <div class="acc-group-card" id="acc-children-list" style="margin-bottom:12px"><!-- filled by JS --></div>
       <button class="acc-edit-save secondary" id="acc-add-child-btn" onclick="advShowOnboarding()">+ Add child</button>
+      <p id="acc-children-limit-note" style="display:none;font-size:12.5px;color:var(--text-dim);text-align:center;line-height:1.6;margin-top:12px">
+        You've reached the 3-child limit. Need to add more?<br>
+        Email us at <a href="mailto:support@getfamilyforce.com" style="color:var(--terra-dark);font-weight:600">support@getfamilyforce.com</a>
+      </p>
     </div>
   </div>
 
@@ -5823,7 +5827,10 @@ function accInitChildren() {
   const children = window.ffAdvisor ? window.ffAdvisor.loadChildren() : [];
   const listEl   = document.getElementById('acc-children-list');
   const addBtn   = document.getElementById('acc-add-child-btn');
-  addBtn.style.display = children.length < 3 ? 'block' : 'none';
+  const atLimit = children.length >= 3;
+  addBtn.style.display = atLimit ? 'none' : 'block';
+  const limitNote = document.getElementById('acc-children-limit-note');
+  if (limitNote) limitNote.style.display = atLimit ? 'block' : 'none';
   if (children.length === 0) {
     listEl.innerHTML = '<div class="acc-cell"><div class="acc-cell-body"><div class="acc-cell-value">No children added yet. Add one to unlock the Advisor.</div></div></div>';
     return;
