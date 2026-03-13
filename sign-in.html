@@ -1784,7 +1784,7 @@ button { font: inherit; cursor: pointer; }
       var target = document.getElementById('step-' + stepId);
       if (target) {
         target.classList.add('active');
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
       // Mount Stripe Card Element when payment step becomes visible
       if (stepId === 'payment') mountStripeElement();
