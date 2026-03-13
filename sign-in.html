@@ -1360,20 +1360,20 @@ button { font: inherit; cursor: pointer; }
         </div>
 
         <!-- Name on card -->
-        <div class="step-form-group">
+        <div class="step-form-group" id="pay-name-wrap">
           <label class="step-label" for="pay-name">Name on card</label>
           <input class="step-input" id="pay-name" type="text" placeholder="Full name" autocomplete="cc-name">
         </div>
 
         <!-- Stripe Card Element (number, expiry, CVV in one secure iframe) -->
-        <div class="step-form-group">
+        <div class="step-form-group" id="stripe-card-wrap">
           <label class="step-label">Card details</label>
           <div id="stripe-card-element" style="border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;background:var(--surface);transition:border-color .15s" aria-label="Card details — powered by Stripe"></div>
           <div id="stripe-card-errors" role="alert" style="font-size:11px;color:#DC2626;margin-top:6px;display:none"></div>
           <span style="font-size:11px;color:var(--text-dim);margin-top:6px;display:block">🔒 Secured by Stripe. We never store your card details.</span>
         </div>
 
-        <button class="step-btn-primary" id="payment-submit-btn" onclick="submitPayment()">
+        <button class="step-btn-primary" id="pay-submit-btn" onclick="submitPayment()">
           Start free trial →
         </button>
         <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">Still not sure? <a href="dashboard.html" style="color:var(--terra)">Check out the free library first →</a></p>
@@ -2014,22 +2014,49 @@ button { font: inherit; cursor: pointer; }
     var code     = (input.value || '').trim().toUpperCase();
     if (!code) return;
 
-    // TODO: Replace with real API call to validate code via Stripe coupon endpoint
-    // For now: any code containing 'FRIEND' gives 25% off; anything else is invalid
-    var isValid  = code.indexOf('FRIEND') !== -1;
-    var discount = 0.25; // 25%
+    feedback.style.display = 'block';
+
+    // ── BABYSHOWER100: 100% off, no card needed ─────────────────
+    if (code === 'BABYSHOWER100') {
+      appliedPromo = { code: code, discount: 1.0, newPrice: 0, freeYear: true };
+      input.style.borderColor = '#16A34A';
+      feedback.style.color    = '#166534';
+      feedback.innerHTML      = '🎉 Gift code applied — your first year is completely free. No card needed.';
+      // Update summary
+      var priceEl   = document.getElementById('payment-price');
+      var discRow   = document.getElementById('payment-discount-row');
+      var discLabel = document.getElementById('payment-discount-label');
+      var discVal   = document.getElementById('payment-discount-value');
+      if (priceEl)   priceEl.innerHTML = '<span style="text-decoration:line-through;opacity:.45;font-weight:400">$79.99</span> <span style="color:#16A34A;font-weight:800">FREE</span>';
+      if (discRow)   discRow.style.display = '';
+      if (discLabel) discLabel.textContent = 'Baby shower gift';
+      if (discVal)   discVal.textContent   = '100% off ✓';
+      // Hide card form — no card needed
+      var cardWrap = document.getElementById('stripe-card-wrap');
+      var nameWrap = document.getElementById('pay-name-wrap');
+      if (cardWrap) cardWrap.style.display = 'none';
+      if (nameWrap) nameWrap.style.display = 'none';
+      // Update button
+      var submitBtn = document.getElementById('pay-submit-btn');
+      if (submitBtn) submitBtn.textContent = 'Redeem Free Year →';
+      input.disabled = true;
+      document.getElementById('promo-apply-btn').disabled = true;
+      document.getElementById('promo-apply-btn').textContent = '✓';
+      return;
+    }
+
+    // ── Standard referral / promo codes: 25% off ────────────────
+    var isValid   = code.indexOf('FRIEND') !== -1 || code.match(/^[A-Z]{2,8}-[A-Z0-9]{4}$/);
+    var discount  = 0.25;
     var origPrice = 79.99;
     var newPrice  = +(origPrice * (1 - discount)).toFixed(2);
     var saving    = +(origPrice - newPrice).toFixed(2);
-
-    feedback.style.display = 'block';
 
     if (isValid) {
       appliedPromo = { code: code, discount: discount, newPrice: newPrice };
       input.style.borderColor = '#16A34A';
       feedback.style.color    = '#166534';
       feedback.textContent    = '✓ Code applied — you save $' + saving.toFixed(2);
-      // Update summary
       var priceEl   = document.getElementById('payment-price');
       var discRow   = document.getElementById('payment-discount-row');
       var discLabel = document.getElementById('payment-discount-label');
@@ -2038,7 +2065,6 @@ button { font: inherit; cursor: pointer; }
       if (discRow)   discRow.style.display = '';
       if (discLabel) discLabel.textContent = 'Code ' + code;
       if (discVal)   discVal.textContent   = '25% off ✓';
-      // Disable input + button so user can't re-apply
       input.disabled = true;
       document.getElementById('promo-apply-btn').disabled = true;
       document.getElementById('promo-apply-btn').textContent = '✓';
@@ -2110,10 +2136,52 @@ button { font: inherit; cursor: pointer; }
     function showErr(msg) {
       if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
       btn.disabled    = false;
-      btn.textContent = 'Start free trial →';
+      btn.textContent = appliedPromo && appliedPromo.freeYear ? 'Redeem Free Year →' : 'Start free trial →';
     }
 
-    // Step 1: Create Stripe payment method
+    function callEdgeFunction(session, paymentMethodId) {
+      btn.textContent = 'Processing...';
+      fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-subscribe', {
+        method:  'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + session.access_token,
+        },
+        body: JSON.stringify({
+          paymentMethodId: paymentMethodId || null,
+          promoCode:       appliedPromo ? appliedPromo.code : null,
+          childId:         sessionStorage.getItem('ff_child_id') || null,
+        }),
+      })
+      .then(function(r) {
+        btn.textContent = 'Confirming...';
+        return r.json();
+      })
+      .then(function(data) {
+        if (!data.ok) { showErr(data.error || 'Something went wrong. Please try again.'); return; }
+        onPaymentSuccess();
+        btn.disabled = false;
+      })
+      .catch(function(e) {
+        showErr('Network error: ' + (e && e.message ? e.message : String(e)));
+      });
+    }
+
+    // ── Free year path: skip card entirely ───────────────────────
+    if (appliedPromo && appliedPromo.freeYear) {
+      btn.textContent = 'Activating...';
+      var sb = window._supabaseClient;
+      sb.auth.getSession().then(function(res) {
+        var session = res.data && res.data.session;
+        if (!session) { showErr('Session expired — please sign in again.'); return; }
+        callEdgeFunction(session, null);
+      }).catch(function(e) {
+        showErr('Auth error: ' + (e && e.message ? e.message : String(e)));
+      });
+      return;
+    }
+
+    // ── Standard path: card required ─────────────────────────────
     btn.textContent = 'Verifying card...';
     stripeInstance.createPaymentMethod({
       type: 'card',
@@ -2122,39 +2190,12 @@ button { font: inherit; cursor: pointer; }
     }).then(function(result) {
       if (result.error) { showErr(result.error.message); return; }
 
-      // Step 2: Get session
       btn.textContent = 'Authorising...';
       var sb = window._supabaseClient;
       sb.auth.getSession().then(function(res) {
         var session = res.data && res.data.session;
         if (!session) { showErr('Session expired — please sign in again.'); return; }
-
-        // Step 3: Call edge function
-        btn.textContent = 'Processing payment...';
-        fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-subscribe', {
-          method:  'POST',
-          headers: {
-            'Content-Type':  'application/json',
-            'Authorization': 'Bearer ' + session.access_token,
-          },
-          body: JSON.stringify({
-            paymentMethodId: result.paymentMethod.id,
-            promoCode:       appliedPromo ? appliedPromo.code : null,
-            childId:         sessionStorage.getItem('ff_child_id') || null,
-          }),
-        })
-        .then(function(r) {
-          btn.textContent = 'Confirming...';
-          return r.json();
-        })
-        .then(function(data) {
-          if (!data.ok) { showErr(data.error || 'Payment failed. Please try again.'); return; }
-          onPaymentSuccess();
-          btn.disabled = false;
-        })
-        .catch(function(e) {
-          showErr('Network error: ' + (e && e.message ? e.message : String(e)));
-        });
+        callEdgeFunction(session, result.paymentMethod.id);
       }).catch(function(e) {
         showErr('Auth error: ' + (e && e.message ? e.message : String(e)));
       });

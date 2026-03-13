@@ -90,16 +90,17 @@ Deno.serve(async (req: Request) => {
       customerId = customer.id
     }
 
-    // 4. Attach payment method
-    step = 'pm-attach'
-    await stripeReq(stripeKey, 'POST', `/payment_methods/${paymentMethodId}/attach`, {
-      customer: customerId,
-    })
-
-    step = 'pm-set-default'
-    await stripeReq(stripeKey, 'POST', `/customers/${customerId}`, {
-      'invoice_settings[default_payment_method]': paymentMethodId,
-    })
+    // 4. Attach payment method (skipped for 100% free codes)
+    if (paymentMethodId) {
+      step = 'pm-attach'
+      await stripeReq(stripeKey, 'POST', `/payment_methods/${paymentMethodId}/attach`, {
+        customer: customerId,
+      })
+      step = 'pm-set-default'
+      await stripeReq(stripeKey, 'POST', `/customers/${customerId}`, {
+        'invoice_settings[default_payment_method]': paymentMethodId,
+      })
+    }
 
     // 5. Validate promo/referral code
     step = 'promo-validate'
@@ -129,13 +130,23 @@ Deno.serve(async (req: Request) => {
     // Create subscription
     step = 'subscription'
 
+    // Free-year codes: use 365-day trial + no payment method required
+    const isFreeYear   = (normalised === 'BABYSHOWER100' && !paymentMethodId)
+    const trialDays    = isFreeYear ? 365 : 7
+
     const subBody: Record<string, unknown> = {
       customer:          customerId,
       'items[0][price]': PRICE_ID,
-      trial_period_days: 7,
-      'payment_settings[save_default_payment_method]': 'on_subscription',
+      trial_period_days: trialDays,
       'metadata[supabase_user_id]': user.id,
       'metadata[child_id]':        childId ?? '',
+    }
+    if (paymentMethodId) {
+      subBody['payment_settings[save_default_payment_method]'] = 'on_subscription'
+    } else {
+      // No card — subscription stays in trial; Stripe will request payment at end of trial
+      subBody['payment_behavior']  = 'default_incomplete'
+      subBody['collection_method'] = 'charge_automatically'
     }
     if (couponId) subBody.coupon = couponId
 
