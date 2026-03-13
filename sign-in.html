@@ -579,6 +579,7 @@ button { font: inherit; cursor: pointer; }
 .step-success-sub { text-align: center; margin-bottom: 28px; color: var(--text-dim); font-size: 14px; line-height: 1.6; }
 
 /* Step container width overrides */
+#step-confirm-email .step-card,
 #step-intent .step-card,
 #step-child .step-card,
 #step-payment .step-card,
@@ -1243,6 +1244,18 @@ button { font: inherit; cursor: pointer; }
 
     </div><!-- /.signin-card -->
 
+    <!-- ═══ STEP: CONFIRM EMAIL ═══ -->
+    <div class="signup-step" id="step-confirm-email" role="region" aria-label="Confirm your email">
+      <div class="step-card" style="text-align:center">
+        <span class="step-success-icon">📬</span>
+        <h2 class="step-h step-success-h">Check your inbox</h2>
+        <p class="step-success-sub">We sent a confirmation link to <strong id="confirm-email-address"></strong>. Click it to activate your account — then come back here.</p>
+        <p style="font-size:13px;color:var(--text-dim);margin-bottom:20px">Can't find it? Check your spam folder.</p>
+        <button class="step-btn-primary" onclick="resendConfirmation()" id="resend-btn" style="max-width:320px;margin:0 auto 12px;display:block">Resend confirmation email</button>
+        <p style="font-size:12px;color:var(--text-dim)">Already confirmed? <a href="#" onclick="checkSessionAndRoute();return false" style="color:var(--terra)">Continue →</a></p>
+      </div>
+    </div>
+
     <!-- ═══ STEP: INTENT ═══ -->
     <div class="signup-step" id="step-intent" role="region" aria-label="Choose your path">
       <div class="step-card">
@@ -1692,11 +1705,16 @@ button { font: inherit; cursor: pointer; }
         }
         try { localStorage.setItem('ff_user_email', email); } catch(_) {}
         clearLoading('Create account →');
-        /* Route new user to intent step instead of dashboard */
-        if (typeof routeAfterSignup === 'function') {
-          routeAfterSignup();
+        if (res.data && res.data.session) {
+          // Email confirmation disabled — session available immediately
+          if (typeof routeAfterSignup === 'function') routeAfterSignup();
+          else window.location.href = 'dashboard.html';
         } else {
-          window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+          // Email confirmation required — show check-your-inbox step
+          var confirmAddrEl = document.getElementById('confirm-email-address');
+          if (confirmAddrEl) confirmAddrEl.textContent = email;
+          try { sessionStorage.setItem('ff_pending_email', email); } catch(_) {}
+          if (typeof showStep === 'function') showStep('confirm-email');
         }
       });
       return;
@@ -1762,7 +1780,7 @@ button { font: inherit; cursor: pointer; }
     }
   };
 
-  /* ── Check URL params on load — pre-select intent ── */
+  /* ── On page load: detect URL params + post-confirmation redirect ── */
   (function() {
     var params = new URLSearchParams(window.location.search);
     var intent = params.get('intent');
@@ -1771,7 +1789,63 @@ button { font: inherit; cursor: pointer; }
     if (dobEl) dobEl.max = new Date().toISOString().split('T')[0];
     // Store intent for post-signup routing
     if (intent) sessionStorage.setItem('ff_intent', intent);
+
+    // Detect post-email-confirmation redirect
+    // Supabase puts #access_token=...&type=signup in the URL hash after confirmation
+    var hash = window.location.hash;
+    if (hash && hash.indexOf('access_token') !== -1 && hash.indexOf('type=signup') !== -1) {
+      // Let Supabase JS process the hash and establish the session
+      var sb = window._supabaseClient;
+      if (sb) {
+        // Small delay to let Supabase process the hash tokens
+        setTimeout(function() {
+          sb.auth.getSession().then(function(res) {
+            if (res.data && res.data.session) {
+              // Clean the hash from the URL without reloading
+              history.replaceState(null, '', window.location.pathname + window.location.search);
+              routeAfterSignup();
+            }
+          });
+        }, 300);
+      }
+    }
   })();
+
+  /* ── Manual "already confirmed" check ── */
+  window.checkSessionAndRoute = function() {
+    var sb = window._supabaseClient;
+    if (!sb) return;
+    sb.auth.getSession().then(function(res) {
+      if (res.data && res.data.session) {
+        routeAfterSignup();
+      } else {
+        alert('No confirmed session found yet. Please click the link in your email first.');
+      }
+    });
+  };
+
+  /* ── Resend confirmation email ── */
+  window.resendConfirmation = function() {
+    var sb    = window._supabaseClient;
+    var email = sessionStorage.getItem('ff_pending_email') || localStorage.getItem('ff_user_email');
+    var btn   = document.getElementById('resend-btn');
+    if (!sb || !email) return;
+    btn.disabled    = true;
+    btn.textContent = 'Sending...';
+    sb.auth.resend({ type: 'signup', email: email }).then(function(res) {
+      if (res.error) {
+        btn.disabled    = false;
+        btn.textContent = 'Resend confirmation email';
+        alert('Could not resend: ' + res.error.message);
+      } else {
+        btn.textContent = 'Sent! Check your inbox.';
+        setTimeout(function() {
+          btn.disabled    = false;
+          btn.textContent = 'Resend confirmation email';
+        }, 10000);
+      }
+    });
+  };
 
   /* ── After successful signup: route based on saved intent ── */
   window.routeAfterSignup = function() {
