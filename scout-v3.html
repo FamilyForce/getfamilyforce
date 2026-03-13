@@ -280,7 +280,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 9.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
   padding: 3px 9px; border-radius: 100px; margin-bottom: 12px; display: inline-block;
 }
-.comp-card.alt .comp-badge { background: #FEF2F2; color: #DC2626; }
+.comp-card.alt .comp-badge { background: #F0EBFF; color: #5B3CC4; }
 .comp-card.scout .comp-badge { background: rgba(167,139,255,.25); color: #C4B5FD; border: 1px solid rgba(167,139,255,.3); }
 
 .comp-option {
@@ -340,8 +340,84 @@ a { color: inherit; text-decoration: none; }
 .comp-footer-line {
   font-size: 12px; font-weight: 600;
 }
-.comp-card.alt .comp-footer-line { color: #DC2626; }
+.comp-card.alt .comp-footer-line { color: var(--terra); }
 .comp-card.scout .comp-footer-line { color: #A78BFF; }
+
+/* ─── STATS SECTION ─── */
+.stats-section {
+  padding: 88px var(--rx) 96px;
+  background: var(--indigo-deep);
+}
+.stats-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+}
+.stats-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.stats-header .section-label {
+  color: rgba(255,255,255,.45);
+  margin-bottom: 14px;
+  display: block;
+}
+.stats-header h2 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.15;
+  letter-spacing: -.025em;
+  color: #fff;
+  margin-bottom: 14px;
+}
+.stats-header h2 em { font-style: italic; color: #A78BFF; }
+.stats-header p {
+  font-size: 16px;
+  color: rgba(255,255,255,.5);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+.stat-card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  padding: 44px 36px;
+}
+.stat-card + .stat-card {
+  border-left: none;
+}
+.stat-number {
+  font-family: var(--display);
+  font-size: clamp(56px, 8vw, 88px);
+  font-weight: 800;
+  color: #A78BFF;
+  line-height: 1;
+  margin-bottom: 18px;
+  letter-spacing: -.03em;
+}
+.stat-body {
+  font-size: 15px;
+  color: rgba(255,255,255,.55);
+  line-height: 1.7;
+}
+.stat-body strong {
+  color: rgba(255,255,255,.9);
+  font-weight: 600;
+}
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: 1fr; border-radius: 16px; }
+  .stat-card + .stat-card { border-left: 1px solid rgba(255,255,255,.08); border-top: none; }
+  .stat-card { padding: 32px 28px; }
+}
+@media (max-width: 540px) {
+  .stats-grid { gap: 1px; }
+}
 
 @media (max-width: 900px) {
   .comp-grid { grid-template-columns: 1fr 1fr; }
@@ -544,13 +620,13 @@ a { color: inherit; text-decoration: none; }
 </section>
 
 <!-- ════════════════════════════════════════════════
-     COMPARISON — The "obvious choice" table
+     COMPARISON — The "smart parents use all four" section
      ════════════════════════════════════════════════ -->
 <section class="comparison">
   <div class="comparison-intro" data-reveal>
     <span class="section-label">Why Scout</span>
-    <h2 class="comparison-title">There are four ways<br>to handle this. <em>One is obvious.</em></h2>
-    <p class="comparison-sub">Every parent figures out their child's development somehow. Here's what the four options actually cost you — in money, time, and missed windows.</p>
+    <h2 class="comparison-title">Most great parents<br>use <em>all four of these.</em></h2>
+    <p class="comparison-sub">Your pediatrician, your parenting books, your own good instincts — none of that goes away. Scout is the layer that ties it all together, specifically for your child's age, right now.</p>
   </div>
 
   <div class="comp-grid">
@@ -558,16 +634,16 @@ a { color: inherit; text-decoration: none; }
     <!-- Option 1: Doctor visits -->
     <div class="comp-card alt" data-reveal data-d="1">
       <div class="comp-head">
-        <span class="comp-option-icon">🏥</span>
-        <div class="comp-badge">High cost</div>
-        <div class="comp-option">Doctor visits</div>
+        <span class="comp-option-icon">🩺</span>
+        <div class="comp-badge">Essential</div>
+        <div class="comp-option">Your Pediatrician</div>
         <div class="comp-cost">
-          <strong>$50–200</strong>
-          per visit · 8+ visits in year one
+          <strong>Irreplaceable</strong>
+          keep every appointment
         </div>
       </div>
       <div class="comp-pain">
-        Great for emergencies. But your pediatrician has 15 minutes. They can't tell you what to watch for in the next 4 weeks. And they're not there at 11pm when you're wondering if something's off.
+        The gold standard. They catch things nobody else will. But they have 15 minutes, a few times a year — and zero visibility into what's happening between visits.
       </div>
       <div class="comp-rows">
         <div class="comp-row">
@@ -596,7 +672,7 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
       <div class="comp-footer">
-        <div class="comp-footer-line">$1,000+ in year one alone</div>
+        <div class="comp-footer-line">Keep every appointment.</div>
       </div>
     </div>
 
@@ -604,15 +680,15 @@ a { color: inherit; text-decoration: none; }
     <div class="comp-card alt" data-reveal data-d="2">
       <div class="comp-head">
         <span class="comp-option-icon">📚</span>
-        <div class="comp-badge">High effort</div>
-        <div class="comp-option">10 parenting books</div>
+        <div class="comp-badge">Great foundation</div>
+        <div class="comp-option">Parenting Books</div>
         <div class="comp-cost">
-          <strong>$150–200</strong>
-          plus hundreds of hours of reading
+          <strong>Worth every page</strong>
+          the big picture, beautifully written
         </div>
       </div>
       <div class="comp-pain">
-        Lots of general wisdom. None of it says "your child is 14 weeks old — here's exactly what matters this month." By the time you've read about it, the window has moved.
+        Deep, thoughtful, genuinely useful. Just doesn't know that your kid turned 14 weeks yesterday and the peanut window opened last Tuesday.
       </div>
       <div class="comp-rows">
         <div class="comp-row">
@@ -641,23 +717,23 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
       <div class="comp-footer">
-        <div class="comp-footer-line">Hundreds of hours. Zero personalisation.</div>
+        <div class="comp-footer-line">Read them all.</div>
       </div>
     </div>
 
     <!-- Option 3: On your own -->
     <div class="comp-card alt" data-reveal data-d="3">
       <div class="comp-head">
-        <span class="comp-option-icon">🤷</span>
-        <div class="comp-badge">High risk</div>
-        <div class="comp-option">On your own</div>
+        <span class="comp-option-icon">🧭</span>
+        <div class="comp-badge">Where everyone starts</div>
+        <div class="comp-option">Your Own Instincts</div>
         <div class="comp-cost">
-          <strong>Free</strong>
-          paid in missed windows
+          <strong>Free, always</strong>
+          and genuinely underrated
         </div>
       </div>
       <div class="comp-pain">
-        Most parents wing it. They Google things when something seems off. By then, the window has often closed. You don't know what you don't know — and that's the problem.
+        Your gut matters. So does Googling things at 2am — that's a time-honoured parenting tradition. Scout just makes the 2am searches a little less necessary.
       </div>
       <div class="comp-rows">
         <div class="comp-row">
@@ -686,15 +762,15 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
       <div class="comp-footer">
-        <div class="comp-footer-line">The most common choice. The riskiest.</div>
+        <div class="comp-footer-line">Trust your gut.</div>
       </div>
     </div>
 
-    <!-- Option 4: Scout (the obvious choice) -->
+    <!-- Option 4: Scout -->
     <div class="comp-card scout" data-reveal data-d="4">
       <div class="comp-head">
         <span class="comp-option-icon">🌱</span>
-        <div class="comp-badge">The obvious choice</div>
+        <div class="comp-badge">The missing layer</div>
         <div class="comp-option" style="color:#fff">FamilyForce Scout</div>
         <div class="comp-cost" style="color:rgba(255,255,255,.6)">
           <strong style="color:#fff">$6.67/mo</strong>
@@ -702,7 +778,7 @@ a { color: inherit; text-decoration: none; }
         </div>
       </div>
       <div class="comp-pain" style="color:rgba(255,255,255,.65)">
-        Everything your child needs this month — specific, prioritised, and timed. Built for the first three years. Backed by AAP, CDC, and WHO. Less than a single co-pay for the whole year.
+        Everything you're already doing — with a layer that knows your child's exact age, tracks the open windows, and tells you what matters this month. Not in general. Right now.
       </div>
       <div class="comp-rows">
         <div class="comp-row">
@@ -736,6 +812,33 @@ a { color: inherit; text-decoration: none; }
     </div>
 
   </div><!-- /comp-grid -->
+</section>
+
+<!-- ════════════════════════════════════════════════
+     STATS — The windows are real
+     ════════════════════════════════════════════════ -->
+<section class="stats-section">
+  <div class="stats-inner">
+    <div class="stats-header" data-reveal>
+      <span class="section-label">The Science</span>
+      <h2>The windows are real.<br><em>And they close.</em></h2>
+      <p>Every month has a job. Scout makes sure you know what it is.</p>
+    </div>
+    <div class="stats-grid" data-reveal data-d="80">
+      <div class="stat-card">
+        <div class="stat-number">80%</div>
+        <p class="stat-body">Children whose parents introduce allergens in the <strong>4–11 month window</strong> are 80% less likely to develop peanut allergies.</p>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">2mo</div>
+        <p class="stat-body">6-month-olds who sleep train reach <strong>developmental milestones 2 months earlier</strong> on average.</p>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">11</div>
+        <p class="stat-body">The average parent misses <strong>11 critical developmental windows</strong> in the first 3 years. Scout makes sure you don't miss a single one.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ════════════════════════════════════════════════
