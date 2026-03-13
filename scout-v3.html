@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE SCOUT — v3 Design Mock-up
+     Concept: Airbnb early-days — make Scout the obvious choice
+     Designer brief: convince exhausted new parents in 5 scrolls
+     Stack: Vanilla HTML/CSS/JS · zero dependencies
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>FamilyForce Scout — Know what your child needs. Right now.</title>
+<meta name="description" content="The first three years have critical windows. Scout tells you what's open, what's closing, and what to do — for your child's exact age. 7 days free.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+/* ─── TOKENS ─── */
+:root {
+  --bg:           #FAFAFA;
+  --surface:      #FFFFFF;
+  --border:       #E5E2EC;
+  --border-light: #EDEBF2;
+  --text:         #1D1D1F;
+  --text-mid:     #5C5960;
+  --text-dim:     #8A879A;
+  --terra:        #6E4ED6;
+  --terra-dark:   #5B3CC4;
+  --terra-tint:   #F0EBFF;
+  --indigo-deep:  #1E1248;
+  --sans:         'Outfit', system-ui, sans-serif;
+  --serif:        'Instrument Serif', Georgia, serif;
+  --rx:           clamp(20px, 5vw, 64px);
+  --max:          1100px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+::selection { background: rgba(110,78,214,.15); }
+:focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; border-radius: 4px; }
+
+/* ─── NAV ─── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(250,250,250,.94);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-light);
+  height: 64px;
+}
+.nav-inner {
+  max-width: var(--max); margin: 0 auto; padding: 0 var(--rx);
+  height: 100%; display: flex; align-items: center; justify-content: space-between;
+}
+.logo {
+  font-size: 16px; font-weight: 800; letter-spacing: -.02em; color: var(--text);
+  display: flex; align-items: center; gap: 7px;
+}
+.logo svg { flex-shrink: 0; }
+.logo-mark { color: var(--terra); }
+.nav-links { display: flex; align-items: center; gap: 24px; list-style: none; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-mid); transition: color .15s; }
+.nav-links a.active { color: var(--terra); font-weight: 700; }
+@media (hover:hover) { .nav-links a:hover { color: var(--terra); } }
+.nav-cta {
+  background: var(--terra); color: #fff; font-size: 13px; font-weight: 700;
+  padding: 9px 20px; border-radius: 100px; border: none; cursor: pointer;
+  transition: background .15s; white-space: nowrap;
+}
+@media (hover:hover) { .nav-cta:hover { background: var(--terra-dark); } }
+@media (max-width: 600px) { .nav-links { display: none; } }
+
+/* ─── HERO ─── */
+.hero {
+  padding: calc(64px + 56px) var(--rx) 64px;
+  background: linear-gradient(160deg, var(--indigo-deep) 0%, #2D1A7A 50%, #4A2EA8 100%);
+  text-align: center; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,252,.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-inner { max-width: var(--max); margin: 0 auto; position: relative; z-index: 1; }
+.hero-kicker {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+  border-radius: 100px; padding: 5px 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.75); margin-bottom: 20px;
+}
+.hero-kicker-dot { width: 6px; height: 6px; border-radius: 50%; background: #A78BFF; }
+.hero-h1 {
+  font-family: var(--serif); font-size: clamp(32px, 6vw, 60px);
+  line-height: 1.08; letter-spacing: -.03em; color: #fff; margin-bottom: 16px;
+}
+.hero-h1 em { font-style: italic; color: #A78BFF; }
+.hero-sub {
+  font-size: clamp(15px, 2.5vw, 18px); line-height: 1.7;
+  color: rgba(255,255,255,.65); max-width: 520px;
+  margin: 0 auto 40px;
+}
+
+/* Widget container */
+.hero-widget-wrap {
+  max-width: 520px; margin: 0 auto 32px;
+  border-radius: 24px; overflow: hidden;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 40px 100px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.05);
+}
+.hero-trust {
+  display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;
+  font-size: 12px; color: rgba(255,255,255,.45); font-weight: 500;
+}
+.hero-trust-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.25); }
+
+/* ── Widget internals ── */
+.w-header { padding: 22px 22px 14px; }
+.w-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: #A78BFF; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.w-title {
+  font-family: var(--serif); font-size: 20px; line-height: 1.25;
+  color: #fff; letter-spacing: -.015em;
+}
+.w-title em { font-style: italic; color: #A78BFF; }
+.w-personas {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 7px; padding: 0 22px 14px;
+}
+.w-persona {
+  background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12);
+  border-radius: 14px; padding: 11px 8px; text-align: center;
+  cursor: pointer; transition: all .2s; user-select: none;
+}
+.w-persona:hover { background: rgba(255,255,255,.12); }
+.w-persona.active {
+  background: rgba(167,139,255,.18); border-color: #A78BFF;
+}
+.w-persona-icon { font-size: 20px; display: block; margin-bottom: 5px; }
+.w-persona-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.88); display: block; line-height: 1.3; }
+.w-persona.active .w-persona-label { color: #C4B5FD; }
+.w-persona-sub { font-size: 10px; color: rgba(255,255,255,.38); display: block; margin-top: 2px; }
+.w-persona.active .w-persona-sub { color: rgba(167,139,255,.6); }
+.w-divider { height: 1px; background: rgba(255,255,255,.08); }
+.w-stage-row { padding: 11px 22px 7px; display: flex; align-items: center; gap: 9px; }
+.w-stage-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(167,139,255,.15); border: 1px solid rgba(167,139,255,.25);
+  border-radius: 100px; padding: 4px 11px;
+  font-size: 11px; font-weight: 700; color: #C4B5FD;
+}
+.w-stage-dot { width: 5px; height: 5px; border-radius: 50%; background: #A78BFF; flex-shrink: 0; }
+.w-stage-desc { font-size: 11px; color: rgba(255,255,255,.38); }
+.w-windows { padding: 2px 14px 6px; display: flex; flex-direction: column; gap: 5px; }
+.w-row {
+  display: flex; gap: 10px; align-items: flex-start;
+  border-radius: 11px; padding: 10px 11px;
+}
+.w-row.urgent { background: rgba(251,191,36,.1);  border: 1px solid rgba(251,191,36,.2); }
+.w-row.open   { background: rgba(167,139,255,.1); border: 1px solid rgba(167,139,255,.16); }
+.w-row.closed { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); opacity: .55; }
+.w-row.coming { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); }
+.w-row-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+.w-row-body { flex: 1; min-width: 0; }
+.w-row-tag { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
+.w-row.urgent .w-row-tag { color: #FBBF24; }
+.w-row.open   .w-row-tag { color: #A78BFF; }
+.w-row.closed .w-row-tag, .w-row.coming .w-row-tag { color: rgba(255,255,255,.3); }
+.w-row-title { font-size: 12.5px; font-weight: 700; line-height: 1.3; margin-bottom: 1px; }
+.w-row.closed .w-row-title { color: rgba(255,255,255,.38); }
+.w-row:not(.closed) .w-row-title { color: #fff; }
+.w-row-desc { font-size: 11px; line-height: 1.5; }
+.w-row.closed .w-row-desc { color: rgba(255,255,255,.25); }
+.w-row:not(.closed) .w-row-desc { color: rgba(255,255,255,.52); }
+.w-row-badge {
+  flex-shrink: 0; font-size: 9.5px; font-weight: 700; padding: 3px 8px;
+  border-radius: 100px; white-space: nowrap; align-self: flex-start; margin-top: 1px;
+}
+.w-row.urgent .w-row-badge { background: rgba(251,191,36,.15); color: #FBBF24; border: 1px solid rgba(251,191,36,.25); }
+.w-row.open   .w-row-badge { background: rgba(167,139,255,.18); color: #C4B5FD; border: 1px solid rgba(167,139,255,.25); }
+.w-row.closed .w-row-badge, .w-row.coming .w-row-badge { background: rgba(255,255,255,.05); color: rgba(255,255,255,.3); border: 1px solid rgba(255,255,255,.08); }
+.w-cta {
+  padding: 14px 16px 18px; border-top: 1px solid rgba(255,255,255,.09); margin-top: 5px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.w-cta-btn {
+  display: block; width: 100%; text-align: center;
+  background: #fff; color: var(--terra-dark);
+  font-family: var(--sans); font-size: 14px; font-weight: 700;
+  padding: 13px; border-radius: 100px; cursor: pointer; border: none;
+  transition: transform .15s, box-shadow .15s;
+}
+@media (hover:hover) { .w-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.3); } }
+.w-cta-note { text-align: center; font-size: 10.5px; color: rgba(255,255,255,.28); }
+
+/* ─── THREE THINGS ─── */
+.three-things {
+  padding: 88px var(--rx) 80px; background: var(--bg);
+}
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--terra); margin-bottom: 14px; display: block;
+}
+.section-title {
+  font-family: var(--serif); font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.1; letter-spacing: -.025em; color: var(--text);
+  margin-bottom: 48px;
+}
+.section-title em { font-style: italic; color: var(--terra); }
+.three-grid {
+  max-width: var(--max); margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+}
+.thing-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px 24px 32px;
+  position: relative; overflow: hidden;
+}
+.thing-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--terra);
+}
+.thing-num {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--terra); margin-bottom: 16px; display: block; opacity: .6;
+}
+.thing-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+.thing-title {
+  font-family: var(--serif); font-size: 22px; line-height: 1.2;
+  letter-spacing: -.015em; margin-bottom: 12px; color: var(--text);
+}
+.thing-body { font-size: 14px; line-height: 1.75; color: var(--text-mid); }
+.thing-body strong { color: var(--text); font-weight: 600; }
+@media (max-width: 780px) {
+  .three-grid { grid-template-columns: 1fr; max-width: 480px; }
+}
+
+/* ─── COMPARISON ─── */
+.comparison {
+  padding: 88px var(--rx) 96px;
+  background: linear-gradient(180deg, #F7F4FF 0%, var(--bg) 100%);
+}
+.comparison-intro { max-width: var(--max); margin: 0 auto 48px; }
+.comparison-title {
+  font-family: var(--serif); font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.1; letter-spacing: -.025em; color: var(--text);
+  margin-bottom: 14px;
+}
+.comparison-title em { font-style: italic; color: var(--terra); }
+.comparison-sub { font-size: 16px; line-height: 1.7; color: var(--text-mid); max-width: 560px; }
+
+/* Cards grid */
+.comp-grid {
+  max-width: var(--max); margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  align-items: stretch;
+}
+.comp-card {
+  border-radius: 20px; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.comp-card.alt { background: var(--surface); border: 1px solid var(--border); }
+.comp-card.scout { background: var(--indigo-deep); box-shadow: 0 20px 60px rgba(30,18,72,.3); }
+
+.comp-head {
+  padding: 22px 20px 18px;
+  border-bottom: 1px solid;
+}
+.comp-card.alt .comp-head { border-color: var(--border); }
+.comp-card.scout .comp-head { border-color: rgba(255,255,255,.12); }
+
+.comp-badge {
+  font-size: 9.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 100px; margin-bottom: 12px; display: inline-block;
+}
+.comp-card.alt .comp-badge { background: #FEF2F2; color: #DC2626; }
+.comp-card.scout .comp-badge { background: rgba(167,139,255,.25); color: #C4B5FD; border: 1px solid rgba(167,139,255,.3); }
+
+.comp-option {
+  font-size: 16px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 6px;
+}
+.comp-card.alt .comp-option { color: var(--text); }
+.comp-card.scout .comp-option { color: #fff; }
+
+.comp-option-icon { font-size: 24px; display: block; margin-bottom: 10px; }
+
+.comp-cost {
+  font-size: 13px; font-weight: 500;
+}
+.comp-card.alt .comp-cost { color: var(--text-mid); }
+.comp-card.scout .comp-cost { color: rgba(255,255,255,.65); }
+
+.comp-cost strong {
+  font-size: 20px; font-weight: 800; letter-spacing: -.02em; display: block; margin-bottom: 2px;
+}
+.comp-card.alt .comp-cost strong { color: var(--text); }
+.comp-card.scout .comp-cost strong { color: #fff; }
+
+.comp-pain {
+  padding: 14px 20px; font-size: 13px; line-height: 1.6;
+  flex: 1;
+}
+.comp-card.alt .comp-pain { color: var(--text-mid); border-bottom: 1px solid var(--border); }
+.comp-card.scout .comp-pain { color: rgba(255,255,255,.65); border-bottom: 1px solid rgba(255,255,255,.1); }
+
+.comp-rows { padding: 8px 0 0; }
+.comp-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px;
+  font-size: 13px;
+  border-bottom: 1px solid;
+}
+.comp-row:last-child { border-bottom: none; }
+.comp-card.alt .comp-row { border-color: var(--border-light); color: var(--text-mid); }
+.comp-card.scout .comp-row { border-color: rgba(255,255,255,.07); color: rgba(255,255,255,.75); }
+
+.comp-check {
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.comp-check.yes { background: rgba(110,78,214,.12); }
+.comp-check.no  { background: rgba(0,0,0,.05); }
+.comp-card.scout .comp-check.yes { background: rgba(167,139,255,.25); }
+.comp-card.scout .comp-check.no  { background: rgba(255,255,255,.07); }
+
+.comp-card .comp-footer {
+  padding: 16px 20px;
+}
+.comp-card.alt .comp-footer { background: #FAFAFA; border-top: 1px solid var(--border); }
+.comp-card.scout .comp-footer { border-top: 1px solid rgba(255,255,255,.1); }
+
+.comp-footer-line {
+  font-size: 12px; font-weight: 600;
+}
+.comp-card.alt .comp-footer-line { color: #DC2626; }
+.comp-card.scout .comp-footer-line { color: #A78BFF; }
+
+@media (max-width: 900px) {
+  .comp-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 540px) {
+  .comp-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+}
+
+/* ─── FINAL CTA ─── */
+.final {
+  padding: 96px var(--rx);
+  background: linear-gradient(160deg, var(--indigo-deep) 0%, #2D1A7A 50%, #4A2EA8 100%);
+  text-align: center;
+}
+.final-inner { max-width: 580px; margin: 0 auto; }
+.final-h2 {
+  font-family: var(--serif); font-size: clamp(30px, 5vw, 50px);
+  line-height: 1.1; letter-spacing: -.03em; color: #fff; margin-bottom: 16px;
+}
+.final-h2 em { font-style: italic; color: #A78BFF; }
+.final-sub { font-size: 16px; line-height: 1.75; color: rgba(255,255,255,.6); margin-bottom: 36px; }
+.final-btn {
+  display: inline-block; background: #fff; color: var(--terra-dark);
+  font-family: var(--sans); font-size: 16px; font-weight: 800;
+  padding: 17px 40px; border-radius: 100px; border: none; cursor: pointer;
+  text-decoration: none; transition: transform .2s, box-shadow .2s;
+  letter-spacing: -.01em;
+}
+@media (hover:hover) { .final-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.3); } }
+.final-note { margin-top: 16px; font-size: 12px; color: rgba(255,255,255,.35); }
+.final-trust {
+  margin-top: 28px; display: flex; align-items: center; justify-content: center;
+  gap: 20px; flex-wrap: wrap;
+}
+.final-trust-item {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12px; color: rgba(255,255,255,.45); font-weight: 500;
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,.07);
+  padding: 32px var(--rx);
+  text-align: center;
+}
+.footer-logo {
+  font-size: 15px; font-weight: 800; color: rgba(255,255,255,.6); letter-spacing: -.01em;
+}
+.footer-logo span { color: #A78BFF; }
+.footer-links {
+  display: flex; align-items: center; justify-content: center; gap: 24px;
+  margin-top: 16px; flex-wrap: wrap;
+}
+.footer-links a { font-size: 12px; color: rgba(255,255,255,.35); transition: color .15s; }
+@media (hover:hover) { .footer-links a:hover { color: rgba(255,255,255,.7); } }
+
+/* ─── REVEAL ─── */
+[data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+[data-reveal].visible { opacity: 1; transform: none; }
+[data-d="1"] { transition-delay: .08s; }
+[data-d="2"] { transition-delay: .16s; }
+[data-d="3"] { transition-delay: .24s; }
+@media (prefers-reduced-motion: reduce) { [data-reveal] { opacity: 1; transform: none; } }
+
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════
+     NAV
+     ════════════════════════════════════════════════ -->
+<nav class="nav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" aria-label="FamilyForce home">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Family<span class="logo-mark">Force</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html#library">Playbooks</a></li>
+      <li><a href="scout.html" class="active">Scout</a></li>
+    </ul>
+    <a href="sign-in.html" class="nav-cta">Try Free for 7 Days</a>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════════
+     HERO — Widget front and centre
+     ════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-kicker">
+      <div class="hero-kicker-dot"></div>
+      FamilyForce Scout
+    </div>
+
+    <h1 class="hero-h1" data-reveal>
+      Your child's development<br>is on a <em>schedule.</em>
+    </h1>
+
+    <p class="hero-sub" data-reveal data-d="1">
+      The first three years have critical windows. Miss them and they close. Pick your situation below — see what's open right now.
+    </p>
+
+    <!-- THE WIDGET -->
+    <div class="hero-widget-wrap" data-reveal data-d="2">
+      <div class="w-header">
+        <div class="w-eyebrow">
+          <svg width="10" height="11" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#A78BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Live milestone preview
+        </div>
+        <div class="w-title">What's open <em>for your child right now</em></div>
+      </div>
+
+      <div class="w-personas">
+        <div class="w-persona" id="p0" onclick="selectPersona(0)">
+          <span class="w-persona-icon">🤱</span>
+          <span class="w-persona-label">Expecting</span>
+          <span class="w-persona-sub">~8 weeks out</span>
+        </div>
+        <div class="w-persona" id="p1" onclick="selectPersona(1)">
+          <span class="w-persona-icon">👶</span>
+          <span class="w-persona-label">5 months old</span>
+          <span class="w-persona-sub">22 weeks</span>
+        </div>
+        <div class="w-persona" id="p2" onclick="selectPersona(2)">
+          <span class="w-persona-icon">🧒</span>
+          <span class="w-persona-label">1 year old</span>
+          <span class="w-persona-sub">52 weeks</span>
+        </div>
+      </div>
+
+      <div class="w-divider"></div>
+
+      <div class="w-stage-row">
+        <div class="w-stage-pill"><div class="w-stage-dot"></div><span id="w-stage"></span></div>
+        <div class="w-stage-desc" id="w-stage-desc"></div>
+      </div>
+
+      <div class="w-windows" id="w-windows"></div>
+
+      <div class="w-cta">
+        <a href="sign-in.html" class="w-cta-btn">Get my full personalised digest →</a>
+        <div class="w-cta-note">7 days free · no card required · cancel anytime</div>
+      </div>
+    </div>
+
+    <div class="hero-trust" data-reveal data-d="3">
+      <div class="hero-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        197 milestones tracked
+      </div>
+      <div class="hero-trust-dot"></div>
+      <div class="hero-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        AAP · CDC · WHO sourced
+      </div>
+      <div class="hero-trust-dot"></div>
+      <div class="hero-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Whole family included
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     THREE THINGS THAT CHANGE
+     ════════════════════════════════════════════════ -->
+<section class="three-things">
+  <div style="max-width:var(--max);margin:0 auto">
+    <span class="section-label" data-reveal>What Scout does</span>
+    <h2 class="section-title" data-reveal>Three things that <em>change</em><br>when you use it.</h2>
+    <div class="three-grid">
+
+      <div class="thing-card" data-reveal data-d="1">
+        <span class="thing-num">01</span>
+        <span class="thing-icon">🎯</span>
+        <h3 class="thing-title">You stop Googling and start knowing.</h3>
+        <p class="thing-body">Googling "what should a 4-month-old be doing" gives you 10 articles with 50 things each. Scout gives you a <strong>short, prioritised list for your child's exact age.</strong> Nothing extra. Nothing missed.</p>
+      </div>
+
+      <div class="thing-card" data-reveal data-d="2">
+        <span class="thing-num">02</span>
+        <span class="thing-icon">⏱️</span>
+        <h3 class="thing-title">You stop finding out too late.</h3>
+        <p class="thing-body">Most parents learn about the peanut window after it closes. Miss the speech check at 18 months. Start sleep training at 11 months instead of 6. <strong>Scout watches the timeline</strong> — so you don't have to.</p>
+      </div>
+
+      <div class="thing-card" data-reveal data-d="3">
+        <span class="thing-num">03</span>
+        <span class="thing-icon">👨‍👩‍👧</span>
+        <h3 class="thing-title">Everyone in your family knows.</h3>
+        <p class="thing-body">Not just you. Your partner, your parents, your caregiver. <strong>One subscription, unlimited family members.</strong> Because the person who reads the milestone card shouldn't be the only one who acts on it.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     COMPARISON — The "obvious choice" table
+     ════════════════════════════════════════════════ -->
+<section class="comparison">
+  <div class="comparison-intro" data-reveal>
+    <span class="section-label">Why Scout</span>
+    <h2 class="comparison-title">There are four ways<br>to handle this. <em>One is obvious.</em></h2>
+    <p class="comparison-sub">Every parent figures out their child's development somehow. Here's what the four options actually cost you — in money, time, and missed windows.</p>
+  </div>
+
+  <div class="comp-grid">
+
+    <!-- Option 1: Doctor visits -->
+    <div class="comp-card alt" data-reveal data-d="1">
+      <div class="comp-head">
+        <span class="comp-option-icon">🏥</span>
+        <div class="comp-badge">High cost</div>
+        <div class="comp-option">Doctor visits</div>
+        <div class="comp-cost">
+          <strong>$50–200</strong>
+          per visit · 8+ visits in year one
+        </div>
+      </div>
+      <div class="comp-pain">
+        Great for emergencies. But your pediatrician has 15 minutes. They can't tell you what to watch for in the next 4 weeks. And they're not there at 11pm when you're wondering if something's off.
+      </div>
+      <div class="comp-rows">
+        <div class="comp-row">
+          <div class="comp-check no">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Specific to your child's age today
+        </div>
+        <div class="comp-row">
+          <div class="comp-check no">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Warns before windows close
+        </div>
+        <div class="comp-row">
+          <div class="comp-check no">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Available at 11pm
+        </div>
+        <div class="comp-row">
+          <div class="comp-check no">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Whole family included
+        </div>
+      </div>
+      <div class="comp-footer">
+        <div class="comp-footer-line">$1,000+ in year one alone</div>
+      </div>
+    </div>
+
+    <!-- Option 2: Parenting books -->
+    <div class="comp-card alt" data-reveal data-d="2">
+      <div class="comp-head">
+        <span class="comp-option-icon">📚</span>
+        <div class="comp-badge">High effort</div>
+        <div class="comp-option">10 parenting books</div>
+        <div class="comp-cost">
+          <strong>$150–200</strong>
+          plus hundreds of hours of reading
+        </div>
+      </div>
+      <div class="comp-pain">
+        Lots of general wisdom. None of it says "your child is 14 weeks old — here's exactly what matters this month." By the time you've read about it, the window has moved.
+      </div>
+      <div class="comp-rows">
+        <div class="comp-row">
+          <div class="comp-check no">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Specific to your child's age today
+        </div>
+        <div class="comp-row">
+          <div class="comp-check no">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Warns before windows close
+        </div>
+        <div class="comp-row">
+          <div class="comp-check yes">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#6E4ED6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          Available at 11pm
+        </div>
+        <div class="comp-row">
+          <div class="comp-check no">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Whole family included
+        </div>
+      </div>
+      <div class="comp-footer">
+        <div class="comp-footer-line">Hundreds of hours. Zero personalisation.</div>
+      </div>
+    </div>
+
+    <!-- Option 3: On your own -->
+    <div class="comp-card alt" data-reveal data-d="3">
+      <div class="comp-head">
+        <span class="comp-option-icon">🤷</span>
+        <div class="comp-badge">High risk</div>
+        <div class="comp-option">On your own</div>
+        <div class="comp-cost">
+          <strong>Free</strong>
+          paid in missed windows
+        </div>
+      </div>
+      <div class="comp-pain">
+        Most parents wing it. They Google things when something seems off. By then, the window has often closed. You don't know what you don't know — and that's the problem.
+      </div>
+      <div class="comp-rows">
+        <div class="comp-row">
+          <div class="comp-check no">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Specific to your child's age today
+        </div>
+        <div class="comp-row">
+          <div class="comp-check no">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Warns before windows close
+        </div>
+        <div class="comp-row">
+          <div class="comp-check no">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Available at 11pm
+        </div>
+        <div class="comp-row">
+          <div class="comp-check no">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </div>
+          Whole family included
+        </div>
+      </div>
+      <div class="comp-footer">
+        <div class="comp-footer-line">The most common choice. The riskiest.</div>
+      </div>
+    </div>
+
+    <!-- Option 4: Scout (the obvious choice) -->
+    <div class="comp-card scout" data-reveal data-d="4">
+      <div class="comp-head">
+        <span class="comp-option-icon">🌱</span>
+        <div class="comp-badge">The obvious choice</div>
+        <div class="comp-option" style="color:#fff">FamilyForce Scout</div>
+        <div class="comp-cost" style="color:rgba(255,255,255,.6)">
+          <strong style="color:#fff">$6.67/mo</strong>
+          billed $79.99/year · 7 days free
+        </div>
+      </div>
+      <div class="comp-pain" style="color:rgba(255,255,255,.65)">
+        Everything your child needs this month — specific, prioritised, and timed. Built for the first three years. Backed by AAP, CDC, and WHO. Less than a single co-pay for the whole year.
+      </div>
+      <div class="comp-rows">
+        <div class="comp-row">
+          <div class="comp-check yes" style="background:rgba(167,139,255,.25)">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          Specific to your child's age today
+        </div>
+        <div class="comp-row">
+          <div class="comp-check yes" style="background:rgba(167,139,255,.25)">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          Warns before windows close
+        </div>
+        <div class="comp-row">
+          <div class="comp-check yes" style="background:rgba(167,139,255,.25)">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          Available at 11pm
+        </div>
+        <div class="comp-row">
+          <div class="comp-check yes" style="background:rgba(167,139,255,.25)">
+            <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          Whole family included
+        </div>
+      </div>
+      <div class="comp-footer" style="border-top:1px solid rgba(255,255,255,.1)">
+        <a href="sign-in.html" style="display:block;text-align:center;background:#fff;color:var(--terra-dark);font-weight:700;font-size:13px;padding:12px;border-radius:100px;text-decoration:none;transition:transform .15s">Start Free for 7 Days →</a>
+      </div>
+    </div>
+
+  </div><!-- /comp-grid -->
+</section>
+
+<!-- ════════════════════════════════════════════════
+     FINAL CTA
+     ════════════════════════════════════════════════ -->
+<section class="final">
+  <div class="final-inner">
+    <h2 class="final-h2" data-reveal>
+      The window is<br><em>open right now.</em>
+    </h2>
+    <p class="final-sub" data-reveal data-d="1">Seven days free. No card required. Add your child and get your first digest in under 60 seconds.</p>
+    <a href="sign-in.html" class="final-btn" data-reveal data-d="2">Try Scout Free for 7 Days</a>
+    <p class="final-note">$79.99/year after your free trial. That's $6.67/month. Cancel anytime.</p>
+    <div class="final-trust" data-reveal data-d="3">
+      <div class="final-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        No card required
+      </div>
+      <div class="hero-trust-dot" style="background:rgba(255,255,255,.2)"></div>
+      <div class="final-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Cancel anytime
+      </div>
+      <div class="hero-trust-dot" style="background:rgba(255,255,255,.2)"></div>
+      <div class="final-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Whole family included
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-logo">Family<span>Force</span></div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="scout.html">Scout</a>
+    <a href="index.html#library">Playbooks</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+  </div>
+</footer>
+
+<!-- ════════════════════════════════════════════════
+     WIDGET JS
+     ════════════════════════════════════════════════ -->
+<script>
+const PERSONAS = [
+  {
+    stage: 'Expecting',
+    stageDesc: '~8 weeks to go',
+    windows: [
+      { status:'urgent', icon:'🏥', tag:'Do this now',   title:'Choose your pediatrician',        desc:'Book your meet-the-doctor appointment before the baby arrives. Most practices book out 4–6 weeks.',                       badge:'Due now' },
+      { status:'urgent', icon:'🚗', tag:'Do this now',   title:'Install the car seat',             desc:'Must be installed and inspected before discharge. 72% of seats are installed incorrectly — get it checked.',              badge:'Due now' },
+      { status:'open',   icon:'🧠', tag:'Window open',   title:'Infant CPR class',                 desc:'One session. Most hospitals run them monthly. You\'ll never regret knowing this.',                                        badge:'Book now' },
+      { status:'open',   icon:'📋', tag:'Coming soon',   title:'Newborn screening tests',          desc:'PKU, hearing, cardiac — done at the hospital within 24–48 hours of birth.',                                              badge:'At birth' },
+      { status:'open',   icon:'🛏️', tag:'Do before birth', title:'Safe sleep setup',                  desc:'Firm surface, no loose bedding, room-sharing (not bed-sharing). Set it up now — you won\'t have bandwidth after.',      badge:'Before birth' },
+      { status:'open',   icon:'🤱', tag:'Book now',       title:'Lactation consultant',              desc:'Line one up before delivery. Feeding issues are far easier to prevent than fix at 3am with a screaming newborn.',       badge:'Book now' },
+    ]
+  },
+  {
+    stage: 'Infant stage',
+    stageDesc: '5 months old · 22 weeks',
+    windows: [
+      { status:'urgent', icon:'🥜', tag:'⚠ Act this month', title:'Peanut window — open now',          desc:'Ideal: 4–6 months. This is your moment. One spoonful of peanut butter puree could prevent a lifelong allergy.',          badge:'Closing soon' },
+      { status:'open',   icon:'😴', tag:'Opens in 4 weeks',  title:'Sleep training window approaching', desc:'6–9 months is fastest and lowest-stress. Start building a consistent bedtime routine right now.',                        badge:'Coming fast' },
+      { status:'open',   icon:'🦷', tag:'Due this month',    title:'First dental visit',                desc:'AAP recommends the first visit by 12 months. Paediatric dentists book out — schedule ahead.',                          badge:'Book ahead' },
+      { status:'open',   icon:'👁️', tag:'Due at 6 months',   title:'6-month vision check',              desc:'Strabismus and amblyopia are most treatable when caught early. Ask at your 6-month well-child visit.',                 badge:'Next visit' },
+      { status:'coming', icon:'💬', tag:'Coming up',         title:'Speech milestones',                 desc:'5+ words at 12 months, 10 by 15 months. Start counting now — earlier detection changes outcomes.',                    badge:'At 12 months' },
+      { status:'coming', icon:'🚽', tag:'Coming up',         title:'Potty training readiness',          desc:'Signs emerge at 18–24 months. Know what to look for before you\'re in the middle of it.',                            badge:'At 18 months' },
+    ]
+  },
+  {
+    stage: 'Toddler stage',
+    stageDesc: '1 year old · 52 weeks',
+    windows: [
+      { status:'urgent', icon:'💬', tag:'⚠ Watch now',       title:'Speech window',                    desc:'10–25 words by 18 months — you\'re 6 months away. If you\'re not hearing new words weekly, flag it now.',              badge:'6 months left' },
+      { status:'urgent', icon:'🦷', tag:'⚠ Overdue',         title:'First dental visit',               desc:'AAP recommends by 12 months. If not done — book this week. Early cavities affect adult teeth.',                       badge:'Book now' },
+      { status:'open',   icon:'🚽', tag:'Window opening',     title:'Potty training readiness signs',   desc:'Signs begin at 18–24 months. The earlier you know what to look for, the smoother the process.',                       badge:'In 6 months' },
+      { status:'open',   icon:'📚', tag:'Critical window',    title:'Read every day',                   desc:'Vocabulary at age 3 predicts reading ability at age 8. 15 minutes a day — the highest-ROI parenting habit.',          badge:'Every day' },
+      { status:'open',   icon:'🍽️', tag:'Watch now',          title:'Food texture progression',         desc:'Toddlers should be on family foods by 12 months. Purees past 12 months can cause lasting texture aversion.',          badge:'Act now' },
+      { status:'closed', icon:'😴', tag:'✗ Window closed',    title:'Sleep training optimal window',    desc:'Easiest window was 6–9 months. Still possible now — just harder. Scout has a protocol for this age.',                  badge:'Closed at 9mo' },
+    ]
+  }
+];
+
+let current = 0;
+
+function selectPersona(i) {
+  current = i;
+  document.querySelectorAll('.w-persona').forEach((el, idx) => el.classList.toggle('active', idx === i));
+  render();
+}
+
+function render() {
+  const p = PERSONAS[current];
+  document.getElementById('w-stage').textContent      = p.stage;
+  document.getElementById('w-stage-desc').textContent = p.stageDesc;
+  const list = document.getElementById('w-windows');
+  list.innerHTML = '';
+  p.windows.forEach(w => {
+    const el = document.createElement('div');
+    el.className = 'w-row ' + w.status;
+    el.innerHTML =
+      '<div class="w-row-icon">' + w.icon + '</div>' +
+      '<div class="w-row-body">' +
+        '<div class="w-row-tag">' + w.tag + '</div>' +
+        '<div class="w-row-title">' + w.title + '</div>' +
+        '<div class="w-row-desc">' + w.desc + '</div>' +
+      '</div>' +
+      '<div class="w-row-badge">' + w.badge + '</div>';
+    list.appendChild(el);
+  });
+}
+
+// Reveal on scroll
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.1 });
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+
+// Init widget
+selectPersona(0);
+</script>
+
+</body>
+</html>
