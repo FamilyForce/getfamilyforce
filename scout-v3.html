@@ -45,37 +45,129 @@ a { color: inherit; text-decoration: none; }
 
 /* ─── NAV ─── */
 .nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  background: rgba(250,250,250,.94);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250,250,250,.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-light);
-  height: 64px;
 }
 .nav-inner {
-  max-width: var(--max); margin: 0 auto; padding: 0 var(--rx);
-  height: 100%; display: flex; align-items: center; justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--rx);
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
 }
 .logo {
-  font-size: 16px; font-weight: 800; letter-spacing: -.02em; color: var(--text);
-  display: flex; align-items: center; gap: 7px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text);
+  letter-spacing: -.01em;
+  flex-shrink: 0;
 }
-.logo svg { flex-shrink: 0; }
-.logo-mark { color: var(--terra); }
-.nav-links { display: flex; align-items: center; gap: 24px; list-style: none; }
-.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-mid); transition: color .15s; }
+.logo-s { color: var(--terra); }
+.nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: color .2s; }
 .nav-links a.active { color: var(--terra); font-weight: 700; }
 @media (hover:hover) { .nav-links a:hover { color: var(--terra); } }
-.nav-cta {
-  background: var(--terra); color: #fff; font-size: 13px; font-weight: 700;
-  padding: 9px 20px; border-radius: 100px; border: none; cursor: pointer;
-  transition: background .15s; white-space: nowrap;
+.btn-nav {
+  background: var(--terra);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: background .2s, transform .2s;
+  letter-spacing: .01em;
+  white-space: nowrap;
 }
-@media (hover:hover) { .nav-cta:hover { background: var(--terra-dark); } }
-@media (max-width: 600px) { .nav-links { display: none; } }
+@media (hover:hover) { .btn-nav:hover { background: var(--terra-dark); transform: translateY(-1px); } }
+@media (max-width: 640px) { .nav-links { display: none; } .btn-nav { display: none; } }
+
+/* ─── HAMBURGER / MOBILE MENU ─── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-left: 4px;
+}
+.hamburger span {
+  display: block;
+  height: 1.5px;
+  background: var(--text);
+  border-radius: 1px;
+  transition: transform .3s, opacity .3s;
+}
+.hamburger span:nth-child(1) { width: 20px; }
+.hamburger span:nth-child(2) { width: 14px; }
+@media (max-width: 640px) { .hamburger { display: flex; } }
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  background: rgba(250,250,252,.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity .25s, visibility .25s, transform .3s;
+  pointer-events: none;
+}
+.mobile-menu.open { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+.mobile-menu-header {
+  display: flex; justify-content: space-between; align-items: center;
+  height: 64px; padding: 0 20px; border-bottom: 1px solid var(--border-light);
+}
+.mobile-menu-close {
+  background: none; border: none; font-size: 18px; color: var(--text-dim);
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: 8px;
+}
+.mobile-menu-links { flex: 1; padding: 20px; list-style: none; }
+.mobile-menu-links li a {
+  display: flex; align-items: center; min-height: 56px; padding: 12px 0;
+  border-bottom: 1px solid var(--border-light); font-size: 18px; font-weight: 500;
+  color: var(--text); text-decoration: none; font-family: var(--sans);
+}
+.mobile-menu-links li:last-child a { border-bottom: none; }
+.mobile-menu-cta {
+  padding: 20px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+}
+.mobile-menu-cta a {
+  display: block; text-align: center; background: var(--terra); color: #fff;
+  padding: 16px; border-radius: 100px; font-weight: 700; font-size: 16px;
+  text-decoration: none; font-family: var(--sans);
+}
 
 /* ─── HERO ─── */
 .hero {
-  padding: calc(64px + 56px) var(--rx) 64px;
+  padding: calc(72px + 56px) var(--rx) 64px;
   background: linear-gradient(160deg, var(--indigo-deep) 0%, #2D1A7A 50%, #4A2EA8 100%);
   text-align: center; position: relative; overflow: hidden;
 }
@@ -526,19 +618,41 @@ a { color: inherit; text-decoration: none; }
      ════════════════════════════════════════════════ -->
 <nav class="nav" aria-label="Main navigation">
   <div class="nav-inner">
-    <a href="index.html" class="logo" aria-label="FamilyForce home">
+    <a href="index.html" class="logo" aria-label="FamilyForce Home">
       <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true">
         <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      Family<span class="logo-mark">Force</span>
+      <span>Family<span class="logo-s">Force</span></span>
     </a>
-    <ul class="nav-links">
+    <ul class="nav-links" role="list">
       <li><a href="index.html#library">Playbooks</a></li>
       <li><a href="scout.html" class="active">Scout</a></li>
     </ul>
-    <a href="sign-in.html" class="nav-cta">Try Free for 7 Days</a>
+    <a href="sign-in.html" class="btn-nav">Try Free for 7 Days</a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span>
+      <span></span>
+    </button>
   </div>
 </nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="mobile-menu-header">
+    <a href="index.html" class="logo" style="font-size:17px">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Family<span class="logo-s">Force</span></span>
+    </a>
+    <button class="mobile-menu-close" id="mobile-close-btn" aria-label="Close menu">✕</button>
+  </div>
+  <ul class="mobile-menu-links" role="list">
+    <li><a href="index.html#library">Playbooks</a></li>
+    <li><a href="scout.html">Scout</a></li>
+  </ul>
+  <div class="mobile-menu-cta">
+    <a href="sign-in.html">Try Free for 7 Days →</a>
+  </div>
+</div>
 
 <!-- ════════════════════════════════════════════════
      HERO — Widget front and centre
@@ -889,6 +1003,23 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
 // Init widget
 selectPersona(0);
+
+// Mobile menu
+const hamburger = document.getElementById('hamburger-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const mobileClose = document.getElementById('mobile-close-btn');
+if (hamburger && mobileMenu) {
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  });
+  mobileClose.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  });
+}
 </script>
 
 </body>
