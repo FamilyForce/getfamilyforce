@@ -1228,6 +1228,75 @@ a { color: inherit; }
 }
 @media (max-width: 560px) { .testimonials-grid { grid-template-columns: 1fr; } }
 
+/* ─── SCOUT TEASER ─── */
+.scout-teaser {
+  background: linear-gradient(155deg, #1E1248 0%, #2D1A7A 50%, #4A2EA8 100%);
+  padding: 100px var(--space-x);
+  position: relative; overflow: hidden;
+}
+.scout-teaser::before {
+  content: ''; position: absolute; top: -200px; right: -150px;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,252,.2) 0%, transparent 65%);
+  pointer-events: none;
+}
+.scout-teaser-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  position: relative; z-index: 1;
+}
+.scout-teaser-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18);
+  border-radius: var(--radius-pill); padding: 6px 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.75); margin-bottom: 20px;
+}
+.scout-teaser-title {
+  font-family: var(--serif); font-size: clamp(30px,4.5vw,48px);
+  line-height: 1.1; letter-spacing: -.025em; color: #fff; margin-bottom: 16px;
+}
+.scout-teaser-title em { font-style: italic; color: #A78BFF; }
+.scout-teaser-body { font-size: 16px; line-height: 1.8; color: rgba(255,255,255,.65); margin-bottom: 32px; max-width: 460px; }
+.scout-teaser-body strong { color: rgba(255,255,255,.9); font-weight: 600; }
+.scout-teaser-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.scout-teaser-note { font-size: 12px; color: rgba(255,255,255,.35); margin-top: 12px; }
+
+/* Teaser mini-card */
+.scout-mini-card {
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px; overflow: hidden;
+}
+.smc-header {
+  background: rgba(255,255,255,.06); border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;
+}
+.smc-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.45); }
+.smc-badge { font-size: 11px; font-weight: 700; color: #A78BFF; background: rgba(167,139,255,.15); padding: 3px 10px; border-radius: 100px; }
+.smc-body { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.smc-row {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: rgba(255,255,255,.05); border-radius: 12px; padding: 14px;
+}
+.smc-row.urgent { border-left: 3px solid #FBBF24; background: rgba(251,191,36,.06); }
+.smc-row.normal { border-left: 3px solid #A78BFF; }
+.smc-icon { font-size: 20px; flex-shrink: 0; }
+.smc-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 3px; line-height: 1.3; }
+.smc-sub { font-size: 11.5px; color: rgba(255,255,255,.55); line-height: 1.5; }
+.smc-tag { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+.smc-tag.urgent { color: #FBBF24; }
+.smc-tag.normal { color: #A78BFF; }
+.smc-divider { height: 1px; background: rgba(255,255,255,.07); }
+.smc-progress { padding: 14px 20px 20px; }
+.smc-progress-label { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,.45); margin-bottom: 7px; }
+.smc-progress-bar { height: 5px; background: rgba(255,255,255,.1); border-radius: 99px; overflow: hidden; }
+.smc-progress-fill { height: 5px; background: #A78BFF; border-radius: 99px; }
+
+@media (max-width: 900px) {
+  .scout-teaser-inner { grid-template-columns: 1fr; gap: 48px; }
+  .scout-mini-card { max-width: 480px; }
+}
+
 /* ─── FOOTER ─── */
 .site-footer {
   background: var(--surface);
@@ -1516,6 +1585,54 @@ a { color: inherit; }
   .ba-divider { display: none; }
 }
 
+/* ─── STATS / WINDOWS SECTION ─── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  margin-top: 56px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-container);
+  overflow: hidden;
+}
+
+.stat-card {
+  padding: 48px 40px;
+  background: var(--surface);
+  position: relative;
+}
+
+.stat-card + .stat-card {
+  border-left: 1.5px solid var(--border);
+}
+
+.stat-number {
+  font-family: var(--display);
+  font-size: clamp(52px, 7vw, 80px);
+  font-weight: 700;
+  color: var(--terra);
+  line-height: 1;
+  margin-bottom: 16px;
+  letter-spacing: -.02em;
+}
+
+.stat-body {
+  font-size: 16px;
+  color: var(--text-mid);
+  line-height: 1.65;
+}
+
+.stat-body strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .stat-card + .stat-card { border-left: none; border-top: 1.5px solid var(--border); }
+  .stat-card { padding: 36px 28px; }
+}
+
 /* ─── EMAIL CAPTURE ─── */
 .email-section {
   background: linear-gradient(135deg, #1E1248 0%, #2D1B69 60%, #3D2A80 100%);
@@ -1618,8 +1735,8 @@ a { color: inherit; }
       <span>Family<span class="logo-s">Force</span></span>
     </a>
     <ul class="nav-links" role="list">
-      <li><a href="#how-it-works">How It Works</a></li>
       <li><a href="#library">Playbooks</a></li>
+      <li><a href="scout.html">Scout</a></li>
       <li><a href="sign-in.html?mode=signin">Sign In</a></li>
     </ul>
     <a href="sign-in.html" class="btn-nav">Get It Free</a>
@@ -1640,8 +1757,8 @@ a { color: inherit; }
     <button class="mobile-menu-close" id="mobile-close-btn" aria-label="Close menu">✕</button>
   </div>
   <ul class="mobile-menu-links" role="list">
-    <li><a href="#how-it-works">How It Works</a></li>
     <li><a href="#library">Playbooks</a></li>
+    <li><a href="scout.html">Scout</a></li>
     <li><a href="sign-in.html?mode=signin">Sign In</a></li>
   </ul>
   <div class="mobile-menu-cta">
@@ -2099,6 +2216,107 @@ a { color: inherit; }
     </form>
   </div>
 </div>
+
+<div class="divider" style="width:min(80%,960px)" role="separator" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCOUT TEASER
+     ═══════════════════════════════════════════════════════════ -->
+<section class="scout-teaser" aria-label="FamilyForce Scout">
+  <div class="scout-teaser-inner">
+
+    <!-- Left: Copy -->
+    <div data-reveal>
+      <div class="scout-teaser-eyebrow">
+        <svg width="11" height="12" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+          <path d="M1 15 L7 1 L13 15" stroke="#A78BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Introducing Scout
+      </div>
+      <h2 class="scout-teaser-title">
+        Read the playbook.<br>
+        Now <em>stay ahead.</em>
+      </h2>
+      <p class="scout-teaser-body">
+        Child development has <strong>critical windows</strong>. Peanut introduction. Sleep training. Speech screening. Miss them and they close. Scout tells you exactly what to focus on — right now — for your child's age. Automatically updated every month.
+      </p>
+      <div class="scout-teaser-actions">
+        <a href="scout.html" class="btn-primary" style="background:#fff;color:#5B3CC4">Learn about Scout →</a>
+        <a href="sign-in.html" style="color:rgba(255,255,255,.6);font-size:14px;font-weight:500;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.6)'">Try free for 7 days</a>
+      </div>
+      <p class="scout-teaser-note">$9.99/month · whole Family Circle included · cancel anytime</p>
+    </div>
+
+    <!-- Right: Mini product card -->
+    <div data-reveal data-d="2">
+      <div class="scout-mini-card">
+        <div class="smc-header">
+          <div class="smc-label">FamilyForce Scout</div>
+          <div class="smc-badge">🌱 14 months</div>
+        </div>
+        <div class="smc-body">
+          <div class="smc-row urgent">
+            <div class="smc-icon">🥜</div>
+            <div>
+              <div class="smc-tag urgent">⚠ Don't miss this</div>
+              <div class="smc-title">Peanut introduction window is open</div>
+              <div class="smc-sub">Up to 86% reduction in peanut allergy when introduced at 4–11 months. Window closes soon.</div>
+            </div>
+          </div>
+          <div class="smc-row normal">
+            <div class="smc-icon">💬</div>
+            <div>
+              <div class="smc-tag normal">This month</div>
+              <div class="smc-title">First words: what to listen for</div>
+              <div class="smc-sub">10+ words by 18 months. Here's what counts — and what to flag.</div>
+            </div>
+          </div>
+          <div class="smc-row normal">
+            <div class="smc-icon">🚶</div>
+            <div>
+              <div class="smc-tag normal">Ongoing</div>
+              <div class="smc-title">Independent walking</div>
+              <div class="smc-sub">Normal range: 9–18 months. Still open — no action needed yet.</div>
+            </div>
+          </div>
+        </div>
+        <div class="smc-divider"></div>
+        <div class="smc-progress">
+          <div class="smc-progress-label"><span>Current window</span><span>4 / 9 milestones</span></div>
+          <div class="smc-progress-bar"><div class="smc-progress-fill" style="width:44%"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     STATS: THE WINDOWS
+     ═══════════════════════════════════════════════════════════ -->
+<section class="section" aria-label="Why timing matters">
+  <div class="wrap">
+    <div style="max-width:640px;margin:0 auto;text-align:center" data-reveal>
+      <p class="label" style="margin-bottom:16px">The Science</p>
+      <h2 class="heading" style="margin-bottom:12px">The windows are real.<br>And they close.</h2>
+      <p style="font-size:17px;color:var(--text-mid);font-weight:300;max-width:480px;margin:0 auto">Every month has a job. FamilyForce makes sure you know what it is.</p>
+    </div>
+    <div class="stats-grid" data-reveal data-d="80">
+      <div class="stat-card">
+        <div class="stat-number">80%</div>
+        <p class="stat-body">Children whose parents introduce allergens in the <strong>4–11 month window</strong> are 80% less likely to develop peanut allergies.</p>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">2mo</div>
+        <p class="stat-body">6-month-olds who sleep train reach <strong>developmental milestones 2 months earlier</strong> on average.</p>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">11</div>
+        <p class="stat-body">The average parent misses <strong>11 critical developmental windows</strong> in the first 3 years. We make sure you don't miss a single one.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 <div class="divider" style="width:min(80%,960px)" role="separator" aria-hidden="true"></div>
 
