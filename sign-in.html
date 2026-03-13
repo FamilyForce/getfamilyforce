@@ -1059,9 +1059,13 @@ button { font: inherit; cursor: pointer; }
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
     );
     // Already signed in? Go straight to dashboard
-    window._supabaseClient.auth.getSession().then(({ data }) => {
-      if (data.session) window.location.replace('dashboard.html');
-    });
+    // — but NOT if there's a session hash in the URL (post-confirmation/OAuth redirect)
+    //   that case is handled by the hash detection code below
+    if (window.location.hash.indexOf('access_token') === -1) {
+      window._supabaseClient.auth.getSession().then(({ data }) => {
+        if (data.session) window.location.replace('dashboard.html');
+      });
+    }
 
     // Heading logic:
     // ?mode=signin  → always "Welcome back" (user clicked Sign In nav link)
