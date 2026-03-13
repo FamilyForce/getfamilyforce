@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE SCOUT — v2 Design Mock-up
+     NEW: First-1000-days positioning, annual-only pricing, persona widget in hero
+     Original: scout.html (preserved)
+     Stack: Vanilla HTML/CSS/JS (zero dependencies, no build step)
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+
+<title>FamilyForce Scout — The first 1,000 days. Built for parents who don't miss windows.</title>
+<meta name="description" content="The first three years shape everything. FamilyForce Scout tracks 197 critical development milestones so you never miss a window that matters.">
+<link rel="canonical" href="https://getfamilyforce.com/scout.html">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="FamilyForce Scout — The first 1,000 days. Don't miss a window.">
+<meta property="og:description" content="The first three years shape everything. 197 milestones. One tool.">
+<meta property="og:url" content="https://getfamilyforce.com/scout.html">
+<meta property="og:site_name" content="FamilyForce">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#6E4ED6">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+/* ─── TOKENS ─── */
+:root {
+  --bg:            #FAFAFA;
+  --surface:       #FFFFFF;
+  --elevated:      #F4F0FC;
+  --border:        #E5E2EC;
+  --border-light:  #EDEBF2;
+  --text:          #1D1D1F;
+  --text-mid:      #5C5960;
+  --text-dim:      #8A879A;
+  --text-ghost:    #C2BFD0;
+  --terra:         #6E4ED6;
+  --terra-dark:    #5B3CC4;
+  --terra-bright:  #7C5CFC;
+  --terra-glow:    rgba(110,78,214,.06);
+  --terra-tint:    #F0EBFF;
+  --indigo-deep:   #1E1248;
+  --sans:          'Outfit', system-ui, sans-serif;
+  --serif:         'Instrument Serif', Georgia, serif;
+  --space-x:       clamp(20px, 5vw, 72px);
+  --radius-card:   16px;
+  --radius-pill:   100px;
+  --ease:          cubic-bezier(.16,1,.3,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+::selection { background: rgba(110,78,214,.15); }
+:focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; border-radius: 4px; }
+
+/* ─── NAV ─── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(250,250,250,.92);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-light);
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 var(--space-x); height: 72px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.logo {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--sans); font-size: 17px; font-weight: 700;
+  text-decoration: none; color: var(--text); letter-spacing: -.01em; flex-shrink: 0;
+}
+.logo-s { color: var(--terra); }
+.nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: color .2s; }
+.nav-links a.active { color: var(--terra); font-weight: 700; }
+.nav-links a.btn-nav { color: #fff; }
+@media (hover:hover) { .nav-links a:hover { color: var(--terra); } .nav-links a.btn-nav:hover { color: #fff; } }
+.btn-nav {
+  background: var(--terra); color: #fff; font-family: var(--sans);
+  font-size: 13px; font-weight: 700; padding: 10px 20px;
+  border-radius: var(--radius-pill); border: none; cursor: pointer;
+  text-decoration: none; display: inline-flex; align-items: center;
+  transition: background .2s, transform .2s; letter-spacing: .01em;
+}
+@media (hover:hover) { .btn-nav:hover { background: var(--terra-dark); transform: translateY(-1px); } }
+@media (max-width: 640px) { .nav-links { display: none; } .btn-nav { display: none; } }
+
+/* ─── HAMBURGER ─── */
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; padding: 10px; cursor: pointer; border-radius: 8px;
+}
+.hamburger span { display: block; height: 1.5px; background: var(--text); border-radius: 1px; transition: transform .3s, opacity .3s; }
+.hamburger span:nth-child(1) { width: 20px; }
+.hamburger span:nth-child(2) { width: 14px; }
+@media (max-width: 640px) { .hamburger { display: flex; } }
+
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 1001;
+  background: rgba(250,250,252,.97); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  display: flex; flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0);
+  opacity: 0; visibility: hidden; transform: translateY(8px);
+  transition: opacity .25s, visibility .25s, transform .3s; pointer-events: none;
+}
+.mobile-menu.open { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+.mobile-menu-header {
+  display: flex; justify-content: space-between; align-items: center;
+  height: 64px; padding: 0 20px; border-bottom: 1px solid var(--border-light);
+}
+.mobile-menu-close {
+  background: none; border: none; font-size: 18px; color: var(--text-dim);
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: 8px;
+}
+.mobile-menu-links { flex: 1; padding: 20px; list-style: none; }
+.mobile-menu-links li a {
+  display: flex; align-items: center; min-height: 56px; padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 18px; font-weight: 500; color: var(--text); text-decoration: none;
+}
+.mobile-menu-links li:last-child a { border-bottom: none; }
+.mobile-menu-cta { padding: 20px; padding-bottom: max(20px, env(safe-area-inset-bottom, 0px)); }
+.mobile-menu-cta a {
+  display: block; text-align: center; background: var(--terra); color: #fff;
+  padding: 16px; border-radius: var(--radius-pill); font-weight: 700; font-size: 16px; text-decoration: none;
+}
+
+/* ─── LAYOUT ─── */
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-x); }
+.section { padding: 100px 0; }
+.section-sm { padding: 72px 0; }
+.divider { height: 1px; background: var(--border-light); }
+.label {
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--terra-dark);
+}
+.heading {
+  font-family: var(--serif); font-size: clamp(32px,5vw,52px);
+  line-height: 1.1; letter-spacing: -.025em; color: var(--text);
+}
+.heading-md {
+  font-family: var(--serif); font-size: clamp(24px,3.5vw,36px);
+  line-height: 1.2; letter-spacing: -.02em; color: var(--text);
+}
+.body-text { font-size: 16px; line-height: 1.8; color: var(--text-mid); }
+
+/* ─── BUTTONS ─── */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--terra); color: #fff; font-family: var(--sans);
+  font-size: 15px; font-weight: 700; padding: 16px 32px;
+  border-radius: var(--radius-pill); border: none; cursor: pointer;
+  text-decoration: none; transition: background .2s, transform .2s, box-shadow .2s;
+  letter-spacing: .01em; white-space: nowrap;
+}
+@media (hover:hover) { .btn-primary:hover { background: var(--terra-dark); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(110,78,214,.35); } }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--terra); font-family: var(--sans);
+  font-size: 15px; font-weight: 600; padding: 14px 28px;
+  border-radius: var(--radius-pill); border: 1.5px solid var(--terra);
+  cursor: pointer; text-decoration: none; transition: background .2s, transform .2s; white-space: nowrap;
+}
+@media (hover:hover) { .btn-secondary:hover { background: var(--terra-glow); transform: translateY(-1px); } }
+
+/* ─── REVEAL ANIMATIONS ─── */
+[data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity .55s var(--ease), transform .55s var(--ease); }
+[data-reveal].visible { opacity: 1; transform: none; }
+[data-d="1"] { transition-delay: .08s; }
+[data-d="2"] { transition-delay: .16s; }
+[data-d="3"] { transition-delay: .24s; }
+[data-d="4"] { transition-delay: .32s; }
+[data-d="5"] { transition-delay: .40s; }
+@media (prefers-reduced-motion: reduce) { [data-reveal] { opacity:1; transform:none; } }
+
+/* ════════════════════════════════════════════════
+   HERO
+   ════════════════════════════════════════════════ */
+.scout-hero {
+  padding: calc(72px + 80px) var(--space-x) 100px;
+  background: linear-gradient(155deg, var(--indigo-deep) 0%, #2D1A7A 45%, #4A2EA8 100%);
+  position: relative; overflow: hidden;
+}
+.scout-hero::before {
+  content: ''; position: absolute; top: -300px; right: -200px;
+  width: 800px; height: 800px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,252,.25) 0%, transparent 65%);
+  pointer-events: none;
+}
+.scout-hero::after {
+  content: ''; position: absolute; bottom: -100px; left: -100px;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(110,78,214,.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+.scout-hero-inner {
+  max-width: 1200px; margin: 0 auto; position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1fr 440px; gap: 72px; align-items: center;
+}
+.scout-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+  border-radius: var(--radius-pill); padding: 6px 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.8); margin-bottom: 24px;
+}
+.scout-hero-title {
+  font-family: var(--serif); font-size: clamp(38px,6vw,64px);
+  line-height: 1.08; letter-spacing: -.03em; color: #fff; margin-bottom: 20px;
+}
+.scout-hero-title em { font-style: italic; color: #A78BFF; }
+.scout-hero-sub {
+  font-size: 18px; line-height: 1.75; color: rgba(255,255,255,.72);
+  max-width: 500px; margin-bottom: 40px;
+}
+.scout-hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 48px; }
+.btn-primary-white {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #fff; color: var(--terra-dark); font-family: var(--sans);
+  font-size: 15px; font-weight: 700; padding: 16px 32px;
+  border-radius: var(--radius-pill); border: none; cursor: pointer;
+  text-decoration: none; transition: transform .2s, box-shadow .2s; white-space: nowrap;
+}
+@media (hover:hover) { .btn-primary-white:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.25); } }
+.btn-ghost-white {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: rgba(255,255,255,.75); font-size: 15px; font-weight: 500;
+  text-decoration: none; transition: color .2s; white-space: nowrap;
+}
+@media (hover:hover) { .btn-ghost-white:hover { color: #fff; } }
+.scout-hero-trust {
+  display: flex; align-items: center; gap: 28px; flex-wrap: wrap;
+}
+.scout-trust-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: rgba(255,255,255,.55); font-weight: 500;
+}
+.scout-trust-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.3); }
+
+/* Hero product card */
+.scout-hero-card {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 24px; overflow: hidden;
+  backdrop-filter: blur(12px);
+  position: relative; z-index: 1;
+}
+.shc-header {
+  background: rgba(255,255,255,.08); border-bottom: 1px solid rgba(255,255,255,.1);
+  padding: 14px 18px; display: flex; align-items: center; gap: 10px;
+}
+.shc-dots { display: flex; gap: 5px; }
+.shc-dots span { width: 9px; height: 9px; border-radius: 50%; display: block; }
+.shc-dots span:nth-child(1) { background: rgba(255,255,255,.2); }
+.shc-dots span:nth-child(2) { background: rgba(255,255,255,.2); }
+.shc-dots span:nth-child(3) { background: rgba(255,255,255,.2); }
+.shc-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5); margin-left: auto; letter-spacing: .04em; }
+.shc-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.shc-name-row { display: flex; align-items: center; gap: 10px; }
+.shc-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#7C5CFC,#A78BFF); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.shc-name { font-size: 14px; font-weight: 700; color: #fff; }
+.shc-age  { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 1px; }
+.shc-progress-wrap { background: rgba(255,255,255,.06); border-radius: 10px; padding: 12px 14px; }
+.shc-progress-label { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 8px; }
+.shc-progress-row { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,.65); margin-bottom: 6px; }
+.shc-bar { height: 5px; background: rgba(255,255,255,.12); border-radius: 99px; overflow: hidden; }
+.shc-bar-fill { height: 5px; background: #A78BFF; border-radius: 99px; }
+.shc-milestone {
+  background: rgba(255,255,255,.06); border-radius: 12px; padding: 14px;
+  border-left: 3px solid #A78BFF;
+}
+.shc-ms-tag { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #A78BFF; margin-bottom: 5px; }
+.shc-ms-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 6px; line-height: 1.35; }
+.shc-ms-body { font-size: 11px; color: rgba(255,255,255,.6); line-height: 1.55; }
+.shc-milestone-urgent {
+  background: rgba(255,200,100,.08); border-radius: 12px; padding: 14px;
+  border-left: 3px solid #FBBF24;
+}
+.shc-ms-tag-urgent { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #FBBF24; margin-bottom: 5px; }
+.shc-todo { display: flex; align-items: flex-start; gap: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,.07); }
+.shc-todo:last-child { border-bottom: none; }
+.shc-checkbox { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid rgba(255,255,255,.25); flex-shrink: 0; margin-top: 1px; }
+.shc-checkbox.done { background: #A78BFF; border-color: #A78BFF; display: flex; align-items: center; justify-content: center; }
+.shc-todo-text { font-size: 11.5px; color: rgba(255,255,255,.75); line-height: 1.5; }
+.shc-todo-text.done { color: rgba(255,255,255,.35); text-decoration: line-through; }
+
+@media (max-width: 900px) {
+  .scout-hero { padding-top: calc(72px + 48px); padding-bottom: 64px; }
+  .scout-hero-inner { grid-template-columns: 1fr; gap: 48px; }
+  .scout-hero-card { max-width: 480px; }
+}
+@media (max-width: 480px) {
+  .scout-hero-sub { font-size: 16px; }
+}
+
+/* ════════════════════════════════════════════════
+   PROOF STRIP
+   ════════════════════════════════════════════════ */
+.proof-strip {
+  background: var(--indigo-deep); padding: 20px var(--space-x);
+}
+.proof-strip-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  gap: 48px; flex-wrap: wrap;
+}
+.proof-stat { text-align: center; }
+.proof-stat-num { font-family: var(--serif); font-size: 28px; color: #A78BFF; line-height: 1; }
+.proof-stat-label { font-size: 11px; color: rgba(255,255,255,.45); margin-top: 3px; font-weight: 500; letter-spacing: .04em; }
+.proof-sep { width: 1px; height: 36px; background: rgba(255,255,255,.1); }
+@media (max-width: 600px) { .proof-sep { display: none; } .proof-strip-inner { gap: 32px; } }
+
+/* ════════════════════════════════════════════════
+   STAKES — "The window you can't miss"
+   ════════════════════════════════════════════════ */
+.stakes { padding: 100px var(--space-x); background: var(--bg); }
+.stakes-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.stakes-label { margin-bottom: 16px; }
+.stakes-heading { font-family: var(--serif); font-size: clamp(30px,4.5vw,48px); line-height: 1.12; letter-spacing: -.025em; margin-bottom: 28px; }
+.stakes-heading em { font-style: italic; color: var(--terra); }
+.stakes-body { font-size: 16px; line-height: 1.85; color: var(--text-mid); margin-bottom: 20px; }
+.stakes-body strong { color: var(--text); font-weight: 600; }
+.stakes-quote {
+  border-left: 3px solid var(--terra); padding: 16px 20px;
+  background: var(--terra-tint); border-radius: 0 12px 12px 0; margin-top: 32px;
+}
+.stakes-quote p { font-size: 15px; line-height: 1.7; color: var(--text-mid); font-style: italic; }
+.stakes-quote strong { color: var(--text); font-style: normal; }
+
+/* Window timeline card */
+.window-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; overflow: hidden;
+  box-shadow: 0 8px 40px rgba(110,78,214,.1);
+}
+.window-card-header {
+  background: linear-gradient(135deg, var(--indigo-deep), #4A2EA8);
+  padding: 20px 24px;
+}
+.window-card-header h3 { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.6); margin-bottom: 4px; }
+.window-card-header p { font-size: 15px; font-weight: 700; color: #fff; }
+.window-list { padding: 8px 0; }
+.window-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 24px; border-bottom: 1px solid var(--border-light);
+  transition: background .15s;
+}
+.window-item:last-child { border-bottom: none; }
+.window-item-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.window-item-icon.open { background: var(--terra-tint); }
+.window-item-icon.closed { background: #FEF2F2; }
+.window-item-icon.upcoming { background: #FFF7ED; }
+.window-item-body { flex: 1; }
+.window-item-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.window-item-age { font-size: 11.5px; color: var(--text-dim); }
+.window-item-status { font-size: 11px; font-weight: 700; letter-spacing: .06em; padding: 3px 10px; border-radius: 100px; white-space: nowrap; flex-shrink: 0; }
+.window-item-status.open { background: var(--terra-tint); color: var(--terra-dark); }
+.window-item-status.closed { background: #FEE2E2; color: #DC2626; }
+.window-item-status.upcoming { background: #FFF7ED; color: #D97706; }
+
+@media (max-width: 900px) {
+  .stakes-inner { grid-template-columns: 1fr; gap: 48px; }
+}
+
+/* ════════════════════════════════════════════════
+   THREE UVPs
+   ════════════════════════════════════════════════ */
+.uvps { padding: 100px var(--space-x); background: linear-gradient(160deg, #F5F2FF 0%, var(--bg) 60%); }
+.uvps-intro { text-align: center; max-width: 600px; margin: 0 auto 64px; }
+.uvps-intro .label { margin-bottom: 16px; }
+.uvps-intro .heading { margin-bottom: 16px; }
+.uvps-intro .body-text { font-size: 17px; }
+.uvps-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+.uvp-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 36px 32px;
+  box-shadow: 0 4px 24px rgba(110,78,214,.06);
+  transition: transform .2s, box-shadow .2s;
+}
+@media (hover:hover) { .uvp-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(110,78,214,.14); } }
+.uvp-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--terra-tint); display: flex; align-items: center; justify-content: center;
+  font-size: 26px; margin-bottom: 20px;
+}
+.uvp-num {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--terra-dark); margin-bottom: 10px;
+}
+.uvp-title { font-family: var(--serif); font-size: 22px; line-height: 1.2; color: var(--text); margin-bottom: 12px; }
+.uvp-body { font-size: 14.5px; line-height: 1.75; color: var(--text-mid); }
+
+@media (max-width: 900px) { .uvps-grid { grid-template-columns: 1fr; max-width: 520px; } }
+
+/* ════════════════════════════════════════════════
+   HOW IT WORKS
+   ════════════════════════════════════════════════ */
+.how { padding: 100px var(--space-x); background: var(--bg); }
+.how-intro { text-align: center; max-width: 560px; margin: 0 auto 64px; }
+.how-intro .label { margin-bottom: 16px; }
+.how-intro .heading { margin-bottom: 16px; }
+.steps-grid {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 2px; background: var(--border-light); border-radius: 20px; overflow: hidden;
+}
+.step {
+  background: var(--surface); padding: 40px 32px;
+  position: relative;
+}
+.step-num {
+  font-family: var(--serif); font-size: 48px; line-height: 1;
+  color: var(--terra-tint); margin-bottom: 20px; display: block;
+  user-select: none;
+}
+.step-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.step-body { font-size: 14px; line-height: 1.75; color: var(--text-mid); }
+
+@media (max-width: 900px) { .steps-grid { grid-template-columns: 1fr; } }
+
+/* ════════════════════════════════════════════════
+   FEATURE LIST
+   ════════════════════════════════════════════════ */
+.features { padding: 100px var(--space-x); background: linear-gradient(180deg, #F5F2FF 0%, var(--bg) 100%); }
+.features-intro { text-align: center; max-width: 560px; margin: 0 auto 64px; }
+.features-intro .label { margin-bottom: 16px; }
+.features-intro .heading { margin-bottom: 16px; }
+.features-grid {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(2,1fr); gap: 20px;
+}
+.feature-row {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 24px;
+  box-shadow: 0 2px 12px rgba(110,78,214,.05);
+}
+.feature-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+.feature-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.feature-body { font-size: 13.5px; line-height: 1.65; color: var(--text-mid); }
+
+@media (max-width: 700px) { .features-grid { grid-template-columns: 1fr; } }
+
+/* ════════════════════════════════════════════════
+   PRICING
+   ════════════════════════════════════════════════ */
+.pricing { padding: 100px var(--space-x); background: var(--bg); }
+.pricing-intro { text-align: center; max-width: 520px; margin: 0 auto 56px; }
+.pricing-intro .label { margin-bottom: 16px; }
+.pricing-intro .heading { margin-bottom: 16px; }
+.pricing-intro .body-text { font-size: 16px; }
+.pricing-cards {
+  max-width: 820px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+}
+.price-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 20px; padding: 36px 32px;
+  position: relative; transition: transform .2s, box-shadow .2s;
+}
+.price-card.featured {
+  border-color: var(--terra); background: var(--terra);
+  box-shadow: 0 16px 56px rgba(110,78,214,.35);
+  transform: scale(1.03);
+}
+@media (hover:hover) { .price-card:hover { box-shadow: 0 12px 40px rgba(110,78,214,.15); transform: scale(1.01); } .price-card.featured:hover { transform: scale(1.04); } }
+.price-badge {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: #FBBF24; color: #1D1D1F; font-size: 11px; font-weight: 800;
+  letter-spacing: .08em; text-transform: uppercase; padding: 4px 14px;
+  border-radius: 100px; white-space: nowrap;
+}
+.price-label { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+.price-card:not(.featured) .price-label { color: var(--terra-dark); }
+.price-card.featured .price-label { color: rgba(255,255,255,.7); }
+.price-amount { font-family: var(--serif); font-size: 52px; line-height: 1; margin-bottom: 4px; }
+.price-card:not(.featured) .price-amount { color: var(--text); }
+.price-card.featured .price-amount { color: #fff; }
+.price-per { font-size: 13px; color: var(--text-dim); margin-bottom: 6px; }
+.price-card.featured .price-per { color: rgba(255,255,255,.6); }
+.price-save { font-size: 12px; font-weight: 700; color: #16a34a; background: #F0FDF4; border-radius: 100px; padding: 3px 10px; display: inline-block; margin-bottom: 28px; }
+.price-card.featured .price-save { background: rgba(255,255,255,.15); color: #A7F3D0; }
+.price-no-save { margin-bottom: 28px; display: block; height: 22px; }
+.price-features { list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 10px; }
+.price-features li { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; }
+.price-card:not(.featured) .price-features li { color: var(--text-mid); }
+.price-card.featured .price-features li { color: rgba(255,255,255,.85); }
+.price-check { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.price-card:not(.featured) .price-check { background: var(--terra-tint); }
+.price-card.featured .price-check { background: rgba(255,255,255,.2); }
+.btn-price-white {
+  display: block; text-align: center; width: 100%;
+  background: #fff; color: var(--terra-dark);
+  font-family: var(--sans); font-size: 15px; font-weight: 700;
+  padding: 16px; border-radius: var(--radius-pill); border: none;
+  cursor: pointer; text-decoration: none;
+  transition: transform .2s, box-shadow .2s;
+}
+@media (hover:hover) { .btn-price-white:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.2); } }
+.btn-price-outline {
+  display: block; text-align: center; width: 100%;
+  background: transparent; color: var(--terra);
+  font-family: var(--sans); font-size: 15px; font-weight: 700;
+  padding: 14px; border-radius: var(--radius-pill);
+  border: 1.5px solid var(--terra); cursor: pointer; text-decoration: none;
+  transition: background .2s, transform .2s;
+}
+@media (hover:hover) { .btn-price-outline:hover { background: var(--terra-glow); transform: translateY(-1px); } }
+.pricing-note { text-align: center; font-size: 13px; color: var(--text-dim); margin-top: 24px; max-width: 820px; margin-inline: auto; }
+
+@media (max-width: 640px) { .pricing-cards { grid-template-columns: 1fr; } .price-card.featured { transform: none; } }
+
+/* ════════════════════════════════════════════════
+   TESTIMONIALS
+   ════════════════════════════════════════════════ */
+.testimonials { padding: 100px var(--space-x); background: linear-gradient(160deg, #F5F2FF 0%, var(--bg) 60%); }
+.testimonials-intro { text-align: center; max-width: 480px; margin: 0 auto 56px; }
+.testimonials-intro .label { margin-bottom: 16px; }
+.testimonials-intro .heading { margin-bottom: 0; }
+.testi-grid {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 20px;
+}
+.testi-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px;
+  box-shadow: 0 2px 12px rgba(110,78,214,.05);
+}
+.testi-stars { font-size: 13px; letter-spacing: 2px; color: #FBBF24; margin-bottom: 14px; }
+.testi-quote { font-size: 14.5px; line-height: 1.75; color: var(--text-mid); margin-bottom: 20px; font-style: italic; }
+.testi-quote strong { color: var(--text); font-style: normal; }
+.testi-author { display: flex; align-items: center; gap: 10px; }
+.testi-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--terra-tint); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.testi-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.testi-detail { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+
+@media (max-width: 900px) { .testi-grid { grid-template-columns: 1fr; max-width: 520px; } }
+
+/* ════════════════════════════════════════════════
+   FINAL CTA
+   ════════════════════════════════════════════════ */
+.final-cta {
+  padding: 120px var(--space-x);
+  background: linear-gradient(155deg, var(--indigo-deep) 0%, #2D1A7A 50%, #4A2EA8 100%);
+  text-align: center; position: relative; overflow: hidden;
+}
+.final-cta::before {
+  content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,252,.2) 0%, transparent 65%);
+  pointer-events: none;
+}
+.final-cta-inner { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+.final-cta-label { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #A78BFF; margin-bottom: 20px; }
+.final-cta-title { font-family: var(--serif); font-size: clamp(32px,5vw,52px); line-height: 1.1; letter-spacing: -.025em; color: #fff; margin-bottom: 20px; }
+.final-cta-title em { font-style: italic; color: #A78BFF; }
+.final-cta-sub { font-size: 17px; line-height: 1.7; color: rgba(255,255,255,.65); margin-bottom: 40px; }
+.final-cta-actions { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.final-note { font-size: 12.5px; color: rgba(255,255,255,.4); margin-top: 20px; }
+
+/* ════════════════════════════════════════════════
+   FOOTER
+   ════════════════════════════════════════════════ */
+.footer { background: var(--indigo-deep); padding: 60px var(--space-x) 40px; }
+.footer-inner { max-width: 1200px; margin: 0 auto; }
+.footer-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 48px; flex-wrap: wrap; margin-bottom: 48px; }
+.footer-brand {}
+.footer-logo { display: inline-flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; color: #fff; text-decoration: none; margin-bottom: 10px; }
+.footer-logo-s { color: #A78BFF; }
+.footer-tagline { font-size: 13px; color: rgba(255,255,255,.4); max-width: 240px; line-height: 1.6; }
+.footer-links { display: flex; gap: 48px; flex-wrap: wrap; }
+.footer-col { display: flex; flex-direction: column; gap: 12px; }
+.footer-col-label { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 4px; }
+.footer-col a { font-size: 13px; color: rgba(255,255,255,.55); text-decoration: none; transition: color .2s; }
+@media (hover:hover) { .footer-col a:hover { color: #fff; } }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,.08); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.footer-copy { font-size: 12px; color: rgba(255,255,255,.25); }
+.footer-links-bottom { display: flex; gap: 20px; }
+.footer-links-bottom a { font-size: 12px; color: rgba(255,255,255,.3); text-decoration: none; transition: color .2s; }
+@media (hover:hover) { .footer-links-bottom a:hover { color: rgba(255,255,255,.7); } }
+@media (max-width: 640px) { .footer-top { flex-direction: column; } .footer-links { gap: 32px; } }
+
+
+/* ════════════════════════════════════════════════
+   HERO WIDGET (persona toggle)
+   ════════════════════════════════════════════════ */
+.scout-widget {
+  width: 100%;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+  border-radius: 24px; overflow: hidden;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 32px 80px rgba(0,0,0,.4);
+}
+.sw-header { padding: 24px 24px 16px; }
+.sw-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: #A78BFF; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+.sw-title {
+  font-family: var(--serif); font-size: 22px; line-height: 1.2;
+  color: #fff; letter-spacing: -.02em;
+}
+.sw-title em { font-style: italic; color: #A78BFF; }
+.sw-personas {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; padding: 0 24px 16px;
+}
+.sw-persona {
+  background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12);
+  border-radius: 14px; padding: 12px 8px; text-align: center;
+  cursor: pointer; transition: all .2s; user-select: none;
+}
+@media (hover:hover) { .sw-persona:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.22); } }
+.sw-persona.active {
+  background: rgba(167,139,255,.18); border-color: #A78BFF;
+  box-shadow: 0 0 0 1px rgba(167,139,255,.3);
+}
+.sw-persona-icon { font-size: 22px; display: block; margin-bottom: 6px; }
+.sw-persona-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.9); line-height: 1.3; display: block; }
+.sw-persona.active .sw-persona-label { color: #C4B5FD; }
+.sw-persona-sublabel { font-size: 10px; color: rgba(255,255,255,.4); margin-top: 2px; display: block; }
+.sw-persona.active .sw-persona-sublabel { color: rgba(167,139,255,.7); }
+.sw-divider { height: 1px; background: rgba(255,255,255,.08); }
+.sw-stage-row { padding: 12px 24px 8px; display: flex; align-items: center; gap: 10px; }
+.sw-stage-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(167,139,255,.15); border: 1px solid rgba(167,139,255,.25);
+  border-radius: 100px; padding: 4px 11px;
+  font-size: 11px; font-weight: 700; color: #C4B5FD;
+}
+.sw-stage-dot { width: 6px; height: 6px; border-radius: 50%; background: #A78BFF; flex-shrink: 0; }
+.sw-stage-desc { font-size: 11px; color: rgba(255,255,255,.4); }
+.sw-windows { padding: 4px 16px 6px; display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto; }
+.sw-windows::-webkit-scrollbar { width: 4px; }
+.sw-windows::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 2px; }
+.sw-row {
+  display: flex; gap: 10px; align-items: flex-start;
+  border-radius: 12px; padding: 11px 12px;
+}
+.sw-row.urgent { background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.22); }
+.sw-row.open   { background: rgba(167,139,255,.1); border: 1px solid rgba(167,139,255,.18); }
+.sw-row.closed { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); opacity: .6; }
+.sw-row.coming { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); }
+.sw-row-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.sw-row-body { flex: 1; min-width: 0; }
+.sw-row-tag { font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 2px; }
+.sw-row.urgent .sw-row-tag { color: #FBBF24; }
+.sw-row.open   .sw-row-tag { color: #A78BFF; }
+.sw-row.closed .sw-row-tag, .sw-row.coming .sw-row-tag { color: rgba(255,255,255,.32); }
+.sw-row-title { font-size: 13px; font-weight: 700; line-height: 1.3; margin-bottom: 2px; }
+.sw-row.closed .sw-row-title { color: rgba(255,255,255,.4); }
+.sw-row:not(.closed) .sw-row-title { color: #fff; }
+.sw-row-desc { font-size: 11px; line-height: 1.5; }
+.sw-row.closed .sw-row-desc  { color: rgba(255,255,255,.28); }
+.sw-row:not(.closed) .sw-row-desc { color: rgba(255,255,255,.55); }
+.sw-row-badge {
+  flex-shrink: 0; font-size: 10px; font-weight: 700; padding: 3px 8px;
+  border-radius: 100px; white-space: nowrap; align-self: flex-start; margin-top: 1px;
+}
+.sw-row.urgent .sw-row-badge { background: rgba(251,191,36,.18); color: #FBBF24; border: 1px solid rgba(251,191,36,.28); }
+.sw-row.open   .sw-row-badge { background: rgba(167,139,255,.2); color: #C4B5FD; border: 1px solid rgba(167,139,255,.28); }
+.sw-row.closed .sw-row-badge, .sw-row.coming .sw-row-badge { background: rgba(255,255,255,.05); color: rgba(255,255,255,.35); border: 1px solid rgba(255,255,255,.1); }
+.sw-cta {
+  padding: 14px 18px 20px; border-top: 1px solid rgba(255,255,255,.09); margin-top: 6px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.sw-cta-btn {
+  display: block; width: 100%; text-align: center;
+  background: #fff; color: var(--terra-dark);
+  font-family: var(--sans); font-size: 14px; font-weight: 700;
+  padding: 13px; border-radius: 100px; text-decoration: none; border: none; cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+@media (hover:hover) { .sw-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.3); } }
+.sw-cta-note { text-align: center; font-size: 11px; color: rgba(255,255,255,.3); }
+
+/* Pricing context block */
+.pricing-context {
+  max-width: 540px; margin: 32px auto 0; text-align: center;
+  font-size: 14px; line-height: 1.75; color: var(--text-mid);
+  padding: 20px 24px; background: var(--terra-tint); border-radius: 16px;
+  border: 1px solid var(--border);
+}
+.pricing-cards-solo { justify-content: center; }
+
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav class="nav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="logo" aria-label="FamilyForce Home">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Family<span class="logo-s">Force</span></span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="index.html#library">Playbooks</a></li>
+      <li><a href="scout.html" class="active">Scout</a></li>
+      <li><a href="sign-in.html?mode=signin">Sign In</a></li>
+    </ul>
+    <a href="sign-in.html" class="btn-nav">Try Scout Free</a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="mobile-menu-header">
+    <a href="index.html" class="logo">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Family<span class="logo-s">Force</span></span>
+    </a>
+    <button class="mobile-menu-close" id="mobile-close-btn" aria-label="Close menu">✕</button>
+  </div>
+  <ul class="mobile-menu-links" role="list">
+    <li><a href="index.html#library">Playbooks</a></li>
+    <li><a href="scout.html">Scout</a></li>
+    <li><a href="sign-in.html?mode=signin">Sign In</a></li>
+  </ul>
+  <div class="mobile-menu-cta">
+    <a href="sign-in.html">Try Scout Free →</a>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     HERO
+     ════════════════════════════════════════════════ -->
+<section class="scout-hero" aria-label="Hero">
+  <div class="scout-hero-inner">
+
+    <!-- Left: Copy -->
+    <div>
+      <div class="scout-eyebrow" data-reveal data-d="0">
+        <svg width="12" height="12" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+          <path d="M1 15 L7 1 L13 15" stroke="#A78BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        FamilyForce Scout — Available Now
+      </div>
+
+      <h1 class="scout-hero-title" data-reveal data-d="1">
+        The first 1,000 days<br>
+        <em>shape everything.</em>
+      </h1>
+
+      <p class="scout-hero-sub" data-reveal data-d="2">
+        The most critical developmental windows in your child's life happen in the first three years. Scout tells you what to do, when to do it — and what closes if you wait too long.
+      </p>
+
+      <div class="scout-hero-actions" data-reveal data-d="3">
+        <a href="sign-in.html" class="btn-primary-white">Try Free for 7 Days</a>
+        <a href="#how-it-works" class="btn-ghost-white">See how it works ↓</a>
+      </div>
+
+      <div class="scout-hero-trust" data-reveal data-d="4">
+        <div class="scout-trust-item">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          No card required
+        </div>
+        <div class="scout-trust-dot"></div>
+        <div class="scout-trust-item">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Cancel anytime
+        </div>
+        <div class="scout-trust-dot"></div>
+        <div class="scout-trust-item">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Whole family included
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Interactive Widget -->
+    <div data-reveal data-d="2">
+      <div class="scout-widget">
+        <div class="sw-header">
+          <div class="sw-eyebrow">
+            <svg width="10" height="11" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#A78BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            FamilyForce Scout
+          </div>
+          <div class="sw-title">See which windows are <em>open right now</em></div>
+        </div>
+        <div class="sw-personas">
+          <div class="sw-persona" id="sp0" onclick="selectPersona(0)">
+            <span class="sw-persona-icon">🤱</span>
+            <span class="sw-persona-label">Expecting</span>
+            <span class="sw-persona-sublabel">Due in ~8 weeks</span>
+          </div>
+          <div class="sw-persona" id="sp1" onclick="selectPersona(1)">
+            <span class="sw-persona-icon">👶</span>
+            <span class="sw-persona-label">5 months old</span>
+            <span class="sw-persona-sublabel">22 weeks</span>
+          </div>
+          <div class="sw-persona" id="sp2" onclick="selectPersona(2)">
+            <span class="sw-persona-icon">🧒</span>
+            <span class="sw-persona-label">1 year old</span>
+            <span class="sw-persona-sublabel">52 weeks</span>
+          </div>
+        </div>
+        <div class="sw-divider"></div>
+        <div class="sw-stage-row">
+          <div class="sw-stage-pill"><div class="sw-stage-dot"></div><span id="sw-stage"></span></div>
+          <div class="sw-stage-desc" id="sw-stage-desc"></div>
+        </div>
+        <div class="sw-windows" id="sw-windows"></div>
+        <div class="sw-cta">
+          <a href="sign-in.html" class="sw-cta-btn">Get my full personalised digest →</a>
+          <div class="sw-cta-note">7 days free · no card required · cancel anytime</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     PROOF STRIP
+     ════════════════════════════════════════════════ -->
+<div class="proof-strip" aria-label="At a glance">
+  <div class="proof-strip-inner">
+    <div class="proof-stat">
+      <div class="proof-stat-num">197</div>
+      <div class="proof-stat-label">Milestones tracked</div>
+    </div>
+    <div class="proof-sep"></div>
+    <div class="proof-stat">
+      <div class="proof-stat-num">100+</div>
+      <div class="proof-stat-label">Peer-reviewed sources</div>
+    </div>
+    <div class="proof-sep"></div>
+    <div class="proof-stat">
+      <div class="proof-stat-num">0–3 yrs</div>
+      <div class="proof-stat-label">Most critical years</div>
+    </div>
+    <div class="proof-sep"></div>
+    <div class="proof-stat">
+      <div class="proof-stat-num">AAP · WHO · CDC</div>
+      <div class="proof-stat-label">Sources we pull from</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════
+     STAKES — The window you can't miss
+     ════════════════════════════════════════════════ -->
+<section class="stakes" aria-label="The stakes">
+  <div class="stakes-inner">
+    <div data-reveal>
+      <div class="stakes-label label">Why it matters</div>
+      <h2 class="stakes-heading">
+        Some windows<br><em>close forever.</em>
+      </h2>
+      <p class="stakes-body">
+        The first three years of a child's life account for more developmental change than any other period. Language. Motor. Attachment. Cognition. Every domain is moving fast — and each has a <strong>window</strong>. A specific period when the brain is most receptive. Miss it and it closes.
+      </p>
+      <p class="stakes-body">
+        Most parents learn about the peanut window after it's gone. They miss the speech check at 18 months. They start sleep training at 11 months instead of 6.
+      </p>
+      <p class="stakes-body">
+        Not because they're bad parents. Because <strong>nobody told them when</strong>.
+      </p>
+      <div class="stakes-quote">
+        <p>Scout tells you <strong>what to watch for, when to act, and what happens if you wait</strong> — before the window moves on without you.</p>
+      </div>
+    </div>
+
+    <div data-reveal data-d="1">
+      <div class="window-card">
+        <div class="window-card-header">
+          <h3>Critical Windows</h3>
+          <p>Example: 14-month-old</p>
+        </div>
+        <div class="window-list">
+          <div class="window-item">
+            <div class="window-item-icon closed">🥜</div>
+            <div class="window-item-body">
+              <div class="window-item-title">Peanut introduction</div>
+              <div class="window-item-age">4–11 months · This window has passed</div>
+            </div>
+            <div class="window-item-status closed">Closed</div>
+          </div>
+          <div class="window-item">
+            <div class="window-item-icon open">💬</div>
+            <div class="window-item-body">
+              <div class="window-item-title">First words & language</div>
+              <div class="window-item-age">12–18 months · Open now</div>
+            </div>
+            <div class="window-item-status open">Open now</div>
+          </div>
+          <div class="window-item">
+            <div class="window-item-icon open">🚶</div>
+            <div class="window-item-body">
+              <div class="window-item-title">Independent walking</div>
+              <div class="window-item-age">9–18 months · Open now</div>
+            </div>
+            <div class="window-item-status open">Open now</div>
+          </div>
+          <div class="window-item">
+            <div class="window-item-icon upcoming">🧠</div>
+            <div class="window-item-body">
+              <div class="window-item-title">Sleep training window</div>
+              <div class="window-item-age">6–9 months · Check back</div>
+            </div>
+            <div class="window-item-status upcoming">Next child</div>
+          </div>
+          <div class="window-item">
+            <div class="window-item-icon upcoming">🚽</div>
+            <div class="window-item-body">
+              <div class="window-item-title">Potty training readiness</div>
+              <div class="window-item-age">18–36 months · Coming up</div>
+            </div>
+            <div class="window-item-status upcoming">Coming up</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     THREE UVPs
+     ════════════════════════════════════════════════ -->
+<section class="uvps" aria-label="Why Scout">
+  <div class="uvps-intro" data-reveal>
+    <div class="label">Three things Scout does</div>
+    <h2 class="heading" style="margin-top:16px;margin-bottom:16px">Built differently.<br>On purpose.</h2>
+    <p class="body-text">Most parenting apps give you everything. Scout gives you the right thing, at the right time, for your child's age.</p>
+  </div>
+
+  <div class="uvps-grid">
+    <div class="uvp-card" data-reveal data-d="1">
+      <div class="uvp-icon">🎯</div>
+      <div class="uvp-num">01 — Precision</div>
+      <h3 class="uvp-title">Precision over noise</h3>
+      <p class="uvp-body">Other apps give you a fire hose. Scout gives you a short list of what actually matters this month. Nothing else. Your child is 5 months old — here's exactly what to watch for, act on, and celebrate. Built for the years when precision matters most.</p>
+    </div>
+    <div class="uvp-card" data-reveal data-d="2">
+      <div class="uvp-icon">⏱️</div>
+      <div class="uvp-num">02 — Windows</div>
+      <h3 class="uvp-title">The window you can't miss</h3>
+      <p class="uvp-body">Peanut introduction. Sleep training. Speech screening. Each one has a window. Miss it and it closes. Scout watches the calendar so you can focus on actually parenting.</p>
+    </div>
+    <div class="uvp-card" data-reveal data-d="3">
+      <div class="uvp-icon">👨‍👩‍👧</div>
+      <div class="uvp-num">03 — Family</div>
+      <h3 class="uvp-title">One family. One subscription.</h3>
+      <p class="uvp-body">Every member of your Family Circle gets full access. Because the person who reads the milestone card shouldn't be the only one who knows about it. One price covers everyone.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     HOW IT WORKS
+     ════════════════════════════════════════════════ -->
+<section class="how" id="how-it-works" aria-label="How it works">
+  <div class="how-intro" data-reveal>
+    <div class="label">How it works</div>
+    <h2 class="heading" style="margin-top:16px;margin-bottom:16px">Three steps.<br>Five minutes to set up.</h2>
+  </div>
+
+  <div class="steps-grid" role="list">
+    <div class="step" data-reveal data-d="1" role="listitem">
+      <span class="step-num" aria-hidden="true">01</span>
+      <div class="step-title">Add your child</div>
+      <p class="step-body">Tell Scout your child's name, birthday (or due date — expecting parents are welcome too), and we handle the rest. Takes 60 seconds.</p>
+    </div>
+    <div class="step" data-reveal data-d="2" role="listitem">
+      <span class="step-num" aria-hidden="true">02</span>
+      <div class="step-title">Get your digest</div>
+      <p class="step-body">Scout builds a personalised milestone digest for your child's exact age. Critical windows front and centre. Mark things done as you go. Share with your family.</p>
+    </div>
+    <div class="step" data-reveal data-d="3" role="listitem">
+      <span class="step-num" aria-hidden="true">03</span>
+      <div class="step-title">Stay ahead</div>
+      <p class="step-body">As your child grows, Scout updates automatically. New milestones unlock. Closed windows are archived. You always see exactly what's relevant, right now.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     FEATURE LIST
+     ════════════════════════════════════════════════ -->
+<section class="features" aria-label="What's included">
+  <div class="features-intro" data-reveal>
+    <div class="label">What's included</div>
+    <h2 class="heading" style="margin-top:16px;margin-bottom:0">Everything you need.<br>Nothing you don't.</h2>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-row" data-reveal data-d="1">
+      <div class="feature-icon">📅</div>
+      <div>
+        <div class="feature-title">Age-specific milestone digest</div>
+        <div class="feature-body">Updated automatically as your child grows. 197 milestones spanning prenatal to school age — with the highest density in years 0–3 where it matters most.</div>
+      </div>
+    </div>
+    <div class="feature-row" data-reveal data-d="2">
+      <div class="feature-icon">⚠️</div>
+      <div>
+        <div class="feature-title">Critical window alerts</div>
+        <div class="feature-body">Time-sensitive milestones are flagged clearly — peanut introduction, speech screening, sleep training, vision checks. Know before the window closes.</div>
+      </div>
+    </div>
+    <div class="feature-row" data-reveal data-d="1">
+      <div class="feature-icon">✅</div>
+      <div>
+        <div class="feature-title">Mark complete &amp; track wins</div>
+        <div class="feature-body">Check off milestones as you hit them. Log who was there and when. Your win history grows as your child does.</div>
+      </div>
+    </div>
+    <div class="feature-row" data-reveal data-d="2">
+      <div class="feature-icon">👨‍👩‍👧</div>
+      <div>
+        <div class="feature-title">Family Circle sharing</div>
+        <div class="feature-body">One subscription, unlimited family members. Add your partner, a grandparent, your caregiver. Everyone stays on the same page.</div>
+      </div>
+    </div>
+    <div class="feature-row" data-reveal data-d="1">
+      <div class="feature-icon">👶</div>
+      <div>
+        <div class="feature-title">Multiple children</div>
+        <div class="feature-body">Track up to 3 children from a single account. Expecting? Add your baby before they arrive — prenatal milestones are included.</div>
+      </div>
+    </div>
+    <div class="feature-row" data-reveal data-d="2">
+      <div class="feature-icon">🔬</div>
+      <div>
+        <div class="feature-title">100+ research sources</div>
+        <div class="feature-body">Every milestone is sourced. AAP, WHO, CDC, peer-reviewed journals. Not parenting blogs. Not anecdotes. Real evidence, made readable.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     PRICING
+     ════════════════════════════════════════════════ -->
+<section class="pricing" id="pricing" aria-label="Pricing">
+  <div class="pricing-intro" data-reveal>
+    <div class="label">Simple pricing</div>
+    <h2 class="heading" style="margin-top:16px;margin-bottom:16px">Try it free.<br><em>Then $6.67/month.</em></h2>
+    <p class="body-text">7 days free. No card required. One plan — the whole first three years.</p>
+  </div>
+
+  <div class="pricing-cards pricing-cards-solo">
+    <div class="price-card featured" data-reveal data-d="1" style="max-width:460px;margin:0 auto">
+      <div class="price-badge">7 days free — no card required</div>
+      <div class="price-label">Annual plan</div>
+      <div class="price-amount" style="color:#fff">$79<span style="font-size:24px;vertical-align:super;font-family:var(--sans)">.99</span></div>
+      <div class="price-per">per year · that's $6.67/month</div>
+      <div class="price-save">One price. The whole first three years.</div>
+      <ul class="price-features">
+        <li>
+          <div class="price-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          197 milestones · prenatal through school age
+        </li>
+        <li>
+          <div class="price-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Critical window alerts — before they close
+        </li>
+        <li>
+          <div class="price-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Up to 3 children tracked
+        </li>
+        <li>
+          <div class="price-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Family Circle — whole family included, no extra charge
+        </li>
+        <li>
+          <div class="price-check"><svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2.5 6l2.5 2.5 4.5-5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          Cancel anytime · your progress is always saved
+        </li>
+      </ul>
+      <a href="sign-in.html" class="btn-price-white">Start Free — 7 Days on Us</a>
+    </div>
+  </div>
+
+  <div class="pricing-context" data-reveal>
+    <p>Scout is built for the first three years — the most milestone-dense, developmentally critical period in your child's life. Most families subscribe from expecting through age three. At $6.67/month, it costs less than a single paediatric co-pay.</p>
+  </div>
+
+  <p class="pricing-note">Have a gift code? <a href="sign-in.html" style="color:var(--terra);font-weight:600">Redeem it here →</a></p>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     FINAL CTA
+     ════════════════════════════════════════════════ -->
+<section class="final-cta" aria-label="Get started">
+  <div class="final-cta-inner">
+    <div class="final-cta-label">Start today</div>
+    <h2 class="final-cta-title">
+      The window is<br><em>open right now.</em>
+    </h2>
+    <p class="final-cta-sub">Seven days free. No card required. Add your child and get your first digest in 60 seconds.</p>
+    <div class="final-cta-actions">
+      <a href="sign-in.html" class="btn-primary-white">Try Scout Free for 7 Days</a>
+      <a href="sign-in.html?mode=signin" class="btn-ghost-white">Already have an account →</a>
+    </div>
+    <p class="final-note">$79.99/year after your free trial. Less than $6.67/month. Cancel anytime.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="footer-logo">
+          <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#A78BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Family<span class="footer-logo-s">Force</span>
+        </a>
+        <p class="footer-tagline">Research-backed parenting. Built for the parent who actually wants to do the work.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <div class="footer-col-label">Product</div>
+          <a href="index.html">Home</a>
+          <a href="scout.html">Scout</a>
+          <a href="index.html#library">Playbooks</a>
+          <a href="dashboard.html">Dashboard</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-label">Company</div>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="privacy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-label">Account</div>
+          <a href="sign-in.html">Sign In</a>
+          <a href="sign-in.html">Start Free Trial</a>
+          <a href="sign-in.html">Redeem Gift Code</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 FamilyForce. All rights reserved.</p>
+      <div class="footer-links-bottom">
+        <a href="privacy.html">Privacy</a>
+        <a href="terms.html">Terms</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ─── Mobile menu ─── */
+const hamburger   = document.getElementById('hamburger-btn');
+const mobileMenu  = document.getElementById('mobile-menu');
+const mobileClose = document.getElementById('mobile-close-btn');
+
+function openMenu()  { mobileMenu.classList.add('open'); hamburger.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; }
+function closeMenu() { mobileMenu.classList.remove('open'); hamburger.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+
+hamburger.addEventListener('click', openMenu);
+mobileClose.addEventListener('click', closeMenu);
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+/* ─── Scroll reveal ─── */
+const revealEls = document.querySelectorAll('[data-reveal]');
+const observer  = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.08 });
+revealEls.forEach(el => observer.observe(el));
+</script>
+
+<script>
+/* ── Scout hero widget ── */
+const SW_PERSONAS = [
+  {
+    stage: 'Expecting',
+    stageDesc: '~8 weeks to go',
+    windows: [
+      { status:'urgent', icon:'🏥', tag:'Do this now',   title:'Choose your pediatrician',       desc:'Book your meet-the-doctor appointment before the baby arrives. Most practices book out 4–6 weeks.',                              badge:'Due now' },
+      { status:'urgent', icon:'🚗', tag:'Do this now',   title:'Install the car seat',            desc:'Must be installed and inspected before you leave the hospital. Don't leave this to the last week.',                             badge:'Due now' },
+      { status:'open',   icon:'🧠', tag:'Window open',   title:'Infant CPR class',                desc:'One session with your partner. Hospitals run them monthly. You'll never regret knowing this.',                                  badge:'Book now' },
+      { status:'open',   icon:'📋', tag:'Coming soon',   title:'Newborn screening tests',         desc:'PKU, hearing, cardiac — done at the hospital within 24–48 hours of birth. Know what to expect.',                               badge:'At birth' },
+      { status:'coming', icon:'🥜', tag:'Coming up',     title:'Peanut introduction window',      desc:'Opens at 4 months. Early introduction cuts allergy risk by up to 86%.',                                                        badge:'In ~4 months' },
+      { status:'coming', icon:'😴', tag:'Coming up',     title:'Sleep training window',           desc:'The optimal window is 6–9 months. Set up good foundations before then.',                                                       badge:'In ~6 months' },
+    ]
+  },
+  {
+    stage: 'Infant stage',
+    stageDesc: '5 months old · 22 weeks',
+    windows: [
+      { status:'urgent', icon:'🥜', tag:'⚠ Act this month', title:'Peanut window — open now',         desc:'Ideal window: 4–6 months. One spoonful of peanut butter puree could prevent a lifelong allergy.',                           badge:'Closing soon' },
+      { status:'open',   icon:'😴', tag:'Opens in 4 weeks',  title:'Sleep training window approaching', desc:'The 6–9 month window is fastest and lowest-stress. Start building the routine now.',                                       badge:'Coming fast' },
+      { status:'open',   icon:'🦷', tag:'Due this month',    title:'First dental visit',               desc:'AAP recommends first visit by 12 months. Book ahead — paediatric dentists fill up.',                                       badge:'Book ahead' },
+      { status:'open',   icon:'👁️', tag:'Due at 6 months',   title:'6-month vision check',             desc:'Strabismus and amblyopia are most treatable when caught early. Ask at your 6-month well-child visit.',                     badge:'Next visit' },
+      { status:'coming', icon:'💬', tag:'Coming up',         title:'Speech milestones',                desc:'10+ words by 15 months, 50+ by 2 years. Start counting words at 12 months.',                                              badge:'At 12 months' },
+      { status:'coming', icon:'🚽', tag:'Coming up',         title:'Potty training readiness',         desc:'Readiness signs emerge at 18–24 months. Know what to look for before you're in the middle of it.',                       badge:'At 18 months' },
+    ]
+  },
+  {
+    stage: 'Toddler stage',
+    stageDesc: '1 year old · 52 weeks',
+    windows: [
+      { status:'urgent', icon:'💬', tag:'⚠ Watch now',       title:'Speech & language window',         desc:'10–25 words by 18 months. You're 6 months from that checkpoint. Flag missing words at the next visit.',                   badge:'6 months left' },
+      { status:'urgent', icon:'🦷', tag:'⚠ Overdue',         title:'First dental visit',               desc:'AAP recommends by 12 months. If you haven't done it — book this week.',                                                  badge:'Book now' },
+      { status:'open',   icon:'🚽', tag:'Window opening',     title:'Potty training readiness signs',   desc:'Readiness signs begin at 18–24 months. Know what to look for now.',                                                       badge:'In 6 months' },
+      { status:'open',   icon:'📚', tag:'Critical window',    title:'Early literacy: read every day',   desc:'Vocabulary at age 3 predicts reading at age 8. 15 minutes a day is the highest-ROI parenting activity.',                 badge:'Every day' },
+      { status:'open',   icon:'🍽️', tag:'Watch now',          title:'Food texture progression',         desc:'Toddlers should be on family foods by 12 months. Purees past 12 months can cause lasting texture aversion.',             badge:'Act now' },
+      { status:'closed', icon:'😴', tag:'✗ Window closed',    title:'Sleep training optimal window',    desc:'Easiest window was 6–9 months. Still possible now — just harder. Scout has a protocol.',                                  badge:'Closed at 9mo' },
+    ]
+  }
+];
+
+let _swPersona = 0;
+
+function selectPersona(i) {
+  _swPersona = i;
+  document.querySelectorAll('.sw-persona').forEach((el, idx) => el.classList.toggle('active', idx === i));
+  renderWidget();
+}
+
+function renderWidget() {
+  const p = SW_PERSONAS[_swPersona];
+  document.getElementById('sw-stage').textContent      = p.stage;
+  document.getElementById('sw-stage-desc').textContent = p.stageDesc;
+  const list = document.getElementById('sw-windows');
+  if (!list) return;
+  list.innerHTML = '';
+  p.windows.forEach(w => {
+    const el = document.createElement('div');
+    el.className = 'sw-row ' + w.status;
+    el.innerHTML =
+      '<div class="sw-row-icon">' + w.icon + '</div>' +
+      '<div class="sw-row-body">' +
+        '<div class="sw-row-tag">' + w.tag + '</div>' +
+        '<div class="sw-row-title">' + w.title + '</div>' +
+        '<div class="sw-row-desc">' + w.desc + '</div>' +
+      '</div>' +
+      '<div class="sw-row-badge">' + w.badge + '</div>';
+    list.appendChild(el);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.getElementById('sw-windows')) selectPersona(0);
+});
+</script>
+</body>
+</html>

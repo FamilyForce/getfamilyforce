@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scout Age Calculator — Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --terra:      #6E4ED6;
+  --terra-dark: #5B3CC4;
+  --terra-tint: #F0EBFF;
+  --indigo:     #1E1248;
+  --sans:       'Outfit', system-ui, sans-serif;
+  --serif:      'Instrument Serif', Georgia, serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font-family: var(--sans);
+  background: linear-gradient(155deg, #1E1248 0%, #2D1A7A 50%, #4A2EA8 100%);
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  padding: 40px 20px;
+}
+
+/* ── Widget ── */
+.widget {
+  width: 100%; max-width: 520px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+  border-radius: 24px; overflow: hidden;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 32px 80px rgba(0,0,0,.4);
+}
+
+/* ── Header ── */
+.w-header { padding: 28px 28px 20px; }
+.w-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: #A78BFF; margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+.w-title {
+  font-family: var(--serif); font-size: 24px; line-height: 1.2;
+  color: #fff; letter-spacing: -.02em;
+}
+.w-title em { font-style: italic; color: #A78BFF; }
+
+/* ── Persona toggle ── */
+.w-personas {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; padding: 0 28px 20px;
+}
+.w-persona {
+  background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12);
+  border-radius: 14px; padding: 14px 10px; text-align: center;
+  cursor: pointer; transition: all .2s; user-select: none;
+}
+.w-persona:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.22); }
+.w-persona.active {
+  background: rgba(167,139,255,.18); border-color: #A78BFF;
+  box-shadow: 0 0 0 1px rgba(167,139,255,.3);
+}
+.w-persona-icon { font-size: 26px; display: block; margin-bottom: 7px; }
+.w-persona-label {
+  font-size: 11px; font-weight: 700; color: rgba(255,255,255,.9);
+  line-height: 1.3; display: block;
+}
+.w-persona.active .w-persona-label { color: #C4B5FD; }
+.w-persona-sublabel {
+  font-size: 10px; color: rgba(255,255,255,.4); margin-top: 3px; display: block;
+}
+.w-persona.active .w-persona-sublabel { color: rgba(167,139,255,.7); }
+
+/* ── Divider ── */
+.w-divider { height: 1px; background: rgba(255,255,255,.08); margin: 0 0 0; }
+
+/* ── Stage pill ── */
+.w-stage-row { padding: 14px 28px 10px; display: flex; align-items: center; gap: 10px; }
+.w-stage-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(167,139,255,.15); border: 1px solid rgba(167,139,255,.25);
+  border-radius: 100px; padding: 5px 12px;
+  font-size: 12px; font-weight: 700; color: #C4B5FD;
+}
+.w-stage-dot { width: 6px; height: 6px; border-radius: 50%; background: #A78BFF; }
+.w-stage-desc { font-size: 12px; color: rgba(255,255,255,.4); }
+
+/* ── Window list ── */
+.w-windows { padding: 4px 20px 8px; display: flex; flex-direction: column; gap: 7px; max-height: 380px; overflow-y: auto; }
+.w-windows::-webkit-scrollbar { width: 4px; }
+.w-windows::-webkit-scrollbar-track { background: transparent; }
+.w-windows::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 2px; }
+
+.w-row {
+  display: flex; gap: 12px; align-items: flex-start;
+  border-radius: 12px; padding: 13px 14px; transition: transform .15s;
+}
+.w-row:hover { transform: translateX(2px); }
+.w-row.urgent { background: rgba(251,191,36,.1);  border: 1px solid rgba(251,191,36,.22); }
+.w-row.open   { background: rgba(167,139,255,.1); border: 1px solid rgba(167,139,255,.18); }
+.w-row.closed { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); opacity: .6; }
+.w-row.coming { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); }
+
+.w-row-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+.w-row-body { flex: 1; min-width: 0; }
+
+.w-row-tag {
+  font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 3px;
+}
+.w-row.urgent .w-row-tag { color: #FBBF24; }
+.w-row.open   .w-row-tag { color: #A78BFF; }
+.w-row.closed .w-row-tag { color: rgba(255,255,255,.28); }
+.w-row.coming .w-row-tag { color: rgba(255,255,255,.35); }
+
+.w-row-title { font-size: 13.5px; font-weight: 700; line-height: 1.3; margin-bottom: 3px; }
+.w-row.closed .w-row-title { color: rgba(255,255,255,.4); }
+.w-row:not(.closed) .w-row-title { color: #fff; }
+
+.w-row-desc { font-size: 11.5px; line-height: 1.55; }
+.w-row.closed .w-row-desc  { color: rgba(255,255,255,.28); }
+.w-row:not(.closed) .w-row-desc { color: rgba(255,255,255,.58); }
+
+.w-row-badge {
+  flex-shrink: 0; font-size: 10.5px; font-weight: 700; padding: 4px 9px;
+  border-radius: 100px; margin-top: 1px; white-space: nowrap; align-self: flex-start;
+}
+.w-row.urgent .w-row-badge { background: rgba(251,191,36,.18); color: #FBBF24; border: 1px solid rgba(251,191,36,.28); }
+.w-row.open   .w-row-badge { background: rgba(167,139,255,.2); color: #C4B5FD; border: 1px solid rgba(167,139,255,.28); }
+.w-row.closed .w-row-badge { background: rgba(255,255,255,.05); color: rgba(255,255,255,.28); border: 1px solid rgba(255,255,255,.1); }
+.w-row.coming .w-row-badge { background: rgba(255,255,255,.05); color: rgba(255,255,255,.38); border: 1px solid rgba(255,255,255,.1); }
+
+/* ── CTA ── */
+.w-cta {
+  padding: 16px 20px 22px; border-top: 1px solid rgba(255,255,255,.09); margin-top: 8px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.w-cta-btn {
+  display: block; width: 100%; text-align: center;
+  background: #fff; color: var(--terra-dark);
+  font-family: var(--sans); font-size: 15px; font-weight: 700;
+  padding: 15px; border-radius: 100px; text-decoration: none; border: none; cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+}
+.w-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.3); }
+.w-cta-note { text-align: center; font-size: 11px; color: rgba(255,255,255,.3); }
+</style>
+</head>
+<body>
+
+<div class="widget">
+  <div class="w-header">
+    <div class="w-eyebrow">
+      <svg width="10" height="11" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#A78BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      FamilyForce Scout
+    </div>
+    <div class="w-title">See which windows are <em>open right now</em></div>
+  </div>
+
+  <!-- Persona toggles -->
+  <div class="w-personas">
+    <div class="w-persona" id="p0" onclick="selectPersona(0)">
+      <span class="w-persona-icon">🤱</span>
+      <span class="w-persona-label">Expecting</span>
+      <span class="w-persona-sublabel">Due in ~8 weeks</span>
+    </div>
+    <div class="w-persona" id="p1" onclick="selectPersona(1)">
+      <span class="w-persona-icon">👶</span>
+      <span class="w-persona-label">5 months old</span>
+      <span class="w-persona-sublabel">22 weeks</span>
+    </div>
+    <div class="w-persona" id="p2" onclick="selectPersona(2)">
+      <span class="w-persona-icon">🧒</span>
+      <span class="w-persona-label">1 year old</span>
+      <span class="w-persona-sublabel">52 weeks</span>
+    </div>
+  </div>
+
+  <div class="w-divider"></div>
+
+  <!-- Stage pill -->
+  <div class="w-stage-row">
+    <div class="w-stage-pill"><div class="w-stage-dot"></div><span id="w-stage"></span></div>
+    <div class="w-stage-desc" id="w-stage-desc"></div>
+  </div>
+
+  <!-- Window list -->
+  <div class="w-windows" id="w-windows"></div>
+
+  <!-- CTA -->
+  <div class="w-cta">
+    <a href="sign-in.html" class="w-cta-btn">Get my full personalised digest →</a>
+    <div class="w-cta-note">7 days free · no card required · cancel anytime</div>
+  </div>
+</div>
+
+<script>
+const PERSONAS = [
+  {
+    stage: 'Expecting',
+    stageDesc: '~8 weeks to go',
+    ageWeeks: -8,
+    windows: [
+      { status:'urgent', icon:'🏥', tag:'Do this now', title:'Choose your pediatrician', desc:'Book your "meet the doctor" appointment before the baby arrives. Most practices book out 4–6 weeks.', badge:'Due now' },
+      { status:'urgent', icon:'🚗', tag:'Do this now', title:'Install the car seat',        desc:'It must be installed and inspected before you leave the hospital. Don\'t leave this to the last week.', badge:'Due now' },
+      { status:'open',   icon:'🧠', tag:'Window open', title:'CPR & infant first aid class', desc:'One session with your partner. Hospitals run them monthly. You\'ll never regret knowing this.', badge:'Book now' },
+      { status:'open',   icon:'📋', tag:'Coming soon', title:'Newborn screening tests',      desc:'PKU, hearing, cardiac — done at the hospital within 24–48 hours of birth. Know what to expect.', badge:'At birth' },
+      { status:'coming', icon:'🥜', tag:'Coming up',   title:'Peanut introduction window',   desc:'Opens at 4 months. Research shows early introduction cuts allergy risk by up to 86%.', badge:'In ~4 months' },
+      { status:'coming', icon:'😴', tag:'Coming up',   title:'Sleep training window',         desc:'The optimal window is 6–9 months. Set up good sleep foundations before then.', badge:'In ~6 months' },
+    ]
+  },
+  {
+    stage: 'Infant stage',
+    stageDesc: '5 months old · 22 weeks',
+    ageWeeks: 22,
+    windows: [
+      { status:'urgent', icon:'🥜', tag:'⚠ Act this month',   title:'Peanut introduction window — open now', desc:'The ideal window is 4–6 months. This is your moment. One spoonful of peanut butter puree could prevent a lifelong allergy.', badge:'Closing soon' },
+      { status:'open',   icon:'😴', tag:'Opens in 4 weeks',    title:'Sleep training window approaching',      desc:'The 6–9 month window is when it\'s fastest and lowest-stress. Start building the foundation now — consistent bedtime, consistent routine.', badge:'Coming up fast' },
+      { status:'open',   icon:'🦷', tag:'Due this month',      title:'First dental visit',                     desc:'AAP recommends the first visit by 12 months — or within 6 months of the first tooth appearing. Book it now.', badge:'Book ahead' },
+      { status:'open',   icon:'👁️', tag:'Due at 6 months',     title:'6-month vision check',                   desc:'Strabismus and amblyopia are most treatable when caught early. Ask about it at your 6-month well-child visit.', badge:'Next visit' },
+      { status:'coming', icon:'💬', tag:'Coming up',           title:'Speech & language milestones',           desc:'10+ words by 18 months, 50+ by 2 years. Start counting words at 12 months — early detection changes outcomes.', badge:'At 12 months' },
+      { status:'coming', icon:'🚽', tag:'Coming up',           title:'Potty training readiness',               desc:'Signs typically emerge at 18–24 months. Read the playbook before you\'re in the middle of it.', badge:'At 18 months' },
+    ]
+  },
+  {
+    stage: 'Toddler stage',
+    stageDesc: '1 year old · 52 weeks',
+    ageWeeks: 52,
+    windows: [
+      { status:'urgent', icon:'💬', tag:'⚠ Watch now',         title:'Speech & language window',               desc:'10–25 words expected by 18 months. You\'re 6 months away from that checkpoint. If you\'re not hearing new words weekly, flag it at the next visit.', badge:'6 months left' },
+      { status:'urgent', icon:'🦷', tag:'⚠ Overdue',           title:'First dental visit',                     desc:'AAP recommends by 12 months. If you haven\'t done it — book this week. Early cavities affect adult teeth.', badge:'Book now' },
+      { status:'open',   icon:'🚽', tag:'Window opening',       title:'Potty training readiness signs',          desc:'Readiness signs begin at 18–24 months. The earlier you know what to look for, the smoother the training goes.', badge:'In 6 months' },
+      { status:'open',   icon:'📚', tag:'Critical window',      title:'Early literacy: read every day',          desc:'Vocabulary at age 3 predicts reading ability at age 8. 15 minutes of reading a day from now is the highest-ROI parenting activity.', badge:'Every day' },
+      { status:'open',   icon:'🍽️', tag:'Watch now',            title:'Food texture progression',               desc:'Most toddlers should be eating family foods by 12 months. Purees past 12 months can create texture aversion that\'s hard to reverse.', badge:'Act now' },
+      { status:'closed', icon:'😴', tag:'✗ Window closed',      title:'Sleep training optimal window',           desc:'The easiest window was 6–9 months. It can still be done — it\'s just harder now. Scout has a protocol for this age.', badge:'Closed at 9mo' },
+    ]
+  }
+];
+
+let current = 0;
+
+function selectPersona(i) {
+  current = i;
+  document.querySelectorAll('.w-persona').forEach((el, idx) => {
+    el.classList.toggle('active', idx === i);
+  });
+  render();
+}
+
+function render() {
+  const p = PERSONAS[current];
+  document.getElementById('w-stage').textContent      = p.stage;
+  document.getElementById('w-stage-desc').textContent = p.stageDesc;
+
+  const list = document.getElementById('w-windows');
+  list.innerHTML = '';
+
+  const tagMap = { urgent:'', open:'', closed:'', coming:'' };
+
+  p.windows.forEach(w => {
+    const el = document.createElement('div');
+    el.className = `w-row ${w.status}`;
+    el.innerHTML = `
+      <div class="w-row-icon">${w.icon}</div>
+      <div class="w-row-body">
+        <div class="w-row-tag">${w.tag}</div>
+        <div class="w-row-title">${w.title}</div>
+        <div class="w-row-desc">${w.desc}</div>
+      </div>
+      <div class="w-row-badge">${w.badge}</div>
+    `;
+    list.appendChild(el);
+  });
+}
+
+// Init
+selectPersona(0);
+</script>
+</body>
+</html>
