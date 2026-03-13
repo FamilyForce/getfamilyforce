@@ -3591,6 +3591,8 @@ button { font: inherit; cursor: pointer; }
 
     <!-- Active advisor content (paid) -->
     <div id="adv-active" style="display:none">
+      <!-- Trial status banner (injected by JS when trialing) -->
+      <div id="adv-trial-banner" style="display:none"></div>
       <!-- Child switcher -->
       <div class="adv-child-switcher" id="adv-child-switcher"></div>
       <!-- Family Circle row -->
@@ -4502,6 +4504,9 @@ button { font: inherit; cursor: pointer; }
 
     // Load family section (fire-and-forget)
     initFamilySection(session.user.id);
+
+    // ── Load Scout subscription + child from Supabase ──────────────
+    loadScoutFromSupabase(session.user.id);
   }
 
   const certName     = localStorage.getItem('ff_user_name') || '';
@@ -5367,6 +5372,64 @@ const ADV_REFERRAL_KEY = 'ff_advisor_referral';
 const MAX_ADV_CHILDREN = 3;
 
 /* ─── Paywall check ─── */
+// ── Load Scout subscription + child from Supabase ────────────────
+async function loadScoutFromSupabase(userId) {
+  try {
+    const sb = window._supabaseClient;
+
+    // 1. Check scout_subscriptions
+    const { data: subs } = await sb
+      .from('scout_subscriptions')
+      .select('status, trial_end, period_end, stripe_sub_id')
+      .eq('user_id', userId)
+      .limit(1);
+
+    const sub = subs && subs[0];
+    const activeStatuses = ['trialing', 'active'];
+
+    if (sub && activeStatuses.includes(sub.status)) {
+      // Mark as unlocked in localStorage so isAdvisorUnlocked() returns true
+      if (!localStorage.getItem(ADV_PLAN_KEY) || localStorage.getItem(ADV_PLAN_KEY) === 'none') {
+        localStorage.setItem(ADV_PLAN_KEY, 'annual');
+      }
+
+      // Store trial/subscription info for the banner
+      if (sub.trial_end) localStorage.setItem('ff_scout_trial_end', sub.trial_end);
+      localStorage.setItem('ff_scout_status', sub.status);
+
+      // 2. Load child from Supabase children table
+      const { data: kids } = await sb
+        .from('children')
+        .select('id, name, dob, gender')
+        .eq('user_id', userId)
+        .limit(3);
+
+      if (kids && kids.length > 0) {
+        // Seed children into ffAdvisor localStorage format if not already present
+        const existing = window.ffAdvisor ? window.ffAdvisor.loadChildren() : [];
+        for (const kid of kids) {
+          const alreadyIn = existing.find(c =>
+            c.name && kid.name && c.name.toLowerCase() === kid.name.toLowerCase()
+          );
+          if (!alreadyIn && window.ffAdvisor) {
+            window.ffAdvisor.addChild(
+              kid.name,
+              kid.dob,
+              kid.gender === 'boy' ? '👦' : '👧',
+              kid.gender || 'girl'
+            );
+          }
+        }
+      }
+
+      // 3. Re-run advisorInit now that data is seeded
+      advisorInit();
+    }
+  } catch (e) {
+    console.warn('[Scout] loadScoutFromSupabase error:', e);
+  }
+}
+
 function isAdvisorUnlocked() {
   const plan = localStorage.getItem(ADV_PLAN_KEY);
   return plan && plan !== 'none';
@@ -5401,6 +5464,34 @@ function advisorInit() {
 
   document.getElementById('adv-locked').style.display = 'none';
   document.getElementById('adv-active').style.display = 'block';
+
+  // Trial status banner
+  (function() {
+    var banner   = document.getElementById('adv-trial-banner');
+    var status   = localStorage.getItem('ff_scout_status');
+    var trialEnd = localStorage.getItem('ff_scout_trial_end');
+    if (!banner) return;
+    if (status === 'trialing' && trialEnd) {
+      var daysLeft = Math.ceil((new Date(trialEnd) - Date.now()) / 86400000);
+      daysLeft = Math.max(0, daysLeft);
+      var msg = daysLeft === 0
+        ? 'Your trial ends today. Your card will be charged $79.99 tonight.'
+        : daysLeft === 1
+          ? 'Your trial ends tomorrow. Cancel anytime before then if you want to stop.'
+          : 'Your trial ends in <strong>' + daysLeft + ' days</strong>. Cancel anytime before then.';
+      banner.innerHTML =
+        '<div style="background:var(--elevated);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px">' +
+          '<span style="font-size:18px;flex-shrink:0">🌱</span>' +
+          '<div style="flex:1">' +
+            '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px">Scout trial active</div>' +
+            '<div style="font-size:12px;color:var(--text-mid);line-height:1.5">' + msg + '</div>' +
+          '</div>' +
+        '</div>';
+      banner.style.display = 'block';
+    } else if (status === 'active') {
+      banner.style.display = 'none';
+    }
+  })();
 
   const children = window.ffAdvisor.loadChildren();
 
