@@ -864,73 +864,70 @@ button { font: inherit; cursor: pointer; }
 /* ═══════════════════════════════════════════════════════════
    14. COMPARISON TABLE
    ═══════════════════════════════════════════════════════════ */
-/* ─── RESOURCE CARDS GRID ─── */
-.resource-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 40px;
-}
-
-.resource-card {
+.comparison-wrap {
   background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-card);
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-container);
+  overflow: hidden;
 }
 
-.resource-card.is-ff {
-  border-color: var(--terra);
-  background: var(--elevated);
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.resource-card-icon {
-  font-size: 28px;
-  margin-bottom: 16px;
-  line-height: 1;
-}
-
-.resource-card-name {
+.comparison-table thead th {
+  padding: 20px 24px;
+  text-align: center;
   font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .08em;
+  font-size: 12px;
+  font-weight: 600;
   color: var(--text-dim);
-  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
 }
 
-.resource-card.is-ff .resource-card-name {
-  color: var(--terra);
+.comparison-table thead th:first-child {
+  text-align: left;
+  width: 30%;
 }
 
-.resource-card-title {
-  font-size: 16px;
+.comparison-table thead th.col-ff {
+  background: var(--elevated);
+  color: var(--text);
+  font-size: 13px;
+}
+
+.comparison-table tbody tr:not(:last-child) td {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.comparison-table tbody td {
+  padding: 16px 24px;
+  font-family: var(--sans);
+  font-size: 14px;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+.comparison-table tbody td:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-mid);
+}
+
+.comparison-table tbody th[scope="row"] {
+  padding-left: 28px;
+}
+
+.comparison-table tbody td.col-ff {
+  background: rgba(244,240,252,.5);
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 12px;
-  line-height: 1.35;
 }
 
-.resource-card-body {
-  font-size: 14px;
-  color: var(--text-mid);
-  line-height: 1.65;
-  flex-grow: 1;
-  margin-bottom: 16px;
-}
-
-.resource-card-tag {
-  font-size: 12px;
-  color: var(--text-dim);
-  font-weight: 600;
-  letter-spacing: .02em;
-}
-
-.resource-card.is-ff .resource-card-tag {
-  color: var(--terra-dark);
+.comparison-table tbody td.col-ff .check-yes {
+  color: #27AE60;
 }
 
 .comparison-punchline {
@@ -1466,7 +1463,11 @@ button { font: inherit; cursor: pointer; }
     margin-top: 32px;
   }
 
-  .resource-grid { grid-template-columns: repeat(2, 1fr); }
+  .comparison-table thead th,
+  .comparison-table tbody td {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1529,7 +1530,19 @@ button { font: inherit; cursor: pointer; }
   .testimonial-card { padding: 28px 24px; }
   .testimonial-card::before { font-size: 52px; top: 20px; left: 20px; }
 
-  .resource-grid { grid-template-columns: 1fr; }
+  /* Comparison table: hide middle columns, keep row label + FF */
+  .comparison-table thead th.col-comp1,
+  .comparison-table thead th.col-comp2,
+  .comparison-table tbody td.col-comp1,
+  .comparison-table tbody td.col-comp2 {
+    display: none;
+  }
+
+  .comparison-table thead th,
+  .comparison-table tbody td {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
 
   /* Included list */
   .included-item { padding: 16px 20px; }
@@ -1908,19 +1921,65 @@ button { font: inherit; cursor: pointer; }
 
   <!-- ─── COMPARISON TABLE ─── -->
   <span id="chapter-5" aria-hidden="true" style="position:absolute;visibility:hidden;pointer-events:none"></span>
-  <section id="compare" class="section" aria-label="How FamilyForce fits in">
+  <section id="compare" class="section" aria-label="How The Tantrum Playbook compares">
     <div class="wrap">
       <div data-reveal data-d="0">
-        <p class="label" style="margin-bottom:16px">The Full Picture</p>
-        <h2 class="heading" style="margin-bottom:12px;max-width:600px">Smart parents use all of these.</h2>
-        <p class="body-text" style="font-size:16px;margin-bottom:48px;max-width:540px">FamilyForce isn't here to replace your pediatrician, your parenting books, or your own good instincts. It's the research layer that ties everything together — in under an hour.</p>
+        <p class="label" style="margin-bottom:16px">How It Compares</p>
+        <h2 class="heading" style="margin-bottom:12px;max-width:520px">You've probably seen the alternatives.</h2>
+        <p class="body-text" style="font-size:16px;margin-bottom:48px;max-width:460px">Here's how the FamilyForce guide stacks up against the books most parents buy first.</p>
       </div>
-      <div class="resource-grid" data-reveal data-d="80">
+      <div data-reveal data-d="80">
+        <div class="comparison-wrap">
+          <table class="comparison-table" role="table" aria-label="Comparison of tantrum guides">
+            <thead>
+              <tr>
+                <th scope="col" style="text-align:left"></th>
+                <th scope="col" class="col-comp1">Popular parenting book</th>
+                <th scope="col" class="col-comp2">Blog / advice column</th>
+                <th scope="col" class="col-ff">FamilyForce</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" style="text-align:left;font-weight:500;color:var(--text-mid)">Read time</th>
+                <td class="col-comp1">7+ hours</td>
+                <td class="col-comp2">Advice forums</td>
+                <td class="col-ff">&lt; 1 hour</td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align:left;font-weight:500;color:var(--text-mid)">Cited research</th>
+                <td class="col-comp1">Some</td>
+                <td class="col-comp2">None</td>
+                <td class="col-ff">30+ studies</td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align:left;font-weight:500;color:var(--text-mid)">Audiobook</th>
+                <td class="col-comp1">Separate $$$</td>
+                <td class="col-comp2">No</td>
+                <td class="col-ff"><span class="check-yes">✓ Included</span></td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align:left;font-weight:500;color:var(--text-mid)">Quiz + Certificate</th>
+                <td class="col-comp1">No</td>
+                <td class="col-comp2">No</td>
+                <td class="col-ff"><span class="check-yes">✓ Included</span></td>
+              </tr>
+              <tr>
+                <th scope="row" style="text-align:left;font-weight:500;color:var(--text-mid)">Price</th>
+                <td class="col-comp1">$16.99</td>
+                <td class="col-comp2">$5.99</td>
+                <td class="col-ff">$4.99</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-        <div class="resource-card">
-          <div class="resource-card-icon">🩺</div>
-          <p class="resource-card-name">Your Pediatrician</p>
-          <p class="resource-card-title">The gold standard.</p>
+        <!-- Punchline after table -->
+        <p class="comparison-punchline" aria-label="Summary">
+          Same science. A fraction of the time. None of the fluff.
+        </p>
+      </div>
+<p class="resource-card-title">The gold standard.</p>
           <p class="resource-card-body">Clinical expertise, milestone checks, and the reassurance that yes, this is normal. 15 minutes every few months — and worth every second.</p>
           <p class="resource-card-tag">Keep this appointment.</p>
         </div>
