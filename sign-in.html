@@ -1692,7 +1692,13 @@ button { font: inherit; cursor: pointer; }
       var confirm = confirmEl.value;
       if (pw !== confirm) { fieldError('signin-confirm-error','Passwords don\'t match.'); confirmEl.focus(); return; }
       setLoading('Creating account…');
-      sb.auth.signUp({ email: email, password: pw }).then(function(res) {
+      sb.auth.signUp({
+        email: email,
+        password: pw,
+        options: {
+          emailRedirectTo: 'https://getfamilyforce.com/sign-in.html'
+        }
+      }).then(function(res) {
         if (res.error) {
           clearLoading('Create account →');
           if (res.error.message.toLowerCase().includes('already')) {
