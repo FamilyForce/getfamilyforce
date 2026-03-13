@@ -23,7 +23,7 @@ async function sendEmail(resendKey: string, to: string, subject: string, html: s
   const res = await fetch('https://api.resend.com/emails', {
     method:  'POST',
     headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from: 'FamilyForce <support@getfamilyforce.com>', to, subject, html }),
+    body: JSON.stringify({ from: 'FamilyForce <support@getfamilyforce.com>', to, bcc: ['support@getfamilyforce.com'], subject, html }),
   })
   const data = await res.json()
   if (!res.ok) console.error('[stripe-webhook] Resend error:', JSON.stringify(data))
