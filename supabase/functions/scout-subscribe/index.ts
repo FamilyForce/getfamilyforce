@@ -6,12 +6,10 @@
 //   SUPABASE_URL             = set automatically by Supabase
 //   SUPABASE_SERVICE_ROLE_KEY = set automatically by Supabase
 
-import Stripe from 'npm:stripe@14'
+import Stripe from 'https://esm.sh/stripe@13?target=deno&no-check=true'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
-  apiVersion: '2024-04-10',
-})
+// Stripe initialised inside handler to catch env var errors at runtime
 
 // ── Stripe config ──────────────────────────────────────────────
 const PRICE_ID = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'  // FamilyForce Scout $79.99/yr
@@ -39,6 +37,11 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
+    // Initialise Stripe inside handler so missing env var is caught cleanly
+    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
+    if (!stripeKey) return err(500, 'Stripe key not configured')
+    const stripe = new Stripe(stripeKey, { apiVersion: '2024-04-10' })
+
     // 1. Authenticate: verify Supabase JWT from Authorization header
     const authHeader = req.headers.get('Authorization')
     if (!authHeader?.startsWith('Bearer ')) return err(401, 'Missing auth token')

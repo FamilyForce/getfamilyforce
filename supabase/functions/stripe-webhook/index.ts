@@ -14,14 +14,13 @@
 //   invoice.payment_failed
 //   invoice.paid
 
-import Stripe from 'npm:stripe@14'
+import Stripe from 'https://esm.sh/stripe@13?target=deno&no-check=true'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
-  apiVersion: '2024-04-10',
-})
-
 Deno.serve(async (req: Request) => {
+  const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
+  if (!stripeKey) return new Response('Stripe key not configured', { status: 500 })
+  const stripe  = new Stripe(stripeKey, { apiVersion: '2024-04-10' })
   const sig     = req.headers.get('stripe-signature')
   const secret  = Deno.env.get('STRIPE_WEBHOOK_SECRET')
 
