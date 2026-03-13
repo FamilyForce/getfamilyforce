@@ -1051,6 +1051,7 @@ button { font: inherit; cursor: pointer; }
   </script>
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://js.stripe.com/v3/"></script>
   <script>
     window._supabaseClient = supabase.createClient(
       'https://ewjqbafaxeasyvknxmof.supabase.co',
@@ -1346,26 +1347,12 @@ button { font: inherit; cursor: pointer; }
           <input class="step-input" id="pay-name" type="text" placeholder="Full name" autocomplete="cc-name">
         </div>
 
-        <!-- Card number (Stripe element placeholder) -->
+        <!-- Stripe Card Element (number, expiry, CVV in one secure iframe) -->
         <div class="step-form-group">
-          <label class="step-label">Card number</label>
-          <div class="stripe-placeholder" id="stripe-card-element" aria-label="Card number input — powered by Stripe">
-            <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><rect width="20" height="14" rx="2" fill="#E5E7EB"/><rect x="0" y="4" width="20" height="4" fill="#9CA3AF"/></svg>
-            •••• •••• •••• ••••
-          </div>
-          <span style="font-size:11px;color:var(--text-dim);margin-top:4px;display:block">🔒 Secured by Stripe. We never store your card details.</span>
-        </div>
-
-        <!-- Expiry + CVV -->
-        <div class="payment-card-row step-form-group">
-          <div>
-            <label class="step-label" for="pay-expiry">Expiry</label>
-            <input class="step-input" id="pay-expiry" type="text" placeholder="MM / YY" autocomplete="cc-exp" maxlength="7" inputmode="numeric">
-          </div>
-          <div>
-            <label class="step-label" for="pay-cvv">CVV</label>
-            <input class="step-input" id="pay-cvv" type="text" placeholder="•••" autocomplete="cc-csc" maxlength="4" inputmode="numeric">
-          </div>
+          <label class="step-label">Card details</label>
+          <div id="stripe-card-element" style="border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;background:var(--surface);transition:border-color .15s" aria-label="Card details — powered by Stripe"></div>
+          <div id="stripe-card-errors" role="alert" style="font-size:11px;color:#DC2626;margin-top:6px;display:none"></div>
+          <span style="font-size:11px;color:var(--text-dim);margin-top:6px;display:block">🔒 Secured by Stripe. We never store your card details.</span>
         </div>
 
         <button class="step-btn-primary" id="payment-submit-btn" onclick="submitPayment()">
@@ -1747,8 +1734,10 @@ button { font: inherit; cursor: pointer; }
    ───────────────────────────────────────────────────────────────── */
 (function() {
 
-  var currentIntent = null;  // 'library' | 'trial'
-  var appliedPromo  = null;  // { code, discount } once validated
+  var currentIntent  = null;  // 'library' | 'trial'
+  var appliedPromo   = null;  // { code, discount, newPrice } once validated
+  var stripeInstance = null;  // Stripe.js instance
+  var stripeCard     = null;  // Stripe Card Element
 
   /* ── Show a step, hide all others ── */
   window.showStep = function(stepId) {
@@ -1768,6 +1757,8 @@ button { font: inherit; cursor: pointer; }
         target.classList.add('active');
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+      // Mount Stripe Card Element when payment step becomes visible
+      if (stepId === 'payment') mountStripeElement();
     }
   };
 
@@ -1939,71 +1930,133 @@ button { font: inherit; cursor: pointer; }
     }
   };
 
-  /* ── Submit payment (Stripe integration point) ── */
-  window.submitPayment = function() {
-    var btn = document.getElementById('payment-submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'Processing...';
+  /* ── Mount Stripe Card Element ── */
+  window.mountStripeElement = function() {
+    if (stripeCard) return; // Already mounted
+    if (typeof Stripe === 'undefined') {
+      console.error('[FamilyForce] Stripe.js not loaded');
+      return;
+    }
+    stripeInstance = Stripe('pk_test_51TAQTZRF5ve13fCKDmbO62d5eyQD1P5elKFxqb10rtEr7kMJ3myKneIpZs26oxTYafC2s1Q796gUnHxa0LuuDkX600u23YbO8I');
+    var elements   = stripeInstance.elements();
+    stripeCard     = elements.create('card', {
+      style: {
+        base: {
+          fontFamily:  "'Outfit', sans-serif",
+          fontSize:    '15px',
+          color:       '#1A1523',
+          '::placeholder': { color: '#C2BFD0' },
+        },
+        invalid: { color: '#DC2626' },
+      },
+    });
+    stripeCard.mount('#stripe-card-element');
 
-    // ── TODO: Replace simulation with real Stripe.js flow ──────────────
-    // 1. Load Stripe.js: <script src="https://js.stripe.com/v3/"></script>
-    // 2. Mount: const stripe = Stripe('pk_live_...')
-    // 3. Create payment method: stripe.createPaymentMethod({ type:'card', card: stripeElement })
-    // 4. POST to your backend /api/scout-subscribe with:
-    //    { paymentMethodId, promoCode: appliedPromo?.code, childId: sessionStorage.ff_child_id }
-    // 5. Backend: create Stripe customer → attach method → create subscription with
-    //    trial_period_days: 7, coupon if promo code
-    // 6. Backend: insert row into scout_subscriptions with status:'trialing', trial_end, etc.
-    // 7. On success: call onPaymentSuccess() below
-    // ───────────────────────────────────────────────────────────────────
-
-    // Simulate success for now (remove when Stripe is wired)
-    setTimeout(function() {
-      onPaymentSuccess();
-      btn.disabled = false;
-    }, 1500);
+    // Focus border highlight
+    var mountEl = document.getElementById('stripe-card-element');
+    stripeCard.on('focus', function() {
+      if (mountEl) mountEl.style.borderColor = 'var(--terra)';
+    });
+    stripeCard.on('blur', function() {
+      if (mountEl) mountEl.style.borderColor = 'var(--border)';
+    });
+    // Show inline card errors
+    stripeCard.on('change', function(event) {
+      var errEl = document.getElementById('stripe-card-errors');
+      if (!errEl) return;
+      if (event.error) {
+        errEl.textContent = event.error.message;
+        errEl.style.display = 'block';
+      } else {
+        errEl.textContent = '';
+        errEl.style.display = 'none';
+      }
+    });
   };
 
-  /* ── Called after Stripe confirms payment / trial start ── */
-  window.onPaymentSuccess = function() {
-    var sb        = window._supabaseClient;
-    var childName = sessionStorage.getItem('ff_child_name') || 'your child';
+  /* ── Submit payment via Stripe + Edge Function ── */
+  window.submitPayment = function() {
+    var btn = document.getElementById('payment-submit-btn');
+    if (!stripeInstance || !stripeCard) {
+      alert('Payment form not ready. Please refresh and try again.');
+      return;
+    }
+    btn.disabled    = true;
+    btn.textContent = 'Processing...';
 
-    // Write a pending subscription row to Supabase so Scout dashboard
-    // can show trial status immediately (Stripe webhook will update it fully)
-    if (sb) {
+    var payName = (document.getElementById('pay-name') || {}).value || '';
+
+    // 1. Create payment method from the card element
+    stripeInstance.createPaymentMethod({
+      type: 'card',
+      card: stripeCard,
+      billing_details: { name: payName },
+    }).then(function(result) {
+      if (result.error) {
+        // Show error, re-enable button
+        var errEl = document.getElementById('stripe-card-errors');
+        if (errEl) { errEl.textContent = result.error.message; errEl.style.display = 'block'; }
+        btn.disabled    = false;
+        btn.textContent = 'Start free trial →';
+        return;
+      }
+
+      // 2. Get Supabase session for auth token
+      var sb = window._supabaseClient;
       sb.auth.getSession().then(function(res) {
         var session = res.data && res.data.session;
-        if (!session) return;
+        if (!session) {
+          btn.disabled    = false;
+          btn.textContent = 'Start free trial →';
+          alert('Your session expired. Please sign in again.');
+          return;
+        }
 
-        var trialEnd = new Date();
-        trialEnd.setDate(trialEnd.getDate() + 7);
-
-        sb.from('scout_subscriptions')
-          .upsert({
-            user_id:      session.user.id,
-            status:       'trialing',
-            promo_code:   appliedPromo ? appliedPromo.code : null,
-            discount_pct: appliedPromo ? Math.round(appliedPromo.discount * 100) : null,
-            price_paid:   appliedPromo ? appliedPromo.newPrice : 79.99,
-            trial_end:    trialEnd.toISOString(),
-            period_end:   trialEnd.toISOString() // updated by webhook once Stripe confirms
-          }, { onConflict: 'user_id' })
-          .then(function(result) {
-            if (result && result.error) {
-              console.warn('[FamilyForce] Subscription save error:', result.error.message);
-            }
-          });
+        // 3. POST to scout-subscribe Edge Function
+        fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-subscribe', {
+          method:  'POST',
+          headers: {
+            'Content-Type':  'application/json',
+            'Authorization': 'Bearer ' + session.access_token,
+          },
+          body: JSON.stringify({
+            paymentMethodId: result.paymentMethod.id,
+            promoCode:       appliedPromo ? appliedPromo.code : null,
+            childId:         sessionStorage.getItem('ff_child_id') || null,
+          }),
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (!data.ok) {
+            var errEl = document.getElementById('stripe-card-errors');
+            if (errEl) { errEl.textContent = data.error || 'Payment failed. Please try again.'; errEl.style.display = 'block'; }
+            btn.disabled    = false;
+            btn.textContent = 'Start free trial →';
+            return;
+          }
+          // 4. Success
+          onPaymentSuccess();
+          btn.disabled = false;
+        })
+        .catch(function(e) {
+          console.error('[FamilyForce] scout-subscribe error:', e);
+          btn.disabled    = false;
+          btn.textContent = 'Start free trial →';
+          alert('Something went wrong. Please try again.');
+        });
       });
-    }
+    });
+  };
 
-    // Show success step
-    var icon    = document.getElementById('success-icon');
-    var heading = document.getElementById('success-heading');
-    var sub     = document.getElementById('success-sub');
-    if (icon)    icon.textContent = '🌱';
+  /* ── Called after Edge Function confirms subscription created ── */
+  window.onPaymentSuccess = function() {
+    var childName = sessionStorage.getItem('ff_child_name') || 'your child';
+    var icon      = document.getElementById('success-icon');
+    var heading   = document.getElementById('success-heading');
+    var sub       = document.getElementById('success-sub');
+    if (icon)    icon.textContent    = '🌱';
     if (heading) heading.textContent = 'Your free trial has started!';
-    if (sub)     sub.textContent = 'Scout is setting up ' + childName + '\'s dashboard. Your card won\'t be charged for 7 days.';
+    if (sub)     sub.textContent     = 'Scout is setting up ' + childName + '\'s dashboard. Your card won\'t be charged for 7 days.';
     showStep('success');
   };
 
