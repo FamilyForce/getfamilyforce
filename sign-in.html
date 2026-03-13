@@ -1622,9 +1622,9 @@ button { font: inherit; cursor: pointer; }
   window.signinWithGoogle = function() {
     var sb = window._supabaseClient;
     if (!sb) { alert('Auth not ready. Please refresh.'); return; }
-    // Carry intent through OAuth callback so server can route new Google users correctly
-    var intent = sessionStorage.getItem('ff_intent') || new URLSearchParams(window.location.search).get('intent') || '';
-    var redirectTo = 'https://getfamilyforce.com/auth/callback?next=sign-in.html' + (intent ? '&intent=' + intent : '');
+    // Redirect back to sign-in.html after Google OAuth — carry intent param
+    var intent     = sessionStorage.getItem('ff_intent') || new URLSearchParams(window.location.search).get('intent') || '';
+    var redirectTo = 'https://getfamilyforce.com/sign-in.html' + (intent ? '?intent=' + intent : '');
 
     var btn = document.getElementById('signin-google-btn');
     if (btn) { btn.disabled = true; btn.textContent = 'Redirecting…'; }
@@ -1790,20 +1790,30 @@ button { font: inherit; cursor: pointer; }
     // Store intent for post-signup routing
     if (intent) sessionStorage.setItem('ff_intent', intent);
 
-    // Detect post-email-confirmation redirect
-    // Supabase puts #access_token=...&type=signup in the URL hash after confirmation
+    // Detect post-confirmation or post-Google-OAuth redirect
+    // Supabase puts #access_token=... in the URL hash in both cases:
+    //   Email confirmation: type=signup
+    //   Google OAuth:       type=bearer (or no type)
     var hash = window.location.hash;
-    if (hash && hash.indexOf('access_token') !== -1 && hash.indexOf('type=signup') !== -1) {
-      // Let Supabase JS process the hash and establish the session
+    if (hash && hash.indexOf('access_token') !== -1) {
       var sb = window._supabaseClient;
       if (sb) {
-        // Small delay to let Supabase process the hash tokens
+        // Small delay to let Supabase JS process and store the session
         setTimeout(function() {
           sb.auth.getSession().then(function(res) {
             if (res.data && res.data.session) {
-              // Clean the hash from the URL without reloading
+              // Clean the hash from the URL
               history.replaceState(null, '', window.location.pathname + window.location.search);
-              routeAfterSignup();
+              var user = res.data.session.user;
+              // New user (created in last 30s) → show intent screen
+              // Returning user → go straight to dashboard
+              var createdAt  = user.created_at ? new Date(user.created_at).getTime() : 0;
+              var isNewUser  = (Date.now() - createdAt) < 30000;
+              if (isNewUser) {
+                routeAfterSignup();
+              } else {
+                window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+              }
             }
           });
         }, 300);
