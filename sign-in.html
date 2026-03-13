@@ -1810,26 +1810,90 @@ button { font: inherit; cursor: pointer; }
 
   /* ── Go from child setup to payment ── */
   window.goToPayment = function() {
-    var name = document.getElementById('child-name').value.trim();
-    var dob  = document.getElementById('child-dob').value;
-    // Validate — name required, DOB required
+    var nameEl   = document.getElementById('child-name');
+    var dobEl    = document.getElementById('child-dob');
+    var genderEl = document.getElementById('child-gender');
+    var name     = nameEl.value.trim();
+    var dob      = dobEl.value;
+    var gender   = genderEl.value || null;
+
+    // Reset field borders
+    nameEl.style.borderColor = '';
+    dobEl.style.borderColor  = '';
+
+    // Validate
     if (!name) {
-      document.getElementById('child-name').focus();
-      document.getElementById('child-name').style.borderColor = '#EF4444';
+      nameEl.focus();
+      nameEl.style.borderColor = '#EF4444';
       return;
     }
     if (!dob) {
-      document.getElementById('child-dob').focus();
-      document.getElementById('child-dob').style.borderColor = '#EF4444';
+      dobEl.focus();
+      dobEl.style.borderColor = '#EF4444';
       return;
     }
-    // Save child data
+
+    // Cache locally
     try {
-      sessionStorage.setItem('ff_child_name', name);
-      sessionStorage.setItem('ff_child_dob', dob);
-      sessionStorage.setItem('ff_child_gender', document.getElementById('child-gender').value);
+      sessionStorage.setItem('ff_child_name',   name);
+      sessionStorage.setItem('ff_child_dob',    dob);
+      sessionStorage.setItem('ff_child_gender', gender || '');
     } catch(_) {}
+
+    // Persist to Supabase (non-blocking — show payment step immediately)
+    saveChildToSupabase(name, dob, gender);
+
     showStep('payment');
+  };
+
+  /* ── Save child data to Supabase children table ── */
+  window.saveChildToSupabase = function(name, dob, gender) {
+    var sb = window._supabaseClient;
+    if (!sb) return;
+
+    sb.auth.getSession().then(function(res) {
+      var session = res.data && res.data.session;
+      if (!session) return; // Not logged in yet — skip silently
+
+      var userId = session.user.id;
+
+      // Upsert: if user already has a child record with same name+dob, update it
+      // Otherwise insert new. Uses a workaround since children has no natural unique key —
+      // we check for an existing record for this user first.
+      sb.from('children')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('name', name)
+        .eq('dob', dob)
+        .maybeSingle()
+        .then(function(existing) {
+          if (existing.data) {
+            // Update existing record (e.g. gender changed)
+            return sb.from('children')
+              .update({ gender: gender, updated_at: new Date().toISOString() })
+              .eq('id', existing.data.id);
+          } else {
+            // Insert new child
+            return sb.from('children')
+              .insert({
+                user_id: userId,
+                name:    name,
+                dob:     dob,
+                gender:  gender
+              });
+          }
+        })
+        .then(function(result) {
+          if (result && result.error) {
+            console.warn('[FamilyForce] Child save error:', result.error.message);
+          } else {
+            // Cache child ID locally for later use (e.g. Scout dashboard)
+            if (result && result.data && result.data[0]) {
+              try { sessionStorage.setItem('ff_child_id', result.data[0].id); } catch(_) {}
+            }
+          }
+        });
+    });
   };
 
   /* ── Apply promo / referral code ── */
@@ -1881,20 +1945,66 @@ button { font: inherit; cursor: pointer; }
     btn.disabled = true;
     btn.textContent = 'Processing...';
 
-    // TODO: Replace with real Stripe.js call
-    // stripe.createPaymentMethod({ type:'card', card: stripeCardElement }).then(...)
-    // Pass appliedPromo.code as coupon to Stripe subscription create call if set
+    // ── TODO: Replace simulation with real Stripe.js flow ──────────────
+    // 1. Load Stripe.js: <script src="https://js.stripe.com/v3/"></script>
+    // 2. Mount: const stripe = Stripe('pk_live_...')
+    // 3. Create payment method: stripe.createPaymentMethod({ type:'card', card: stripeElement })
+    // 4. POST to your backend /api/scout-subscribe with:
+    //    { paymentMethodId, promoCode: appliedPromo?.code, childId: sessionStorage.ff_child_id }
+    // 5. Backend: create Stripe customer → attach method → create subscription with
+    //    trial_period_days: 7, coupon if promo code
+    // 6. Backend: insert row into scout_subscriptions with status:'trialing', trial_end, etc.
+    // 7. On success: call onPaymentSuccess() below
+    // ───────────────────────────────────────────────────────────────────
+
+    // Simulate success for now (remove when Stripe is wired)
     setTimeout(function() {
-      var childName = sessionStorage.getItem('ff_child_name') || 'your child';
-      var icon    = document.getElementById('success-icon');
-      var heading = document.getElementById('success-heading');
-      var sub     = document.getElementById('success-sub');
-      if (icon)    icon.textContent = '🌱';
-      if (heading) heading.textContent = 'Your free trial has started!';
-      if (sub)     sub.textContent = 'Scout is setting up ' + childName + '\'s dashboard. Your card won\'t be charged for 7 days.';
-      showStep('success');
+      onPaymentSuccess();
       btn.disabled = false;
     }, 1500);
+  };
+
+  /* ── Called after Stripe confirms payment / trial start ── */
+  window.onPaymentSuccess = function() {
+    var sb        = window._supabaseClient;
+    var childName = sessionStorage.getItem('ff_child_name') || 'your child';
+
+    // Write a pending subscription row to Supabase so Scout dashboard
+    // can show trial status immediately (Stripe webhook will update it fully)
+    if (sb) {
+      sb.auth.getSession().then(function(res) {
+        var session = res.data && res.data.session;
+        if (!session) return;
+
+        var trialEnd = new Date();
+        trialEnd.setDate(trialEnd.getDate() + 7);
+
+        sb.from('scout_subscriptions')
+          .upsert({
+            user_id:      session.user.id,
+            status:       'trialing',
+            promo_code:   appliedPromo ? appliedPromo.code : null,
+            discount_pct: appliedPromo ? Math.round(appliedPromo.discount * 100) : null,
+            price_paid:   appliedPromo ? appliedPromo.newPrice : 79.99,
+            trial_end:    trialEnd.toISOString(),
+            period_end:   trialEnd.toISOString() // updated by webhook once Stripe confirms
+          }, { onConflict: 'user_id' })
+          .then(function(result) {
+            if (result && result.error) {
+              console.warn('[FamilyForce] Subscription save error:', result.error.message);
+            }
+          });
+      });
+    }
+
+    // Show success step
+    var icon    = document.getElementById('success-icon');
+    var heading = document.getElementById('success-heading');
+    var sub     = document.getElementById('success-sub');
+    if (icon)    icon.textContent = '🌱';
+    if (heading) heading.textContent = 'Your free trial has started!';
+    if (sub)     sub.textContent = 'Scout is setting up ' + childName + '\'s dashboard. Your card won\'t be charged for 7 days.';
+    showStep('success');
   };
 
   /* ── Success redirect ── */
