@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>FamilyForce Sign-Up Flow v2</title>
+<title>FamilyForce Sign-Up Flow v3</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -34,137 +34,148 @@ p.subtitle { font-size: 15px; color: var(--text-dim); margin-bottom: 8px; }
 .path-label::after { content: ''; flex: 1; height: 1px; background: rgba(110,78,214,.2); }
 
 .flow-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 52px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; }
-.arrow { font-size: 20px; color: var(--terra); opacity: .5; margin-top: 88px; flex-shrink: 0; }
+.arrow { font-size: 20px; color: var(--terra); opacity: .5; margin-top: 90px; flex-shrink: 0; }
 .screen-wrap { flex-shrink: 0; }
-.screen-num { font-size: 10px; font-weight: 700; color: var(--text-ghost); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; text-align: center; }
-.screen-tag { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 100px; display: inline-block; margin-bottom: 8px; }
-.screen-tag.existing { background: #FEF3C7; color: #92400E; }
-.screen-tag.new      { background: #DCFCE7; color: #166534; }
-.screen-tag.done     { background: #F0FDF4; color: #166534; }
-.screen-tag.changed  { background: #EEF2FF; color: #3730A3; }
+.screen-num  { font-size: 10px; font-weight: 700; color: var(--text-ghost); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; text-align: center; }
+.screen-tag  { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 100px; display: inline-block; margin-bottom: 8px; }
+.tag-exist   { background: #FEF3C7; color: #92400E; }
+.tag-new     { background: #DCFCE7; color: #166534; }
+.tag-done    { background: #F0FDF4; color: #166534; }
+.tag-changed { background: #EEF2FF; color: #3730A3; }
 
-.screen {
-  width: 240px;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(110,78,214,.08);
-}
+.screen { width: 240px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(110,78,214,.08); }
 
 /* Nav */
-.s-nav {
-  height: 40px; background: rgba(250,250,250,.95);
-  border-bottom: 1px solid var(--border-light);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 14px; flex-shrink: 0;
-}
-.s-logo { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 800; color: var(--text); }
-.s-logo-s { color: var(--terra); }
+.s-nav { height: 40px; background: rgba(250,250,250,.97); border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; padding: 0 14px; }
+.s-logo { font-size: 12px; font-weight: 800; color: var(--text); }
+.s-logo span { color: var(--terra); }
+.s-nav-pill { background: var(--terra); color: #fff; font-size: 8px; font-weight: 700; padding: 3px 8px; border-radius: 100px; }
+.s-nav-link { font-size: 10px; font-weight: 600; color: var(--terra); }
 
-.s-bg { background: #F4F0FC; padding: 18px 16px 20px; }
-.s-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
-.s-card-logo { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
-.s-card-logo-s { color: var(--terra); }
-.s-h1 { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-.s-sub { font-size: 10px; color: var(--text-dim); margin-bottom: 14px; line-height: 1.5; }
-.s-google-btn { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 600; color: var(--text-mid); margin-bottom: 10px; }
-.s-divider { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-.s-divider-line { flex: 1; height: 1px; background: var(--border-light); }
-.s-divider-text { font-size: 9px; color: var(--text-ghost); }
-.s-label { font-size: 9px; font-weight: 600; color: var(--text-mid); margin-bottom: 4px; display: block; }
-.s-input { width: 100%; border: 1.5px solid var(--border); border-radius: 6px; padding: 7px 10px; font-size: 10px; color: var(--text-dim); margin-bottom: 8px; font-family: var(--sans); }
-.s-input.active { border-color: var(--terra); color: var(--text); }
-.s-btn { width: 100%; background: var(--terra); color: #fff; border-radius: 100px; padding: 8px; font-size: 11px; font-weight: 700; text-align: center; margin-top: 4px; cursor: pointer; }
-.s-toggle { font-size: 9px; color: var(--text-dim); text-align: center; margin-top: 10px; }
+/* Auth card wrapper */
+.s-bg  { background: #F4F0FC; padding: 16px 14px 18px; }
+.s-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.s-card-logo { font-size: 13px; font-weight: 800; color: var(--text); text-align: center; margin-bottom: 12px; }
+.s-card-logo span { color: var(--terra); }
+.s-h1  { font-family: var(--serif); font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.s-sub { font-size: 9.5px; color: var(--text-dim); margin-bottom: 12px; line-height: 1.5; }
+.s-google { width: 100%; border: 1.5px solid var(--border); border-radius: 7px; padding: 7px 8px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 10px; font-weight: 600; color: var(--text-mid); margin-bottom: 9px; }
+.s-divider { display: flex; align-items: center; gap: 7px; margin-bottom: 9px; }
+.s-div-line { flex: 1; height: 1px; background: var(--border-light); }
+.s-div-txt  { font-size: 8.5px; color: var(--text-ghost); }
+.s-label { display: block; font-size: 8.5px; font-weight: 600; color: var(--text-mid); margin-bottom: 3px; }
+.s-input { width: 100%; border: 1.5px solid var(--border); border-radius: 6px; padding: 6px 9px; font-size: 9.5px; color: var(--text-dim); margin-bottom: 7px; font-family: var(--sans); background: var(--surface); }
+.s-input.fill { color: var(--text); border-color: var(--terra); }
+.s-btn  { width: 100%; background: var(--terra); color: #fff; border-radius: 100px; padding: 8px; font-size: 10.5px; font-weight: 700; text-align: center; margin-top: 2px; }
+.s-toggle { font-size: 8.5px; color: var(--text-dim); text-align: center; margin-top: 9px; }
 .s-toggle a { color: var(--terra); }
-.s-back { font-size: 10px; color: var(--terra); margin-bottom: 12px; cursor: pointer; }
+.s-back { font-size: 9.5px; color: var(--terra); margin-bottom: 10px; cursor: pointer; }
 
 /* Intent cards */
-.s-intent-card { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border: 1.5px solid var(--border); border-radius: 8px; margin-bottom: 7px; }
-.s-intent-card:last-child { margin-bottom: 0; }
-.s-intent-icon { font-size: 16px; background: var(--elevated); width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.s-intent-title { font-size: 10px; font-weight: 700; color: var(--text); }
-.s-intent-desc { font-size: 8.5px; color: var(--text-dim); line-height: 1.4; }
-.s-intent-arrow { font-size: 14px; color: var(--text-ghost); margin-left: auto; flex-shrink: 0; }
+.s-intent { display: flex; align-items: center; gap: 8px; padding: 8px 9px; border: 1.5px solid var(--border); border-radius: 8px; margin-bottom: 6px; }
+.s-intent:last-child { margin-bottom: 0; }
+.s-intent.hi { border-color: var(--terra); background: var(--elevated); }
+.s-intent-ico { font-size: 15px; background: var(--elevated); width: 26px; height: 26px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.s-intent-title { font-size: 9.5px; font-weight: 700; color: var(--text); }
+.s-intent-desc  { font-size: 8px; color: var(--text-dim); line-height: 1.4; }
+.s-intent-arr   { font-size: 13px; color: var(--text-ghost); margin-left: auto; flex-shrink: 0; }
+.s-intent.hi .s-intent-arr { color: var(--terra); }
 
-/* Child form */
-.s-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-
-/* Payment */
-.s-pay-summary { background: var(--elevated); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
-.s-pay-row { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-mid); margin-bottom: 5px; }
-.s-pay-row:last-child { margin-bottom: 0; }
-.s-pay-row strong { color: var(--text); font-weight: 700; }
-.s-pay-badge { background: #DCFCE7; color: #166534; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 100px; }
-.s-stripe { border: 1.5px solid var(--border); border-radius: 6px; padding: 7px 10px; display: flex; align-items: center; gap: 6px; font-size: 9px; color: var(--text-ghost); margin-bottom: 6px; }
-.s-pay-card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px; }
-.s-terms { font-size: 7.5px; color: var(--text-ghost); text-align: center; line-height: 1.5; margin-top: 8px; }
-.s-referral-row { display: flex; gap: 5px; margin-bottom: 8px; }
-.s-referral-input { flex: 1; border: 1.5px dashed var(--border); border-radius: 6px; padding: 6px 10px; font-size: 9px; color: var(--text-ghost); font-family: var(--sans); }
-.s-referral-btn { background: var(--elevated); border: 1.5px solid var(--border); border-radius: 6px; padding: 6px 9px; font-size: 9px; font-weight: 700; color: var(--terra); white-space: nowrap; }
-.s-escape { font-size: 8.5px; color: var(--text-dim); text-align: center; margin-top: 10px; line-height: 1.5; }
+/* Child setup (matches real sign-in.html fields exactly) */
+.s-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 0; }
+.s-hint { font-size: 8px; color: var(--text-dim); margin-top: -5px; margin-bottom: 7px; }
+.s-select { width: 100%; border: 1.5px solid var(--border); border-radius: 6px; padding: 6px 9px; font-size: 9.5px; color: var(--text); margin-bottom: 7px; font-family: var(--sans); background: var(--surface); }
+.s-ghost { font-size: 8px; color: var(--text-dim); text-align: center; margin-top: 8px; }
+.s-escape { font-size: 8.5px; color: var(--text-dim); text-align: center; margin-top: 8px; }
 .s-escape a { color: var(--terra); text-decoration: underline; }
 
-/* Library */
-.s-library-item { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border-light); }
-.s-library-item:last-child { border-bottom: none; }
-.s-lib-icon { font-size: 16px; }
-.s-lib-title { font-size: 10px; font-weight: 600; color: var(--text); }
-.s-lib-sub { font-size: 8.5px; color: var(--text-dim); }
-.s-lib-badge { font-size: 8px; font-weight: 700; color: var(--terra); background: var(--elevated); padding: 1px 6px; border-radius: 100px; margin-left: auto; flex-shrink: 0; }
+/* Payment */
+.s-summary { background: var(--elevated); border-radius: 8px; padding: 9px 11px; margin-bottom: 9px; }
+.s-sum-row { display: flex; justify-content: space-between; font-size: 8.5px; color: var(--text-mid); margin-bottom: 4px; }
+.s-sum-row:last-child { margin-bottom: 0; }
+.s-sum-row strong { color: var(--text); font-weight: 700; }
+.s-badge-green  { background: #DCFCE7; color: #166534; font-size: 7.5px; font-weight: 700; padding: 1px 5px; border-radius: 100px; }
+.s-stripe { border: 1.5px solid var(--border); border-radius: 6px; padding: 6px 9px; display: flex; align-items: center; gap: 5px; font-size: 8.5px; color: var(--text-ghost); margin-bottom: 5px; }
+.s-2col-pay { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-bottom: 5px; }
+.s-referral-row { display: flex; gap: 5px; margin-bottom: 7px; }
+.s-ref-input { flex: 1; border: 1.5px dashed var(--border); border-radius: 6px; padding: 5px 8px; font-size: 8.5px; color: var(--text-ghost); font-family: var(--sans); }
+.s-ref-input.applied { border-style: solid; border-color: #16A34A; color: #166534; font-weight: 700; }
+.s-ref-btn  { background: var(--elevated); border: 1.5px solid var(--border); border-radius: 6px; padding: 5px 8px; font-size: 8.5px; font-weight: 700; color: var(--terra); white-space: nowrap; }
+.s-ref-btn.ok { background: #F0FDF4; border-color: #BBF7D0; color: #166534; }
+.s-ref-success { background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 5px; padding: 5px 8px; font-size: 8px; color: #166534; font-weight: 600; margin-bottom: 6px; }
+.s-terms { font-size: 7px; color: var(--text-ghost); text-align: center; line-height: 1.5; margin-top: 7px; }
 
 /* Success */
-.s-success { text-align: center; padding: 20px 10px; }
-.s-success-icon { font-size: 36px; display: block; margin-bottom: 10px; }
-.s-success-h { font-family: var(--serif); font-size: 15px; color: var(--text); margin-bottom: 6px; }
-.s-success-sub { font-size: 9px; color: var(--text-dim); line-height: 1.5; margin-bottom: 14px; }
+.s-success { text-align: center; padding: 22px 12px 18px; }
+.s-suc-icon { font-size: 34px; display: block; margin-bottom: 9px; }
+.s-suc-h { font-family: var(--serif); font-size: 14px; color: var(--text); margin-bottom: 5px; }
+.s-suc-sub { font-size: 8.5px; color: var(--text-dim); line-height: 1.5; margin-bottom: 13px; }
 
-/* Scout dashboard preview */
+/* Real dashboard mockup */
+.s-dash-greet { padding: 14px 14px 10px; background: #FAFAFA; border-bottom: 1px solid var(--border-light); }
+.s-dash-hi { font-family: var(--serif); font-size: 16px; color: var(--text); font-weight: 700; }
+.s-dash-sub { font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+.s-lib-row { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-bottom: 1px solid var(--border-light); }
+.s-lib-accent { width: 3px; height: 32px; border-radius: 2px; flex-shrink: 0; }
+.s-lib-info { flex: 1; }
+.s-lib-title { font-size: 10px; font-weight: 700; color: var(--text); }
+.s-lib-meta  { font-size: 8px; color: var(--text-dim); }
+.s-lib-free  { font-size: 8px; font-weight: 700; color: var(--terra); background: var(--elevated); padding: 2px 6px; border-radius: 100px; }
+.s-lib-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.s-lib-btn { font-size: 8px; font-weight: 600; color: var(--terra); border: 1px solid var(--border); border-radius: 100px; padding: 2px 7px; }
+.s-section-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-dim); padding: 10px 14px 6px; }
+.s-trial-bar { background: #FFFBEB; border-bottom: 1px solid #FDE68A; padding: 6px 14px; font-size: 8px; color: #92400E; font-weight: 600; display: flex; justify-content: space-between; }
+
+/* Scout dashboard */
 .s-scout-bar { background: var(--terra); color: #fff; font-size: 8px; font-weight: 700; padding: 5px 12px; display: flex; justify-content: space-between; }
 .s-scout-section { padding: 10px 12px; }
-.s-scout-section-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--terra); margin-bottom: 6px; }
-.s-scout-window { background: var(--elevated); border-radius: 6px; padding: 7px 9px; margin-bottom: 5px; }
-.s-scout-window-title { font-size: 9px; font-weight: 700; color: var(--text); }
-.s-scout-window-sub { font-size: 8px; color: var(--text-dim); }
-.s-scout-trial-bar { background: #FEF3C7; padding: 6px 12px; font-size: 8px; color: #92400E; font-weight: 600; text-align: center; }
+.s-scout-sec-label { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--terra); margin-bottom: 6px; }
+.s-scout-win { background: var(--elevated); border-radius: 6px; padding: 7px 9px; margin-bottom: 5px; }
+.s-scout-win-title { font-size: 9px; font-weight: 700; color: var(--text); }
+.s-scout-win-sub { font-size: 7.5px; color: var(--text-dim); margin-top: 1px; }
 
-/* Annotation box */
-.annot { background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; width: 160px; flex-shrink: 0; align-self: center; }
+/* Annotations */
+.annot { background: white; border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; width: 150px; flex-shrink: 0; align-self: center; }
 .annot-icon { font-size: 18px; margin-bottom: 6px; }
 .annot-title { font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .annot-body { font-size: 10px; color: var(--text-dim); line-height: 1.6; }
 
-/* SVG logo helper */
-.logo-svg { display:inline-block; }
+/* Decisions grid */
+.decisions { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; max-width: 900px; }
+.decision-card { background: white; border-radius: 12px; padding: 14px 16px; border: 1px solid var(--border); }
+.decision-icon { font-size: 20px; margin-bottom: 8px; }
+.decision-title { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.decision-body { font-size: 11px; color: var(--text-dim); line-height: 1.6; }
 </style>
 </head>
 <body>
 
 <h1 class="title">FamilyForce — Sign-Up Flow</h1>
 <p class="subtitle">Two paths. Everyone gets a 7-day trial before paying.</p>
-<div class="version-badge">v2 — updated Mar 13</div>
+<div class="version-badge">v3 — Mar 13</div>
 
-<!-- ─── SHARED: ACCOUNT CREATION ─── -->
+<!-- ════════════════════════════════════
+     SHARED: ACCOUNT CREATION
+════════════════════════════════════ -->
 <div class="path-label">Shared — Account Creation (all users start here)</div>
 <div class="flow-row">
 
   <!-- Create Account -->
   <div class="screen-wrap">
     <div class="screen-num">Screen 1</div>
-    <div class="screen-tag existing">Existing · create account</div>
+    <div class="screen-tag tag-exist">Existing · create account</div>
     <div class="screen">
-      <div class="s-nav"><div class="s-logo"><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-nav"><div class="s-logo">Family<span>Force</span></div></div>
       <div class="s-bg">
         <div class="s-card">
-          <div class="s-card-logo">Family<span class="s-card-logo-s">Force</span></div>
+          <div class="s-card-logo">Family<span>Force</span></div>
           <div class="s-h1">Create your account</div>
           <div class="s-sub">Free to start. No card required.</div>
-          <div class="s-google-btn">
-            <svg width="12" height="12" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          <div class="s-google">
+            <svg width="11" height="11" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
             Continue with Google
           </div>
-          <div class="s-divider"><div class="s-divider-line"></div><span class="s-divider-text">or</span><div class="s-divider-line"></div></div>
+          <div class="s-divider"><div class="s-div-line"></div><span class="s-div-txt">or</span><div class="s-div-line"></div></div>
           <label class="s-label">Email address</label>
           <div class="s-input" style="color:var(--text-ghost)">you@example.com</div>
           <label class="s-label">Password</label>
@@ -180,27 +191,27 @@ p.subtitle { font-size: 15px; color: var(--text-dim); margin-bottom: 8px; }
 
   <div class="arrow">→</div>
 
-  <!-- Intent — updated: only 2 options now -->
+  <!-- Intent — 2 options only -->
   <div class="screen-wrap">
     <div class="screen-num">Screen 2</div>
-    <div class="screen-tag changed">Updated · 2 options only</div>
+    <div class="screen-tag tag-changed">Updated · 2 options only</div>
     <div class="screen">
-      <div class="s-nav"><div class="s-logo"><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-nav"><div class="s-logo">Family<span>Force</span></div></div>
       <div class="s-bg">
         <div class="s-card">
-          <div class="s-h1" style="margin-bottom:4px">What would you like to do?</div>
+          <div class="s-h1">What would you like to do?</div>
           <div class="s-sub">Pick one to get started. You can always do both.</div>
-          <div class="s-intent-card">
-            <div class="s-intent-icon">📖</div>
+          <div class="s-intent">
+            <div class="s-intent-ico">📖</div>
             <div><div class="s-intent-title">Browse the free library</div><div class="s-intent-desc">Playbooks on sleep, potty training, feeding, tantrums and more.</div></div>
-            <div class="s-intent-arrow">›</div>
+            <div class="s-intent-arr">›</div>
           </div>
-          <div class="s-intent-card" style="border-color:var(--terra);background:var(--elevated)">
-            <div class="s-intent-icon">🌱</div>
-            <div><div class="s-intent-title">Try Scout free — 7 days</div><div class="s-intent-desc">Age-specific windows for your child. $79.99/yr after. Cancel anytime.</div></div>
-            <div class="s-intent-arrow" style="color:var(--terra)">›</div>
+          <div class="s-intent hi">
+            <div class="s-intent-ico">🌱</div>
+            <div><div class="s-intent-title">Try Scout free — 7 days</div><div class="s-intent-desc">Age-specific windows for your child. $79.99/yr after.</div></div>
+            <div class="s-intent-arr">›</div>
           </div>
-          <div style="font-size:8.5px;color:var(--text-ghost);text-align:center;margin-top:10px">No purchase option — all subscriptions start with a 7-day trial</div>
+          <div style="font-size:8px;color:var(--text-ghost);text-align:center;margin-top:10px">All subscriptions start with a 7-day trial</div>
         </div>
       </div>
     </div>
@@ -208,101 +219,107 @@ p.subtitle { font-size: 15px; color: var(--text-dim); margin-bottom: 8px; }
 
 </div>
 
-<!-- ─── PATH A: FREE LIBRARY ─── -->
-<div class="path-label">Path A — Free Library (2 steps total)</div>
+<!-- ════════════════════════════════════
+     PATH A: FREE LIBRARY
+════════════════════════════════════ -->
+<div class="path-label">Path A — Free Library (intent → straight to dashboard)</div>
 <div class="flow-row">
 
-  <div class="annot" style="align-self:flex-start;margin-top:0">
+  <div class="annot" style="margin-top:0;align-self:flex-start;margin-top:18px">
     <div class="annot-icon">✂️</div>
-    <div class="annot-title">Playbook picker removed</div>
-    <div class="annot-body">Intent card → straight to My Account / Library. They browse and pick there, not during signup.</div>
+    <div class="annot-title">No intermediate screen</div>
+    <div class="annot-body">Clicking "Browse free library" goes directly to getfamilyforce.com/dashboard. They pick what they want from there.</div>
   </div>
 
   <div class="arrow" style="margin-top:60px">→</div>
 
-  <!-- Library (My Account) -->
+  <!-- Real dashboard -->
   <div class="screen-wrap">
-    <div class="screen-num">Step A1</div>
-    <div class="screen-tag changed">Updated · lands here directly</div>
+    <div class="screen-num">Destination A</div>
+    <div class="screen-tag tag-done">getfamilyforce.com/dashboard</div>
     <div class="screen">
       <div class="s-nav">
-        <div class="s-logo"><span>Family<span class="s-logo-s">Force</span></span></div>
-        <div style="font-size:9px;font-weight:700;color:var(--terra)">My Account</div>
+        <div class="s-logo">Family<span>Force</span></div>
+        <div class="s-nav-link">My Account</div>
       </div>
-      <div style="padding:14px 14px 0">
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:10px">My Library</div>
-        <div class="s-library-item">
-          <div class="s-lib-icon">🚽</div>
-          <div><div class="s-lib-title">Potty Training</div><div class="s-lib-sub">The Clear Signal Method</div></div>
-          <div class="s-lib-badge">Free</div>
-        </div>
-        <div class="s-library-item">
-          <div class="s-lib-icon">😴</div>
-          <div><div class="s-lib-title">Sleep Training</div><div class="s-lib-sub">Done Winging It</div></div>
-          <div class="s-lib-badge">Free</div>
-        </div>
-        <div class="s-library-item">
-          <div class="s-lib-icon">🥣</div>
-          <div><div class="s-lib-title">Feeding</div><div class="s-lib-sub">Coming soon</div></div>
-          <div class="s-lib-badge" style="background:#F3F4F6;color:var(--text-ghost)">Soon</div>
-        </div>
-        <div class="s-library-item">
-          <div class="s-lib-icon">😤</div>
-          <div><div class="s-lib-title">Tantrums</div><div class="s-lib-sub">Coming soon</div></div>
-          <div class="s-lib-badge" style="background:#F3F4F6;color:var(--text-ghost)">Soon</div>
-        </div>
-        <div class="s-library-item">
-          <div class="s-lib-icon">📱</div>
-          <div><div class="s-lib-title">Screen Time</div><div class="s-lib-sub">Coming soon</div></div>
-          <div class="s-lib-badge" style="background:#F3F4F6;color:var(--text-ghost)">Soon</div>
-        </div>
+      <div class="s-dash-greet">
+        <div class="s-dash-hi">Hi there.</div>
+        <div class="s-dash-sub">5 playbooks · all free</div>
       </div>
-      <div style="margin:12px 14px;padding:9px 10px;background:var(--elevated);border-radius:8px;border-left:3px solid var(--terra)">
+      <div class="s-section-label">Your Library</div>
+      <div class="s-lib-row">
+        <div class="s-lib-accent" style="background:#9B80FF"></div>
+        <div class="s-lib-info"><div class="s-lib-title">Screen Time</div><div class="s-lib-meta">Ages 0–6</div></div>
+        <div class="s-lib-free">FREE</div>
+        <div class="s-lib-actions"><div class="s-lib-btn">Course</div><div class="s-lib-btn">e-book</div></div>
+      </div>
+      <div class="s-lib-row">
+        <div class="s-lib-accent" style="background:#6E4ED6"></div>
+        <div class="s-lib-info"><div class="s-lib-title">Potty Training</div><div class="s-lib-meta">Ages 2–3</div></div>
+        <div class="s-lib-free">FREE</div>
+        <div class="s-lib-actions"><div class="s-lib-btn">Course</div><div class="s-lib-btn">e-book</div></div>
+      </div>
+      <div class="s-lib-row">
+        <div class="s-lib-accent" style="background:#5B7BB5"></div>
+        <div class="s-lib-info"><div class="s-lib-title">Sleep Training</div><div class="s-lib-meta">Ages 0–3</div></div>
+        <div class="s-lib-free">FREE</div>
+        <div class="s-lib-actions"><div class="s-lib-btn">Course</div><div class="s-lib-btn">e-book</div></div>
+      </div>
+      <div class="s-lib-row" style="opacity:.45">
+        <div class="s-lib-accent" style="background:#E9967A"></div>
+        <div class="s-lib-info"><div class="s-lib-title">Tantrums</div><div class="s-lib-meta">Coming soon</div></div>
+      </div>
+      <div class="s-lib-row" style="opacity:.45;border-bottom:none">
+        <div class="s-lib-accent" style="background:#7EB89A"></div>
+        <div class="s-lib-info"><div class="s-lib-title">Feeding</div><div class="s-lib-meta">Coming soon</div></div>
+      </div>
+      <!-- Scout upsell -->
+      <div style="margin:10px 12px 12px;padding:8px 10px;background:var(--elevated);border-radius:8px;border-left:3px solid var(--terra)">
         <div style="font-size:9px;font-weight:700;color:var(--text);margin-bottom:2px">🌱 Ready for more?</div>
-        <div style="font-size:8.5px;color:var(--text-dim);line-height:1.5">Try Scout free for 7 days and see exactly what your child should be working on this month.</div>
-        <div style="font-size:9px;font-weight:700;color:var(--terra);margin-top:6px">Start free trial →</div>
+        <div style="font-size:8px;color:var(--text-dim);line-height:1.5">Try Scout free and see what your child should be working on this month.</div>
+        <div style="font-size:8.5px;font-weight:700;color:var(--terra);margin-top:5px">Start free trial →</div>
       </div>
     </div>
-  </div>
-
-  <div style="margin-top:60px;font-size:11px;color:var(--text-dim);padding: 10px 12px;max-width:150px;background:white;border-radius:10px;border:1px solid var(--border);align-self:center">
-    <strong style="color:var(--text);font-size:12px">From here they:</strong><br><br>
-    📖 Click any playbook to read<br><br>
-    🌱 Or click Scout upsell to start a trial (goes to Path B, skipping account creation)
   </div>
 
 </div>
 
-<!-- ─── PATH B: SCOUT TRIAL ─── -->
-<div class="path-label">Path B — Scout 7-Day Trial (card upfront, auto-charges $79.99/yr after 7 days)</div>
+<!-- ════════════════════════════════════
+     PATH B: SCOUT TRIAL
+════════════════════════════════════ -->
+<div class="path-label">Path B — Scout 7-Day Trial (card upfront · auto-charges $79.99/yr after 7 days)</div>
 <div class="flow-row">
 
-  <!-- Child setup -->
+  <!-- B1: Child setup — matches sign-in.html exactly -->
   <div class="screen-wrap">
     <div class="screen-num">Step B1</div>
-    <div class="screen-tag existing">Existing · child setup</div>
+    <div class="screen-tag tag-exist">Matches sign-in.html</div>
     <div class="screen">
-      <div class="s-nav"><div class="s-logo"><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-nav"><div class="s-logo">Family<span>Force</span></div></div>
       <div class="s-bg">
         <div class="s-card">
           <div class="s-back">← Back</div>
-          <div class="s-h1" style="margin-bottom:4px">Tell us about your child</div>
-          <div class="s-sub">Scout uses this to show what matters this month, not in general.</div>
+          <div class="s-h1">Tell us about your child</div>
+          <div class="s-sub">Scout uses this to show you exactly what matters this month, not in general.</div>
+
           <label class="s-label">Child's first name</label>
-          <div class="s-input active">Olivia</div>
-          <div class="s-form-row" style="gap:6px;margin-bottom:8px">
+          <div class="s-input fill">Olivia</div>
+
+          <div class="s-2col">
             <div>
               <label class="s-label">Date of birth</label>
-              <div class="s-input active">Jan 15, 2025</div>
+              <div class="s-input fill">Jan 15, 2025</div>
+              <div class="s-hint">We use this to calculate their exact age</div>
             </div>
             <div>
               <label class="s-label">Sex (optional)</label>
-              <div class="s-input active">Girl</div>
+              <div class="s-select">Girl</div>
             </div>
           </div>
+
           <div class="s-btn">Continue to payment →</div>
           <div class="s-escape">Not ready? <a href="#">Browse free books instead →</a></div>
-          <div style="font-size:8px;color:var(--text-ghost);text-align:center;margin-top:6px">You can add more children later.</div>
+          <div class="s-ghost">You can add more children later.</div>
         </div>
       </div>
     </div>
@@ -310,40 +327,44 @@ p.subtitle { font-size: 15px; color: var(--text-dim); margin-bottom: 8px; }
 
   <div class="arrow">→</div>
 
-  <!-- Payment (trial) — with referral code -->
+  <!-- B2: Payment + referral code -->
   <div class="screen-wrap">
     <div class="screen-num">Step B2</div>
-    <div class="screen-tag changed">Updated · referral code added</div>
+    <div class="screen-tag tag-changed">Updated · 25% referral code</div>
     <div class="screen">
-      <div class="s-nav"><div class="s-logo"><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-nav"><div class="s-logo">Family<span>Force</span></div></div>
       <div class="s-bg">
         <div class="s-card">
           <div class="s-back">← Back</div>
-          <div class="s-h1" style="margin-bottom:4px">Start your free 7-day trial</div>
-          <div class="s-sub" style="margin-bottom:10px">No charge today. After 7 days, $79.99/year. Cancel anytime.</div>
-          <div class="s-pay-summary">
-            <div class="s-pay-row"><span>FamilyForce Scout</span><span class="s-pay-badge">7 days free</span></div>
-            <div class="s-pay-row"><span>Then</span><strong>$79.99 / year</strong></div>
-            <div class="s-pay-row"><span>30-day refund</span><strong style="color:#16A34A">✓ Guaranteed</strong></div>
+          <div class="s-h1">Start your free 7-day trial</div>
+          <div class="s-sub">No charge today. After 7 days, $79.99/year. Cancel anytime.</div>
+
+          <div class="s-summary">
+            <div class="s-sum-row"><span>FamilyForce Scout</span><span class="s-badge-green">7 days free</span></div>
+            <div class="s-sum-row"><span>Then</span><strong>$79.99 / year</strong></div>
+            <div class="s-sum-row"><span>30-day refund</span><strong style="color:#16A34A">✓ Guaranteed</strong></div>
           </div>
-          <!-- Referral code -->
+
           <label class="s-label">Referral or promo code (optional)</label>
           <div class="s-referral-row">
-            <div class="s-referral-input">e.g. FRIEND20</div>
-            <div class="s-referral-btn">Apply</div>
+            <div class="s-ref-input" style="color:var(--text-ghost)">Enter code...</div>
+            <div class="s-ref-btn">Apply</div>
           </div>
-          <!-- Card fields -->
+
           <label class="s-label">Name on card</label>
-          <div class="s-input" style="margin-bottom:6px;color:var(--text-ghost)">Full name</div>
+          <div class="s-input" style="color:var(--text-ghost);margin-bottom:5px">Full name</div>
+
           <label class="s-label">Card number</label>
           <div class="s-stripe">🔒 •••• •••• •••• ••••</div>
-          <div class="s-pay-card-row">
+
+          <div class="s-2col-pay">
             <div><label class="s-label">Expiry</label><div class="s-input" style="color:var(--text-ghost)">MM / YY</div></div>
             <div><label class="s-label">CVV</label><div class="s-input" style="color:var(--text-ghost)">•••</div></div>
           </div>
+
           <div class="s-btn">Start free trial →</div>
           <div class="s-escape">Still not sure? <a href="#">Check out the free library first →</a></div>
-          <div class="s-terms">$79.99 billed after 7-day trial. Full refund within 30 days of billing, no questions asked.</div>
+          <div class="s-terms">$79.99 billed after 7-day trial. Full refund within 30 days of billing, no questions.</div>
         </div>
       </div>
     </div>
@@ -351,18 +372,18 @@ p.subtitle { font-size: 15px; color: var(--text-dim); margin-bottom: 8px; }
 
   <div class="arrow">→</div>
 
-  <!-- Success -->
+  <!-- B3: Success -->
   <div class="screen-wrap">
     <div class="screen-num">Step B3</div>
-    <div class="screen-tag done">Done · trial active</div>
+    <div class="screen-tag tag-done">Trial active</div>
     <div class="screen">
-      <div class="s-nav"><div class="s-logo"><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-nav"><div class="s-logo">Family<span>Force</span></div></div>
       <div class="s-bg">
         <div class="s-card">
           <div class="s-success">
-            <span class="s-success-icon">🌱</span>
-            <div class="s-success-h">Your free trial has started!</div>
-            <div class="s-success-sub">Setting up Olivia's dashboard. Your card won't be charged for 7 days.</div>
+            <span class="s-suc-icon">🌱</span>
+            <div class="s-suc-h">Your free trial has started!</div>
+            <div class="s-suc-sub">Setting up Olivia's dashboard. Your card won't be charged for 7 days.</div>
             <div class="s-btn">Go to Scout →</div>
           </div>
         </div>
@@ -374,25 +395,28 @@ p.subtitle { font-size: 15px; color: var(--text-dim); margin-bottom: 8px; }
 
   <!-- Scout dashboard -->
   <div class="screen-wrap">
-    <div class="screen-num">Destination</div>
-    <div class="screen-tag done">Scout dashboard</div>
+    <div class="screen-num">Destination B</div>
+    <div class="screen-tag tag-done">Scout dashboard</div>
     <div class="screen">
-      <div class="s-nav"><div class="s-logo"><span>Family<span class="s-logo-s">Force</span></span></div></div>
-      <div class="s-scout-trial-bar">🌱 Trial: 7 days remaining — keep or cancel anytime</div>
-      <div class="s-scout-bar"><span>Olivia · 14 months</span><span>Scout</span></div>
+      <div class="s-nav"><div class="s-logo">Family<span>Force</span></div></div>
+      <div class="s-trial-bar">
+        <span>🌱 Trial: 7 days remaining</span>
+        <span style="text-decoration:underline">Keep or cancel</span>
+      </div>
+      <div class="s-scout-bar"><span>Olivia · 14 months</span><span>Scout ✦</span></div>
       <div class="s-scout-section">
-        <div class="s-scout-section-label">This month for Olivia</div>
-        <div class="s-scout-window">
-          <div class="s-scout-window-title">🗣 First words explosion</div>
-          <div class="s-scout-window-sub">Peak window: 12–18mo. Talk narrate everything.</div>
+        <div class="s-scout-sec-label">This month for Olivia</div>
+        <div class="s-scout-win">
+          <div class="s-scout-win-title">🗣 First words explosion</div>
+          <div class="s-scout-win-sub">Peak: 12–18mo. Talk narrate everything.</div>
         </div>
-        <div class="s-scout-window">
-          <div class="s-scout-window-title">🚶 Independent walking</div>
-          <div class="s-scout-window-sub">Most children walk solo by 15mo.</div>
+        <div class="s-scout-win">
+          <div class="s-scout-win-title">🚶 Independent walking</div>
+          <div class="s-scout-win-sub">Most children walk solo by 15mo.</div>
         </div>
-        <div class="s-scout-window">
-          <div class="s-scout-window-title">🫐 Pincer grasp foods</div>
-          <div class="s-scout-window-sub">Fine motor practice. Offer small soft pieces.</div>
+        <div class="s-scout-win">
+          <div class="s-scout-win-title">🫐 Pincer grasp foods</div>
+          <div class="s-scout-win-sub">Fine motor practice. Offer small soft pieces.</div>
         </div>
       </div>
     </div>
@@ -400,77 +424,85 @@ p.subtitle { font-size: 15px; color: var(--text-dim); margin-bottom: 8px; }
 
 </div>
 
-<!-- ─── ESCAPE HATCH: CHICKENING OUT ─── -->
-<div class="path-label">Path B — Escape Hatch (user clicks "check out free books instead")</div>
+<!-- ════════════════════════════════════
+     ESCAPE HATCH
+════════════════════════════════════ -->
+<div class="path-label">Path B — Escape Hatch (user backs out of child setup or payment)</div>
 <div class="flow-row">
 
   <div class="annot" style="align-self:center">
     <div class="annot-icon">🐔</div>
-    <div class="annot-title">They chicken out</div>
-    <div class="annot-body">Two places to escape:<br><br>• Child setup step<br>• Payment step<br><br>Both link to the Library.</div>
+    <div class="annot-title">Two escape points</div>
+    <div class="annot-body">
+      "Not ready?" link appears on:<br><br>
+      • Child setup (B1)<br>
+      • Payment screen (B2)<br><br>
+      Both send to dashboard. Scout upsell stays visible when they're ready.
+    </div>
   </div>
 
-  <div class="arrow" style="margin-top:40px">→</div>
+  <div class="arrow" style="margin-top:50px">→</div>
 
-  <!-- Lands on library same as Path A -->
+  <!-- Dashboard with "come back" upsell -->
   <div class="screen-wrap">
     <div class="screen-num">Escape destination</div>
-    <div class="screen-tag done">Same as Path A destination</div>
+    <div class="screen-tag tag-done">Same as Destination A</div>
     <div class="screen">
       <div class="s-nav">
-        <div class="s-logo"><span>Family<span class="s-logo-s">Force</span></span></div>
-        <div style="font-size:9px;font-weight:700;color:var(--terra)">My Account</div>
+        <div class="s-logo">Family<span>Force</span></div>
+        <div class="s-nav-link">My Account</div>
       </div>
-      <div style="padding:14px 14px 0">
-        <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:10px">My Library</div>
-        <div class="s-library-item">
-          <div class="s-lib-icon">🚽</div>
-          <div><div class="s-lib-title">Potty Training</div><div class="s-lib-sub">The Clear Signal Method</div></div>
-          <div class="s-lib-badge">Free</div>
-        </div>
-        <div class="s-library-item">
-          <div class="s-lib-icon">😴</div>
-          <div><div class="s-lib-title">Sleep Training</div><div class="s-lib-sub">Done Winging It</div></div>
-          <div class="s-lib-badge">Free</div>
-        </div>
+      <div class="s-dash-greet">
+        <div class="s-dash-hi">Hi there.</div>
+        <div class="s-dash-sub">5 playbooks · all free</div>
       </div>
-      <div style="margin:12px 14px 14px;padding:9px 10px;background:var(--elevated);border-radius:8px;border-left:3px solid var(--terra)">
-        <div style="font-size:9px;font-weight:700;color:var(--text);margin-bottom:2px">🌱 Come back when you're ready</div>
-        <div style="font-size:8.5px;color:var(--text-dim);line-height:1.5">Your 7-day trial is still waiting. Start Scout anytime.</div>
-        <div style="font-size:9px;font-weight:700;color:var(--terra);margin-top:6px">Start free trial →</div>
+      <div class="s-lib-row">
+        <div class="s-lib-accent" style="background:#6E4ED6"></div>
+        <div class="s-lib-info"><div class="s-lib-title">Potty Training</div><div class="s-lib-meta">Ages 2–3 · 40+ sources</div></div>
+        <div class="s-lib-free">FREE</div>
+        <div class="s-lib-actions"><div class="s-lib-btn">Course</div></div>
+      </div>
+      <div class="s-lib-row">
+        <div class="s-lib-accent" style="background:#5B7BB5"></div>
+        <div class="s-lib-info"><div class="s-lib-title">Sleep Training</div><div class="s-lib-meta">Ages 0–3</div></div>
+        <div class="s-lib-free">FREE</div>
+        <div class="s-lib-actions"><div class="s-lib-btn">Course</div></div>
+      </div>
+      <div style="margin:10px 12px 12px;padding:8px 10px;background:var(--elevated);border-radius:8px;border-left:3px solid var(--terra)">
+        <div style="font-size:9px;font-weight:700;color:var(--text);margin-bottom:2px">🌱 Your trial is still waiting</div>
+        <div style="font-size:8px;color:var(--text-dim);line-height:1.5">Start Scout anytime — pick up right where you left off.</div>
+        <div style="font-size:8.5px;font-weight:700;color:var(--terra);margin-top:5px">Start free trial →</div>
       </div>
     </div>
   </div>
 
-  <div style="align-self:center;font-size:11px;color:var(--text-dim);padding:10px 12px;max-width:150px;background:white;border-radius:10px;border:1px solid var(--border)">
-    The Scout upsell stays visible. Low pressure. They can start the trial anytime from their library page.
-  </div>
-
 </div>
 
-<!-- ─── REFERRAL CODE DETAIL ─── -->
-<div class="path-label">Referral Code — Applied State</div>
+<!-- ════════════════════════════════════
+     REFERRAL CODE DETAIL
+════════════════════════════════════ -->
+<div class="path-label">Referral Code — Default vs Applied (25% discount)</div>
 <div class="flow-row">
 
+  <!-- Default -->
   <div class="screen-wrap">
-    <div class="screen-num">Payment (no code)</div>
-    <div class="screen-tag existing">Default</div>
+    <div class="screen-num">No code entered</div>
+    <div class="screen-tag tag-exist">Default</div>
     <div class="screen">
-      <div class="s-nav"><div class="s-logo"><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-nav"><div class="s-logo">Family<span>Force</span></div></div>
       <div class="s-bg">
         <div class="s-card">
-          <div class="s-pay-summary" style="margin-bottom:10px">
-            <div class="s-pay-row"><span>FamilyForce Scout</span><span class="s-pay-badge">7 days free</span></div>
-            <div class="s-pay-row"><span>Then</span><strong>$79.99 / year</strong></div>
+          <div class="s-summary" style="margin-bottom:9px">
+            <div class="s-sum-row"><span>FamilyForce Scout</span><span class="s-badge-green">7 days free</span></div>
+            <div class="s-sum-row"><span>Then</span><strong>$79.99 / year</strong></div>
           </div>
           <label class="s-label">Referral or promo code (optional)</label>
           <div class="s-referral-row">
-            <div class="s-referral-input" style="color:var(--text-ghost)">Enter code...</div>
-            <div class="s-referral-btn">Apply</div>
+            <div class="s-ref-input">Enter code...</div>
+            <div class="s-ref-btn">Apply</div>
           </div>
-          <div style="font-size:8.5px;color:var(--text-ghost);margin-bottom:10px">Have a friend referral or discount code? Enter it above.</div>
-          <div style="height:60px;background:var(--elevated);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text-ghost)">Card fields...</div>
-          <div class="s-btn" style="margin-top:8px">Start free trial →</div>
+          <div style="height:54px;background:var(--elevated);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:8.5px;color:var(--text-ghost)">Card fields...</div>
+          <div class="s-btn" style="margin-top:7px">Start free trial →</div>
         </div>
       </div>
     </div>
@@ -478,60 +510,73 @@ p.subtitle { font-size: 15px; color: var(--text-dim); margin-bottom: 8px; }
 
   <div class="arrow">→</div>
 
+  <!-- Applied -->
   <div class="screen-wrap">
-    <div class="screen-num">Payment (code applied)</div>
-    <div class="screen-tag done">Discount applied</div>
+    <div class="screen-num">Code applied</div>
+    <div class="screen-tag tag-done">25% off applied</div>
     <div class="screen">
-      <div class="s-nav"><div class="s-logo"><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-nav"><div class="s-logo">Family<span>Force</span></div></div>
       <div class="s-bg">
         <div class="s-card">
-          <div class="s-pay-summary" style="margin-bottom:10px">
-            <div class="s-pay-row"><span>FamilyForce Scout</span><span class="s-pay-badge">7 days free</span></div>
-            <div class="s-pay-row"><span style="text-decoration:line-through;opacity:.5">$79.99 / year</span><strong style="color:#16A34A">$63.99 / year</strong></div>
-            <div class="s-pay-row"><span>Code FRIEND20</span><strong style="color:#16A34A">20% off ✓</strong></div>
+          <div class="s-summary" style="margin-bottom:9px">
+            <div class="s-sum-row"><span>FamilyForce Scout</span><span class="s-badge-green">7 days free</span></div>
+            <div class="s-sum-row">
+              <span style="text-decoration:line-through;opacity:.4">$79.99 / year</span>
+              <strong style="color:#16A34A">$59.99 / year</strong>
+            </div>
+            <div class="s-sum-row"><span>Code FRIEND25</span><strong style="color:#16A34A">25% off ✓</strong></div>
           </div>
-          <div style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:6px 10px;font-size:8.5px;color:#166534;margin-bottom:10px;font-weight:600">✓ Promo code FRIEND20 applied — 20% discount</div>
+          <div class="s-ref-success">✓ FRIEND25 applied — you save $20.00</div>
           <label class="s-label">Referral or promo code</label>
           <div class="s-referral-row">
-            <div class="s-referral-input active" style="border-color:#16A34A;color:#166534;font-weight:700;border-style:solid">FRIEND20</div>
-            <div class="s-referral-btn" style="color:#166534;background:#F0FDF4;border-color:#BBF7D0">✓</div>
+            <div class="s-ref-input applied">FRIEND25</div>
+            <div class="s-ref-btn ok">✓</div>
           </div>
-          <div style="height:60px;background:var(--elevated);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text-ghost)">Card fields...</div>
-          <div class="s-btn" style="margin-top:8px">Start free trial →</div>
+          <div style="height:54px;background:var(--elevated);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:8.5px;color:var(--text-ghost)">Card fields...</div>
+          <div class="s-btn" style="margin-top:7px">Start free trial →</div>
         </div>
       </div>
     </div>
   </div>
 
-  <div style="align-self:center;font-size:11px;color:var(--text-dim);padding:10px 12px;max-width:160px;background:white;border-radius:10px;border:1px solid var(--border)">
-    <strong style="color:var(--text)">How referral codes work:</strong><br><br>
-    Applied before payment. Summary box updates live to show the discounted price. Needs Stripe coupon integration on backend.
+  <div class="annot" style="align-self:center">
+    <div class="annot-icon">🎟️</div>
+    <div class="annot-title">How it works</div>
+    <div class="annot-body">
+      Summary box updates live when a valid code is entered. Shows:<br><br>
+      • Strikethrough on $79.99<br>
+      • New price $59.99<br>
+      • "You save $20.00"<br><br>
+      Needs Stripe coupon on backend.
+    </div>
   </div>
 
 </div>
 
-<!-- ─── DECISIONS ROW ─── -->
-<div class="path-label">Key Design Decisions (v2)</div>
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:860px">
-  <div style="background:white;border-radius:12px;padding:14px 16px;border:1px solid var(--border)">
-    <div style="font-size:20px;margin-bottom:8px">✂️</div>
-    <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">No Path C</div>
-    <div style="font-size:11px;color:var(--text-dim);line-height:1.6">Everyone starts with a 7-day trial. Want the full year? Just don't cancel.</div>
+<!-- ════════════════════════════════════
+     DECISIONS
+════════════════════════════════════ -->
+<div class="path-label">Key Design Decisions</div>
+<div class="decisions">
+  <div class="decision-card">
+    <div class="decision-icon">✂️</div>
+    <div class="decision-title">No Path C</div>
+    <div class="decision-body">Everyone starts with a 7-day trial. Want the full year? Just don't cancel. Simpler for users, same outcome.</div>
   </div>
-  <div style="background:white;border-radius:12px;padding:14px 16px;border:1px solid var(--border)">
-    <div style="font-size:20px;margin-bottom:8px">📖</div>
-    <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">Library, not picker</div>
-    <div style="font-size:11px;color:var(--text-dim);line-height:1.6">Free users land in My Account / Library. Fewer steps, more freedom to explore.</div>
+  <div class="decision-card">
+    <div class="decision-icon">📖</div>
+    <div class="decision-title">Library, not picker</div>
+    <div class="decision-body">Free users land on the real dashboard. They explore all 5 titles and pick freely, including Course and e-book options.</div>
   </div>
-  <div style="background:white;border-radius:12px;padding:14px 16px;border:1px solid var(--border)">
-    <div style="font-size:20px;margin-bottom:8px">🐔</div>
-    <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">Escape hatch</div>
-    <div style="font-size:11px;color:var(--text-dim);line-height:1.6">Two chances to bail out: child setup and payment. Both land in the library with a soft Scout upsell.</div>
+  <div class="decision-card">
+    <div class="decision-icon">🐔</div>
+    <div class="decision-title">Escape hatch × 2</div>
+    <div class="decision-body">Child setup and payment both have a soft "browse free books" exit. Landing page keeps the Scout upsell alive for when they're ready.</div>
   </div>
-  <div style="background:white;border-radius:12px;padding:14px 16px;border:1px solid var(--border)">
-    <div style="font-size:20px;margin-bottom:8px">🎟️</div>
-    <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">Referral code</div>
-    <div style="font-size:11px;color:var(--text-dim);line-height:1.6">On payment screen. Applies discount live. Summary box updates to show new price before charging.</div>
+  <div class="decision-card">
+    <div class="decision-icon">🎟️</div>
+    <div class="decision-title">25% referral code</div>
+    <div class="decision-body">Applied on payment screen. Summary updates live. $79.99 → $59.99. "You save $20.00" shown clearly.</div>
   </div>
 </div>
 
