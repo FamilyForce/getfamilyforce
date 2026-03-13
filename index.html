@@ -1516,6 +1516,163 @@ a { color: inherit; }
   .ba-divider { display: none; }
 }
 
+/* ─── SCOUT PROMO SECTION ─── */
+.scout-promo {
+  margin: 0 max(var(--space-x), 16px);
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1E1248 0%, #2D1B69 55%, #3D2A80 100%);
+  position: relative;
+}
+.scout-promo::before {
+  content: '';
+  position: absolute;
+  top: -120px; right: -80px;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,252,.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.scout-promo-inner {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 64px;
+  align-items: center;
+  padding: 72px 64px;
+  position: relative;
+  z-index: 1;
+}
+.scout-promo-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #6E4ED6, #9B80FF, #7C5CFC, #6E4ED6);
+  background-size: 300% 100%;
+  animation: kicker-shimmer 3s ease infinite;
+  border-radius: 100px; padding: 6px 16px;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: #fff; margin-bottom: 24px;
+  box-shadow: 0 0 28px rgba(124,92,252,.45);
+}
+@keyframes kicker-shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+.scout-promo-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(255,255,255,.9); flex-shrink: 0; position: relative;
+}
+.scout-promo-dot::after {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  background: rgba(255,255,255,.4);
+  animation: scout-pulse 1.6s ease-out infinite;
+}
+@keyframes scout-pulse { 0%{transform:scale(1);opacity:.8} 100%{transform:scale(2.8);opacity:0} }
+.scout-promo-h2 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 3.5vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -.025em;
+  color: #fff;
+  margin-bottom: 16px;
+}
+.scout-promo-h2 em { font-style: italic; color: #A78BFF; }
+.scout-promo-sub {
+  font-size: 16px;
+  line-height: 1.75;
+  color: rgba(255,255,255,.6);
+  margin-bottom: 32px;
+  max-width: 440px;
+}
+.scout-promo-benefits {
+  display: flex; flex-direction: column; gap: 12px;
+  margin-bottom: 36px;
+}
+.scout-promo-benefit {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; color: rgba(255,255,255,.8); font-weight: 500;
+}
+.scout-promo-benefit-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(167,139,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.scout-promo-actions {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.scout-promo-btn-primary {
+  display: inline-flex; align-items: center;
+  background: #fff; color: var(--terra-dark);
+  font-family: var(--sans); font-size: 15px; font-weight: 800;
+  padding: 14px 28px; border-radius: 100px; text-decoration: none;
+  transition: transform .2s, box-shadow .2s;
+  letter-spacing: -.01em;
+}
+@media (hover:hover) { .scout-promo-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.25); } }
+.scout-promo-btn-secondary {
+  font-size: 14px; font-weight: 500; color: rgba(255,255,255,.55);
+  text-decoration: none; transition: color .2s;
+}
+@media (hover:hover) { .scout-promo-btn-secondary:hover { color: #fff; } }
+
+/* Scout promo — right side card */
+.sp-card {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.sp-card-header {
+  background: rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 14px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sp-card-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: rgba(255,255,255,.45);
+}
+.sp-card-age {
+  background: rgba(167,139,255,.2); color: #C4B5FD;
+  font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 100px;
+  border: 1px solid rgba(167,139,255,.25);
+}
+.sp-card-body { padding: 8px 0 4px; }
+.sp-window {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.sp-window:last-of-type { border-bottom: none; }
+.sp-window-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.sp-window-content { flex: 1; }
+.sp-window-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  margin-bottom: 3px;
+}
+.sp-window-tag.urgent { color: #FBBF24; }
+.sp-window-tag.open { color: #A78BFF; }
+.sp-window-tag.coming { color: rgba(255,255,255,.3); }
+.sp-window-title { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.35; margin-bottom: 3px; }
+.sp-window-desc { font-size: 12px; color: rgba(255,255,255,.45); line-height: 1.5; }
+.sp-card-footer {
+  padding: 14px 20px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.sp-progress-meta {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: rgba(255,255,255,.4); margin-bottom: 7px;
+}
+.sp-progress-meta span:last-child { color: #A78BFF; font-weight: 700; }
+.sp-bar { height: 4px; background: rgba(255,255,255,.1); border-radius: 2px; }
+.sp-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #7C5CFC, #A78BFF); width: 44%; }
+
+@media (max-width: 1000px) {
+  .scout-promo-inner { grid-template-columns: 1fr; gap: 40px; padding: 52px 40px; }
+  .sp-card { max-width: 480px; }
+}
+@media (max-width: 600px) {
+  .scout-promo-inner { padding: 40px 28px; }
+  .scout-promo { margin: 0 16px; border-radius: 20px; }
+}
+
 /* ─── EMAIL CAPTURE ─── */
 .email-section {
   background: linear-gradient(135deg, #1E1248 0%, #2D1B69 60%, #3D2A80 100%);
@@ -2097,6 +2254,90 @@ a { color: inherit; }
       </div>
       <p class="gift-submit-note">You'll be asked to create a free account (or sign in) before checkout.</p>
     </form>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCOUT PROMO
+     ═══════════════════════════════════════════════════════════ -->
+<div class="scout-promo" style="margin-top:0;margin-bottom:80px" data-reveal>
+  <div class="scout-promo-inner">
+
+    <!-- Left: Copy -->
+    <div>
+      <div class="scout-promo-eyebrow">
+        <div class="scout-promo-dot"></div>
+        FamilyForce Scout
+      </div>
+      <h2 class="scout-promo-h2">
+        Your child has 200+ developmental<br>windows. <em>Don't miss one.</em>
+      </h2>
+      <p class="scout-promo-sub">
+        Every month has a job. Peanut introduction. Sleep training. Speech screening. Scout tracks the calendar for your child's exact age and tells you what's open right now.
+      </p>
+      <div class="scout-promo-benefits">
+        <div class="scout-promo-benefit">
+          <div class="scout-promo-benefit-icon">🎯</div>
+          Personalised to your child's exact age — updates every month
+        </div>
+        <div class="scout-promo-benefit">
+          <div class="scout-promo-benefit-icon">⚠️</div>
+          Alerts you before windows close, not after
+        </div>
+        <div class="scout-promo-benefit">
+          <div class="scout-promo-benefit-icon">👨‍👩‍👧</div>
+          Whole family included — one subscription, everyone on the same page
+        </div>
+      </div>
+      <div class="scout-promo-actions">
+        <a href="scout.html" class="scout-promo-btn-primary">Learn about Scout →</a>
+        <a href="sign-in.html" class="scout-promo-btn-secondary">Try free for 7 days</a>
+      </div>
+    </div>
+
+    <!-- Right: Mini product card -->
+    <div>
+      <div class="sp-card">
+        <div class="sp-card-header">
+          <span class="sp-card-label">FamilyForce Scout</span>
+          <span class="sp-card-age">🌱 14 months</span>
+        </div>
+        <div class="sp-card-body">
+          <div class="sp-window">
+            <div class="sp-window-icon">🥜</div>
+            <div class="sp-window-content">
+              <div class="sp-window-tag urgent">⚠ Don't miss this</div>
+              <div class="sp-window-title">Peanut introduction window is open</div>
+              <div class="sp-window-desc">Up to 86% reduction in peanut allergy when introduced at 4–11 months. Window closes soon.</div>
+            </div>
+          </div>
+          <div class="sp-window">
+            <div class="sp-window-icon">💬</div>
+            <div class="sp-window-content">
+              <div class="sp-window-tag open">This month</div>
+              <div class="sp-window-title">First words: what to listen for</div>
+              <div class="sp-window-desc">10+ words by 18 months. Here's what counts — and what to flag.</div>
+            </div>
+          </div>
+          <div class="sp-window">
+            <div class="sp-window-icon">🚶</div>
+            <div class="sp-window-content">
+              <div class="sp-window-tag coming">Ongoing</div>
+              <div class="sp-window-title">Independent walking</div>
+              <div class="sp-window-desc">Normal range: 9–18 months. Still open — no action needed yet.</div>
+            </div>
+          </div>
+        </div>
+        <div class="sp-card-footer">
+          <div class="sp-progress-meta">
+            <span>Current window</span>
+            <span>4 / 9 milestones</span>
+          </div>
+          <div class="sp-bar"><div class="sp-bar-fill"></div></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
