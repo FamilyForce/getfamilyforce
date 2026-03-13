@@ -1,48 +1,56 @@
 // FamilyForce — Scout Subscribe Edge Function
-// Creates a Stripe customer + 7-day trial subscription, then writes to scout_subscriptions.
-//
-// Required env vars (Supabase Dashboard → Edge Functions → scout-subscribe → Secrets):
-//   STRIPE_SECRET_KEY        = sk_test_51TAQTZ... (your Stripe secret key)
-//   SUPABASE_URL             = set automatically by Supabase
-//   SUPABASE_SERVICE_ROLE_KEY = set automatically by Supabase
+// Uses raw Stripe REST API (no SDK) for maximum Deno compatibility.
 
-import Stripe from 'https://esm.sh/stripe@13?target=deno&no-check=true'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-// Stripe initialised inside handler to catch env var errors at runtime
+const PRICE_ID   = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'
+const COUPON_MAP: Record<string, string> = { 'FRIEND25': 'bermxA88' }
 
-// ── Stripe config ──────────────────────────────────────────────
-const PRICE_ID = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'  // FamilyForce Scout $79.99/yr
-
-// Maps frontend promo codes → Stripe Coupon IDs
-const COUPON_MAP: Record<string, string> = {
-  'FRIEND25': 'bermxA88',
-}
-
-// ── CORS headers ───────────────────────────────────────────────
 const CORS = {
   'Access-Control-Allow-Origin':  'https://getfamilyforce.com',
   'Access-Control-Allow-Headers': 'authorization, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-// ── Handler ────────────────────────────────────────────────────
-Deno.serve(async (req: Request) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: CORS })
-  }
+function err(status: number, msg: string) {
+  return new Response(JSON.stringify({ ok: false, error: msg }), {
+    status, headers: { ...CORS, 'Content-Type': 'application/json' }
+  })
+}
 
-  if (req.method !== 'POST') {
-    return err(405, 'Method not allowed')
-  }
+// ── Stripe REST helper ────────────────────────────────────────
+async function stripe(secretKey: string, method: string, path: string, body?: Record<string, unknown>) {
+  const encoded = body
+    ? Object.entries(body).flatMap(([k, v]) =>
+        v === null || v === undefined ? [] :
+        Array.isArray(v)
+          ? v.map((item, i) => `${encodeURIComponent(k)}[${i}]=${encodeURIComponent(String(item))}`)
+          : [`${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`]
+      ).join('&')
+    : undefined
+
+  const res = await fetch(`https://api.stripe.com/v1${path}`, {
+    method,
+    headers: {
+      'Authorization': `Bearer ${secretKey}`,
+      'Content-Type':  'application/x-www-form-urlencoded',
+    },
+    body: encoded,
+  })
+  const data = await res.json()
+  if (!res.ok) throw new Error(data?.error?.message ?? `Stripe error ${res.status}`)
+  return data
+}
+
+Deno.serve(async (req: Request) => {
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
+  if (req.method !== 'POST')    return err(405, 'Method not allowed')
 
   try {
-    // Initialise Stripe inside handler so missing env var is caught cleanly
     const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
     if (!stripeKey) return err(500, 'Stripe key not configured')
-    const stripe = new Stripe(stripeKey, { apiVersion: '2024-04-10' })
 
-    // 1. Authenticate: verify Supabase JWT from Authorization header
+    // 1. Auth
     const authHeader = req.headers.get('Authorization')
     if (!authHeader?.startsWith('Bearer ')) return err(401, 'Missing auth token')
 
@@ -50,84 +58,74 @@ Deno.serve(async (req: Request) => {
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     )
-
     const { data: { user }, error: authErr } = await sb.auth.getUser(
       authHeader.replace('Bearer ', '')
     )
     if (authErr || !user) return err(401, 'Invalid or expired session')
     if (!user.email)      return err(400, 'User has no email address')
 
-    // 2. Parse request body
-    const { paymentMethodId, promoCode, childId } = await req.json() as {
-      paymentMethodId: string
-      promoCode?: string
-      childId?: string
-    }
+    // 2. Parse body
+    const { paymentMethodId, promoCode, childId } = await req.json()
     if (!paymentMethodId) return err(400, 'paymentMethodId is required')
 
-    // 3. Create or retrieve Stripe customer for this email
-    const existing = await stripe.customers.list({ email: user.email, limit: 1 })
-    let customer    = existing.data[0]
-    if (!customer) {
-      customer = await stripe.customers.create({
-        email:    user.email,
-        metadata: { supabase_user_id: user.id },
+    // 3. Find or create Stripe customer
+    const search = await stripe(stripeKey, 'GET', `/customers/search?query=email:'${encodeURIComponent(user.email)}'&limit=1`)
+    let customerId: string
+
+    if (search.data?.length > 0) {
+      customerId = search.data[0].id
+    } else {
+      const customer = await stripe(stripeKey, 'POST', '/customers', {
+        email:                         user.email,
+        'metadata[supabase_user_id]':  user.id,
       })
+      customerId = customer.id
     }
 
-    // 4. Attach payment method and set as default
-    await stripe.paymentMethods.attach(paymentMethodId, { customer: customer.id })
-    await stripe.customers.update(customer.id, {
-      invoice_settings: { default_payment_method: paymentMethodId },
+    // 4. Attach payment method
+    await stripe(stripeKey, 'POST', `/payment_methods/${paymentMethodId}/attach`, {
+      customer: customerId,
+    })
+    await stripe(stripeKey, 'POST', `/customers/${customerId}`, {
+      'invoice_settings[default_payment_method]': paymentMethodId,
     })
 
-    // 5. Build subscription params
-    const subParams: Stripe.SubscriptionCreateParams = {
-      customer:         customer.id,
-      items:            [{ price: PRICE_ID }],
-      trial_period_days: 7,
-      payment_settings: { save_default_payment_method: 'on_subscription' },
-      metadata:         { supabase_user_id: user.id, child_id: childId ?? '' },
-    }
-
-    // 6. Apply coupon if valid promo code
+    // 5. Create subscription
     const normalised = (promoCode ?? '').toUpperCase().trim()
-    const couponId   = COUPON_MAP[normalised]
-    if (normalised && couponId) {
-      subParams.coupon = couponId
-    } else if (normalised && !couponId) {
-      // Code was entered but not valid — still proceed without discount
-      console.warn(`[scout-subscribe] Unknown promo code: ${normalised}`)
+    const couponId   = COUPON_MAP[normalised] ?? null
+
+    const subBody: Record<string, unknown> = {
+      customer:            customerId,
+      'items[0][price]':   PRICE_ID,
+      trial_period_days:   7,
+      'payment_settings[save_default_payment_method]': 'on_subscription',
+      'metadata[supabase_user_id]': user.id,
+      'metadata[child_id]':         childId ?? '',
     }
+    if (couponId) subBody.coupon = couponId
 
-    // 7. Create subscription
-    const subscription = await stripe.subscriptions.create(subParams)
+    const subscription = await stripe(stripeKey, 'POST', '/subscriptions', subBody)
 
-    const trialEnd   = subscription.trial_end
+    const trialEnd  = subscription.trial_end
       ? new Date(subscription.trial_end * 1000).toISOString()
       : null
-    const periodEnd  = new Date(subscription.current_period_end * 1000).toISOString()
-    const discountPct = couponId ? 25 : null
-    const pricePaid   = couponId ? parseFloat((79.99 * 0.75).toFixed(2)) : 79.99
+    const periodEnd = new Date(subscription.current_period_end * 1000).toISOString()
+    const pricePaid = couponId ? parseFloat((79.99 * 0.75).toFixed(2)) : 79.99
 
-    // 8. Write to scout_subscriptions (service role bypasses RLS)
+    // 6. Write to scout_subscriptions
     const { error: dbErr } = await sb.from('scout_subscriptions').upsert({
       user_id:            user.id,
       status:             'trialing',
-      stripe_customer_id: customer.id,
+      stripe_customer_id: customerId,
       stripe_sub_id:      subscription.id,
       promo_code:         couponId ? normalised : null,
-      discount_pct:       discountPct,
+      discount_pct:       couponId ? 25 : null,
       price_paid:         pricePaid,
       trial_end:          trialEnd,
       period_end:         periodEnd,
     }, { onConflict: 'user_id' })
 
-    if (dbErr) {
-      console.error('[scout-subscribe] DB write error:', dbErr.message)
-      // Don't fail the request — Stripe subscription was created successfully.
-      // Webhook will sync the DB state if this write fails.
-    }
+    if (dbErr) console.error('[scout-subscribe] DB error:', dbErr.message)
 
     return new Response(
       JSON.stringify({ ok: true, subscriptionId: subscription.id, trialEnd }),
@@ -135,14 +133,7 @@ Deno.serve(async (req: Request) => {
     )
 
   } catch (e) {
-    console.error('[scout-subscribe] Unhandled error:', e)
+    console.error('[scout-subscribe] Error:', e)
     return err(500, e instanceof Error ? e.message : 'Unexpected error')
   }
 })
-
-function err(status: number, msg: string) {
-  return new Response(
-    JSON.stringify({ ok: false, error: msg }),
-    { status, headers: { ...CORS, 'Content-Type': 'application/json' } }
-  )
-}
