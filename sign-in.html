@@ -2081,34 +2081,32 @@ button { font: inherit; cursor: pointer; }
     btn.textContent = 'Processing...';
 
     var payName = (document.getElementById('pay-name') || {}).value || '';
+    var errEl   = document.getElementById('stripe-card-errors');
 
-    // 1. Create payment method from the card element
+    function showErr(msg) {
+      if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
+      btn.disabled    = false;
+      btn.textContent = 'Start free trial →';
+    }
+
+    // Step 1: Create Stripe payment method
+    btn.textContent = 'Verifying card...';
     stripeInstance.createPaymentMethod({
       type: 'card',
       card: stripeCard,
       billing_details: { name: payName },
     }).then(function(result) {
-      if (result.error) {
-        // Show error, re-enable button
-        var errEl = document.getElementById('stripe-card-errors');
-        if (errEl) { errEl.textContent = result.error.message; errEl.style.display = 'block'; }
-        btn.disabled    = false;
-        btn.textContent = 'Start free trial →';
-        return;
-      }
+      if (result.error) { showErr(result.error.message); return; }
 
-      // 2. Get Supabase session for auth token
+      // Step 2: Get session
+      btn.textContent = 'Authorising...';
       var sb = window._supabaseClient;
       sb.auth.getSession().then(function(res) {
         var session = res.data && res.data.session;
-        if (!session) {
-          btn.disabled    = false;
-          btn.textContent = 'Start free trial →';
-          alert('Your session expired. Please sign in again.');
-          return;
-        }
+        if (!session) { showErr('Session expired — please sign in again.'); return; }
 
-        // 3. POST to scout-subscribe Edge Function
+        // Step 3: Call edge function
+        btn.textContent = 'Processing payment...';
         fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-subscribe', {
           method:  'POST',
           headers: {
@@ -2121,28 +2119,23 @@ button { font: inherit; cursor: pointer; }
             childId:         sessionStorage.getItem('ff_child_id') || null,
           }),
         })
-        .then(function(r) { return r.json(); })
+        .then(function(r) {
+          btn.textContent = 'Confirming...';
+          return r.json();
+        })
         .then(function(data) {
-          if (!data.ok) {
-            var errEl = document.getElementById('stripe-card-errors');
-            var msg   = data.error || 'Payment failed. Please try again.';
-            if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
-            btn.disabled    = false;
-            btn.textContent = 'Start free trial →';
-            return;
-          }
-          // 4. Success
+          if (!data.ok) { showErr(data.error || 'Payment failed. Please try again.'); return; }
           onPaymentSuccess();
           btn.disabled = false;
         })
         .catch(function(e) {
-          var errEl = document.getElementById('stripe-card-errors');
-          var msg   = e && e.message ? e.message : String(e);
-          if (errEl) { errEl.textContent = 'Error: ' + msg; errEl.style.display = 'block'; }
-          btn.disabled    = false;
-          btn.textContent = 'Start free trial →';
+          showErr('Network error: ' + (e && e.message ? e.message : String(e)));
         });
+      }).catch(function(e) {
+        showErr('Auth error: ' + (e && e.message ? e.message : String(e)));
       });
+    }).catch(function(e) {
+      showErr('Card error: ' + (e && e.message ? e.message : String(e)));
     });
   };
 
