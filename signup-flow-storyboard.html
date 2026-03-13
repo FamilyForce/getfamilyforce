@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FamilyForce Sign-Up Flow</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --terra: #6E4ED6;
+  --terra-dark: #5B3CC4;
+  --elevated: #F4F0FC;
+  --border: #E5E2EC;
+  --border-light: #EDEBF2;
+  --text: #1A1523;
+  --text-mid: #4A4560;
+  --text-dim: #8A879A;
+  --text-ghost: #C2BFD0;
+  --surface: #FFFFFF;
+  --sans: 'Outfit', sans-serif;
+  --serif: 'Instrument Serif', serif;
+}
+body { background: #F0EDF8; font-family: var(--sans); padding: 48px 40px 80px; }
+
+/* ── Layout ── */
+.title { font-family: var(--serif); font-size: 32px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.subtitle { font-size: 15px; color: var(--text-dim); margin-bottom: 48px; }
+
+.path-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--terra); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+}
+.path-label::after { content: ''; flex: 1; height: 1px; background: rgba(110,78,214,.2); }
+
+.flow-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 48px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; }
+.arrow { font-size: 20px; color: var(--terra); opacity: .5; margin-top: 80px; flex-shrink: 0; }
+.screen-wrap { flex-shrink: 0; }
+.screen-num { font-size: 10px; font-weight: 700; color: var(--text-ghost); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; text-align: center; }
+.screen-tag { font-size: 11px; font-weight: 600; color: var(--terra); background: var(--elevated); padding: 2px 8px; border-radius: 100px; display: inline-block; margin-bottom: 8px; }
+.screen-tag.new { background: #DCFCE7; color: #166534; }
+.screen-tag.shared { background: #FEF3C7; color: #92400E; }
+
+/* ── Screen cards ── */
+.screen {
+  width: 240px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(110,78,214,.08);
+}
+
+/* Nav */
+.s-nav {
+  height: 40px; background: rgba(250,250,250,.95);
+  border-bottom: 1px solid var(--border-light);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px; flex-shrink: 0;
+}
+.s-logo { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 800; color: var(--text); }
+.s-logo-s { color: var(--terra); }
+.s-logo svg { width: 8px; height: 9px; }
+.s-nav-btn { background: var(--terra); color: #fff; font-size: 9px; font-weight: 700; padding: 4px 10px; border-radius: 100px; }
+
+/* Body padding */
+.s-body { padding: 18px 16px 20px; }
+.s-bg { background: #F4F0FC; padding: 18px 16px 20px; }
+
+/* Auth card */
+.s-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+.s-card-logo { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
+.s-card-logo-s { color: var(--terra); }
+.s-h1 { font-family: var(--serif); font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.s-sub { font-size: 10px; color: var(--text-dim); margin-bottom: 14px; line-height: 1.5; }
+.s-google-btn { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; font-weight: 600; color: var(--text-mid); margin-bottom: 10px; }
+.s-google-btn img { width: 12px; height: 12px; }
+.s-divider { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.s-divider-line { flex: 1; height: 1px; background: var(--border-light); }
+.s-divider-text { font-size: 9px; color: var(--text-ghost); }
+.s-label { font-size: 9px; font-weight: 600; color: var(--text-mid); margin-bottom: 4px; display: block; }
+.s-input { width: 100%; border: 1.5px solid var(--border); border-radius: 6px; padding: 7px 10px; font-size: 10px; color: var(--text-dim); margin-bottom: 8px; }
+.s-btn { width: 100%; background: var(--terra); color: #fff; border-radius: 100px; padding: 8px; font-size: 11px; font-weight: 700; text-align: center; margin-top: 4px; }
+.s-toggle { font-size: 9px; color: var(--text-dim); text-align: center; margin-top: 10px; }
+.s-toggle a { color: var(--terra); }
+
+/* Intent cards */
+.s-intent-card { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border: 1.5px solid var(--border); border-radius: 8px; margin-bottom: 7px; cursor: pointer; }
+.s-intent-card:last-child { margin-bottom: 0; }
+.s-intent-icon { font-size: 16px; background: var(--elevated); width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.s-intent-title { font-size: 10px; font-weight: 700; color: var(--text); }
+.s-intent-desc { font-size: 8.5px; color: var(--text-dim); line-height: 1.4; }
+.s-intent-arrow { font-size: 14px; color: var(--text-ghost); margin-left: auto; flex-shrink: 0; }
+
+/* Playbook grid */
+.s-pb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+.s-pb-card { padding: 9px 8px; border: 1.5px solid var(--border); border-radius: 7px; text-align: center; }
+.s-pb-card.sel { border-color: var(--terra); background: var(--elevated); }
+.s-pb-icon { font-size: 16px; display: block; margin-bottom: 4px; }
+.s-pb-name { font-size: 8.5px; font-weight: 700; color: var(--text); }
+
+/* Child form */
+.s-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+/* Payment summary */
+.s-pay-summary { background: var(--elevated); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+.s-pay-row { display: flex; justify-content: space-between; font-size: 9px; color: var(--text-mid); margin-bottom: 5px; }
+.s-pay-row:last-child { margin-bottom: 0; }
+.s-pay-row strong { color: var(--text); font-weight: 700; }
+.s-pay-badge { background: #DCFCE7; color: #166534; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 100px; }
+.s-pay-badge.purple { background: var(--elevated); color: var(--terra); }
+.s-stripe { border: 1.5px solid var(--border); border-radius: 6px; padding: 8px 10px; display: flex; align-items: center; gap: 6px; font-size: 9px; color: var(--text-ghost); margin-bottom: 6px; }
+.s-pay-card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 8px; }
+.s-terms { font-size: 7.5px; color: var(--text-ghost); text-align: center; line-height: 1.5; margin-top: 8px; }
+
+/* Success */
+.s-success { text-align: center; padding: 20px 16px; }
+.s-success-icon { font-size: 36px; display: block; margin-bottom: 10px; }
+.s-success-h { font-family: var(--serif); font-size: 15px; color: var(--text); margin-bottom: 6px; }
+.s-success-sub { font-size: 9px; color: var(--text-dim); line-height: 1.5; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+
+<h1 class="title">FamilyForce — Sign-Up Flow</h1>
+<p class="subtitle">All paths share the same account creation screen. Intent routing happens immediately after.</p>
+
+<!-- ─── SHARED: ACCOUNT CREATION ─── -->
+<div class="path-label">Shared — Account Creation (all users start here)</div>
+<div class="flow-row">
+
+  <!-- Sign In / Create -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 1</div>
+    <div class="screen-tag shared">Existing · sign in</div>
+    <div class="screen">
+      <div class="s-nav">
+        <div class="s-logo"><svg viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-logo-s">Force</span></span></div>
+      </div>
+      <div class="s-bg">
+        <div class="s-card">
+          <div class="s-card-logo"><svg width="9" height="11" viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-card-logo-s">Force</span></span></div>
+          <div class="s-h1">Welcome back</div>
+          <div class="s-sub">Sign in to your account.</div>
+          <div class="s-google-btn">
+            <svg width="12" height="12" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+            Continue with Google
+          </div>
+          <div class="s-divider"><div class="s-divider-line"></div><span class="s-divider-text">or</span><div class="s-divider-line"></div></div>
+          <label class="s-label">Email address</label>
+          <div class="s-input" style="color:var(--text-ghost)">you@example.com</div>
+          <label class="s-label">Password</label>
+          <div class="s-input" style="color:var(--text-ghost)">••••••••</div>
+          <div class="s-btn">Sign In →</div>
+          <div class="s-toggle">New here? <a href="#">Create a free account →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow" style="margin-top:100px">→</div>
+
+  <!-- Create Account -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 1b</div>
+    <div class="screen-tag shared">New user · create account</div>
+    <div class="screen">
+      <div class="s-nav">
+        <div class="s-logo"><svg viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-logo-s">Force</span></span></div>
+      </div>
+      <div class="s-bg">
+        <div class="s-card">
+          <div class="s-card-logo"><svg width="9" height="11" viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-card-logo-s">Force</span></span></div>
+          <div class="s-h1">Create your account</div>
+          <div class="s-sub">Free to start. No card required.</div>
+          <div class="s-google-btn">
+            <svg width="12" height="12" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+            Continue with Google
+          </div>
+          <div class="s-divider"><div class="s-divider-line"></div><span class="s-divider-text">or</span><div class="s-divider-line"></div></div>
+          <label class="s-label">Email address</label>
+          <div class="s-input" style="color:var(--text-ghost)">you@example.com</div>
+          <label class="s-label">Password</label>
+          <div class="s-input" style="color:var(--text-ghost)">Choose a password</div>
+          <label class="s-label">Confirm password</label>
+          <div class="s-input" style="color:var(--text-ghost)">Confirm password</div>
+          <div class="s-btn">Create account →</div>
+          <div class="s-toggle">Already have an account? <a href="#">Sign in →</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow" style="margin-top:100px">→</div>
+
+  <!-- Intent step -->
+  <div class="screen-wrap">
+    <div class="screen-num">Screen 2</div>
+    <div class="screen-tag new">New · intent routing</div>
+    <div class="screen">
+      <div class="s-nav">
+        <div class="s-logo"><svg viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-logo-s">Force</span></span></div>
+      </div>
+      <div class="s-bg">
+        <div class="s-card">
+          <div class="s-h1" style="margin-bottom:4px">What would you like to do?</div>
+          <div class="s-sub">Pick one to get started.</div>
+          <div class="s-intent-card" style="border-color:var(--border)">
+            <div class="s-intent-icon">📖</div>
+            <div><div class="s-intent-title">Get a free playbook</div><div class="s-intent-desc">Potty training, sleep, feeding and more. Free.</div></div>
+            <div class="s-intent-arrow">›</div>
+          </div>
+          <div class="s-intent-card">
+            <div class="s-intent-icon">🌱</div>
+            <div><div class="s-intent-title">Try Scout free — 7 days</div><div class="s-intent-desc">Age-specific milestones. $79.99/yr after.</div></div>
+            <div class="s-intent-arrow">›</div>
+          </div>
+          <div class="s-intent-card">
+            <div class="s-intent-icon">⭐</div>
+            <div><div class="s-intent-title">Subscribe to Scout</div><div class="s-intent-desc">$79.99/year. 30-day refund guarantee.</div></div>
+            <div class="s-intent-arrow">›</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── PATH A: FREE PLAYBOOK ─── -->
+<div class="path-label">Path A — Free Playbook</div>
+<div class="flow-row">
+
+  <div class="screen-wrap">
+    <div class="screen-num">Step A1</div>
+    <div class="screen-tag new">New · playbook picker</div>
+    <div class="screen">
+      <div class="s-nav"><div class="s-logo"><svg viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-bg">
+        <div class="s-card">
+          <div style="font-size:10px;color:var(--terra);margin-bottom:12px;cursor:pointer">← Back</div>
+          <div class="s-h1" style="margin-bottom:4px">Which playbook?</div>
+          <div class="s-sub">All free. Pick one to read first.</div>
+          <div class="s-pb-grid">
+            <div class="s-pb-card sel"><span class="s-pb-icon">🚽</span><div class="s-pb-name">Potty Training</div></div>
+            <div class="s-pb-card"><span class="s-pb-icon">😴</span><div class="s-pb-name">Sleep Training</div></div>
+            <div class="s-pb-card"><span class="s-pb-icon">🥣</span><div class="s-pb-name">Feeding</div></div>
+            <div class="s-pb-card"><span class="s-pb-icon">😤</span><div class="s-pb-name">Tantrums</div></div>
+            <div class="s-pb-card"><span class="s-pb-icon">📱</span><div class="s-pb-name">Screen Time</div></div>
+          </div>
+          <div class="s-btn">Get my playbook →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow" style="margin-top:80px">→</div>
+
+  <!-- Playbook page -->
+  <div class="screen-wrap">
+    <div class="screen-num">Step A2</div>
+    <div class="screen-tag" style="background:#F0FDF4;color:#166534">Done · playbook unlocked</div>
+    <div class="screen">
+      <div class="s-nav"><div class="s-logo"><svg viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div style="padding:18px 16px">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--terra);margin-bottom:8px">📖 Potty Training Playbook</div>
+        <div style="font-family:var(--serif);font-size:17px;color:var(--text);margin-bottom:8px;line-height:1.3">The Clear Signal Method</div>
+        <div style="font-size:9px;color:var(--text-dim);line-height:1.6;margin-bottom:14px">Research-backed. Under an hour. A cheat sheet for the fridge, a quiz, and a certificate.</div>
+        <div style="background:var(--elevated);border-radius:8px;padding:10px 12px;font-size:9px;color:var(--text-mid);margin-bottom:12px;border-left:3px solid var(--terra)">🌱 <strong>Also try Scout</strong> — track every developmental window for your child's exact age.</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text);margin-bottom:8px">Chapter 1: Is My Child Ready?</div>
+        <div style="font-size:8.5px;color:var(--text-dim);line-height:1.6">The most common mistake parents make is starting too early or too late. Here's how to read the signs...</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:80px;font-size:11px;color:var(--text-dim);padding-top:4px;max-width:120px;text-align:center;flex-shrink:0">
+    Scout upsell shown softly — never blocks content
+  </div>
+
+</div>
+
+<!-- ─── PATH B: SCOUT TRIAL ─── -->
+<div class="path-label">Path B — Scout 7-Day Trial (card upfront → auto-charges after 7 days)</div>
+<div class="flow-row">
+
+  <div class="screen-wrap">
+    <div class="screen-num">Step B1</div>
+    <div class="screen-tag new">New · child setup</div>
+    <div class="screen">
+      <div class="s-nav"><div class="s-logo"><svg viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-bg">
+        <div class="s-card">
+          <div style="font-size:10px;color:var(--terra);margin-bottom:12px;cursor:pointer">← Back</div>
+          <div class="s-h1" style="margin-bottom:4px">Tell us about your child</div>
+          <div class="s-sub">Scout uses this to show what matters this month, not in general.</div>
+          <label class="s-label">Child's first name</label>
+          <div class="s-input">Olivia</div>
+          <div class="s-form-row" style="gap:6px;margin-bottom:8px">
+            <div>
+              <label class="s-label">Date of birth</label>
+              <div class="s-input">2025-01-15</div>
+            </div>
+            <div>
+              <label class="s-label">Sex (optional)</label>
+              <div class="s-input">Girl</div>
+            </div>
+          </div>
+          <div class="s-btn">Continue to payment →</div>
+          <div style="font-size:8px;color:var(--text-ghost);text-align:center;margin-top:8px">You can update this anytime in your profile.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow" style="margin-top:80px">→</div>
+
+  <div class="screen-wrap">
+    <div class="screen-num">Step B2</div>
+    <div class="screen-tag new">New · payment (trial)</div>
+    <div class="screen">
+      <div class="s-nav"><div class="s-logo"><svg viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-bg">
+        <div class="s-card">
+          <div style="font-size:10px;color:var(--terra);margin-bottom:12px;cursor:pointer">← Back</div>
+          <div class="s-h1" style="margin-bottom:4px">Start your free 7-day trial</div>
+          <div class="s-sub" style="margin-bottom:12px">Your card won't be charged today. After 7 days, $79.99/year. Cancel anytime.</div>
+          <div class="s-pay-summary">
+            <div class="s-pay-row"><span>FamilyForce Scout</span><span class="s-pay-badge">7 days free</span></div>
+            <div class="s-pay-row"><span>Then</span><strong>$79.99 / year</strong></div>
+            <div class="s-pay-row"><span>30-day refund</span><strong style="color:#16A34A">✓ Guaranteed</strong></div>
+          </div>
+          <label class="s-label">Name on card</label>
+          <div class="s-input" style="margin-bottom:6px">Jack Hartley</div>
+          <label class="s-label">Card number</label>
+          <div class="s-stripe">🔒 •••• •••• •••• 4242</div>
+          <div class="s-pay-card-row">
+            <div>
+              <label class="s-label">Expiry</label>
+              <div class="s-input">09 / 27</div>
+            </div>
+            <div>
+              <label class="s-label">CVV</label>
+              <div class="s-input">•••</div>
+            </div>
+          </div>
+          <div class="s-btn">Start free trial →</div>
+          <div class="s-terms">By continuing you agree to our Terms. $79.99 billed after 7-day trial. Full refund within 30 days of billing, no questions.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow" style="margin-top:80px">→</div>
+
+  <div class="screen-wrap">
+    <div class="screen-num">Step B3</div>
+    <div class="screen-tag" style="background:#F0FDF4;color:#166534">Done · trial started</div>
+    <div class="screen">
+      <div class="s-nav"><div class="s-logo"><svg viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-bg">
+        <div class="s-card">
+          <div class="s-success">
+            <span class="s-success-icon">🌱</span>
+            <div class="s-success-h">Your free trial has started!</div>
+            <div class="s-success-sub">Scout is setting up Olivia's dashboard. You won't be charged for 7 days.</div>
+            <div class="s-btn">Go to Scout →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── PATH C: SCOUT PURCHASE ─── -->
+<div class="path-label">Path C — Subscribe to Scout ($79.99/year, charged today)</div>
+<div class="flow-row">
+
+  <div class="screen-wrap" style="opacity:.6">
+    <div class="screen-num">Step C1</div>
+    <div class="screen-tag new">Same · child setup</div>
+    <div class="screen" style="border-color:var(--border-light)">
+      <div class="s-nav"><div class="s-logo"><svg viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-bg">
+        <div class="s-card">
+          <div style="font-size:10px;color:var(--terra);margin-bottom:12px;">← Back</div>
+          <div class="s-h1" style="margin-bottom:4px">Tell us about your child</div>
+          <div class="s-sub">Identical to Trial path B1</div>
+          <div style="height:80px;background:var(--elevated);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--text-ghost)">Same fields as Path B, Step 1</div>
+          <div class="s-btn" style="margin-top:12px">Continue to payment →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow" style="margin-top:80px;opacity:.5">→</div>
+
+  <div class="screen-wrap">
+    <div class="screen-num">Step C2</div>
+    <div class="screen-tag new">New · payment (purchase)</div>
+    <div class="screen">
+      <div class="s-nav"><div class="s-logo"><svg viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-bg">
+        <div class="s-card">
+          <div style="font-size:10px;color:var(--terra);margin-bottom:12px;">← Back</div>
+          <div class="s-h1" style="margin-bottom:4px">Subscribe to Scout</div>
+          <div class="s-sub" style="margin-bottom:12px">Charged today. Not happy within 30 days? Full refund, no questions.</div>
+          <div class="s-pay-summary">
+            <div class="s-pay-row"><span>FamilyForce Scout</span><span class="s-pay-badge purple">1 year</span></div>
+            <div class="s-pay-row"><span>Charged today</span><strong>$79.99</strong></div>
+            <div class="s-pay-row"><span>30-day refund</span><strong style="color:#16A34A">✓ Guaranteed</strong></div>
+          </div>
+          <label class="s-label">Name on card</label>
+          <div class="s-input" style="margin-bottom:6px">Jack Hartley</div>
+          <label class="s-label">Card number</label>
+          <div class="s-stripe">🔒 •••• •••• •••• 4242</div>
+          <div class="s-pay-card-row">
+            <div><label class="s-label">Expiry</label><div class="s-input">09 / 27</div></div>
+            <div><label class="s-label">CVV</label><div class="s-input">•••</div></div>
+          </div>
+          <div class="s-btn">Subscribe now →</div>
+          <div class="s-terms">$79.99 charged today. Full refund if not satisfied within 30 days of billing.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="arrow" style="margin-top:80px">→</div>
+
+  <div class="screen-wrap">
+    <div class="screen-num">Step C3</div>
+    <div class="screen-tag" style="background:#F0FDF4;color:#166534">Done · subscribed</div>
+    <div class="screen">
+      <div class="s-nav"><div class="s-logo"><svg viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Family<span class="s-logo-s">Force</span></span></div></div>
+      <div class="s-bg">
+        <div class="s-card">
+          <div class="s-success">
+            <span class="s-success-icon">⭐</span>
+            <div class="s-success-h">Welcome to Scout!</div>
+            <div class="s-success-sub">Your subscription is active. A receipt is on its way to your inbox.</div>
+            <div class="s-btn">Go to Scout →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── KEY DECISIONS ─── -->
+<div class="path-label">Key Design Decisions</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:720px">
+  <div style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border)">
+    <div style="font-size:18px;margin-bottom:8px">💳</div>
+    <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">Card upfront</div>
+    <div style="font-size:11px;color:var(--text-dim);line-height:1.6">Trial auto-converts after 7 days. Higher conversion than "add card later."</div>
+  </div>
+  <div style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border)">
+    <div style="font-size:18px;margin-bottom:8px">🔒</div>
+    <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">30-day refund</div>
+    <div style="font-size:11px;color:var(--text-dim);line-height:1.6">Shown on every payment screen. Removes risk anxiety from both paths.</div>
+  </div>
+  <div style="background:white;border-radius:12px;padding:16px;border:1px solid var(--border)">
+    <div style="font-size:18px;margin-bottom:8px">🎯</div>
+    <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px">Intent pre-select</div>
+    <div style="font-size:11px;color:var(--text-dim);line-height:1.6">CTAs with ?intent= skip the routing screen. Scout CTA goes straight to child setup.</div>
+  </div>
+</div>
+
+</body>
+</html>
