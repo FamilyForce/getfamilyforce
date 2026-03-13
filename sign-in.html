@@ -523,18 +523,6 @@ button { font: inherit; cursor: pointer; }
 .intent-card-arrow { color: var(--terra); font-size: 18px; flex-shrink: 0; opacity: 0; transition: opacity .15s; }
 @media (hover:hover) { .intent-card:hover .intent-card-arrow { opacity: 1; } }
 
-/* Playbook grid */
-.playbook-pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 24px; }
-.playbook-pick-card {
-  padding: 16px; border: 1.5px solid var(--border); border-radius: 12px;
-  cursor: pointer; transition: border-color .15s, background .15s;
-  background: var(--surface); text-align: left;
-}
-@media (hover:hover) { .playbook-pick-card:hover { border-color: var(--terra); background: var(--elevated); } }
-.playbook-pick-card.selected { border-color: var(--terra); background: var(--elevated); }
-.playbook-pick-icon { font-size: 22px; margin-bottom: 8px; display: block; }
-.playbook-pick-name { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.3; }
-
 /* Child setup */
 .step-form-group { margin-bottom: 20px; }
 .step-label { display: block; font-size: 13px; font-weight: 600; color: var(--text-mid); margin-bottom: 7px; }
@@ -592,7 +580,6 @@ button { font: inherit; cursor: pointer; }
 
 /* Step container width overrides */
 #step-intent .step-card,
-#step-playbook .step-card,
 #step-child .step-card,
 #step-payment .step-card,
 #step-success .step-card { max-width: 480px; margin: 0 auto; }
@@ -1259,14 +1246,14 @@ button { font: inherit; cursor: pointer; }
     <div class="signup-step" id="step-intent" role="region" aria-label="Choose your path">
       <div class="step-card">
         <h2 class="step-h">What would you like to do?</h2>
-        <p class="step-sub">Pick one to get started. You can always come back and do the others.</p>
+        <p class="step-sub">Pick one to get started. You can always do both.</p>
         <div class="intent-grid">
 
-          <button class="intent-card" onclick="handleIntent('playbook')" aria-label="Get a free playbook">
+          <button class="intent-card" onclick="handleIntent('library')" aria-label="Browse the free library">
             <div class="intent-card-icon">📖</div>
             <div class="intent-card-text">
-              <div class="intent-card-title">Get a free playbook</div>
-              <div class="intent-card-desc">Research-backed guides on potty training, sleep, feeding, tantrums and more. Free.</div>
+              <div class="intent-card-title">Browse the free library</div>
+              <div class="intent-card-desc">Playbooks on potty training, sleep, feeding, tantrums and more. All free.</div>
             </div>
             <div class="intent-card-arrow">›</div>
           </button>
@@ -1280,50 +1267,8 @@ button { font: inherit; cursor: pointer; }
             <div class="intent-card-arrow">›</div>
           </button>
 
-          <button class="intent-card" onclick="handleIntent('purchase')" aria-label="Subscribe to Scout">
-            <div class="intent-card-icon">⭐</div>
-            <div class="intent-card-text">
-              <div class="intent-card-title">Subscribe to Scout — $79.99/year</div>
-              <div class="intent-card-desc">Skip the trial. Get a full year of Scout now. 30-day full refund guarantee.</div>
-            </div>
-            <div class="intent-card-arrow">›</div>
-          </button>
-
         </div>
-      </div>
-    </div>
-
-    <!-- ═══ STEP: PLAYBOOK PICKER ═══ -->
-    <div class="signup-step" id="step-playbook" role="region" aria-label="Choose a playbook">
-      <div class="step-card">
-        <button class="step-back" onclick="showStep('intent')" aria-label="Back">← Back</button>
-        <h2 class="step-h">Which playbook do you want?</h2>
-        <p class="step-sub">All free. Pick one to read first.</p>
-        <div class="playbook-pick-grid" id="playbook-pick-grid">
-          <button class="playbook-pick-card" onclick="selectPlaybook('potty-training')" data-book="potty-training">
-            <span class="playbook-pick-icon">🚽</span>
-            <div class="playbook-pick-name">Potty Training</div>
-          </button>
-          <button class="playbook-pick-card" onclick="selectPlaybook('sleep')" data-book="sleep">
-            <span class="playbook-pick-icon">😴</span>
-            <div class="playbook-pick-name">Sleep Training</div>
-          </button>
-          <button class="playbook-pick-card" onclick="selectPlaybook('feeding')" data-book="feeding">
-            <span class="playbook-pick-icon">🥣</span>
-            <div class="playbook-pick-name">Feeding</div>
-          </button>
-          <button class="playbook-pick-card" onclick="selectPlaybook('tantrum')" data-book="tantrum">
-            <span class="playbook-pick-icon">😤</span>
-            <div class="playbook-pick-name">Tantrums</div>
-          </button>
-          <button class="playbook-pick-card" onclick="selectPlaybook('screentime')" data-book="screentime">
-            <span class="playbook-pick-icon">📱</span>
-            <div class="playbook-pick-name">Screen Time</div>
-          </button>
-        </div>
-        <button class="step-btn-primary" id="playbook-continue-btn" onclick="goToPlaybook()" disabled>
-          Get my playbook →
-        </button>
+        <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:18px">All subscriptions start with a 7-day free trial.</p>
       </div>
     </div>
 
@@ -1353,7 +1298,8 @@ button { font: inherit; cursor: pointer; }
           </div>
         </div>
         <button class="step-btn-primary" onclick="goToPayment()">Continue to payment →</button>
-        <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">You can update this anytime in your profile.</p>
+        <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">Not ready? <a href="dashboard.html" style="color:var(--terra)">Browse the free library instead →</a></p>
+        <p style="font-size:11px;color:var(--text-ghost);text-align:center;margin-top:6px">You can update child details anytime in your profile.</p>
       </div>
     </div>
 
@@ -1374,10 +1320,24 @@ button { font: inherit; cursor: pointer; }
             <span>Then</span>
             <strong id="payment-price">$79.99 / year</strong>
           </div>
+          <div class="payment-summary-row" id="payment-discount-row" style="display:none">
+            <span id="payment-discount-label">Promo code</span>
+            <strong id="payment-discount-value" style="color:#16A34A"></strong>
+          </div>
           <div class="payment-summary-row">
             <span>30-day refund guarantee</span>
             <strong style="color:#16A34A">✓</strong>
           </div>
+        </div>
+
+        <!-- Referral / promo code -->
+        <div class="step-form-group">
+          <label class="step-label" for="promo-code">Referral or promo code <span style="font-weight:400;color:var(--text-ghost)">(optional)</span></label>
+          <div style="display:flex;gap:8px">
+            <input class="step-input" id="promo-code" type="text" placeholder="Enter code" autocomplete="off" autocapitalize="characters" style="margin-bottom:0;flex:1;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+            <button type="button" onclick="applyPromoCode()" id="promo-apply-btn" style="padding:10px 18px;background:var(--elevated);border:1.5px solid var(--border);border-radius:10px;font-family:var(--sans);font-size:13px;font-weight:700;color:var(--terra);cursor:pointer;white-space:nowrap;flex-shrink:0">Apply</button>
+          </div>
+          <p id="promo-feedback" style="font-size:11px;margin-top:6px;display:none"></p>
         </div>
 
         <!-- Name on card -->
@@ -1411,6 +1371,7 @@ button { font: inherit; cursor: pointer; }
         <button class="step-btn-primary" id="payment-submit-btn" onclick="submitPayment()">
           Start free trial →
         </button>
+        <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">Still not sure? <a href="dashboard.html" style="color:var(--terra)">Check out the free library first →</a></p>
         <p class="payment-terms">
           By continuing, you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.
           You'll be charged $79.99 after your 7-day free trial. Not satisfied within 30 days of billing? <a href="contact.html">Full refund, no questions.</a>
@@ -1786,8 +1747,8 @@ button { font: inherit; cursor: pointer; }
    ───────────────────────────────────────────────────────────────── */
 (function() {
 
-  var currentIntent = null;  // 'playbook' | 'trial' | 'purchase'
-  var selectedBook  = null;  // e.g. 'potty-training'
+  var currentIntent = null;  // 'library' | 'trial'
+  var appliedPromo  = null;  // { code, discount } once validated
 
   /* ── Show a step, hide all others ── */
   window.showStep = function(stepId) {
@@ -1812,27 +1773,23 @@ button { font: inherit; cursor: pointer; }
 
   /* ── Check URL params on load — pre-select intent ── */
   (function() {
-    var params  = new URLSearchParams(window.location.search);
-    var intent  = params.get('intent');
-    var book    = params.get('book');
+    var params = new URLSearchParams(window.location.search);
+    var intent = params.get('intent');
     // Set today as max DOB date
     var dobEl = document.getElementById('child-dob');
     if (dobEl) dobEl.max = new Date().toISOString().split('T')[0];
-
-    // If already logged in AND intent param exists, skip auth and jump straight in
-    // (Handled by backend — here we just store intent for post-signup use)
+    // Store intent for post-signup routing
     if (intent) sessionStorage.setItem('ff_intent', intent);
-    if (book)   sessionStorage.setItem('ff_book', book);
   })();
 
-  /* ── After successful signup: route to intent step or restore saved intent ── */
+  /* ── After successful signup: route based on saved intent ── */
   window.routeAfterSignup = function() {
     var intent = sessionStorage.getItem('ff_intent');
-    if (intent === 'trial' || intent === 'purchase') {
-      currentIntent = intent;
-      handleIntent(intent);
-    } else if (intent === 'playbook') {
-      handleIntent('playbook');
+    if (intent === 'trial') {
+      currentIntent = 'trial';
+      handleIntent('trial');
+    } else if (intent === 'library') {
+      window.location.href = 'dashboard.html';
     } else {
       showStep('intent');
     }
@@ -1843,60 +1800,12 @@ button { font: inherit; cursor: pointer; }
     currentIntent = intent;
     sessionStorage.setItem('ff_intent', intent);
 
-    if (intent === 'playbook') {
-      // Check if book is pre-selected from URL
-      var book = sessionStorage.getItem('ff_book');
-      if (book) {
-        selectedBook = book;
-        goToPlaybook();
-      } else {
-        showStep('playbook');
-      }
-    } else if (intent === 'trial' || intent === 'purchase') {
-      // Update payment step copy
-      var heading = document.getElementById('payment-heading');
-      var sub     = document.getElementById('payment-sub');
-      var badge   = document.getElementById('payment-badge');
-      var price   = document.getElementById('payment-price');
-      var btn     = document.getElementById('payment-submit-btn');
-
-      if (intent === 'purchase') {
-        if (heading) heading.textContent = 'Subscribe to Scout';
-        if (sub)     sub.textContent = 'You\'ll be charged $79.99 today for a full year of Scout. Not happy within 30 days? Full refund, no questions.';
-        if (badge)   badge.textContent = '1 year';
-        if (btn)     btn.textContent = 'Subscribe now →';
-      } else {
-        if (heading) heading.textContent = 'Start your free 7-day trial';
-        if (sub)     sub.textContent = 'Your card won\'t be charged today. After 7 days, you\'ll be billed $79.99 for a full year. Cancel any time before then.';
-        if (badge)   badge.textContent = '7 days free';
-        if (btn)     btn.textContent = 'Start free trial →';
-      }
-
+    if (intent === 'library') {
+      // Go straight to dashboard — no intermediate screen
+      window.location.href = 'dashboard.html';
+    } else if (intent === 'trial') {
       showStep('child');
     }
-  };
-
-  /* ── Playbook selection ── */
-  window.selectPlaybook = function(book) {
-    selectedBook = book;
-    // Visual selection state
-    document.querySelectorAll('.playbook-pick-card').forEach(function(card) {
-      card.classList.toggle('selected', card.dataset.book === book);
-    });
-    document.getElementById('playbook-continue-btn').disabled = false;
-  };
-
-  /* ── Go to selected playbook ── */
-  window.goToPlaybook = function() {
-    if (!selectedBook) return;
-    var destinations = {
-      'potty-training': 'playbook-potty-training.html',
-      'sleep':          'playbook-sleep.html',
-      'feeding':        'playbook-feeding.html',
-      'tantrum':        'playbook-tantrum.html',
-      'screentime':     'playbook-free-screentime.html'
-    };
-    window.location.href = destinations[selectedBook] || 'index.html#library';
   };
 
   /* ── Go from child setup to payment ── */
@@ -1923,6 +1832,49 @@ button { font: inherit; cursor: pointer; }
     showStep('payment');
   };
 
+  /* ── Apply promo / referral code ── */
+  window.applyPromoCode = function() {
+    var input    = document.getElementById('promo-code');
+    var feedback = document.getElementById('promo-feedback');
+    var code     = (input.value || '').trim().toUpperCase();
+    if (!code) return;
+
+    // TODO: Replace with real API call to validate code via Stripe coupon endpoint
+    // For now: any code containing 'FRIEND' gives 25% off; anything else is invalid
+    var isValid  = code.indexOf('FRIEND') !== -1;
+    var discount = 0.25; // 25%
+    var origPrice = 79.99;
+    var newPrice  = +(origPrice * (1 - discount)).toFixed(2);
+    var saving    = +(origPrice - newPrice).toFixed(2);
+
+    feedback.style.display = 'block';
+
+    if (isValid) {
+      appliedPromo = { code: code, discount: discount, newPrice: newPrice };
+      input.style.borderColor = '#16A34A';
+      feedback.style.color    = '#166534';
+      feedback.textContent    = '✓ Code applied — you save $' + saving.toFixed(2);
+      // Update summary
+      var priceEl   = document.getElementById('payment-price');
+      var discRow   = document.getElementById('payment-discount-row');
+      var discLabel = document.getElementById('payment-discount-label');
+      var discVal   = document.getElementById('payment-discount-value');
+      if (priceEl)   priceEl.innerHTML = '<span style="text-decoration:line-through;opacity:.45;font-weight:400">$79.99</span> <span style="color:#16A34A">$' + newPrice.toFixed(2) + ' / year</span>';
+      if (discRow)   discRow.style.display = '';
+      if (discLabel) discLabel.textContent = 'Code ' + code;
+      if (discVal)   discVal.textContent   = '25% off ✓';
+      // Disable input + button so user can't re-apply
+      input.disabled = true;
+      document.getElementById('promo-apply-btn').disabled = true;
+      document.getElementById('promo-apply-btn').textContent = '✓';
+    } else {
+      appliedPromo = null;
+      input.style.borderColor = '#EF4444';
+      feedback.style.color    = '#DC2626';
+      feedback.textContent    = 'That code isn\'t valid. Check for typos and try again.';
+    }
+  };
+
   /* ── Submit payment (Stripe integration point) ── */
   window.submitPayment = function() {
     var btn = document.getElementById('payment-submit-btn');
@@ -1930,22 +1882,16 @@ button { font: inherit; cursor: pointer; }
     btn.textContent = 'Processing...';
 
     // TODO: Replace with real Stripe.js call
-    // stripe.createPaymentMethod({...}).then(function(result) { ... })
-    // For now: simulate success after 1.5s
+    // stripe.createPaymentMethod({ type:'card', card: stripeCardElement }).then(...)
+    // Pass appliedPromo.code as coupon to Stripe subscription create call if set
     setTimeout(function() {
+      var childName = sessionStorage.getItem('ff_child_name') || 'your child';
       var icon    = document.getElementById('success-icon');
       var heading = document.getElementById('success-heading');
       var sub     = document.getElementById('success-sub');
-
-      if (currentIntent === 'trial') {
-        if (icon)    icon.textContent = '🌱';
-        if (heading) heading.textContent = 'Your free trial has started!';
-        if (sub)     sub.textContent = 'Scout is setting up your child\'s personalised dashboard. You won\'t be charged for 7 days.';
-      } else {
-        if (icon)    icon.textContent = '⭐';
-        if (heading) heading.textContent = 'Welcome to Scout!';
-        if (sub)     sub.textContent = 'Your subscription is active. Let\'s get started.';
-      }
+      if (icon)    icon.textContent = '🌱';
+      if (heading) heading.textContent = 'Your free trial has started!';
+      if (sub)     sub.textContent = 'Scout is setting up ' + childName + '\'s dashboard. Your card won\'t be charged for 7 days.';
       showStep('success');
       btn.disabled = false;
     }, 1500);
@@ -1953,7 +1899,7 @@ button { font: inherit; cursor: pointer; }
 
   /* ── Success redirect ── */
   window.successRedirect = function() {
-    window.location.href = 'scout.html';
+    window.location.href = 'dashboard.html';
   };
 
   /* ── Hook into existing signUp success ── */
