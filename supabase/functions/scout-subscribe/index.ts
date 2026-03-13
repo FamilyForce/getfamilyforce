@@ -115,9 +115,11 @@ Deno.serve(async (req: Request) => {
     const subscription = await stripeReq(stripeKey, 'POST', '/subscriptions', subBody)
 
     const trialEnd  = subscription.trial_end
-      ? new Date(subscription.trial_end  * 1000).toISOString()
+      ? new Date(subscription.trial_end * 1000).toISOString()
       : null
-    const periodEnd = new Date(subscription.current_period_end * 1000).toISOString()
+    const periodEnd = subscription.current_period_end
+      ? new Date(subscription.current_period_end * 1000).toISOString()
+      : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // fallback: 7 days
     const pricePaid = couponId ? parseFloat((79.99 * 0.75).toFixed(2)) : 79.99
 
     // 6. Write to scout_subscriptions
