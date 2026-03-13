@@ -2017,7 +2017,7 @@ button { font: inherit; cursor: pointer; }
 /* ── Advisor tab hero header ── */
 .adv-tab-hero {
   background: linear-gradient(135deg, #3D20B0 0%, #7C5CFC 100%);
-  padding: calc(72px + 20px) 24px 24px;
+  padding: 28px 24px 24px;
   text-align: center;
   position: sticky;
   top: 72px;
@@ -2035,7 +2035,7 @@ button { font: inherit; cursor: pointer; }
 .adv-tab-hero-sub   { font-size: 13px; color: rgba(255,255,255,.72); line-height: 1.5; }
 
 @media (max-width: 480px) {
-  .adv-tab-hero { padding-top: calc(64px + 16px); padding-bottom: 20px; top: 64px; }
+  .adv-tab-hero { padding-top: 22px; padding-bottom: 20px; top: 64px; }
   .adv-tab-hero-title { font-size: 19px; }
   .adv-tab-hero-emoji { font-size: 34px; }
   .acc-wrap { padding-top: 64px; }
@@ -2051,18 +2051,18 @@ button { font: inherit; cursor: pointer; }
 /* ── Paywall / Locked state ── */
 .adv-locked-wrap {
   text-align: center;
-  padding: 32px 20px 60px;
+  padding: 40px 24px 72px;
 }
 .adv-locked-icon { font-size: 44px; margin-bottom: 14px; }
-.adv-locked-title { font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -.01em; margin-bottom: 8px; line-height: 1.35; }
-.adv-locked-sub { font-size: 14px; color: var(--text-dim); line-height: 1.6; max-width: 360px; margin-inline: auto; margin-bottom: 24px; }
-.adv-teaser-cards { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; text-align: left; }
+.adv-locked-title { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -.01em; margin-bottom: 12px; line-height: 1.35; }
+.adv-locked-sub { font-size: 14px; color: var(--text-dim); line-height: 1.7; max-width: 360px; margin-inline: auto; margin-bottom: 32px; }
+.adv-teaser-cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; text-align: left; }
 .adv-teaser-card {
-  background: var(--elevated); border-radius: 12px; padding: 14px 16px;
+  background: var(--elevated); border-radius: 14px; padding: 18px 20px;
   position: relative; overflow: hidden;
 }
-.adv-teaser-card-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
-.adv-teaser-card-body { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
+.adv-teaser-card-title { font-size: 13.5px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
+.adv-teaser-card-body { font-size: 12.5px; color: var(--text-dim); line-height: 1.55; }
 .adv-teaser-blur {
   position: absolute; inset: 0;
   background: linear-gradient(to right, transparent 25%, rgba(248,247,255,.97) 65%);
@@ -2075,9 +2075,9 @@ button { font: inherit; cursor: pointer; }
 }
 .adv-unlock-btn {
   display: block; width: 100%;
-  padding: 14px; background: var(--terra); color: #fff;
-  border: none; border-radius: 12px; font-size: 15px; font-weight: 700;
-  cursor: pointer; font-family: var(--sans); margin-bottom: 12px;
+  padding: 16px; background: var(--terra); color: #fff;
+  border: none; border-radius: 100px; font-size: 16px; font-weight: 700;
+  cursor: pointer; font-family: var(--sans); margin-bottom: 0;
   transition: opacity .15s;
 }
 @media (hover:hover) { .adv-unlock-btn:hover { opacity: .9; } }
@@ -2372,7 +2372,7 @@ button { font: inherit; cursor: pointer; }
 .adv-prenatal-intro { font-size: 12.5px; color: var(--text-dim); line-height: 1.4; margin-top: -4px; margin-bottom: 8px; }
 
 /* Age line */
-.adv-age-line { font-size: 14px; color: var(--text-mid); margin-bottom: 4px; }
+.adv-age-line { font-size: 14px; color: var(--text-mid); margin-bottom: 4px; padding: 0 4px; }
 .adv-age-line strong { color: var(--text); font-weight: 700; }
 
 /* Todos */
@@ -2591,7 +2591,7 @@ button { font: inherit; cursor: pointer; }
 
 /* Digest */
 .adv-age-line {
-  font-size: 15px; color: var(--text-dim); margin-bottom: 24px;
+  font-size: 15px; color: var(--text-dim); margin-bottom: 24px; padding: 0 4px;
 }
 .adv-age-line strong { color: var(--text); font-weight: 700; }
 
@@ -2688,11 +2688,11 @@ button { font: inherit; cursor: pointer; }
 
 /* Locked state: 2-column teaser cards on tablet */
 @media (min-width: 600px) {
-  .adv-locked-wrap { max-width: 480px; }
+  .adv-locked-wrap { max-width: 520px; }
   .adv-teaser-cards {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 12px;
   }
   .adv-teaser-cards .adv-teaser-card:last-child {
     grid-column: 1 / -1;
@@ -2701,10 +2701,10 @@ button { font: inherit; cursor: pointer; }
 
 /* Locked state: 3-column teaser cards on desktop */
 @media (min-width: 900px) {
-  .adv-locked-wrap { max-width: 560px; }
-  .adv-locked-title { font-size: 24px; }
-  .adv-locked-icon { font-size: 48px; }
-  .adv-teaser-cards { grid-template-columns: repeat(3, 1fr); }
+  .adv-locked-wrap { max-width: 620px; }
+  .adv-locked-title { font-size: 26px; }
+  .adv-locked-sub { font-size: 15px; }
+  .adv-teaser-cards { grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .adv-teaser-cards .adv-teaser-card:last-child { grid-column: auto; }
 }
 
@@ -3555,7 +3555,7 @@ button { font: inherit; cursor: pointer; }
   <!-- Hero header — always visible -->
   <div class="adv-tab-hero">
     <span class="adv-tab-hero-emoji">🌱</span>
-    <h2 class="adv-tab-hero-title">Development Advisor</h2>
+    <h2 class="adv-tab-hero-title">Scout</h2>
     <p class="adv-tab-hero-sub">Personalised milestones. Right on time.</p>
   </div>
 
@@ -3565,7 +3565,7 @@ button { font: inherit; cursor: pointer; }
     <div id="adv-locked" style="display:none">
       <div class="adv-locked-wrap">
         <div class="adv-locked-title">Know exactly what to do,<br>right now, for your child's age.</div>
-        <p class="adv-locked-sub">Personalised milestones from birth to age 10, backed by 100+ peer-reviewed sources. One purchase covers your whole Family Circle.</p>
+        <p class="adv-locked-sub">Personalised milestones from birth to age&nbsp;10, backed by 100+ peer-reviewed sources. One purchase covers your whole Family Circle.</p>
         <div class="adv-teaser-cards">
           <div class="adv-teaser-card">
             <div class="adv-teaser-card-title">🤱 First 24 hours: what to do, what to ask, what's normal</div>
@@ -3584,7 +3584,7 @@ button { font: inherit; cursor: pointer; }
           </div>
         </div>
         <button class="adv-unlock-btn" onclick="advShowUpsell()">Try Free for 7 Days</button>
-        <div style="text-align:center;font-size:11.5px;color:var(--text-dim);margin-top:6px;margin-bottom:4px">No card required. Cancel anytime.</div>
+        <div style="text-align:center;font-size:12px;color:var(--text-dim);margin-top:10px;margin-bottom:12px">No card required. Cancel anytime.</div>
         <button class="adv-gift-link" onclick="advShowGiftCode()">🎁 Have a gift code? Redeem it here</button>
       </div>
     </div>
@@ -3608,7 +3608,7 @@ button { font: inherit; cursor: pointer; }
 
 <!-- ── Upsell Modal ── -->
 <div class="adv-modal-overlay" id="adv-upsell-modal" style="display:none" onclick="if(event.target===this)advHideUpsell()">
-  <div class="adv-modal-sheet" role="dialog" aria-label="Unlock Development Advisor">
+  <div class="adv-modal-sheet" role="dialog" aria-label="Unlock Scout">
     <div class="adv-modal-handle"></div>
     <div class="adv-modal-close-bar"><button class="adv-modal-close" onclick="advHideUpsell()">✕</button></div>
     <div class="adv-modal-scroll">
@@ -3670,7 +3670,7 @@ button { font: inherit; cursor: pointer; }
       <div class="adv-gift-hero">
         <div class="adv-gift-emoji">🎁</div>
         <div class="adv-gift-h1">You've received a gift!</div>
-        <div class="adv-gift-sub">Someone who loves you purchased the Development Advisor as a gift. Enter your code below to activate it.</div>
+        <div class="adv-gift-sub">Someone who loves you purchased Scout as a gift. Enter your code below to activate it.</div>
       </div>
       <div class="adv-gift-body">
         <label class="adv-ob-label" for="adv-gift-input">Your gift code</label>
@@ -3825,12 +3825,12 @@ button { font: inherit; cursor: pointer; }
 
 <!-- ── Settings Modal ── -->
 <div class="adv-modal-overlay" id="adv-settings-modal" style="display:none" onclick="if(event.target===this)advHideSettings()">
-  <div class="adv-modal-sheet" role="dialog" aria-label="Development Advisor settings">
+  <div class="adv-modal-sheet" role="dialog" aria-label="Scout settings">
     <div class="adv-modal-handle"></div>
     <div class="adv-modal-close-bar"><button class="adv-modal-close" onclick="advHideSettings()">✕</button></div>
     <div class="adv-modal-scroll">
       <div class="adv-settings-head">
-        <div class="adv-settings-h1">Development Advisor</div>
+        <div class="adv-settings-h1">Scout</div>
         <div class="adv-settings-sub" id="adv-settings-plan-label">Active subscription</div>
       </div>
       <div class="adv-settings-section-label">Children (<span id="adv-child-count">0</span> of 3)</div>
@@ -3843,7 +3843,7 @@ button { font: inherit; cursor: pointer; }
       <div style="padding:0 20px 12px">
         <div style="background:rgba(110,78,214,.07);border-radius:12px;padding:13px 14px">
           <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px">👨‍👩‍👧 Everyone in your circle has access</div>
-          <div style="font-size:12px;color:var(--text-mid);line-height:1.45;margin-bottom:9px">All linked family members can view and interact with the Development Advisor. No extra charge. They join through your Family Circle code.</div>
+          <div style="font-size:12px;color:var(--text-mid);line-height:1.45;margin-bottom:9px">All linked family members can view and interact with Scout. No extra charge. They join through your Family Circle code.</div>
           <a href="profile.html#family" style="font-size:12px;color:var(--terra);font-weight:700">Manage Family Circle →</a>
         </div>
       </div>
@@ -3859,7 +3859,7 @@ button { font: inherit; cursor: pointer; }
       </div>
       <div class="adv-settings-section-label">Subscription</div>
       <div class="adv-sub-info-box">
-        <div class="adv-sub-info-title" id="adv-settings-sub-title">Development Advisor</div>
+        <div class="adv-sub-info-title" id="adv-settings-sub-title">Scout</div>
         <div class="adv-sub-info-body" id="adv-settings-sub-body"></div>
         <a href="mailto:support@getfamilyforce.com" style="font-size:12px;color:var(--terra);font-weight:700">Manage subscription →</a>
       </div>
@@ -4099,7 +4099,7 @@ button { font: inherit; cursor: pointer; }
     <div class="acc-group" style="margin-bottom:20px">
       <div class="acc-group-label">How it works</div>
       <div class="acc-group-card">
-        <div class="acc-cell"><span class="acc-cell-icon">🔗</span><div class="acc-cell-body"><div class="acc-cell-label">Share your link</div><div class="acc-cell-value">Send your code to anyone who could use the Advisor</div></div></div>
+        <div class="acc-cell"><span class="acc-cell-icon">🔗</span><div class="acc-cell-body"><div class="acc-cell-label">Share your link</div><div class="acc-cell-value">Send your code to anyone who could use Scout</div></div></div>
         <div class="acc-cell"><span class="acc-cell-icon">💳</span><div class="acc-cell-body"><div class="acc-cell-label">Friend subscribes</div><div class="acc-cell-value">They get 25% off — applied automatically at checkout</div></div></div>
         <div class="acc-cell"><span class="acc-cell-icon">💸</span><div class="acc-cell-body"><div class="acc-cell-label">You get paid</div><div class="acc-cell-value">Cash back clears after 30 days and pays out on the 15th</div></div></div>
       </div>
@@ -4145,7 +4145,7 @@ button { font: inherit; cursor: pointer; }
 
     <!-- Advisor (locked for free users) -->
     <div class="acc-group" id="notif-advisor-group">
-      <div class="acc-group-label">Advisor <span id="notif-advisor-lock" style="font-size:10px;color:var(--text-ghost);font-weight:400;letter-spacing:0;text-transform:none;margin-left:4px">· Subscribers only</span></div>
+      <div class="acc-group-label">Scout <span id="notif-advisor-lock" style="font-size:10px;color:var(--text-ghost);font-weight:400;letter-spacing:0;text-transform:none;margin-left:4px">· Subscribers only</span></div>
       <div class="acc-group-card">
         <div class="acc-cell" id="notif-milestone-cell">
           <span class="acc-cell-icon">🌱</span>
@@ -4283,7 +4283,7 @@ button { font: inherit; cursor: pointer; }
         <span class="st-col-arrow">▶</span>
       </div>
       <div class="st-col-body" id="rf-howit-body">
-        <div class="st-step"><div class="st-step-icon">🔗</div><div><div class="st-step-title">Share your link</div><div class="st-step-body">Send your referral code or link to a friend who could use the Development Advisor.</div></div></div>
+        <div class="st-step"><div class="st-step-icon">🔗</div><div><div class="st-step-title">Share your link</div><div class="st-step-body">Send your referral code or link to a friend who could use Scout.</div></div></div>
         <div class="st-step"><div class="st-step-icon">💳</div><div><div class="st-step-title">Friend subscribes</div><div class="st-step-body">They get 25% off their first year. The discount applies automatically at checkout.</div></div></div>
         <div class="st-step"><div class="st-step-icon">💸</div><div><div class="st-step-title">You get paid</div><div class="st-step-body">After their 30-day return window clears, your cash back moves to Available Balance and pays out on the 15th of each month.</div></div></div>
       </div>
@@ -4371,7 +4371,7 @@ button { font: inherit; cursor: pointer; }
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M12 22V12"/><path d="M12 12C12 7 7 4 3 5c0 5 3 9 9 7"/><path d="M12 12c0-5 5-8 9-7-1 5-4 9-9 7"/>
     </svg>
-    <span class="bnav-label">Advisor</span>
+    <span class="bnav-label">Scout</span>
   </button>
 
   <button class="bnav-btn" id="bnav-account" onclick="switchTab('settings')" aria-label="Settings">
@@ -5572,7 +5572,7 @@ function advValidateGiftCode(raw) {
   const gift = _DEMO_GIFT_CODES[code];
   if (gift) {
     document.getElementById('adv-gift-valid-detail').innerHTML =
-      `<strong>${gift.duration} Development Advisor</strong><br>Gifted by: ${gift.gifter} 💜<br>Valid for 12 months from activation.`;
+      `<strong>${gift.duration} Scout</strong><br>Gifted by: ${gift.gifter} 💜<br>Valid for 12 months from activation.`;
     valid.style.display = 'block';
     submit.disabled = false;
     submit.textContent = 'Activate Gift — 1 Year Free 🎉';
@@ -5782,7 +5782,7 @@ function accRenderSubscription() {
   const p = PLANS[plan];
   if (!p) {
     el.innerHTML = `<div class="acc-sub-free">
-      <div class="acc-sub-free-title">Unlock the Advisor</div>
+      <div class="acc-sub-free-title">Unlock Scout</div>
       <div class="acc-sub-free-sub">Week-by-week milestones and expert-backed guidance for your child's first 8 years.</div>
       <button class="earn-btn-primary" style="width:100%;padding:13px;font-size:14px" onclick="switchTab('advisor');advShowUpsell()">Try Free for 7 Days →</button>
     </div>`;
@@ -5790,7 +5790,7 @@ function accRenderSubscription() {
   }
   el.innerHTML = `<div class="acc-sub-hero">
     <div class="acc-sub-badge">${p.badge}</div>
-    <div class="acc-sub-name">Paid Plan: Development Advisor</div>
+    <div class="acc-sub-name">Paid Plan: Scout</div>
     <div class="acc-sub-detail">${p.price} · ${p.detail}</div>
     <div class="acc-sub-actions">
       <button class="acc-sub-btn manage">Manage</button>
@@ -5935,7 +5935,7 @@ function accInitChildren() {
   const limitNote = document.getElementById('acc-children-limit-note');
   if (limitNote) limitNote.style.display = atLimit ? 'block' : 'none';
   if (children.length === 0) {
-    listEl.innerHTML = '<div class="acc-cell"><div class="acc-cell-body"><div class="acc-cell-value">No children added yet. Add one to unlock the Advisor.</div></div></div>';
+    listEl.innerHTML = '<div class="acc-cell"><div class="acc-cell-body"><div class="acc-cell-value">No children added yet. Add one to unlock Scout.</div></div></div>';
     return;
   }
   listEl.innerHTML = children.map(c => `
@@ -6316,9 +6316,9 @@ function _stRenderSubscription() {
   const plan = localStorage.getItem('ff_advisor_plan') || 'none';
   const el   = document.getElementById('st-plan-body');
   const PLANS = {
-    annual:  { badge:'Annual plan',  name:'Paid Plan: Development Advisor', price:'$79.99 / year', detail:'Saves $39.89 vs monthly<br>Renews March 1, 2027' },
-    monthly: { badge:'Monthly plan', name:'Paid Plan: Development Advisor', price:'$9.99 / month', detail:'Cancel anytime<br>Next billing: April 1, 2026' },
-    gift:    { badge:'Gift access',  name:'Paid Plan: Development Advisor', price:'Gifted access', detail:'Valid until redemption period ends' },
+    annual:  { badge:'Annual plan',  name:'Paid Plan: Scout', price:'$79.99 / year', detail:'Saves $39.89 vs monthly<br>Renews March 1, 2027' },
+    monthly: { badge:'Monthly plan', name:'Paid Plan: Scout', price:'$9.99 / month', detail:'Cancel anytime<br>Next billing: April 1, 2026' },
+    gift:    { badge:'Gift access',  name:'Paid Plan: Scout', price:'Gifted access', detail:'Valid until redemption period ends' },
     none:    null,
   };
   const p = PLANS[plan];
@@ -6326,7 +6326,7 @@ function _stRenderSubscription() {
     el.innerHTML = `
       <div class="st-plan-badge">Free plan</div>
       <div class="st-plan-name">FamilyForce Free</div>
-      <div class="st-plan-detail">Access to courses only.<br>Upgrade to unlock the Development Advisor.</div>
+      <div class="st-plan-detail">Access to courses only.<br>Upgrade to unlock Scout.</div>
       <div class="st-plan-actions">
         <button class="st-text-btn primary" onclick="switchTab('advisor');advShowUpsell()">Try 7 days free →</button>
       </div>`;
@@ -6410,7 +6410,7 @@ function _stRenderChildren() {
   const addBtn   = document.getElementById('st-add-child-btn');
   addBtn.style.display = children.length < 3 ? 'inline-block' : 'none';
   if (children.length === 0) {
-    listEl.innerHTML = '<div style="font-size:13px;color:var(--text-dim);padding:12px 18px">No children added yet. Add one to unlock the Development Advisor.</div>';
+    listEl.innerHTML = '<div style="font-size:13px;color:var(--text-dim);padding:12px 18px">No children added yet. Add one to unlock Scout.</div>';
     return;
   }
   listEl.innerHTML = children.map(c => `
@@ -6709,7 +6709,7 @@ function advShowSettings() {
   const plan = localStorage.getItem(ADV_PLAN_KEY);
   const giftCode = localStorage.getItem('ff_advisor_gift_code');
   let planLabel = 'Active subscription';
-  let subTitle  = 'Development Advisor';
+  let subTitle  = 'Scout';
   let subBody   = '';
   if (plan === 'annual')  { planLabel = 'Annual plan · $79.99/yr'; subTitle = 'Annual Plan · $79.99/yr'; subBody = 'Renews automatically. To cancel, contact support.'; }
   if (plan === 'monthly') { planLabel = 'Monthly plan · $9.99/mo'; subTitle = 'Monthly Plan · $9.99/mo'; subBody = 'Renews monthly. To cancel, contact support.'; }
