@@ -4,7 +4,10 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const PRICE_ID     = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'
-const ADMIN_COUPON_MAP: Record<string, string> = { 'FRIEND25': 'bermxA88' }  // admin-only codes
+const ADMIN_COUPON_MAP: Record<string, string> = {
+  'FRIEND25':      'bermxA88',      // 25% off
+  'BABYSHOWER100': 'BABYSHOWER100', // 100% off — 1 year free gift
+}
 const REFERRAL_COUPON_ID = 'bermxA88'  // 25% off — applied for valid referral codes too
 
 const CORS = {
