@@ -5480,11 +5480,11 @@ function advisorInit() {
           ? 'Your trial ends tomorrow. Cancel anytime before then if you want to stop.'
           : 'Your trial ends in <strong>' + daysLeft + ' days</strong>. Cancel anytime before then.';
       banner.innerHTML =
-        '<div style="background:var(--elevated);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px">' +
-          '<span style="font-size:18px;flex-shrink:0">🌱</span>' +
-          '<div style="flex:1">' +
+        '<div style="background:var(--elevated);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin:0 0 16px;display:flex;align-items:flex-start;gap:10px;box-sizing:border-box;width:100%">' +
+          '<span style="font-size:18px;flex-shrink:0;line-height:1.4">🌱</span>' +
+          '<div style="flex:1;min-width:0">' +
             '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px">Scout trial active</div>' +
-            '<div style="font-size:12px;color:var(--text-mid);line-height:1.5">' + msg + '</div>' +
+            '<div style="font-size:12px;color:var(--text-mid);line-height:1.5;white-space:normal;word-wrap:break-word">' + msg + '</div>' +
           '</div>' +
         '</div>';
       banner.style.display = 'block';
