@@ -1719,6 +1719,7 @@ button { font: inherit; cursor: pointer; }
         clearLoading('Create account →');
         if (res.data && res.data.session) {
           // Email confirmation disabled — session available immediately
+          generateAndSaveReferralCode(res.data.session.user.id, email);
           if (typeof routeAfterSignup === 'function') routeAfterSignup();
           else window.location.href = 'dashboard.html';
         } else {
@@ -1822,6 +1823,7 @@ button { font: inherit; cursor: pointer; }
               var createdAt  = user.created_at ? new Date(user.created_at).getTime() : 0;
               var isNewUser  = (Date.now() - createdAt) < 30000;
               if (isNewUser) {
+                generateAndSaveReferralCode(user.id, user.email);
                 routeAfterSignup();
               } else {
                 window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
@@ -1870,6 +1872,28 @@ button { font: inherit; cursor: pointer; }
   };
 
   /* ── After successful signup: route based on saved intent ── */
+  /* ── Generate + save referral code for every new user ── */
+  window.generateAndSaveReferralCode = function(userId, email) {
+    var sb = window._supabaseClient;
+    if (!sb || !userId) return;
+    // Derive name prefix from email: take letters only before @, up to 6 chars
+    var prefix = (email || '').split('@')[0].replace(/[^a-zA-Z]/g, '').slice(0, 6).toUpperCase() || 'FF';
+    // 4 random alphanumeric chars (no confusable chars)
+    var chars  = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    var suffix = Array.from({length: 4}, function() {
+      return chars[Math.floor(Math.random() * chars.length)];
+    }).join('');
+    var code = prefix + '-' + suffix;
+    // Save to profiles — if collision, Supabase will return an error and we skip silently
+    sb.from('profiles').upsert({ id: userId, referral_code: code }, { onConflict: 'id', ignoreDuplicates: false })
+      .then(function(res) {
+        if (!res.error) {
+          localStorage.setItem('ff_referral_code', code);
+          localStorage.setItem('ff_advisor_referral', code); // keep legacy key in sync
+        }
+      });
+  };
+
   window.routeAfterSignup = function() {
     var intent = sessionStorage.getItem('ff_intent');
     if (intent === 'trial') {

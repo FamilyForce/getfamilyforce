@@ -3,8 +3,9 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const PRICE_ID   = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'
-const COUPON_MAP: Record<string, string> = { 'FRIEND25': 'bermxA88' }
+const PRICE_ID     = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'
+const ADMIN_COUPON_MAP: Record<string, string> = { 'FRIEND25': 'bermxA88' }  // admin-only codes
+const REFERRAL_COUPON_ID = 'bermxA88'  // 25% off — applied for valid referral codes too
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -97,10 +98,33 @@ Deno.serve(async (req: Request) => {
       'invoice_settings[default_payment_method]': paymentMethodId,
     })
 
-    // 5. Create subscription
-    step = 'subscription'
+    // 5. Validate promo/referral code
+    step = 'promo-validate'
     const normalised = (promoCode ?? '').toUpperCase().trim()
-    const couponId   = COUPON_MAP[normalised] ?? null
+    let   couponId: string | null = ADMIN_COUPON_MAP[normalised] ?? null
+    let   referrerUserId: string | null = null
+
+    if (!couponId && normalised) {
+      // Look up as a referral code in profiles table
+      const { data: referrerRows } = await sb
+        .from('profiles')
+        .select('id')
+        .eq('referral_code', normalised)
+        .limit(1)
+      if (referrerRows && referrerRows.length > 0) {
+        // Valid referral code — apply 25% discount
+        couponId     = REFERRAL_COUPON_ID
+        referrerUserId = referrerRows[0].id
+        // Don't allow self-referral
+        if (referrerUserId === user.id) {
+          couponId       = null
+          referrerUserId = null
+        }
+      }
+    }
+
+    // Create subscription
+    step = 'subscription'
 
     const subBody: Record<string, unknown> = {
       customer:          customerId,
@@ -137,6 +161,19 @@ Deno.serve(async (req: Request) => {
     }, { onConflict: 'user_id' })
 
     if (dbErr) console.error('[scout-subscribe] DB error:', dbErr.message)
+
+    // Record referral if a referral code was used
+    if (referrerUserId && normalised) {
+      step = 'referral-record'
+      const { error: refErr } = await sb.from('referrals').insert({
+        referrer_user_id: referrerUserId,
+        referred_user_id: user.id,
+        referral_code:    normalised,
+        discount_pct:     25,
+        status:           'pending',
+      })
+      if (refErr) console.error('[scout-subscribe] Referral record error:', refErr.message)
+    }
 
     return new Response(
       JSON.stringify({ ok: true, subscriptionId: subscription.id, trialEnd }),

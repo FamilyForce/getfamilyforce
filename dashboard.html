@@ -6044,10 +6044,65 @@ function accRemoveChild(id, name) {
 }
 
 /* Earn */
-function accInitEarn() {
-  const fmt  = n => '$' + n.toFixed(2);
-  const code = localStorage.getItem('ff_advisor_referral') || getAdvisorReferralCode();
+async function accInitEarn() {
+  const fmt     = n => '$' + n.toFixed(2);
+  // Prefer Supabase-stored code, fall back to localStorage
+  let   code    = localStorage.getItem('ff_referral_code') || localStorage.getItem('ff_advisor_referral') || 'Loading...';
   document.getElementById('earn-code').textContent = code;
+
+  // Load from Supabase for freshness
+  try {
+    const sb = window._supabaseClient;
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user?.id) {
+      const { data: profile } = await sb
+        .from('profiles')
+        .select('referral_code')
+        .eq('id', session.user.id)
+        .single();
+      if (profile?.referral_code) {
+        code = profile.referral_code;
+        localStorage.setItem('ff_referral_code',    code);
+        localStorage.setItem('ff_advisor_referral', code); // keep legacy key in sync
+        document.getElementById('earn-code').textContent = code;
+      }
+      // Load referral activity from Supabase referrals table
+      const { data: referrals } = await sb
+        .from('referrals')
+        .select('referred_user_id, referral_code, discount_pct, status, created_at')
+        .eq('referrer_user_id', session.user.id)
+        .order('created_at', { ascending: false });
+      if (referrals && referrals.length > 0) {
+        const earnPerReferral = 79.99 * 0.25;
+        const totalEarned = referrals.filter(r => r.status !== 'cancelled').length * earnPerReferral;
+        const pendingAmt  = referrals.filter(r => r.status === 'pending').length  * earnPerReferral;
+        const availAmt    = referrals.filter(r => r.status === 'credited').length * earnPerReferral;
+        document.getElementById('earn-total').textContent     = fmt(totalEarned);
+        document.getElementById('earn-pending').textContent   = fmt(pendingAmt);
+        document.getElementById('earn-available').textContent = fmt(availAmt);
+        document.getElementById('earn-feed').innerHTML = referrals.map(r => {
+          const date   = new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          const earned = r.status !== 'cancelled' ? earnPerReferral : 0;
+          const colors = { pending: '#D97706', credited: '#38A169', cancelled: 'var(--text-dim)' };
+          const labels = { pending: 'Pending', credited: 'Cleared', cancelled: 'Cancelled' };
+          return `<div class="earn-feed-row">
+            <div class="earn-feed-avatar">🌱</div>
+            <div style="flex:1;min-width:0">
+              <div class="earn-feed-name">Referral</div>
+              <div class="earn-feed-meta">Annual · ${date}</div>
+            </div>
+            <div class="earn-feed-right">
+              <div class="earn-feed-earned" style="color:${earned > 0 ? '#38A169' : 'var(--text-dim)'}">${earned > 0 ? '+' + fmt(earned) : '—'}</div>
+              <div class="earn-feed-status" style="color:${colors[r.status] || 'var(--text-dim)'}">${labels[r.status] || r.status}</div>
+            </div>
+          </div>`;
+        }).join('');
+        return; // skip mock data below
+      }
+    }
+  } catch(e) {
+    console.warn('[Earn] Supabase load error:', e);
+  }
   const total     = ST_REFERRALS.reduce((s,r) => s + (r.status!=='expired'?r.earned:0), 0);
   const pending   = ST_REFERRALS.filter(r=>r.status==='pending').reduce((s,r)=>s+r.earned,0);
   const available = ST_REFERRALS.filter(r=>r.status==='cleared').reduce((s,r)=>s+r.earned,0);
