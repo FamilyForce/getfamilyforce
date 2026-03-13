@@ -1707,8 +1707,9 @@ button { font: inherit; cursor: pointer; }
       }).then(function(res) {
         if (res.error) {
           clearLoading('Create account →');
-          if (res.error.message.toLowerCase().includes('already')) {
-            showBanner('An account with that email already exists. Sign in instead.');
+          var errMsg = res.error.message.toLowerCase();
+          if (errMsg.includes('already') || errMsg.includes('registered') || errMsg.includes('taken') || errMsg.includes('exist')) {
+            showBanner('That email is already registered. <a href="#" onclick="signinSwitchMode(\'sign-in\');return false" style="color:inherit;font-weight:700;text-decoration:underline">Sign in instead →</a>');
           } else {
             showBanner(res.error.message || 'Something went wrong. Please try again.');
           }
