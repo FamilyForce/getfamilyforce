@@ -1281,14 +1281,14 @@ button { font: inherit; cursor: pointer; }
           <button class="intent-card" onclick="handleIntent('trial')" aria-label="Try Scout free for 7 days">
             <div class="intent-card-icon">🌱</div>
             <div class="intent-card-text">
-              <div class="intent-card-title">Try Scout free for 7 days</div>
-              <div class="intent-card-desc">Age-specific developmental windows for your child. Then $79.99/year. Cancel anytime.</div>
+              <div class="intent-card-title">Try Scout free</div>
+              <div class="intent-card-desc">Age-specific developmental windows for your child. Free until their next birthday. No credit card needed.</div>
             </div>
             <div class="intent-card-arrow">›</div>
           </button>
 
         </div>
-        <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:18px">All subscriptions start with a 7-day free trial.</p>
+        <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:18px">Free until your child's next birthday. No credit card needed.</p>
       </div>
     </div>
 
@@ -1313,12 +1313,13 @@ button { font: inherit; cursor: pointer; }
             <select class="step-input" id="child-gender">
               <option value="girl">Girl</option>
               <option value="boy">Boy</option>
+              <option value="other">Prefer not to say</option>
             </select>
           </div>
         </div>
-        <button class="step-btn-primary" onclick="goToPayment()">Continue to payment →</button>
+        <button class="step-btn-primary" id="start-trial-btn" onclick="startFreeTrial()">Start my free trial →</button>
         <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">Not ready? <a href="dashboard.html" style="color:var(--terra)">Browse the free library instead →</a></p>
-        <p style="font-size:11px;color:var(--text-ghost);text-align:center;margin-top:6px">You can update child details anytime in your profile.</p>
+        <p style="font-size:11px;color:var(--text-ghost);text-align:center;margin-top:6px">No credit card. Free until their next birthday. You can update child details anytime.</p>
       </div>
     </div>
 
@@ -1919,6 +1920,89 @@ button { font: inherit; cursor: pointer; }
     }
   };
 
+  /* ── Start free trial (no credit card) — Stream 3B ── */
+  window.startFreeTrial = function() {
+    var nameEl   = document.getElementById('child-name');
+    var dobEl    = document.getElementById('child-dob');
+    var genderEl = document.getElementById('child-gender');
+    var btn      = document.getElementById('start-trial-btn');
+    var name     = nameEl.value.trim();
+    var dob      = dobEl.value;
+    var gender   = genderEl.value || 'other';
+
+    // Reset field borders
+    nameEl.style.borderColor = '';
+    dobEl.style.borderColor  = '';
+
+    // Validate
+    if (!name) {
+      nameEl.focus();
+      nameEl.style.borderColor = '#EF4444';
+      return;
+    }
+    if (!dob) {
+      dobEl.focus();
+      dobEl.style.borderColor = '#EF4444';
+      return;
+    }
+
+    // Cache locally
+    try {
+      sessionStorage.setItem('ff_child_name',   name);
+      sessionStorage.setItem('ff_child_dob',    dob);
+      sessionStorage.setItem('ff_child_gender', gender);
+    } catch(_) {}
+
+    // Disable button and show loading state
+    if (btn) { btn.disabled = true; btn.textContent = 'Setting up your trial…'; }
+
+    var sb = window._supabaseClient;
+    if (!sb) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Start my free trial →'; }
+      return;
+    }
+
+    sb.auth.getSession().then(function(res) {
+      var session = res.data && res.data.session;
+      if (!session) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Start my free trial →'; }
+        return;
+      }
+
+      fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-trial-start', {
+        method: 'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': 'Bearer ' + session.access_token,
+        },
+        body: JSON.stringify({
+          childName:   name,
+          childDob:    dob,
+          childGender: gender,
+        }),
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (!data.ok) {
+          console.error('[startFreeTrial] Edge function error:', data.error);
+          if (btn) { btn.disabled = false; btn.textContent = 'Start my free trial →'; }
+          return;
+        }
+        // Cache child ID for dashboard
+        try {
+          sessionStorage.setItem('ff_child_id',    data.childId  || '');
+          sessionStorage.setItem('ff_trial_end',   data.trialEnd || '');
+        } catch(_) {}
+        // Show success step
+        onPaymentSuccess();
+      })
+      .catch(function(e) {
+        console.error('[startFreeTrial] Network error:', e);
+        if (btn) { btn.disabled = false; btn.textContent = 'Start my free trial →'; }
+      });
+    });
+  };
+
   /* ── Go from child setup to payment ── */
   window.goToPayment = function() {
     var nameEl   = document.getElementById('child-name');
@@ -2212,7 +2296,7 @@ button { font: inherit; cursor: pointer; }
     var sub       = document.getElementById('success-sub');
     if (icon)    icon.textContent    = '🌱';
     if (heading) heading.textContent = 'Your free trial has started!';
-    if (sub)     sub.textContent     = 'Scout is setting up ' + childName + '\'s dashboard. Your card won\'t be charged for 7 days.';
+    if (sub)     sub.textContent     = 'Check your email — we just sent ' + childName + '\'s first digest. Your free trial runs until their next birthday.';
     showStep('success');
   };
 
