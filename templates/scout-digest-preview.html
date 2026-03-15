@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<!--
+  FamilyForce Scout — Digest Email Template (4A)
+  Static preview with sample data. Open in browser to review.
+  The buildDigestEmail() function in scout-digest/index.ts generates
+  the live version of this template with real data.
+
+  Sections:
+    1. Preheader (hidden)
+    2. Header — FamilyForce Scout wordmark
+    3. Hero — child name + age
+    4. CLOSING SOON section (red-orange, only if windows closing ≤4 weeks)
+    5. THIS MONTH section (main windows)
+    6. COMING UP section (preview only, if any)
+    7. Don't worry about this strip
+    8. Dashboard CTA
+    9. What you marked done (active track only)
+   10. Calendar note
+   11. Jack's signature
+   12. Footer
+
+  Email client notes:
+    - Table-based layout for Outlook compatibility
+    - All CSS inline
+    - No CSS Grid or Flexbox
+    - Border-radius not supported in Outlook — use MSO VML for buttons
+    - max-width 600px desktop, fluid on mobile
+    - Preheader text: hidden 0px div
+-->
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="x-apple-disable-message-reformatting">
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <title>Oliver turns 9 months — 3 weeks left on crawling</title>
+  <style>
+    /* Reset */
+    body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    img { -ms-interpolation-mode: bicubic; border: 0; outline: none; text-decoration: none; }
+    body { margin: 0; padding: 0; background: #F5F3FF; font-family: 'Outfit', Arial, sans-serif; }
+    /* Responsive */
+    @media screen and (max-width: 600px) {
+      .email-container { width: 100% !important; }
+      .stack-column { display: block !important; width: 100% !important; }
+      .mobile-padding { padding: 16px !important; }
+      h1.hero { font-size: 22px !important; }
+    }
+    /* Dark mode — invert only text and backgrounds, preserve brand purple */
+    @media (prefers-color-scheme: dark) {
+      body { background: #1A1A2E !important; }
+      .email-bg { background: #1A1A2E !important; }
+      .email-card { background: #22223B !important; border-color: #3A3A5C !important; }
+      .text-dark { color: #F0EEF8 !important; }
+      .text-mid { color: #B0AECC !important; }
+      .text-dim { color: #8A87AA !important; }
+      .section-bg { background: #2A2A45 !important; border-color: #3A3A5C !important; }
+      .cta-box { background: #2A1F6B !important; }
+      .done-box { background: #0F2A1A !important; }
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#F5F3FF">
+
+  <!-- ═══ Preheader (invisible preview text) ═══ -->
+  <div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">
+    Oliver turns 9 months. 3 weeks left on crawling. 7 open windows this month.&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌
+  </div>
+
+  <!-- ═══ Outer wrapper ═══ -->
+  <table class="email-bg" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F3FF">
+    <tr>
+      <td align="center" style="padding:24px 12px 40px">
+
+        <!-- ═══ Email container (600px) ═══ -->
+        <table class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">
+
+          <!-- ─── Header: wordmark ─────────────────────────────────────── -->
+          <tr>
+            <td style="padding:0 0 20px">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td>
+                    <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;font-weight:700;color:#6E4ED6;letter-spacing:.12em;text-transform:uppercase;margin:0">
+                      FamilyForce Scout
+                    </p>
+                  </td>
+                  <td align="right">
+                    <p class="text-dim" style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;margin:0">
+                      Month 9
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- ─── Hero ─────────────────────────────────────────────────── -->
+          <tr>
+            <td class="email-card" style="background:#FFFFFF;border-radius:16px;padding:28px;margin-bottom:16px">
+              <p class="text-dim" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 6px">
+                Today · March 15, 2026
+              </p>
+              <h1 class="hero text-dark" style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:400;color:#1D1D1F;margin:0 0 10px;line-height:1.3">
+                Oliver turns 9 months today.
+              </h1>
+              <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:15px;color:#5C5960;margin:0;line-height:1.6">
+                7 developmental windows are open. Here are the 4 you need to focus on this month.
+              </p>
+            </td>
+          </tr>
+
+          <tr><td style="height:12px"></td></tr>
+
+          <!-- ─── CLOSING SOON section ──────────────────────────────────── -->
+          <tr>
+            <td class="section-bg" style="background:#FFF5F5;border:1.5px solid #FECACA;border-radius:16px;padding:20px 20px 8px">
+
+              <!-- Section header -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:16px">
+                <tr>
+                  <td>
+                    <span style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#DC2626;letter-spacing:.1em;text-transform:uppercase">
+                      ⚠️ Closing soon
+                    </span>
+                    <p class="text-dim" style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;margin:2px 0 0">
+                      These windows close in the next 3 weeks. Do not wait.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Window card: Crawling -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px">
+                <tr>
+                  <td class="email-card" style="background:#FFFFFF;border:1px solid #FECACA;border-radius:12px;padding:18px">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td>
+                          <span style="display:inline-block;background:#FEE2E2;color:#DC2626;font-family:'Outfit',Arial,sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase">
+                            Clinical · 3 weeks left
+                          </span>
+                        </td>
+                      </tr>
+                      <tr><td style="height:8px"></td></tr>
+                      <tr>
+                        <td>
+                          <h3 class="text-dark" style="font-family:'Outfit',Arial,sans-serif;font-size:16px;font-weight:700;color:#1D1D1F;margin:0 0 8px">
+                            Crawling or alternative mobility
+                          </h3>
+                          <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 10px;line-height:1.6">
+                            By 9 months most babies are moving — crawling, bottom-shuffling, or rolling to get places. Moving builds the cross-body coordination that feeds language and problem-solving.
+                          </p>
+                          <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:600;color:#1D1D1F;margin:0 0 6px">
+                            What to do this week
+                          </p>
+                          <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0 0 10px;line-height:1.6">
+                            Put a toy just out of reach on a firm surface. Tummy time twice a day, 10 minutes each. If no movement by 9.5 months, mention it at your next pediatrician visit.
+                          </p>
+                          <a href="https://getfamilyforce.com/scout-dashboard" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#6E4ED6;font-weight:600;text-decoration:none">
+                            See this window in your tracker →
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <tr><td style="height:12px"></td></tr>
+
+          <!-- ─── THIS MONTH section ─────────────────────────────────────── -->
+          <tr>
+            <td class="section-bg" style="background:#FFFFFF;border:1.5px solid #E5E2EC;border-radius:16px;padding:20px 20px 8px">
+
+              <!-- Section header -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:16px">
+                <tr>
+                  <td>
+                    <span class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:600;color:#5C5960;letter-spacing:.1em;text-transform:uppercase">
+                      This month
+                    </span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Window card: Object permanence -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px">
+                <tr>
+                  <td class="email-card" style="background:#FAFAFA;border:1px solid #E5E2EC;border-radius:12px;padding:18px">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td>
+                          <span style="display:inline-block;background:#EFF6FF;color:#2563EB;font-family:'Outfit',Arial,sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase">
+                            Screening
+                          </span>
+                        </td>
+                      </tr>
+                      <tr><td style="height:8px"></td></tr>
+                      <tr>
+                        <td>
+                          <h3 class="text-dark" style="font-family:'Outfit',Arial,sans-serif;font-size:16px;font-weight:700;color:#1D1D1F;margin:0 0 8px">
+                            Object permanence
+                          </h3>
+                          <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 10px;line-height:1.6">
+                            Oliver now knows things exist even when he cannot see them. This is a major cognitive leap — the foundation for memory, anticipation, and eventually language.
+                          </p>
+                          <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:600;color:#1D1D1F;margin:0 0 6px">
+                            What to do this week
+                          </p>
+                          <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0 0 10px;line-height:1.6">
+                            Hide a toy under a blanket while he watches. Let him find it. Repeat. Peek-a-boo is not just a game — it is practice.
+                          </p>
+                          <a href="https://getfamilyforce.com/scout-dashboard" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#6E4ED6;font-weight:600;text-decoration:none">
+                            See this window in your tracker →
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Window card: Pincer grasp -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px">
+                <tr>
+                  <td class="email-card" style="background:#FAFAFA;border:1px solid #E5E2EC;border-radius:12px;padding:18px">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td>
+                          <span style="display:inline-block;background:#F5F3FF;color:#6E4ED6;font-family:'Outfit',Arial,sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase">
+                            Advisory
+                          </span>
+                        </td>
+                      </tr>
+                      <tr><td style="height:8px"></td></tr>
+                      <tr>
+                        <td>
+                          <h3 class="text-dark" style="font-family:'Outfit',Arial,sans-serif;font-size:16px;font-weight:700;color:#1D1D1F;margin:0 0 8px">
+                            Pincer grasp emerging
+                          </h3>
+                          <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 10px;line-height:1.6">
+                            The shift from palmar to thumb-index grip. Feeds self-feeding, tool use, and eventually writing. Most babies develop this between 9 and 12 months.
+                          </p>
+                          <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:600;color:#1D1D1F;margin:0 0 6px">
+                            What to do this week
+                          </p>
+                          <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0 0 10px;line-height:1.6">
+                            Put small soft foods on the tray — peas, banana pieces, small pasta. Let him work for it. Do not help. The struggle is the point.
+                          </p>
+                          <a href="https://getfamilyforce.com/scout-dashboard" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#6E4ED6;font-weight:600;text-decoration:none">
+                            See this window in your tracker →
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Window card: Stranger anxiety -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px">
+                <tr>
+                  <td class="email-card" style="background:#FAFAFA;border:1px solid #E5E2EC;border-radius:12px;padding:18px">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td>
+                          <span style="display:inline-block;background:#F5F3FF;color:#6E4ED6;font-family:'Outfit',Arial,sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase">
+                            Advisory
+                          </span>
+                        </td>
+                      </tr>
+                      <tr><td style="height:8px"></td></tr>
+                      <tr>
+                        <td>
+                          <h3 class="text-dark" style="font-family:'Outfit',Arial,sans-serif;font-size:16px;font-weight:700;color:#1D1D1F;margin:0 0 8px">
+                            Stranger anxiety peaks
+                          </h3>
+                          <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 10px;line-height:1.6">
+                            Healthy sign that Oliver has formed strong attachments. He knows who matters to him — and reacts when unfamiliar people get too close.
+                          </p>
+                          <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:600;color:#1D1D1F;margin:0 0 6px">
+                            What to do this week
+                          </p>
+                          <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0 0 10px;line-height:1.6">
+                            Do not force contact with unfamiliar people. Stay visible when a stranger approaches. Let him warm up on his terms. Tell grandparents: it is not personal, it is neuroscience.
+                          </p>
+                          <a href="https://getfamilyforce.com/scout-dashboard" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#6E4ED6;font-weight:600;text-decoration:none">
+                            See this window in your tracker →
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <tr><td style="height:12px"></td></tr>
+
+          <!-- ─── COMING UP section ──────────────────────────────────────── -->
+          <tr>
+            <td class="section-bg" style="background:#FAFAFA;border:1.5px solid #E5E2EC;border-radius:16px;padding:20px 20px 12px">
+
+              <!-- Section header -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:14px">
+                <tr>
+                  <td>
+                    <span class="text-dim" style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:600;color:#8A879A;letter-spacing:.1em;text-transform:uppercase">
+                      Coming up
+                    </span>
+                    <p class="text-dim" style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;margin:2px 0 0">
+                      Opens in the next few weeks. No action needed yet.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px">
+                <tr>
+                  <td style="padding:10px 0;border-top:1px solid #EEECF5">
+                    <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0">
+                      First words (babbling with intent) — opens at 10 months
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 0;border-top:1px solid #EEECF5">
+                    <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0">
+                      Pulling to stand — opens at 10 months
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <tr><td style="height:12px"></td></tr>
+
+          <!-- ─── Don't worry about this ─────────────────────────────────── -->
+          <tr>
+            <td style="background:#F9F8FD;border:1.5px solid #E5E2EC;border-radius:16px;padding:20px">
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#8A879A;letter-spacing:.1em;text-transform:uppercase;margin:0 0 12px">
+                Don't worry about this
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding:0 0 10px">
+                    <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6">
+                      <strong style="color:#1D1D1F">Walking before 12 months.</strong> Early walkers are not more advanced. Most babies walk between 9 and 15 months. Both ends of that range are completely normal.
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="border-top:1px solid #EEECF5;padding:10px 0 0">
+                    <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6">
+                      <strong style="color:#1D1D1F">Not waving bye-bye yet.</strong> Imitative gestures like waving typically emerge between 9 and 12 months. Oliver is right in the window.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr><td style="height:12px"></td></tr>
+
+          <!-- ─── Dashboard CTA ─────────────────────────────────────────── -->
+          <tr>
+            <td class="cta-box" style="background:#F0EBFF;border-radius:16px;padding:24px;text-align:center">
+              <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 6px">
+                3 more windows are open this month.
+              </p>
+              <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0 0 16px">
+                Mark windows done. Add notes. Personalise your next email.
+              </p>
+              <!-- Outlook VML button -->
+              <!--[if mso]>
+              <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+                href="https://getfamilyforce.com/scout-dashboard"
+                style="height:44px;v-text-anchor:middle;width:240px;" arcsize="50%"
+                stroke="f" fillcolor="#6E4ED6">
+                <w:anchorlock/>
+                <center style="color:#ffffff;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;">See all Oliver's windows →</center>
+              </v:roundrect>
+              <![endif]-->
+              <!--[if !mso]><!-->
+              <a href="https://getfamilyforce.com/scout-dashboard"
+                style="display:inline-block;background:#6E4ED6;color:#FFFFFF;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;padding:12px 28px;border-radius:100px;text-decoration:none;mso-hide:all">
+                See all Oliver's windows →
+              </a>
+              <!--<![endif]-->
+            </td>
+          </tr>
+
+          <tr><td style="height:12px"></td></tr>
+
+          <!-- ─── What you marked done (active track) ───────────────────── -->
+          <tr>
+            <td class="done-box" style="background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:16px;padding:18px">
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#166534;letter-spacing:.1em;text-transform:uppercase;margin:0 0 12px">
+                What you marked done last month
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding:0 0 6px">
+                    <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#166534;margin:0">
+                      ✅ Solid food introduction — first tastes
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:0 0 6px">
+                    <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#166534;margin:0">
+                      ✅ Sitting without support
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr><td style="height:12px"></td></tr>
+
+          <!-- ─── Calendar note ─────────────────────────────────────────── -->
+          <tr>
+            <td style="border-left:3px solid #6E4ED6;padding:12px 16px;background:#F9F8FD;border-radius:0 8px 8px 0">
+              <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6">
+                📅 A calendar event for April 15 is attached to this email. Accept it and a 7-day reminder will fire before Oliver's next windows close.
+              </p>
+            </td>
+          </tr>
+
+          <tr><td style="height:32px"></td></tr>
+
+          <!-- ─── Jack's signature ──────────────────────────────────────── -->
+          <tr>
+            <td>
+              <p class="text-dark" style="font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1D1D1F;margin:0 0 2px">
+                Jack Hartley
+              </p>
+              <p class="text-dim" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 6px">
+                Dad of two · Founder, FamilyForce
+              </p>
+              <p class="text-mid" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6;font-style:italic">
+                Got it wrong with First Son. Got it right with Second Son in three days. This is what changed.
+              </p>
+            </td>
+          </tr>
+
+          <tr><td style="height:32px"></td></tr>
+
+          <!-- ─── Footer ────────────────────────────────────────────────── -->
+          <tr>
+            <td style="border-top:1px solid #E5E2EC;padding-top:20px">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td>
+                    <p class="text-dim" style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0 0 4px">
+                      FamilyForce Scout ·
+                      <a href="https://getfamilyforce.com" style="color:#8A879A;text-decoration:none">getfamilyforce.com</a>
+                    </p>
+                    <p class="text-dim" style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0">
+                      You're receiving this because you signed up for Scout. ·
+                      <a href="https://getfamilyforce.com/scout-dashboard/settings" style="color:#8A879A;text-decoration:none">Email preferences</a>
+                      ·
+                      <a href="https://getfamilyforce.com/unsubscribe?user=USER_ID" style="color:#8A879A;text-decoration:none">Unsubscribe</a>
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+        <!-- /email-container -->
+
+      </td>
+    </tr>
+  </table>
+  <!-- /outer wrapper -->
+
+</body>
+</html>

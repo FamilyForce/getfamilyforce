@@ -96,6 +96,57 @@ function buildSubjectLine(childName: string, ageMonths: number, aboveFold: Miles
   return `${childName} turns ${ageMonths} months today. Here is what is open.`
 }
 
+// ─── Email HTML helpers ───────────────────────────────────────────────────────
+function windowCard(w: MilestoneWindow, ageWeeks: number, dashboardUrl: string, cardBg: string, borderColor: string): string {
+  const closingWeeksLeft = w.close_age_weeks - ageWeeks
+  const isClosing        = closingWeeksLeft <= 4
+  const urgencyBg  = { clinical: '#FEE2E2', screening: '#EFF6FF', advisory: '#F5F3FF' }
+  const urgencyFg  = { clinical: '#DC2626', screening: '#2563EB', advisory: '#6E4ED6' }
+  const urgencyLbl = { clinical: 'Clinical', screening: 'Screening', advisory: 'Advisory' }
+  const bg  = urgencyBg[w.urgency]  ?? '#F5F3FF'
+  const fg  = urgencyFg[w.urgency]  ?? '#6E4ED6'
+  const lbl = urgencyLbl[w.urgency] ?? 'Advisory'
+  const badge = isClosing
+    ? `${lbl} · ${closingWeeksLeft} week${closingWeeksLeft === 1 ? '' : 's'} left`
+    : lbl
+
+  const whatToDo = w.what_to_do
+    ? `<tr><td style="height:10px"></td></tr>
+       <tr><td><p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:700;color:#1D1D1F;margin:0 0 4px">What to do this week</p>
+       <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6">${w.what_to_do}</p></td></tr>`
+    : ''
+
+  const playbook = w.playbook_link
+    ? `<tr><td style="height:8px"></td></tr>
+       <tr><td><a href="${dashboardUrl}" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#6E4ED6;font-weight:600;text-decoration:none">See full guide →</a></td></tr>`
+    : `<tr><td style="height:8px"></td></tr>
+       <tr><td><a href="${dashboardUrl}" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#6E4ED6;font-weight:600;text-decoration:none">See this window in your tracker →</a></td></tr>`
+
+  return `
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px">
+    <tr>
+      <td style="background:${cardBg};border:1px solid ${borderColor};border-radius:12px;padding:18px">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td>
+              <span style="display:inline-block;background:${bg};color:${fg};font-family:'Outfit',Arial,sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase">${badge}</span>
+            </td>
+          </tr>
+          <tr><td style="height:8px"></td></tr>
+          <tr>
+            <td>
+              <h3 style="font-family:'Outfit',Arial,sans-serif;font-size:16px;font-weight:700;color:#1D1D1F;margin:0 0 6px">${w.title}</h3>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0;line-height:1.6">${w.why_it_matters}</p>
+            </td>
+          </tr>
+          ${whatToDo}
+          ${playbook}
+        </table>
+      </td>
+    </tr>
+  </table>`
+}
+
 // ─── Email HTML ───────────────────────────────────────────────────────────────
 function buildDigestEmail(opts: {
   childName:        string
@@ -103,122 +154,214 @@ function buildDigestEmail(opts: {
   ageMonths:        number
   aboveFold:        MilestoneWindow[]
   allWindowCount:   number
-  completedWindows: Array<{ title: string }>   // 3I: "what you've done" section
+  completedWindows: Array<{ title: string }>
   nextEventDate:    Date
   dashboardUrl:     string
   siteUrl:          string
   userId:           string
+  ageWeeks:         number
 }): string {
   const { childName, ageMonths, aboveFold, allWindowCount, completedWindows,
-          nextEventDate, dashboardUrl, siteUrl, userId } = opts
+          nextEventDate, dashboardUrl, siteUrl, userId, ageWeeks } = opts
 
   const nextMonthName = nextEventDate.toLocaleDateString('en-US', {
     month: 'long', day: 'numeric', timeZone: 'UTC'
   })
 
-  const urgencyColors = { clinical: '#DC2626', screening: '#2563EB', advisory: '#6B7280' }
-  const urgencyLabels = { clinical: 'Clinical', screening: 'Screening', advisory: 'Advisory' }
+  const todayStr = new Date().toLocaleDateString('en-US', {
+    month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
+  })
 
-  const windowRows = aboveFold.map(w => {
-    const ageWeeks  = Math.round((w.open_age_weeks + w.close_age_weeks) / 2)
-    const isClosing = w.close_age_weeks - ageWeeks <= 4
-    const color     = urgencyColors[w.urgency] ?? urgencyColors.advisory
-    const label     = urgencyLabels[w.urgency] ?? 'Advisory'
+  // Section split: closing soon (<= 4 weeks), this month, coming up (not yet open but within 8 wks)
+  const closingSoon  = aboveFold.filter(w => w.close_age_weeks - ageWeeks <= 4)
+  const thisMonth    = aboveFold.filter(w => w.close_age_weeks - ageWeeks > 4)
 
-    const playbook = w.playbook_link
-      ? `<p style="margin:8px 0 0;font-size:13px;color:#6E4ED6">Free guide: <a href="https://${w.playbook_link}" style="color:#6E4ED6">${w.playbook_link.split('/').pop()?.replace(/-/g, ' ')}</a> →</p>`
-      : ''
+  // Preheader text
+  const preheader = closingSoon.length > 0
+    ? `${childName} turns ${ageMonths} months. ${closingSoon[0].close_age_weeks - ageWeeks} weeks left on ${closingSoon[0].title.toLowerCase()}. ${allWindowCount} open windows this month.`
+    : `${childName} turns ${ageMonths} months. ${allWindowCount} developmental windows are open right now.`
 
-    return `
+  // Collect "don't worry" items from windows that have them
+  const dontWorryItems = aboveFold
+    .filter(w => w.what_not_to_worry)
+    .map(w => `<tr>
+      <td style="padding:10px 0;border-top:1px solid #EEECF5">
+        <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6">${w.what_not_to_worry}</p>
+      </td>
+    </tr>`)
+    .slice(0, 2)
+
+  const closingSoonSection = closingSoon.length > 0 ? `
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px">
     <tr>
-      <td style="background:#FFFFFF;border:1px solid #E5E2EC;border-radius:12px;padding:20px;margin-bottom:12px;display:block">
-        <span style="display:inline-block;background:${color}1A;color:${color};font-size:11px;font-weight:600;padding:2px 8px;border-radius:100px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px">${label}${isClosing ? ' · Closing soon' : ''}</span>
-        <h3 style="font-family:'Outfit',Arial,sans-serif;font-size:16px;font-weight:600;color:#1D1D1F;margin:0 0 8px">${w.title}</h3>
-        <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0;line-height:1.6">${w.why_it_matters.split('. ').slice(0, 2).join('. ')}.</p>
-        ${playbook}
-        <p style="margin:12px 0 0"><a href="${dashboardUrl}" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#6E4ED6;font-weight:500">Read what to do →</a></p>
+      <td style="background:#FFF5F5;border:1.5px solid #FECACA;border-radius:16px;padding:20px 20px 10px">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:16px">
+          <tr>
+            <td>
+              <span style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#DC2626;letter-spacing:.1em;text-transform:uppercase">⚠️ Closing soon</span>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;margin:2px 0 0">These windows close in the next few weeks. Do not wait.</p>
+            </td>
+          </tr>
+        </table>
+        ${closingSoon.map(w => windowCard(w, ageWeeks, dashboardUrl, '#FFFFFF', '#FECACA')).join('')}
       </td>
     </tr>
-    <tr><td style="height:12px"></td></tr>`
-  }).join('')
+  </table>` : ''
+
+  const thisMonthSection = thisMonth.length > 0 ? `
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px">
+    <tr>
+      <td style="background:#FFFFFF;border:1.5px solid #E5E2EC;border-radius:16px;padding:20px 20px 10px">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:16px">
+          <tr>
+            <td>
+              <span style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:600;color:#5C5960;letter-spacing:.1em;text-transform:uppercase">This month</span>
+            </td>
+          </tr>
+        </table>
+        ${thisMonth.map(w => windowCard(w, ageWeeks, dashboardUrl, '#FAFAFA', '#E5E2EC')).join('')}
+      </td>
+    </tr>
+  </table>` : ''
+
+  const dontWorrySection = dontWorryItems.length > 0 ? `
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px">
+    <tr>
+      <td style="background:#F9F8FD;border:1.5px solid #E5E2EC;border-radius:16px;padding:20px">
+        <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#8A879A;letter-spacing:.1em;text-transform:uppercase;margin:0 0 0">Don't worry about this</p>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+          ${dontWorryItems.join('')}
+        </table>
+      </td>
+    </tr>
+  </table>` : ''
+
+  const completedSection = completedWindows.length > 0 ? `
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px">
+    <tr>
+      <td style="background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:16px;padding:18px">
+        <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#166534;letter-spacing:.1em;text-transform:uppercase;margin:0 0 12px">What you marked done last month</p>
+        ${completedWindows.map(w => `<p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#166534;margin:0 0 6px">✅ ${w.title}</p>`).join('')}
+      </td>
+    </tr>
+  </table>` : ''
+
+  const remainingCount = allWindowCount - aboveFold.length
+  const ctaText = remainingCount > 0
+    ? `${remainingCount} more window${remainingCount === 1 ? '' : 's'} are open this month.`
+    : `See all of ${childName}'s open windows.`
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="light">
+  <meta name="x-apple-disable-message-reformatting">
+  <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
   <title>${childName} turns ${ageMonths} months</title>
+  <style>
+    body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+    table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}
+    body{margin:0;padding:0;background:#F5F3FF;font-family:'Outfit',Arial,sans-serif}
+    @media (prefers-color-scheme:dark){
+      body,.email-bg{background:#1A1A2E!important}
+      .email-card{background:#22223B!important;border-color:#3A3A5C!important}
+      .text-dark{color:#F0EEF8!important}
+      .text-mid{color:#B0AECC!important}
+    }
+  </style>
 </head>
-<body style="margin:0;padding:0;background:#FAFAFA;font-family:'Outfit',Arial,sans-serif">
-<div style="max-width:600px;margin:0 auto;padding:24px 16px">
+<body style="margin:0;padding:0;background:#F5F3FF">
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px">
+  <!-- Preheader -->
+  <div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">${preheader}&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;</div>
+
+  <table class="email-bg" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F3FF">
     <tr>
-      <td>
-        <p style="font-size:13px;color:#8A879A;margin:0 0 8px">FamilyForce Scout</p>
-        <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:400;color:#1D1D1F;margin:0 0 8px;line-height:1.3">${childName} turns ${ageMonths} months today.</h1>
-        <p style="font-size:15px;color:#5C5960;margin:0">${allWindowCount} developmental windows are open right now. Here are the ${aboveFold.length} you need to know about this month.</p>
+      <td align="center" style="padding:24px 12px 40px">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">
+
+          <!-- Wordmark -->
+          <tr>
+            <td style="padding:0 0 16px">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td><p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;font-weight:700;color:#6E4ED6;letter-spacing:.12em;text-transform:uppercase;margin:0">FamilyForce Scout</p></td>
+                  <td align="right"><p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;margin:0">Month ${ageMonths}</p></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Hero -->
+          <tr>
+            <td style="background:#FFFFFF;border-radius:16px;padding:28px;margin-bottom:12px">
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 6px">${todayStr}</p>
+              <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:400;color:#1D1D1F;margin:0 0 10px;line-height:1.3">${childName} turns ${ageMonths} months today.</h1>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:15px;color:#5C5960;margin:0;line-height:1.6">${allWindowCount} developmental windows are open. Here are the ${aboveFold.length} to focus on this month.</p>
+            </td>
+          </tr>
+          <tr><td style="height:12px"></td></tr>
+
+          <!-- Window sections -->
+          <tr><td>${closingSoonSection}</td></tr>
+          <tr><td>${thisMonthSection}</td></tr>
+          <tr><td>${dontWorrySection}</td></tr>
+
+          <!-- Dashboard CTA -->
+          <tr>
+            <td style="background:#F0EBFF;border-radius:16px;padding:24px;text-align:center">
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 6px">${ctaText}</p>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0 0 16px">Mark windows done. Add notes. Personalise your next email.</p>
+              <!--[if mso]>
+              <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${dashboardUrl}" style="height:44px;v-text-anchor:middle;width:260px;" arcsize="50%" stroke="f" fillcolor="#6E4ED6">
+                <w:anchorlock/>
+                <center style="color:#ffffff;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;">See all ${childName}'s windows →</center>
+              </v:roundrect>
+              <![endif]-->
+              <!--[if !mso]><!-->
+              <a href="${dashboardUrl}" style="display:inline-block;background:#6E4ED6;color:#FFFFFF;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;padding:12px 28px;border-radius:100px;text-decoration:none;mso-hide:all">See all ${childName}'s windows →</a>
+              <!--<![endif]-->
+            </td>
+          </tr>
+          <tr><td style="height:12px"></td></tr>
+
+          <!-- Completed windows (active track) -->
+          <tr><td>${completedSection}</td></tr>
+          ${completedWindows.length > 0 ? '<tr><td style="height:12px"></td></tr>' : ''}
+
+          <!-- Calendar note -->
+          <tr>
+            <td style="border-left:3px solid #6E4ED6;padding:12px 16px;background:#F9F8FD;border-radius:0 8px 8px 0">
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6">📅 A calendar event for ${nextMonthName} is attached. Accept it and a 7-day alarm will fire before ${childName}'s next windows close.</p>
+            </td>
+          </tr>
+          <tr><td style="height:32px"></td></tr>
+
+          <!-- Signature -->
+          <tr>
+            <td>
+              <p style="font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1D1D1F;margin:0 0 2px">Jack Hartley</p>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 6px">Dad of two · Founder, FamilyForce</p>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6;font-style:italic">Got it wrong with First Son. Got it right with Second Son in three days. This is what changed.</p>
+            </td>
+          </tr>
+          <tr><td style="height:32px"></td></tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="border-top:1px solid #E5E2EC;padding-top:20px">
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0 0 4px">FamilyForce Scout · <a href="${siteUrl}" style="color:#8A879A;text-decoration:none">${siteUrl.replace('https://', '')}</a></p>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0">You're receiving this because you signed up for Scout. · <a href="${siteUrl}/scout-dashboard/settings" style="color:#8A879A;text-decoration:none">Email preferences</a> · <a href="${siteUrl}/unsubscribe?user=${userId}" style="color:#8A879A;text-decoration:none">Unsubscribe</a></p>
+            </td>
+          </tr>
+
+        </table>
       </td>
     </tr>
   </table>
 
-  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px">
-    ${windowRows}
-  </table>
-
-  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px">
-    <tr>
-      <td style="text-align:center;padding:20px;background:#F0EBFF;border-radius:12px">
-        <p style="font-size:14px;color:#5C5960;margin:0 0 12px">${allWindowCount - aboveFold.length} more windows are open this month.</p>
-        <a href="${dashboardUrl}" style="display:inline-block;background:#6E4ED6;color:#FFFFFF;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:600;padding:12px 28px;border-radius:100px;text-decoration:none">See all ${childName}'s windows →</a>
-      </td>
-    </tr>
-  </table>
-
-  ${completedWindows.length > 0 ? `
-  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px">
-    <tr>
-      <td style="background:#F0FDF4;border-radius:12px;padding:18px">
-        <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:600;color:#166534;letter-spacing:.06em;text-transform:uppercase;margin:0 0 10px">What you marked done last month</p>
-        ${completedWindows.map(w => `
-        <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#166534;margin:0 0 6px">
-          ✅ ${w.title}
-        </p>`).join('')}
-      </td>
-    </tr>
-  </table>` : ''}
-
-  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px">
-    <tr>
-      <td style="border-left:3px solid #6E4ED6;padding:12px 16px;background:#F9F8FD">
-        <p style="font-size:14px;color:#5C5960;margin:0;line-height:1.6">📅 A calendar event for ${nextMonthName} is attached. Accept it and a 7-day alarm will fire before ${childName}'s next windows close.</p>
-      </td>
-    </tr>
-  </table>
-
-  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px">
-    <tr>
-      <td>
-        <p style="font-size:15px;color:#1D1D1F;margin:0 0 4px">Jack</p>
-        <p style="font-size:13px;color:#8A879A;margin:0">FamilyForce</p>
-      </td>
-    </tr>
-  </table>
-
-  <table width="100%" cellpadding="0" cellspacing="0">
-    <tr>
-      <td style="border-top:1px solid #E5E2EC;padding-top:20px">
-        <p style="font-size:12px;color:#8A879A;margin:0 0 4px">FamilyForce · <a href="${siteUrl}" style="color:#8A879A">${siteUrl.replace('https://', '')}</a></p>
-        <p style="font-size:12px;color:#8A879A;margin:0">
-          <a href="${siteUrl}/scout-dashboard/settings" style="color:#8A879A">Manage preferences</a>
-          · <a href="${siteUrl}/unsubscribe?user=${userId}" style="color:#8A879A">Unsubscribe</a>
-        </p>
-      </td>
-    </tr>
-  </table>
-
-</div>
 </body>
 </html>`
 }
@@ -375,6 +518,7 @@ Deno.serve(async (req: Request) => {
         dashboardUrl:     dashUrl,
         siteUrl,
         userId,
+        ageWeeks:         weeks,
       })
 
       // 8. Generate .ics for next birthday
