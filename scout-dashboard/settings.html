@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Settings — Scout Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/scout-dashboard.css">
+<script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+
+<div class="mobile-child-header" id="mobileChildHeader">
+  <div class="mobile-child-pill" id="mobileChildName">Loading…</div>
+</div>
+
+<div class="scout-layout" id="scoutLayout">
+
+  <aside class="scout-sidebar">
+    <a href="/scout-dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-mark"><svg viewBox="0 0 14 14"><path d="M7 1L13 5V9L7 13L1 9V5L7 1Z"/></svg></div>
+      <div><div class="sidebar-logo-name">FamilyForce</div><div class="sidebar-logo-product">Scout</div></div>
+    </a>
+    <div class="sidebar-child">
+      <div id="childSelectorWrap" style="position:relative">
+        <button class="child-selector" id="childSelectorBtn">Loading…</button>
+        <div class="child-dropdown" id="childDropdownList"></div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/scout-dashboard.html"          class="sidebar-nav-item" data-nav="home"><span class="nav-icon">🏠</span> Home</a>
+      <a href="/scout-dashboard/history.html"  class="sidebar-nav-item" data-nav="history"><span class="nav-icon">📋</span> History</a>
+      <a href="/scout-dashboard/family.html"   class="sidebar-nav-item" data-nav="family"><span class="nav-icon">👨‍👩‍👧</span> Family Circle</a>
+      <div class="sidebar-divider"></div>
+      <a href="/scout-dashboard/settings.html" class="sidebar-nav-item" data-nav="settings"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div id="sidebarTrialWrap"></div>
+  </aside>
+
+  <main class="scout-main">
+
+    <div class="trial-banner" id="trialBanner" style="display:none">
+      <span class="trial-banner-text"></span>
+      <a href="#subscription" class="trial-banner-link">Subscribe →</a>
+      <button class="trial-banner-close">✕</button>
+    </div>
+
+    <h1 class="page-title">Settings</h1>
+
+    <!-- Checkout inbound (from paywall) -->
+    <div id="checkoutBanner" style="display:none;margin-bottom:20px"></div>
+
+    <!-- 11.1 Email preferences -->
+    <div class="settings-section">
+      <p class="settings-section-title">Email preferences</p>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div>
+            <p class="settings-row-label">Monthly digest</p>
+            <p class="settings-row-sub" id="digestDeliveryDay">Delivered on your child's birthday each month</p>
+          </div>
+          <span style="font-size:13px;color:var(--text-dim)">Always on</span>
+        </div>
+        <div class="settings-row">
+          <div>
+            <p class="settings-row-label">Update email address</p>
+          </div>
+          <a href="#" class="settings-row-link" id="updateEmailLink">Change →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11.2 Subscription -->
+    <div class="settings-section" id="subscription">
+      <p class="settings-section-title">Subscription</p>
+      <div class="settings-card" id="subCard">
+        <div class="loading-state" style="padding:20px">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Stripe card form (shown when subscribing) -->
+    <div id="stripeFormWrap" style="display:none;margin-bottom:24px">
+      <div class="settings-card" style="padding:24px">
+        <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px" id="stripeFormTitle">Subscribe to Scout</p>
+        <div class="form-field">
+          <label class="form-label">Card details</label>
+          <div id="stripeCardEl" style="padding:13px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface)"></div>
+          <p style="font-size:12px;color:var(--red);margin-top:6px;display:none" id="stripeCardErr"></p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="stripeSubmitBtn" onclick="submitSubscribe()">Subscribe →</button>
+          <button class="btn btn-secondary" onclick="cancelStripeForm()">Cancel</button>
+        </div>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:10px">🔒 Secured by Stripe. Cancel any time from this page.</p>
+      </div>
+    </div>
+
+    <!-- 11.3 Account -->
+    <div class="settings-section">
+      <p class="settings-section-title">Account</p>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div>
+            <p class="settings-row-label">Email</p>
+            <p class="settings-row-sub" id="accountEmail"></p>
+          </div>
+        </div>
+        <div class="settings-row">
+          <p class="settings-row-label">Child profile</p>
+          <a href="" class="settings-row-link" id="editChildLink">Edit →</a>
+        </div>
+        <div class="settings-row">
+          <p class="settings-row-label">Sign out</p>
+          <button class="settings-row-link" style="background:none;border:none;cursor:pointer;font-size:14px;font-weight:500;color:var(--terra)" onclick="signOut()">Sign out →</button>
+        </div>
+        <div class="settings-row">
+          <div>
+            <p class="settings-row-label settings-row-danger">Delete account</p>
+            <p class="settings-row-sub">Cancels subscription and permanently removes your data.</p>
+          </div>
+          <button class="settings-row-link settings-row-danger" style="background:none;border:none;cursor:pointer;font-size:14px;font-weight:500" onclick="openDeleteConfirm()">Delete →</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<nav class="scout-bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="/scout-dashboard.html"          class="bottom-nav-item" data-nav="home"><span class="bottom-nav-icon">🏠</span>Home</a>
+    <a href="/scout-dashboard/history.html"  class="bottom-nav-item" data-nav="history"><span class="bottom-nav-icon">📋</span>History</a>
+    <a href="/scout-dashboard/family.html"   class="bottom-nav-item" data-nav="family"><span class="bottom-nav-icon">👨‍👩‍👧</span>Family</a>
+    <a href="/scout-dashboard/settings.html" class="bottom-nav-item" data-nav="settings"><span class="bottom-nav-icon">⚙️</span>Settings</a>
+  </div>
+</nav>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Delete confirm modal -->
+<div class="confirm-modal" id="confirmModal">
+  <div class="confirm-modal-card" aria-modal="true" role="dialog" aria-labelledby="confirmTitle">
+    <h3 class="confirm-modal-title" id="confirmTitle">Delete your account?</h3>
+    <p class="confirm-modal-text">This permanently deletes your Scout history, notes, and progress. Your subscription will be cancelled immediately. This cannot be undone.</p>
+    <div class="confirm-modal-actions">
+      <button class="btn btn-secondary" id="confirmCancel" onclick="closeDeleteConfirm()">Cancel</button>
+      <button class="btn btn-danger"    id="confirmOk"     onclick="deleteAccount()">Delete account</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/scout-dashboard.js"></script>
+<script>
+var _stripe     = null
+var _stripeCard = null
+var _checkoutPlan = null
+var STRIPE_PK = 'pk_test_51TAQTZRF5ve13fCKDmbO62d5eyQD1P5elKFxqb10rtEr7kMJ3myKneIpZs26oxTYafC2s1Q796gUnHxa0LuuDkX600u23YbO8I'
+var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1'
+
+document.addEventListener('DOMContentLoaded', function () {
+  ScoutDash.init('settings', function (user, child, sub) {
+    renderSettings(user, child, sub)
+
+    // Check if arriving from paywall (?checkout=annual or ?checkout=monthly)
+    var params = new URLSearchParams(window.location.search)
+    var plan   = params.get('checkout')
+    if (plan === 'annual' || plan === 'monthly') openStripeForm(plan)
+  })
+})
+
+function renderSettings(user, child, sub) {
+  // Account section
+  var emailEl = document.getElementById('accountEmail')
+  if (emailEl) emailEl.textContent = user.email
+
+  var editChildLink = document.getElementById('editChildLink')
+  if (editChildLink && child) editChildLink.href = '/scout-dashboard/child.html?edit=' + child.id
+
+  var updateEmailLink = document.getElementById('updateEmailLink')
+  if (updateEmailLink) updateEmailLink.href = '#'
+
+  // Digest delivery day
+  if (child && child.dob) {
+    var day = new Date(child.dob + 'T00:00:00Z').getUTCDate()
+    var el  = document.getElementById('digestDeliveryDay')
+    if (el) el.textContent = 'Delivered on the ' + ordinal(day) + ' of each month (' + child.name + '\'s birthday)'
+  }
+
+  // Subscription card
+  renderSubCard(sub, child)
+}
+
+function ordinal(n) {
+  var s = ['th','st','nd','rd']
+  var v = n % 100
+  return n + (s[(v-20)%10] || s[v] || s[0])
+}
+
+function renderSubCard(sub, child) {
+  var card = document.getElementById('subCard')
+  if (!card) return
+  if (!sub) {
+    card.innerHTML = subRow('Plan', '—') + subRow('Status', 'No subscription') +
+      '<div class="settings-row"><button class="btn btn-primary" onclick="openStripeForm(\'annual\')" style="width:100%">Subscribe to Scout →</button></div>'
+    return
+  }
+
+  var status = sub.status === 'trialing' ? 'Free trial' : sub.status === 'active' ? 'Active' : 'Cancelled'
+  var html   = subRow('Status', status)
+
+  if (sub.status === 'trialing') {
+    var end  = new Date(sub.trial_end)
+    var days = Math.ceil((end - new Date()) / 86400000)
+    html += subRow('Trial ends', end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + ' (' + days + ' days)')
+    html += '<div class="settings-row">' +
+      '<div><p class="settings-row-label">Subscribe now</p><p class="settings-row-sub">Keep Scout going after your trial ends.</p></div>' +
+      '</div>' +
+      '<div class="settings-row" style="flex-direction:column;gap:10px;align-items:stretch">' +
+      '<button class="btn btn-primary" onclick="openStripeForm(\'annual\')">Annual — $79.99 <span style="font-size:11px;opacity:.8;margin-left:4px">Recommended</span></button>' +
+      '<button class="btn btn-secondary" onclick="openStripeForm(\'monthly\')">Monthly — $9.99</button>' +
+      '</div>'
+  } else if (sub.status === 'active') {
+    html += subRow('Plan', sub.plan === 'annual' ? 'Annual ($79.99/year)' : 'Monthly ($9.99/month)')
+    if (sub.current_period_end) {
+      html += subRow('Next billing', new Date(sub.current_period_end * 1000).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }))
+    }
+    html += '<div class="settings-row">' +
+      '<p class="settings-row-label">Manage subscription</p>' +
+      '<a href="#" class="settings-row-link" onclick="openPortal(event)">Manage →</a>' +
+      '</div>'
+  }
+  card.innerHTML = html
+}
+
+function subRow(label, value) {
+  return '<div class="settings-row"><p class="settings-row-label">' + label + '</p><span class="settings-row-value">' + value + '</span></div>'
+}
+
+// ── Stripe subscribe ──────────────────────────────────────────────────────────
+function openStripeForm(plan) {
+  _checkoutPlan = plan
+  document.getElementById('stripeFormWrap').style.display = 'block'
+  document.getElementById('stripeFormTitle').textContent = plan === 'annual'
+    ? 'Subscribe annually — $79.99/year'
+    : 'Subscribe monthly — $9.99/month'
+  document.getElementById('stripeFormWrap').scrollIntoView({ behavior: 'smooth' })
+
+  if (!_stripe) {
+    _stripe = Stripe(STRIPE_PK)
+    var elements = _stripe.elements()
+    _stripeCard  = elements.create('card', {
+      style: {
+        base: { fontFamily: "'Outfit', sans-serif", fontSize: '14px', color: '#1D1D1F', '::placeholder': { color: '#B0AEBC' } },
+        invalid: { color: '#EF4444' },
+      }
+    })
+    _stripeCard.mount('#stripeCardEl')
+    _stripeCard.on('change', function (e) {
+      var errEl = document.getElementById('stripeCardErr')
+      errEl.style.display = e.error ? 'block' : 'none'
+      if (e.error) errEl.textContent = e.error.message
+    })
+  }
+}
+
+function cancelStripeForm() {
+  document.getElementById('stripeFormWrap').style.display = 'none'
+}
+
+function submitSubscribe() {
+  var btn = document.getElementById('stripeSubmitBtn')
+  var user = ScoutDash.getUser()
+  if (!user) return
+  btn.disabled    = true
+  btn.textContent = 'Processing…'
+  var errEl = document.getElementById('stripeCardErr')
+  errEl.style.display = 'none'
+
+  _stripe.createPaymentMethod({ type: 'card', card: _stripeCard, billing_details: { email: user.email } })
+    .then(function (result) {
+      if (result.error) {
+        errEl.style.display = 'block'; errEl.textContent = result.error.message
+        btn.disabled = false; btn.textContent = 'Subscribe →'
+        return
+      }
+      ScoutDash.getSb().auth.getSession().then(function (res) {
+        var tok = res.data && res.data.session && res.data.session.access_token
+        fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-convert', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+          body: JSON.stringify({ paymentMethodId: result.paymentMethod.id, plan: _checkoutPlan }),
+        }).then(function (r) { return r.json() }).then(function (data) {
+          if (!data.ok) {
+            errEl.style.display = 'block'; errEl.textContent = data.error || 'Payment failed.'
+            btn.disabled = false; btn.textContent = 'Subscribe →'
+            return
+          }
+          ScoutDash.toast('You\'re subscribed. Welcome to Scout.', 'success')
+          cancelStripeForm()
+          window.location.reload()
+        }).catch(function () {
+          errEl.style.display = 'block'; errEl.textContent = 'Network error. Please try again.'
+          btn.disabled = false; btn.textContent = 'Subscribe →'
+        })
+      })
+    })
+}
+
+function openPortal(e) {
+  e.preventDefault()
+  ScoutDash.toast('Opening Stripe billing portal…')
+  // Stripe customer portal — requires a portal session endpoint
+  // For now redirect to Stripe portal URL if available
+  ScoutDash.getSb().auth.getSession().then(function (res) {
+    var tok = res.data && res.data.session && res.data.session.access_token
+    fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-billing-portal', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + tok },
+    }).then(function (r) { return r.json() }).then(function (data) {
+      if (data.url) window.location.href = data.url
+    }).catch(function () { ScoutDash.toast('Could not open billing portal. Please try again.', 'error') })
+  })
+}
+
+// ── Sign out ──────────────────────────────────────────────────────────────────
+function signOut() {
+  ScoutDash.getSb().auth.signOut().then(function () {
+    window.location.href = '/sign-in.html'
+  })
+}
+
+// ── Delete account ────────────────────────────────────────────────────────────
+function openDeleteConfirm() {
+  var modal = document.getElementById('confirmModal')
+  modal.classList.add('open')
+  document.getElementById('scoutLayout').setAttribute('inert', '')
+  document.getElementById('confirmCancel').focus()
+}
+function closeDeleteConfirm() {
+  document.getElementById('confirmModal').classList.remove('open')
+  document.getElementById('scoutLayout').removeAttribute('inert')
+}
+function deleteAccount() {
+  var btn = document.getElementById('confirmOk')
+  btn.disabled    = true
+  btn.textContent = 'Deleting…'
+  ScoutDash.getSb().auth.getSession().then(function (res) {
+    var tok = res.data && res.data.session && res.data.session.access_token
+    fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-delete-account', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + tok },
+    }).then(function (r) { return r.json() }).then(function (data) {
+      if (data.ok) {
+        ScoutDash.getSb().auth.signOut()
+        window.location.href = '/?deleted=1'
+      } else {
+        ScoutDash.toast(data.error || 'Could not delete account. Please contact support.', 'error')
+        closeDeleteConfirm()
+        btn.disabled    = false
+        btn.textContent = 'Delete account'
+      }
+    }).catch(function () {
+      ScoutDash.toast('Network error. Please try again.', 'error')
+      closeDeleteConfirm()
+    })
+  })
+}
+
+// ESC closes confirm modal
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeDeleteConfirm()
+})
+</script>
+</body>
+</html>

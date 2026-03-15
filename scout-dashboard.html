@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FamilyForce Scout — Dashboard Home
+     Action tracker for developmental milestone windows.
+     Stack: Vanilla HTML/CSS/JS · zero dependencies
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Scout Dashboard — FamilyForce</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/scout-dashboard.css">
+</head>
+<body>
+
+<!-- Mobile child header -->
+<div class="mobile-child-header" id="mobileChildHeader">
+  <div class="mobile-child-pill" id="mobileChildName">Loading…</div>
+</div>
+
+<!-- Layout -->
+<div class="scout-layout" id="scoutLayout">
+
+  <!-- Sidebar (desktop) -->
+  <aside class="scout-sidebar">
+    <a href="/scout-dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-mark"><svg viewBox="0 0 14 14"><path d="M7 1L13 5V9L7 13L1 9V5L7 1Z"/></svg></div>
+      <div>
+        <div class="sidebar-logo-name">FamilyForce</div>
+        <div class="sidebar-logo-product">Scout</div>
+      </div>
+    </a>
+
+    <div class="sidebar-child">
+      <div id="childSelectorWrap" style="position:relative">
+        <button class="child-selector" id="childSelectorBtn">Loading…</button>
+        <div class="child-dropdown" id="childDropdownList"></div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="/scout-dashboard.html"         class="sidebar-nav-item" data-nav="home">
+        <span class="nav-icon">🏠</span> Home
+      </a>
+      <a href="/scout-dashboard/history.html" class="sidebar-nav-item" data-nav="history">
+        <span class="nav-icon">📋</span> History
+      </a>
+      <a href="/scout-dashboard/family.html"  class="sidebar-nav-item" data-nav="family">
+        <span class="nav-icon">👨‍👩‍👧</span> Family Circle
+      </a>
+      <div class="sidebar-divider"></div>
+      <a href="/scout-dashboard/settings.html" class="sidebar-nav-item" data-nav="settings">
+        <span class="nav-icon">⚙️</span> Settings
+      </a>
+    </nav>
+
+    <div id="sidebarTrialWrap"></div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="scout-main" id="scoutMain">
+
+    <!-- Trial banner -->
+    <div class="trial-banner" id="trialBanner" style="display:none">
+      <span class="trial-banner-text"></span>
+      <a href="/scout-dashboard/settings.html" class="trial-banner-link">Subscribe →</a>
+      <button class="trial-banner-close" aria-label="Dismiss">✕</button>
+    </div>
+
+    <!-- Page header -->
+    <div class="page-header" id="pageHeader">
+      <div class="skeleton" style="height:32px;width:260px;margin-bottom:8px"></div>
+      <div class="skeleton" style="height:16px;width:120px;margin-bottom:16px"></div>
+      <div class="skeleton" style="height:6px;width:100%"></div>
+    </div>
+
+    <!-- Window sections (populated by JS) -->
+    <div id="windowSections"></div>
+
+  </main>
+</div>
+
+<!-- Bottom nav (mobile) -->
+<nav class="scout-bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="/scout-dashboard.html"          class="bottom-nav-item" data-nav="home">
+      <span class="bottom-nav-icon">🏠</span>Home
+    </a>
+    <a href="/scout-dashboard/history.html"  class="bottom-nav-item" data-nav="history">
+      <span class="bottom-nav-icon">📋</span>History
+    </a>
+    <a href="/scout-dashboard/family.html"   class="bottom-nav-item" data-nav="family">
+      <span class="bottom-nav-icon">👨‍👩‍👧</span>Family
+    </a>
+    <a href="/scout-dashboard/settings.html" class="bottom-nav-item" data-nav="settings">
+      <span class="bottom-nav-icon">⚙️</span>Settings
+    </a>
+  </div>
+</nav>
+
+<!-- Window detail modal -->
+<div class="modal-overlay" id="windowModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-top">
+      <div>
+        <div class="card-badges" id="modalBadges"></div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <p class="modal-age"   id="modalAge"></p>
+      </div>
+      <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    </div>
+
+    <div class="modal-section">
+      <p class="modal-section-header">Why it matters</p>
+      <p class="modal-body-text" id="modalWhy"></p>
+    </div>
+    <div class="modal-section">
+      <p class="modal-section-header">What to do</p>
+      <p class="modal-body-text" id="modalWhat"></p>
+    </div>
+    <div class="modal-section">
+      <p class="modal-section-header">What not to worry about</p>
+      <p class="modal-body-text" id="modalWorry"></p>
+    </div>
+    <div class="modal-section" id="modalMissedSection" style="display:none">
+      <p class="modal-section-header">If you missed this window</p>
+      <p class="modal-body-text"></p>
+    </div>
+    <div class="modal-section">
+      <p class="modal-source" id="modalSource"></p>
+      <a class="modal-playbook-link" id="modalPlaybook" href="#" style="display:none">📖 Free guide →</a>
+    </div>
+
+    <div class="modal-section">
+      <p class="modal-section-header">Progress</p>
+      <div class="card-actions">
+        <button class="action-btn" id="modalDone" data-action="completed"   aria-label="Mark as done">✓ Done</button>
+        <button class="action-btn" id="modalProg" data-action="in_progress" aria-label="Mark as in progress">▶ In progress</button>
+        <button class="action-btn" id="modalSkip" data-action="skipped"     aria-label="Skip">– Skip</button>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <p class="modal-section-header">Your note</p>
+      <div id="modalNoteDisplay" style="display:none">
+        <p class="modal-note-attr" id="modalNoteAttr"></p>
+        <div class="modal-note-display" id="modalNoteText"></div>
+        <button class="modal-note-edit-btn" id="modalNoteEdit">Edit</button>
+      </div>
+      <div id="modalNoteEditorWrap">
+        <textarea class="note-textarea" id="modalNoteTA" maxlength="500" placeholder="e.g. Tried peanuts today — no reaction. Will repeat next week." style="width:100%"></textarea>
+        <div class="note-meta">
+          <span class="note-char-count" id="modalNoteCount">0 / 500</span>
+          <span class="note-status" id="modalNoteStatus"></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Confirm delete modal (not used on home but included for completeness) -->
+<div class="confirm-modal" id="confirmModal">
+  <div class="confirm-modal-card">
+    <h3 class="confirm-modal-title" id="confirmTitle">Are you sure?</h3>
+    <p class="confirm-modal-text" id="confirmText"></p>
+    <div class="confirm-modal-actions">
+      <button class="btn btn-secondary" id="confirmCancel">Cancel</button>
+      <button class="btn btn-danger"    id="confirmOk">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/scout-dashboard.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  ScoutDash.init('home', function (user, child, sub) {
+    renderHome(child, sub)
+  })
+})
+
+function renderHome(child, sub) {
+  var dob      = child.dob
+  var ageW     = ScoutDash.ageWeeks(dob)
+  var ageM     = ScoutDash.ageMonths(dob)
+  var name     = child.name
+
+  // Page header
+  var header = document.getElementById('pageHeader')
+  header.innerHTML = '<h1 class="page-header-child">' + name + '</h1>' +
+    '<p class="page-header-age">' + ageM + ' month' + (ageM === 1 ? '' : 's') + ' old</p>' +
+    '<div class="progress-bar-wrap">' +
+    '<div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>' +
+    '<p class="progress-bar-label" id="progressLabel">Loading windows…</p>' +
+    '</div>' +
+    '<p class="page-header-meta">Next digest: <a href="/scout-dashboard/history.html" id="nextDigestLink"></a></p>'
+
+  // Next digest date (child's next monthly birthday)
+  var nextBday = nextMonthlyBirthday(dob)
+  var nextStr  = nextBday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
+  var daysTo   = Math.ceil((nextBday - new Date()) / 86400000)
+  var nextLink = document.getElementById('nextDigestLink')
+  if (nextLink) nextLink.textContent = nextStr + ' — ' + daysTo + ' day' + (daysTo === 1 ? '' : 's')
+
+  // Over 36 months
+  if (ageM > 36) {
+    document.getElementById('windowSections').innerHTML =
+      '<div class="end-state"><p class="end-state-title">Scout covers birth to 3 years.</p>' +
+      '<p class="end-state-text">' + name + ' has graduated. Your history and notes are still here.</p></div>'
+    return
+  }
+
+  // Load windows
+  ScoutDash.loadWindows(child.id, dob, function (windows, ageW) {
+    var sections = ScoutDash.sectionWindows(windows, ageW)
+    renderSections(sections, windows, child, sub, ageM, name)
+    ScoutDash._updateProgressBar(windows)
+    ScoutDash.wireActions(child.id, windows)
+    ScoutDash.wireNotes(child.id)
+    ScoutDash.wireModal(windows)
+    wireModalActions(windows, child.id)
+    wireDoneAccordion()
+
+    // First-visit welcome state
+    var hasActions = windows.some(function (w) { return w._status && w._status !== 'open' })
+    if (!hasActions) {
+      var welcomeHtml =
+        '<div class="welcome-card">' +
+        '<p class="welcome-card-title">Welcome to Scout.</p>' +
+        '<p class="welcome-card-text">' + name + ' has ' + (sections.closing.length + sections.thisMonth.length) + ' open windows right now. Start with the ones marked ⚠️ Closing soon.</p>' +
+        '</div>'
+      var progressWrap = document.querySelector('.progress-bar-wrap')
+      if (progressWrap) progressWrap.style.display = 'none'
+      document.getElementById('windowSections').insertAdjacentHTML('beforebegin', welcomeHtml)
+    }
+  })
+
+  // Sidebar trial info
+  renderSidebarTrial(sub)
+}
+
+function renderSections(sections, allWindows, child, sub, ageM, name) {
+  var html = ''
+
+  // Closing soon
+  if (sections.closing.length > 0) {
+    html += '<div class="section-header"><span class="section-label section-label-closing">⚠️ Closing soon</span></div>'
+    html += '<div class="window-grid">'
+    sections.closing.forEach(function (w) { html += ScoutDash.renderCard(w) })
+    html += '</div>'
+  }
+
+  // This month
+  html += '<div class="section-header" style="' + (sections.closing.length > 0 ? '' : 'margin-top:0') + '">' +
+    '<span class="section-label section-label-month">This month</span></div>'
+  if (sections.thisMonth.length > 0) {
+    html += '<div class="window-grid">'
+    sections.thisMonth.forEach(function (w) { html += ScoutDash.renderCard(w) })
+    html += '</div>'
+  } else {
+    html += '<p class="section-empty">All windows for this age are either complete or coming up.</p>'
+  }
+
+  // Coming up (gated behind active subscription if trial expired)
+  var trialExpired = sub && sub.status === 'trialing' && new Date(sub.trial_end) < new Date()
+  if (trialExpired) {
+    html += renderPaywall(name, ageM)
+  } else if (sections.comingUp.length > 0) {
+    html += '<div class="section-header"><span class="section-label section-label-coming">Coming up</span></div>'
+    html += '<div class="window-grid">'
+    sections.comingUp.forEach(function (w) { html += ScoutDash.renderCard(w, { preview: true }) })
+    html += '</div>'
+  }
+
+  // Done accordion
+  html += '<div class="done-accordion" id="doneAccordion">' +
+    '<div class="done-accordion-header" id="doneAccordionHeader">' +
+    '<span class="done-accordion-label">✓ Done this month (<span id="doneCount">' + sections.done.length + '</span>)</span>' +
+    '<span class="done-accordion-arrow">▾</span>' +
+    '</div>' +
+    '<div class="done-accordion-body" id="doneAccordionBody">'
+  if (sections.done.length > 0) {
+    html += '<div class="window-grid">'
+    sections.done.forEach(function (w) { html += ScoutDash.renderCard(w) })
+    html += '</div>'
+  }
+  html += '</div></div>'
+
+  document.getElementById('windowSections').innerHTML = html
+}
+
+function renderPaywall(name, ageM) {
+  var nextM = ageM + 1
+  return '<div class="paywall-card">' +
+    '<p class="paywall-title">' + name + '\'s ' + nextM + '-month windows are ready.</p>' +
+    '<div class="paywall-blur-row">' +
+    '<div class="paywall-blur-pill">Introduce texture variety in solids</div>' +
+    '<div class="paywall-blur-pill">Separation anxiety response</div>' +
+    '</div>' +
+    '<p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px">Subscribe to continue.</p>' +
+    '<div class="paywall-plans">' +
+    '<button class="paywall-plan-btn paywall-plan-annual" onclick="startCheckout(\'annual\')">' +
+    '<span>Annual — $79.99/year</span><span class="paywall-plan-badge">Recommended</span>' +
+    '</button>' +
+    '<button class="paywall-plan-btn paywall-plan-monthly" onclick="startCheckout(\'monthly\')">' +
+    '<span>Monthly — $9.99/month</span>' +
+    '</button>' +
+    '</div></div>'
+}
+
+function renderSidebarTrial(sub) {
+  var wrap = document.getElementById('sidebarTrialWrap')
+  if (!wrap || !sub || sub.status !== 'trialing') return
+  var end  = new Date(sub.trial_end)
+  var days = Math.ceil((end - new Date()) / 86400000)
+  if (days < 0) return
+  wrap.innerHTML =
+    '<div class="sidebar-trial">' +
+    '<p class="sidebar-trial-label">Free trial</p>' +
+    '<p class="sidebar-trial-text">Ends in ' + days + ' day' + (days === 1 ? '' : 's') + '.</p>' +
+    '<a class="sidebar-trial-link" href="/scout-dashboard/settings.html">Subscribe →</a>' +
+    '</div>'
+}
+
+function nextMonthlyBirthday(dob) {
+  var dobDate  = new Date(dob + 'T00:00:00Z')
+  var birthDay = dobDate.getUTCDate()
+  var now      = new Date()
+  var candidate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), birthDay))
+  if (candidate >= now) return candidate
+  var next = new Date(candidate)
+  next.setUTCMonth(next.getUTCMonth() + 1)
+  if (next.getUTCDate() !== birthDay) next.setUTCDate(0)
+  return next
+}
+
+function wireDoneAccordion() {
+  var header = document.getElementById('doneAccordionHeader')
+  var acc    = document.getElementById('doneAccordion')
+  if (header && acc) {
+    header.addEventListener('click', function () { acc.classList.toggle('open') })
+  }
+}
+
+function wireModalActions(windows, childId) {
+  var btns = [
+    document.getElementById('modalDone'),
+    document.getElementById('modalProg'),
+    document.getElementById('modalSkip'),
+  ]
+  btns.forEach(function (btn) {
+    if (!btn) return
+    btn.addEventListener('click', function () {
+      var wid    = btn.dataset.wid
+      var action = btn.dataset.action
+      var win    = windows.find(function (w) { return w.id === wid })
+      if (!win) return
+      var newStatus = (win._status === action) ? 'open' : action
+      win._status = newStatus
+      btns.forEach(function (b) { b.classList.remove('active-done', 'active-progress', 'active-skip') })
+      if (newStatus === 'completed')   btn.classList.add('active-done')
+      if (newStatus === 'in_progress') btn.classList.add('active-progress')
+      if (newStatus === 'skipped')     btn.classList.add('active-skip')
+      // Sync card in background
+      var card = document.querySelector('[data-window-id="' + wid + '"]')
+      if (card) {
+        var cardBtns = card.querySelectorAll('[data-action]')
+        cardBtns.forEach(function (b) { b.classList.remove('active-done', 'active-progress', 'active-skip') })
+        var matchBtn = card.querySelector('[data-action="' + newStatus + '"]')
+        if (matchBtn) matchBtn.classList.add('active-' + (newStatus === 'completed' ? 'done' : newStatus === 'in_progress' ? 'progress' : 'skip'))
+      }
+      ScoutDash.saveProgress(wid, newStatus, childId, function (err) {
+        if (err) ScoutDash.toast('Could not save. Please try again.', 'error')
+        ScoutDash._updateProgressBar(windows)
+      })
+    })
+  })
+
+  // Modal note
+  var ta = document.getElementById('modalNoteTA')
+  if (ta) {
+    ta.addEventListener('input', function () {
+      var count = document.getElementById('modalNoteCount')
+      if (count) count.textContent = ta.value.length + ' / 500'
+    })
+    ta.addEventListener('blur', function () {
+      var wid  = ta.dataset.wid
+      var stat = document.getElementById('modalNoteStatus')
+      if (!wid) return
+      if (stat) { stat.className = 'note-status saving'; stat.textContent = 'Saving…' }
+      ScoutDash.saveNote(wid, ta.value.trim(), childId, function (err) {
+        if (stat) {
+          stat.className = err ? 'note-status error' : 'note-status saved'
+          stat.textContent = err ? 'Could not save.' : 'Saved'
+        }
+        // Update _note on window object
+        var win = windows.find(function (w) { return w.id === wid })
+        if (win && !err) win._note = ta.value.trim()
+      })
+    })
+  }
+}
+
+function startCheckout(plan) {
+  window.location.href = '/scout-dashboard/settings.html?checkout=' + plan
+}
+</script>
+</body>
+</html>

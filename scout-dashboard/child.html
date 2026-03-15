@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Child Profile — Scout Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/scout-dashboard.css">
+</head>
+<body>
+
+<div class="mobile-child-header" id="mobileChildHeader">
+  <div class="mobile-child-pill" id="mobileChildName">Scout</div>
+</div>
+
+<div class="scout-layout" id="scoutLayout">
+
+  <aside class="scout-sidebar">
+    <a href="/scout-dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-mark"><svg viewBox="0 0 14 14"><path d="M7 1L13 5V9L7 13L1 9V5L7 1Z"/></svg></div>
+      <div><div class="sidebar-logo-name">FamilyForce</div><div class="sidebar-logo-product">Scout</div></div>
+    </a>
+    <div class="sidebar-child">
+      <div id="childSelectorWrap" style="position:relative">
+        <button class="child-selector" id="childSelectorBtn">Children</button>
+        <div class="child-dropdown" id="childDropdownList"></div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/scout-dashboard.html"          class="sidebar-nav-item" data-nav="home"><span class="nav-icon">🏠</span> Home</a>
+      <a href="/scout-dashboard/history.html"  class="sidebar-nav-item" data-nav="history"><span class="nav-icon">📋</span> History</a>
+      <a href="/scout-dashboard/family.html"   class="sidebar-nav-item" data-nav="family"><span class="nav-icon">👨‍👩‍👧</span> Family Circle</a>
+      <div class="sidebar-divider"></div>
+      <a href="/scout-dashboard/settings.html" class="sidebar-nav-item" data-nav="settings"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+  </aside>
+
+  <main class="scout-main">
+
+    <h1 class="page-title" id="pageTitle">Add a child</h1>
+
+    <div class="child-form" id="childForm">
+
+      <div class="form-field">
+        <label class="form-label" for="childName">First name</label>
+        <input type="text" class="form-input" id="childName" placeholder="Oliver" maxlength="50" autocomplete="off">
+        <p class="form-error" id="nameError">Please enter your child's first name.</p>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="childDob">Date of birth</label>
+        <input type="date" class="form-input" id="childDob" max="">
+        <p class="form-hint">Scout covers birth to 36 months. If your child is older than 3, Scout may not be the right fit yet.</p>
+        <p class="form-error" id="dobError">Please enter a valid date of birth.</p>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Gender <span class="form-label-hint">(optional)</span></label>
+        <p class="form-hint" style="margin-bottom:10px">We use this to personalise your emails. You can change this any time.</p>
+        <div class="gender-picker" id="genderPicker">
+          <button class="gender-pill" data-gender="boy"  type="button">Boy</button>
+          <button class="gender-pill" data-gender="girl" type="button">Girl</button>
+          <button class="gender-pill" data-gender="other" type="button">Prefer not to say</button>
+        </div>
+      </div>
+
+      <p class="form-error" id="saveError"></p>
+
+      <button class="btn btn-primary btn-full" id="saveBtn" onclick="saveChild()" style="margin-top:8px">Save →</button>
+
+    </div>
+  </main>
+</div>
+
+<nav class="scout-bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="/scout-dashboard.html"          class="bottom-nav-item" data-nav="home"><span class="bottom-nav-icon">🏠</span>Home</a>
+    <a href="/scout-dashboard/history.html"  class="bottom-nav-item" data-nav="history"><span class="bottom-nav-icon">📋</span>History</a>
+    <a href="/scout-dashboard/family.html"   class="bottom-nav-item" data-nav="family"><span class="bottom-nav-icon">👨‍👩‍👧</span>Family</a>
+    <a href="/scout-dashboard/settings.html" class="bottom-nav-item" data-nav="settings"><span class="bottom-nav-icon">⚙️</span>Settings</a>
+  </div>
+</nav>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/assets/scout-dashboard.js"></script>
+<script>
+var _editChildId = null
+var _selectedGender = null
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Set max date (today)
+  var dobInput = document.getElementById('childDob')
+  var today    = new Date().toISOString().split('T')[0]
+  if (dobInput) dobInput.max = today
+
+  // Gender pill selection
+  document.getElementById('genderPicker').addEventListener('click', function (e) {
+    var pill = e.target.closest('.gender-pill')
+    if (!pill) return
+    document.querySelectorAll('.gender-pill').forEach(function (p) { p.classList.remove('selected') })
+    pill.classList.add('selected')
+    _selectedGender = pill.dataset.gender
+  })
+
+  // Check URL param for edit mode (?edit=childId)
+  var params = new URLSearchParams(window.location.search)
+  _editChildId = params.get('edit') || null
+
+  // Init (skip redirect if no children — we ARE the add child page)
+  var sb = window.supabase.createClient(
+    'https://ewjqbafaxeasyvknxmof.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+  )
+  window._supabaseClient = sb
+
+  sb.auth.getSession().then(function (res) {
+    var session = res.data && res.data.session
+    if (!session) { window.location.href = '/sign-in.html'; return }
+
+    if (_editChildId) {
+      // Pre-fill form for editing
+      document.getElementById('pageTitle').textContent = 'Edit child'
+      sb.from('children').select('*').eq('id', _editChildId).single().then(function (res) {
+        if (res.data) {
+          document.getElementById('childName').value = res.data.name || ''
+          document.getElementById('childDob').value  = res.data.dob  || ''
+          if (res.data.gender) {
+            _selectedGender = res.data.gender
+            var pill = document.querySelector('[data-gender="' + res.data.gender + '"]')
+            if (pill) pill.classList.add('selected')
+          }
+        }
+      })
+    }
+  })
+})
+
+function saveChild() {
+  var nameVal   = document.getElementById('childName').value.trim()
+  var dobVal    = document.getElementById('childDob').value
+  var nameErr   = document.getElementById('nameError')
+  var dobErr    = document.getElementById('dobError')
+  var saveErr   = document.getElementById('saveError')
+  var btn       = document.getElementById('saveBtn')
+  var valid     = true
+
+  nameErr.classList.remove('show')
+  dobErr.classList.remove('show')
+  saveErr.classList.remove('show')
+
+  if (!nameVal) { nameErr.classList.add('show'); valid = false }
+  if (!dobVal)  { dobErr.classList.add('show');  valid = false }
+  else {
+    var d = new Date(dobVal + 'T00:00:00Z')
+    var now = new Date()
+    var minDate = new Date(now); minDate.setFullYear(minDate.getFullYear() - 4)
+    if (isNaN(d) || d > now || d < minDate) { dobErr.textContent = 'Date must be within the last 3 years.'; dobErr.classList.add('show'); valid = false }
+  }
+  if (!valid) return
+
+  btn.disabled    = true
+  btn.textContent = 'Saving…'
+
+  var sb      = window._supabaseClient
+  var payload = { name: nameVal, dob: dobVal, gender: _selectedGender || 'other' }
+
+  var promise
+  if (_editChildId) {
+    promise = sb.from('children').update(payload).eq('id', _editChildId)
+  } else {
+    sb.auth.getUser().then(function (res) {
+      payload.user_id = res.data.user.id
+      sb.from('children').insert(payload).select('id').single().then(function (r) {
+        if (r.error) { showSaveErr(r.error.message, btn); return }
+        localStorage.setItem('scout_active_child_id', r.data.id)
+        window.location.href = '/scout-dashboard.html'
+      })
+    })
+    return
+  }
+
+  promise.then(function (r) {
+    if (r.error) { showSaveErr(r.error.message, btn); return }
+    window.location.href = '/scout-dashboard.html'
+  })
+}
+
+function showSaveErr(msg, btn) {
+  var saveErr = document.getElementById('saveError')
+  saveErr.textContent = msg || 'Could not save. Please try again.'
+  saveErr.classList.add('show')
+  btn.disabled    = false
+  btn.textContent = 'Save →'
+}
+</script>
+</body>
+</html>
