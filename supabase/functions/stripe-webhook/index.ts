@@ -201,13 +201,55 @@ Deno.serve(async (req: Request) => {
       }
 
       // ── Payment succeeded ───────────────────────────────────
+      // On first payment after trial conversion: update status + fire digest immediately.
       case 'invoice.paid': {
         const invoice = event.data.object
         if (!invoice.subscription) break
         if ((invoice.amount_paid ?? 0) > 0) {
-          await sb.from('scout_subscriptions')
+          // Update status to active
+          const { data: updatedSub } = await sb
+            .from('scout_subscriptions')
             .update({ status: 'active' })
             .eq('stripe_sub_id', invoice.subscription)
+            .select('user_id, status')
+            .maybeSingle()
+
+          // If this looks like a first payment (billing_reason = subscription_create),
+          // fire the digest immediately so the user gets their first paid email right away.
+          if (updatedSub && invoice.billing_reason === 'subscription_create') {
+            const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+            const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+
+            // Log trial_converted if not already logged (safety net for cases where
+            // scout-convert didn't fire — e.g., direct Stripe dashboard payment)
+            const { count } = await sb
+              .from('scout_events')
+              .select('id', { count: 'exact', head: true })
+              .eq('user_id', updatedSub.user_id)
+              .eq('event_type', 'trial_converted')
+
+            if ((count ?? 0) === 0) {
+              await sb.from('scout_events').insert({
+                user_id:    updatedSub.user_id,
+                event_type: 'trial_converted',
+                properties: {
+                  stripe_sub_id: invoice.subscription,
+                  source:        'stripe_webhook',
+                  amount_paid:   invoice.amount_paid,
+                },
+              })
+            }
+
+            // Fire digest in background
+            fetch(`${supabaseUrl}/functions/v1/scout-digest`, {
+              method:  'POST',
+              headers: {
+                'Content-Type':  'application/json',
+                'Authorization': `Bearer ${serviceKey}`,
+              },
+              body: JSON.stringify({}),
+            }).catch(e => console.error('[stripe-webhook] Failed to trigger digest:', e.message))
+          }
         }
         break
       }

@@ -98,17 +98,18 @@ function buildSubjectLine(childName: string, ageMonths: number, aboveFold: Miles
 
 // ─── Email HTML ───────────────────────────────────────────────────────────────
 function buildDigestEmail(opts: {
-  childName:       string
-  childGender:     string | null
-  ageMonths:       number
-  aboveFold:       MilestoneWindow[]
-  allWindowCount:  number
-  nextEventDate:   Date
-  dashboardUrl:    string
-  siteUrl:         string
-  userId:          string
+  childName:        string
+  childGender:      string | null
+  ageMonths:        number
+  aboveFold:        MilestoneWindow[]
+  allWindowCount:   number
+  completedWindows: Array<{ title: string }>   // 3I: "what you've done" section
+  nextEventDate:    Date
+  dashboardUrl:     string
+  siteUrl:          string
+  userId:           string
 }): string {
-  const { childName, ageMonths, aboveFold, allWindowCount,
+  const { childName, ageMonths, aboveFold, allWindowCount, completedWindows,
           nextEventDate, dashboardUrl, siteUrl, userId } = opts
 
   const nextMonthName = nextEventDate.toLocaleDateString('en-US', {
@@ -174,6 +175,19 @@ function buildDigestEmail(opts: {
       </td>
     </tr>
   </table>
+
+  ${completedWindows.length > 0 ? `
+  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px">
+    <tr>
+      <td style="background:#F0FDF4;border-radius:12px;padding:18px">
+        <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:600;color:#166534;letter-spacing:.06em;text-transform:uppercase;margin:0 0 10px">What you marked done last month</p>
+        ${completedWindows.map(w => `
+        <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#166534;margin:0 0 6px">
+          ✅ ${w.title}
+        </p>`).join('')}
+      </td>
+    </tr>
+  </table>` : ''}
 
   <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:32px">
     <tr>
@@ -303,7 +317,6 @@ Deno.serve(async (req: Request) => {
       }
 
       // 5. Query open windows for this age
-      // TODO (Phase 3 / 3I): exclude completed windows via window_progress join
       const { data: windows, error: winErr } = await sb
         .from('milestone_windows')
         .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link')
@@ -314,8 +327,31 @@ Deno.serve(async (req: Request) => {
 
       if (winErr) throw new Error(`Window query failed: ${winErr.message}`)
 
+      // 3I — Active track: fetch user's completed windows for this child
+      const { data: progressRows } = await sb
+        .from('window_progress')
+        .select('window_id, status')
+        .eq('user_id', userId)
+        .eq('child_id', child.id)
+        .in('status', ['completed', 'skipped'])
+
+      const completedWindowIds = new Set(
+        (progressRows ?? [])
+          .filter(p => p.status === 'completed' || p.status === 'skipped')
+          .map(p => p.window_id)
+      )
+
+      // 3I — "What you've done" section: completed windows from last month
+      const completedWindows = (windows ?? [])
+        .filter(w => completedWindowIds.has(w.id))
+        .map(w => ({ title: w.title }))
+
+      const isActiveTrack = completedWindowIds.size > 0
+
+      // 3I — Exclude completed/skipped from above-fold selection
       const allWindows = (windows ?? []) as MilestoneWindow[]
-      const aboveFold  = selectAboveFold(allWindows, weeks)
+      const openWindows = allWindows.filter(w => !completedWindowIds.has(w.id))
+      const aboveFold  = selectAboveFold(openWindows.length > 0 ? openWindows : allWindows, weeks)
 
       if (allWindows.length === 0) {
         console.log(`[scout-digest] No windows for child ${child.id} at ${weeks}w — skipping`)
@@ -329,13 +365,14 @@ Deno.serve(async (req: Request) => {
       // 7. Build email HTML
       const nextBirthday = nextMonthlyBirthday(childDob, now)
       const html = buildDigestEmail({
-        childName:      child.name,
-        childGender:    child.gender,
-        ageMonths:      months,
+        childName:        child.name,
+        childGender:      child.gender,
+        ageMonths:        months,
         aboveFold,
-        allWindowCount: allWindows.length,
-        nextEventDate:  nextBirthday,
-        dashboardUrl:   dashUrl,
+        allWindowCount:   openWindows.length > 0 ? openWindows.length : allWindows.length,
+        completedWindows,
+        nextEventDate:    nextBirthday,
+        dashboardUrl:     dashUrl,
         siteUrl,
         userId,
       })
@@ -411,12 +448,14 @@ Deno.serve(async (req: Request) => {
         child_id:   child.id,
         event_type: 'monthly_digest_sent',
         properties: {
-          child_age_months:  months,
-          child_age_weeks:   weeks,
-          windows_count:     allWindows.length,
-          above_fold_count:  aboveFold.length,
-          resend_message_id: messageId,
-          duration_ms:       Date.now() - jobStart,
+          child_age_months:     months,
+          child_age_weeks:      weeks,
+          windows_count:        allWindows.length,
+          above_fold_count:     aboveFold.length,
+          completed_count:      completedWindows.length,
+          personalisation_track: isActiveTrack ? 'active' : 'passive',
+          resend_message_id:    messageId,
+          duration_ms:          Date.now() - jobStart,
         },
       })
 
