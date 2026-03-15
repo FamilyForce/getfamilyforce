@@ -62,20 +62,10 @@ SELECT cron.schedule(
 
 -- ─── Job 3: 7-day closing window alert (daily 08:00 UTC) ─────────────────────
 -- Fires if the child's next birthday is exactly 7 days away.
-SELECT cron.schedule(
-  'scout-alert',
-  '0 8 * * *',
-  $$
-  SELECT net.http_post(
-    url     := 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-alert',
-    headers := jsonb_build_object(
-      'Content-Type',  'application/json',
-      'Authorization', 'Bearer ' || current_setting('app.service_role_key', true)
-    ),
-    body    := '{}'::jsonb
-  );
-  $$
-);
+-- scout-alert REMOVED (Mar 15, 2026)
+-- Decision: duplicative with .ics VALARM 7-day calendar reminder.
+-- Rely on calendar notification only. Scout = low-noise (one email/month).
+-- Function still deployed but not scheduled. Re-enable by restoring cron.schedule() call.
 
 -- ─── Job 4: Daily monitoring + sanity check (daily 09:00 UTC) ────────────────
 -- Runs 1 hour after the main jobs (08:00 UTC) to verify they all fired.
@@ -99,7 +89,7 @@ SELECT cron.schedule(
 -- ─── Verify jobs are scheduled ────────────────────────────────────────────────
 SELECT jobname, schedule, active, command
 FROM cron.job
-WHERE jobname IN ('scout-trial-end', 'scout-digest', 'scout-alert', 'scout-monitor')
+WHERE jobname IN ('scout-trial-end', 'scout-digest', 'scout-monitor')
 ORDER BY jobname;
 
 -- ─── Notes ───────────────────────────────────────────────────────────────────
