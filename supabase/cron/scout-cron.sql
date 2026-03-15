@@ -22,6 +22,7 @@ CREATE EXTENSION IF NOT EXISTS pg_cron;
 SELECT cron.unschedule('scout-trial-end')   WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-trial-end');
 SELECT cron.unschedule('scout-digest')      WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-digest');
 SELECT cron.unschedule('scout-alert')       WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-alert');
+SELECT cron.unschedule('scout-monitor')     WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-monitor');
 
 -- ─── Job 1: Trial-end emails + re-engagement (daily 08:00 UTC) ───────────────
 -- Sends trial-end email on the day trial_end is reached.
@@ -76,10 +77,29 @@ SELECT cron.schedule(
   $$
 );
 
+-- ─── Job 4: Daily monitoring + sanity check (daily 09:00 UTC) ────────────────
+-- Runs 1 hour after the main jobs (08:00 UTC) to verify they all fired.
+-- Sends a daily Telegram report: subscriber counts, digests sent, bounce rate.
+-- Alerts immediately on: job failures, zero digests, bounce rate > 2%.
+SELECT cron.schedule(
+  'scout-monitor',
+  '0 9 * * *',
+  $$
+  SELECT net.http_post(
+    url     := 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-monitor',
+    headers := jsonb_build_object(
+      'Content-Type',  'application/json',
+      'Authorization', 'Bearer ' || current_setting('app.service_role_key', true)
+    ),
+    body    := '{}'::jsonb
+  );
+  $$
+);
+
 -- ─── Verify jobs are scheduled ────────────────────────────────────────────────
 SELECT jobname, schedule, active, command
 FROM cron.job
-WHERE jobname IN ('scout-trial-end', 'scout-digest', 'scout-alert')
+WHERE jobname IN ('scout-trial-end', 'scout-digest', 'scout-alert', 'scout-monitor')
 ORDER BY jobname;
 
 -- ─── Notes ───────────────────────────────────────────────────────────────────
