@@ -60,20 +60,19 @@ function weeksSince(fromDate: Date, toDate: Date): number {
 
 // ─── Build trial-end email HTML ───────────────────────────────────────────────
 function buildTrialEndEmail(opts: {
-  childName:      string
-  childGender:    string | null
-  ageMonths:      number
-  weeksSinceJoin: number
-  digestCount:    number
-  calendarCount:  number
-  topWindows:     Array<{ title: string; why_it_matters: string; urgency: string }>
-  annualCta:      string
-  monthlyCta:     string
-  siteUrl:        string
-  userId:         string
+  childName:       string
+  childGender:     string | null
+  ageMonths:       number
+  weeksSinceJoin:  number
+  allWindowCount:  number
+  topWindows:      Array<{ title: string; why_it_matters: string; urgency: string }>
+  annualCta:       string
+  monthlyCta:      string
+  siteUrl:         string
+  userId:          string
 }): string {
-  const { childName, childGender, ageMonths, weeksSinceJoin, digestCount,
-          calendarCount, topWindows, annualCta, monthlyCta, siteUrl, userId } = opts
+  const { childName, childGender, ageMonths, weeksSinceJoin, allWindowCount,
+          topWindows, annualCta, monthlyCta, siteUrl, userId } = opts
 
   // Edge case: vary "you signed up X weeks ago" copy
   let joinCopy: string
@@ -84,9 +83,6 @@ function buildTrialEndEmail(opts: {
   } else {
     joinCopy = `You signed up ${weeksSinceJoin} weeks ago.`
   }
-
-  const digestWord   = digestCount   === 1 ? 'email'  : 'emails'
-  const calendarWord = calendarCount === 1 ? 'event'  : 'events'
 
   // Annual birthday variant (month 12)
   const isFirstBirthday = ageMonths === 12
@@ -158,7 +154,7 @@ function buildTrialEndEmail(opts: {
 
           <tr>
             <td style="background:#EDE9FF;border-radius:16px;padding:20px">
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#3D2A9E;margin:0;line-height:1.8">${joinCopy} Since then, you have received <strong>${digestCount} digest ${digestWord}</strong> and <strong>${calendarCount} calendar ${calendarWord}</strong> with ${childName}'s closing developmental windows.<br><br><strong>Your free trial ends today.</strong></p>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#3D2A9E;margin:0;line-height:1.8">${joinCopy} As part of your trial, you received <strong>one digest email</strong> and <strong>one calendar event</strong> for ${childName}'s first month. There are <strong>${allWindowCount} windows open this month</strong> — and a new digest ready to go.<br><br><strong>Your free trial ends today.</strong></p>
             </td>
           </tr>
           <tr><td style="height:16px"></td></tr>
@@ -171,7 +167,7 @@ function buildTrialEndEmail(opts: {
 
           <tr><td>
             <h2 style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;color:#1D1D1F;margin:0 0 10px">Subscribe to keep going.</h2>
-            <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 20px;line-height:1.7">Scout delivers one email and one calendar event every month, on ${childName}'s birthday. No app to check. No notifications to manage. Just the right information at the right time.</p>
+            <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 20px;line-height:1.7">Scout delivers one email and one calendar event every month, on ${childName}'s birthday. The right information at the right time.</p>
           </td></tr>
 
           <!-- Annual plan -->
@@ -482,17 +478,7 @@ Deno.serve(async (req: Request) => {
       // Skip if child is past 36 months (nothing to sell)
       if (months > 36) { results.trialEnd.skipped++; continue }
 
-      // 4. Count digests sent during trial
-      const { count: digestCount } = await sb
-        .from('scout_digest_log')
-        .select('id', { count: 'exact', head: true })
-        .eq('user_id', userId)
-        .in('digest_type', ['signup', 'monthly'])
-
-      // 5. Count calendar events (approximation: one per digest)
-      const calendarCount = digestCount ?? 1
-
-      // 6. Query top 3 open windows
+      // 4. Query all open windows for this age (for count + top 3)
       const { data: windows } = await sb
         .from('milestone_windows')
         .select('title, why_it_matters, urgency')
@@ -500,7 +486,9 @@ Deno.serve(async (req: Request) => {
         .lte('open_age_weeks', weeks)
         .gte('close_age_weeks', weeks)
         .order('priority', { ascending: true })
-        .limit(3)
+
+      const allWindowCount = windows?.length ?? 0
+      const topWindows     = (windows ?? []).slice(0, 3)
 
       // 7. Weeks since signup
       const signupDate = new Date(sub.created_at)
@@ -520,9 +508,8 @@ Deno.serve(async (req: Request) => {
         childGender:    child.gender,
         ageMonths:      months,
         weeksSinceJoin: wks,
-        digestCount:    digestCount ?? 1,
-        calendarCount,
-        topWindows:     windows ?? [],
+        allWindowCount,
+        topWindows,
         annualCta,
         monthlyCta,
         siteUrl,
