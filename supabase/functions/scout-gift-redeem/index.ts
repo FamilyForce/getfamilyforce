@@ -9,10 +9,17 @@
 //   1. Auth check
 //   2. Validate gift code (exists, not redeemed, not expired)
 //   3. Insert child record
-//   4. Calculate trial_end = now + plan_months
+//   4. Calculate trial_end = nextMonthlyBirthday(childDob) + plan_months
+//      The catch-up period (today → next monthly birthday) is FREE.
+//      The paid subscription starts from the first monthly birthday after redemption.
+//      Example: John (born Jan 20) redeems March 16, annual gift:
+//        - First digest fires today (March 16) via scout-signup-delivery
+//        - scout-digest fires on March 20 (next monthly birthday, catch-up)
+//        - trial_end = March 20 + 12 months = March 20, 2027
+//        - April 20 onward = month 1 of the paid subscription
 //   5. Upsert scout_subscriptions (status = 'trialing')
 //   6. Mark gift as redeemed
-//   7. Fire scout-signup-delivery (first digest)
+//   7. Fire scout-signup-delivery (first digest today)
 //   8. Return { ok: true, trialEnd }
 //
 // Deploy: supabase functions deploy scout-gift-redeem
@@ -30,6 +37,34 @@ function err(status: number, msg: string, step = '') {
   return new Response(JSON.stringify({ ok: false, error: msg, step }), {
     status, headers: { ...CORS, 'Content-Type': 'application/json' }
   })
+}
+
+// ─── Date helpers (mirrors scout-trial-start logic) ──────────────────────────
+
+// Returns the next occurrence of the child's birth day-of-month at or after today.
+// If the birth day-of-month has already passed this month, returns next month's date.
+// Example: DOB Jan 20, today March 16 → returns March 20
+// Example: DOB Jan 20, today March 21 → returns April 20
+function nextMonthlyBirthday(dob: string, now: Date): Date {
+  const dobDate  = new Date(dob + 'T00:00:00Z')
+  const birthDay = dobDate.getUTCDate()
+
+  // Try this calendar month first
+  const candidate = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), birthDay))
+
+  // If candidate is today or in the future, use it; otherwise advance one month
+  if (candidate >= now) return candidate
+  return oneMonthForward(candidate)
+}
+
+// Advance a date by exactly one calendar month (handles end-of-month edge cases).
+function oneMonthForward(d: Date): Date {
+  const result = new Date(d)
+  const day    = result.getUTCDate()
+  result.setUTCMonth(result.getUTCMonth() + 1)
+  // If the day overflowed (e.g. Jan 31 → Mar 3), snap back to end of target month
+  if (result.getUTCDate() !== day) result.setUTCDate(0)
+  return result
 }
 
 function normaliseGender(raw: string | null | undefined): 'girl' | 'boy' | 'other' | null {
@@ -135,10 +170,17 @@ Deno.serve(async (req: Request) => {
       childId = newChild.id
     }
 
-    // 6. Calculate trial_end = now + plan_months
+    // 6. Calculate trial_end = nextMonthlyBirthday(childDob) + plan_months
+    //    The catch-up window (today → first birthday) is free.
+    //    The subscription clock starts from the first monthly birthday after redemption.
     step = 'calculate-trial-end'
-    const trialEnd = new Date()
-    trialEnd.setMonth(trialEnd.getMonth() + (gift.plan_months ?? 12))
+    const now           = new Date()
+    const firstBirthday = nextMonthlyBirthday(dob, now)
+    const trialEnd      = new Date(firstBirthday)
+    for (let i = 0; i < (gift.plan_months ?? 12); i++) {
+      const next = oneMonthForward(trialEnd)
+      trialEnd.setTime(next.getTime())
+    }
 
     // 7. Upsert scout_subscriptions
     step = 'upsert-subscription'
@@ -184,9 +226,14 @@ Deno.serve(async (req: Request) => {
     }).catch(e => console.error('[scout-gift-redeem] Delivery trigger failed:', e.message))
 
     return new Response(JSON.stringify({
-      ok: true,
-      plan:      gift.plan,
-      trialEnd:  trialEnd.toISOString(),
+      ok:   true,
+      plan: gift.plan,
+      // When the subscription starts (first monthly birthday after redemption)
+      subscriptionStart: firstBirthday.toLocaleDateString('en-US', {
+        month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+      }),
+      // When the subscription ends (subscriptionStart + plan_months)
+      trialEnd:          trialEnd.toISOString(),
       trialEndFormatted: trialEnd.toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
       }),
