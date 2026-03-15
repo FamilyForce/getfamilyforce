@@ -2318,6 +2318,55 @@ button { font: inherit; cursor: pointer; }
     routeAfterSignup();
   });
 
+  // ─── URL parameter routing (trial-end email CTAs) ────────────────────────
+  // Handles: sign-in.html?intent=subscribe&plan=annual|monthly
+  // When a logged-in user arrives via trial-end email CTA, skip straight to payment.
+  (function handleUrlIntent() {
+    var params = new URLSearchParams(window.location.search);
+    var intent = params.get('intent');
+    var plan   = params.get('plan');  // 'annual' | 'monthly'
+
+    if (intent !== 'subscribe') return;
+
+    // Store plan preference — payment step reads this to pre-select the plan
+    if (plan === 'annual' || plan === 'monthly') {
+      try { sessionStorage.setItem('ff_plan_intent', plan); } catch(_) {}
+    }
+
+    // Wait for Supabase auth to initialise, then check session
+    var attempts = 0;
+    var checkSession = setInterval(function() {
+      attempts++;
+      var sb = window._supabaseClient;
+      if (!sb) {
+        if (attempts > 20) clearInterval(checkSession);  // give up after 10s
+        return;
+      }
+      clearInterval(checkSession);
+
+      sb.auth.getSession().then(function(res) {
+        var session = res.data && res.data.session;
+        if (session) {
+          // Already logged in — skip auth, go straight to payment
+          // Hide the auth card, show the payment step
+          var authCard = document.querySelector('.auth-card');
+          if (authCard) authCard.style.display = 'none';
+
+          // Update payment step copy for returning subscriber
+          var payHeading = document.getElementById('payment-heading');
+          var paySub     = document.getElementById('payment-sub');
+          if (payHeading) payHeading.textContent = 'Continue your Scout subscription';
+          if (paySub) paySub.textContent = plan === 'annual'
+            ? 'Annual plan — $79.99/year. That\'s $6.67/month. One payment, no monthly reminders.'
+            : 'Monthly plan — $9.99/month. Cancel any time.';
+
+          showStep('payment');
+        }
+        // If not logged in, normal flow — user signs in first, then is routed to payment
+      });
+    }, 500);
+  })();
+
 })();
 </script>
 
