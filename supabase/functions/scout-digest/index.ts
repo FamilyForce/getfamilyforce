@@ -160,9 +160,10 @@ function buildDigestEmail(opts: {
   siteUrl:          string
   userId:           string
   ageWeeks:         number
+  bonusMonth?:      boolean   // true = extra month granted because signup was within 7 days of birthday
 }): string {
   const { childName, ageMonths, aboveFold, allWindowCount, completedWindows,
-          nextEventDate, dashboardUrl, siteUrl, userId, ageWeeks } = opts
+          nextEventDate, dashboardUrl, siteUrl, userId, ageWeeks, bonusMonth } = opts
 
   const nextMonthName = nextEventDate.toLocaleDateString('en-US', {
     month: 'long', day: 'numeric', timeZone: 'UTC'
@@ -304,6 +305,17 @@ function buildDigestEmail(opts: {
           </tr>
           <tr><td style="height:12px"></td></tr>
 
+          ${bonusMonth ? `
+          <!-- Bonus month note -->
+          <tr>
+            <td style="background:#EDE9FF;border-radius:12px;padding:16px 18px">
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#3D2A9E;margin:0;line-height:1.6">
+                🎁 <strong>Bonus month.</strong> You signed up within a week of ${childName}'s birthday, so we're including this month as a bonus. Starting next month, a subscription keeps Scout going.
+              </p>
+            </td>
+          </tr>
+          <tr><td style="height:12px"></td></tr>` : ''}
+
           <!-- Window sections -->
           <tr><td>${closingSoonSection}</td></tr>
           <tr><td>${thisMonthSection}</td></tr>
@@ -404,8 +416,10 @@ Deno.serve(async (req: Request) => {
 
   console.log(`[scout-digest] Starting — ${now.toISOString()}`)
 
-  // 1. Load all active subscriptions
-  const { data: subs, error: subErr } = await sb
+  // 1. Load all active subscriptions + trialing bonus-eligible users
+  const todayStr = now.toISOString().split('T')[0]  // YYYY-MM-DD
+
+  const { data: activeSubs, error: subErr } = await sb
     .from('scout_subscriptions')
     .select('user_id, created_at')
     .eq('status', 'active')
@@ -415,7 +429,27 @@ Deno.serve(async (req: Request) => {
     return new Response(JSON.stringify({ ok: false, error: subErr.message }), { status: 500 })
   }
 
-  console.log(`[scout-digest] ${subs?.length ?? 0} active subscriptions to check`)
+  // Also load trialing users who have a bonus_birthday = today
+  // These users signed up within 7 days of their child's birthday and get a bonus digest
+  const { data: bonusEvents } = await sb
+    .from('scout_events')
+    .select('user_id')
+    .eq('event_type', 'trial_bonus_eligible')
+    .eq('properties->>bonus_birthday', todayStr)
+
+  const bonusUserIds = new Set((bonusEvents ?? []).map(e => e.user_id))
+
+  // Merge: active subs + bonus trialing users (deduplicated)
+  const activeSets  = new Set((activeSubs ?? []).map(s => s.user_id))
+  const allUserIds  = [
+    ...(activeSubs ?? []),
+    ...(bonusEvents ?? [])
+      .filter(e => !activeSets.has(e.user_id))  // don't double-add active users
+      .map(e => ({ user_id: e.user_id, created_at: now.toISOString() })),
+  ]
+
+  const subs = allUserIds
+  console.log(`[scout-digest] ${activeSubs?.length ?? 0} active + ${bonusUserIds.size} bonus trialing to check`)
 
   for (const sub of (subs ?? [])) {
     try {
@@ -519,6 +553,7 @@ Deno.serve(async (req: Request) => {
         siteUrl,
         userId,
         ageWeeks:         weeks,
+        bonusMonth:       bonusUserIds.has(userId),
       })
 
       // 8. Generate .ics for next birthday

@@ -32,27 +32,38 @@ function err(status: number, msg: string, step = '') {
   })
 }
 
-// ─── Calculate child's next birthday from a given date ───────────────────────
-// Handles Feb 29 babies (uses Feb 28 in non-leap years)
-// Handles 31st-of-month babies (uses last day of month in short months)
-function nextBirthday(dob: Date, fromDate: Date): Date {
-  const birthMonth = dob.getUTCMonth()   // 0-indexed
-  const birthDay   = dob.getUTCDate()
+// ─── Calculate child's next MONTHLY birthday from a given date ───────────────
+// Returns the next occurrence of the birth day-of-month in any month.
+// e.g. born Jan 22, today = March 5 → returns March 22
+// e.g. born Jan 22, today = March 22 → returns April 22
+// Handles short months: born 31st in a 30-day month → last day of month
+function nextMonthlyBirthday(dob: Date, fromDate: Date): Date {
+  const birthDay = dob.getUTCDate()
+  const year     = fromDate.getUTCFullYear()
+  const month    = fromDate.getUTCMonth()
 
-  let year = fromDate.getUTCFullYear()
+  // Try this month
+  const daysThisMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate()
+  const dayThisMonth  = Math.min(birthDay, daysThisMonth)
+  const thisMonth     = new Date(Date.UTC(year, month, dayThisMonth))
+  if (thisMonth > fromDate) return thisMonth
 
-  // Try this calendar year first, then next year
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const daysInMonth = new Date(Date.UTC(year, birthMonth + 1, 0)).getUTCDate()
-    const day         = Math.min(birthDay, daysInMonth)
-    const candidate   = new Date(Date.UTC(year, birthMonth, day))
+  // Next month
+  const nextMonth     = month === 11 ? 0 : month + 1
+  const nextYear      = month === 11 ? year + 1 : year
+  const daysNextMonth = new Date(Date.UTC(nextYear, nextMonth + 1, 0)).getUTCDate()
+  const dayNextMonth  = Math.min(birthDay, daysNextMonth)
+  return new Date(Date.UTC(nextYear, nextMonth, dayNextMonth))
+}
 
-    if (candidate > fromDate) return candidate
-    year++
-  }
-
-  // Fallback (should never reach here)
-  return new Date(Date.UTC(fromDate.getUTCFullYear() + 1, birthMonth, birthDay))
+// ─── Advance one monthly birthday forward ─────────────────────────────────────
+function oneMonthForward(date: Date, birthDay: number): Date {
+  const month = date.getUTCMonth()
+  const year  = date.getUTCFullYear()
+  const nextM = month === 11 ? 0 : month + 1
+  const nextY = month === 11 ? year + 1 : year
+  const days  = new Date(Date.UTC(nextY, nextM + 1, 0)).getUTCDate()
+  return new Date(Date.UTC(nextY, nextM, Math.min(birthDay, days)))
 }
 
 // ─── Validate date of birth ───────────────────────────────────────────────────
@@ -165,18 +176,18 @@ Deno.serve(async (req: Request) => {
       childId = newChild.id
     }
 
-    // 4. Calculate trial_end = child's next birthday
+    // 4. Calculate trial_end = child's next MONTHLY birthday
     step = 'calculate-trial-end'
-    const dobDate  = new Date(dob + 'T00:00:00Z')
-    const now      = new Date()
-    const trialEnd = nextBirthday(dobDate, now)
+    const dobDate      = new Date(dob + 'T00:00:00Z')
+    const now          = new Date()
+    const birthDay     = dobDate.getUTCDate()
+    const nextBday     = nextMonthlyBirthday(dobDate, now)
+    const daysUntilEnd = Math.floor((nextBday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 
-    // Sanity check: trial must be at least 1 day, at most 366 days
-    const daysUntilEnd = Math.floor((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-    if (daysUntilEnd < 1) {
-      // Edge case: birthday is today — give them a full year
-      trialEnd.setFullYear(trialEnd.getUTCFullYear() + 1)
-    }
+    // Bonus month: if next birthday is within 7 days, extend trial by one extra month
+    // so the user gets 2 digests instead of 1 during their trial
+    const bonusMonth = daysUntilEnd <= 7
+    const trialEnd   = bonusMonth ? oneMonthForward(nextBday, birthDay) : nextBday
 
     // 5. Upsert scout_subscriptions
     step = 'upsert-subscription'
@@ -197,14 +208,31 @@ Deno.serve(async (req: Request) => {
       child_id:   childId,
       event_type: 'trial_started',
       properties: {
-        child_name:  name,
-        child_dob:   dob,
-        child_gender: gender,
-        trial_end:   trialEnd.toISOString(),
-        days_of_trial: daysUntilEnd,
-        duration_ms: Date.now() - jobStart,
+        child_name:    name,
+        child_dob:     dob,
+        child_gender:  gender,
+        trial_end:     trialEnd.toISOString(),
+        days_until_first_birthday: daysUntilEnd,
+        bonus_month:   bonusMonth,
+        duration_ms:   Date.now() - jobStart,
       },
     })
+
+    // 6b. If bonus month: log trial_bonus_eligible so scout-digest knows to fire
+    //     for this user on the intermediate birthday (nextBday)
+    if (bonusMonth) {
+      step = 'log-bonus-event'
+      await sb.from('scout_events').insert({
+        user_id:    user.id,
+        child_id:   childId,
+        event_type: 'trial_bonus_eligible',
+        properties: {
+          bonus_birthday:      nextBday.toISOString().split('T')[0],  // YYYY-MM-DD
+          days_until_birthday: daysUntilEnd,
+        },
+      })
+      console.log(`[scout-trial-start] Bonus month granted for user ${user.id} — next birthday ${nextBday.toISOString().split('T')[0]} in ${daysUntilEnd} days`)
+    }
 
     // 7. Fire scout-signup-delivery (async — do not await, don't block the response)
     step = 'trigger-delivery'
@@ -232,12 +260,13 @@ Deno.serve(async (req: Request) => {
 
     // Return immediately — delivery happens in the background
     return new Response(JSON.stringify({
-      ok:       true,
+      ok:         true,
       childId,
-      trialEnd: trialEnd.toISOString(),
+      trialEnd:   trialEnd.toISOString(),
       trialEndFormatted: trialEnd.toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
       }),
+      bonusMonth,
     }), {
       status:  200,
       headers: { ...CORS, 'Content-Type': 'application/json' },
