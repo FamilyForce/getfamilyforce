@@ -3,7 +3,7 @@
 --
 -- Run these in Supabase SQL Editor weekly.
 -- All queries use the scout_events table.
--- Filter by date range: change the WHERE created_at filters.
+-- Filter by date range: change the WHERE occurred_at filters.
 --
 -- Activation metric (5A): dashboard_opened
 -- Definition: user opens the Scout dashboard after receiving their first digest.
@@ -35,7 +35,7 @@ SELECT
     1
   ) AS "activation_rate_pct"
 FROM scout_events
-WHERE created_at >= NOW() - INTERVAL '30 days';
+WHERE occurred_at >= NOW() - INTERVAL '30 days';
 
 
 -- Drop-off rates between each step
@@ -48,7 +48,7 @@ WITH funnel AS (
                         THEN user_id END)                                        AS email_opens,
     COUNT(DISTINCT CASE WHEN event_type = 'dashboard_opened'  THEN user_id END) AS dash_opens
   FROM scout_events
-  WHERE created_at >= NOW() - INTERVAL '30 days'
+  WHERE occurred_at >= NOW() - INTERVAL '30 days'
 )
 SELECT
   signups,
@@ -81,7 +81,7 @@ SELECT
     1
   ) AS "trial_to_paid_pct"
 FROM scout_events
-WHERE created_at >= NOW() - INTERVAL '90 days';
+WHERE occurred_at >= NOW() - INTERVAL '90 days';
 
 
 -- Conversion breakdown: annual vs monthly
@@ -91,7 +91,7 @@ SELECT
   ROUND(AVG((properties->>'days_in_trial')::numeric), 1) AS avg_days_in_trial
 FROM scout_events
 WHERE event_type = 'trial_converted'
-  AND created_at >= NOW() - INTERVAL '90 days'
+  AND occurred_at >= NOW() - INTERVAL '90 days'
 GROUP BY 1
 ORDER BY 2 DESC;
 
@@ -102,7 +102,7 @@ ORDER BY 2 DESC;
 -- ─────────────────────────────────────────────────────────────────────────────
 
 SELECT
-  DATE_TRUNC('month', created_at) AS month,
+  DATE_TRUNC('month', occurred_at) AS month,
   COUNT(DISTINCT CASE WHEN event_type = 'first_digest_sent'
                       OR  (event_type = 'job_succeeded' AND properties->>'job_type' = 'scout-digest')
                       THEN user_id END) AS digests_sent,
@@ -122,7 +122,7 @@ SELECT
     1
   ) AS "email_open_rate_%"
 FROM scout_events
-WHERE created_at >= NOW() - INTERVAL '6 months'
+WHERE occurred_at >= NOW() - INTERVAL '6 months'
 GROUP BY 1
 ORDER BY 1 DESC;
 
@@ -140,7 +140,7 @@ SELECT
     1
   ) AS "redemption_rate_%"
 FROM scout_events
-WHERE created_at >= NOW() - INTERVAL '90 days';
+WHERE occurred_at >= NOW() - INTERVAL '90 days';
 
 
 -- ─────────────────────────────────────────────────────────────────────────────
@@ -149,7 +149,7 @@ WHERE created_at >= NOW() - INTERVAL '90 days';
 -- ─────────────────────────────────────────────────────────────────────────────
 
 SELECT
-  DATE_TRUNC('week', created_at) AS week,
+  DATE_TRUNC('week', occurred_at) AS week,
   COUNT(CASE WHEN event_type = 'email_delivered'    THEN 1 END) AS delivered,
   COUNT(CASE WHEN event_type = 'email_opened'       THEN 1 END) AS opened,
   COUNT(CASE WHEN event_type = 'email_clicked'      THEN 1 END) AS clicked,
@@ -167,7 +167,7 @@ SELECT
     2
   ) AS "bounce_rate_%"
 FROM scout_events
-WHERE created_at >= NOW() - INTERVAL '12 weeks'
+WHERE occurred_at >= NOW() - INTERVAL '12 weeks'
 GROUP BY 1
 ORDER BY 1 DESC;
 
@@ -184,7 +184,7 @@ SELECT
   ROUND(AVG(CASE WHEN event_type = 'job_succeeded'
                  THEN (properties->>'duration_ms')::numeric END), 0) AS avg_duration_ms
 FROM scout_events
-WHERE created_at >= NOW() - INTERVAL '30 days'
+WHERE occurred_at >= NOW() - INTERVAL '30 days'
   AND event_type IN ('job_succeeded', 'job_failed')
 GROUP BY 1
 ORDER BY failed DESC, succeeded DESC;
@@ -203,7 +203,7 @@ SELECT
     1
   ) AS "paywall_conversion_%"
 FROM scout_events
-WHERE created_at >= NOW() - INTERVAL '90 days';
+WHERE occurred_at >= NOW() - INTERVAL '90 days';
 
 
 -- ─────────────────────────────────────────────────────────────────────────────
@@ -216,7 +216,7 @@ SELECT
   COUNT(*)                    AS updates
 FROM scout_events
 WHERE event_type = 'window_progress_updated'
-  AND created_at >= NOW() - INTERVAL '30 days'
+  AND occurred_at >= NOW() - INTERVAL '30 days'
 GROUP BY 1, 2
 ORDER BY 3 DESC;
 
@@ -234,4 +234,4 @@ SELECT
   COUNT(CASE WHEN event_type = 'email_bounced'              THEN 1 END)       AS bounces,
   COUNT(CASE WHEN event_type = 'email_complained'           THEN 1 END)       AS complaints
 FROM scout_events
-WHERE created_at >= DATE_TRUNC('week', NOW());
+WHERE occurred_at >= DATE_TRUNC('week', NOW());
