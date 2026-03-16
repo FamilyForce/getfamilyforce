@@ -42,12 +42,12 @@
       </div>
     </div>
 
-        <nav class="sidebar-nav">
+            <nav class="sidebar-nav">
       <a href="/scout-dashboard.html"          class="sidebar-nav-item" data-nav="home"><span class="nav-icon">🔭</span> Scout</a>
-      <a href="/scout-dashboard/family.html"   class="sidebar-nav-item" data-nav="family"><span class="nav-icon">👨‍👩‍👧</span> Family Circle</a>
       <a href="/scout-dashboard/library.html"  class="sidebar-nav-item" data-nav="library"><span class="nav-icon">📚</span> Free Library</a>
-      <a href="/scout-dashboard/history.html"  class="sidebar-nav-item" data-nav="history"><span class="nav-icon">📋</span> History</a>
       <div class="sidebar-divider"></div>
+      <a href="/scout-dashboard/family.html"   class="sidebar-nav-item" data-nav="family"><span class="nav-icon">👨‍👩‍👧</span> Family Circle</a>
+      <a href="/scout-dashboard/history.html"  class="sidebar-nav-item" data-nav="history"><span class="nav-icon">📋</span> History</a>
       <a href="/scout-dashboard/settings.html" class="sidebar-nav-item" data-nav="settings"><span class="nav-icon">⚙️</span> Settings</a>
     </nav>
 
@@ -74,16 +74,24 @@
     <!-- Window sections (populated by JS) -->
     <div id="windowSections"></div>
 
+    <!-- History link -->
+    <div style="margin-top:32px;padding-top:20px;border-top:1px solid var(--border);text-align:center">
+      <a href="/scout-dashboard/history.html"
+        style="font-size:13px;font-weight:600;color:var(--text-dim);text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:color .15s"
+        onmouseover="this.style.color='var(--terra)'" onmouseout="this.style.color='var(--text-dim)'">
+        📋 View full history →
+      </a>
+    </div>
+
   </main>
 </div>
 
 <!-- Bottom nav (mobile) -->
 <nav class="scout-bottom-nav">
-    <div class="bottom-nav-inner">
+      <div class="bottom-nav-inner">
     <a href="/scout-dashboard.html"          class="bottom-nav-item" data-nav="home"><span class="bottom-nav-icon">🔭</span>Scout</a>
-    <a href="/scout-dashboard/family.html"   class="bottom-nav-item" data-nav="family"><span class="bottom-nav-icon">👨‍👩‍👧</span>Family</a>
     <a href="/scout-dashboard/library.html"  class="bottom-nav-item" data-nav="library"><span class="bottom-nav-icon">📚</span>Library</a>
-    <a href="/scout-dashboard/history.html"  class="bottom-nav-item" data-nav="history"><span class="bottom-nav-icon">📋</span>History</a>
+    <a href="/scout-dashboard/family.html"   class="bottom-nav-item" data-nav="family"><span class="bottom-nav-icon">👨‍👩‍👧</span>Family</a>
     <a href="/scout-dashboard/settings.html" class="bottom-nav-item" data-nav="settings"><span class="bottom-nav-icon">⚙️</span>Settings</a>
   </div>
 </nav>
