@@ -58,21 +58,47 @@
     /* ── Child loading ───────────────────────────────────────── */
     _loadChild: function (cb) {
       var savedId = localStorage.getItem('scout_active_child_id')
-      sb.from('children').select('*').eq('user_id', _user.id).order('created_at').then(function (res) {
-        var children = res.data || []
+      // Load own children + children shared via Family Circle (where this user is a member)
+      Promise.all([
+        sb.from('children').select('*').eq('user_id', _user.id).order('created_at'),
+        sb.from('family_members').select('owner_user_id').eq('member_user_id', _user.id)
+      ]).then(function (results) {
+        var ownChildren   = results[0].data || []
+        var memberships   = results[1].data || []
+        var ownerIds      = memberships.map(function (m) { return m.owner_user_id })
+
+        if (ownerIds.length === 0) {
+          return Promise.resolve(ownChildren)
+        }
+        return sb.from('children').select('*').in('user_id', ownerIds).order('created_at')
+          .then(function (r) { return ownChildren.concat(r.data || []) })
+      }).then(function (children) {
         if (children.length === 0) {
-          // No child — redirect to child setup (unless already on that page)
           if (!window.location.pathname.includes('/child')) {
             window.location.href = '/scout-dashboard/child.html'
           }
           return
         }
-        // Pick saved child or first
         var found = children.find(function (c) { return c.id === savedId })
         _child = found || children[0]
         localStorage.setItem('scout_active_child_id', _child.id)
         ScoutDash._renderChildSelector(children)
         if (typeof cb === 'function') cb()
+      }).catch(function (e) {
+        console.error('[_loadChild] Failed:', e)
+        // Fall back to own children only
+        sb.from('children').select('*').eq('user_id', _user.id).order('created_at').then(function (res) {
+          var children = res.data || []
+          if (children.length === 0) {
+            if (!window.location.pathname.includes('/child')) window.location.href = '/scout-dashboard/child.html'
+            return
+          }
+          var found = children.find(function (c) { return c.id === savedId })
+          _child = found || children[0]
+          localStorage.setItem('scout_active_child_id', _child.id)
+          ScoutDash._renderChildSelector(children)
+          if (typeof cb === 'function') cb()
+        })
       })
     },
 
@@ -115,6 +141,7 @@
           wrapper.style.position = 'relative'
         })
         document.addEventListener('click', function () { list.classList.remove('open') })
+        document.addEventListener('touchstart', function () { list.classList.remove('open') }, { passive: true })
       }
     },
 
@@ -144,10 +171,15 @@
       var daysStr  = days > 0 ? days + ' day' + (days === 1 ? '' : 's') : 'today'
       var textEl   = banner.querySelector('.trial-banner-text')
       if (textEl) textEl.textContent = 'Free trial ends ' + dateStr + ' (' + daysStr + ')'
+      // Check if user dismissed within last 24h
+      var dismissKey = 'scout_trial_banner_dismissed'
+      var dismissed  = localStorage.getItem(dismissKey)
+      if (dismissed && (Date.now() - parseInt(dismissed)) < 86400000) return
       banner.style.display = 'flex'
       var closeBtn = banner.querySelector('.trial-banner-close')
       if (closeBtn) closeBtn.addEventListener('click', function () {
         banner.style.display = 'none'
+        localStorage.setItem(dismissKey, Date.now().toString())
       })
     },
 
@@ -195,6 +227,9 @@
           w._note     = w._progress ? (w._progress.notes || '') : ''
         })
         if (typeof cb === 'function') cb(windows, ageW)
+      }).catch(function (e) {
+        console.error('[loadWindows] Failed:', e)
+        if (typeof cb === 'function') cb(null, ageW, e)
       })
     },
 
@@ -394,6 +429,9 @@
             if (err) { stat.className = 'note-status error'; stat.textContent = 'Could not save. Tap to retry.' }
             else     { stat.className = 'note-status saved'; stat.textContent = 'Saved' }
           }
+          // Update lastSaved so closeModal flush knows this is already persisted
+          var modalTA = document.getElementById('modalNoteTA')
+          if (modalTA && modalTA.dataset.wid === wid) modalTA.dataset.lastSaved = text
         })
       }, true)
     },
@@ -455,11 +493,23 @@
 
         // Persist (with today as default date)
         var selectedDate = (dateInp && dateInp.value) ? dateInp.value : null
+        // In-flight indicator: briefly dim the card
+        card.style.opacity = '0.6'
+        card.style.pointerEvents = 'none'
         ScoutDash.saveProgress(wid, newStatus, childId, selectedDate, function (err, data) {
+          card.style.opacity = ''
+          card.style.pointerEvents = ''
           if (err) {
             ScoutDash.toast('Could not save. Please try again.', 'error')
             win._status = 'open'
+            // Revert optimistic UI
+            btns.forEach(function (b) { b.classList.remove('active-done', 'active-progress', 'active-skip') })
+            card.classList.remove('state-in-progress', 'state-done', 'state-skipped')
           } else {
+          }
+          ScoutDash._updateProgressBar(windowsRef)
+        })
+      })
             // Store attribution data back on the window object
             if (data && data.updatedByName) {
               if (!win._progress) win._progress = {}
@@ -572,6 +622,9 @@
       overlay.addEventListener('click', function (e) {
         if (e.target === overlay) ScoutDash.closeModal()
       })
+      // Tag textarea with childId so closeModal can flush pending notes
+      var ta = document.getElementById('modalNoteTA')
+      if (ta) ta.dataset.childId = window._scoutChildId || ''
       var closeBtn = document.getElementById('modalClose')
       if (closeBtn) closeBtn.addEventListener('click', ScoutDash.closeModal)
 
@@ -652,15 +705,25 @@
       var noteEl = document.getElementById('modalNoteText')
       var noteTA = document.getElementById('modalNoteTA')
       if (noteEl) noteEl.textContent = win._note || ''
-      if (noteTA) { noteTA.value = win._note || ''; noteTA.dataset.wid = win.id }
+      if (noteTA) { noteTA.value = win._note || ''; noteTA.dataset.wid = win.id; noteTA.dataset.lastSaved = win._note || '' }
 
       overlay.classList.add('open')
       overlay.removeAttribute('aria-hidden')
+      // Tag textarea with childId so closeModal can flush pending notes
+      var ta = document.getElementById('modalNoteTA')
+      if (ta) ta.dataset.childId = window._scoutChildId || ''
       var closeBtn = document.getElementById('modalClose')
       if (closeBtn) closeBtn.focus()
     },
 
     closeModal: function () {
+      // Flush any unsaved note before closing
+      var ta  = document.getElementById('modalNoteTA')
+      var wid = ta && ta.dataset.wid
+      if (ta && wid && ta.dataset.childId && ta.value.trim() !== (ta.dataset.lastSaved || '')) {
+        ScoutDash.saveNote(wid, ta.value.trim(), ta.dataset.childId, function () {})
+        ta.dataset.lastSaved = ta.value.trim()
+      }
       var overlay = document.getElementById('windowModal')
       if (!overlay) return
       overlay.classList.remove('open')

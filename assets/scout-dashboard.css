@@ -87,7 +87,7 @@ input, textarea, select { font-family: var(--sans); }
 }
 .sidebar-logo-mark svg { width: 14px; height: 14px; fill: #fff; }
 .sidebar-logo-name { font-size: 15px; font-weight: 700; color: var(--text); }
-.sidebar-logo-product { font-size: 13px; font-weight: 500; color: var(--terra); }
+.sidebar-logo-product { font-size: 13px; font-weight: 500; color: var(--terra); max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* Child selector */
 .sidebar-child {
@@ -780,4 +780,41 @@ input, textarea, select { font-family: var(--sans); }
 }
 @media (prefers-reduced-motion: reduce) {
   .section-body { transition: none; }
+}
+
+/* ─── Load error state ─────────────────────────────────────── */
+.error-state {
+  text-align: center; padding: 40px 20px;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-card); margin-top: 20px;
+}
+.error-state-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.error-state-text  { font-size: 14px; color: var(--text-dim); }
+
+/* ─── First-visit onboarding banner ───────────────────────── */
+.onboarding-banner {
+  background: var(--terra-tint); border: 1.5px solid var(--terra);
+  border-radius: var(--radius-card); padding: 14px 18px;
+  margin-bottom: 20px;
+}
+.onboarding-banner-inner {
+  display: flex; align-items: flex-start; gap: 14px;
+  justify-content: space-between;
+}
+.onboarding-banner-text {
+  font-size: 14px; color: var(--text); line-height: 1.6; flex: 1;
+}
+.onboarding-banner-text strong { color: var(--terra); }
+.onboarding-banner-close {
+  flex-shrink: 0; padding: 5px 14px;
+  background: var(--terra); color: #fff;
+  border: none; border-radius: var(--radius-pill);
+  font-family: var(--sans); font-size: 12px; font-weight: 700;
+  cursor: pointer; white-space: nowrap; align-self: flex-start;
+  transition: background .15s;
+}
+@media (hover: hover) { .onboarding-banner-close:hover { background: var(--terra-dark); } }
+@media (max-width: 480px) {
+  .onboarding-banner-inner { flex-direction: column; gap: 10px; }
+  .onboarding-banner-close { align-self: flex-start; }
 }

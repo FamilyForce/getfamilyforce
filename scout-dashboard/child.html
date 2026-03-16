@@ -290,8 +290,8 @@ function saveChild() {
   else {
     var d = new Date(dobVal + 'T00:00:00Z')
     var now = new Date()
-    var minDate = new Date(now); minDate.setFullYear(minDate.getFullYear() - 4)
-    if (isNaN(d) || d > now || d < minDate) { dobErr.textContent = 'Date must be within the last 3 years.'; dobErr.classList.add('show'); valid = false }
+    var minDate = new Date(now); minDate.setFullYear(minDate.getFullYear() - 3)
+    if (isNaN(d) || d > now || d < minDate) { dobErr.textContent = 'Scout covers birth to 3 years. Please check the date of birth.'; dobErr.classList.add('show'); valid = false }
   }
   if (!valid) return
 

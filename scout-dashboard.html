@@ -64,6 +64,18 @@
       <button class="trial-banner-close" aria-label="Dismiss">✕</button>
     </div>
 
+    <!-- First-visit onboarding banner -->
+    <div class="onboarding-banner" id="onboardingBanner" style="display:none" role="note">
+      <div class="onboarding-banner-inner">
+        <div class="onboarding-banner-text">
+          <strong>Welcome to Scout.</strong>
+          Each month we email you a digest of your child's active developmental windows.
+          Use this dashboard to track what you've done, add notes, and see what's coming up.
+        </div>
+        <button class="onboarding-banner-close" aria-label="Dismiss" onclick="dismissOnboarding()">Got it</button>
+      </div>
+    </div>
+
     <!-- Page header -->
     <div class="page-header" id="pageHeader">
       <div class="skeleton" style="height:32px;width:260px;margin-bottom:8px"></div>
@@ -214,7 +226,16 @@ function renderHome(child, sub) {
   }
 
   // Load windows
-  ScoutDash.loadWindows(child.id, dob, function (windows, ageW) {
+  ScoutDash.loadWindows(child.id, dob, function (windows, ageW, loadErr) {
+    if (loadErr || !windows) {
+      document.getElementById('windowSections').innerHTML =
+        '<div class="error-state">' +
+        '<p class="error-state-title">Could not load windows.</p>' +
+        '<p class="error-state-text">Check your connection and try again.</p>' +
+        '<button class="btn btn-secondary" onclick="window.location.reload()" style="margin-top:12px">Retry</button>' +
+        '</div>'
+      return
+    }
     var sections = ScoutDash.sectionWindows(windows, ageW)
     renderSections(sections, windows, child, sub, ageM, name)
     ScoutDash._updateProgressBar(windows)
@@ -223,6 +244,9 @@ function renderHome(child, sub) {
     ScoutDash.wireModal(windows)
     wireModalActions(windows, child.id)
     wireDoneAccordion()
+    showOnboarding()
+    // Store childId globally for modal note flush on close
+    window._scoutChildId = child.id
 
     // First-visit welcome state
     var hasActions = windows.some(function (w) { return w._status && w._status !== 'open' })
@@ -296,8 +320,13 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
     thisMonthContent)
 
   // Coming up
-  var trialExpired = sub && sub.status === 'trialing' && new Date(sub.trial_end) < new Date()
-  if (trialExpired) {
+  // No access: expired trial, lapsed active sub, past_due, or no sub
+  var noAccess = !sub
+    || sub.status === 'expired'
+    || sub.status === 'past_due'
+    || (sub.status === 'trialing' && new Date(sub.trial_end) < new Date())
+    || (sub.status === 'active' && sub.period_end && new Date(sub.period_end) < new Date())
+  if (noAccess) {
     html += renderPaywall(name, ageM)
   } else if (sections.comingUp.length > 0) {
     var comingCards = '<div class="window-grid">'
@@ -439,6 +468,22 @@ function wireModalActions(windows, childId) {
 
 function startCheckout(plan) {
   window.location.href = '/scout-dashboard/settings.html?checkout=' + plan
+}
+
+function showOnboarding() {
+  var DISMISS_KEY = 'scout_onboarding_dismissed'
+  if (localStorage.getItem(DISMISS_KEY)) return
+  var banner = document.getElementById('onboardingBanner')
+  if (banner) banner.style.display = 'block'
+}
+function dismissOnboarding() {
+  localStorage.setItem('scout_onboarding_dismissed', '1')
+  var banner = document.getElementById('onboardingBanner')
+  if (banner) {
+    banner.style.transition = 'opacity .2s'
+    banner.style.opacity = '0'
+    setTimeout(function () { banner.style.display = 'none' }, 200)
+  }
 }
 </script>
 </body>
