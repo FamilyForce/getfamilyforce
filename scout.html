@@ -1017,15 +1017,15 @@ a { color: inherit; text-decoration: none; }
         <div class="w-cal-header">
           <div class="w-cal-icon">📅</div>
           <div>
-            <div class="w-cal-event-title" id="w-cal-title">Scout Digest — April 2026</div>
-            <div class="w-cal-organizer">FamilyForce Scout · Recurring monthly</div>
+            <div class="w-cal-event-title" id="w-cal-title">Scout Digest</div>
+            <div class="w-cal-organizer">To: Mom, Dad, Grandma, Grandpa, Nanny</div>
           </div>
         </div>
 
         <!-- Event body -->
         <div class="w-cal-body">
           <div class="w-cal-meta-row">
-            <div class="w-cal-date-chip">📅 Arrives on your child's birthday</div>
+            <div class="w-cal-date-chip" id="w-date-chip">📅 Arrives on your child's birthday</div>
             <div class="w-cal-child-chip" id="w-child-chip">👶 5 months old</div>
             <div class="w-cal-reminder-chip">🔔 7-day reminder included</div>
           </div>
@@ -1591,8 +1591,10 @@ function render() {
   const yr  = now.getFullYear();
   const titleEl = document.getElementById('w-cal-title');
   const chipEl  = document.getElementById('w-child-chip');
-  if (titleEl) titleEl.textContent = 'Scout Digest — ' + mon + ' ' + yr;
+  if (titleEl) titleEl.textContent = 'Scout Digest';
   if (chipEl)  chipEl.textContent  = p.stageDesc;
+  const dateChip = document.getElementById('w-date-chip');
+  if (dateChip) dateChip.textContent = '📅 ' + mon + ' ' + yr + ' digest';
 
   // Render agenda items
   const list = document.getElementById('w-windows');
