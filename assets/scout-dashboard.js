@@ -58,21 +58,8 @@
     /* ── Child loading ───────────────────────────────────────── */
     _loadChild: function (cb) {
       var savedId = localStorage.getItem('scout_active_child_id')
-      // Load own children + children shared via Family Circle (where this user is a member)
-      Promise.all([
-        sb.from('children').select('*').eq('user_id', _user.id).order('created_at'),
-        sb.from('family_members').select('owner_user_id').eq('member_user_id', _user.id)
-      ]).then(function (results) {
-        var ownChildren   = results[0].data || []
-        var memberships   = results[1].data || []
-        var ownerIds      = memberships.map(function (m) { return m.owner_user_id })
 
-        if (ownerIds.length === 0) {
-          return Promise.resolve(ownChildren)
-        }
-        return sb.from('children').select('*').in('user_id', ownerIds).order('created_at')
-          .then(function (r) { return ownChildren.concat(r.data || []) })
-      }).then(function (children) {
+      function finalize(children) {
         if (children.length === 0) {
           if (!window.location.pathname.includes('/child')) {
             window.location.href = '/scout-dashboard/child.html'
@@ -84,22 +71,34 @@
         localStorage.setItem('scout_active_child_id', _child.id)
         ScoutDash._renderChildSelector(children)
         if (typeof cb === 'function') cb()
-      }).catch(function (e) {
-        console.error('[_loadChild] Failed:', e)
-        // Fall back to own children only
-        sb.from('children').select('*').eq('user_id', _user.id).order('created_at').then(function (res) {
-          var children = res.data || []
-          if (children.length === 0) {
-            if (!window.location.pathname.includes('/child')) window.location.href = '/scout-dashboard/child.html'
-            return
-          }
-          var found = children.find(function (c) { return c.id === savedId })
-          _child = found || children[0]
-          localStorage.setItem('scout_active_child_id', _child.id)
-          ScoutDash._renderChildSelector(children)
-          if (typeof cb === 'function') cb()
+      }
+
+      // Step 1: load own children (critical path)
+      sb.from('children').select('*').eq('user_id', _user.id).order('created_at')
+        .then(function (res) {
+          var ownChildren = res.data || []
+
+          // Step 2: try to load shared children via Family Circle (non-critical)
+          sb.from('family_members').select('owner_user_id').eq('member_user_id', _user.id)
+            .then(function (fmRes) {
+              var ownerIds = (fmRes.data || []).map(function (m) { return m.owner_user_id })
+              if (ownerIds.length === 0) { finalize(ownChildren); return }
+
+              sb.from('children').select('*').in('user_id', ownerIds).order('created_at')
+                .then(function (r) {
+                  finalize(ownChildren.concat(r.data || []))
+                })
+                .catch(function () { finalize(ownChildren) })
+            })
+            .catch(function () {
+              // family_members query failed (RLS, missing table) — use own children
+              finalize(ownChildren)
+            })
         })
-      })
+        .catch(function (e) {
+          console.error('[_loadChild] children query failed:', e)
+          finalize([])
+        })
     },
 
     _renderChildSelector: function (children) {
