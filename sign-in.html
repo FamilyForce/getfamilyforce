@@ -1298,11 +1298,25 @@ button { font: inherit; cursor: pointer; }
         <button class="step-back" id="child-back-btn" onclick="showStep('intent')" aria-label="Back">← Back</button>
         <h2 class="step-h">Tell us about your child</h2>
         <p class="step-sub">Scout uses this to show you exactly what matters this month, not in general.</p>
+
+        <!-- Error banner (hidden by default) -->
+        <div id="child-step-error" role="alert" style="display:none;background:#FEF2F2;border:1.5px solid #FECACA;border-radius:10px;padding:12px 14px;margin-bottom:20px;font-size:13px;color:#B91C1C;line-height:1.5"></div>
+
         <div class="step-form-group">
           <label class="step-label" for="child-name">Child's first name</label>
           <input class="step-input" id="child-name" type="text" placeholder="e.g. Olivia" autocomplete="off" autocapitalize="words">
         </div>
-        <div class="step-input-row step-form-group">
+
+        <!-- Expecting toggle -->
+        <div class="step-form-group" style="margin-bottom:16px">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none">
+            <input type="checkbox" id="child-expecting" onchange="toggleExpecting()" style="width:18px;height:18px;accent-color:var(--terra);cursor:pointer;flex-shrink:0">
+            <span style="font-size:14px;color:var(--text)">I'm expecting — baby not born yet</span>
+          </label>
+        </div>
+
+        <!-- DOB section (shown when NOT expecting) -->
+        <div id="dob-section" class="step-input-row step-form-group">
           <div>
             <label class="step-label" for="child-dob">Date of birth</label>
             <input class="step-input" id="child-dob" type="date" max="" aria-describedby="child-dob-hint">
@@ -1318,6 +1332,29 @@ button { font: inherit; cursor: pointer; }
             </select>
           </div>
         </div>
+
+        <!-- Due date section (shown when expecting) -->
+        <div id="due-date-section" class="step-input-row step-form-group" style="display:none">
+          <div>
+            <label class="step-label" for="child-due-date">Due date</label>
+            <input class="step-input" id="child-due-date" type="date" min="" aria-describedby="due-date-hint">
+            <span id="due-date-hint" style="font-size:11px;color:var(--text-dim);margin-top:4px;display:block">Approximate is fine — you can update it later</span>
+          </div>
+          <div>
+            <label class="step-label" for="child-gender-exp">Sex</label>
+            <select class="step-input" id="child-gender-exp">
+              <option value="other">Don't know yet</option>
+              <option value="girl">Girl</option>
+              <option value="boy">Boy</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Pre-birth info banner -->
+        <div id="prebirth-info" style="display:none;background:#F5F3FF;border:1.5px solid #DDD6FE;border-radius:10px;padding:12px 14px;margin-bottom:20px;font-size:13px;color:#5B3CC4;line-height:1.6">
+          🌱 <strong>Pre-birth mode:</strong> You'll get prep windows now — things to do before baby arrives. Your full trial starts when you confirm baby is here.
+        </div>
+
         <button class="step-btn-primary" id="start-trial-btn" onclick="startFreeTrial()">Start my free trial →</button>
         <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">Not ready? <a href="dashboard.html" style="color:var(--terra)">Browse the free library instead →</a></p>
         <p style="font-size:11px;color:var(--text-ghost);text-align:center;margin-top:6px">No credit card. You can add more children later.</p>
@@ -1395,6 +1432,11 @@ button { font: inherit; cursor: pointer; }
         <button class="step-btn-primary" id="success-cta" onclick="successRedirect()" style="max-width:320px;margin:0 auto;display:block">
           Go to my dashboard →
         </button>
+        <div id="add-another-child-wrap" style="display:none;margin-top:16px">
+          <button onclick="addAnotherChild()" style="background:none;border:none;font-size:14px;color:var(--terra);cursor:pointer;text-decoration:underline;text-underline-offset:2px;font-family:var(--sans)">
+            + Add another child
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1927,40 +1969,120 @@ button { font: inherit; cursor: pointer; }
     }
   };
 
+  /* ── Expecting toggle ── */
+  window.toggleExpecting = function() {
+    var checked    = document.getElementById('child-expecting').checked;
+    var dobSec     = document.getElementById('dob-section');
+    var dueSec     = document.getElementById('due-date-section');
+    var preInfo    = document.getElementById('prebirth-info');
+    var today      = new Date().toISOString().split('T')[0];
+    dobSec.style.display  = checked ? 'none' : '';
+    dueSec.style.display  = checked ? '' : 'none';
+    preInfo.style.display = checked ? 'block' : 'none';
+    // Set min for due date = today, max = today + 10 months
+    if (checked) {
+      var maxDue = new Date(); maxDue.setMonth(maxDue.getMonth() + 10);
+      document.getElementById('child-due-date').min = today;
+      document.getElementById('child-due-date').max = maxDue.toISOString().split('T')[0];
+    }
+    document.getElementById('child-step-error').style.display = 'none';
+  };
+
+  /* ── Child step error helper ── */
+  function showChildError(msg) {
+    var el = document.getElementById('child-step-error');
+    el.textContent = msg;
+    el.style.display = 'block';
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  function clearChildError() {
+    document.getElementById('child-step-error').style.display = 'none';
+  }
+
   /* ── Start free trial (no credit card) — Stream 3B ── */
   window.startFreeTrial = function() {
-    var nameEl   = document.getElementById('child-name');
-    var dobEl    = document.getElementById('child-dob');
-    var genderEl = document.getElementById('child-gender');
-    var btn      = document.getElementById('start-trial-btn');
-    var name     = nameEl.value.trim();
-    var dob      = dobEl.value;
-    var gender   = genderEl.value || 'other';
+    clearChildError();
+    var nameEl      = document.getElementById('child-name');
+    var btn         = document.getElementById('start-trial-btn');
+    var isExpecting = document.getElementById('child-expecting').checked;
+    var name        = nameEl.value.trim();
 
     // Reset field borders
     nameEl.style.borderColor = '';
-    dobEl.style.borderColor  = '';
 
-    // Validate
+    // ── Validate name ────────────────────────────────────────
     if (!name) {
       nameEl.focus();
       nameEl.style.borderColor = '#EF4444';
+      showChildError('Please enter your child\'s first name.');
       return;
     }
-    if (!dob) {
-      dobEl.focus();
-      dobEl.style.borderColor = '#EF4444';
-      return;
+
+    var dob, gender, dueDate;
+
+    if (isExpecting) {
+      // ── Expecting path ───────────────────────────────────
+      var dueDateEl  = document.getElementById('child-due-date');
+      var genderExpEl = document.getElementById('child-gender-exp');
+      dueDate = dueDateEl.value;
+      gender  = genderExpEl.value || 'other';
+
+      if (!dueDate) {
+        dueDateEl.focus();
+        dueDateEl.style.borderColor = '#EF4444';
+        showChildError('Please enter your due date.');
+        return;
+      }
+      var dueDateObj = new Date(dueDate + 'T00:00:00Z');
+      if (dueDateObj <= new Date()) {
+        dueDateEl.style.borderColor = '#EF4444';
+        showChildError('Due date must be in the future. If your baby has arrived, uncheck "I\'m expecting" and enter their date of birth instead.');
+        return;
+      }
+      // Use due date as placeholder DOB; is_expecting=true passed to edge fn
+      dob = dueDate;
+
+    } else {
+      // ── Standard path ─────────────────────────────────────
+      var dobEl    = document.getElementById('child-dob');
+      var genderEl = document.getElementById('child-gender');
+      dob    = dobEl.value;
+      gender = genderEl.value || 'other';
+
+      if (!dob) {
+        dobEl.focus();
+        dobEl.style.borderColor = '#EF4444';
+        showChildError('Please enter your child\'s date of birth.');
+        return;
+      }
+
+      // Client-side age validation
+      var dobDate  = new Date(dob + 'T00:00:00Z');
+      var today    = new Date();
+      var ageYears = (today - dobDate) / (365.25 * 24 * 60 * 60 * 1000);
+
+      if (dobDate > today) {
+        dobEl.style.borderColor = '#EF4444';
+        showChildError('Date of birth can\'t be in the future. If you\'re expecting, check the "I\'m expecting" box above.');
+        return;
+      }
+      if (ageYears > 4) {
+        dobEl.style.borderColor = '#EF4444';
+        showChildError('Scout tracks developmental windows from birth to 36 months. ' + name + ' is outside that age range. Scout may not be the right fit right now — but check back for new content.');
+        return;
+      }
     }
 
     // Cache locally
     try {
-      sessionStorage.setItem('ff_child_name',   name);
-      sessionStorage.setItem('ff_child_dob',    dob);
-      sessionStorage.setItem('ff_child_gender', gender);
+      sessionStorage.setItem('ff_child_name',      name);
+      sessionStorage.setItem('ff_child_dob',       dob);
+      sessionStorage.setItem('ff_child_gender',    gender);
+      sessionStorage.setItem('ff_is_expecting',    isExpecting ? '1' : '');
+      if (isExpecting) sessionStorage.setItem('ff_due_date', dueDate);
     } catch(_) {}
 
-    // Disable button and show loading state
+    // Disable button
     if (btn) { btn.disabled = true; btn.textContent = 'Setting up your trial…'; }
 
     var sb = window._supabaseClient;
@@ -1976,29 +2098,43 @@ button { font: inherit; cursor: pointer; }
         return;
       }
 
-      fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-trial-start', {
+      var isAddingChild = sessionStorage.getItem('ff_adding_child') === '1';
+      var endpoint = isAddingChild
+        ? 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-child-trial-start'
+        : 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-trial-start';
+
+      var payload = { childName: name, childDob: dob, childGender: gender };
+      if (isExpecting) {
+        payload.isExpecting = true;
+        payload.dueDate     = dueDate;
+      }
+
+      fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type':  'application/json',
           'Authorization': 'Bearer ' + session.access_token,
         },
-        body: JSON.stringify({
-          childName:   name,
-          childDob:    dob,
-          childGender: gender,
-        }),
+        body: JSON.stringify(payload),
       })
       .then(function(r) { return r.json(); })
       .then(function(data) {
         if (!data.ok) {
           console.error('[startFreeTrial] Edge function error:', data.error);
           if (btn) { btn.disabled = false; btn.textContent = 'Start my free trial →'; }
+          // Show user-facing error
+          var msg = data.error || 'Something went wrong. Please try again.';
+          if (msg.includes('4 years')) {
+            msg = 'Scout tracks developmental windows from birth to 36 months. ' + name + ' is outside that age range.';
+          }
+          showChildError(msg);
           return;
         }
         // Cache child ID for dashboard
         try {
           sessionStorage.setItem('ff_child_id',    data.childId  || '');
           sessionStorage.setItem('ff_trial_end',   data.trialEnd || '');
+          sessionStorage.removeItem('ff_adding_child');
         } catch(_) {}
         // Show success step
         onPaymentSuccess();
@@ -2006,6 +2142,7 @@ button { font: inherit; cursor: pointer; }
       .catch(function(e) {
         console.error('[startFreeTrial] Network error:', e);
         if (btn) { btn.disabled = false; btn.textContent = 'Start my free trial →'; }
+        showChildError('Network error — please check your connection and try again.');
       });
     });
   };
@@ -2297,16 +2434,29 @@ button { font: inherit; cursor: pointer; }
 
   /* ── Called after Edge Function confirms subscription created ── */
   window.onPaymentSuccess = function() {
-    var childName = sessionStorage.getItem('ff_child_name') || 'your child';
-    var trialEnd  = sessionStorage.getItem('ff_trial_end');
-    var trialDate = trialEnd ? new Date(trialEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : null;
-    var icon      = document.getElementById('success-icon');
-    var heading   = document.getElementById('success-heading');
-    var sub       = document.getElementById('success-sub');
-    if (icon)    icon.textContent    = '🌱';
-    if (heading) heading.textContent = 'Your first Scout digest is on its way.';
-    if (sub)     sub.textContent     = 'We\'ve sent ' + childName + '\'s first window digest to your inbox.'
-      + (trialDate ? ' Your free trial runs until ' + trialDate + '.' : ' Your free trial runs until their next birthday.');
+    var childName  = sessionStorage.getItem('ff_child_name') || 'your child';
+    var trialEnd   = sessionStorage.getItem('ff_trial_end');
+    var trialDate  = trialEnd ? new Date(trialEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : null;
+    var isExpecting = sessionStorage.getItem('ff_is_expecting') === '1';
+    var icon       = document.getElementById('success-icon');
+    var heading    = document.getElementById('success-heading');
+    var sub        = document.getElementById('success-sub');
+
+    if (isExpecting) {
+      if (icon)    icon.textContent    = '🌱';
+      if (heading) heading.textContent = 'You\'re all set for baby\'s arrival.';
+      if (sub)     sub.textContent     = 'We\'ve sent your first pre-birth prep windows to your inbox. Your full Scout trial starts when baby arrives.';
+    } else {
+      if (icon)    icon.textContent    = '🌱';
+      if (heading) heading.textContent = 'Your first Scout digest is on its way.';
+      if (sub)     sub.textContent     = 'We\'ve sent ' + childName + '\'s first window digest to your inbox.'
+        + (trialDate ? ' Your free trial runs until ' + trialDate + '.' : ' Your free trial runs until their next birthday.');
+    }
+
+    // Show "Add another child" button
+    var addWrap = document.getElementById('add-another-child-wrap');
+    if (addWrap) addWrap.style.display = 'block';
+
     showStep('success');
 
     // Log signup_completed event
@@ -2336,6 +2486,34 @@ button { font: inherit; cursor: pointer; }
   /* ── Success redirect ── */
   window.successRedirect = function() {
     window.location.href = 'dashboard.html';
+  };
+
+  /* ── Add another child from success screen ── */
+  window.addAnotherChild = function() {
+    // Reset child form for a fresh entry
+    var nameEl    = document.getElementById('child-name');
+    var dobEl     = document.getElementById('child-dob');
+    var genderEl  = document.getElementById('child-gender');
+    var expCheck  = document.getElementById('child-expecting');
+    var dueDateEl = document.getElementById('child-due-date');
+    var genderExp = document.getElementById('child-gender-exp');
+    if (nameEl)    nameEl.value    = '';
+    if (dobEl)     dobEl.value     = '';
+    if (genderEl)  genderEl.value  = 'girl';
+    if (expCheck)  expCheck.checked = false;
+    if (dueDateEl) dueDateEl.value  = '';
+    if (genderExp) genderExp.value  = 'other';
+    // Reset expecting UI state
+    var dobSec  = document.getElementById('dob-section');
+    var dueSec  = document.getElementById('due-date-section');
+    var preInfo = document.getElementById('prebirth-info');
+    if (dobSec)  dobSec.style.display  = '';
+    if (dueSec)  dueSec.style.display  = 'none';
+    if (preInfo) preInfo.style.display = 'none';
+    clearChildError();
+    // Update the trial-start flow to use scout-child-trial-start (add-child endpoint)
+    sessionStorage.setItem('ff_adding_child', '1');
+    showStep('child');
   };
 
   /* ── Hook into existing signUp success ── */

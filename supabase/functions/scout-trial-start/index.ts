@@ -130,18 +130,32 @@ Deno.serve(async (req: Request) => {
     // 2. Parse and validate body
     step = 'parse'
     const body = await req.json()
-    const { childName, childDob, childGender } = body
+    const { childName, childDob, childGender, isExpecting, dueDate } = body
 
     if (!childName || typeof childName !== 'string' || childName.trim().length < 1) {
       return err(400, 'childName is required', step)
     }
-    if (!isValidDob(childDob)) {
-      return err(400, 'childDob must be a valid date in YYYY-MM-DD format, not in the future, not more than 4 years ago', step)
+
+    // For expecting parents: validate due date (future), skip DOB validation
+    // For standard: validate DOB (past, ≤4 years)
+    if (isExpecting) {
+      if (!dueDate || !/^\d{4}-\d{2}-\d{2}$/.test(dueDate)) {
+        return err(400, 'dueDate is required for expecting parents (YYYY-MM-DD)', step)
+      }
+      const due = new Date(dueDate + 'T00:00:00Z')
+      if (isNaN(due.getTime()) || due <= new Date()) {
+        return err(400, 'dueDate must be a future date', step)
+      }
+    } else {
+      if (!isValidDob(childDob)) {
+        return err(400, 'childDob must be a valid date in YYYY-MM-DD format, not in the future, not more than 4 years ago', step)
+      }
     }
 
     const name   = childName.trim().slice(0, 50)
     const gender = normaliseGender(childGender)
-    const dob    = childDob as string
+    // For expecting: use dueDate as placeholder DOB; real DOB set at arrival
+    const dob    = isExpecting ? (dueDate as string) : (childDob as string)
 
     // 3. Insert child record
     step = 'insert-child'
@@ -156,17 +170,26 @@ Deno.serve(async (req: Request) => {
     let childId: string
 
     if (existingChild) {
-      // Update existing record (e.g. name or gender changed)
+      // Update existing record
       childId = existingChild.id
       await sb
         .from('children')
-        .update({ name, gender, updated_at: new Date().toISOString() })
+        .update({
+          name, gender,
+          ...(isExpecting ? { is_expecting: true, due_date: dueDate } : {}),
+          updated_at: new Date().toISOString(),
+        })
         .eq('id', childId)
     } else {
       // Insert new child
+      const childRow: Record<string, unknown> = { user_id: user.id, name, dob, gender }
+      if (isExpecting) {
+        childRow.is_expecting = true
+        childRow.due_date     = dueDate
+      }
       const { data: newChild, error: childErr } = await sb
         .from('children')
-        .insert({ user_id: user.id, name, dob, gender })
+        .insert(childRow)
         .select('id')
         .single()
 

@@ -298,14 +298,41 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
   <!-- Success state (hidden until purchase completes) -->
   <div class="success-card" id="successCard">
     <div class="success-icon">🎁</div>
-    <h2 class="success-title">Your gift is on its way.</h2>
-    <p class="success-sub" id="successSub">A gift email has been sent to your recipient. They will receive a link to claim their Scout subscription.</p>
-    <div class="referral-box">
+    <h2 class="success-title">Gift sent!</h2>
+    <p class="success-sub" id="successSub">A gift email is on its way.</p>
+
+    <!-- What the recipient gets — plain English -->
+    <div style="background:var(--elevated);border-radius:12px;padding:16px 18px;margin-bottom:20px;text-align:left">
+      <p style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">What happens next:</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <span style="font-size:16px;flex-shrink:0">📬</span>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.5;margin:0"><strong id="successRecipientName">They</strong> will get an email with a link to claim their subscription. It goes straight to their inbox.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <span style="font-size:16px;flex-shrink:0">🌱</span>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.5;margin:0">Once they set up their child's birthday, Scout sends a monthly email with the 3–5 developmental windows that matter most that month.</p>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          <span style="font-size:16px;flex-shrink:0">📅</span>
+          <p style="font-size:13px;color:var(--text-mid);line-height:1.5;margin:0">Each email includes a calendar event with a 7-day reminder — so they never miss a window.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shareable message -->
+    <div style="background:#F5F3FF;border:1.5px solid #DDD6FE;border-radius:12px;padding:16px 18px;margin-bottom:20px;text-align:left">
+      <p style="font-size:12px;font-weight:700;color:var(--terra);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Copy this to send yourself</p>
+      <p id="shareMessage" style="font-size:13px;color:var(--text);line-height:1.6;margin:0 0 12px"></p>
+      <button onclick="copyShareMessage()" id="copyBtn" style="background:var(--terra);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer">Copy message</button>
+    </div>
+
+    <div class="referral-box" id="referralBox" style="display:none">
       <p class="referral-label">Your referral code</p>
       <p class="referral-code" id="successReferralCode"></p>
       <p class="referral-desc">Share with anyone for 25% off their first Scout payment. Use it yourself too.</p>
     </div>
-    <p style="font-size:13px;color:var(--text-mid)">Check your inbox — we sent a confirmation with your referral code.</p>
+    <p style="font-size:13px;color:var(--text-mid)">We also sent a purchase confirmation to your email.</p>
   </div>
 
   <!-- Purchase form -->
@@ -459,6 +486,26 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 // ─── Plan selection ───────────────────────────────────────────────────────────
+function copyShareMessage() {
+  var msg = document.getElementById('shareMessage').textContent
+  var btn = document.getElementById('copyBtn')
+  navigator.clipboard.writeText(msg).then(function () {
+    btn.textContent = '✓ Copied!'
+    setTimeout(function () { btn.textContent = 'Copy message' }, 2000)
+  }).catch(function () {
+    // Fallback for older browsers
+    var ta = document.createElement('textarea')
+    ta.value = msg
+    ta.style.position = 'fixed'; ta.style.opacity = '0'
+    document.body.appendChild(ta)
+    ta.select()
+    document.execCommand('copy')
+    document.body.removeChild(ta)
+    btn.textContent = '✓ Copied!'
+    setTimeout(function () { btn.textContent = 'Copy message' }, 2000)
+  })
+}
+
 function selectPlan(plan) {
   selectedPlan = plan
   document.getElementById('planAnnual').classList.toggle('selected',  plan === 'annual')
@@ -522,10 +569,31 @@ function submitGift() {
       document.getElementById('purchaseForm').style.display = 'none'
       document.getElementById('scoutExplainer').style.display = 'none'
       document.getElementById('heroSection').innerHTML = ''
+
       var card = document.getElementById('successCard')
+
+      // Personalise success screen
       document.getElementById('successSub').textContent =
-        'A gift email has been sent to ' + recipientName + ' at ' + data.recipientEmail + '. They will receive a link to claim their Scout subscription.'
-      document.getElementById('successReferralCode').textContent = data.referralCode
+        'A gift email is on its way to ' + recipientName + ' at ' + data.recipientEmail + '.'
+
+      var nameEl = document.getElementById('successRecipientName')
+      if (nameEl) nameEl.textContent = recipientName
+
+      // Build copyable share message
+      var planLabel = selectedPlan === 'annual' ? 'a full year' : 'a month'
+      var shareEl   = document.getElementById('shareMessage')
+      if (shareEl) {
+        var redeemUrl = 'https://getfamilyforce.com/scout-gift.html?redeem=' + data.giftCode
+        shareEl.textContent = 'Hey! I just got you ' + planLabel + ' of FamilyForce Scout — a monthly email that tracks what your baby needs to hit each developmental milestone. Here\'s your link to set it up: ' + redeemUrl
+      }
+
+      // Referral code (shown only if returned)
+      if (data.referralCode) {
+        document.getElementById('successReferralCode').textContent = data.referralCode
+        var refBox = document.getElementById('referralBox')
+        if (refBox) refBox.style.display = 'block'
+      }
+
       card.style.display = 'block'
     })
     .catch(function () {
