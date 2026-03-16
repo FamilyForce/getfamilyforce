@@ -1327,17 +1327,17 @@ button { font: inherit; cursor: pointer; }
     <div class="signup-step" id="step-payment" role="region" aria-label="Payment">
       <div class="step-card">
         <button class="step-back" onclick="showStep('child')" aria-label="Back">← Back</button>
-        <h2 class="step-h" id="payment-heading">Start your free 7-day trial</h2>
-        <p class="step-sub" id="payment-sub">Your card won't be charged today. After 7 days, you'll be billed $79.99 for a full year of Scout. Cancel any time before then.</p>
+        <h2 class="step-h" id="payment-heading">Start your Scout subscription</h2>
+        <p class="step-sub" id="payment-sub">Your trial has ended. Choose a plan to keep your windows coming every month.</p>
 
         <!-- Order summary -->
         <div class="payment-summary" role="region" aria-label="Order summary">
           <div class="payment-summary-row">
             <span>FamilyForce Scout</span>
-            <span class="badge" id="payment-badge">7 days free</span>
+            <span class="badge" id="payment-badge">Annual</span>
           </div>
           <div class="payment-summary-row">
-            <span>Then</span>
+            <span>Billed</span>
             <strong id="payment-price">$79.99 / year</strong>
           </div>
           <div class="payment-summary-row" id="payment-discount-row" style="display:none">
@@ -1975,7 +1975,7 @@ button { font: inherit; cursor: pointer; }
         return;
       }
 
-      fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-trial-start', {
+      fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-child-trial-start', {
         method: 'POST',
         headers: {
           'Content-Type':  'application/json',
@@ -2297,13 +2297,39 @@ button { font: inherit; cursor: pointer; }
   /* ── Called after Edge Function confirms subscription created ── */
   window.onPaymentSuccess = function() {
     var childName = sessionStorage.getItem('ff_child_name') || 'your child';
+    var trialEnd  = sessionStorage.getItem('ff_trial_end');
+    var trialDate = trialEnd ? new Date(trialEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : null;
     var icon      = document.getElementById('success-icon');
     var heading   = document.getElementById('success-heading');
     var sub       = document.getElementById('success-sub');
     if (icon)    icon.textContent    = '🌱';
-    if (heading) heading.textContent = 'Your free trial has started!';
-    if (sub)     sub.textContent     = 'Check your email — we just sent ' + childName + '\'s first digest. Your free trial runs until their next birthday.';
+    if (heading) heading.textContent = 'Your first Scout digest is on its way.';
+    if (sub)     sub.textContent     = 'We\'ve sent ' + childName + '\'s first window digest to your inbox.'
+      + (trialDate ? ' Your free trial runs until ' + trialDate + '.' : ' Your free trial runs until their next birthday.');
     showStep('success');
+
+    // Log signup_completed event
+    (function() {
+      var sb = window._supabaseClient;
+      if (!sb) return;
+      sb.auth.getSession().then(function(res) {
+        var session = res.data && res.data.session;
+        if (!session) return;
+        var childId     = sessionStorage.getItem('ff_child_id') || null;
+        var childGender = sessionStorage.getItem('ff_child_gender') || null;
+        var childDob    = sessionStorage.getItem('ff_child_dob') || null;
+        var ageWeeks    = null;
+        if (childDob) {
+          ageWeeks = Math.floor((Date.now() - new Date(childDob).getTime()) / (7 * 24 * 60 * 60 * 1000));
+        }
+        sb.from('scout_events').insert({
+          user_id:    session.user.id,
+          child_id:   childId,
+          event_type: 'signup_completed',
+          properties: { child_gender: childGender, child_age_weeks: ageWeeks }
+        }).then(function() {});
+      });
+    })();
   };
 
   /* ── Success redirect ── */
