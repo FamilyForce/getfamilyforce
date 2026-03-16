@@ -142,6 +142,24 @@
   border-radius: var(--radius-pill); padding: 3px 10px;
 }
 
+/* Completed state */
+.lib-card.lib-completed .lib-accent { background: #22C55E !important; }
+.lib-badge-completed {
+  flex-shrink: 0; align-self: flex-start;
+  background: #DCFCE7; color: #16A34A;
+  font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: var(--radius-pill);
+  white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;
+}
+.lib-btn-completed {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 16px; border-radius: var(--radius-pill);
+  font-family: var(--sans); font-size: 13px; font-weight: 600;
+  text-decoration: none; cursor: default;
+  background: #DCFCE7; color: #16A34A;
+  border: 1.5px solid #BBF7D0;
+}
+
 /* Scout tag showing which windows link here */
 .lib-scout-tag {
   font-size: 11px; font-weight: 600; color: var(--terra);
@@ -268,7 +286,7 @@
     <div class="lib-grid">
 
       <!-- 1. Screen Time -->
-      <div class="lib-card">
+      <div class="lib-card" data-course-key="screen-time">
         <div class="lib-accent" style="background:#6E4ED6"></div>
         <div class="lib-body">
           <div class="lib-top">
@@ -288,7 +306,7 @@
       </div>
 
       <!-- 2. Potty Training -->
-      <div class="lib-card">
+      <div class="lib-card" data-course-key="potty-training">
         <div class="lib-accent" style="background:#8B5CF6"></div>
         <div class="lib-body">
           <div class="lib-top">
@@ -308,7 +326,7 @@
       </div>
 
       <!-- 3. Sleep Training -->
-      <div class="lib-card">
+      <div class="lib-card" data-course-key="sleep-training">
         <div class="lib-accent" style="background:#7C3AED"></div>
         <div class="lib-body">
           <div class="lib-top">
@@ -328,7 +346,7 @@
       </div>
 
       <!-- 4. Tantrums -->
-      <div class="lib-card">
+      <div class="lib-card" data-course-key="tantrum">
         <div class="lib-accent" style="background:#5B21B6"></div>
         <div class="lib-body">
           <div class="lib-top">
@@ -348,7 +366,7 @@
       </div>
 
       <!-- 5. Feeding -->
-      <div class="lib-card">
+      <div class="lib-card" data-course-key="feeding">
         <div class="lib-accent" style="background:#4C1D95"></div>
         <div class="lib-body">
           <div class="lib-top">
@@ -524,7 +542,6 @@ function renderBadges() {
       if (circle) {
         circle.classList.remove('badge-locked')
         circle.classList.add('badge-earned')
-        // Add green check overlay
         var check = document.createElement('div')
         check.className = 'badge-earned-check'
         check.innerHTML = '<svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
@@ -532,6 +549,27 @@ function renderBadges() {
       }
       item.classList.add('badge-item--earned')
       previewBadgesHtml += '<div class="sac-preview-badge-sm" style="background:' + b.bg + '">' + b.emoji + '</div>'
+    }
+
+    // Update library card for this course
+    var card = document.querySelector('[data-course-key="' + b.key + '"]')
+    if (!card) return
+    if (earned) {
+      card.classList.add('lib-completed')
+      // Swap FREE badge → ✓ Completed chip
+      var freeBadge = card.querySelector('.lib-badge')
+      if (freeBadge) {
+        freeBadge.className = 'lib-badge-completed'
+        freeBadge.innerHTML = '<svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M2 8l4 4 8-8" stroke="#16A34A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Completed'
+      }
+      // Swap Take course button → ✓ Completed (non-link)
+      var courseBtn = card.querySelector('.lib-btn-primary')
+      if (courseBtn) {
+        var span = document.createElement('span')
+        span.className = 'lib-btn-completed'
+        span.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M2 8l4 4 8-8" stroke="#16A34A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Course complete'
+        courseBtn.parentNode.replaceChild(span, courseBtn)
+      }
     }
   })
 
