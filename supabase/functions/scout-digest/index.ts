@@ -378,6 +378,129 @@ function buildDigestEmail(opts: {
 </html>`
 }
 
+// ─── Pre-birth reminder email ─────────────────────────────────────────────────
+function buildPreBirthEmail(opts: {
+  childName:    string
+  dueDate:      Date
+  daysLeft:     number
+  windows:      MilestoneWindow[]
+  dashboardUrl: string
+  siteUrl:      string
+  userId:       string
+}): string {
+  const { childName, dueDate, daysLeft, windows, dashboardUrl, siteUrl, userId } = opts
+
+  const dueFmt = dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+  const todayStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+
+  const heroText = daysLeft > 0
+    ? `${childName} arrives in <strong>${daysLeft} day${daysLeft === 1 ? '' : 's'}</strong> — ${dueFmt}.`
+    : `Your due date has passed. Is ${childName} here?`
+
+  const heroSub = daysLeft > 0
+    ? `Here are your open preparation windows. Do these before the hospital bag is packed.`
+    : `Confirm their arrival on your Scout dashboard to start full developmental tracking.`
+
+  const windowCards = windows.length > 0
+    ? windows.map(w => windowCard(w, /* ageWeeks = */ -Math.ceil(daysLeft / 7), dashboardUrl, '#FFFFFF', '#E5E2EC')).join('')
+    : `<p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0">No preparation windows are open right now — check back closer to your due date.</p>`
+
+  const arrivedSection = daysLeft <= 0 ? `
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:12px">
+    <tr>
+      <td style="background:#EDF7F2;border:1.5px solid #86C9A8;border-radius:16px;padding:24px;text-align:center">
+        <h2 style="font-family:'Outfit',Arial,sans-serif;font-size:18px;font-weight:700;color:#1A4731;margin:0 0 8px">🎉 Is ${childName} here?</h2>
+        <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#2E7D5E;margin:0 0 18px;line-height:1.6">Confirm their arrival so Scout can start tracking developmental windows from day one.</p>
+        <a href="${dashboardUrl}?arrived=1" style="display:inline-block;background:#2E7D5E;color:#FFFFFF;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;padding:12px 28px;border-radius:100px;text-decoration:none">Confirm arrival →</a>
+      </td>
+    </tr>
+  </table>` : ''
+
+  const ctaUrl = daysLeft <= 0 ? `${dashboardUrl}?arrived=1` : dashboardUrl
+  const ctaLabel = daysLeft <= 0 ? `Confirm ${childName}'s arrival →` : `View your prep checklist →`
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>${daysLeft > 0 ? `${childName} arrives in ${daysLeft} days` : `Is ${childName} here?`}</title>
+  <style>
+    body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+    body{margin:0;padding:0;background:#F5F3FF;font-family:'Outfit',Arial,sans-serif}
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#F5F3FF">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F3FF">
+    <tr>
+      <td align="center" style="padding:24px 12px 40px">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">
+
+          <!-- Wordmark -->
+          <tr>
+            <td style="padding:0 0 16px">
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;font-weight:700;color:#6E4ED6;letter-spacing:.12em;text-transform:uppercase;margin:0">FamilyForce Scout</p>
+            </td>
+          </tr>
+
+          <!-- Hero -->
+          <tr>
+            <td style="background:#FFFFFF;border-radius:16px;padding:28px;margin-bottom:12px">
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 6px">${todayStr}</p>
+              <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:400;color:#1D1D1F;margin:0 0 10px;line-height:1.3">${heroText}</h1>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:15px;color:#5C5960;margin:0;line-height:1.6">${heroSub}</p>
+            </td>
+          </tr>
+          <tr><td style="height:12px"></td></tr>
+
+          ${arrivedSection}
+
+          ${windows.length > 0 ? `
+          <!-- Prep windows -->
+          <tr>
+            <td style="background:#FFFFFF;border:1.5px solid #E5E2EC;border-radius:16px;padding:20px 20px 10px">
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#8A879A;letter-spacing:.1em;text-transform:uppercase;margin:0 0 16px">Prepare now</p>
+              ${windowCards}
+            </td>
+          </tr>
+          <tr><td style="height:12px"></td></tr>` : ''}
+
+          <!-- CTA -->
+          <tr>
+            <td style="background:#F0EBFF;border-radius:16px;padding:24px;text-align:center">
+              <a href="${ctaUrl}" style="display:inline-block;background:#6E4ED6;color:#FFFFFF;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;padding:12px 28px;border-radius:100px;text-decoration:none">${ctaLabel}</a>
+            </td>
+          </tr>
+          <tr><td style="height:32px"></td></tr>
+
+          <!-- Signature -->
+          <tr>
+            <td>
+              <p style="font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1D1D1F;margin:0 0 2px">Jack Hartley</p>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 6px">Dad of two · Founder, FamilyForce</p>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6;font-style:italic">Got it wrong with First Son. Got it right with Second Son. Make informed parenting decisions.</p>
+            </td>
+          </tr>
+          <tr><td style="height:32px"></td></tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="border-top:1px solid #E5E2EC;padding-top:20px">
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0 0 4px">FamilyForce Scout · <a href="${siteUrl}" style="color:#8A879A;text-decoration:none">${siteUrl.replace('https://', '')}</a></p>
+              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0">You're receiving this because you signed up for Scout. · <a href="${siteUrl}/unsubscribe?user=${userId}" style="color:#8A879A;text-decoration:none">Unsubscribe</a></p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>`
+}
+
 // ─── Telegram alert ───────────────────────────────────────────────────────────
 async function telegramAlert(message: string): Promise<void> {
   const token  = Deno.env.get('TELEGRAM_BOT_TOKEN')
@@ -451,6 +574,14 @@ Deno.serve(async (req: Request) => {
   const subs = allUserIds
   console.log(`[scout-digest] ${activeSubs?.length ?? 0} active + ${bonusUserIds.size} bonus trialing to check`)
 
+  // ── Step 2: Load expecting users ──────────────────────────────────────────
+  const { data: expectingChildren } = await sb
+    .from('children')
+    .select('id, name, dob, due_date, is_expecting, gender, user_id')
+    .eq('is_expecting', true)
+
+  console.log(`[scout-digest] ${expectingChildren?.length ?? 0} expecting children to check`)
+
   for (const sub of (subs ?? [])) {
     try {
       const userId = sub.user_id
@@ -458,7 +589,7 @@ Deno.serve(async (req: Request) => {
       // 2. Load child
       const { data: children } = await sb
         .from('children')
-        .select('id, name, dob, gender')
+        .select('id, name, dob, due_date, is_expecting, gender')
         .eq('user_id', userId)
         .order('created_at', { ascending: true })
         .limit(1)
@@ -645,6 +776,117 @@ Deno.serve(async (req: Request) => {
       const msg = e instanceof Error ? e.message : String(e)
       console.error(`[scout-digest] Error for user ${sub.user_id}:`, msg)
       await telegramAlert(`Monthly digest failed for user ${sub.user_id}: ${msg}`)
+      results.errors++
+    }
+  }
+
+  // ── Step 3 & 4: Pre-birth reminder loop ──────────────────────────────────
+  for (const child of (expectingChildren ?? [])) {
+    try {
+      const due     = new Date(child.due_date + 'T00:00:00Z')
+      const daysLeft = Math.ceil((due.getTime() - now.getTime()) / 86400000)
+
+      // Cadence: fire on the day-of-month matching the due date
+      // e.g. due April 16 → reminder fires on the 16th of each month
+      const reminderDay = due.getUTCDate()
+      if (now.getUTCDate() !== reminderDay) { results.not_birthday++; continue }
+
+      // Dedup: one prebirth_reminder per calendar month per child
+      const currentMonth = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`
+      const { data: existingPre } = await sb
+        .from('scout_digest_log')
+        .select('id')
+        .eq('child_id', child.id)
+        .eq('digest_type', 'prebirth_reminder')
+        .eq('digest_month', currentMonth)
+        .limit(1)
+        .maybeSingle()
+
+      if (existingPre) { results.skipped++; continue }
+
+      // Load open pre-birth windows for this gestational age
+      const ageWeeks = Math.floor((now.getTime() - due.getTime()) / (7 * 24 * 3600 * 1000)) // negative
+      const { data: preBirthWindows } = await sb
+        .from('milestone_windows')
+        .select('id, slug, title, urgency, why_it_matters, what_to_do, what_not_to_worry, open_age_weeks, close_age_weeks, priority, playbook_link, missed_window')
+        .eq('prenatal', true)
+        .lte('open_age_weeks', ageWeeks)
+        .gte('close_age_weeks', ageWeeks)
+        .order('priority', { ascending: true })
+
+      const { data: { user } } = await sb.auth.admin.getUserById(child.user_id)
+      if (!user?.email) { results.skipped++; continue }
+
+      const subject = daysLeft > 0
+        ? `${child.name} arrives in ${daysLeft} day${daysLeft === 1 ? '' : 's'} — your prep checklist`
+        : `Is ${child.name} here? Confirm their arrival to start Scout.`
+
+      const html = buildPreBirthEmail({
+        childName:    child.name,
+        dueDate:      due,
+        daysLeft,
+        windows:      (preBirthWindows ?? []) as MilestoneWindow[],
+        dashboardUrl: dashUrl,
+        siteUrl,
+        userId:       child.user_id,
+      })
+
+      const preheader = daysLeft > 0
+        ? `${child.name} arrives in ${daysLeft} days. Here's what to prepare before they arrive.`
+        : `Your due date has passed. Let us know ${child.name} is here to start full Scout tracking.`
+
+      const resendBodyPre: Record<string, unknown> = {
+        from:    `${fromName} <${fromEmail}>`,
+        to:      [user.email],
+        subject,
+        html,
+        tags: [
+          { name: 'user_id',     value: child.user_id },
+          { name: 'child_id',    value: child.id },
+          { name: 'digest_type', value: 'prebirth_reminder' },
+          { name: 'month',       value: currentMonth },
+        ],
+      }
+      if (bccEmail) resendBodyPre.bcc = [bccEmail]
+
+      const resendResPre  = await fetch('https://api.resend.com/emails', {
+        method:  'POST',
+        headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+        body:    JSON.stringify(resendBodyPre),
+      })
+      const resendDataPre = await resendResPre.json()
+      if (!resendResPre.ok) throw new Error(`Resend error (prebirth): ${JSON.stringify(resendDataPre)}`)
+
+      await sb.from('scout_digest_log').insert({
+        user_id:           child.user_id,
+        child_id:          child.id,
+        digest_month:      currentMonth,
+        child_age_months:  -1,  // sentinel: pre-birth
+        digest_type:       'prebirth_reminder',
+        windows_included:  (preBirthWindows ?? []).map(w => ({ id: w.id, slug: w.slug, title: w.title })),
+        email_subject:     subject,
+        resend_message_id: resendDataPre.id as string,
+      })
+
+      await sb.from('scout_events').insert({
+        user_id:    child.user_id,
+        child_id:   child.id,
+        event_type: 'prebirth_reminder_sent',
+        properties: {
+          days_until_due:    daysLeft,
+          windows_count:     preBirthWindows?.length ?? 0,
+          resend_message_id: resendDataPre.id,
+          duration_ms:       Date.now() - jobStart,
+        },
+      })
+
+      results.sent++
+      console.log(`[scout-digest] Sent pre-birth reminder for ${child.name} (user ${child.user_id}, ${daysLeft} days to due)`)
+
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e)
+      console.error(`[scout-digest] Error (prebirth) for child ${child.id}:`, msg)
+      await telegramAlert(`Pre-birth reminder failed for child ${child.id}: ${msg}`)
       results.errors++
     }
   }

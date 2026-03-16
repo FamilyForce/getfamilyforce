@@ -14,6 +14,68 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/scout-dashboard.css">
+<style>
+/* ── Pre-birth mode ──────────────────────────────────────── */
+.prebirth-countdown {
+  background: linear-gradient(135deg, var(--terra-tint) 0%, #f0ebff 100%);
+  border: 1.5px solid var(--terra-light, #c4b0f8);
+  border-radius: var(--radius-card);
+  padding: 20px 22px;
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 16px;
+}
+.prebirth-countdown-emoji { font-size: 32px; flex-shrink: 0; }
+.prebirth-countdown-title {
+  font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 3px;
+}
+.prebirth-countdown-sub { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+.prebirth-countdown-days {
+  font-size: 28px; font-weight: 800; color: var(--terra);
+  margin-left: auto; flex-shrink: 0; text-align: center; line-height: 1;
+}
+.prebirth-countdown-days-label { font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: .05em; }
+
+/* Baby arrived banner */
+.baby-arrived-banner {
+  background: #EDF7F2; border: 1.5px solid #86C9A8;
+  border-radius: var(--radius-card); padding: 18px 20px;
+  margin-bottom: 24px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.baby-arrived-banner-text { flex: 1; min-width: 180px; }
+.baby-arrived-banner-title { font-size: 15px; font-weight: 700; color: #1A4731; margin-bottom: 3px; }
+.baby-arrived-banner-sub   { font-size: 13px; color: #2E7D5E; }
+.baby-arrived-banner-btn {
+  padding: 10px 18px; background: #2E7D5E; color: #fff;
+  border: none; border-radius: var(--radius-pill);
+  font-family: var(--sans); font-size: 13px; font-weight: 700;
+  cursor: pointer; white-space: nowrap;
+  transition: background .15s;
+}
+.baby-arrived-banner-btn:hover { background: #1A4731; }
+
+/* Arrival modal */
+.arrival-modal { display:none; position:fixed; inset:0; z-index:200; align-items:center; justify-content:center; padding:20px; }
+.arrival-modal.open { display:flex; }
+.arrival-modal-backdrop { position:absolute; inset:0; background:rgba(0,0,0,.45); }
+.arrival-modal-card {
+  position: relative; z-index: 1;
+  background: var(--surface); border-radius: var(--radius-card);
+  padding: 28px 24px; width: 100%; max-width: 380px;
+  box-shadow: 0 8px 40px rgba(0,0,0,.18);
+}
+.arrival-modal-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+.arrival-modal-sub   { font-size: 14px; color: var(--text-mid); line-height: 1.5; margin-bottom: 20px; }
+.arrival-modal-label { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-bottom: 6px; display: block; }
+.arrival-modal-input {
+  width: 100%; padding: 12px 14px; font-family: var(--sans); font-size: 15px;
+  border: 1.5px solid var(--border); border-radius: 10px; color: var(--text);
+  margin-bottom: 8px; outline: none; background: var(--surface);
+}
+.arrival-modal-input:focus { border-color: var(--terra); }
+.arrival-modal-hint   { font-size: 12px; color: var(--text-dim); margin-bottom: 20px; line-height: 1.4; }
+.arrival-modal-error  { font-size: 13px; color: var(--red); margin-bottom: 12px; display: none; }
+.arrival-modal-actions { display: flex; gap: 10px; }
+</style>
 </head>
 <body>
 
@@ -185,20 +247,48 @@
   </div>
 </div>
 
+<!-- Baby arrival confirmation modal -->
+<div class="arrival-modal" id="arrivalModal" role="dialog" aria-modal="true" aria-labelledby="arrivalModalTitle">
+  <div class="arrival-modal-backdrop" onclick="closeArrivalModal()"></div>
+  <div class="arrival-modal-card">
+    <h2 class="arrival-modal-title" id="arrivalModalTitle">🎉 Welcome to the world!</h2>
+    <p class="arrival-modal-sub" id="arrivalModalSub">Enter your baby's actual date of birth to start Scout tracking.</p>
+    <label class="arrival-modal-label" for="arrivalDobInput">Date of birth</label>
+    <input type="date" class="arrival-modal-input" id="arrivalDobInput">
+    <p class="arrival-modal-hint">The trial clock starts from today. Your first month is always free.</p>
+    <p class="arrival-modal-error" id="arrivalModalError"></p>
+    <div class="arrival-modal-actions">
+      <button class="btn btn-secondary" onclick="closeArrivalModal()" style="flex:1">Cancel</button>
+      <button class="btn btn-primary"   onclick="saveArrival()"        style="flex:2" id="arrivalSaveBtn">Confirm arrival →</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/assets/scout-dashboard.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('home', function (user, child, sub) {
     renderHome(child, sub)
+    // ?arrived=1 deep-link from pre-birth reminder email — open arrival modal immediately
+    if (new URLSearchParams(window.location.search).get('arrived') === '1' && child.is_expecting) {
+      openArrivalModal()
+    }
   })
 })
 
 function renderHome(child, sub) {
+  var name = child.name
+
+  // ── Pre-birth mode ──────────────────────────────────────────
+  if (child.is_expecting && child.due_date) {
+    renderPreBirthMode(child, sub)
+    return
+  }
+
   var dob      = child.dob
   var ageW     = ScoutDash.ageWeeks(dob)
   var ageM     = ScoutDash.ageMonths(dob)
-  var name     = child.name
 
   // Page header
   var header = document.getElementById('pageHeader')
@@ -254,7 +344,7 @@ function renderHome(child, sub) {
       var welcomeHtml =
         '<div class="welcome-card">' +
         '<p class="welcome-card-title">Welcome to Scout.</p>' +
-        '<p class="welcome-card-text">' + name + ' has ' + (sections.closing.length + sections.thisMonth.length) + ' open windows right now. Start with the ones marked ⚠️ Closing soon.</p>' +
+        '<p class="welcome-card-text">' + name + ' has ' + (sections.closing.length + sections.thisMonth.length) + ' open windows right now. ' + (sections.closing.length > 0 ? 'Start with the ones marked ⚠️ Closing soon.' : 'Tap any window to learn more and mark your progress.') + '</p>' +
         '</div>'
       var progressWrap = document.querySelector('.progress-bar-wrap')
       if (progressWrap) progressWrap.style.display = 'none'
@@ -267,9 +357,10 @@ function renderHome(child, sub) {
 }
 
 // Collapse state: persisted in localStorage per section key
-function isSectionOpen(key) {
+function isSectionOpen(key, defaultVal) {
+  var def = defaultVal !== undefined ? defaultVal : true
   var stored = localStorage.getItem('scout_section_' + key)
-  return stored === null ? true : stored === '1'  // default open
+  return stored === null ? def : stored === '1'
 }
 function toggleSection(key) {
   var header = document.getElementById('secHeader-' + key)
@@ -280,7 +371,7 @@ function toggleSection(key) {
   localStorage.setItem('scout_section_' + key, opening ? '1' : '0')
 }
 function collapsibleSection(key, labelHtml, contentHtml, defaultOpen) {
-  var open = defaultOpen !== undefined ? defaultOpen : isSectionOpen(key)
+  var open = isSectionOpen(key, defaultOpen)
   return '<div class="section-header' + (open ? '' : ' section-collapsed') + '" id="secHeader-' + key + '" onclick="toggleSection(\'' + key + '\')">' +
     labelHtml +
     '<span class="section-toggle-arrow">▾</span>' +
@@ -296,15 +387,19 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
 
   var html = ''
 
-  // Closing soon
+  // Closing soon — always shown, even when empty
+  var closingContent
   if (sections.closing.length > 0) {
-    var closingCards = '<div class="window-grid">'
-    sections.closing.forEach(function (w) { closingCards += ScoutDash.renderCard(w) })
-    closingCards += '</div>'
-    html += collapsibleSection('closing',
-      '<span class="section-label section-label-closing">⚠️ Closing soon</span><span class="section-count">(' + sections.closing.length + ')</span>',
-      closingCards)
+    closingContent = '<div class="window-grid">'
+    sections.closing.forEach(function (w) { closingContent += ScoutDash.renderCard(w) })
+    closingContent += '</div>'
+  } else {
+    closingContent = '<p class="section-empty">No windows closing soon — you\'re on track.</p>'
   }
+  html += collapsibleSection('closing',
+    '<span class="section-label section-label-closing">⚠️ Closing soon</span><span class="section-count">(' + sections.closing.length + ')</span>',
+    closingContent,
+    true)  // always open — closing soon is high-priority
 
   // This month
   var thisMonthContent
@@ -317,7 +412,8 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
   }
   html += collapsibleSection('month',
     '<span class="section-label section-label-month">This month</span><span class="section-count">(' + sections.thisMonth.length + ')</span>',
-    thisMonthContent)
+    thisMonthContent,
+    false)  // default collapsed
 
   // Coming up
   // No access: expired trial, lapsed active sub, past_due, or no sub
@@ -372,6 +468,209 @@ function renderPaywall(name, ageM) {
     '</button>' +
     '</div></div>'
 }
+
+// ── Pre-birth mode ─────────────────────────────────────────────────────────
+
+var _preBirthChild = null  // stored for arrival modal
+
+function renderPreBirthMode(child, sub) {
+  _preBirthChild = child
+  var name     = child.name
+  var dueDate  = child.due_date
+  var now      = new Date()
+  var due      = new Date(dueDate + 'T00:00:00Z')
+  var daysLeft = Math.ceil((due - now) / 86400000)
+  var dueFmt   = due.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
+
+  // Auto-switch: if due date was more than 14 days ago, silently confirm arrival
+  if (daysLeft < -14) {
+    silentArrivalConfirm(child, dueDate)
+    return
+  }
+
+  // Page header — simplified for pre-birth
+  var header = document.getElementById('pageHeader')
+  header.innerHTML = '<h1 class="page-header-child">' + ScoutDash._esc(name) + '</h1>'
+
+  // Baby arrived banner (due date has passed)
+  var arrivedHtml = ''
+  if (daysLeft <= 0) {
+    arrivedHtml =
+      '<div class="baby-arrived-banner">' +
+      '<div class="baby-arrived-banner-text">' +
+      '<div class="baby-arrived-banner-title">Is ' + ScoutDash._esc(name) + ' here? 🎉</div>' +
+      '<div class="baby-arrived-banner-sub">Confirm their arrival to start full Scout tracking.</div>' +
+      '</div>' +
+      '<button class="baby-arrived-banner-btn" onclick="openArrivalModal()">Confirm arrival →</button>' +
+      '</div>'
+  }
+
+  // Countdown card (before due date)
+  var countdownHtml = ''
+  if (daysLeft > 0) {
+    countdownHtml =
+      '<div class="prebirth-countdown">' +
+      '<div class="prebirth-countdown-emoji">🤰</div>' +
+      '<div>' +
+      '<div class="prebirth-countdown-title">Due ' + dueFmt + '</div>' +
+      '<div class="prebirth-countdown-sub">Prepare now. Scout starts tracking from the moment ' + ScoutDash._esc(name) + ' arrives.</div>' +
+      '</div>' +
+      '<div style="text-align:center;margin-left:auto;flex-shrink:0">' +
+      '<div class="prebirth-countdown-days">' + daysLeft + '</div>' +
+      '<div class="prebirth-countdown-days-label">days to go</div>' +
+      '</div>' +
+      '</div>'
+  }
+
+  // Render pre-birth windows using due_date as age reference
+  var ageW = ScoutDash.ageWeeks(dueDate)  // negative — weeks until due
+  ScoutDash.loadWindows(child.id, dueDate, function (windows, ageW, loadErr) {
+    var sectionsHtml = ''
+    if (loadErr || !windows) {
+      sectionsHtml = '<div class="error-state"><p class="error-state-title">Could not load preparation windows.</p>' +
+        '<button class="btn btn-secondary" onclick="window.location.reload()" style="margin-top:12px">Retry</button></div>'
+    } else {
+      // Split into active (open now) and coming up
+      var active  = []
+      var coming  = []
+      windows.forEach(function (w) {
+        if (!w.prenatal) return  // only show pre-birth windows in this mode
+        var isOpen = w.open_age_weeks <= ageW && w.close_age_weeks >= ageW
+        var isComing = w.open_age_weeks > ageW
+        if (isOpen)   active.push(w)
+        if (isComing) coming.push(w)
+      })
+
+      if (active.length === 0 && coming.length === 0) {
+        sectionsHtml = '<p class="section-empty" style="padding:20px 0">No preparation windows yet — check back as your due date gets closer.</p>'
+      } else {
+        if (active.length > 0) {
+          var activeCards = '<div class="window-grid">'
+          active.forEach(function (w) { activeCards += ScoutDash.renderCard(w) })
+          activeCards += '</div>'
+          sectionsHtml += collapsibleSection('prebirth-active',
+            '<span class="section-label section-label-month">Prepare now</span><span class="section-count">(' + active.length + ')</span>',
+            activeCards,
+            true)
+        }
+        if (coming.length > 0) {
+          var comingCards = '<div class="window-grid">'
+          coming.forEach(function (w) { comingCards += ScoutDash.renderCard(w, { preview: false }) })
+          comingCards += '</div>'
+          sectionsHtml += collapsibleSection('prebirth-coming',
+            '<span class="section-label section-label-coming">Coming up</span><span class="section-count">(' + coming.length + ')</span>',
+            comingCards,
+            false)
+        }
+      }
+
+      ScoutDash.wireActions(child.id, windows)
+      ScoutDash.wireNotes(child.id)
+      ScoutDash.wireModal(windows)
+      wireModalActions(windows, child.id)
+    }
+
+    document.getElementById('windowSections').innerHTML =
+      arrivedHtml + countdownHtml + sectionsHtml
+
+    renderSidebarTrial(sub)
+  })
+}
+
+// Silently flip is_expecting → false using due_date as DOB (auto-switch after 14 days overdue)
+function silentArrivalConfirm(child, dueDate) {
+  var sb = ScoutDash.getSb ? ScoutDash.getSb() : window._supabaseClient
+  sb.from('children')
+    .update({ dob: dueDate, is_expecting: false })
+    .eq('id', child.id)
+    .then(function () { window.location.reload() })
+}
+
+// Arrival modal open/close
+function openArrivalModal() {
+  var modal   = document.getElementById('arrivalModal')
+  var input   = document.getElementById('arrivalDobInput')
+  var title   = document.getElementById('arrivalModalTitle')
+  var sub     = document.getElementById('arrivalModalSub')
+  var name    = _preBirthChild ? _preBirthChild.name : 'your baby'
+  var dueDate = _preBirthChild ? _preBirthChild.due_date : ''
+
+  title.textContent = '🎉 ' + name + ' is here!'
+  sub.textContent   = 'Enter the actual date of birth to start tracking ' + name + '\'s development.'
+
+  // Pre-fill with due date, allow ± a few weeks around it
+  if (dueDate) input.value = dueDate
+  var minD = new Date(dueDate + 'T00:00:00Z'); minD.setDate(minD.getDate() - 28)
+  var maxD = new Date()
+  input.setAttribute('min', minD.toISOString().split('T')[0])
+  input.setAttribute('max', maxD.toISOString().split('T')[0])
+
+  document.getElementById('arrivalModalError').style.display = 'none'
+  document.getElementById('scoutLayout').setAttribute('inert', '')
+  modal.classList.add('open')
+}
+
+function closeArrivalModal() {
+  document.getElementById('arrivalModal').classList.remove('open')
+  document.getElementById('scoutLayout').removeAttribute('inert')
+}
+
+function saveArrival() {
+  var input  = document.getElementById('arrivalDobInput')
+  var errEl  = document.getElementById('arrivalModalError')
+  var btn    = document.getElementById('arrivalSaveBtn')
+  var dobVal = input.value
+
+  errEl.style.display = 'none'
+  if (!dobVal) { errEl.textContent = 'Please enter the date of birth.'; errEl.style.display = 'block'; return }
+  var d = new Date(dobVal + 'T00:00:00Z')
+  if (isNaN(d) || d > new Date()) { errEl.textContent = 'Please enter a valid date — must be today or earlier.'; errEl.style.display = 'block'; return }
+
+  btn.disabled    = true
+  btn.textContent = 'Saving…'
+
+  var sb      = ScoutDash.getSb ? ScoutDash.getSb() : window._supabaseClient
+  var childId = _preBirthChild.id
+
+  sb.from('children')
+    .update({ dob: dobVal, is_expecting: false })
+    .eq('id', childId)
+    .then(function (res) {
+      if (res.error) {
+        errEl.textContent = 'Could not save. Please try again.'
+        errEl.style.display = 'block'
+        btn.disabled    = false
+        btn.textContent = 'Confirm arrival →'
+        return
+      }
+      // Start trial now that baby has arrived
+      sb.auth.getSession().then(function (r) {
+        var tok = r.data && r.data.session && r.data.session.access_token
+        if (tok) {
+          fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-child-trial-start', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+            body:    JSON.stringify({ childId: childId }),
+          }).then(function () {
+            ScoutDash.toast('Welcome, ' + ScoutDash._esc(_preBirthChild.name) + '! 🎉 Scout is now tracking.')
+            closeArrivalModal()
+            window.location.reload()
+          }).catch(function () {
+            // Trial start failed — still reload, trial can be started later
+            closeArrivalModal()
+            window.location.reload()
+          })
+        } else {
+          closeArrivalModal()
+          window.location.reload()
+        }
+      })
+    })
+}
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeArrivalModal()
+})
 
 function renderSidebarTrial(sub) {
   var wrap = document.getElementById('sidebarTrialWrap')

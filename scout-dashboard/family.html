@@ -58,8 +58,15 @@
         <input type="email" class="form-input" id="inviteEmail" placeholder="partner@email.com" style="flex:1;min-width:200px" autocomplete="off">
         <button class="btn btn-primary" onclick="sendInvite()">Send invite →</button>
       </div>
-      <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Invite expires after 7 days.</p>
+      <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Invite expires after 7 days. Maximum 5 members per Family Circle.</p>
       <p style="font-size:13px;color:var(--red);margin-top:8px;display:none" id="inviteError"></p>
+    </div>
+
+    <!-- Limit reached banner (shown when circle is full) -->
+    <div class="family-invite-card" id="inviteLimitBanner" style="display:none;border-color:var(--border)">
+      <p class="family-invite-title" style="color:var(--text)">Family Circle is full</p>
+      <p class="family-invite-sub">Your Family Circle has reached the maximum of 5 members. To add more people, please remove an existing member or contact us — we're happy to help.</p>
+      <p style="font-size:13px;margin-top:4px">📧 <a href="mailto:support@getfamilyforce.com" style="color:var(--terra);font-weight:600;text-decoration:none">support@getfamilyforce.com</a></p>
     </div>
 
     <!-- Members list -->
@@ -113,6 +120,8 @@
 <script>
 var _isPrimary = false
 var _familyMemberId = null
+var _memberCount = 1
+var FAMILY_CIRCLE_MAX = 5
 
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('family', function (user, child, sub) {
@@ -157,9 +166,11 @@ function renderMembers(members, user, child) {
     userId:  child.user_id,
   })
 
-  // Partners
-  members.forEach(function (m) {
-    if (m.user_id === child.user_id) return  // skip primary
+  // Partners (excluding primary)
+  var partners = members.filter(function (m) { return m.user_id !== child.user_id })
+  _memberCount = 1 + partners.length
+
+  partners.forEach(function (m) {
     html += renderMemberRow({
       name:    m.display_name || m.invited_email || 'Partner',
       email:   m.invited_email || '',
@@ -170,8 +181,20 @@ function renderMembers(members, user, child) {
     })
   })
 
-  // Pending invites (invited_at but no user_id yet)
   list.innerHTML = html || '<div style="padding:16px 20px;font-size:14px;color:var(--text-dim)">No partners added yet.</div>'
+
+  // Show/hide invite card based on limit
+  var inviteCard = document.getElementById('inviteCard')
+  var limitBanner = document.getElementById('inviteLimitBanner')
+  if (_isPrimary && inviteCard) {
+    if (_memberCount >= FAMILY_CIRCLE_MAX) {
+      inviteCard.style.display = 'none'
+      if (limitBanner) limitBanner.style.display = 'block'
+    } else {
+      inviteCard.style.display = 'block'
+      if (limitBanner) limitBanner.style.display = 'none'
+    }
+  }
 
   // Wire remove buttons (primary only)
   if (_isPrimary) {
@@ -208,6 +231,12 @@ function sendInvite() {
   var errEl   = document.getElementById('inviteError')
   var email   = emailEl.value.trim()
   errEl.style.display = 'none'
+
+  if (_memberCount >= FAMILY_CIRCLE_MAX) {
+    errEl.innerHTML = 'Your Family Circle is full (maximum ' + FAMILY_CIRCLE_MAX + ' members). To add more people, please contact <a href="mailto:support@getfamilyforce.com" style="color:inherit;font-weight:700">support@getfamilyforce.com</a>.'
+    errEl.style.display = 'block'
+    return
+  }
 
   if (!email || !email.includes('@')) {
     errEl.textContent = 'Please enter a valid email address.'

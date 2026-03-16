@@ -15,7 +15,8 @@ create table if not exists children (
   user_id     uuid references auth.users(id) on delete cascade not null,
   name        text not null,
   dob         date not null,
-  gender      text check (gender in ('girl', 'boy', null)),
+  gender      text check (gender in ('girl', 'boy', 'other', null)),
+  -- 'girl' → she/her  |  'boy' → he/him  |  'other' → they/them  |  null → they/them (fallback)
   created_at  timestamptz default now(),
   updated_at  timestamptz default now()
 );

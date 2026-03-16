@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE SCOUT — v4 Landing Page
+     Concept: Email + calendar reminders for every critical window
+     Stack: Vanilla HTML/CSS/JS · zero dependencies
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>FamilyForce Scout — Never miss a critical parenting window</title>
+<meta name="description" content="138 developmental windows in your child's first year. Scout emails you what's open this month and puts a reminder in your calendar. First month free.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+/* ─── TOKENS ─── */
+:root {
+  --bg:           #FAFAFA;
+  --surface:      #FFFFFF;
+  --border:       #E5E2EC;
+  --border-light: #EDEBF2;
+  --text:         #1D1D1F;
+  --text-mid:     #5C5960;
+  --text-dim:     #8A879A;
+  --terra:        #6E4ED6;
+  --terra-dark:   #5B3CC4;
+  --terra-tint:   #F0EBFF;
+  --gold:         #F59E0B;
+  --gold-tint:    #FFFBEB;
+  --green:        #059669;
+  --indigo-deep:  #1E1248;
+  --sans:         'Outfit', system-ui, sans-serif;
+  --serif:        'Instrument Serif', Georgia, serif;
+  --rx:           clamp(20px, 5vw, 64px);
+  --max:          1100px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+::selection { background: rgba(110,78,214,.15); }
+:focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; border-radius: 4px; }
+
+/* ─── NAV ─── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250,250,250,.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-light);
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 var(--rx); height: 72px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.logo {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--sans); font-size: 17px; font-weight: 700;
+  text-decoration: none; color: var(--text); letter-spacing: -.01em; flex-shrink: 0;
+}
+.logo svg { width: 28px; height: 28px; }
+.logo-s { color: var(--terra); }
+.nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: color .2s; }
+@media (hover:hover) { .nav-links a:hover { color: var(--terra); } }
+.btn-nav {
+  background: var(--terra); color: #fff;
+  font-family: var(--sans); font-size: 13px; font-weight: 700;
+  padding: 10px 20px; border-radius: 100px; border: none; cursor: pointer;
+  text-decoration: none; display: inline-flex; align-items: center;
+  transition: background .2s, transform .2s; letter-spacing: .01em; white-space: nowrap;
+}
+@media (hover:hover) { .btn-nav:hover { background: var(--terra-dark); transform: translateY(-1px); } }
+@media (max-width: 640px) { .nav-links { display: none; } .btn-nav { display: none; } }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; padding: 10px; cursor: pointer; border-radius: 8px;
+}
+.hamburger span { display: block; height: 1.5px; background: var(--text); border-radius: 1px; transition: transform .3s, opacity .3s; }
+.hamburger span:nth-child(1) { width: 20px; }
+.hamburger span:nth-child(2) { width: 14px; }
+@media (max-width: 640px) { .hamburger { display: flex; } }
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 1001;
+  background: rgba(250,250,252,.97); backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex; flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0);
+  opacity: 0; visibility: hidden; transform: translateY(8px);
+  transition: opacity .25s, visibility .25s, transform .3s; pointer-events: none;
+}
+.mobile-menu.open { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+.mobile-menu-header { display: flex; justify-content: space-between; align-items: center; height: 64px; padding: 0 20px; border-bottom: 1px solid var(--border-light); }
+.mobile-menu-close { background: none; border: none; font-size: 18px; color: var(--text-dim); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 8px; }
+.mobile-menu-links { flex: 1; padding: 20px; list-style: none; }
+.mobile-menu-links li a { display: flex; align-items: center; min-height: 56px; padding: 12px 0; border-bottom: 1px solid var(--border-light); font-size: 18px; font-weight: 500; color: var(--text); text-decoration: none; }
+.mobile-menu-links li:last-child a { border-bottom: none; }
+.mobile-menu-cta { padding: 20px; padding-bottom: max(20px, env(safe-area-inset-bottom, 0px)); }
+.mobile-menu-cta a { display: block; text-align: center; background: var(--terra); color: #fff; padding: 16px; border-radius: 100px; font-weight: 700; font-size: 16px; text-decoration: none; }
+
+/* ─── SECTION SHARED ─── */
+.section-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--terra); margin-bottom: 14px; display: block;
+}
+.section-h2 {
+  font-family: var(--serif); font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.1; letter-spacing: -.025em; color: var(--text); margin-bottom: 16px;
+}
+.section-h2 em { font-style: italic; color: var(--terra); }
+.section-sub { font-size: 16px; line-height: 1.75; color: var(--text-mid); max-width: 560px; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--terra); color: #fff;
+  font-family: var(--sans); font-size: 15px; font-weight: 700;
+  padding: 14px 28px; border-radius: 100px; border: none; cursor: pointer;
+  text-decoration: none; transition: background .2s, transform .2s; letter-spacing: .01em;
+}
+@media (hover:hover) { .btn-primary:hover { background: var(--terra-dark); transform: translateY(-1px); } }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--terra);
+  font-family: var(--sans); font-size: 15px; font-weight: 600;
+  padding: 14px 28px; border-radius: 100px;
+  border: 1.5px solid rgba(110,78,214,.3); cursor: pointer;
+  text-decoration: none; transition: border-color .2s, background .2s;
+}
+@media (hover:hover) { .btn-ghost:hover { border-color: var(--terra); background: var(--terra-tint); } }
+
+/* ─── HERO ─── */
+.hero {
+  padding: calc(72px + 64px) var(--rx) 80px;
+  background: linear-gradient(160deg, var(--indigo-deep) 0%, #2D1A7A 50%, #4A2EA8 100%);
+  text-align: center; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,252,.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-inner { max-width: var(--max); margin: 0 auto; position: relative; z-index: 1; }
+.hero-kicker {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #6E4ED6, #9B80FF, #7C5CFC, #6E4ED6);
+  background-size: 300% 100%;
+  animation: kicker-shimmer 3s ease infinite;
+  border-radius: 100px; padding: 7px 18px;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: #fff; margin-bottom: 28px;
+  box-shadow: 0 0 32px rgba(124,92,252,.55), 0 0 0 1px rgba(167,139,255,.3);
+}
+@keyframes kicker-shimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+.hero-kicker-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.9);
+  position: relative; flex-shrink: 0;
+}
+.hero-kicker-dot::after {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  background: rgba(255,255,255,.45); animation: kicker-pulse 1.6s ease-out infinite;
+}
+@keyframes kicker-pulse { 0% { transform: scale(1); opacity: .8; } 100% { transform: scale(2.8); opacity: 0; } }
+.hero-h1 {
+  font-family: var(--serif); font-size: clamp(34px, 6vw, 62px);
+  line-height: 1.07; letter-spacing: -.03em; color: #fff; margin-bottom: 20px;
+}
+.hero-h1 em { font-style: italic; color: #A78BFF; }
+.hero-sub {
+  font-size: clamp(15px, 2.5vw, 18px); line-height: 1.75;
+  color: rgba(255,255,255,.65); max-width: 540px; margin: 0 auto 36px;
+}
+.hero-ctas { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+.hero-note { font-size: 12px; color: rgba(255,255,255,.35); margin-bottom: 56px; }
+
+/* Hero visuals — email + calendar */
+.hero-visuals {
+  display: flex; align-items: flex-start; justify-content: center; gap: 16px;
+  max-width: 780px; margin: 0 auto;
+  flex-wrap: wrap;
+}
+.hero-email-card {
+  flex: 1; min-width: 280px; max-width: 380px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(20px); border-radius: 20px; overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,.5);
+  text-align: left;
+}
+.email-chrome {
+  background: rgba(255,255,255,.06); border-bottom: 1px solid rgba(255,255,255,.1);
+  padding: 12px 16px; display: flex; align-items: center; gap: 8px;
+}
+.email-dot { width: 9px; height: 9px; border-radius: 50%; }
+.email-body { padding: 20px; }
+.email-from {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em;
+  color: #A78BFF; margin-bottom: 4px;
+}
+.email-subject {
+  font-family: var(--serif); font-size: 17px; line-height: 1.3;
+  color: #fff; margin-bottom: 14px; letter-spacing: -.01em;
+}
+.email-preview { font-size: 12px; line-height: 1.6; color: rgba(255,255,255,.55); margin-bottom: 14px; }
+.email-window-row {
+  background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.22);
+  border-radius: 10px; padding: 10px 12px; margin-bottom: 8px;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.email-window-row.open { background: rgba(167,139,255,.1); border-color: rgba(167,139,255,.2); }
+.email-window-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.email-window-body { flex: 1; min-width: 0; }
+.email-window-tag { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
+.email-window-row .email-window-tag { color: #FBBF24; }
+.email-window-row.open .email-window-tag { color: #A78BFF; }
+.email-window-title { font-size: 12px; font-weight: 700; color: #fff; }
+.email-window-desc { font-size: 11px; color: rgba(255,255,255,.5); }
+.email-cal-btn {
+  display: block; width: 100%; text-align: center;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2);
+  color: #fff; font-family: var(--sans); font-size: 12px; font-weight: 700;
+  padding: 10px; border-radius: 100px; margin-top: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+
+.hero-cal-card {
+  flex: 0 0 220px;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(20px); border-radius: 20px; overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,.4);
+  text-align: left;
+}
+.cal-header {
+  background: rgba(167,139,255,.18); border-bottom: 1px solid rgba(255,255,255,.1);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 8px;
+}
+.cal-header-logo { font-size: 18px; }
+.cal-header-text { font-size: 12px; font-weight: 700; color: #C4B5FD; }
+.cal-header-sub { font-size: 10px; color: rgba(255,255,255,.4); }
+.cal-body { padding: 14px 16px; }
+.cal-event {
+  background: rgba(110,78,214,.3); border: 1px solid rgba(167,139,255,.3);
+  border-radius: 10px; padding: 10px 12px; margin-bottom: 10px;
+}
+.cal-event-time { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #A78BFF; margin-bottom: 4px; }
+.cal-event-title { font-size: 12px; font-weight: 700; color: #fff; line-height: 1.3; }
+.cal-event-desc { font-size: 10px; color: rgba(255,255,255,.5); margin-top: 2px; }
+.cal-notify {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.06); border-radius: 8px; padding: 8px 10px;
+}
+.cal-notify-icon { font-size: 14px; }
+.cal-notify-text { font-size: 10px; color: rgba(255,255,255,.55); line-height: 1.4; }
+.cal-logos { display: flex; align-items: center; gap: 6px; padding: 12px 16px; border-top: 1px solid rgba(255,255,255,.08); }
+.cal-logo-pill {
+  flex: 1; text-align: center; background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1); border-radius: 6px;
+  font-size: 9px; font-weight: 700; color: rgba(255,255,255,.5); padding: 5px 4px;
+}
+
+.hero-trust {
+  display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;
+  font-size: 12px; color: rgba(255,255,255,.4); font-weight: 500; margin-top: 40px;
+}
+.hero-trust-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.2); }
+
+/* ─── PROBLEM ─── */
+.problem { padding: 96px var(--rx) 96px; background: var(--bg); }
+.problem-inner { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+@media (max-width: 768px) { .problem-inner { grid-template-columns: 1fr; gap: 40px; } }
+
+.problem-text .section-h2 { margin-bottom: 20px; }
+.problem-body { font-size: 16px; line-height: 1.8; color: var(--text-mid); margin-bottom: 20px; }
+.problem-body strong { color: var(--text); font-weight: 600; }
+
+.peanut-card {
+  background: var(--gold-tint);
+  border: 1.5px solid rgba(245,158,11,.3);
+  border-radius: 20px; padding: 24px;
+}
+.peanut-card-top {
+  display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px;
+}
+.peanut-icon { font-size: 32px; flex-shrink: 0; }
+.peanut-tag {
+  font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 4px;
+}
+.peanut-title { font-family: var(--serif); font-size: 18px; font-weight: 400; color: var(--text); line-height: 1.3; letter-spacing: -.01em; }
+.peanut-window {
+  background: rgba(245,158,11,.1); border-radius: 10px; padding: 10px 14px;
+  font-size: 13px; color: var(--text-mid); line-height: 1.65;
+}
+.peanut-window strong { color: #92400E; font-weight: 600; }
+.peanut-stat {
+  margin-top: 14px; font-size: 13px; font-style: italic; color: var(--text-dim);
+  border-top: 1px solid rgba(245,158,11,.2); padding-top: 12px;
+}
+
+/* ─── HOW IT WORKS ─── */
+.how { padding: 96px var(--rx) 96px; background: linear-gradient(180deg, #F7F4FF 0%, var(--bg) 100%); }
+.how-inner { max-width: var(--max); margin: 0 auto; }
+.how-header { margin-bottom: 56px; }
+
+.steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 56px; }
+@media (max-width: 900px) { .steps-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .steps-grid { grid-template-columns: 1fr; } }
+.step-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 24px 20px 28px;
+  position: relative;
+}
+.step-card::before {
+  content: ''; position: absolute; top: 0; left: 24px; right: 24px; height: 2px;
+  background: linear-gradient(90deg, var(--terra), #9B80FF); border-radius: 0 0 2px 2px;
+}
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--terra-tint); color: var(--terra);
+  font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.step-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+.step-title { font-family: var(--serif); font-size: 18px; letter-spacing: -.01em; margin-bottom: 8px; color: var(--text); }
+.step-body { font-size: 13px; line-height: 1.7; color: var(--text-mid); }
+
+/* Dual device mockup */
+.device-row {
+  display: flex; align-items: flex-start; justify-content: center; gap: 24px; flex-wrap: wrap;
+}
+.device-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 20px; flex: 1; min-width: 260px; max-width: 360px;
+  box-shadow: 0 8px 40px rgba(110,78,214,.08);
+}
+.device-label {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+}
+.device-label-icon { font-size: 18px; }
+.device-label-text { font-size: 12px; font-weight: 700; color: var(--text-mid); }
+
+.mini-email-header {
+  display: flex; align-items: center; gap: 10px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light); margin-bottom: 14px;
+}
+.mini-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #6E4ED6, #9B80FF);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0; font-family: var(--sans);
+}
+.mini-from { font-size: 12px; font-weight: 700; color: var(--text); }
+.mini-date { font-size: 11px; color: var(--text-dim); }
+.mini-subject { font-family: var(--serif); font-size: 16px; color: var(--text); margin-bottom: 10px; letter-spacing: -.01em; }
+.mini-body { font-size: 12px; line-height: 1.65; color: var(--text-mid); margin-bottom: 12px; }
+.mini-window-row {
+  border-radius: 8px; padding: 9px 11px; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 9px;
+  font-size: 12px; font-weight: 600;
+}
+.mini-window-row.urgent { background: #FFFBEB; color: #92400E; border: 1px solid #FCD34D; }
+.mini-window-row.open   { background: var(--terra-tint); color: var(--terra-dark); border: 1px solid rgba(110,78,214,.15); }
+.mini-window-icon { font-size: 14px; flex-shrink: 0; }
+.mini-cal-btn {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  background: var(--terra); color: #fff; padding: 10px 14px; border-radius: 100px;
+  font-size: 12px; font-weight: 700; width: 100%; margin-top: 10px; border: none; cursor: pointer;
+}
+
+.mini-cal-header {
+  background: linear-gradient(135deg, #6E4ED6, #9B80FF);
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; color: #fff;
+}
+.mini-cal-month { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; opacity: .8; margin-bottom: 2px; }
+.mini-cal-day { font-family: var(--serif); font-size: 36px; line-height: 1; margin-bottom: 2px; }
+.mini-cal-event {
+  background: rgba(255,255,255,.18); border-radius: 8px; padding: 6px 10px;
+  font-size: 11px; font-weight: 600;
+}
+.mini-cal-list { display: flex; flex-direction: column; gap: 8px; }
+.mini-cal-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border-light);
+}
+.mini-cal-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.mini-cal-dot.purple { background: var(--terra); }
+.mini-cal-dot.gold   { background: var(--gold); }
+.mini-cal-title { font-size: 12px; font-weight: 600; color: var(--text); }
+.mini-cal-time { font-size: 11px; color: var(--text-dim); }
+.cal-badges { display: flex; gap: 6px; margin-top: 14px; }
+.cal-badge {
+  flex: 1; text-align: center; border: 1px solid var(--border);
+  border-radius: 8px; padding: 6px 8px;
+  font-size: 10px; font-weight: 700; color: var(--text-mid);
+}
+
+/* ─── STATS / MATH ─── */
+.math { padding: 96px var(--rx) 96px; background: var(--indigo-deep); }
+.math-inner { max-width: var(--max); margin: 0 auto; }
+.math-header { text-align: center; margin-bottom: 56px; }
+.math-header .section-eyebrow { color: #A78BFF; }
+.math-header .section-h2 { color: #fff; }
+.math-header .section-h2 em { color: #A78BFF; }
+.math-header .section-sub { color: rgba(255,255,255,.6); margin: 0 auto; }
+
+.stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 56px; }
+@media (max-width: 640px) { .stats-row { grid-template-columns: 1fr; max-width: 320px; margin-left: auto; margin-right: auto; } }
+.stat-card {
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px; padding: 28px 24px; text-align: center;
+}
+.stat-num {
+  font-family: var(--serif); font-size: clamp(40px, 6vw, 56px);
+  line-height: 1; letter-spacing: -.04em; color: #fff; margin-bottom: 6px;
+  display: block;
+}
+.stat-num em { font-style: normal; color: #A78BFF; }
+.stat-label { font-size: 14px; font-weight: 500; color: rgba(255,255,255,.5); line-height: 1.4; }
+
+.family-strip {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09);
+  border-radius: 20px; padding: 28px 32px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+}
+.family-avatars { display: flex; gap: -8px; }
+.family-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 3px solid var(--indigo-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; margin-left: -8px; flex-shrink: 0;
+}
+.family-avatar:first-child { margin-left: 0; }
+.family-text { flex: 1; }
+.family-title { font-family: var(--serif); font-size: 20px; color: #fff; margin-bottom: 4px; }
+.family-desc { font-size: 14px; color: rgba(255,255,255,.5); }
+.family-tag {
+  background: rgba(167,139,255,.2); border: 1px solid rgba(167,139,255,.3);
+  border-radius: 100px; padding: 6px 16px;
+  font-size: 12px; font-weight: 700; color: #C4B5FD; white-space: nowrap;
+}
+
+/* ─── COVERAGE ─── */
+.coverage { padding: 96px var(--rx) 96px; background: var(--bg); }
+.coverage-inner { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+@media (max-width: 768px) { .coverage-inner { grid-template-columns: 1fr; gap: 40px; } }
+
+.coverage-bar-wrap { display: flex; flex-direction: column; gap: 16px; }
+.coverage-year-label { font-size: 12px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: .1em; }
+.coverage-bar {
+  background: var(--border); border-radius: 100px; height: 10px; overflow: hidden; position: relative;
+}
+.coverage-fill {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(90deg, var(--terra), #9B80FF);
+}
+.coverage-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.coverage-num { font-family: var(--serif); font-size: 28px; color: var(--terra); font-weight: 400; flex-shrink: 0; }
+.coverage-desc { font-size: 13px; color: var(--text-mid); }
+
+.age-badge-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+.age-badge {
+  background: var(--terra-tint); border: 1px solid rgba(110,78,214,.15);
+  border-radius: 100px; padding: 6px 16px;
+  font-size: 13px; font-weight: 600; color: var(--terra);
+}
+
+/* ─── DASHBOARD ─── */
+.dashboard { padding: 96px var(--rx) 96px; background: linear-gradient(180deg, #F7F4FF 0%, var(--bg) 100%); }
+.dashboard-inner { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+@media (max-width: 768px) { .dashboard-inner { grid-template-columns: 1fr; gap: 40px; } }
+
+.dash-features { display: flex; flex-direction: column; gap: 20px; margin-top: 28px; }
+.dash-feature { display: flex; align-items: flex-start; gap: 14px; }
+.dash-feature-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: var(--terra-tint); color: var(--terra);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.dash-feature-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.dash-feature-desc { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+
+.dash-mockup {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 24px; padding: 24px;
+  box-shadow: 0 8px 48px rgba(110,78,214,.1);
+}
+.dash-mock-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.dash-mock-title { font-family: var(--serif); font-size: 18px; color: var(--text); }
+.dash-mock-badge { background: var(--terra-tint); color: var(--terra); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 100px; }
+.dash-progress { margin-bottom: 18px; }
+.dash-progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-mid); margin-bottom: 6px; }
+.dash-progress-bar { background: var(--border); border-radius: 100px; height: 8px; overflow: hidden; }
+.dash-progress-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--terra), #9B80FF); width: 62%; }
+.dash-rows { display: flex; flex-direction: column; gap: 8px; }
+.dash-row {
+  display: flex; align-items: center; gap: 12px;
+  border-radius: 10px; padding: 10px 12px; border: 1px solid var(--border-light);
+}
+.dash-row.urgent { background: #FFFBEB; border-color: rgba(245,158,11,.25); }
+.dash-row.done   { background: #F0FDF4; border-color: rgba(5,150,105,.2); opacity: .75; }
+.dash-check {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 12px;
+}
+.dash-check.todo   { border: 2px solid var(--border); }
+.dash-check.urgent { border: 2px solid var(--gold); background: rgba(245,158,11,.1); color: var(--gold); }
+.dash-check.done   { background: #DCFCE7; color: var(--green); }
+.dash-row-title { font-size: 13px; font-weight: 600; color: var(--text); flex: 1; }
+.dash-row.done .dash-row-title { color: var(--text-dim); text-decoration: line-through; }
+.dash-row-close { font-size: 10px; color: var(--text-dim); white-space: nowrap; }
+.dash-row.urgent .dash-row-close { color: #D97706; font-weight: 700; }
+.dash-personalized {
+  margin-top: 14px; background: var(--terra-tint);
+  border: 1px solid rgba(110,78,214,.15); border-radius: 10px; padding: 12px 14px;
+  font-size: 12px; color: var(--terra-dark); line-height: 1.6;
+}
+.dash-personalized strong { font-weight: 700; }
+
+/* ─── RESEARCH ─── */
+.research { padding: 96px var(--rx) 96px; background: var(--bg); }
+.research-inner { max-width: var(--max); margin: 0 auto; text-align: center; }
+.research-inner .section-sub { margin: 0 auto 48px; }
+.research-badges { display: flex; align-items: stretch; justify-content: center; gap: 20px; flex-wrap: wrap; max-width: 820px; margin: 0 auto; }
+.research-badge {
+  flex: 1; min-width: 200px; max-width: 260px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px 24px; text-align: center;
+}
+.research-badge-icon { font-size: 36px; margin-bottom: 12px; display: block; }
+.research-badge-title { font-family: var(--serif); font-size: 18px; color: var(--text); margin-bottom: 8px; }
+.research-badge-body { font-size: 13px; color: var(--text-mid); line-height: 1.65; }
+
+.research-quote {
+  margin-top: 48px; background: var(--terra-tint);
+  border: 1px solid rgba(110,78,214,.15);
+  border-radius: 20px; padding: 32px; max-width: 680px; margin-left: auto; margin-right: auto;
+}
+.research-quote-text {
+  font-family: var(--serif); font-size: clamp(18px, 2.5vw, 22px);
+  line-height: 1.5; letter-spacing: -.01em; color: var(--text);
+  margin-bottom: 16px; font-style: italic;
+}
+.research-quote-source { font-size: 12px; font-weight: 700; color: var(--terra); text-transform: uppercase; letter-spacing: .1em; }
+
+/* ─── GIFT / BABY SHOWER ─── */
+.gift { padding: 96px var(--rx) 96px; background: linear-gradient(180deg, #FFF8F0 0%, var(--bg) 100%); }
+.gift-inner { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+@media (max-width: 768px) { .gift-inner { grid-template-columns: 1fr; gap: 40px; } }
+.gift-text .section-h2 { margin-bottom: 16px; }
+.gift-body { font-size: 16px; line-height: 1.8; color: var(--text-mid); margin-bottom: 24px; }
+.gift-cards { display: flex; flex-direction: column; gap: 12px; }
+.gift-card {
+  display: flex; align-items: flex-start; gap: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 16px; padding: 16px 18px;
+}
+.gift-card-icon { font-size: 24px; flex-shrink: 0; }
+.gift-card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.gift-card-desc { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+.gift-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 28px; }
+
+.gift-visual {
+  background: linear-gradient(135deg, var(--indigo-deep), #2D1A7A);
+  border-radius: 24px; padding: 32px; text-align: center;
+  box-shadow: 0 20px 60px rgba(30,18,72,.25);
+}
+.gift-tag-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(167,139,255,.2); border: 1px solid rgba(167,139,255,.3);
+  border-radius: 100px; padding: 6px 16px;
+  font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: #C4B5FD; margin-bottom: 20px;
+}
+.gift-amount {
+  font-family: var(--serif); font-size: 56px; color: #fff;
+  line-height: 1; margin-bottom: 4px;
+}
+.gift-amount-sub { font-size: 14px; color: rgba(255,255,255,.5); margin-bottom: 24px; }
+.gift-perks { display: flex; flex-direction: column; gap: 10px; text-align: left; margin-bottom: 24px; }
+.gift-perk {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.07); border-radius: 10px; padding: 10px 14px;
+  font-size: 13px; color: rgba(255,255,255,.8);
+}
+.gift-perk-check { color: #A78BFF; font-size: 14px; flex-shrink: 0; }
+.gift-btn {
+  display: block; width: 100%; text-align: center;
+  background: #fff; color: var(--terra-dark);
+  font-family: var(--sans); font-size: 14px; font-weight: 800;
+  padding: 14px; border-radius: 100px; border: none; cursor: pointer; text-decoration: none;
+}
+
+/* ─── ABOUT JACK ─── */
+.about { padding: 96px var(--rx) 96px; background: var(--bg); }
+.about-inner { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+@media (max-width: 768px) { .about-inner { grid-template-columns: 1fr; gap: 40px; } }
+.about-photo-wrap { position: relative; }
+.about-photo {
+  width: 100%; max-width: 400px; border-radius: 24px; object-fit: cover;
+  aspect-ratio: 3/4; box-shadow: 0 24px 64px rgba(0,0,0,.15);
+}
+.about-photo-badge {
+  position: absolute; bottom: 24px; left: 16px; right: 16px;
+  background: rgba(30,18,72,.92); backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px; padding: 14px 18px;
+  display: flex; align-items: center; gap: 12px;
+}
+.about-badge-avatar {
+  width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+  border: 2px solid rgba(167,139,255,.4);
+}
+.about-badge-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.about-badge-name { font-size: 13px; font-weight: 700; color: #fff; }
+.about-badge-title { font-size: 11px; color: rgba(255,255,255,.5); }
+
+.about-text .section-h2 { margin-bottom: 20px; }
+.about-body { font-size: 16px; line-height: 1.8; color: var(--text-mid); margin-bottom: 16px; }
+.about-body strong { color: var(--text); font-weight: 600; }
+.about-quote {
+  background: var(--terra-tint); border-left: 3px solid var(--terra);
+  border-radius: 0 12px 12px 0; padding: 18px 20px; margin: 20px 0;
+  font-family: var(--serif); font-size: 18px; line-height: 1.5;
+  color: var(--terra-dark); font-style: italic;
+}
+
+/* ─── FREE LIBRARY ─── */
+.library { padding: 96px var(--rx) 96px; background: linear-gradient(180deg, #F7F4FF 0%, var(--bg) 100%); }
+.library-inner { max-width: var(--max); margin: 0 auto; }
+.library-header { margin-bottom: 48px; }
+.library-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 32px; }
+@media (max-width: 900px) { .library-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 600px) { .library-grid { grid-template-columns: repeat(2, 1fr); } }
+.lib-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 20px 16px 22px; text-align: center;
+  transition: transform .2s, box-shadow .2s;
+}
+@media (hover:hover) { .lib-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(110,78,214,.1); } }
+.lib-card-emoji { font-size: 32px; margin-bottom: 10px; display: block; }
+.lib-card-title { font-family: var(--serif); font-size: 15px; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+.lib-card-meta { font-size: 11px; color: var(--text-dim); margin-bottom: 14px; }
+.lib-card-btn {
+  display: block; background: var(--terra-tint); color: var(--terra);
+  font-family: var(--sans); font-size: 12px; font-weight: 700;
+  padding: 7px 12px; border-radius: 100px; border: none; cursor: pointer; text-decoration: none;
+  width: 100%;
+}
+.library-note {
+  text-align: center; font-size: 14px; color: var(--text-mid);
+}
+.library-note strong { color: var(--text); font-weight: 600; }
+
+/* ─── FINAL CTA ─── */
+.cta-section { padding: 96px var(--rx) 96px; background: linear-gradient(160deg, var(--indigo-deep), #2D1A7A 60%, #4A2EA8); text-align: center; }
+.cta-section .section-eyebrow { color: #A78BFF; justify-content: center; display: flex; }
+.cta-section .section-h2 { color: #fff; margin-bottom: 16px; }
+.cta-section .section-h2 em { color: #A78BFF; }
+.cta-section .section-sub { color: rgba(255,255,255,.6); margin: 0 auto 48px; text-align: center; }
+
+.pricing-pills { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+.pricing-pill {
+  background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.15);
+  border-radius: 20px; padding: 20px 28px; min-width: 200px; text-align: center;
+  cursor: pointer; transition: border-color .2s, background .2s;
+  position: relative;
+}
+.pricing-pill.best {
+  border-color: #A78BFF;
+  background: rgba(167,139,255,.12);
+}
+.pricing-best-tag {
+  position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(135deg, #7C5CFC, #A78BFF);
+  color: #fff; font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
+  padding: 3px 12px; border-radius: 100px; white-space: nowrap;
+}
+.pricing-period { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: rgba(255,255,255,.45); margin-bottom: 6px; }
+.pricing-amount { font-family: var(--serif); font-size: 36px; color: #fff; line-height: 1; margin-bottom: 4px; }
+.pricing-monthly { font-size: 12px; color: rgba(255,255,255,.5); }
+
+.cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 32px; }
+.cta-trust-row { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; font-size: 13px; color: rgba(255,255,255,.45); }
+.cta-trust-item { display: flex; align-items: center; gap: 6px; }
+.cta-trust-check { color: #A78BFF; }
+
+/* ─── FOOTER ─── */
+.footer {
+  padding: 32px var(--rx) max(32px, env(safe-area-inset-bottom, 0px));
+  background: var(--indigo-deep);
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+.footer-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.footer-logo { font-size: 15px; font-weight: 700; color: rgba(255,255,255,.8); }
+.footer-logo span { color: #A78BFF; }
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { font-size: 12px; color: rgba(255,255,255,.35); text-decoration: none; transition: color .2s; }
+@media (hover:hover) { .footer-links a:hover { color: rgba(255,255,255,.7); } }
+.footer-copy { font-size: 12px; color: rgba(255,255,255,.25); }
+
+/* ─── WIDGET ─── */
+.widget-section { padding: 96px var(--rx) 96px; background: linear-gradient(160deg, var(--indigo-deep) 0%, #2D1A7A 50%, #4A2EA8 100%); }
+.widget-section-inner { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: 1fr 480px; gap: 64px; align-items: center; }
+@media (max-width: 900px) { .widget-section-inner { grid-template-columns: 1fr; } }
+.widget-text .section-eyebrow { color: #A78BFF; }
+.widget-text .section-h2 { color: #fff; margin-bottom: 16px; }
+.widget-text .section-h2 em { color: #A78BFF; }
+.widget-text .section-sub { color: rgba(255,255,255,.6); margin-bottom: 32px; }
+.widget-proof { display: flex; flex-direction: column; gap: 12px; }
+.widget-proof-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px; padding: 14px 16px;
+}
+.widget-proof-icon { font-size: 20px; flex-shrink: 0; }
+.widget-proof-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.widget-proof-desc { font-size: 12px; color: rgba(255,255,255,.5); line-height: 1.5; }
+
+.w-wrap {
+  border-radius: 24px; overflow: hidden;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 40px 100px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.05);
+}
+.w-header { padding: 22px 22px 14px; }
+.w-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: #A78BFF; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.w-title {
+  font-family: var(--serif); font-size: 20px; line-height: 1.25;
+  color: #fff; letter-spacing: -.015em;
+}
+.w-title em { font-style: italic; color: #A78BFF; }
+.w-personas {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 7px; padding: 0 22px 14px;
+}
+.w-persona {
+  background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12);
+  border-radius: 14px; padding: 11px 8px; text-align: center;
+  cursor: pointer; transition: all .2s; user-select: none;
+}
+@media (hover:hover) { .w-persona:hover { background: rgba(255,255,255,.12); } }
+.w-persona.active { background: rgba(167,139,255,.18); border-color: #A78BFF; }
+.w-persona-icon { font-size: 20px; display: block; margin-bottom: 5px; }
+.w-persona-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.88); display: block; line-height: 1.3; }
+.w-persona.active .w-persona-label { color: #C4B5FD; }
+.w-persona-sub { font-size: 10px; color: rgba(255,255,255,.38); display: block; margin-top: 2px; }
+.w-persona.active .w-persona-sub { color: rgba(167,139,255,.6); }
+.w-divider { height: 1px; background: rgba(255,255,255,.08); }
+.w-stage-row { padding: 11px 22px 7px; display: flex; align-items: center; gap: 9px; }
+.w-stage-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(167,139,255,.15); border: 1px solid rgba(167,139,255,.25);
+  border-radius: 100px; padding: 4px 11px;
+  font-size: 11px; font-weight: 700; color: #C4B5FD;
+}
+.w-stage-dot { width: 5px; height: 5px; border-radius: 50%; background: #A78BFF; flex-shrink: 0; }
+.w-stage-desc { font-size: 11px; color: rgba(255,255,255,.38); }
+.w-windows { padding: 2px 14px 6px; display: flex; flex-direction: column; gap: 5px; }
+.w-row {
+  display: flex; gap: 10px; align-items: flex-start;
+  border-radius: 11px; padding: 10px 11px;
+}
+.w-row.urgent { background: rgba(251,191,36,.1);  border: 1px solid rgba(251,191,36,.2); }
+.w-row.open   { background: rgba(167,139,255,.1); border: 1px solid rgba(167,139,255,.16); }
+.w-row.closed { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); opacity: .55; }
+.w-row.coming { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); }
+.w-row-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+.w-row-body { flex: 1; min-width: 0; }
+.w-row-tag { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
+.w-row.urgent .w-row-tag { color: #FBBF24; }
+.w-row.open   .w-row-tag { color: #A78BFF; }
+.w-row.closed .w-row-tag, .w-row.coming .w-row-tag { color: rgba(255,255,255,.3); }
+.w-row-title { font-size: 12.5px; font-weight: 700; line-height: 1.3; margin-bottom: 1px; }
+.w-row.closed .w-row-title { color: rgba(255,255,255,.38); }
+.w-row:not(.closed) .w-row-title { color: #fff; }
+.w-row-desc { font-size: 11px; line-height: 1.5; }
+.w-row.closed .w-row-desc { color: rgba(255,255,255,.25); }
+.w-row:not(.closed) .w-row-desc { color: rgba(255,255,255,.52); }
+.w-row-badge {
+  flex-shrink: 0; font-size: 9.5px; font-weight: 700; padding: 3px 8px;
+  border-radius: 100px; white-space: nowrap; align-self: flex-start; margin-top: 1px;
+}
+.w-row.urgent .w-row-badge { background: rgba(251,191,36,.15); color: #FBBF24; border: 1px solid rgba(251,191,36,.25); }
+.w-row.open   .w-row-badge { background: rgba(167,139,255,.18); color: #C4B5FD; border: 1px solid rgba(167,139,255,.25); }
+.w-row.closed .w-row-badge, .w-row.coming .w-row-badge { background: rgba(255,255,255,.05); color: rgba(255,255,255,.3); border: 1px solid rgba(255,255,255,.08); }
+.w-cta {
+  padding: 14px 16px 18px; border-top: 1px solid rgba(255,255,255,.09); margin-top: 5px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.w-cta-btn {
+  display: block; width: 100%; text-align: center;
+  background: #fff; color: var(--terra-dark);
+  font-family: var(--sans); font-size: 14px; font-weight: 700;
+  padding: 13px; border-radius: 100px; cursor: pointer; border: none;
+  transition: transform .15s, box-shadow .15s; text-decoration: none;
+}
+@media (hover:hover) { .w-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.3); } }
+.w-cta-note { text-align: center; font-size: 10.5px; color: rgba(255,255,255,.28); }
+
+/* ─── FOUNDER STRIP ─── */
+.founder-strip {
+  background: var(--indigo-deep);
+  border-top: 1px solid rgba(255,255,255,.08);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 16px var(--rx);
+}
+.founder-strip-inner {
+  max-width: var(--max); margin: 0 auto;
+  display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap;
+}
+.founder-strip-avatar {
+  width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+  border: 2px solid rgba(167,139,255,.5);
+}
+.founder-strip-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.founder-strip-text { font-size: 14px; color: rgba(255,255,255,.7); font-style: italic; }
+.founder-strip-text strong { color: #C4B5FD; font-style: normal; font-weight: 700; }
+
+/* ─── TESTIMONIALS ─── */
+.testimonials { padding: 72px var(--rx) 72px; background: var(--bg); }
+.testimonials-inner { max-width: var(--max); margin: 0 auto; }
+.testimonials-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--terra); margin-bottom: 32px; display: block; text-align: center; }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 760px) { .testimonials-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } }
+.testi-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 24px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.testi-stars { color: #F59E0B; font-size: 14px; letter-spacing: 2px; }
+.testi-quote {
+  font-family: var(--serif); font-size: 16px; line-height: 1.55;
+  color: var(--text); letter-spacing: -.01em; flex: 1;
+  font-style: italic;
+}
+.testi-quote strong { font-style: normal; font-weight: 600; color: var(--terra-dark); }
+.testi-author { display: flex; align-items: center; gap: 10px; }
+.testi-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.testi-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.testi-meta { font-size: 11px; color: var(--text-dim); }
+
+/* ─── CTA URGENCY ─── */
+.cta-urgency {
+  max-width: 560px; margin: 0 auto 36px;
+  background: rgba(167,139,255,.15); border: 1px solid rgba(167,139,255,.25);
+  border-radius: 14px; padding: 16px 22px;
+  font-size: 15px; color: rgba(255,255,255,.8); line-height: 1.65; text-align: center;
+}
+.cta-urgency strong { color: #fff; }
+.cta-price-anchor {
+  font-size: 13px; color: rgba(255,255,255,.4); margin-bottom: 28px; text-align: center;
+}
+
+/* ─── SCROLL REVEAL ─── */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="logo" aria-label="FamilyForce Scout home">
+      <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+        <path d="M14 3L25 9.5V20.5L14 27L3 20.5V9.5L14 3Z" fill="#6E4ED6" opacity=".15"/>
+        <path d="M14 3L25 9.5V20.5L14 27L3 20.5V9.5L14 3Z" stroke="#6E4ED6" stroke-width="1.5"/>
+        <path d="M14 8L20 11.5V18.5L14 22L8 18.5V11.5L14 8Z" fill="#6E4ED6" opacity=".3"/>
+        <circle cx="14" cy="14" r="3" fill="#6E4ED6"/>
+      </svg>
+      FamilyForce <span class="logo-s">Scout</span>
+    </a>
+    <ul class="nav-links" aria-label="Navigation links">
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#research">The research</a></li>
+      <li><a href="#jack">About Jack</a></li>
+      <li><a href="#library">Free library</a></li>
+    </ul>
+    <a href="/scout-signup.html" class="btn-nav">Start free →</a>
+    <button class="hamburger" aria-label="Open menu" onclick="document.getElementById('mobileMenu').classList.add('open')">
+      <span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <div class="mobile-menu-header">
+    <span class="footer-logo">FamilyForce <span>Scout</span></span>
+    <button class="mobile-menu-close" onclick="document.getElementById('mobileMenu').classList.remove('open')" aria-label="Close menu">✕</button>
+  </div>
+  <ul class="mobile-menu-links">
+    <li><a href="#how" onclick="document.getElementById('mobileMenu').classList.remove('open')">How it works</a></li>
+    <li><a href="#research" onclick="document.getElementById('mobileMenu').classList.remove('open')">The research</a></li>
+    <li><a href="#jack" onclick="document.getElementById('mobileMenu').classList.remove('open')">About Jack</a></li>
+    <li><a href="#library" onclick="document.getElementById('mobileMenu').classList.remove('open')">Free library</a></li>
+  </ul>
+  <div class="mobile-menu-cta"><a href="/scout-signup.html">Start free trial →</a></div>
+</div>
+
+<!-- HERO -->
+<section class="hero" aria-label="Hero">
+  <div class="hero-inner">
+    <div class="hero-kicker" aria-label="Backed by pediatric research">
+      <span class="hero-kicker-dot" aria-hidden="true"></span>
+      Backed by pediatric research
+    </div>
+    <h1 class="hero-h1">
+      Every month, Scout tells you exactly<br>what your child needs —<br>and puts it <em>in your calendar.</em>
+    </h1>
+    <p class="hero-sub">
+      The first three years are full of time-sensitive developmental windows. Some are open for months. Others close in weeks. Scout makes sure you never find out too late.
+    </p>
+    <div class="hero-ctas">
+      <a href="/scout-signup.html" class="btn-primary">Start free trial →</a>
+      <a href="#widget" class="btn-ghost" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2);color:#fff">See it live</a>
+    </div>
+    <p class="hero-note">First month free · No credit card required · Cancel any time</p>
+
+    <!-- Hero visuals -->
+    <div class="hero-visuals" aria-hidden="true">
+      <!-- Email mockup -->
+      <div class="hero-email-card">
+        <div class="email-chrome">
+          <div class="email-dot" style="background:#FF605C"></div>
+          <div class="email-dot" style="background:#FFBD44;margin-left:5px"></div>
+          <div class="email-dot" style="background:#00CA4E;margin-left:5px"></div>
+        </div>
+        <div class="email-body">
+          <div class="email-from">FamilyForce Scout</div>
+          <div class="email-subject">Emma's windows for April — 3 open, 1 closing soon</div>
+          <div class="email-preview">Hi Sarah, here's what's important this month for Emma (7 months). One window closes in 12 days.</div>
+          <div class="email-window-row">
+            <div class="email-window-icon">⚠️</div>
+            <div class="email-window-body">
+              <div class="email-window-tag">Closing in 12 days</div>
+              <div class="email-window-title">Peanut introduction</div>
+              <div class="email-window-desc">Early intro reduces allergy risk by up to 80%</div>
+            </div>
+          </div>
+          <div class="email-window-row open">
+            <div class="email-window-icon">🌱</div>
+            <div class="email-window-body">
+              <div class="email-window-tag">Open this month</div>
+              <div class="email-window-title">First solid foods</div>
+              <div class="email-window-desc">Start with iron-rich purees, single ingredients</div>
+            </div>
+          </div>
+          <div class="email-cal-btn">
+            📅 Add all to calendar
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendar mockup -->
+      <div class="hero-cal-card">
+        <div class="cal-header">
+          <div class="cal-header-logo">📅</div>
+          <div>
+            <div class="cal-header-text">April Reminders</div>
+            <div class="cal-header-sub">Added to your calendar</div>
+          </div>
+        </div>
+        <div class="cal-body">
+          <div class="cal-event">
+            <div class="cal-event-time">April 8 · All day</div>
+            <div class="cal-event-title">⚠️ Peanut introduction closes</div>
+            <div class="cal-event-desc">Emma — window closes soon</div>
+          </div>
+          <div class="cal-notify">
+            <div class="cal-notify-icon">🔔</div>
+            <div class="cal-notify-text">Reminder sent to Mom, Dad, and Grandma</div>
+          </div>
+        </div>
+        <div class="cal-logos">
+          <div class="cal-logo-pill">Google</div>
+          <div class="cal-logo-pill">Apple</div>
+          <div class="cal-logo-pill">Outlook</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-trust">
+      <span>138 windows in year 1</span>
+      <span class="hero-trust-dot" aria-hidden="true"></span>
+      <span>Covers birth to age 3</span>
+      <span class="hero-trust-dot" aria-hidden="true"></span>
+      <span>Clinically reviewed</span>
+      <span class="hero-trust-dot" aria-hidden="true"></span>
+      <span>Family sharing included</span>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH CREDIBILITY STRIP -->
+<div class="founder-strip" role="complementary" aria-label="Research credibility">
+  <div class="founder-strip-inner">
+    <div style="font-size:22px;flex-shrink:0" aria-hidden="true">🎓</div>
+    <p class="founder-strip-text">
+      <strong>"Early childhood is a period of extraordinary sensitivity. What happens in the first three years shapes brain architecture for life."</strong> — Harvard Center on the Developing Child
+    </p>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" aria-labelledby="testimonials-eyebrow">
+  <div class="testimonials-inner">
+    <span class="testimonials-eyebrow" id="testimonials-eyebrow">What parents say</span>
+    <div class="testimonials-grid">
+      <div class="testi-card reveal">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"I had no idea the <strong>peanut introduction window</strong> was even a thing. Scout flagged it at 4 months and we acted in time. Our pediatrician said we did exactly the right thing."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#EDE9FE">👩</div>
+          <div>
+            <div class="testi-name">Sarah M.</div>
+            <div class="testi-meta">Mom of Emma, 7 months · Hong Kong</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:.08s">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"I'm a planner. Scout was the first thing I set up after the 12-week scan. <strong>Knowing what's coming makes me feel in control</strong> — not overwhelmed. My husband is on it too."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#FCE7F3">🤰</div>
+          <div>
+            <div class="testi-name">Priya K.</div>
+            <div class="testi-meta">Expecting, 28 weeks · Singapore</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal" style="transition-delay:.16s">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"We're both working full-time with a 10-month-old. <strong>The calendar invite is the killer feature</strong> — it's already in my schedule before I even think about it. Nothing falls through the cracks."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#DBEAFE">👨</div>
+          <div>
+            <div class="testi-name">David &amp; Rachel T.</div>
+            <div class="testi-meta">Parents of Liam, 10 months · London</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WIDGET — LIVE SCENARIO PREVIEW (moved up) -->
+<section class="widget-section" id="widget" aria-labelledby="widget-h2">
+  <div class="widget-section-inner">
+    <div class="widget-text reveal">
+      <span class="section-eyebrow">Live preview</span>
+      <h2 class="section-h2" id="widget-h2">Pick your situation.<br><em>See your windows.</em></h2>
+      <p class="section-sub">This is what Scout shows you every month — specific to your child's exact age. Select a scenario to see real windows right now.</p>
+      <div class="widget-proof">
+        <div class="widget-proof-item">
+          <div class="widget-proof-icon">⚠️</div>
+          <div>
+            <div class="widget-proof-title">Urgent windows are flagged first</div>
+            <div class="widget-proof-desc">The most time-sensitive items are always at the top — so nothing slips past you.</div>
+          </div>
+        </div>
+        <div class="widget-proof-item">
+          <div class="widget-proof-icon">📅</div>
+          <div>
+            <div class="widget-proof-title">Each one gets a calendar invite</div>
+            <div class="widget-proof-desc">Every window is delivered with a calendar event so the reminder is already in your schedule.</div>
+          </div>
+        </div>
+        <div class="widget-proof-item">
+          <div class="widget-proof-icon">👨‍👩‍👧</div>
+          <div>
+            <div class="widget-proof-title">Shared with your whole family</div>
+            <div class="widget-proof-desc">Everyone on your Family Circle gets the same reminders. No one is left out of the loop.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-wrap reveal" style="transition-delay:.12s" aria-label="Live milestone preview">
+      <div class="w-header">
+        <div class="w-eyebrow">● Live milestone preview</div>
+        <div class="w-title">What's open <em>for your child right now</em></div>
+      </div>
+      <div class="w-personas" role="tablist" aria-label="Select scenario">
+        <div class="w-persona" id="wp0" role="tab" tabindex="0" aria-selected="true" onclick="selectPersona(0)" onkeydown="if(event.key==='Enter'||event.key===' ')selectPersona(0)">
+          <span class="w-persona-icon">🤱</span>
+          <span class="w-persona-label">Expecting</span>
+          <span class="w-persona-sub">~8 weeks out</span>
+        </div>
+        <div class="w-persona" id="wp1" role="tab" tabindex="0" aria-selected="false" onclick="selectPersona(1)" onkeydown="if(event.key==='Enter'||event.key===' ')selectPersona(1)">
+          <span class="w-persona-icon">👶</span>
+          <span class="w-persona-label">5 months old</span>
+          <span class="w-persona-sub">22 weeks</span>
+        </div>
+        <div class="w-persona" id="wp2" role="tab" tabindex="0" aria-selected="false" onclick="selectPersona(2)" onkeydown="if(event.key==='Enter'||event.key===' ')selectPersona(2)">
+          <span class="w-persona-icon">🧒</span>
+          <span class="w-persona-label">1 year old</span>
+          <span class="w-persona-sub">52 weeks</span>
+        </div>
+      </div>
+      <div class="w-divider"></div>
+      <div class="w-stage-row">
+        <div class="w-stage-pill"><div class="w-stage-dot" aria-hidden="true"></div><span id="w-stage"></span></div>
+        <div class="w-stage-desc" id="w-stage-desc"></div>
+      </div>
+      <div class="w-windows" id="w-windows" role="list"></div>
+      <div class="w-cta">
+        <a href="/scout-signup.html" class="w-cta-btn">Get my full personalised digest →</a>
+        <div class="w-cta-note">First month free · no card required · cancel anytime</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem" aria-labelledby="problem-h2">
+  <div class="problem-inner">
+    <div class="problem-text reveal">
+      <span class="section-eyebrow">Why it matters</span>
+      <h2 class="section-h2" id="problem-h2">
+        Most parents miss critical windows — not because they don't care.
+        <em>Because they're exhausted.</em>
+      </h2>
+      <p class="problem-body">
+        The first three years of a child's life contain hundreds of time-sensitive developmental windows. Some are open for months. Others close in weeks.
+      </p>
+      <p class="problem-body">
+        <strong>The research is clear: timing matters.</strong> Acting in the right window dramatically improves outcomes. Acting outside it — or not at all — can mean missed opportunities that don't come back.
+      </p>
+      <p class="problem-body">
+        Most parents don't find out about these windows until after they've closed. Not because they weren't trying — because no one told them in time.
+      </p>
+    </div>
+    <div class="reveal" style="transition-delay:.12s">
+      <div class="peanut-card">
+        <div class="peanut-card-top">
+          <div class="peanut-icon">🥜</div>
+          <div>
+            <div class="peanut-tag">⚠️ Real example — Window closes</div>
+            <div class="peanut-title">Peanut introduction<br>(months 4–6)</div>
+          </div>
+        </div>
+        <div class="peanut-window">
+          The research is unambiguous: introducing peanuts between 4 and 6 months reduces the risk of peanut allergy by <strong>up to 80%</strong>. The window is short. After 12 months, the benefit largely disappears.
+          <br><br>
+          Most parents find out about this window after it closes — from a friend, a blog post, a moment of panic. <strong>Scout tells you before it matters.</strong>
+        </div>
+        <div class="peanut-stat">
+          Source: LEAP trial (Learning Early About Peanut allergy), published in NEJM, 2015. The most cited allergy study of the last decade.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how" aria-labelledby="how-h2">
+  <div class="how-inner">
+    <div class="how-header reveal">
+      <span class="section-eyebrow">How Scout works</span>
+      <h2 class="section-h2" id="how-h2">One email. One calendar invite. <em>Every month.</em></h2>
+      <p class="section-sub">Scout does the tracking for you. You just show up for your child.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card reveal">
+        <div class="step-num">1</div>
+        <span class="step-icon">👶</span>
+        <div class="step-title">Add your child</div>
+        <p class="step-body">Enter your child's date of birth (or due date — Scout covers expecting parents too). Takes 30 seconds.</p>
+      </div>
+      <div class="step-card reveal" style="transition-delay:.08s">
+        <div class="step-num">2</div>
+        <span class="step-icon">🗺️</span>
+        <div class="step-title">Scout maps your windows</div>
+        <p class="step-body">Scout cross-references 196 clinical windows against your child's exact age and surfaces what's open, closing, and coming up.</p>
+      </div>
+      <div class="step-card reveal" style="transition-delay:.16s">
+        <div class="step-num">3</div>
+        <span class="step-icon">📬</span>
+        <div class="step-title">Monthly email + calendar invite</div>
+        <p class="step-body">Each month you get a clear email summary and a calendar reminder — ready to add to Google Calendar, Apple Calendar, or any calendar app.</p>
+      </div>
+      <div class="step-card reveal" style="transition-delay:.24s">
+        <div class="step-num">4</div>
+        <span class="step-icon">✅</span>
+        <div class="step-title">Track and personalize</div>
+        <p class="step-body">Mark what you've done in the dashboard. Your next email gets smarter — flagging gaps and adjusting to your child's actual progress.</p>
+      </div>
+    </div>
+    <div class="device-row reveal">
+      <!-- Mini email -->
+      <div class="device-card">
+        <div class="device-label">
+          <span class="device-label-icon">📧</span>
+          <span class="device-label-text">Monthly email</span>
+        </div>
+        <div class="mini-email-header">
+          <div class="mini-avatar">FF</div>
+          <div>
+            <div class="mini-from">FamilyForce Scout</div>
+            <div class="mini-date">April 1, 2026</div>
+          </div>
+        </div>
+        <div class="mini-subject">Emma's April windows (7 months)</div>
+        <div class="mini-body">3 windows open this month. 1 closing in 12 days — action needed.</div>
+        <div class="mini-window-row urgent"><span class="mini-window-icon">⚠️</span> Peanut introduction — closes Apr 12</div>
+        <div class="mini-window-row open"><span class="mini-window-icon">🌱</span> First solid foods — open all month</div>
+        <div class="mini-window-row open"><span class="mini-window-icon">💬</span> Babbling response — open this month</div>
+        <button class="mini-cal-btn">📅 Add to my calendar</button>
+      </div>
+      <!-- Mini calendar -->
+      <div class="device-card">
+        <div class="device-label">
+          <span class="device-label-icon">📅</span>
+          <span class="device-label-text">Calendar invite (any app)</span>
+        </div>
+        <div class="mini-cal-header">
+          <div class="mini-cal-month">April 2026</div>
+          <div class="mini-cal-day">8</div>
+          <div class="mini-cal-event">⚠️ Peanut intro window closes — Emma</div>
+        </div>
+        <div class="mini-cal-list">
+          <div class="mini-cal-item">
+            <div class="mini-cal-dot gold"></div>
+            <div>
+              <div class="mini-cal-title">Peanut introduction window</div>
+              <div class="mini-cal-time">Closes April 12 · All family reminded</div>
+            </div>
+          </div>
+          <div class="mini-cal-item">
+            <div class="mini-cal-dot purple"></div>
+            <div>
+              <div class="mini-cal-title">First solid foods — start this month</div>
+              <div class="mini-cal-time">Open through May 15</div>
+            </div>
+          </div>
+        </div>
+        <div class="cal-badges">
+          <div class="cal-badge">📱 Google</div>
+          <div class="cal-badge">🍎 Apple</div>
+          <div class="cal-badge">📋 Outlook</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MATH / STATS -->
+<section class="math" aria-labelledby="math-h2">
+  <div class="math-inner">
+    <div class="math-header reveal">
+      <span class="section-eyebrow">The numbers</span>
+      <h2 class="section-h2" id="math-h2">138 windows in year one alone.<br><em>Less than 60¢ each.</em></h2>
+      <p class="section-sub">Scout covers every developmental window from birth to age 3. And the whole family stays coordinated — one subscription, everyone in the loop.</p>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card reveal">
+        <span class="stat-num">138</span>
+        <div class="stat-label">developmental windows in<br>your child's first year</div>
+      </div>
+      <div class="stat-card reveal" style="transition-delay:.1s">
+        <span class="stat-num"><em>58¢</em></span>
+        <div class="stat-label">per reminder<br>($79.99/year ÷ 138)</div>
+      </div>
+      <div class="stat-card reveal" style="transition-delay:.2s">
+        <span class="stat-num">196</span>
+        <div class="stat-label">total windows tracked<br>from birth to age 3</div>
+      </div>
+    </div>
+    <div class="family-strip reveal">
+      <div class="family-avatars" aria-hidden="true">
+        <div class="family-avatar" style="background:#EDE9FE">👩</div>
+        <div class="family-avatar" style="background:#DBEAFE">👨</div>
+        <div class="family-avatar" style="background:#FCE7F3">👵</div>
+        <div class="family-avatar" style="background:#D1FAE5">👴</div>
+        <div class="family-avatar" style="background:#FEF3C7">👩‍🍳</div>
+      </div>
+      <div class="family-text">
+        <div class="family-title">The whole family, on the same page</div>
+        <div class="family-desc">Mom, Dad, grandparents, nanny — everyone gets the same information at the same time. One subscription. No confusion. No one left out.</div>
+      </div>
+      <div class="family-tag">Up to 5 family members</div>
+    </div>
+  </div>
+</section>
+
+<!-- DASHBOARD -->
+<section class="dashboard" id="dashboard" aria-labelledby="dashboard-h2">
+  <div class="dashboard-inner">
+    <div class="reveal">
+      <span class="section-eyebrow">The dashboard</span>
+      <h2 class="section-h2" id="dashboard-h2">Track everything.<br><em>Miss nothing.</em></h2>
+      <p class="section-sub" style="margin-bottom:0">The longer you use Scout, the smarter it gets. Mark what you've done and your monthly emails become personal to your child's actual progress.</p>
+      <div class="dash-features">
+        <div class="dash-feature">
+          <div class="dash-feature-icon">✅</div>
+          <div>
+            <div class="dash-feature-title">Mark windows as done</div>
+            <div class="dash-feature-desc">Log what you've tried, add notes, and let Scout know how it went.</div>
+          </div>
+        </div>
+        <div class="dash-feature">
+          <div class="dash-feature-icon">⚠️</div>
+          <div>
+            <div class="dash-feature-title">Closing windows surface early</div>
+            <div class="dash-feature-desc">If a window is about to close and you haven't acted, Scout flags it — in the dashboard and in your next email.</div>
+          </div>
+        </div>
+        <div class="dash-feature">
+          <div class="dash-feature-icon">🎯</div>
+          <div>
+            <div class="dash-feature-title">Personalized monthly emails</div>
+            <div class="dash-feature-desc">Your reminders adapt over time — showing what's actually open for your child, not a generic list.</div>
+          </div>
+        </div>
+        <div class="dash-feature">
+          <div class="dash-feature-icon">👨‍👩‍👧</div>
+          <div>
+            <div class="dash-feature-title">The whole family sees it</div>
+            <div class="dash-feature-desc">Invite up to 4 family members to your Family Circle. Everyone sees the same dashboard and gets the same reminders.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal" style="transition-delay:.12s">
+      <div class="dash-mockup">
+        <div class="dash-mock-header">
+          <div class="dash-mock-title">Emma · 7 months</div>
+          <div class="dash-mock-badge">3 open</div>
+        </div>
+        <div class="dash-progress">
+          <div class="dash-progress-label"><span>April progress</span><span>4 of 7 done</span></div>
+          <div class="dash-progress-bar"><div class="dash-progress-fill"></div></div>
+        </div>
+        <div class="dash-rows">
+          <div class="dash-row urgent">
+            <div class="dash-check urgent">⚠️</div>
+            <div class="dash-row-title">Peanut introduction</div>
+            <div class="dash-row-close">Closes Apr 12</div>
+          </div>
+          <div class="dash-row">
+            <div class="dash-check todo"></div>
+            <div class="dash-row-title">First solid foods</div>
+            <div class="dash-row-close">Open all month</div>
+          </div>
+          <div class="dash-row">
+            <div class="dash-check todo"></div>
+            <div class="dash-row-title">Babbling response</div>
+            <div class="dash-row-close">Open all month</div>
+          </div>
+          <div class="dash-row done">
+            <div class="dash-check done">✓</div>
+            <div class="dash-row-title">Tummy time — 20 min/day</div>
+            <div class="dash-row-close">Done Apr 3</div>
+          </div>
+          <div class="dash-row done">
+            <div class="dash-check done">✓</div>
+            <div class="dash-row-title">Iron supplement started</div>
+            <div class="dash-row-close">Done Apr 1</div>
+          </div>
+        </div>
+        <div class="dash-personalized">
+          <strong>Next month's email will be personalized.</strong> Based on what you've marked, we'll surface the gaps and prioritize what Emma needs most in May.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section class="research" id="research" aria-labelledby="research-h2">
+  <div class="research-inner">
+    <div class="reveal">
+      <span class="section-eyebrow">Clinical foundation</span>
+      <h2 class="section-h2" id="research-h2">Not parenting advice.<br><em>Clinical evidence.</em></h2>
+      <p class="section-sub">Every window in Scout is grounded in peer-reviewed research and reviewed for clinical accuracy. We translate the science into plain English — delivered when it matters.</p>
+    </div>
+    <div class="research-badges">
+      <div class="research-badge reveal">
+        <span class="research-badge-icon">🏥</span>
+        <div class="research-badge-title">AAP Guidelines</div>
+        <p class="research-badge-body">Every window is cross-referenced against American Academy of Pediatrics developmental guidance and updated recommendations.</p>
+      </div>
+      <div class="research-badge reveal" style="transition-delay:.08s">
+        <span class="research-badge-icon">🔬</span>
+        <div class="research-badge-title">Peer-reviewed research</div>
+        <p class="research-badge-body">Windows are built from primary research — clinical trials, longitudinal studies, and meta-analyses from major developmental journals.</p>
+      </div>
+      <div class="research-badge reveal" style="transition-delay:.16s">
+        <span class="research-badge-icon">👶</span>
+        <div class="research-badge-title">Pediatrician reviewed</div>
+        <p class="research-badge-body">Our content is reviewed by practicing pediatricians before it reaches you. We flag uncertainty honestly — no false precision.</p>
+      </div>
+    </div>
+    <div class="research-quote reveal">
+      <div class="research-quote-text">
+        "The evidence is clear: early childhood is a period of extraordinary sensitivity. What happens in the first three years shapes brain architecture for life."
+      </div>
+      <div class="research-quote-source">Harvard Center on the Developing Child</div>
+    </div>
+  </div>
+</section>
+
+<!-- GIFT / BABY SHOWER -->
+<section class="gift" aria-labelledby="gift-h2">
+  <div class="gift-inner">
+    <div class="gift-text reveal">
+      <span class="section-eyebrow">Perfect gift</span>
+      <h2 class="section-h2" id="gift-h2">The best baby shower gift<br>isn't a onesie. <em>It's a year of Scout.</em></h2>
+      <p class="gift-body">
+        New parents don't need more stuff. They need someone to tell them what matters, when it matters — so they can focus on what only they can do: show up for their child.
+      </p>
+      <div class="gift-cards">
+        <div class="gift-card">
+          <div class="gift-card-icon">🤰</div>
+          <div>
+            <div class="gift-card-title">Expecting parents</div>
+            <div class="gift-card-desc">Scout covers the pre-birth period too — with prep windows before baby arrives and a full year of reminders from day one.</div>
+          </div>
+        </div>
+        <div class="gift-card">
+          <div class="gift-card-icon">🎁</div>
+          <div>
+            <div class="gift-card-title">Baby shower gift</div>
+            <div class="gift-card-desc">Give a year of Scout as a gift — something that stays useful long after the onesies are outgrown and the bibs have been donated.</div>
+          </div>
+        </div>
+        <div class="gift-card">
+          <div class="gift-card-icon">👨‍👩‍👧‍👦</div>
+          <div>
+            <div class="gift-card-title">For the busy family member</div>
+            <div class="gift-card-desc">Working parents, single parents, grandparents raising grandkids — Scout is built for people who can't afford to miss a thing but barely have time to breathe.</div>
+          </div>
+        </div>
+      </div>
+      <div class="gift-ctas">
+        <a href="/scout-signup.html" class="btn-primary">Start your free trial →</a>
+        <a href="/scout-gift.html" class="btn-ghost">Give as a gift →</a>
+      </div>
+    </div>
+    <div class="reveal" style="transition-delay:.12s">
+      <div class="gift-visual">
+        <div class="gift-tag-pill">🎁 Baby shower gift</div>
+        <div class="gift-amount">$79.99</div>
+        <div class="gift-amount-sub">Full year of Scout · One-time gift</div>
+        <div class="gift-perks">
+          <div class="gift-perk"><span class="gift-perk-check">✓</span> 138 reminders in year 1</div>
+          <div class="gift-perk"><span class="gift-perk-check">✓</span> Email + calendar invite every month</div>
+          <div class="gift-perk"><span class="gift-perk-check">✓</span> Share with up to 5 family members</div>
+          <div class="gift-perk"><span class="gift-perk-check">✓</span> Access to all 5 free playbooks</div>
+          <div class="gift-perk"><span class="gift-perk-check">✓</span> Pre-birth prep windows included</div>
+        </div>
+        <a href="/scout-gift.html" class="gift-btn">Give Scout as a gift →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT JACK -->
+<section class="about" id="jack" aria-labelledby="jack-h2">
+  <div class="about-inner">
+    <div class="about-photo-wrap reveal">
+      <img
+        src="/images/jack-hartley.jpg"
+        alt="Jack Hartley holding his newborn son"
+        class="about-photo"
+        width="400"
+        loading="lazy"
+      >
+      <div class="about-photo-badge">
+        <div class="about-badge-avatar">
+          <img src="/images/jack-hartley.jpg" alt="">
+        </div>
+        <div>
+          <div class="about-badge-name">Jack Hartley</div>
+          <div class="about-badge-title">Dad of two · Founder, FamilyForce</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-text reveal" style="transition-delay:.12s">
+      <span class="section-eyebrow">About Jack</span>
+      <h2 class="section-h2" id="jack-h2">He got it wrong with <em>First Son.</em><br>Got it right with Second Son.</h2>
+      <p class="about-body">
+        Jack Hartley is a dad from Dallas. When his first son was born, he did what most parents do: Googled frantically, took advice from relatives, and trusted that the important things would somehow surface on their own.
+      </p>
+      <p class="about-body">
+        <strong>They didn't.</strong> The peanut window closed. A language milestone was flagged at a routine checkup — months after the ideal window. Nothing catastrophic. But avoidable.
+      </p>
+      <div class="about-quote">
+        "I didn't build Scout because I'm an expert. I built it because I'm a dad who learned too late what the research already knew. I don't want other parents to find out the same way I did."
+      </div>
+      <p class="about-body">
+        FamilyForce is Jack's effort to make the clinical research that pediatricians rely on accessible to every parent — not in a textbook, not in a $400 consultation, but in your inbox once a month, before the window closes.
+      </p>
+      <p class="about-body">
+        Every playbook, every window, every email in Scout is written in Jack's voice: a dad who's read the research so you don't have to.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FREE LIBRARY -->
+<section class="library" id="library" aria-labelledby="library-h2">
+  <div class="library-inner">
+    <div class="library-header reveal">
+      <span class="section-eyebrow">Free library</span>
+      <h2 class="section-h2" id="library-h2">Start with the free books.<br><em>No strings attached.</em></h2>
+      <p class="section-sub">Every FamilyForce playbook is free. Each one is under an hour, research-backed, and written by Jack — plain English, no fluff. Complete a playbook and earn a certificate.</p>
+    </div>
+    <div class="library-grid">
+      <div class="lib-card reveal">
+        <span class="lib-card-emoji">💤</span>
+        <div class="lib-card-title">Sleep Training</div>
+        <div class="lib-card-meta">0–12 months · 45 min read</div>
+        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
+      </div>
+      <div class="lib-card reveal" style="transition-delay:.06s">
+        <span class="lib-card-emoji">🚽</span>
+        <div class="lib-card-title">Potty Training</div>
+        <div class="lib-card-meta">18–36 months · 40 min read</div>
+        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
+      </div>
+      <div class="lib-card reveal" style="transition-delay:.12s">
+        <span class="lib-card-emoji">⚡</span>
+        <div class="lib-card-title">Tantrums</div>
+        <div class="lib-card-meta">12–36 months · 35 min read</div>
+        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
+      </div>
+      <div class="lib-card reveal" style="transition-delay:.18s">
+        <span class="lib-card-emoji">🥦</span>
+        <div class="lib-card-title">Feeding</div>
+        <div class="lib-card-meta">4–24 months · 40 min read</div>
+        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
+      </div>
+      <div class="lib-card reveal" style="transition-delay:.24s">
+        <span class="lib-card-emoji">📱</span>
+        <div class="lib-card-title">Screen Time</div>
+        <div class="lib-card-meta">0–36 months · 35 min read</div>
+        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
+      </div>
+    </div>
+    <p class="library-note reveal">
+      <strong>All 5 playbooks are free.</strong> Always. Scout is the subscription — the books are our gift to you.
+    </p>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="cta-section" aria-labelledby="cta-h2">
+  <div style="max-width:var(--max);margin:0 auto">
+    <span class="section-eyebrow">Get started</span>
+    <h2 class="section-h2" id="cta-h2">Start tracking. <em>First month is free.</em></h2>
+    <p class="section-sub">138 windows are opening for your child this year. Scout makes sure you're ready before every one closes.</p>
+    <div class="cta-urgency">
+      <strong>Some of these windows are open right now.</strong> Every month you wait is a month Scout can't give back. The peanut window, the sleep training window, the language window — they close on your child's schedule, not yours.
+    </div>
+    <p class="cta-price-anchor">Less than one pediatric co-pay for a full year of reminders.</p>
+    <div class="pricing-pills">
+      <div class="pricing-pill best reveal">
+        <div class="pricing-best-tag">Best value</div>
+        <div class="pricing-period">Annual</div>
+        <div class="pricing-amount">$79.99</div>
+        <div class="pricing-monthly">$6.67 / month</div>
+      </div>
+      <div class="pricing-pill reveal" style="transition-delay:.08s">
+        <div class="pricing-period">Monthly</div>
+        <div class="pricing-amount">$9.99</div>
+        <div class="pricing-monthly">per month</div>
+      </div>
+    </div>
+    <div class="cta-btn-wrap">
+      <a href="/scout-signup.html" class="btn-primary" style="font-size:17px;padding:16px 36px">Start free trial →</a>
+      <div style="font-size:13px;color:rgba(255,255,255,.4)">First month free · No credit card required</div>
+    </div>
+    <div class="cta-trust-row">
+      <div class="cta-trust-item"><span class="cta-trust-check">✓</span> Cancel any time</div>
+      <div class="cta-trust-item"><span class="cta-trust-check">✓</span> Family sharing included</div>
+      <div class="cta-trust-item"><span class="cta-trust-check">✓</span> Free library always free</div>
+      <div class="cta-trust-item"><span class="cta-trust-check">✓</span> Works for expecting parents</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">FamilyForce <span>Scout</span></div>
+    <div class="footer-links">
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="mailto:support@getfamilyforce.com">Support</a>
+    </div>
+    <div class="footer-copy">© 2026 FamilyForce. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+// ── Widget ────────────────────────────────────────────────────────────────────
+var PERSONAS = [
+  {
+    stage: 'Expecting',
+    stageDesc: '~8 weeks to go',
+    windows: [
+      { status:'urgent', icon:'🏥', tag:'Do this now',      title:'Choose your pediatrician',      desc:'Book your meet-the-doctor appointment before the baby arrives. Most practices book out 4–6 weeks.',           badge:'Due now' },
+      { status:'urgent', icon:'🚗', tag:'Do this now',      title:'Install the car seat',           desc:'Must be installed and inspected before discharge. 72% of seats are installed incorrectly. Get it checked.',   badge:'Due now' },
+      { status:'open',   icon:'🧠', tag:'Window open',      title:'Infant CPR class',               desc:'One session. Most hospitals run them monthly. You\'ll never regret knowing this.',                            badge:'Book now' },
+      { status:'open',   icon:'🛏️', tag:'Do before birth',  title:'Safe sleep setup',               desc:'Firm surface, no loose bedding, room sharing (not bed sharing). Set it up before baby arrives.',             badge:'Before birth' },
+      { status:'open',   icon:'🤱', tag:'Book now',         title:'Lactation consultant',           desc:'Line one up before delivery. Feeding issues are far easier to prevent than fix at 3am.',                     badge:'Book now' },
+      { status:'open',   icon:'📋', tag:'At birth',         title:'Newborn screening tests',        desc:'PKU, hearing, cardiac — done at the hospital within 24–48 hours of birth.',                                  badge:'At birth' },
+    ]
+  },
+  {
+    stage: 'Infant stage',
+    stageDesc: '5 months old · 22 weeks',
+    windows: [
+      { status:'urgent', icon:'🥜', tag:'⚠ Act this month', title:'Peanut introduction window',     desc:'Ideal: 4–6 months. One spoonful of peanut butter puree could prevent a lifelong allergy. Don\'t wait.',       badge:'Closing soon' },
+      { status:'urgent', icon:'🥣', tag:'⚠ Window open now', title:'Start solids — don\'t wait',    desc:'The 4–6 month window is ideal. Waiting past 6 months increases texture aversion and iron deficiency risk.',   badge:'This month' },
+      { status:'open',   icon:'😴', tag:'Opens in 4 weeks', title:'Sleep training window',          desc:'6–9 months is fastest and lowest stress. Start building a consistent bedtime routine now.',                   badge:'Coming fast' },
+      { status:'open',   icon:'🦷', tag:'Due this month',   title:'First dental visit',             desc:'AAP recommends first visit by 12 months. Paediatric dentists book out. Schedule ahead.',                     badge:'Book ahead' },
+      { status:'open',   icon:'👁️', tag:'Due at 6 months',  title:'6-month vision check',           desc:'Strabismus and amblyopia are most treatable when caught early. Ask at your 6-month well-child visit.',        badge:'Next visit' },
+      { status:'coming', icon:'💬', tag:'Coming up',        title:'Speech milestones (12 months)',  desc:'5+ words at 12 months, 10 by 15 months. Start counting now — earlier detection changes outcomes.',            badge:'At 12 months' },
+    ]
+  },
+  {
+    stage: 'Toddler stage',
+    stageDesc: '1 year old · 52 weeks',
+    windows: [
+      { status:'urgent', icon:'💬', tag:'⚠ Watch now',      title:'Speech window',                  desc:'10–25 words by 18 months. You\'re 6 months away. If you\'re not hearing new words weekly, flag it now.',     badge:'6 months left' },
+      { status:'urgent', icon:'🦷', tag:'⚠ Overdue',        title:'First dental visit',             desc:'AAP recommends by 12 months. If not done yet, book this week. Early cavities affect adult teeth.',            badge:'Book now' },
+      { status:'open',   icon:'📚', tag:'Critical window',  title:'Read every day',                 desc:'Vocabulary at age 3 predicts reading ability at age 8. 15 minutes a day — highest ROI parenting habit.',     badge:'Every day' },
+      { status:'open',   icon:'🍽️', tag:'Watch now',        title:'Food texture progression',       desc:'Toddlers should be on family foods by 12 months. Purees past 12 months can cause lasting texture aversion.',  badge:'Act now' },
+      { status:'open',   icon:'🚽', tag:'Window opening',   title:'Potty training readiness signs', desc:'Signs begin at 18–24 months. The earlier you spot them, the smoother the process.',                           badge:'In 6 months' },
+      { status:'closed', icon:'😴', tag:'✗ Window closed',  title:'Sleep training optimal window',  desc:'Easiest window was 6–9 months. Still possible now, just harder. Scout has a protocol for this age.',          badge:'Closed at 9mo' },
+    ]
+  }
+];
+
+var _currentPersona = 0;
+
+function selectPersona(i) {
+  _currentPersona = i;
+  document.querySelectorAll('.w-persona').forEach(function (el, idx) {
+    el.classList.toggle('active', idx === i);
+    el.setAttribute('aria-selected', idx === i ? 'true' : 'false');
+  });
+  renderWidget();
+}
+
+function renderWidget() {
+  var p = PERSONAS[_currentPersona];
+  document.getElementById('w-stage').textContent      = p.stage;
+  document.getElementById('w-stage-desc').textContent = p.stageDesc;
+  var list = document.getElementById('w-windows');
+  list.innerHTML = '';
+  p.windows.forEach(function (w) {
+    var el = document.createElement('div');
+    el.className = 'w-row ' + w.status;
+    el.setAttribute('role', 'listitem');
+    el.innerHTML =
+      '<div class="w-row-icon">' + w.icon + '</div>' +
+      '<div class="w-row-body">' +
+        '<div class="w-row-tag">' + w.tag + '</div>' +
+        '<div class="w-row-title">' + w.title + '</div>' +
+        '<div class="w-row-desc">' + w.desc + '</div>' +
+      '</div>' +
+      '<div class="w-row-badge">' + w.badge + '</div>';
+    list.appendChild(el);
+  });
+}
+
+selectPersona(0);
+
+// ── Scroll reveal ──────────────────────────────────────────────────────────────
+(function () {
+  var els = document.querySelectorAll('.reveal');
+  if (!els.length) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+  els.forEach(function (el) { io.observe(el); });
+})();
+
+// ── Mobile menu close on outside click ────────────────────────────────────────
+document.addEventListener('click', function (e) {
+  var menu = document.getElementById('mobileMenu');
+  if (menu && menu.classList.contains('open') && !menu.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+</script>
+</body>
+</html>

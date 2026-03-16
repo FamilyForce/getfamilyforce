@@ -119,11 +119,12 @@ create table if not exists scout_digest_log (
   child_age_months  integer not null,   -- child's age in months at send time
   digest_type       text    not null
                     check (digest_type in (
-                      'signup',       -- first digest on account creation
-                      'monthly',      -- regular monthly digest
-                      'trial_end',    -- trial expiry email
-                      'alert',        -- 7-day closing window alert
-                      'reengagement'  -- 30-day post-trial lapse email
+                      'signup',            -- first digest on account creation
+                      'monthly',           -- regular monthly digest
+                      'trial_end',         -- trial expiry email
+                      'alert',             -- 7-day closing window alert
+                      'reengagement',      -- 30-day post-trial lapse email
+                      'prebirth_reminder'  -- monthly reminder for expecting parents
                     )),
   windows_included  jsonb,             -- [{id, slug, title, urgency, priority}]
   email_subject     text,
@@ -373,3 +374,60 @@ $$;
 -- Test window query (run after 2F import):
 -- select slug, title, priority, urgency from get_windows_for_age(26, 5);
 -- Expected: 5 highest-priority windows open at 26 weeks (6 months)
+
+
+-- ───────────────────────────────────────────────────────────────
+-- MIGRATION v2.0 — Add prebirth_reminder to digest_type constraint
+--    Run this before deploying scout-digest with pre-birth support.
+-- ───────────────────────────────────────────────────────────────
+
+alter table scout_digest_log
+  drop constraint if exists scout_digest_log_digest_type_check;
+
+alter table scout_digest_log
+  add constraint scout_digest_log_digest_type_check
+  check (digest_type in (
+    'signup',
+    'monthly',
+    'trial_end',
+    'alert',
+    'reengagement',
+    'prebirth_reminder'
+  ));
+
+-- Verification:
+-- select pg_get_constraintdef(oid) from pg_constraint
+-- where conname = 'scout_digest_log_digest_type_check';
+-- Expected: CHECK ((digest_type = ANY (ARRAY[..., 'prebirth_reminder'::text])))
+
+-- ───────────────────────────────────────────────────────────────
+-- MIGRATION v2.1 — Pre-birth mode support
+--    Adds due_date and is_expecting to the children table.
+--    Run this migration ONCE on existing databases.
+--
+-- is_expecting: true while baby has not yet arrived.
+--               Set to false when arrival is confirmed.
+-- due_date:     Expected date of birth (populated when is_expecting = true).
+--               Retained after arrival for reference.
+--
+-- Trial timing: for expecting parents, the trial clock starts on
+-- arrival confirmation (dob set to real birthdate, is_expecting → false).
+-- The monthly-birthday catch-up logic runs from the real dob as usual.
+--
+-- Email digest behaviour (implement in scout-monthly-digest edge fn):
+--   if is_expecting = true → send "Is your baby here yet?" reminder
+--   instead of (or in addition to) the normal pre-birth window digest.
+-- ───────────────────────────────────────────────────────────────
+
+alter table children
+  add column if not exists due_date    date    default null,
+  add column if not exists is_expecting boolean not null default false;
+
+-- Index for quickly finding all expecting parents (used by digest edge fn)
+create index if not exists children_is_expecting_idx
+  on children (is_expecting)
+  where is_expecting = true;
+
+-- Verification:
+-- select id, name, dob, due_date, is_expecting from children limit 5;
+-- Expected: due_date and is_expecting columns present, all existing rows have is_expecting = false

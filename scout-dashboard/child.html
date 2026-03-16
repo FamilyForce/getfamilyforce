@@ -105,10 +105,22 @@
       </div>
 
       <div class="form-field">
-        <label class="form-label" for="childDob">Date of birth</label>
+        <label class="form-label" for="childDob" id="dobLabel">Date of birth</label>
         <input type="date" class="form-input" id="childDob" max="">
-        <p class="form-hint">Scout covers birth to 36 months. If your child is older than 3, Scout may not be the right fit yet.</p>
+        <p class="form-hint" id="dobHint">Scout covers birth to 36 months.</p>
+        <p class="form-hint" id="dobAgeWarning" style="display:none;margin-top:6px"></p>
         <p class="form-error" id="dobError">Please enter a valid date of birth.</p>
+        <!-- Expecting toggle -->
+        <div style="margin-top:12px">
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none">
+            <div style="position:relative;width:38px;height:22px;flex-shrink:0">
+              <input type="checkbox" id="expectingToggle" style="opacity:0;width:0;height:0;position:absolute" onchange="toggleExpecting()">
+              <span id="expectingTrack" style="position:absolute;inset:0;border-radius:100px;background:var(--border);transition:background .2s;cursor:pointer"></span>
+              <span id="expectingThumb" style="position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:pointer"></span>
+            </div>
+            <span style="font-size:13px;color:var(--text-mid)">My baby hasn't arrived yet</span>
+          </label>
+        </div>
       </div>
 
       <div class="form-field">
@@ -223,12 +235,17 @@ var _selectedPlan    = 'annual'
 var _stripe          = null
 var _cardElement     = null
 var _hasExistingPM   = false   // true if user already has a Stripe customer with default PM
+var _isExpecting     = false
+var _dobLocked       = false   // true when trial started + 1 change already used
 
 document.addEventListener('DOMContentLoaded', function () {
-  // Set max date (today)
+  // Set max date (today, for born children)
   var dobInput = document.getElementById('childDob')
   var today    = new Date().toISOString().split('T')[0]
-  if (dobInput) dobInput.max = today
+  if (dobInput) {
+    dobInput.max = today
+    dobInput.addEventListener('change', onDobChange)
+  }
 
   // Gender pill selection
   document.getElementById('genderPicker').addEventListener('click', function (e) {
@@ -257,20 +274,129 @@ document.addEventListener('DOMContentLoaded', function () {
     if (_editChildId) {
       // Pre-fill form for editing
       document.getElementById('pageTitle').textContent = 'Edit child'
-      sb.from('children').select('*').eq('id', _editChildId).single().then(function (res) {
-        if (res.data) {
-          document.getElementById('childName').value = res.data.name || ''
-          document.getElementById('childDob').value  = res.data.dob  || ''
-          if (res.data.gender) {
-            _selectedGender = res.data.gender
-            var pill = document.querySelector('[data-gender="' + res.data.gender + '"]')
-            if (pill) pill.classList.add('selected')
-          }
+      // Hide expecting toggle in edit mode (arrival flow handles that separately)
+      var toggleWrap = document.getElementById('expectingToggle') && document.getElementById('expectingToggle').closest('div')
+      if (toggleWrap) toggleWrap.style.display = 'none'
+
+      Promise.all([
+        sb.from('children').select('*').eq('id', _editChildId).single(),
+        sb.from('scout_subscriptions').select('id').eq('child_id', _editChildId).limit(1).maybeSingle(),
+        sb.from('scout_events').select('id', { count: 'exact', head: true }).eq('child_id', _editChildId).eq('event_type', 'dob_changed'),
+      ]).then(function (results) {
+        var child      = results[0].data
+        var sub        = results[1].data
+        var changeCount = results[2].count || 0
+
+        if (!child) return
+
+        document.getElementById('childName').value = child.name || ''
+        document.getElementById('childDob').value  = child.dob  || ''
+        if (child.gender) {
+          _selectedGender = child.gender
+          var pill = document.querySelector('[data-gender="' + child.gender + '"]')
+          if (pill) pill.classList.add('selected')
+        }
+
+        // DOB lock state: trial started + already used 1 change
+        var trialStarted = !!sub
+        _dobLocked = trialStarted && changeCount >= 1
+
+        var dobInput = document.getElementById('childDob')
+        var dobHint  = document.getElementById('dobHint')
+        if (_dobLocked) {
+          dobInput.disabled = true
+          dobInput.style.opacity = '0.5'
+          dobHint.innerHTML = 'Date of birth is locked. You\u2019ve already made one change. Contact ' +
+            '<a href="mailto:support@getfamilyforce.com" style="color:var(--terra)">support@getfamilyforce.com</a> to update it.'
+          dobHint.style.color = 'var(--text-mid)'
+        } else if (trialStarted) {
+          dobHint.textContent = 'You have 1 change remaining after your trial started.'
         }
       })
     }
   })
 })
+
+// ── Live DOB age check ────────────────────────────────────────────────────────
+function calcAgeMonths(dobVal) {
+  var d   = new Date(dobVal + 'T00:00:00Z')
+  var now = new Date()
+  return (now.getUTCFullYear() - d.getUTCFullYear()) * 12 + (now.getUTCMonth() - d.getUTCMonth())
+}
+
+function onDobChange() {
+  if (_isExpecting) return  // expecting mode uses due date, not DOB
+  var dobVal  = document.getElementById('childDob').value
+  var warning = document.getElementById('dobAgeWarning')
+  var dobErr  = document.getElementById('dobError')
+  var saveBtn = document.getElementById('saveBtn')
+  if (!dobVal) { warning.style.display = 'none'; return }
+
+  var ageM = calcAgeMonths(dobVal)
+
+  if (ageM >= 36) {
+    // Hard block — too old
+    var ageYears = Math.floor(ageM / 12)
+    var ageRem   = ageM % 12
+    var ageStr   = ageYears + ' year' + (ageYears !== 1 ? 's' : '')
+    if (ageRem > 0) ageStr += ' and ' + ageRem + ' month' + (ageRem !== 1 ? 's' : '')
+    warning.style.display = 'block'
+    warning.style.color   = 'var(--red, #DC2626)'
+    warning.innerHTML = 'Your child is <strong>' + ageStr + ' old</strong> — Scout covers birth to 36 months, so they\u2019ve outgrown it. ' +
+      'The <a href="/scout-dashboard/library.html" style="color:var(--terra);font-weight:600">Free Library</a> has all 5 playbooks at no cost.'
+    saveBtn.disabled = true
+  } else if (ageM >= 30) {
+    // Warning zone — 6 months or fewer remaining
+    var monthsLeft = 36 - ageM
+    warning.style.display = 'block'
+    warning.style.color   = '#92400E'
+    warning.style.background = '#FFFBEB'
+    warning.style.border  = '1px solid #FCD34D'
+    warning.style.borderRadius = '8px'
+    warning.style.padding = '10px 12px'
+    warning.innerHTML = '⚠️ Your child has <strong>' + monthsLeft + ' month' + (monthsLeft !== 1 ? 's' : '') + ' of Scout remaining</strong>. ' +
+      'You\u2019ll have fewer windows, but the ones left cover language milestones, independence, and school readiness — some of the most important.'
+    saveBtn.disabled = false
+  } else {
+    // Normal — clear warning
+    warning.style.display = 'none'
+    warning.style.background = ''
+    warning.style.border  = ''
+    warning.style.padding = ''
+    saveBtn.disabled = false
+  }
+}
+
+function toggleExpecting() {
+  _isExpecting = document.getElementById('expectingToggle').checked
+  var track  = document.getElementById('expectingTrack')
+  var thumb  = document.getElementById('expectingThumb')
+  var label  = document.getElementById('dobLabel')
+  var hint   = document.getElementById('dobHint')
+  var input  = document.getElementById('childDob')
+  var today  = new Date().toISOString().split('T')[0]
+  var maxDue = new Date(); maxDue.setMonth(maxDue.getMonth() + 10)
+  var maxDueStr = maxDue.toISOString().split('T')[0]
+
+  if (_isExpecting) {
+    track.style.background = 'var(--terra)'
+    thumb.style.left       = '19px'
+    label.textContent      = 'Due date'
+    hint.textContent       = "We\u2019ll show you preparation windows now and switch to full Scout tracking once your baby arrives."
+    input.removeAttribute('max')
+    input.setAttribute('min', today)
+    input.setAttribute('max', maxDueStr)
+    input.value = ''
+  } else {
+    track.style.background = 'var(--border)'
+    thumb.style.left       = '3px'
+    label.textContent      = 'Date of birth'
+    hint.textContent       = 'Scout covers birth to 36 months. If your child is older than 3, Scout may not be the right fit yet.'
+    input.removeAttribute('min')
+    input.setAttribute('max', today)
+    input.value = ''
+  }
+}
 
 function saveChild() {
   var nameVal   = document.getElementById('childName').value.trim()
@@ -288,10 +414,25 @@ function saveChild() {
   if (!nameVal) { nameErr.classList.add('show'); valid = false }
   if (!dobVal)  { dobErr.classList.add('show');  valid = false }
   else {
-    var d = new Date(dobVal + 'T00:00:00Z')
+    var d   = new Date(dobVal + 'T00:00:00Z')
     var now = new Date()
-    var minDate = new Date(now); minDate.setFullYear(minDate.getFullYear() - 3)
-    if (isNaN(d) || d > now || d < minDate) { dobErr.textContent = 'Scout covers birth to 3 years. Please check the date of birth.'; dobErr.classList.add('show'); valid = false }
+    if (_isExpecting) {
+      // Due date must be today or in the future, no more than 10 months out
+      var maxDue = new Date(); maxDue.setMonth(maxDue.getMonth() + 10)
+      if (isNaN(d) || d < now || d > maxDue) {
+        dobErr.textContent = 'Please enter a due date between today and 10 months from now.'
+        dobErr.classList.add('show'); valid = false
+      }
+    } else {
+      var ageMonthsVal = calcAgeMonths(dobVal)
+      if (isNaN(d) || d > now) {
+        dobErr.textContent = 'Please enter a valid date of birth.'
+        dobErr.classList.add('show'); valid = false
+      } else if (ageMonthsVal >= 36) {
+        dobErr.textContent = 'Scout covers birth to 36 months. Your child has outgrown it — see the Free Library for our full collection of playbooks.'
+        dobErr.classList.add('show'); valid = false
+      }
+    }
   }
   if (!valid) return
 
@@ -299,13 +440,44 @@ function saveChild() {
   btn.textContent = 'Saving…'
 
   var sb      = window._supabaseClient
-  var payload = { name: nameVal, dob: dobVal, gender: _selectedGender || 'other' }
+  var payload = _isExpecting
+    ? { name: nameVal, dob: dobVal, due_date: dobVal, is_expecting: true, gender: _selectedGender || 'other' }
+    : { name: nameVal, dob: dobVal, gender: _selectedGender || 'other' }
 
-  var promise
   if (_editChildId) {
-    promise = sb.from('children').update(payload).eq('id', _editChildId)
-  } else {
-    sb.auth.getUser().then(function (res) {
+    // Edit mode — route through protected edge function
+    sb.auth.getSession().then(function (sr) {
+      var tok = sr.data && sr.data.session && sr.data.session.access_token
+      if (!tok) { showSaveErr('Session expired. Please sign in again.', btn); return }
+      fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-child-update', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+        body:    JSON.stringify({
+          childId: _editChildId,
+          name:    nameVal,
+          dob:     _dobLocked ? undefined : dobVal,  // don't send DOB if locked
+          gender:  _selectedGender || 'other',
+        }),
+      })
+      .then(function (r) { return r.json() })
+      .then(function (data) {
+        if (!data.ok) {
+          var errMsg = data.code === 'DOB_LOCKED'
+            ? 'Date of birth is locked. Contact support@getfamilyforce.com to make further changes.'
+            : data.code === 'DOB_OUT_OF_RANGE'
+            ? 'New date of birth is too far from the original. Contact support@getfamilyforce.com for help.'
+            : (data.error || 'Could not save. Please try again.')
+          showSaveErr(errMsg, btn); return
+        }
+        window.location.href = '/scout-dashboard.html'
+      })
+      .catch(function () { showSaveErr('Network error. Please try again.', btn) })
+    })
+    return
+  }
+
+  // New child insert path
+  sb.auth.getUser().then(function (res) {
       var userId = res.data.user.id
       payload.user_id = userId
 
@@ -320,8 +492,22 @@ function saveChild() {
           localStorage.setItem('scout_active_child_id', newId)
 
           if (existingCount === 0) {
-            // First child — go straight to dashboard
-            window.location.href = '/scout-dashboard.html'
+            // First child — send pre-birth welcome if expecting, then go to dashboard
+            if (_isExpecting) {
+              sb.auth.getSession().then(function (sr) {
+                var tok = sr.data && sr.data.session && sr.data.session.access_token
+                if (tok) {
+                  fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-prebirth-welcome', {
+                    method:  'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+                    body:    JSON.stringify({ childId: newId }),
+                  }).catch(function () { /* non-critical — proceed to dashboard regardless */ })
+                }
+                window.location.href = '/scout-dashboard.html'
+              })
+            } else {
+              window.location.href = '/scout-dashboard.html'
+            }
           } else {
             // Child #2+ — show subscribe gate
             _newChildId  = newId
@@ -332,13 +518,6 @@ function saveChild() {
           }
         })
       })
-    })
-    return
-  }
-
-  promise.then(function (r) {
-    if (r.error) { showSaveErr(r.error.message, btn); return }
-    window.location.href = '/scout-dashboard.html'
   })
 }
 
