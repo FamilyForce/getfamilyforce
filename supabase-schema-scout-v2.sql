@@ -80,10 +80,12 @@ create trigger set_milestone_windows_updated_at
 -- Only service role can insert/update (via import script or admin editor)
 alter table milestone_windows enable row level security;
 
+drop policy if exists "Authenticated users can read milestone windows" on milestone_windows;
 create policy "Authenticated users can read milestone windows"
   on milestone_windows for select
   using (auth.role() = 'authenticated');
 
+drop policy if exists "Service role manages milestone windows" on milestone_windows;
 create policy "Service role manages milestone windows"
   on milestone_windows for all
   using (auth.role() = 'service_role')
@@ -138,11 +140,13 @@ create table if not exists scout_digest_log (
 alter table scout_digest_log enable row level security;
 
 -- Users can read their own digest log (useful for debugging and history screen)
+drop policy if exists "Users can read own digest log" on scout_digest_log;
 create policy "Users can read own digest log"
   on scout_digest_log for select
   using (auth.uid() = user_id);
 
 -- Only service role can insert/update
+drop policy if exists "Service role manages digest log" on scout_digest_log;
 create policy "Service role manages digest log"
   on scout_digest_log for all
   using (auth.role() = 'service_role')
@@ -185,6 +189,7 @@ create trigger set_window_progress_updated_at
 alter table window_progress enable row level security;
 
 -- Users can manage their own progress records
+drop policy if exists "Users can manage own window progress" on window_progress;
 create policy "Users can manage own window progress"
   on window_progress for all
   using (auth.uid() = user_id)
@@ -193,6 +198,7 @@ create policy "Users can manage own window progress"
 -- Family Circle: members can read progress for children they have shared access to.
 -- A member has shared access if they are in the same family as the child's owner
 -- (via family_members: owner = child owner, member = current user).
+drop policy if exists "Family members can read shared child progress" on window_progress;
 create policy "Family members can read shared child progress"
   on window_progress for select
   using (
@@ -236,11 +242,13 @@ create table if not exists scout_events (
 alter table scout_events enable row level security;
 
 -- Users can read their own events (useful for debugging)
+drop policy if exists "Users can read own events" on scout_events;
 create policy "Users can read own events"
   on scout_events for select
   using (auth.uid() = user_id);
 
 -- Only service role can insert
+drop policy if exists "Service role inserts events" on scout_events;
 create policy "Service role inserts events"
   on scout_events for insert
   with check (auth.role() = 'service_role');
