@@ -112,6 +112,18 @@
           <p class="settings-row-label">Child profile</p>
           <a href="" class="settings-row-link" id="editChildLink">Edit →</a>
         </div>
+        <div class="settings-row" style="flex-wrap:wrap;gap:8px">
+          <div style="flex:1;min-width:200px">
+            <p class="settings-row-label">Your name</p>
+            <p class="settings-row-sub">Shown when you mark a window as done or add a note.</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="displayNameInput" maxlength="40" placeholder="e.g. Michael"
+              style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--sans);font-size:14px;color:var(--text);outline:none;width:140px"
+              onfocus="this.style.borderColor='var(--terra)'" onblur="this.style.borderColor='var(--border)'">
+            <button onclick="saveDisplayName()" style="padding:8px 14px;background:var(--terra);color:#fff;border:none;border-radius:8px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer">Save</button>
+          </div>
+        </div>
         <div class="settings-row">
           <p class="settings-row-label">Sign out</p>
           <button class="settings-row-link" style="background:none;border:none;cursor:pointer;font-size:14px;font-weight:500;color:var(--terra)" onclick="signOut()">Sign out →</button>
@@ -176,6 +188,14 @@ function renderSettings(user, child, sub) {
   // Account section
   var emailEl = document.getElementById('accountEmail')
   if (emailEl) emailEl.textContent = user.email
+
+  // Load existing display name
+  ScoutDash.getSb().from('profiles').select('display_name').eq('id', user.id).maybeSingle().then(function (res) {
+    var nameInput = document.getElementById('displayNameInput')
+    if (nameInput && res.data && res.data.display_name) {
+      nameInput.value = res.data.display_name
+    }
+  })
 
   var editChildLink = document.getElementById('editChildLink')
   if (editChildLink && child) editChildLink.href = '/scout-dashboard/child.html?edit=' + child.id
@@ -323,6 +343,18 @@ function openPortal(e) {
     }).then(function (r) { return r.json() }).then(function (data) {
       if (data.url) window.location.href = data.url
     }).catch(function () { ScoutDash.toast('Could not open billing portal. Please try again.', 'error') })
+  })
+}
+
+// ── Display name ─────────────────────────────────────────────────────────────
+function saveDisplayName() {
+  var input = document.getElementById('displayNameInput')
+  var name  = input ? input.value.trim() : ''
+  if (!name) return
+  var user = ScoutDash.getUser()
+  ScoutDash.getSb().from('profiles').upsert({ id: user.id, display_name: name }, { onConflict: 'id' }).then(function (res) {
+    if (res.error) { ScoutDash.toast('Could not save name.', 'error'); return }
+    ScoutDash.toast('Name saved.', 'success')
   })
 }
 

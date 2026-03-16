@@ -3,9 +3,11 @@
 // Called from the dashboard on user action (mark done / in progress / skip).
 // Optimistic UI: dashboard updates immediately, this confirms server-side.
 //
-// POST body: { windowId, childId, status, notes? }
-//   status: 'open' | 'in_progress' | 'completed' | 'skipped'
-//   notes: optional string, max 500 chars
+// POST body:
+//   { windowId, childId, status, notes?, completedDate? }
+//   status:        'open' | 'in_progress' | 'completed' | 'skipped'
+//   notes:         optional string, max 500 chars
+//   completedDate: optional 'YYYY-MM-DD' — user-specified date (defaults to today)
 //
 // Auth: Bearer session token
 //
@@ -50,12 +52,27 @@ Deno.serve(async (req: Request) => {
 
     // 2. Parse and validate body
     const body = await req.json()
-    const { windowId, childId, status, notes } = body
+    const { windowId, childId, status, notes, completedDate } = body
 
-    if (!windowId)                  return err(400, 'windowId is required')
-    if (!childId)                   return err(400, 'childId is required')
-    if (!VALID_STATUSES.has(status)) return err(400, `status must be one of: ${[...VALID_STATUSES].join(', ')}`)
-    if (notes && notes.length > 500) return err(400, 'notes must be 500 characters or fewer')
+    if (!windowId)                    return err(400, 'windowId is required')
+    if (!childId)                     return err(400, 'childId is required')
+    if (!VALID_STATUSES.has(status))  return err(400, `status must be one of: ${[...VALID_STATUSES].join(', ')}`)
+    if (notes && notes.length > 500)  return err(400, 'notes must be 500 characters or fewer')
+
+    // Validate completedDate if provided
+    let resolvedDate: string | null = null
+    if (status === 'completed' || status === 'in_progress') {
+      if (completedDate && /^\d{4}-\d{2}-\d{2}$/.test(completedDate)) {
+        const d = new Date(completedDate + 'T00:00:00Z')
+        if (!isNaN(d.getTime()) && d <= new Date()) {
+          resolvedDate = completedDate
+        }
+      }
+      if (!resolvedDate) {
+        // Default to today
+        resolvedDate = new Date().toISOString().split('T')[0]
+      }
+    }
 
     // 3. Verify the child belongs to this user (or user has family access)
     const { data: child } = await sb
@@ -66,19 +83,29 @@ Deno.serve(async (req: Request) => {
 
     if (!child) return err(404, 'Child not found')
 
-    // Check ownership or family circle access
     if (child.user_id !== user.id) {
       const { data: familyAccess } = await sb
         .from('family_members')
         .select('id')
-        .eq('owner_user_id', child.user_id)
-        .eq('member_user_id', user.id)
+        .eq('child_id', childId)
+        .eq('user_id', user.id)
         .maybeSingle()
 
       if (!familyAccess) return err(403, 'You do not have access to this child\'s records')
     }
 
-    // 4. Verify the window exists
+    // 4. Resolve display name for attribution
+    // Prefer profiles.display_name → fall back to email prefix
+    const { data: profile } = await sb
+      .from('profiles')
+      .select('display_name')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    const displayName = profile?.display_name?.trim() ||
+      (user.email ? user.email.split('@')[0] : 'Unknown')
+
+    // 5. Verify the window exists
     const { data: window } = await sb
       .from('milestone_windows')
       .select('id, title, urgency, category')
@@ -87,39 +114,57 @@ Deno.serve(async (req: Request) => {
 
     if (!window) return err(404, 'Window not found')
 
-    // 5. Upsert window_progress
+    // 6. Build upsert payload
+    const payload: Record<string, unknown> = {
+      user_id:              user.id,
+      child_id:             childId,
+      window_id:            windowId,
+      status,
+      updated_at:           new Date().toISOString(),
+      updated_by_user_id:   user.id,
+      updated_by_name:      displayName,
+    }
+
+    // Only set notes if provided (don't overwrite existing note when just updating status)
+    if (notes !== undefined) payload.notes = notes ?? null
+
+    // Set completed_date for active states; clear it when reverting to open
+    if (resolvedDate)      payload.completed_date = resolvedDate
+    if (status === 'open') payload.completed_date = null
+
+    // 7. Upsert window_progress
     const { error: upsertErr } = await sb
       .from('window_progress')
-      .upsert({
-        user_id:    user.id,
-        child_id:   childId,
-        window_id:  windowId,
-        status,
-        notes:      notes ?? null,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'user_id,child_id,window_id' })
+      .upsert(payload, { onConflict: 'user_id,child_id,window_id' })
 
     if (upsertErr) {
       console.error('[scout-progress] Upsert error:', upsertErr.message)
       return err(500, `Failed to save progress: ${upsertErr.message}`)
     }
 
-    // 6. Log to scout_events (fire and forget — don't block response)
+    // 8. Log to scout_events (fire and forget)
     sb.from('scout_events').insert({
       user_id:    user.id,
       child_id:   childId,
       event_type: 'window_progress_updated',
       properties: {
-        window_id:    windowId,
-        window_title: window.title,
-        urgency_tier: window.urgency,
-        category:     window.category,
+        window_id:      windowId,
+        window_title:   window.title,
+        urgency_tier:   window.urgency,
+        category:       window.category,
         status,
-        has_notes:    !!notes,
+        completed_date: resolvedDate,
+        updated_by:     displayName,
+        has_notes:      !!notes,
       },
     }).then().catch(e => console.error('[scout-progress] Event log error:', e.message))
 
-    return new Response(JSON.stringify({ ok: true, status }), {
+    return new Response(JSON.stringify({
+      ok:             true,
+      status,
+      completedDate:  resolvedDate,
+      updatedByName:  displayName,
+    }), {
       status:  200,
       headers: { ...CORS, 'Content-Type': 'application/json' },
     })

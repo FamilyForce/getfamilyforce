@@ -197,12 +197,12 @@ function renderHome(child, sub) {
   // Page header
   var header = document.getElementById('pageHeader')
   header.innerHTML = '<h1 class="page-header-child">' + name + '</h1>' +
-    '<p class="page-header-age">' + ageM + ' month' + (ageM === 1 ? '' : 's') + ' old</p>' +
-    '<div class="progress-bar-wrap">' +
-    '<div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill" style="width:0%"></div></div>' +
-    '<p class="progress-bar-label" id="progressLabel">Loading windows…</p>' +
+    '<p class="page-header-age" id="windowCountLine">Loading…</p>' +
+    '<div style="margin-bottom:4px">' +
+    '<div class="progress-seg-track"><div class="progress-seg-green" id="segGreen" style="width:0%"></div><div class="progress-seg-amber" id="segAmber" style="width:0%"></div></div>' +
+    '<div class="progress-legend" id="progressLegend"></div>' +
     '</div>' +
-    '<p class="page-header-meta">Next digest: <a href="/scout-dashboard/history.html" id="nextDigestLink"></a></p>'
+    '<p class="page-header-meta" style="margin-top:10px">Next digest: <a href="/scout-dashboard/history.html" id="nextDigestLink"></a></p>'
 
   // Next digest date (child's next monthly birthday)
   var nextBday = nextMonthlyBirthday(dob)
@@ -248,52 +248,85 @@ function renderHome(child, sub) {
   renderSidebarTrial(sub)
 }
 
+// Collapse state: persisted in localStorage per section key
+function isSectionOpen(key) {
+  var stored = localStorage.getItem('scout_section_' + key)
+  return stored === null ? true : stored === '1'  // default open
+}
+function toggleSection(key) {
+  var header = document.getElementById('secHeader-' + key)
+  var body   = document.getElementById('secBody-' + key)
+  if (!header || !body) return
+  var opening = header.classList.contains('section-collapsed')
+  header.classList.toggle('section-collapsed', !opening)
+  localStorage.setItem('scout_section_' + key, opening ? '1' : '0')
+}
+function collapsibleSection(key, labelHtml, contentHtml, defaultOpen) {
+  var open = defaultOpen !== undefined ? defaultOpen : isSectionOpen(key)
+  return '<div class="section-header' + (open ? '' : ' section-collapsed') + '" id="secHeader-' + key + '" onclick="toggleSection(\'' + key + '\')">' +
+    labelHtml +
+    '<span class="section-toggle-arrow">▾</span>' +
+    '</div>' +
+    '<div class="section-body" id="secBody-' + key + '">' + contentHtml + '</div>'
+}
+
 function renderSections(sections, allWindows, child, sub, ageM, name) {
+  // Update window count line
+  var totalOpen = sections.closing.length + sections.thisMonth.length
+  var countLine = document.getElementById('windowCountLine')
+  if (countLine) countLine.textContent = totalOpen + ' window' + (totalOpen === 1 ? '' : 's') + ' open right now · ' + ageM + ' month' + (ageM === 1 ? '' : 's') + ' old'
+
   var html = ''
 
   // Closing soon
   if (sections.closing.length > 0) {
-    html += '<div class="section-header"><span class="section-label section-label-closing">⚠️ Closing soon</span></div>'
-    html += '<div class="window-grid">'
-    sections.closing.forEach(function (w) { html += ScoutDash.renderCard(w) })
-    html += '</div>'
+    var closingCards = '<div class="window-grid">'
+    sections.closing.forEach(function (w) { closingCards += ScoutDash.renderCard(w) })
+    closingCards += '</div>'
+    html += collapsibleSection('closing',
+      '<span class="section-label section-label-closing">⚠️ Closing soon</span><span class="section-count">(' + sections.closing.length + ')</span>',
+      closingCards)
   }
 
   // This month
-  html += '<div class="section-header" style="' + (sections.closing.length > 0 ? '' : 'margin-top:0') + '">' +
-    '<span class="section-label section-label-month">This month</span></div>'
+  var thisMonthContent
   if (sections.thisMonth.length > 0) {
-    html += '<div class="window-grid">'
-    sections.thisMonth.forEach(function (w) { html += ScoutDash.renderCard(w) })
-    html += '</div>'
+    thisMonthContent = '<div class="window-grid">'
+    sections.thisMonth.forEach(function (w) { thisMonthContent += ScoutDash.renderCard(w) })
+    thisMonthContent += '</div>'
   } else {
-    html += '<p class="section-empty">All windows for this age are either complete or coming up.</p>'
+    thisMonthContent = '<p class="section-empty">All windows for this age are either complete or coming up.</p>'
   }
+  html += collapsibleSection('month',
+    '<span class="section-label section-label-month">This month</span><span class="section-count">(' + sections.thisMonth.length + ')</span>',
+    thisMonthContent)
 
-  // Coming up (gated behind active subscription if trial expired)
+  // Coming up
   var trialExpired = sub && sub.status === 'trialing' && new Date(sub.trial_end) < new Date()
   if (trialExpired) {
     html += renderPaywall(name, ageM)
   } else if (sections.comingUp.length > 0) {
-    html += '<div class="section-header"><span class="section-label section-label-coming">Coming up</span></div>'
-    html += '<div class="window-grid">'
-    sections.comingUp.forEach(function (w) { html += ScoutDash.renderCard(w, { preview: true }) })
-    html += '</div>'
+    var comingCards = '<div class="window-grid">'
+    sections.comingUp.forEach(function (w) { comingCards += ScoutDash.renderCard(w, { preview: true }) })
+    comingCards += '</div>'
+    html += collapsibleSection('coming',
+      '<span class="section-label section-label-coming">Coming up</span><span class="section-count">(' + sections.comingUp.length + ')</span>',
+      comingCards)
   }
 
-  // Done accordion
-  html += '<div class="done-accordion" id="doneAccordion">' +
-    '<div class="done-accordion-header" id="doneAccordionHeader">' +
-    '<span class="done-accordion-label">✓ Done this month (<span id="doneCount">' + sections.done.length + '</span>)</span>' +
-    '<span class="done-accordion-arrow">▾</span>' +
-    '</div>' +
-    '<div class="done-accordion-body" id="doneAccordionBody">'
+  // Done / addressed accordion (default collapsed)
+  var doneContent = ''
   if (sections.done.length > 0) {
-    html += '<div class="window-grid">'
-    sections.done.forEach(function (w) { html += ScoutDash.renderCard(w) })
-    html += '</div>'
+    doneContent = '<div class="window-grid" id="doneAccordionBody">'
+    sections.done.forEach(function (w) { doneContent += ScoutDash.renderCard(w) })
+    doneContent += '</div>'
+  } else {
+    doneContent = '<div id="doneAccordionBody"></div>'
   }
-  html += '</div></div>'
+  html += collapsibleSection('done',
+    '<span class="section-label section-label-done">✓ Addressed (<span id="doneCount">' + sections.done.length + '</span>)</span>',
+    doneContent,
+    false)  // default collapsed
 
   document.getElementById('windowSections').innerHTML = html
 }

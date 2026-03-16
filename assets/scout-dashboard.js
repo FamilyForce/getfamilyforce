@@ -212,14 +212,18 @@
     },
 
     /* ── Progress save ───────────────────────────────────────── */
-    saveProgress: function (windowId, status, childId, cb) {
+    saveProgress: function (windowId, status, childId, completedDate, cb) {
+      // completedDate is optional: pass null to use today (server default)
+      if (typeof completedDate === 'function') { cb = completedDate; completedDate = null }
       var session = sb.auth.getSession()
       session.then(function (res) {
         var tok = res.data && res.data.session && res.data.session.access_token
+        var body = { windowId: windowId, childId: childId, status: status }
+        if (completedDate) body.completedDate = completedDate
         fetch(FUNCTIONS_URL + '/scout-progress', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-          body: JSON.stringify({ window_id: windowId, child_id: childId, status: status }),
+          body: JSON.stringify(body),
         }).then(function (r) { return r.json() }).then(function (d) {
           if (typeof cb === 'function') cb(d.ok ? null : (d.error || 'Error'), d)
         }).catch(function (e) { if (typeof cb === 'function') cb(e.message) })
@@ -280,6 +284,31 @@
 
       var missedHtml = w._sectionTag === 'missed' ? '<p class="card-missed-label">⚠️ This window has closed.</p>' : ''
 
+      // Date picker prompt (shown after marking done/in-progress)
+      var datePromptHtml = (!isPreview && !isHistory)
+        ? '<div class="date-prompt" id="datePrompt-' + w.id + '">' +
+          '<span class="date-prompt-label">📅 When did this happen?</span>' +
+          '<input type="date" class="date-prompt-input" id="dateInput-' + w.id + '" max="' + new Date().toISOString().split('T')[0] + '">' +
+          '<button class="date-prompt-dismiss" data-dismiss-date="' + w.id + '">✕</button>' +
+          '</div>'
+        : ''
+
+      // Attribution line (shown when progress has been set)
+      var attrHtml = ''
+      if (!isPreview && w._progress && w._status !== 'open') {
+        var name = w._progress.updated_by_name || ''
+        var date = w._progress.completed_date
+          ? ScoutDash._fmtDate(w._progress.completed_date)
+          : ''
+        if (name || date) {
+          attrHtml = '<p class="card-attribution">' +
+            (name ? '<span class="card-attribution-name">' + ScoutDash._esc(name) + '</span>' : '') +
+            (name && date ? ' · ' : '') +
+            (date ? ScoutDash._esc(date) : '') +
+            '</p>'
+        }
+      }
+
       return '<div class="window-card ' + stateClass + '" data-window-id="' + w.id + '">' +
         '<div class="card-header">' +
         '<div class="card-badges">' +
@@ -291,8 +320,23 @@
         missedHtml +
         '<p class="card-title" data-modal-open="' + w.id + '">' + ScoutDash._esc(w.title) + '</p>' +
         '<p class="card-hook">' + ScoutDash._esc(hook) + '</p>' +
-        actionsHtml + noteHtml +
+        actionsHtml + datePromptHtml + attrHtml + noteHtml +
         '</div>'
+    },
+
+    _fmtDate: function (dateStr) {
+      if (!dateStr) return ''
+      var d = new Date(dateStr + 'T00:00:00Z')
+      if (isNaN(d.getTime())) return ''
+      var now     = new Date()
+      var diffMs  = now - d
+      var diffDay = Math.floor(diffMs / 86400000)
+      if (diffDay === 0) return 'today'
+      if (diffDay === 1) return 'yesterday'
+      if (diffDay < 7)   return diffDay + ' days ago'
+      if (diffDay < 14)  return '1 week ago'
+      if (diffDay < 30)  return Math.floor(diffDay / 7) + ' weeks ago'
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
     },
 
     _hook: function (text) {
@@ -348,6 +392,14 @@
     wireActions: function (childId, windowsRef, container) {
       container = container || document
       container.addEventListener('click', function (e) {
+        // Dismiss date prompt
+        var dismiss = e.target.closest('[data-dismiss-date]')
+        if (dismiss) {
+          var dp = document.getElementById('datePrompt-' + dismiss.dataset.dismissDate)
+          if (dp) dp.classList.remove('show')
+          return
+        }
+
         var btn = e.target.closest('[data-action]')
         if (!btn) return
         var wid    = btn.dataset.wid
@@ -374,20 +426,75 @@
         if (newStatus === 'in_progress')  card.classList.add('state-in-progress')
         if (newStatus === 'completed' || newStatus === 'skipped') card.classList.add('state-done')
 
-        // If done/skipped: move to Done section after short delay
-        if (newStatus === 'completed' || newStatus === 'skipped') {
-          setTimeout(function () { ScoutDash._moveToDone(card, wid) }, 600)
+        // Show date prompt for done/in-progress; hide for skip/open
+        var prompt  = document.getElementById('datePrompt-' + wid)
+        var dateInp = document.getElementById('dateInput-' + wid)
+        if (prompt && dateInp) {
+          if (newStatus === 'completed' || newStatus === 'in_progress') {
+            dateInp.value = new Date().toISOString().split('T')[0]
+            prompt.classList.add('show')
+          } else {
+            prompt.classList.remove('show')
+          }
         }
 
-        // Persist
-        ScoutDash.saveProgress(wid, newStatus, childId, function (err) {
+        // If done/skipped: move to Done section after short delay
+        if (newStatus === 'completed' || newStatus === 'skipped') {
+          setTimeout(function () { ScoutDash._moveToDone(card, wid) }, 800)
+        }
+
+        // Persist (with today as default date)
+        var selectedDate = (dateInp && dateInp.value) ? dateInp.value : null
+        ScoutDash.saveProgress(wid, newStatus, childId, selectedDate, function (err, data) {
           if (err) {
             ScoutDash.toast('Could not save. Please try again.', 'error')
-            win._status = 'open'  // revert
+            win._status = 'open'
+          } else {
+            // Store attribution data back on the window object
+            if (data && data.updatedByName) {
+              if (!win._progress) win._progress = {}
+              win._progress.updated_by_name = data.updatedByName
+              win._progress.completed_date  = data.completedDate || null
+              win._status = newStatus
+              ScoutDash._updateCardAttribution(card, data.updatedByName, data.completedDate)
+            }
           }
           ScoutDash._updateProgressBar(windowsRef)
         })
       })
+
+      // Date prompt change: re-save with new date
+      container.addEventListener('change', function (e) {
+        if (!e.target.classList.contains('date-prompt-input')) return
+        var wid = e.target.id.replace('dateInput-', '')
+        var win = windowsRef.find(function (w) { return w.id === wid })
+        if (!win || win._status === 'open') return
+        var newDate = e.target.value
+        ScoutDash.saveProgress(wid, win._status, childId, newDate, function (err, data) {
+          if (err) { ScoutDash.toast('Could not save date.', 'error'); return }
+          if (data && data.updatedByName) {
+            if (!win._progress) win._progress = {}
+            win._progress.completed_date = data.completedDate
+            var card = document.querySelector('[data-window-id="' + wid + '"]')
+            if (card) ScoutDash._updateCardAttribution(card, data.updatedByName, data.completedDate)
+          }
+        })
+      })
+    },
+
+    _updateCardAttribution: function (card, name, dateStr) {
+      var existing = card.querySelector('.card-attribution')
+      var dateLabel = dateStr ? ScoutDash._fmtDate(dateStr) : ''
+      var html = '<p class="card-attribution">' +
+        (name ? '<span class="card-attribution-name">' + ScoutDash._esc(name) + '</span>' : '') +
+        (name && dateLabel ? ' · ' : '') +
+        (dateLabel ? ScoutDash._esc(dateLabel) : '') +
+        '</p>'
+      if (existing) {
+        existing.outerHTML = html
+      } else {
+        card.insertAdjacentHTML('beforeend', html)
+      }
     },
 
     _moveToDone: function (card, wid) {
@@ -395,19 +502,46 @@
       if (!doneBody) return
       card.classList.add('state-done')
       doneBody.appendChild(card)
+      // Auto-open the done section when first card arrives
+      var doneHeader = document.getElementById('secHeader-done')
+      if (doneHeader && doneHeader.classList.contains('section-collapsed')) {
+        doneHeader.classList.remove('section-collapsed')
+        localStorage.setItem('scout_section_done', '1')
+      }
       // Update done count
       var countEl = document.getElementById('doneCount')
       if (countEl) countEl.textContent = doneBody.querySelectorAll('.window-card').length
     },
 
     _updateProgressBar: function (windowsRef) {
-      var addressed = windowsRef.filter(function (w) { return w._status === 'completed' || w._status === 'skipped' }).length
-      var total     = windowsRef.filter(function (w) { return w._status !== 'coming' }).length
-      var pct       = total > 0 ? Math.round(addressed / total * 100) : 0
-      var fill      = document.getElementById('progressFill')
-      var label     = document.getElementById('progressLabel')
-      if (fill)  fill.style.width = pct + '%'
-      if (label) label.textContent = addressed + ' of ' + total + ' windows addressed this month'
+      // Active windows only (not "coming up" previews)
+      var active     = windowsRef.filter(function (w) { return w._sectionTag !== 'coming' })
+      var total      = active.length
+      var completed  = active.filter(function (w) { return w._status === 'completed' || w._status === 'skipped' }).length
+      var inProgress = active.filter(function (w) { return w._status === 'in_progress' }).length
+      var remaining  = total - completed - inProgress
+
+      var pctDone = total > 0 ? (completed  / total * 100) : 0
+      var pctProg = total > 0 ? (inProgress / total * 100) : 0
+
+      var segGreen = document.getElementById('segGreen')
+      var segAmber = document.getElementById('segAmber')
+      var legend   = document.getElementById('progressLegend')
+
+      if (segGreen) segGreen.style.width = pctDone + '%'
+      if (segAmber) segAmber.style.width = pctProg + '%'
+
+      if (legend) {
+        legend.innerHTML =
+          '<div class="progress-legend-item"><span class="progress-legend-dot green"></span>' +
+          '<span class="progress-legend-count">' + completed + '</span> done</div>' +
+          (inProgress > 0
+            ? '<div class="progress-legend-item"><span class="progress-legend-dot amber"></span>' +
+              '<span class="progress-legend-count">' + inProgress + '</span> in progress</div>'
+            : '') +
+          '<div class="progress-legend-item"><span class="progress-legend-dot grey"></span>' +
+          '<span class="progress-legend-count">' + remaining + '</span> open</div>'
+      }
     },
 
     /* ── Modal ───────────────────────────────────────────────── */
