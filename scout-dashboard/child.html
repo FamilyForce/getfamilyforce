@@ -134,46 +134,65 @@
       <p class="subscribe-gate-sub" id="subscribeGateSub">Scout tracks one child per subscription. To start tracking <strong id="subscribeChildName"></strong>, choose a plan below.</p>
       <span class="subscribe-gate-catchup" id="catchupLabel">📅 Catch-up period is free until first monthly birthday</span>
 
-      <!-- Plan toggle -->
-      <div class="plan-toggle">
-        <div class="plan-option selected" id="planAnnual" onclick="selectPlan('annual')">
-          <div class="plan-option-label">Annual <span class="plan-option-badge">Best value</span></div>
-          <div class="plan-option-price">$79.99</div>
-          <div class="plan-option-per">per year · $6.67/month</div>
-        </div>
-        <div class="plan-option" id="planMonthly" onclick="selectPlan('monthly')">
-          <div class="plan-option-label">Monthly</div>
-          <div class="plan-option-price">$9.99</div>
-          <div class="plan-option-per">per month</div>
-        </div>
-      </div>
-
-      <!-- Card entry (hidden if user already has a payment method on file) -->
-      <div id="cardEntryWrap">
-        <div class="card-field-wrap">
-          <div class="card-field-label">Card details</div>
-          <div id="cardElement"></div>
-        </div>
-      </div>
-      <div id="existingCardWrap" style="display:none">
-        <div class="card-use-existing" id="existingCardLabel">
-          💳 Using your card on file
-        </div>
-      </div>
-
+      <!-- Primary CTA: free trial -->
       <p class="form-error" id="subscribeError"></p>
 
-      <button class="btn btn-primary btn-full" id="subscribeBtn" onclick="subscribeForChild()">
-        Subscribe for <span id="subscribeBtnName"></span> →
+      <button class="btn btn-primary btn-full" id="trialBtn" onclick="startTrialForChild()">
+        Start free trial for <span id="trialBtnName"></span> →
       </button>
+      <p class="subscribe-note">No card needed. Free until the catch-up period ends, then choose a plan.</p>
 
-      <p class="subscribe-note">Your catch-up period is free. You will be billed once it ends. Cancel any time from Settings.</p>
+      <!-- Secondary: subscribe now (collapsed by default) -->
+      <div style="text-align:center;margin-top:16px;margin-bottom:4px">
+        <button onclick="toggleSubscribeNow()"
+          id="subscribeNowToggle"
+          style="background:none;border:none;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--text-dim);cursor:pointer;transition:color .15s"
+          onmouseover="this.style.color='var(--terra)'" onmouseout="this.style.color='var(--text-dim)'">
+          Or subscribe now with a card ›
+        </button>
+      </div>
 
-      <div style="text-align:center;margin-top:16px">
+      <div id="subscribeNowPanel" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+        <!-- Plan toggle -->
+        <div class="plan-toggle">
+          <div class="plan-option selected" id="planAnnual" onclick="selectPlan('annual')">
+            <div class="plan-option-label">Annual <span class="plan-option-badge">Best value</span></div>
+            <div class="plan-option-price">$79.99</div>
+            <div class="plan-option-per">per year · $6.67/month</div>
+          </div>
+          <div class="plan-option" id="planMonthly" onclick="selectPlan('monthly')">
+            <div class="plan-option-label">Monthly</div>
+            <div class="plan-option-price">$9.99</div>
+            <div class="plan-option-per">per month</div>
+          </div>
+        </div>
+
+        <!-- Card entry -->
+        <div id="cardEntryWrap">
+          <div class="card-field-wrap">
+            <div class="card-field-label">Card details</div>
+            <div id="cardElement"></div>
+          </div>
+        </div>
+        <div id="existingCardWrap" style="display:none">
+          <div class="card-use-existing" id="existingCardLabel">
+            💳 Using your card on file
+          </div>
+        </div>
+
+        <p class="form-error" id="paySubscribeError"></p>
+
+        <button class="btn btn-primary btn-full" id="subscribeBtn" onclick="subscribeForChild()">
+          Subscribe for <span id="subscribeBtnName"></span> →
+        </button>
+        <p class="subscribe-note">Billed after the catch-up period ends. Cancel any time from Settings.</p>
+      </div>
+
+      <div style="text-align:center;margin-top:20px">
         <a href="/scout-dashboard.html"
           style="font-size:13px;font-weight:500;color:var(--text-dim);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color .15s"
           onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
-          ← Subscribe later from Settings
+          ← Do this later from Settings
         </a>
       </div>
     </div>
@@ -333,6 +352,52 @@ function showSaveErr(msg, btn) {
 
 // ── Subscribe gate helpers ────────────────────────────────────────────────────
 
+function toggleSubscribeNow() {
+  var panel  = document.getElementById('subscribeNowPanel')
+  var toggle = document.getElementById('subscribeNowToggle')
+  var open   = panel.style.display !== 'none'
+  panel.style.display = open ? 'none' : 'block'
+  toggle.textContent  = open ? 'Or subscribe now with a card ›' : 'Hide ‹'
+  if (!open) initStripeCard()  // lazy-init card element when first opened
+}
+
+function startTrialForChild() {
+  var btn = document.getElementById('trialBtn')
+  var errEl = document.getElementById('subscribeError')
+  errEl.classList.remove('show')
+  btn.disabled    = true
+  btn.textContent = 'Starting trial\u2026'
+
+  var sb = window._supabaseClient
+  sb.auth.getSession().then(function (res) {
+    var session = res.data && res.data.session
+    if (!session) { window.location.href = '/sign-in.html'; return }
+
+    fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-child-trial-start', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body:    JSON.stringify({ childId: _newChildId }),
+    })
+    .then(function (r) { return r.json() })
+    .then(function (data) {
+      if (!data.ok) {
+        errEl.textContent = data.error || 'Could not start trial. Please try again.'
+        errEl.classList.add('show')
+        btn.disabled    = false
+        btn.textContent = 'Start free trial for ' + document.getElementById('trialBtnName').textContent + ' \u2192'
+        return
+      }
+      window.location.href = '/scout-dashboard.html'
+    })
+    .catch(function () {
+      errEl.textContent = 'Network error. Please try again.'
+      errEl.classList.add('show')
+      btn.disabled    = false
+      btn.textContent = 'Start free trial for ' + document.getElementById('trialBtnName').textContent + ' \u2192'
+    })
+  })
+}
+
 function selectPlan(plan) {
   _selectedPlan = plan
   document.getElementById('planAnnual').classList.toggle('selected',  plan === 'annual')
@@ -354,6 +419,7 @@ function showSubscribeGate(childName, dobVal, userId) {
   // Update copy
   document.getElementById('subscribeChildName').textContent = childName
   document.getElementById('subscribeGateTitle').textContent  = 'One more step for ' + childName
+  document.getElementById('trialBtnName').textContent        = childName
   document.getElementById('subscribeBtnName').textContent    = childName
 
   // Calculate catch-up label
@@ -377,14 +443,13 @@ function showSubscribeGate(childName, dobVal, userId) {
     .maybeSingle()
     .then(function (res) {
       if (res.data && res.data.stripe_customer_id) {
-        // Existing customer — skip card entry
+        // Existing customer — skip card entry when subscribe panel is opened
         _hasExistingPM = true
         document.getElementById('cardEntryWrap').style.display = 'none'
         document.getElementById('existingCardWrap').style.display = 'block'
       } else {
-        // New card needed — init Stripe Elements
+        // Stripe Elements initialised lazily when user opens subscribe panel
         _hasExistingPM = false
-        initStripeCard()
       }
     })
 
@@ -392,6 +457,7 @@ function showSubscribeGate(childName, dobVal, userId) {
 }
 
 function initStripeCard() {
+  if (_cardElement) return  // already mounted
   var STRIPE_PK = 'pk_test_51TAQTZRF5ve13fCKDmbO62d5eyQD1P5elKFxqb10rtEr7kMJ3myKneIpZs26oxTYafC2s1Q796gUnHxa0LuuDkX600u23YbO8I'
   _stripe = window.Stripe ? window.Stripe(STRIPE_PK) : null
   if (!_stripe) return
@@ -411,7 +477,7 @@ function initStripeCard() {
 
 function subscribeForChild() {
   var btn = document.getElementById('subscribeBtn')
-  var errEl = document.getElementById('subscribeError')
+  var errEl = document.getElementById('paySubscribeError')
   errEl.classList.remove('show')
   btn.disabled    = true
   btn.textContent = 'Processing…'
