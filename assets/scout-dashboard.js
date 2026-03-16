@@ -505,10 +505,6 @@
             btns.forEach(function (b) { b.classList.remove('active-done', 'active-progress', 'active-skip') })
             card.classList.remove('state-in-progress', 'state-done', 'state-skipped')
           } else {
-          }
-          ScoutDash._updateProgressBar(windowsRef)
-        })
-      })
             // Store attribution data back on the window object
             if (data && data.updatedByName) {
               if (!win._progress) win._progress = {}
