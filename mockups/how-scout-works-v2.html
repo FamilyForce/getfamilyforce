@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Scout Works — Design Mockup v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --terra:      #6E4ED6;
+    --terra-dark: #5B3CC4;
+    --terra-tint: #F0EBFF;
+    --terra-deep: #3D2A9E;
+    --text:       #1A1523;
+    --text-mid:   #5C5960;
+    --text-dim:   #8A879A;
+    --border:     #E5E2EC;
+    --bg:         #FAFAFA;
+    --surface:    #FFFFFF;
+    --amber:      #F59E0B;
+    --amber-tint: #FFFBEB;
+    --green:      #22C55E;
+    --green-tint: #F0FDF4;
+    --sans: 'Outfit', system-ui, sans-serif;
+    --serif: 'Instrument Serif', Georgia, serif;
+  }
+  body {
+    font-family: var(--sans);
+    background: #fff;
+    color: var(--text);
+    line-height: 1.6;
+    padding: 80px 24px;
+  }
+  .section { max-width: 1040px; margin: 0 auto; }
+
+  /* ── Section header ── */
+  .section-eyebrow {
+    font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--terra); margin-bottom: 14px;
+  }
+  .section-h2 {
+    font-family: var(--serif); font-size: clamp(32px, 4vw, 48px);
+    font-weight: 400; line-height: 1.1; letter-spacing: -.025em;
+    color: var(--text); margin-bottom: 14px;
+  }
+  .section-h2 em { font-style: italic; color: var(--terra); }
+  .section-sub {
+    font-size: 17px; color: var(--text-mid); line-height: 1.7; max-width: 540px;
+    margin-bottom: 72px;
+  }
+
+  /* ── Timeline layout ── */
+  .steps {
+    position: relative;
+    display: flex; flex-direction: column; gap: 0;
+  }
+  /* Vertical connecting line */
+  .steps::before {
+    content: '';
+    position: absolute;
+    left: 23px; top: 52px; bottom: 52px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--terra) 0%, rgba(110,78,214,.15) 100%);
+  }
+
+  /* ── Single step ── */
+  .step {
+    display: grid;
+    grid-template-columns: 48px 1fr 1fr;
+    gap: 0 48px;
+    padding: 48px 0;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .step:last-child { border-bottom: none; }
+
+  /* Step number circle */
+  .step-num {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--terra); color: #fff;
+    font-size: 17px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    position: relative; z-index: 1;
+    box-shadow: 0 0 0 5px #fff, 0 0 0 6px rgba(110,78,214,.2);
+    align-self: flex-start;
+    margin-top: 0;
+  }
+  .step:last-child .step-num { background: var(--terra-tint); color: var(--terra); }
+
+  /* Step text */
+  .step-text { padding-top: 6px; }
+  .step-outcome {
+    font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--terra); margin-bottom: 8px;
+  }
+  .step-title {
+    font-family: var(--serif); font-size: 26px; font-weight: 400;
+    color: var(--text); margin-bottom: 12px; line-height: 1.2;
+  }
+  .step-body {
+    font-size: 15px; color: var(--text-mid); line-height: 1.75; max-width: 340px;
+  }
+
+  /* Step visual panel */
+  .step-visual {
+    background: var(--bg); border: 1.5px solid var(--border); border-radius: 20px;
+    padding: 24px; overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,.04);
+  }
+
+  /* ── Visual: Step 1 — DOB form ── */
+  .form-mockup { display: flex; flex-direction: column; gap: 14px; }
+  .form-label { font-size: 11px; font-weight: 700; color: var(--text-dim); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 5px; }
+  .form-input {
+    background: #fff; border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 11px 14px;
+    font-family: var(--sans); font-size: 14px; color: var(--text);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .form-input.active { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(110,78,214,.1); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-submit {
+    background: var(--terra); color: #fff; border: none; border-radius: 100px;
+    padding: 13px; font-family: var(--sans); font-size: 14px; font-weight: 700;
+    text-align: center; cursor: pointer; margin-top: 4px;
+  }
+  .form-tag { font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 6px; }
+
+  /* ── Visual: Step 2 — Window map ── */
+  .age-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .age-badge {
+    background: var(--terra-tint); border: 1.5px solid rgba(110,78,214,.2);
+    color: var(--terra); font-size: 11px; font-weight: 700;
+    padding: 4px 12px; border-radius: 100px;
+  }
+  .age-bar-label { font-size: 12px; color: var(--text-dim); }
+  .window-list { display: flex; flex-direction: column; gap: 6px; }
+  .wl-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: 10px;
+    border-left: 3px solid transparent;
+  }
+  .wl-item.closing { background: #FFFBEB; border-left-color: var(--amber); }
+  .wl-item.open    { background: var(--terra-tint); border-left-color: var(--terra); }
+  .wl-item.coming  { background: var(--bg); border-left-color: var(--border); }
+  .wl-title { flex: 1; font-size: 12.5px; font-weight: 600; color: var(--text); }
+  .wl-item.coming .wl-title { color: var(--text-dim); }
+  .wl-chip {
+    font-size: 9.5px; font-weight: 700; padding: 2px 8px; border-radius: 100px; white-space: nowrap;
+  }
+  .wl-item.closing .wl-chip { background: #FEF3C7; color: #92400E; }
+  .wl-item.open    .wl-chip { background: rgba(110,78,214,.1); color: var(--terra-dark); }
+  .wl-item.coming  .wl-chip { background: var(--border); color: var(--text-dim); }
+  .wl-count { font-size: 11px; color: var(--text-dim); margin-top: 10px; padding-left: 2px; }
+
+  /* ── Visual: Step 3 — Email + Calendar (HERO STEP) ── */
+  .step.hero { background: var(--terra-tint); border-radius: 24px; padding: 56px 48px; margin: 0 -48px; border-bottom: none; }
+  .step.hero .step-visual { background: #fff; border-color: rgba(110,78,214,.15); }
+  .step.hero .step-num { background: var(--terra); box-shadow: 0 0 0 5px var(--terra-tint), 0 0 0 6px rgba(110,78,214,.2); }
+  .step.hero::before { display: none; }
+
+  .email-header { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .email-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--terra); color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .email-from { font-size: 13px; font-weight: 700; color: var(--text); }
+  .email-date { font-size: 11px; color: var(--text-dim); }
+  .email-subject { font-family: var(--serif); font-size: 16px; color: var(--text); margin-bottom: 4px; }
+  .email-preview { font-size: 12px; color: var(--text-mid); margin-bottom: 14px; line-height: 1.5; }
+  .email-windows { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+  .email-win { border-radius: 8px; padding: 8px 11px; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; }
+  .email-win.urgent { background: #FFFBEB; color: #92400E; border: 1px solid #FCD34D; }
+  .email-win.open   { background: var(--terra-tint); color: var(--terra-dark); border: 1px solid rgba(110,78,214,.15); }
+  .email-cal-btn { background: var(--terra); color: #fff; border: none; border-radius: 100px; padding: 10px 18px; font-family: var(--sans); font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+  /* Calendar side */
+  .cal-header-block { background: var(--terra); border-radius: 12px 12px 0 0; padding: 12px 16px; }
+  .cal-month { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.7); margin-bottom: 2px; }
+  .cal-day { font-size: 40px; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 6px; }
+  .cal-event-chip { background: rgba(255,255,255,.18); border-radius: 6px; padding: 5px 10px; font-size: 11px; font-weight: 600; color: #fff; display: inline-flex; align-items: center; gap: 5px; }
+  .cal-body { background: #fff; border: 1.5px solid var(--border); border-top: none; border-radius: 0 0 12px 12px; padding: 12px 14px; }
+  .cal-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+  .cal-item:last-child { border-bottom: none; }
+  .cal-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+  .cal-dot.amber { background: var(--amber); }
+  .cal-dot.purple { background: var(--terra); }
+  .cal-item-title { font-size: 12.5px; font-weight: 600; color: var(--text); line-height: 1.3; }
+  .cal-item-sub { font-size: 11px; color: var(--text-dim); margin-top: 1px; }
+  .cal-app-row { display: flex; gap: 6px; margin-top: 12px; }
+  .cal-app-btn { flex: 1; text-align: center; padding: 6px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 11px; font-weight: 600; color: var(--text-mid); cursor: pointer; }
+
+  /* Hero step: wide grid for email + cal */
+  .step.hero { grid-template-columns: 48px 300px 1fr; }
+  .step.hero .step-visual { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: transparent; border: none; box-shadow: none; padding: 0; }
+  .step.hero .step-visual > div { background: #fff; border: 1.5px solid rgba(110,78,214,.12); border-radius: 16px; padding: 18px; box-shadow: 0 4px 20px rgba(110,78,214,.08); }
+
+  /* ── Visual: Step 4 — Dashboard ── */
+  .dash-progress { margin-bottom: 16px; }
+  .dash-prog-label { font-size: 11px; color: var(--text-dim); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .dash-prog-track { height: 6px; background: var(--border); border-radius: 100px; overflow: hidden; }
+  .dash-prog-fill { height: 100%; background: var(--green); border-radius: 100px; width: 40%; }
+  .dash-cards { display: flex; flex-direction: column; gap: 6px; }
+  .dash-card { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--border); background: #fff; }
+  .dash-card.done { border-color: var(--green); background: var(--green-tint); }
+  .dash-card.progress { border-color: var(--amber); background: var(--amber-tint); }
+  .dash-card-title { flex: 1; font-size: 12.5px; font-weight: 600; color: var(--text); }
+  .dash-card.done .dash-card-title { color: var(--text-mid); text-decoration: line-through; }
+  .dash-status { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+  .dash-card.done     .dash-status { background: var(--green-tint); color: #15803D; border: 1px solid rgba(34,197,94,.2); }
+  .dash-card.progress .dash-status { background: var(--amber-tint); color: #92400E; border: 1px solid rgba(245,158,11,.25); }
+  .dash-card          .dash-status { background: var(--terra-tint); color: var(--terra); border: 1px solid rgba(110,78,214,.2); }
+
+  /* ── Mobile ── */
+  @media (max-width: 800px) {
+    .steps::before { display: none; }
+    .step { grid-template-columns: 40px 1fr; grid-template-rows: auto auto; gap: 12px 16px; padding: 32px 0; }
+    .step-visual { grid-column: 1 / -1; }
+    .step.hero { margin: 0; padding: 32px 24px; grid-template-columns: 40px 1fr; }
+    .step.hero .step-visual { grid-column: 1 / -1; grid-template-columns: 1fr; }
+  }
+
+  /* ── Design notes panel ── */
+  .notes {
+    margin-top: 64px; padding: 28px 32px;
+    background: #1A1523; border-radius: 16px; color: #fff;
+  }
+  .notes h3 { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 16px; }
+  .note-item { display: flex; gap: 10px; margin-bottom: 10px; font-size: 13px; color: rgba(255,255,255,.7); line-height: 1.5; }
+  .note-bullet { color: var(--terra); font-weight: 700; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<div class="section">
+
+  <!-- Section header -->
+  <div>
+    <p class="section-eyebrow">How Scout works</p>
+    <h2 class="section-h2">One email. One calendar invite.<br><em>Every month.</em></h2>
+    <p class="section-sub">Scout does the tracking for you. You just show up for your child.</p>
+  </div>
+
+  <!-- Timeline steps -->
+  <div class="steps">
+
+    <!-- ─── Step 1 ─── -->
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-text">
+        <p class="step-outcome">30 seconds to set up</p>
+        <h3 class="step-title">Add your child</h3>
+        <p class="step-body">Enter your child's name, date of birth, and gender. Expecting? Add your due date. Scout covers pre-birth windows too.</p>
+      </div>
+      <div class="step-visual">
+        <div class="form-mockup">
+          <div>
+            <p class="form-label">Child's first name</p>
+            <div class="form-input active">Emma <span style="color:#ccc">|</span></div>
+          </div>
+          <div class="form-row">
+            <div>
+              <p class="form-label">Date of birth</p>
+              <div class="form-input">Sep 15, 2025 <span style="font-size:12px;color:#ccc">▾</span></div>
+            </div>
+            <div>
+              <p class="form-label">Gender</p>
+              <div class="form-input">Girl <span style="font-size:12px;color:#ccc">▾</span></div>
+            </div>
+          </div>
+          <button class="form-submit">Start my free trial →</button>
+          <p class="form-tag">No credit card · 1 month free</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Step 2 ─── -->
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-text">
+        <p class="step-outcome">196 windows, ranked for your child</p>
+        <h3 class="step-title">Scout maps what's open</h3>
+        <p class="step-body">Scout cross-references 196 clinical developmental windows against your child's exact age — surfacing what's open, closing, and coming up next.</p>
+      </div>
+      <div class="step-visual">
+        <div class="age-bar">
+          <div class="age-badge">7 months · 30 weeks</div>
+          <span class="age-bar-label">3 windows open · 1 closing soon</span>
+        </div>
+        <div class="window-list">
+          <div class="wl-item closing">
+            <span style="font-size:15px">🥜</span>
+            <span class="wl-title">Peanut introduction window</span>
+            <span class="wl-chip">⚠ Closes Apr 12</span>
+          </div>
+          <div class="wl-item open">
+            <span style="font-size:15px">🥣</span>
+            <span class="wl-title">Start solids — texture progression</span>
+            <span class="wl-chip">Open this month</span>
+          </div>
+          <div class="wl-item open">
+            <span style="font-size:15px">👁️</span>
+            <span class="wl-title">6-month vision check</span>
+            <span class="wl-chip">Due this month</span>
+          </div>
+          <div class="wl-item coming">
+            <span style="font-size:15px">💬</span>
+            <span class="wl-title">First words milestone</span>
+            <span class="wl-chip">Opens at 9 months</span>
+          </div>
+        </div>
+        <p class="wl-count">+192 more windows tracked in background</p>
+      </div>
+    </div>
+
+    <!-- ─── Step 3 (HERO) ─── -->
+    <div class="step hero">
+      <div class="step-num">3</div>
+      <div class="step-text">
+        <p class="step-outcome">Arrives on your child's monthly birthday</p>
+        <h3 class="step-title">One email.<br>One calendar invite.</h3>
+        <p class="step-body">Every month, Scout sends a clear email digest plus a .ics calendar file. One tap adds it to Google Calendar, Apple Calendar, or Outlook. A 7-day alarm reminds you before windows close.</p>
+      </div>
+      <div class="step-visual">
+        <!-- Email preview -->
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8A879A;margin-bottom:12px">📧 Monthly email</div>
+          <div class="email-header">
+            <div class="email-avatar">FF</div>
+            <div>
+              <div class="email-from">FamilyForce Scout</div>
+              <div class="email-date">April 1, 2026</div>
+            </div>
+          </div>
+          <p class="email-subject">Emma's April windows (7 months)</p>
+          <p class="email-preview">3 windows open this month. 1 closing in 12 days. Action needed.</p>
+          <div class="email-windows">
+            <div class="email-win urgent">⚠️ Peanut introduction, closes Apr 12</div>
+            <div class="email-win open">🌱 First solid foods, open all month</div>
+            <div class="email-win open">💬 Babbling response, open this month</div>
+          </div>
+          <button class="email-cal-btn">📅 Add to my calendar</button>
+        </div>
+        <!-- Calendar preview -->
+        <div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#8A879A;margin-bottom:12px">📅 Calendar invite (any app)</div>
+          <div class="cal-header-block">
+            <p class="cal-month">April 2026</p>
+            <p class="cal-day">8</p>
+            <div class="cal-event-chip">⚠️ Peanut intro window closes — Emma</div>
+          </div>
+          <div class="cal-body">
+            <div class="cal-item">
+              <div class="cal-dot amber"></div>
+              <div>
+                <p class="cal-item-title">Peanut introduction window</p>
+                <p class="cal-item-sub">Closes April 12. All family reminded.</p>
+              </div>
+            </div>
+            <div class="cal-item">
+              <div class="cal-dot purple"></div>
+              <div>
+                <p class="cal-item-title">First solid foods, start this month</p>
+                <p class="cal-item-sub">Open through May 15.</p>
+              </div>
+            </div>
+          </div>
+          <div class="cal-app-row">
+            <div class="cal-app-btn">🔵 Google</div>
+            <div class="cal-app-btn">🍎 Apple</div>
+            <div class="cal-app-btn">📋 Outlook</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Step 4 ─── -->
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-text">
+        <p class="step-outcome">Your next email gets smarter</p>
+        <h3 class="step-title">Track and personalize</h3>
+        <p class="step-body">Mark what you've done in the dashboard. Scout adjusts — flagging gaps, tracking progress, and sharing updates with your Family Circle.</p>
+      </div>
+      <div class="step-visual">
+        <div class="dash-progress">
+          <div class="dash-prog-label">
+            <span>Emma's progress · April</span>
+            <span style="color:#22C55E;font-weight:700">2 of 3 done</span>
+          </div>
+          <div class="dash-prog-track"><div class="dash-prog-fill"></div></div>
+        </div>
+        <div class="dash-cards">
+          <div class="dash-card done">
+            <span style="font-size:15px">🥜</span>
+            <span class="dash-card-title">Peanut introduction window</span>
+            <span class="dash-status">✓ Done</span>
+          </div>
+          <div class="dash-card progress">
+            <span style="font-size:15px">🥣</span>
+            <span class="dash-card-title">First solid foods</span>
+            <span class="dash-status">In progress</span>
+          </div>
+          <div class="dash-card">
+            <span style="font-size:15px">👁️</span>
+            <span class="dash-card-title">6-month vision check</span>
+            <span class="dash-status">Open</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /steps -->
+
+  <!-- Design notes -->
+  <div class="notes">
+    <h3>Design notes — v2 changes vs. current</h3>
+    <div class="note-item"><span class="note-bullet">→</span> <span><strong>No card grid.</strong> 4 equal cards with emoji icons is the most generic "how it works" pattern on the web. Replaced with a left-rail vertical timeline — each step flows into the next, which is how the product actually works.</span></div>
+    <div class="note-item"><span class="note-bullet">→</span> <span><strong>Product previews integrated into step 3.</strong> The email and calendar mockups were disconnected from the steps above them. Now they live inside step 3, where they belong. This is the product's core promise — it gets the visual weight it deserves.</span></div>
+    <div class="note-item"><span class="note-bullet">→</span> <span><strong>Step 3 is the hero.</strong> Tinted background, larger layout, full-width treatment. At Airbnb, the payoff moment in a flow always got extra visual weight. The email + calendar IS the product. Treat it that way.</span></div>
+    <div class="note-item"><span class="note-bullet">→</span> <span><strong>Outcome labels per step.</strong> "30 seconds to set up" / "196 windows, ranked for your child" / "Arrives on your child's monthly birthday" — these do more work than just "Add your child." They answer the implicit question: what do I get from this step?</span></div>
+    <div class="note-item"><span class="note-bullet">→</span> <span><strong>Left-border colour coding on windows.</strong> Amber for closing, purple for open, grey for coming. Consistent with the dashboard. The visual language starts teaching the user how to read Scout before they've even signed up.</span></div>
+    <div class="note-item"><span class="note-bullet">→</span> <span><strong>Step 2 shows actual data.</strong> Instead of "Scout maps your windows" with an abstract description, the user sees exactly what a window list looks like. The "+192 more tracked in background" line handles the "but why only 4?" objection.</span></div>
+  </div>
+
+</div>
+</body>
+</html>

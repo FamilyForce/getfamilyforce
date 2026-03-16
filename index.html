@@ -375,6 +375,136 @@ a { color: inherit; text-decoration: none; }
   .w-persona-icon { font-size: 22px; margin-bottom: 0; flex-shrink: 0; }
 }
 
+
+/* ═══════════════════════════════════════════
+   HOW SCOUT WORKS — v2 timeline
+   ═══════════════════════════════════════════ */
+.how-timeline { position: relative; display: flex; flex-direction: column; }
+.how-timeline::before {
+  content: ''; position: absolute;
+  left: 23px; top: 52px; bottom: 52px; width: 2px;
+  background: linear-gradient(to bottom, var(--terra) 0%, rgba(110,78,214,.1) 100%);
+}
+.hiw-step {
+  display: grid; grid-template-columns: 48px 1fr 1fr;
+  gap: 0 48px; padding: 48px 0;
+  border-bottom: 1px solid var(--border); position: relative;
+}
+.hiw-step:last-child { border-bottom: none; }
+.hiw-step-num {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--terra); color: #fff;
+  font-size: 17px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; position: relative; z-index: 1;
+  box-shadow: 0 0 0 5px #F7F4FF, 0 0 0 6px rgba(110,78,214,.2);
+  align-self: flex-start;
+}
+.hiw-step-text { padding-top: 6px; }
+.hiw-outcome {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--terra); margin-bottom: 8px;
+}
+.hiw-title {
+  font-family: var(--serif); font-size: clamp(20px, 2.5vw, 26px); font-weight: 400;
+  color: var(--text); margin-bottom: 12px; line-height: 1.2;
+}
+.hiw-body { font-size: 15px; color: var(--text-mid); line-height: 1.75; }
+.hiw-visual {
+  background: var(--bg); border: 1.5px solid var(--border); border-radius: 20px;
+  padding: 22px; overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+/* Step 3 hero treatment */
+.hiw-step.hiw-hero {
+  background: #F0EBFF; border-radius: 24px;
+  padding: 48px; margin: 12px 0; border-bottom: none;
+}
+.hiw-step.hiw-hero .hiw-step-num {
+  box-shadow: 0 0 0 5px #F0EBFF, 0 0 0 6px rgba(110,78,214,.2);
+}
+.hiw-step.hiw-hero .hiw-visual {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  background: transparent; border: none; box-shadow: none; padding: 0;
+}
+.hiw-step.hiw-hero .hiw-visual > div {
+  background: #fff; border: 1.5px solid rgba(110,78,214,.12);
+  border-radius: 16px; padding: 18px;
+  box-shadow: 0 4px 20px rgba(110,78,214,.08);
+}
+/* Step 1 form */
+.hiw-f-label { font-size: 11px; font-weight: 700; color: var(--text-dim); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 5px; }
+.hiw-f-input {
+  background: #fff; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 11px 14px; font-family: var(--sans); font-size: 14px; color: var(--text);
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+}
+.hiw-f-input.active { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(110,78,214,.1); }
+.hiw-f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.hiw-f-submit {
+  background: var(--terra); color: #fff; border: none; border-radius: 100px;
+  padding: 13px; font-family: var(--sans); font-size: 14px; font-weight: 700;
+  text-align: center; width: 100%; cursor: pointer; margin-top: 4px;
+}
+.hiw-f-note { font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 8px; }
+/* Step 2 window list */
+.hiw-age-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.hiw-age-badge {
+  background: #F0EBFF; border: 1.5px solid rgba(110,78,214,.2);
+  color: var(--terra); font-size: 11px; font-weight: 700;
+  padding: 4px 12px; border-radius: 100px;
+}
+.hiw-age-label { font-size: 12px; color: var(--text-dim); }
+.hiw-wl { display: flex; flex-direction: column; gap: 6px; }
+.hiw-wl-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 11px; border-radius: 10px;
+  border-left: 3px solid transparent;
+}
+.hiw-wl-item.closing { background: #FFFBEB; border-left-color: #F59E0B; }
+.hiw-wl-item.open    { background: #F0EBFF; border-left-color: var(--terra); }
+.hiw-wl-item.coming  { background: var(--bg); border-left-color: var(--border); }
+.hiw-wl-title { flex: 1; font-size: 12.5px; font-weight: 600; color: var(--text); }
+.hiw-wl-item.coming .hiw-wl-title { color: var(--text-dim); }
+.hiw-wl-chip { font-size: 9.5px; font-weight: 700; padding: 2px 8px; border-radius: 100px; white-space: nowrap; }
+.hiw-wl-item.closing .hiw-wl-chip { background: #FEF3C7; color: #92400E; }
+.hiw-wl-item.open    .hiw-wl-chip { background: rgba(110,78,214,.1); color: #5B3CC4; }
+.hiw-wl-item.coming  .hiw-wl-chip { background: var(--border); color: var(--text-dim); }
+.hiw-wl-count { font-size: 11px; color: var(--text-dim); margin-top: 10px; padding-left: 2px; }
+/* Step 3 email + calendar */
+.hiw-vsec-label { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; }
+/* Step 4 dashboard */
+.hiw-prog-row { font-size: 11px; color: var(--text-dim); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.hiw-prog-row span:last-child { color: #22C55E; font-weight: 700; }
+.hiw-prog-track { height: 6px; background: var(--border); border-radius: 100px; overflow: hidden; margin-bottom: 16px; }
+.hiw-prog-fill { height: 100%; background: #22C55E; border-radius: 100px; width: 40%; }
+.hiw-dc { display: flex; flex-direction: column; gap: 6px; }
+.hiw-dc-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  border: 1.5px solid var(--border); background: #fff;
+}
+.hiw-dc-card.done     { border-color: #22C55E; background: #F0FDF4; }
+.hiw-dc-card.progress { border-color: #F59E0B; background: #FFFBEB; }
+.hiw-dc-title { flex: 1; font-size: 12.5px; font-weight: 600; color: var(--text); }
+.hiw-dc-card.done .hiw-dc-title { color: var(--text-mid); text-decoration: line-through; }
+.hiw-dc-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+.hiw-dc-card.done     .hiw-dc-badge { background: #F0FDF4; color: #15803D; border: 1px solid rgba(34,197,94,.2); }
+.hiw-dc-card.progress .hiw-dc-badge { background: #FFFBEB; color: #92400E; border: 1px solid rgba(245,158,11,.25); }
+.hiw-dc-card          .hiw-dc-badge { background: #F0EBFF; color: var(--terra); border: 1px solid rgba(110,78,214,.2); }
+/* Responsive */
+@media (max-width: 900px) {
+  .how-timeline::before { display: none; }
+  .hiw-step { grid-template-columns: 48px 1fr; }
+  .hiw-step .hiw-visual { grid-column: 2; }
+}
+@media (max-width: 640px) {
+  .hiw-step { grid-template-columns: 40px 1fr; gap: 12px 14px; padding: 32px 0; }
+  .hiw-step .hiw-visual { grid-column: 1 / -1; }
+  .hiw-step.hiw-hero { padding: 28px 20px; margin: 8px 0; }
+  .hiw-step.hiw-hero .hiw-visual { grid-template-columns: 1fr; }
+}
+
 /* How Scout Works — device cards */
 @media (max-width: 640px) {
   .how { padding: 64px var(--rx) 72px; }
@@ -1074,85 +1204,136 @@ a { color: inherit; text-decoration: none; }
       <h2 class="section-title" id="how-h2">One email. One calendar invite. <em>Every month.</em></h2>
       <p class="section-sub">Scout does the tracking for you. You just show up for your child.</p>
     </div>
-    <div class="steps-grid">
-      <div class="step-card" data-reveal>
-        <div class="step-num">1</div>
-        <span class="step-icon">👶</span>
-        <div class="step-title">Add your child</div>
-        <p class="step-body">Enter your child's date of birth (or due date — Scout covers expecting parents too). Takes 30 seconds.</p>
-      </div>
-      <div class="step-card" data-reveal data-d="1">
-        <div class="step-num">2</div>
-        <span class="step-icon">🗺️</span>
-        <div class="step-title">Scout maps your windows</div>
-        <p class="step-body">Scout cross references 196 clinical windows against your child's exact age and surfaces what's open, closing, and coming up.</p>
-      </div>
-      <div class="step-card" data-reveal data-d="2">
-        <div class="step-num">3</div>
-        <span class="step-icon">📬</span>
-        <div class="step-title">Monthly email + calendar invite</div>
-        <p class="step-body">Each month you get a clear email summary and a calendar reminder — ready to add to Google Calendar, Apple Calendar, or any calendar app.</p>
-      </div>
-      <div class="step-card" data-reveal data-d="3">
-        <div class="step-num">4</div>
-        <span class="step-icon">✅</span>
-        <div class="step-title">Track and personalize</div>
-        <p class="step-body">Mark what you've done in the dashboard. Your next email gets smarter — flagging gaps and adjusting to your child's actual progress.</p>
-      </div>
-    </div>
-    <div class="device-row" data-reveal>
-      <div class="device-card">
-        <div class="device-label">
-          <span class="device-label-icon">📧</span>
-          <span class="device-label-text">Monthly email</span>
+    <div class="how-timeline">
+
+      <!-- Step 1 -->
+      <div class="hiw-step" data-reveal>
+        <div class="hiw-step-num">1</div>
+        <div class="hiw-step-text">
+          <p class="hiw-outcome">30 seconds to set up</p>
+          <h3 class="hiw-title">Add your child</h3>
+          <p class="hiw-body">Enter your child's name, date of birth, and gender. Expecting? Add your due date. Scout covers pre-birth windows too.</p>
         </div>
-        <div class="mini-email-header">
-          <div class="mini-avatar">FF</div>
+        <div class="hiw-visual">
+          <p class="hiw-f-label">Child's first name</p>
+          <div class="hiw-f-input active">Emma <span style="color:#ccc">|</span></div>
+          <div class="hiw-f-row">
+            <div>
+              <p class="hiw-f-label">Date of birth</p>
+              <div class="hiw-f-input">Sep 15, 2025 <span style="font-size:12px;color:#ccc">▾</span></div>
+            </div>
+            <div>
+              <p class="hiw-f-label">Gender</p>
+              <div class="hiw-f-input">Girl <span style="font-size:12px;color:#ccc">▾</span></div>
+            </div>
+          </div>
+          <button class="hiw-f-submit">Start my free trial →</button>
+          <p class="hiw-f-note">No credit card · 1 month free</p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="hiw-step" data-reveal data-d="1">
+        <div class="hiw-step-num">2</div>
+        <div class="hiw-step-text">
+          <p class="hiw-outcome">196 windows, ranked for your child</p>
+          <h3 class="hiw-title">Scout maps what's open</h3>
+          <p class="hiw-body">Scout cross-references 196 clinical developmental windows against your child's exact age, surfacing what's open, closing, and coming up next.</p>
+        </div>
+        <div class="hiw-visual">
+          <div class="hiw-age-bar">
+            <div class="hiw-age-badge">7 months · 30 weeks</div>
+            <span class="hiw-age-label">3 open · 1 closing soon</span>
+          </div>
+          <div class="hiw-wl">
+            <div class="hiw-wl-item closing"><span style="font-size:15px">🥜</span><span class="hiw-wl-title">Peanut introduction window</span><span class="hiw-wl-chip">⚠ Closes Apr 12</span></div>
+            <div class="hiw-wl-item open"><span style="font-size:15px">🥣</span><span class="hiw-wl-title">Start solids, texture progression</span><span class="hiw-wl-chip">Open this month</span></div>
+            <div class="hiw-wl-item open"><span style="font-size:15px">👁️</span><span class="hiw-wl-title">6-month vision check</span><span class="hiw-wl-chip">Due this month</span></div>
+            <div class="hiw-wl-item coming"><span style="font-size:15px">💬</span><span class="hiw-wl-title">First words milestone</span><span class="hiw-wl-chip">Opens at 9 months</span></div>
+          </div>
+          <p class="hiw-wl-count">+192 more windows tracked in background</p>
+        </div>
+      </div>
+
+      <!-- Step 3 — HERO -->
+      <div class="hiw-step hiw-hero" data-reveal data-d="2">
+        <div class="hiw-step-num">3</div>
+        <div class="hiw-step-text">
+          <p class="hiw-outcome">Arrives on your child's monthly birthday</p>
+          <h3 class="hiw-title">One email.<br>One calendar invite.</h3>
+          <p class="hiw-body">Every month, Scout sends a clear email digest plus a .ics calendar file. One tap adds it to Google Calendar, Apple Calendar, or Outlook. A 7-day alarm reminds you before windows close.</p>
+        </div>
+        <div class="hiw-visual">
+          <!-- Email -->
           <div>
-            <div class="mini-from">FamilyForce Scout</div>
-            <div class="mini-date">April 1, 2026</div>
+            <p class="hiw-vsec-label">📧 Monthly email</p>
+            <div class="mini-email-header">
+              <div class="mini-avatar">FF</div>
+              <div>
+                <div class="mini-from">FamilyForce Scout</div>
+                <div class="mini-date">April 1, 2026</div>
+              </div>
+            </div>
+            <div class="mini-subject">Emma's April windows (7 months)</div>
+            <div class="mini-body">3 windows open this month. 1 closing in 12 days. Action needed.</div>
+            <div class="mini-window-row urgent"><span class="mini-window-icon">⚠️</span> Peanut introduction, closes Apr 12</div>
+            <div class="mini-window-row open"><span class="mini-window-icon">🌱</span> First solid foods, open all month</div>
+            <div class="mini-window-row open"><span class="mini-window-icon">💬</span> Babbling response, open this month</div>
+            <button class="mini-cal-btn">📅 Add to my calendar</button>
           </div>
-        </div>
-        <div class="mini-subject">Emma's April windows (7 months)</div>
-        <div class="mini-body">3 windows open this month. 1 closing in 12 days — action needed.</div>
-        <div class="mini-window-row urgent"><span class="mini-window-icon">⚠️</span> Peanut introduction — closes Apr 12</div>
-        <div class="mini-window-row open"><span class="mini-window-icon">🌱</span> First solid foods — open all month</div>
-        <div class="mini-window-row open"><span class="mini-window-icon">💬</span> Babbling response — open this month</div>
-        <button class="mini-cal-btn">📅 Add to my calendar</button>
-      </div>
-      <div class="device-card">
-        <div class="device-label">
-          <span class="device-label-icon">📅</span>
-          <span class="device-label-text">Calendar invite (any app)</span>
-        </div>
-        <div class="mini-cal-header">
-          <div class="mini-cal-month">April 2026</div>
-          <div class="mini-cal-day">8</div>
-          <div class="mini-cal-event">⚠️ Peanut intro window closes — Emma</div>
-        </div>
-        <div class="mini-cal-list">
-          <div class="mini-cal-item">
-            <div class="mini-cal-dot gold"></div>
-            <div>
-              <div class="mini-cal-title">Peanut introduction window</div>
-              <div class="mini-cal-time">Closes April 12 · All family reminded</div>
+          <!-- Calendar -->
+          <div>
+            <p class="hiw-vsec-label">📅 Calendar invite (any app)</p>
+            <div class="mini-cal-header">
+              <div class="mini-cal-month">April 2026</div>
+              <div class="mini-cal-day">8</div>
+              <div class="mini-cal-event">⚠️ Peanut intro window closes</div>
+            </div>
+            <div class="mini-cal-list">
+              <div class="mini-cal-item">
+                <div class="mini-cal-dot gold"></div>
+                <div>
+                  <div class="mini-cal-title">Peanut introduction window</div>
+                  <div class="mini-cal-time">Closes April 12. All family reminded.</div>
+                </div>
+              </div>
+              <div class="mini-cal-item">
+                <div class="mini-cal-dot purple"></div>
+                <div>
+                  <div class="mini-cal-title">First solid foods, start this month</div>
+                  <div class="mini-cal-time">Open through May 15.</div>
+                </div>
+              </div>
+            </div>
+            <div class="cal-badges">
+              <div class="cal-badge">📱 Google</div>
+              <div class="cal-badge">🍎 Apple</div>
+              <div class="cal-badge">📋 Outlook</div>
             </div>
           </div>
-          <div class="mini-cal-item">
-            <div class="mini-cal-dot purple"></div>
-            <div>
-              <div class="mini-cal-title">First solid foods — start this month</div>
-              <div class="mini-cal-time">Open through May 15</div>
-            </div>
-          </div>
-        </div>
-        <div class="cal-badges">
-          <div class="cal-badge">📱 Google</div>
-          <div class="cal-badge">🍎 Apple</div>
-          <div class="cal-badge">📋 Outlook</div>
         </div>
       </div>
-    </div>
+
+      <!-- Step 4 -->
+      <div class="hiw-step" data-reveal data-d="3">
+        <div class="hiw-step-num">4</div>
+        <div class="hiw-step-text">
+          <p class="hiw-outcome">Your next email gets smarter</p>
+          <h3 class="hiw-title">Track and personalize</h3>
+          <p class="hiw-body">Mark what you've done in the dashboard. Scout adjusts, flagging gaps and tracking progress. Share updates with your Family Circle.</p>
+        </div>
+        <div class="hiw-visual">
+          <div class="hiw-prog-row"><span>Emma's progress · April</span><span>2 of 3 done</span></div>
+          <div class="hiw-prog-track"><div class="hiw-prog-fill"></div></div>
+          <div class="hiw-dc">
+            <div class="hiw-dc-card done"><span style="font-size:15px">🥜</span><span class="hiw-dc-title">Peanut introduction window</span><span class="hiw-dc-badge">✓ Done</span></div>
+            <div class="hiw-dc-card progress"><span style="font-size:15px">🥣</span><span class="hiw-dc-title">First solid foods</span><span class="hiw-dc-badge">In progress</span></div>
+            <div class="hiw-dc-card"><span style="font-size:15px">👁️</span><span class="hiw-dc-title">6-month vision check</span><span class="hiw-dc-badge">Open</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /how-timeline -->
   </div>
 </section>
 
