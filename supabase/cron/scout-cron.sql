@@ -61,11 +61,23 @@ SELECT cron.schedule(
 );
 
 -- ─── Job 3: 7-day closing window alert (daily 08:00 UTC) ─────────────────────
--- Fires if the child's next birthday is exactly 7 days away.
--- scout-alert REMOVED (Mar 15, 2026)
--- Decision: duplicative with .ics VALARM 7-day calendar reminder.
--- Rely on calendar notification only. Scout = low-noise (one email/month).
--- Function still deployed but not scheduled. Re-enable by restoring cron.schedule() call.
+-- Fires 7 days before child's next birthday when closing windows exist.
+-- Restored (Mar 16, 2026) — complements .ics VALARM for users who didn't accept calendar.
+SELECT cron.unschedule('scout-alert') WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-alert');
+SELECT cron.schedule(
+  'scout-alert',
+  '0 8 * * *',
+  $$
+  SELECT net.http_post(
+    url     := 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-alert',
+    headers := jsonb_build_object(
+      'Content-Type',  'application/json',
+      'Authorization', 'Bearer ' || current_setting('app.service_role_key')
+    ),
+    body    := '{}'::jsonb
+  )
+  $$
+);
 
 -- ─── Job 4: Daily monitoring + sanity check (daily 09:00 UTC) ────────────────
 -- Runs 1 hour after the main jobs (08:00 UTC) to verify they all fired.
