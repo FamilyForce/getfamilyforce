@@ -22,6 +22,11 @@ import {
   ageInMonths,
   type IcsWindow,
 } from '../_shared/ics-generator.ts'
+import {
+  buildDigestEmail,
+  buildDigestSubject,
+  type DigestWindow,
+} from '../_shared/email-digest.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -68,243 +73,6 @@ function selectAboveFold(windows: MilestoneWindow[], ageWeeks: number): Mileston
 }
 
 // ─── Pronoun helper ───────────────────────────────────────────────────────────
-function pronoun(gender: string | null, form: 'subject' | 'object' | 'possess'): string {
-  const map = {
-    subject: { boy: 'he',  girl: 'she',  other: 'they' },
-    object:  { boy: 'him', girl: 'her',  other: 'them' },
-    possess: { boy: 'his', girl: 'her',  other: 'their' },
-  }
-  const g = (gender ?? 'other') as 'boy' | 'girl' | 'other'
-  return map[form][g] ?? map[form].other
-}
-
-// ─── Email HTML builder ───────────────────────────────────────────────────────
-// Functional template — will be replaced by the final 4A design.
-// Uses inline styles for email client compatibility.
-function buildDigestEmail(opts: {
-  childName:       string
-  childGender:     string | null
-  ageMonths:       number
-  aboveFold:       MilestoneWindow[]
-  allWindowCount:  number
-  nextEventDate:   Date
-  dashboardUrl:    string
-  siteUrl:         string
-  subjectLine:     string
-}): string {
-  const { childName, childGender, ageMonths, aboveFold, allWindowCount,
-          nextEventDate, dashboardUrl, siteUrl } = opts
-
-  const He = pronoun(childGender, 'subject')
-  He.charAt(0).toUpperCase() + He.slice(1)  // capitalised
-  const His = pronoun(childGender, 'possess')
-  His.charAt(0).toUpperCase() + His.slice(1)
-
-  const nextMonthName = nextEventDate.toLocaleDateString('en-US', {
-    month: 'long', day: 'numeric', timeZone: 'UTC'
-  })
-
-  const urgencyColors = {
-    clinical:  '#DC2626',
-    screening: '#2563EB',
-    advisory:  '#6B7280',
-  }
-  const urgencyLabels = {
-    clinical:  'Clinical',
-    screening: 'Screening',
-    advisory:  'Advisory',
-  }
-
-  const windowRows = aboveFold.map(w => {
-    const isClosing = w.close_age_weeks - (ageMonths * 4.33) <= 4
-    const badge     = `
-      <span style="
-        display: inline-block;
-        background: ${urgencyColors[w.urgency]}1A;
-        color: ${urgencyColors[w.urgency]};
-        font-size: 11px;
-        font-weight: 600;
-        padding: 2px 8px;
-        border-radius: 100px;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        margin-bottom: 6px;
-      ">${urgencyLabels[w.urgency]}${isClosing ? ' · Closing soon' : ''}</span>`
-
-    const playbook = w.playbook_link
-      ? `<p style="margin: 8px 0 0; font-size: 13px; color: #6E4ED6;">
-           Free guide: <a href="https://${w.playbook_link}" style="color: #6E4ED6;">${w.playbook_link.split('/').pop()?.replace(/-/g, ' ')}</a> →
-         </p>`
-      : ''
-
-    return `
-    <tr>
-      <td style="
-        background: #FFFFFF;
-        border: 1px solid #E5E2EC;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 12px;
-        display: block;
-      ">
-        ${badge}
-        <h3 style="
-          font-family: 'Outfit', Arial, sans-serif;
-          font-size: 16px;
-          font-weight: 600;
-          color: #1D1D1F;
-          margin: 0 0 8px;
-        ">${w.title}</h3>
-        <p style="
-          font-family: 'Outfit', Arial, sans-serif;
-          font-size: 14px;
-          color: #5C5960;
-          margin: 0;
-          line-height: 1.6;
-        ">${w.why_it_matters.split('. ').slice(0, 2).join('. ')}.</p>
-        ${playbook}
-        <p style="margin: 12px 0 0;">
-          <a href="${dashboardUrl}" style="
-            font-family: 'Outfit', Arial, sans-serif;
-            font-size: 13px;
-            color: #6E4ED6;
-            font-weight: 500;
-          ">Read what to do →</a>
-        </p>
-      </td>
-    </tr>
-    <tr><td style="height: 12px;"></td></tr>`
-  }).join('')
-
-  return `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light">
-  <title>${childName} turns ${ageMonths} months</title>
-</head>
-<body style="margin: 0; padding: 0; background: #FAFAFA; font-family: 'Outfit', Arial, sans-serif;">
-  <div style="max-width: 600px; margin: 0 auto; padding: 24px 16px;">
-
-    <!-- Header -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 32px;">
-      <tr>
-        <td>
-          <p style="font-size: 13px; color: #8A879A; margin: 0 0 8px;">FamilyForce Scout</p>
-          <h1 style="
-            font-family: Georgia, 'Times New Roman', serif;
-            font-size: 28px;
-            font-weight: 400;
-            color: #1D1D1F;
-            margin: 0 0 8px;
-            line-height: 1.3;
-          ">${childName} turns ${ageMonths} months today.</h1>
-          <p style="font-size: 15px; color: #5C5960; margin: 0;">
-            ${allWindowCount} developmental windows are open right now.
-            Here are the ${aboveFold.length} you need to know about this month.
-          </p>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Windows -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 32px;">
-      ${windowRows}
-    </table>
-
-    <!-- All windows CTA -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 32px;">
-      <tr>
-        <td style="text-align: center; padding: 20px; background: #F0EBFF; border-radius: 12px;">
-          <p style="
-            font-size: 14px;
-            color: #5C5960;
-            margin: 0 0 12px;
-          ">
-            ${allWindowCount - aboveFold.length} more windows are open this month.
-          </p>
-          <a href="${dashboardUrl}" style="
-            display: inline-block;
-            background: #6E4ED6;
-            color: #FFFFFF;
-            font-family: 'Outfit', Arial, sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            padding: 12px 28px;
-            border-radius: 100px;
-            text-decoration: none;
-          ">See all ${childName}'s windows →</a>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Calendar note -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 32px;">
-      <tr>
-        <td style="
-          border-left: 3px solid #6E4ED6;
-          padding: 12px 16px;
-          background: #F9F8FD;
-        ">
-          <p style="font-size: 14px; color: #5C5960; margin: 0; line-height: 1.6;">
-            📅 A calendar event for ${nextMonthName} is attached to this email.
-            Accept it and a 7-day alarm will fire before ${childName}'s next windows close.
-          </p>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Signature -->
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 32px;">
-      <tr>
-        <td>
-          <p style="font-size: 15px; color: #1D1D1F; margin: 0 0 4px;">Jack</p>
-          <p style="font-size: 13px; color: #8A879A; margin: 0;">FamilyForce</p>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Footer -->
-    <table width="100%" cellpadding="0" cellspacing="0">
-      <tr>
-        <td style="border-top: 1px solid #E5E2EC; padding-top: 20px;">
-          <p style="font-size: 12px; color: #8A879A; margin: 0 0 4px;">
-            FamilyForce · <a href="${siteUrl}" style="color: #8A879A;">${siteUrl.replace('https://', '')}</a>
-          </p>
-          <p style="font-size: 12px; color: #8A879A; margin: 0;">
-            You're receiving this because you signed up for Scout.
-            <a href="${siteUrl}/scout-dashboard/settings" style="color: #8A879A;">Manage preferences</a>
-            · <a href="${siteUrl}/unsubscribe?user={{USER_ID}}" style="color: #8A879A;">Unsubscribe</a>
-          </p>
-        </td>
-      </tr>
-    </table>
-
-  </div>
-</body>
-</html>`
-}
-
-// ─── Subject line builder ─────────────────────────────────────────────────────
-function buildSubjectLine(
-  childName:    string,
-  ageMonths:    number,
-  aboveFold:    MilestoneWindow[],
-  ageWeeks:     number
-): string {
-  // Find the most urgent closing window for the subject line
-  const closing = aboveFold.filter(w => w.close_age_weeks - ageWeeks <= 4)
-
-  if (closing.length > 0) {
-    const urgent = closing[0]
-    const weeksLeft = urgent.close_age_weeks - ageWeeks
-    return `${childName} turns ${ageMonths} months — ${weeksLeft} weeks left on ${urgent.title.toLowerCase()}`
-  }
-
-  return `${childName} turns ${ageMonths} months today. Here is what's open.`
-}
-
 // ─── Telegram alert ───────────────────────────────────────────────────────────
 async function telegramAlert(message: string): Promise<void> {
   const token  = Deno.env.get('TELEGRAM_BOT_TOKEN')
@@ -418,19 +186,22 @@ Deno.serve(async (req: Request) => {
     step = 'build-email'
     const siteUrl     = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
     const dashUrl     = `${siteUrl}/scout-dashboard`
-    const subjectLine = buildSubjectLine(child.name, months, aboveFold, weeks)
+    const subjectLine = buildDigestSubject(child.name, months, aboveFold, weeks)
+    const closingCount = aboveFold.filter(w => w.close_age_weeks - weeks <= 4).length
 
     // 7. Build email HTML
     const emailHtml = buildDigestEmail({
       childName:      child.name,
       childGender:    child.gender,
       ageMonths:      months,
-      aboveFold,
+      aboveFold:      aboveFold as DigestWindow[],
       allWindowCount: allWindows.length,
+      closingCount,
       nextEventDate:  nextMonthlyBirthday(childDob, now),
       dashboardUrl:   dashUrl,
       siteUrl,
-      subjectLine,
+      userId,
+      digestType:     'signup',
     })
 
     // 8. Generate .ics attachment
