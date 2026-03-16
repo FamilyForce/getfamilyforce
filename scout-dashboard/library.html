@@ -256,10 +256,10 @@
         <div>
           <p class="share-cta-label">Your achievement card</p>
           <p class="share-cta-sub">Copy as an image and share anywhere.</p>
-          <a href="/dashboard.html#share" class="share-btn">
+          <button class="share-btn" id="shareAchievementsBtn" onclick="shareAchievements()">
             <svg width="13" height="13" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M9 6h8M9 10h6M9 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
             Share my achievements
-          </a>
+          </button>
         </div>
       </div>
 
@@ -384,7 +384,25 @@
 
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- Off-screen card captured by html2canvas -->
+<div id="share-achievement-card" aria-hidden="true" style="
+  position:fixed; left:-9999px; top:-9999px;
+  width:480px; background:linear-gradient(145deg,#0e0525 0%,#1e0d48 55%,#0d1a3a 100%);
+  border-radius:24px; padding:44px 40px 40px;
+  font-family:'Outfit',system-ui,sans-serif; text-align:center; color:#fff;
+  box-sizing:border-box; overflow:hidden;">
+  <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:32px;font-size:15px;font-weight:700;color:rgba(255,255,255,.9)">
+    <svg width="11" height="13" viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    FamilyForce
+  </div>
+  <div id="sac-name" style="font-size:28px;font-weight:800;letter-spacing:-.02em;color:#fff;margin-bottom:6px">Your Name</div>
+  <div style="font-size:13px;font-weight:500;color:rgba(255,255,255,.5);letter-spacing:.06em;text-transform:uppercase;margin-bottom:36px">Parenting Achievements</div>
+  <div id="sac-badges" style="display:flex;justify-content:center;gap:16px;margin-bottom:36px;flex-wrap:wrap"></div>
+  <div style="font-size:12px;font-weight:600;letter-spacing:.08em;color:rgba(255,255,255,.35);text-transform:lowercase">getfamilyforce.com</div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="/assets/scout-dashboard.js"></script>
 <script>
 var BADGES = [
@@ -400,6 +418,93 @@ document.addEventListener('DOMContentLoaded', function () {
     renderBadges()
   })
 })
+
+async function shareAchievements() {
+  var btn = document.getElementById('shareAchievementsBtn')
+  var BADGES_META = [
+    { key: 'screen-time',    emoji: '📱', name: 'Digital Guardian',  bg: 'linear-gradient(135deg,#9B80FF,#6E4ED6)' },
+    { key: 'potty-training', emoji: '🚽', name: 'Potty Pro',         bg: 'linear-gradient(135deg,#6E4ED6,#5B3CC4)' },
+    { key: 'sleep-training', emoji: '🌙', name: 'Sleep Champion',    bg: 'linear-gradient(135deg,#5B7BB5,#4A6A9F)' },
+    { key: 'tantrum',        emoji: '⚡', name: 'Tantrum Tamer',     bg: 'linear-gradient(135deg,#7C5CFC,#6E4ED6)' },
+    { key: 'feeding',        emoji: '🥦', name: 'Good Eater Guide',  bg: 'linear-gradient(135deg,#5BA88E,#4A9070)' },
+  ]
+
+  var name = localStorage.getItem('ff_user_name') || 'A FamilyForce Parent'
+  var progress = {}
+  try { progress = JSON.parse(localStorage.getItem('ff_progress') || '{}') } catch (_) {}
+
+  var earned = BADGES_META.filter(function (b) { return progress[b.key] && progress[b.key].cert === true })
+  var earnedCount = earned.length
+  if (earnedCount === 0) { ScoutDash.toast('Complete a playbook to earn your first badge.', 'info'); return }
+
+  // Populate off-screen card
+  document.getElementById('sac-name').textContent = name
+
+  var circleSize = earnedCount <= 2 ? 96 : earnedCount <= 3 ? 84 : 72
+  var fontSize   = earnedCount <= 2 ? 42 : earnedCount <= 3 ? 36 : 30
+  var badgesEl   = document.getElementById('sac-badges')
+  badgesEl.innerHTML = ''
+
+  earned.forEach(function (b) {
+    var wrap   = document.createElement('div')
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:10px;width:' + circleSize + 'px'
+
+    var circle = document.createElement('div')
+    circle.style.cssText = 'width:' + circleSize + 'px;height:' + circleSize + 'px;border-radius:50%;' +
+      'display:flex;align-items:center;justify-content:center;position:relative;' +
+      'background:' + b.bg + ';box-shadow:0 0 0 3px rgba(255,255,255,.2),0 8px 24px rgba(110,78,214,.5)'
+
+    var emoji = document.createElement('span')
+    emoji.style.cssText = 'font-size:' + fontSize + 'px;line-height:1'
+    emoji.textContent = b.emoji
+    circle.appendChild(emoji)
+
+    var check = document.createElement('span')
+    check.style.cssText = 'position:absolute;bottom:2px;right:2px;width:20px;height:20px;border-radius:50%;' +
+      'background:#22c55e;border:2.5px solid #0e0525;font-size:10px;font-weight:800;' +
+      'display:flex;align-items:center;justify-content:center;color:#fff;line-height:1'
+    check.textContent = '\u2713'
+    circle.appendChild(check)
+
+    var label = document.createElement('div')
+    label.style.cssText = 'font-size:10px;font-weight:600;color:rgba(255,255,255,.7);text-align:center;line-height:1.3'
+    label.textContent = b.name
+
+    wrap.appendChild(circle)
+    wrap.appendChild(label)
+    badgesEl.appendChild(wrap)
+  })
+
+  btn.textContent = 'Generating\u2026'
+  btn.disabled = true
+
+  try {
+    var card = document.getElementById('share-achievement-card')
+    var canvas = await html2canvas(card, {
+      scale: 2, useCORS: true, backgroundColor: null, logging: false, width: 480,
+    })
+
+    canvas.toBlob(async function (blob) {
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+        btn.textContent = '\u2713 Image copied!'
+      } catch (_) {
+        var a = document.createElement('a')
+        a.href = URL.createObjectURL(blob)
+        a.download = 'familyforce-achievements.png'
+        a.click()
+        btn.textContent = '\u2713 Image saved!'
+      }
+      setTimeout(function () {
+        btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="14" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M9 6h8M9 10h6M9 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> Share my achievements'
+        btn.disabled = false
+      }, 2500)
+    }, 'image/png')
+  } catch (e) {
+    btn.textContent = 'Try again'
+    btn.disabled = false
+  }
+}
 
 function renderBadges() {
   var progress = {}
