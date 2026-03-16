@@ -99,6 +99,46 @@
       </div>
     </div>
 
+    <!-- 11.25 Referral -->
+    <div class="settings-section">
+      <p class="settings-section-title">Refer a friend</p>
+      <div class="settings-card">
+        <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px">
+          <div>
+            <p class="settings-row-label">Your referral code</p>
+            <p class="settings-row-sub">Friends who use your code get 25% off their first payment. You can share it anywhere.</p>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div id="referralCodeBox" style="
+              font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:.08em;
+              color:var(--terra);background:var(--terra-tint);
+              border:1.5px solid var(--terra);border-radius:10px;
+              padding:10px 16px;min-width:180px;text-align:center;
+              user-select:all;cursor:text">
+              Loading…
+            </div>
+            <button id="copyReferralBtn" onclick="copyReferralCode()"
+              style="padding:9px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;
+                font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;
+                transition:all .15s"
+              onmouseover="this.style.borderColor='var(--terra)';this.style.color='var(--terra)'"
+              onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">
+              Copy code
+            </button>
+            <button id="shareReferralBtn" onclick="shareReferralLink()"
+              style="padding:9px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;
+                font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;
+                transition:all .15s"
+              onmouseover="this.style.borderColor='var(--terra)';this.style.color='var(--terra)'"
+              onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">
+              Share link
+            </button>
+          </div>
+          <p style="font-size:12px;color:var(--text-dim);line-height:1.5" id="referralShareLink"></p>
+        </div>
+      </div>
+    </div>
+
     <!-- 11.3 Account -->
     <div class="settings-section">
       <p class="settings-section-title">Account</p>
@@ -178,6 +218,7 @@ var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1'
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('settings', function (user, child, sub) {
     renderSettings(user, child, sub)
+    loadReferralCode()
 
     // Check if arriving from paywall (?checkout=annual or ?checkout=monthly)
     var params = new URLSearchParams(window.location.search)
@@ -363,6 +404,108 @@ function saveDisplayName() {
     localStorage.setItem('ff_user_name', name)
     ScoutDash.toast('Name saved.', 'success')
   })
+}
+
+// ── Referral code ─────────────────────────────────────────────────────────────
+function _genReferralCode() {
+  var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'  // no O/0, I/1 to avoid confusion
+  function seg() {
+    var s = ''
+    for (var i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)]
+    return s
+  }
+  return 'FRIEND-' + seg() + '-' + seg()
+}
+
+function loadReferralCode() {
+  var user = ScoutDash.getUser()
+  if (!user) return
+
+  ScoutDash.getSb()
+    .from('profiles')
+    .select('referral_code')
+    .eq('id', user.id)
+    .maybeSingle()
+    .then(function (res) {
+      var code = res.data && res.data.referral_code
+
+      if (!code) {
+        // Generate and save a new code
+        code = _genReferralCode()
+        ScoutDash.getSb()
+          .from('profiles')
+          .upsert({ id: user.id, referral_code: code }, { onConflict: 'id' })
+          .then(function (r) {
+            if (r.error) {
+              // Conflict means another code was saved first — reload
+              loadReferralCode()
+              return
+            }
+            _showReferralCode(code)
+          })
+      } else {
+        _showReferralCode(code)
+      }
+    })
+}
+
+function _showReferralCode(code) {
+  var box = document.getElementById('referralCodeBox')
+  if (box) box.textContent = code
+
+  var linkEl = document.getElementById('referralShareLink')
+  var url    = 'https://getfamilyforce.com/?ref=' + encodeURIComponent(code)
+  if (linkEl) {
+    linkEl.textContent = url
+    linkEl.style.display = 'block'
+  }
+}
+
+function copyReferralCode() {
+  var box  = document.getElementById('referralCodeBox')
+  var btn  = document.getElementById('copyReferralBtn')
+  var code = box ? box.textContent.trim() : ''
+  if (!code || code === 'Loading\u2026') return
+  navigator.clipboard.writeText(code).then(function () {
+    btn.textContent = '\u2713 Copied!'
+    btn.style.color  = '#16A34A'
+    btn.style.borderColor = '#BBF7D0'
+    setTimeout(function () {
+      btn.textContent = 'Copy code'
+      btn.style.color  = ''
+      btn.style.borderColor = ''
+    }, 2000)
+  }).catch(function () {
+    ScoutDash.toast('Could not copy. Try selecting the code manually.', 'error')
+  })
+}
+
+function shareReferralLink() {
+  var box  = document.getElementById('referralCodeBox')
+  var btn  = document.getElementById('shareReferralBtn')
+  var code = box ? box.textContent.trim() : ''
+  if (!code || code === 'Loading\u2026') return
+
+  var url  = 'https://getfamilyforce.com/?ref=' + encodeURIComponent(code)
+  var text = 'I\u2019ve been using Scout by FamilyForce to track my child\u2019s development. Use my code for 25% off: ' + url
+
+  if (navigator.share) {
+    navigator.share({ title: 'Scout by FamilyForce', text: text, url: url })
+      .catch(function () {})
+  } else {
+    navigator.clipboard.writeText(url).then(function () {
+      btn.textContent = '\u2713 Link copied!'
+      btn.style.color = '#16A34A'
+      btn.style.borderColor = '#BBF7D0'
+      setTimeout(function () {
+        btn.textContent = 'Share link'
+        btn.style.color = ''
+        btn.style.borderColor = ''
+      }, 2000)
+    }).catch(function () {
+      ScoutDash.toast('Could not copy link.', 'error')
+    })
+  }
 }
 
 // ── Sign out ──────────────────────────────────────────────────────────────────
