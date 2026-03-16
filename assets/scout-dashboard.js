@@ -256,21 +256,71 @@
     },
 
     /* ── Progress save ───────────────────────────────────────── */
+    /* ── Offline queue ───────────────────────────────────────── */
+    // Progress saves that failed while offline are queued in localStorage
+    // and flushed automatically when the connection is restored.
+    _QUEUE_KEY: 'scout_progress_queue',
+
+    _enqueue: function (payload) {
+      var q = JSON.parse(localStorage.getItem(this._QUEUE_KEY) || '[]')
+      payload._queuedAt = Date.now()
+      q.push(payload)
+      localStorage.setItem(this._QUEUE_KEY, JSON.stringify(q))
+    },
+
+    _flushQueue: function () {
+      var self = this
+      var q = JSON.parse(localStorage.getItem(self._QUEUE_KEY) || '[]')
+      if (!q.length) return
+      sb.auth.getSession().then(function (res) {
+        var tok = res.data && res.data.session && res.data.session.access_token
+        if (!tok) return
+        var remaining = []
+        var sends = q.map(function (item) {
+          return fetch(FUNCTIONS_URL + '/scout-progress', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+            body:    JSON.stringify(item),
+          }).then(function (r) { return r.json() }).then(function (d) {
+            if (!d.ok) remaining.push(item)
+          }).catch(function () { remaining.push(item) })
+        })
+        Promise.all(sends).then(function () {
+          localStorage.setItem(self._QUEUE_KEY, JSON.stringify(remaining))
+          if (remaining.length === 0 && q.length > 0)
+            console.log('[Scout] Offline queue flushed (' + q.length + ' items)')
+        })
+      })
+    },
+
     saveProgress: function (windowId, status, childId, completedDate, cb) {
       // completedDate is optional: pass null to use today (server default)
       if (typeof completedDate === 'function') { cb = completedDate; completedDate = null }
+      var self = this
+      var body = { windowId: windowId, childId: childId, status: status }
+      if (completedDate) body.completedDate = completedDate
+
+      if (!navigator.onLine) {
+        // Queue for later, treat as optimistic success
+        self._enqueue(body)
+        if (typeof cb === 'function') cb(null, { ok: true, queued: true })
+        return
+      }
+
       var session = sb.auth.getSession()
       session.then(function (res) {
         var tok = res.data && res.data.session && res.data.session.access_token
-        var body = { windowId: windowId, childId: childId, status: status }
-        if (completedDate) body.completedDate = completedDate
         fetch(FUNCTIONS_URL + '/scout-progress', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
           body: JSON.stringify(body),
         }).then(function (r) { return r.json() }).then(function (d) {
           if (typeof cb === 'function') cb(d.ok ? null : (d.error || 'Error'), d)
-        }).catch(function (e) { if (typeof cb === 'function') cb(e.message) })
+        }).catch(function () {
+          // Network failure — queue it
+          self._enqueue(body)
+          if (typeof cb === 'function') cb(null, { ok: true, queued: true })
+        })
       })
     },
 
@@ -746,6 +796,41 @@
     getChild: function () { return _child },
     getSub:   function () { return _sub },
     getSb:    function () { return sb },
+
+    /* ── IntersectionObserver — lazy card reveal ─────────────── */
+    // Cards below the fold are rendered with opacity:0 and revealed on scroll.
+    // Uses IntersectionObserver for performance; falls back gracefully.
+    initLazyCards: function () {
+      if (!('IntersectionObserver' in window)) return
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('card-visible')
+            io.unobserve(entry.target)
+          }
+        })
+      }, { rootMargin: '80px 0px', threshold: 0.01 })
+
+      document.querySelectorAll('.window-card').forEach(function (card) {
+        card.classList.add('card-lazy')
+        io.observe(card)
+      })
+    },
+
+    /* ── Init ────────────────────────────────────────────────── */
+    _init: function () {
+      var self = this
+      // Flush any queued progress saves when coming back online
+      window.addEventListener('online', function () {
+        console.log('[Scout] Back online — flushing progress queue')
+        self._flushQueue()
+      })
+      // Flush on load in case there are queued items from a previous session
+      if (navigator.onLine) self._flushQueue()
+    },
   }
+
+  // Run init
+  ScoutDash._init()
 
 })()

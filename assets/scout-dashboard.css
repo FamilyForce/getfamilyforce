@@ -818,3 +818,17 @@ input, textarea, select { font-family: var(--sans); }
   .onboarding-banner-inner { flex-direction: column; gap: 10px; }
   .onboarding-banner-close { align-self: flex-start; }
 }
+
+/* ─── Lazy card reveal (IntersectionObserver) ─────────────────── */
+/* Reduced motion: skip animation entirely */
+@media (prefers-reduced-motion: no-preference) {
+  .window-card.card-lazy {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity .25s ease, transform .3s ease;
+  }
+  .window-card.card-lazy.card-visible {
+    opacity: 1;
+    transform: none;
+  }
+}

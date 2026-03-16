@@ -328,6 +328,7 @@ function renderHome(child, sub) {
     }
     var sections = ScoutDash.sectionWindows(windows, ageW)
     renderSections(sections, windows, child, sub, ageM, name)
+    ScoutDash.initLazyCards()
     ScoutDash._updateProgressBar(windows)
     ScoutDash.wireActions(child.id, windows)
     ScoutDash.wireNotes(child.id)
