@@ -1065,7 +1065,7 @@ button { font: inherit; cursor: pointer; }
     //   that case is handled by the hash detection code below
     if (window.location.hash.indexOf('access_token') === -1) {
       window._supabaseClient.auth.getSession().then(({ data }) => {
-        if (data.session) window.location.replace('dashboard.html');
+        if (data.session) window.location.replace('scout-dashboard.html');
       });
     }
 
@@ -1771,7 +1771,7 @@ button { font: inherit; cursor: pointer; }
           // Email confirmation disabled — session available immediately
           generateAndSaveReferralCode(res.data.session.user.id, email);
           if (typeof routeAfterSignup === 'function') routeAfterSignup();
-          else window.location.href = 'dashboard.html';
+          else window.location.href = 'scout-dashboard.html';
         } else {
           // Email confirmation required — show check-your-inbox step
           var confirmAddrEl = document.getElementById('confirm-email-address');
@@ -1822,7 +1822,7 @@ button { font: inherit; cursor: pointer; }
                 : 'Monthly plan — $9.99/month. Cancel any time.';
               showStep('payment');
             } else {
-              window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+              window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
             }
           }
         });
@@ -1921,7 +1921,7 @@ button { font: inherit; cursor: pointer; }
                     routeAfterSignup();
                   } else {
                     // Returning user — go straight to dashboard
-                    window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+                    window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
                   }
                 });
             }
@@ -1945,7 +1945,7 @@ button { font: inherit; cursor: pointer; }
             if (!hasChildren) {
               routeAfterSignup();
             } else {
-              window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+              window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
             }
           });
       } else {
@@ -2006,7 +2006,7 @@ button { font: inherit; cursor: pointer; }
       currentIntent = 'trial';
       handleIntent('trial');
     } else if (intent === 'library') {
-      window.location.href = 'dashboard.html';
+      window.location.href = 'scout-dashboard.html';
     } else {
       showStep('intent');
     }
@@ -2019,7 +2019,7 @@ button { font: inherit; cursor: pointer; }
 
     if (intent === 'library') {
       // Go straight to dashboard — no intermediate screen
-      window.location.href = 'dashboard.html';
+      window.location.href = 'scout-dashboard.html';
     } else if (intent === 'trial') {
       showStep('child');
     }
@@ -2541,7 +2541,7 @@ button { font: inherit; cursor: pointer; }
 
   /* ── Success redirect ── */
   window.successRedirect = function() {
-    window.location.href = 'dashboard.html';
+    window.location.href = 'scout-dashboard.html';
   };
 
   /* ── Add another child from success screen ── */
@@ -2575,7 +2575,7 @@ button { font: inherit; cursor: pointer; }
   /* ── Hook into existing signUp success ── */
   // Override the post-signup redirect by patching showSuccess
   // The existing code calls showSuccess('Account created!') for email confirmation flow
-  // and window.location.href = 'dashboard.html' for immediate success
+  // and window.location.href = 'scout-dashboard.html' for immediate success
   // We intercept the immediate-success case and route to intent step instead
   var _origHref = Object.getOwnPropertyDescriptor(window, 'location');
   // Simpler: after signup, check if we should show routing step

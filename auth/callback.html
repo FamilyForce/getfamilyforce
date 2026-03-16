@@ -99,7 +99,7 @@
           } else if (intent === 'subscribe') {
             window.location.href = '../sign-in.html?intent=subscribe';
           } else {
-            window.location.href = next || '../dashboard.html';
+            window.location.href = next || '../scout-dashboard.html';
           }
         } else {
           throw new Error('No session found');
@@ -146,7 +146,7 @@
 
       document.getElementById('resetSuccess').style.display = 'block';
       btn.style.display = 'none';
-      setTimeout(function() { window.location.href = '../dashboard.html'; }, 1800);
+      setTimeout(function() { window.location.href = '../scout-dashboard.html'; }, 1800);
     };
 
     handleCallback();
