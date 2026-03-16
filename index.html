@@ -2,102 +2,51 @@
 <html lang="en">
 <head>
 <!-- ═══════════════════════════════════════════════════════════
-     FAMILYFORCE HOMEPAGE v2 - Dad-focused redesign
-     Stack: Vanilla HTML/CSS/JS (zero dependencies, no build step)
-     Accessibility: WCAG 2.1 AA compliant
+     FAMILYFORCE SCOUT — v3 Design Mock-up
+     Concept: Airbnb early-days — make Scout the obvious choice
+     Designer brief: convince exhausted new parents in 5 scrolls
+     Stack: Vanilla HTML/CSS/JS · zero dependencies
      ═══════════════════════════════════════════════════════════ -->
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
-
-<title>FamilyForce: Be the Dad Who Actually Did the Reading</title>
-<meta name="description" content="Research-backed parenting playbooks for dads. Read in under an hour, take the quiz, earn your certificate. Start free.">
-<link rel="canonical" href="https://getfamilyforce.com">
-
-<meta property="og:type" content="website">
-<meta property="og:title" content="FamilyForce: Be the Dad Who Actually Did the Reading">
-<meta property="og:description" content="Research-backed parenting playbooks for dads. Read in under an hour, take the quiz, earn your certificate.">
-<meta property="og:url" content="https://getfamilyforce.com">
-<meta property="og:site_name" content="FamilyForce">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="FamilyForce: Be the Dad Who Actually Did the Reading">
-
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#6E4ED6">
+<title>FamilyForce Scout: Know what your child needs. Right now.</title>
+<meta name="description" content="The first three years have critical windows. Scout tells you what's open, what's closing, and what to do, for your child's exact age. 1 month free.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 
 <style>
 /* ─── TOKENS ─── */
 :root {
-  --bg: #FAFAFA;
-  --surface: #FFFFFF;
-  --elevated: #F4F0FC;
-  --border: #E5E2EC;
+  --bg:           #FAFAFA;
+  --surface:      #FFFFFF;
+  --border:       #E5E2EC;
   --border-light: #EDEBF2;
-  --text: #1D1D1F;
-  --text-mid: #5C5960;
-  --text-dim: #8A879A;
-  --text-ghost: #C2BFD0;
-  --terra: #6E4ED6;
-  --terra-dark: #5B3CC4;
-  --terra-bright: #7C5CFC;
-  --terra-glow: rgba(110,78,214,.06);
-  --indigo-deep: #1E1248;
-  --sans: 'Outfit', system-ui, sans-serif;
-  --serif: 'Instrument Serif', Georgia, serif;
-  --space-x: clamp(20px, 5vw, 72px);
-  --radius-card: 16px;
-  --radius-pill: 100px;
-  --ease: cubic-bezier(.16,1,.3,1);
+  --text:         #1D1D1F;
+  --text-mid:     #5C5960;
+  --text-dim:     #8A879A;
+  --terra:        #6E4ED6;
+  --terra-dark:   #5B3CC4;
+  --terra-tint:   #F0EBFF;
+  --indigo-deep:  #1E1248;
+  --sans:         'Outfit', system-ui, sans-serif;
+  --serif:        'Instrument Serif', Georgia, serif;
+  --rx:           clamp(20px, 5vw, 64px);
+  --max:          1100px;
 }
-
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
-img { max-width: 100%; display: block; }
-a { color: inherit; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
 ::selection { background: rgba(110,78,214,.15); }
-
-/* ─── FOCUS ─── */
 :focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; border-radius: 4px; }
-
-/* ─── DOWNLOAD BAR ─── */
-.dl-bar {
-  height: 36px;
-  background: var(--indigo-deep);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(255,255,255,.85);
-  letter-spacing: .04em;
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1001;
-}
-.dl-bar-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: #9B80FF;
-  animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.7)} }
-.dl-bar a { color: rgba(255,255,255,.7); text-decoration: underline; text-underline-offset: 2px; margin-left: 4px; }
-@media (hover:hover) { .dl-bar a:hover { color: #fff; } }
 
 /* ─── NAV ─── */
 .nav {
   position: fixed;
-  top: 36px; left: 0; right: 0;
+  top: 0; left: 0; right: 0;
   z-index: 1000;
   background: rgba(250,250,250,.92);
   backdrop-filter: blur(20px);
@@ -107,7 +56,7 @@ a { color: inherit; }
 .nav-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 var(--space-x);
+  padding: 0 var(--rx);
   height: 72px;
   display: flex;
   align-items: center;
@@ -129,8 +78,8 @@ a { color: inherit; }
 .logo-s { color: var(--terra); }
 .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
 .nav-links a { font-size: 14px; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: color .2s; }
-.nav-links a.btn-nav { color: #fff; }
-@media (hover:hover) { .nav-links a:hover { color: var(--terra); } .nav-links a.btn-nav:hover { color: #fff; } }
+.nav-links a.active { color: var(--terra); font-weight: 700; }
+@media (hover:hover) { .nav-links a:hover { color: var(--terra); } }
 .btn-nav {
   background: var(--terra);
   color: #fff;
@@ -138,7 +87,7 @@ a { color: inherit; }
   font-size: 13px;
   font-weight: 700;
   padding: 10px 20px;
-  border-radius: var(--radius-pill);
+  border-radius: 100px;
   border: none;
   cursor: pointer;
   text-decoration: none;
@@ -146,6 +95,7 @@ a { color: inherit; }
   align-items: center;
   transition: background .2s, transform .2s;
   letter-spacing: .01em;
+  white-space: nowrap;
 }
 @media (hover:hover) { .btn-nav:hover { background: var(--terra-dark); transform: translateY(-1px); } }
 @media (max-width: 640px) { .nav-links { display: none; } .btn-nav { display: none; } }
@@ -172,7 +122,6 @@ a { color: inherit; }
 .hamburger span:nth-child(1) { width: 20px; }
 .hamburger span:nth-child(2) { width: 14px; }
 @media (max-width: 640px) { .hamburger { display: flex; } }
-
 .mobile-menu {
   position: fixed;
   inset: 0;
@@ -189,48 +138,21 @@ a { color: inherit; }
   transition: opacity .25s, visibility .25s, transform .3s;
   pointer-events: none;
 }
-.mobile-menu.open {
-  opacity: 1;
-  visibility: visible;
-  transform: none;
-  pointer-events: auto;
-}
+.mobile-menu.open { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
 .mobile-menu-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 64px;
-  padding: 0 20px;
-  border-bottom: 1px solid var(--border-light);
+  display: flex; justify-content: space-between; align-items: center;
+  height: 64px; padding: 0 20px; border-bottom: 1px solid var(--border-light);
 }
 .mobile-menu-close {
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: var(--text-dim);
-  width: 44px; height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-radius: 8px;
+  background: none; border: none; font-size: 18px; color: var(--text-dim);
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: 8px;
 }
-.mobile-menu-links {
-  flex: 1;
-  padding: 20px;
-  list-style: none;
-}
+.mobile-menu-links { flex: 1; padding: 20px; list-style: none; }
 .mobile-menu-links li a {
-  display: flex;
-  align-items: center;
-  min-height: 56px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border-light);
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--text);
-  text-decoration: none;
-  font-family: var(--sans);
+  display: flex; align-items: center; min-height: 56px; padding: 12px 0;
+  border-bottom: 1px solid var(--border-light); font-size: 18px; font-weight: 500;
+  color: var(--text); text-decoration: none; font-family: var(--sans);
 }
 .mobile-menu-links li:last-child a { border-bottom: none; }
 .mobile-menu-cta {
@@ -238,995 +160,511 @@ a { color: inherit; }
   padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
 }
 .mobile-menu-cta a {
-  display: block;
-  text-align: center;
-  background: var(--terra);
-  color: #fff;
-  padding: 16px;
-  border-radius: var(--radius-pill);
-  font-weight: 700;
-  font-size: 16px;
-  text-decoration: none;
-  font-family: var(--sans);
+  display: block; text-align: center; background: var(--terra); color: #fff;
+  padding: 16px; border-radius: 100px; font-weight: 700; font-size: 16px;
+  text-decoration: none; font-family: var(--sans);
 }
-
-/* ─── LAYOUT UTILS ─── */
-.wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-x); }
-.section { padding: 100px 0; }
-.section-sm { padding: 72px 0; }
-.divider { height: 1px; background: var(--border-light); margin: 0 auto; }
-.label {
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--terra-dark);
-}
-.heading {
-  font-family: var(--serif);
-  font-size: clamp(32px, 5vw, 52px);
-  line-height: 1.1;
-  letter-spacing: -.025em;
-  color: var(--text);
-}
-.heading-md {
-  font-family: var(--serif);
-  font-size: clamp(24px, 3.5vw, 36px);
-  line-height: 1.2;
-  letter-spacing: -.02em;
-  color: var(--text);
-}
-.body-text { font-size: 16px; line-height: 1.8; color: var(--text-mid); }
-
-/* ─── BUTTONS ─── */
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--terra);
-  color: #fff;
-  font-family: var(--sans);
-  font-size: 15px;
-  font-weight: 700;
-  padding: 16px 32px;
-  border-radius: var(--radius-pill);
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  transition: background .2s, transform .2s, box-shadow .2s;
-  letter-spacing: .01em;
-  white-space: nowrap;
-}
-@media (hover:hover) { .btn-primary:hover { background: var(--terra-dark); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(110,78,214,.35); } }
-.btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: transparent;
-  color: var(--terra);
-  font-family: var(--sans);
-  font-size: 15px;
-  font-weight: 600;
-  padding: 14px 28px;
-  border-radius: var(--radius-pill);
-  border: 1.5px solid var(--terra);
-  cursor: pointer;
-  text-decoration: none;
-  transition: background .2s, transform .2s;
-  white-space: nowrap;
-}
-@media (hover:hover) { .btn-secondary:hover { background: var(--terra-glow); transform: translateY(-1px); } }
-.btn-ghost {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: transparent;
-  color: var(--text-dim);
-  font-family: var(--sans);
-  font-size: 14px;
-  font-weight: 500;
-  padding: 10px 0;
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  transition: color .2s;
-}
-@media (hover:hover) { .btn-ghost:hover { color: var(--terra); } }
 
 /* ─── HERO ─── */
 .hero {
-  padding: calc(36px + 72px + 80px) var(--space-x) 100px;
-  background: linear-gradient(160deg, #F5F2FF 0%, #FAFAFA 55%);
-  position: relative;
-  overflow: hidden;
+  padding: calc(72px + 56px) var(--rx) 64px;
+  background: linear-gradient(160deg, var(--indigo-deep) 0%, #2D1A7A 50%, #4A2EA8 100%);
+  text-align: center; position: relative; overflow: hidden;
 }
 .hero::before {
-  content: '';
-  position: absolute;
-  top: -200px; right: -200px;
-  width: 700px; height: 700px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(110,78,214,.08) 0%, transparent 70%);
+  content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+  width: min(900px, 120vw); height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,252,.2) 0%, transparent 70%);
   pointer-events: none;
 }
-.hero-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 64px;
-  align-items: center;
+.hero-inner { max-width: var(--max); margin: 0 auto; position: relative; z-index: 1; }
+.hero-kicker {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #6E4ED6, #9B80FF, #7C5CFC, #6E4ED6);
+  background-size: 300% 100%;
+  animation: kicker-shimmer 3s ease infinite;
+  border-radius: 100px; padding: 7px 18px;
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: #fff; margin-bottom: 24px;
+  box-shadow: 0 0 32px rgba(124,92,252,.55), 0 0 0 1px rgba(167,139,255,.3);
 }
-.hero-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(110,78,214,.08);
-  border: 1px solid rgba(110,78,214,.15);
-  border-radius: var(--radius-pill);
-  padding: 6px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--terra-dark);
-  margin-bottom: 24px;
+@keyframes kicker-shimmer {
+  0%,100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
 }
-.hero-title {
-  font-family: var(--serif);
-  font-size: clamp(38px, 6vw, 68px);
-  line-height: 1.08;
-  letter-spacing: -.03em;
-  color: var(--text);
-  margin-bottom: 20px;
+.hero-kicker-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(255,255,255,.9);
+  position: relative; flex-shrink: 0;
 }
-.hero-title em { font-style: italic; color: var(--terra); }
+.hero-kicker-dot::after {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  background: rgba(255,255,255,.45);
+  animation: kicker-pulse 1.6s ease-out infinite;
+}
+@keyframes kicker-pulse {
+  0%   { transform: scale(1); opacity: .8; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+.hero-h1 {
+  font-family: var(--serif); font-size: clamp(32px, 6vw, 60px);
+  line-height: 1.08; letter-spacing: -.03em; color: #fff; margin-bottom: 16px;
+}
+.hero-h1 em { font-style: italic; color: #A78BFF; }
 .hero-sub {
-  font-size: 18px;
-  line-height: 1.7;
-  color: var(--text-mid);
-  max-width: 520px;
-  margin-bottom: 36px;
-  font-weight: 400;
+  font-size: clamp(15px, 2.5vw, 18px); line-height: 1.7;
+  color: rgba(255,255,255,.65); max-width: 520px;
+  margin: 0 auto 40px;
 }
-.hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 48px; }
-.hero-meta {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
-}
-.hero-stat {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  color: var(--text-dim);
-  font-weight: 500;
-}
-.hero-stat-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text-ghost); }
 
-/* Hero visual — Jack placeholder */
-.hero-visual {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Widget container */
+.hero-widget-wrap {
+  max-width: 520px; margin: 0 auto 32px;
+  border-radius: 24px; overflow: hidden;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 40px 100px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.05);
 }
-/* ─── PRODUCT MOCKUP (replaces hero photo) ─── */
-.hero-mockup {
-  width: 100%;
-  height: 100%;
-  background: #fff;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 24px 64px rgba(110,78,214,.18), 0 4px 16px rgba(0,0,0,.08);
-  display: flex;
-  flex-direction: column;
-  border: 1px solid var(--border-light);
+.hero-trust {
+  display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap;
+  font-size: 12px; color: rgba(255,255,255,.45); font-weight: 500;
 }
-.mockup-chrome {
-  background: #F3F0FF;
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border-bottom: 1px solid var(--border-light);
+.hero-trust-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.25); }
+
+/* ── Widget internals ── */
+.w-header { padding: 22px 22px 14px; }
+.w-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: #A78BFF; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.w-title {
+  font-family: var(--serif); font-size: 20px; line-height: 1.25;
+  color: #fff; letter-spacing: -.015em;
+}
+.w-title em { font-style: italic; color: #A78BFF; }
+.w-personas {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 7px; padding: 0 22px 14px;
+}
+.w-persona {
+  background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12);
+  border-radius: 14px; padding: 11px 8px; text-align: center;
+  cursor: pointer; transition: all .2s; user-select: none;
+}
+.w-persona:hover { background: rgba(255,255,255,.12); }
+.w-persona.active {
+  background: rgba(167,139,255,.18); border-color: #A78BFF;
+}
+.w-persona-icon { font-size: 20px; display: block; margin-bottom: 5px; }
+.w-persona-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.88); display: block; line-height: 1.3; }
+.w-persona.active .w-persona-label { color: #C4B5FD; }
+.w-persona-sub { font-size: 10px; color: rgba(255,255,255,.38); display: block; margin-top: 2px; }
+.w-persona.active .w-persona-sub { color: rgba(167,139,255,.6); }
+.w-divider { height: 1px; background: rgba(255,255,255,.08); }
+.w-stage-row { padding: 11px 22px 7px; display: flex; align-items: center; gap: 9px; }
+.w-stage-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(167,139,255,.15); border: 1px solid rgba(167,139,255,.25);
+  border-radius: 100px; padding: 4px 11px;
+  font-size: 11px; font-weight: 700; color: #C4B5FD;
+}
+.w-stage-dot { width: 5px; height: 5px; border-radius: 50%; background: #A78BFF; flex-shrink: 0; }
+.w-stage-desc { font-size: 11px; color: rgba(255,255,255,.38); }
+.w-windows { padding: 2px 14px 6px; display: flex; flex-direction: column; gap: 5px; }
+.w-row {
+  display: flex; gap: 10px; align-items: flex-start;
+  border-radius: 11px; padding: 10px 11px;
+}
+.w-row.urgent { background: rgba(251,191,36,.1);  border: 1px solid rgba(251,191,36,.2); }
+.w-row.open   { background: rgba(167,139,255,.1); border: 1px solid rgba(167,139,255,.16); }
+.w-row.closed { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); opacity: .55; }
+.w-row.coming { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); }
+.w-row-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+.w-row-body { flex: 1; min-width: 0; }
+.w-row-tag { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
+.w-row.urgent .w-row-tag { color: #FBBF24; }
+.w-row.open   .w-row-tag { color: #A78BFF; }
+.w-row.closed .w-row-tag, .w-row.coming .w-row-tag { color: rgba(255,255,255,.3); }
+.w-row-title { font-size: 12.5px; font-weight: 700; line-height: 1.3; margin-bottom: 1px; }
+.w-row.closed .w-row-title { color: rgba(255,255,255,.38); }
+.w-row:not(.closed) .w-row-title { color: #fff; }
+.w-row-desc { font-size: 11px; line-height: 1.5; }
+.w-row.closed .w-row-desc { color: rgba(255,255,255,.25); }
+.w-row:not(.closed) .w-row-desc { color: rgba(255,255,255,.52); }
+.w-row-badge {
+  flex-shrink: 0; font-size: 9.5px; font-weight: 700; padding: 3px 8px;
+  border-radius: 100px; white-space: nowrap; align-self: flex-start; margin-top: 1px;
+}
+.w-row.urgent .w-row-badge { background: rgba(251,191,36,.15); color: #FBBF24; border: 1px solid rgba(251,191,36,.25); }
+.w-row.open   .w-row-badge { background: rgba(167,139,255,.18); color: #C4B5FD; border: 1px solid rgba(167,139,255,.25); }
+.w-row.closed .w-row-badge, .w-row.coming .w-row-badge { background: rgba(255,255,255,.05); color: rgba(255,255,255,.3); border: 1px solid rgba(255,255,255,.08); }
+.w-cta {
+  padding: 14px 16px 18px; border-top: 1px solid rgba(255,255,255,.09); margin-top: 5px;
+  display: flex; flex-direction: column; gap: 7px;
+}
+.w-cta-btn {
+  display: block; width: 100%; text-align: center;
+  background: #fff; color: var(--terra-dark);
+  font-family: var(--sans); font-size: 14px; font-weight: 700;
+  padding: 13px; border-radius: 100px; cursor: pointer; border: none;
+  transition: transform .15s, box-shadow .15s;
+}
+@media (hover:hover) { .w-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.3); } }
+.w-cta-note { text-align: center; font-size: 10.5px; color: rgba(255,255,255,.28); }
+
+/* ═══════════════════════════════
+   MOBILE / TABLET RESPONSIVE
+   Breakpoints: 900px (tablet), 640px (phone landscape), 480px (phone)
+   ═══════════════════════════════ */
+
+/* Hero — phone */
+@media (max-width: 640px) {
+  .hero { padding-top: calc(56px + 48px); padding-bottom: 48px; }
+  .hero::before { width: 120vw; height: 300px; top: -80px; }
+  .hero-h1 { font-size: 30px; letter-spacing: -.02em; }
+  .hero-h1 br { display: none; }
+  .hero-sub { font-size: 15px; max-width: 100%; }
+  .hero-trust { gap: 4px 8px; }
+  .hero-trust-dot { display: none; }
+}
+
+/* Widget personas — very small screens */
+@media (max-width: 360px) {
+  .w-personas { grid-template-columns: 1fr; }
+  .w-persona { display: flex; align-items: center; gap: 10px; text-align: left; padding: 10px 14px; }
+  .w-persona-icon { font-size: 22px; margin-bottom: 0; flex-shrink: 0; }
+}
+
+/* How Scout Works — device cards */
+@media (max-width: 640px) {
+  .how { padding: 64px var(--rx) 72px; }
+  .how-header { margin-bottom: 40px; }
+  .device-row { flex-direction: column; align-items: stretch; }
+  .device-card { max-width: 100%; }
+}
+
+/* Three Things / Comparison / Stats — tablet */
+@media (max-width: 900px) {
+  .three-things { padding: 64px var(--rx) 72px; }
+  .comparison { padding: 64px var(--rx) 72px; }
+  .stats-section { padding: 64px var(--rx) 72px; }
+  .stats-header { margin-bottom: 40px; }
+  .stat-number { font-size: clamp(48px, 12vw, 72px); }
+}
+
+/* Comparison grid — tablet 2-col, phone 1-col */
+@media (max-width: 900px) {
+  .comp-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 540px) {
+  .comp-grid { grid-template-columns: 1fr; max-width: 420px; }
+}
+
+/* Testimonials */
+@media (max-width: 640px) {
+  .testimonials-grid { max-width: 100% !important; }
+}
+
+/* Gift section */
+@media (max-width: 640px) {
+  .gift-cards { gap: 12px; }
+  .gift-ctas { flex-direction: column; align-items: stretch; }
+  .gift-ctas a, .gift-ctas button { width: 100%; text-align: center; }
+}
+
+/* About Jack (The Dad Behind It) */
+@media (max-width: 900px) {
+  .about-jack-inner { grid-template-columns: 1fr; gap: 40px; }
+  .course-mockup { max-width: 480px; margin: 0 auto; }
+}
+@media (max-width: 640px) {
+  .about-jack { padding: 64px var(--rx) 72px; }
+  .sons-table { font-size: 12px; }
+  .sons-row { padding: 9px 12px; }
+  .sons-cell { font-size: 12px; }
+  .about-jack-creds { gap: 10px 20px; }
+}
+
+/* Library grid — phone 1-col */
+@media (max-width: 440px) {
+  .library-grid { grid-template-columns: 1fr !important; max-width: 320px; margin-left: auto; margin-right: auto; }
+}
+
+/* Final CTA */
+@media (max-width: 640px) {
+  .final { padding: 72px var(--rx); }
+  .final-btn { display: block; width: 100%; text-align: center; padding: 17px 24px; }
+  .final-trust { flex-direction: column; gap: 10px; }
+  .final-trust .hero-trust-dot { display: none; }
+}
+
+/* General section padding — phone */
+@media (max-width: 640px) {
+  .how, .three-things, .comparison, .stats-section,
+  .testimonials, .gift-section, .about-jack, .library-section { padding-top: 64px; padding-bottom: 64px; }
+  .section-title { margin-bottom: 32px; }
+  .steps-grid { margin-bottom: 40px; }
+  .stats-header { margin-bottom: 32px; }
+}
+
+/* ═══════════════════════════════ */
+
+/* ─── THREE THINGS ─── */
+.three-things {
+  padding: 88px var(--rx) 80px; background: var(--bg);
+}
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--terra); margin-bottom: 14px; display: block;
+}
+.section-title {
+  font-family: var(--serif); font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.1; letter-spacing: -.025em; color: var(--text);
+  margin-bottom: 48px;
+}
+.section-title em { font-style: italic; color: var(--terra); }
+.three-grid {
+  max-width: var(--max); margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+}
+.thing-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px 24px 32px;
+  position: relative; overflow: hidden;
+}
+.thing-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--terra);
+}
+.thing-num {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--terra); margin-bottom: 16px; display: block; opacity: .6;
+}
+.thing-icon { font-size: 36px; margin-bottom: 16px; display: block; }
+.thing-title {
+  font-family: var(--serif); font-size: 22px; line-height: 1.2;
+  letter-spacing: -.015em; margin-bottom: 12px; color: var(--text);
+}
+.thing-body { font-size: 14px; line-height: 1.75; color: var(--text-mid); }
+.thing-body strong { color: var(--text); font-weight: 600; }
+@media (max-width: 780px) {
+  .three-grid { grid-template-columns: 1fr; max-width: 480px; }
+}
+
+/* ─── COMPARISON ─── */
+.comparison {
+  padding: 88px var(--rx) 96px;
+  background: linear-gradient(180deg, #F7F4FF 0%, var(--bg) 100%);
+}
+.comparison-intro { max-width: var(--max); margin: 0 auto 48px; }
+.comparison-title {
+  font-family: var(--serif); font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.1; letter-spacing: -.025em; color: var(--text);
+  margin-bottom: 14px;
+}
+.comparison-title em { font-style: italic; color: var(--terra); }
+.comparison-sub { font-size: 16px; line-height: 1.7; color: var(--text-mid); max-width: 560px; }
+
+/* Cards grid */
+.comp-grid {
+  max-width: var(--max); margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+  align-items: stretch;
+}
+.comp-card {
+  border-radius: 20px; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.comp-card.alt { background: var(--surface); border: 1px solid var(--border); }
+.comp-card.scout { background: var(--indigo-deep); box-shadow: 0 20px 60px rgba(30,18,72,.3); }
+
+.comp-head {
+  padding: 22px 20px 18px;
+  border-bottom: 1px solid;
+}
+.comp-card.alt .comp-head { border-color: var(--border); }
+.comp-card.scout .comp-head { border-color: rgba(255,255,255,.12); }
+
+.comp-badge {
+  font-size: 9.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 100px; margin-bottom: 12px; display: inline-block;
+}
+.comp-card.alt .comp-badge { background: #F0EBFF; color: #5B3CC4; }
+.comp-card.scout .comp-badge { background: rgba(167,139,255,.25); color: #C4B5FD; border: 1px solid rgba(167,139,255,.3); }
+
+.comp-option {
+  font-size: 16px; font-weight: 800; letter-spacing: -.01em; margin-bottom: 6px;
+}
+.comp-card.alt .comp-option { color: var(--text); }
+.comp-card.scout .comp-option { color: #fff; }
+
+.comp-option-icon { font-size: 24px; display: block; margin-bottom: 10px; }
+
+.comp-cost {
+  font-size: 13px; font-weight: 500;
+}
+.comp-card.alt .comp-cost { color: var(--text-mid); }
+.comp-card.scout .comp-cost { color: rgba(255,255,255,.65); }
+
+.comp-cost strong {
+  font-size: 20px; font-weight: 800; letter-spacing: -.02em; display: block; margin-bottom: 2px;
+}
+.comp-card.alt .comp-cost strong { color: var(--text); }
+.comp-card.scout .comp-cost strong { color: #fff; }
+
+.comp-pain {
+  padding: 14px 20px; font-size: 13px; line-height: 1.6;
+  flex: 1;
+}
+.comp-card.alt .comp-pain { color: var(--text-mid); border-bottom: 1px solid var(--border); }
+.comp-card.scout .comp-pain { color: rgba(255,255,255,.65); border-bottom: 1px solid rgba(255,255,255,.1); }
+
+.comp-rows { padding: 8px 0 0; }
+.comp-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 20px;
+  font-size: 13px;
+  border-bottom: 1px solid;
+}
+.comp-row:last-child { border-bottom: none; }
+.comp-card.alt .comp-row { border-color: var(--border-light); color: var(--text-mid); }
+.comp-card.scout .comp-row { border-color: rgba(255,255,255,.07); color: rgba(255,255,255,.75); }
+
+.comp-check {
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.mockup-dots { display: flex; gap: 5px; }
-.mockup-dots span { width: 10px; height: 10px; border-radius: 50%; display: block; }
-.mockup-dots span:nth-child(1) { background: #FF5F57; }
-.mockup-dots span:nth-child(2) { background: #FFBD2E; }
-.mockup-dots span:nth-child(3) { background: #28CA41; }
-.mockup-url { font-size: 11px; font-weight: 600; color: var(--text-dim); background: rgba(255,255,255,.7); padding: 4px 10px; border-radius: 6px; flex: 1; text-align: center; letter-spacing: .01em; }
-.mockup-body { flex: 1; overflow: hidden; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; background: #F8F7FF; }
-.mkp-progress-meta { display: flex; justify-content: space-between; font-size: 10px; font-weight: 600; color: var(--text-dim); margin-bottom: 4px; }
-.mkp-bar { height: 4px; background: var(--terra-tint); border-radius: 99px; overflow: hidden; margin-bottom: 8px; }
-.mkp-bar-fill { height: 100%; background: var(--terra); border-radius: 99px; }
-.mkp-roadmap { display: flex; gap: 5px; margin-bottom: 2px; }
-.mkp-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--terra-tint); font-size: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1.5px solid transparent; }
-.mkp-dot.done { background: #F0FDF4; border-color: #86efac; font-size: 8px; }
-.mkp-dot.current { background: var(--terra-tint); border-color: var(--terra); box-shadow: 0 0 0 2px rgba(110,78,214,.15); }
-.mkp-card { background: #fff; border-radius: 12px; padding: 12px 14px; flex: 1; border: 1px solid var(--border-light); box-shadow: 0 1px 6px rgba(110,78,214,.06); display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
-.mkp-eyebrow { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); }
-.mkp-story { border-left: 2px solid rgba(110,78,214,.25); padding: 6px 10px; background: rgba(248,247,255,.8); border-radius: 0 6px 6px 0; }
-.mkp-story p { font-size: 10px; line-height: 1.6; color: var(--text); font-style: italic; margin: 0; }
-.mkp-science { background: var(--terra-tint); border-radius: 6px; padding: 7px 10px; }
-.mkp-science p { font-size: 10px; line-height: 1.55; color: var(--text); margin: 0; }
-.mkp-science-lbl { font-size: 8px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); margin-bottom: 3px; }
-.mkp-question { border-top: 1px solid var(--border-light); padding-top: 8px; margin-top: auto; }
-.mkp-q-lbl { font-size: 8px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); margin-bottom: 5px; }
-.mkp-q-text { font-size: 10px; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 6px; }
-.mkp-option { font-size: 10px; padding: 5px 8px; border-radius: 5px; border: 1.5px solid var(--border); color: var(--text); margin-bottom: 4px; line-height: 1.4; }
-.mkp-option.correct { border-color: #86efac; background: #F0FDF4; color: #166534; font-weight: 600; }
-.mkp-try { background: #F0FDF4; border: 1.5px solid #86efac; border-radius: 6px; padding: 6px 8px; }
-.mkp-try-lbl { font-size: 8px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #16a34a; margin-bottom: 2px; }
-.mkp-try-text { font-size: 9px; color: #166534; font-weight: 500; line-height: 1.4; }
+.comp-check.yes { background: rgba(110,78,214,.12); }
+.comp-check.no  { background: rgba(0,0,0,.05); }
+.comp-card.scout .comp-check.yes { background: rgba(167,139,255,.25); }
+.comp-card.scout .comp-check.no  { background: rgba(255,255,255,.07); }
 
-.hero-photo-wrap {
-  width: 380px;
-  height: 480px;
-  border-radius: 24px;
-  background: transparent;
-  position: relative;
-  overflow: visible;
-  box-shadow: none;
+.comp-card .comp-footer {
+  padding: 16px 20px;
 }
-/* Hero photo */
-.hero-photo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
+.comp-card.alt .comp-footer { background: #FAFAFA; border-top: 1px solid var(--border); }
+.comp-card.scout .comp-footer { border-top: 1px solid rgba(255,255,255,.1); }
+
+.comp-footer-line {
+  font-size: 12px; font-weight: 600;
+}
+.comp-card.alt .comp-footer-line { color: var(--terra); }
+.comp-card.scout .comp-footer-line { color: #A78BFF; }
+
+/* ─── STATS SECTION ─── */
+.stats-section {
+  padding: 88px var(--rx) 96px;
+  background: var(--indigo-deep);
+}
+.stats-inner {
+  max-width: var(--max);
+  margin: 0 auto;
+}
+.stats-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.stats-header .section-label {
+  color: rgba(255,255,255,.45);
+  margin-bottom: 14px;
   display: block;
 }
-.hero-photo-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(0,0,0,0) 50%,
-    rgba(20,10,50,.45) 100%
-  );
-  pointer-events: none;
+.stats-header h2 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.15;
+  letter-spacing: -.025em;
+  color: #fff;
+  margin-bottom: 14px;
 }
-.hpc-avatar {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: rgba(110,78,214,.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-  border: 2px solid rgba(110,78,214,.2);
+.stats-header h2 em { font-style: italic; color: #A78BFF; }
+.stats-header p {
+  font-size: 16px;
+  color: rgba(255,255,255,.5);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.7;
 }
-.hpc-name {
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--terra-dark);
-  margin-bottom: 3px;
-}
-.hpc-title {
-  font-size: 12px;
-  color: var(--text-dim);
-  font-style: italic;
-  margin-bottom: 18px;
-}
-.hpc-score-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(110,78,214,.1);
-  border-radius: 100px;
-  padding: 6px 16px;
-  margin-bottom: 20px;
-}
-.hpc-score-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: var(--terra-dark);
-}
-.hpc-score-val {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--terra);
-  line-height: 1;
-}
-.hpc-badges-label {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 10px;
-}
-.hpc-badges {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 18px;
-}
-.hpc-badge {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.hpc-badge.earned  { background: var(--terra); }
-.hpc-badge.locked  { background: rgba(110,78,214,.12); }
-.hpc-cert {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 8px 14px;
-  font-size: 12px;
-  color: var(--text-mid);
-  font-weight: 500;
-  box-shadow: 0 2px 8px rgba(110,78,214,.08);
-}
-
-/* Floating cert badge on hero */
-.hero-cert-badge {
-  position: absolute;
-  bottom: -16px;
-  left: -32px;
-  background: var(--surface);
-  border-radius: 14px;
-  padding: 14px 18px;
-  box-shadow: 0 16px 48px rgba(0,0,0,.12);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 220px;
-  animation: float 4s ease-in-out infinite;
-}
-@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-.hero-cert-icon {
-  width: 40px; height: 40px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #1E1248, #4A2EA8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.hero-cert-text { display: flex; flex-direction: column; gap: 2px; }
-.hero-cert-text strong { font-size: 13px; font-weight: 700; color: var(--text); }
-.hero-cert-text span { font-size: 11px; color: var(--text-dim); }
-
-/* FamilyForce score badge */
-.hero-ff-badge {
-  position: absolute;
-  top: 24px;
-  right: -24px;
-  background: var(--indigo-deep);
-  border-radius: 14px;
-  padding: 12px 16px;
-  box-shadow: 0 12px 32px rgba(0,0,0,.2);
-  text-align: center;
-  min-width: 100px;
-}
-.hero-ff-badge-label { font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: rgba(255,255,255,.5); margin-bottom: 4px; }
-.hero-ff-badge-value { font-family: var(--serif); font-size: 28px; color: #9B80FF; line-height: 1; }
-.hero-ff-badge-sub { font-size: 10px; color: rgba(255,255,255,.45); margin-top: 3px; }
-
-@media (max-width: 900px) {
-  .hero { padding-top: calc(72px + 36px); padding-bottom: 64px; }
-  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
-  .hero-visual { order: 1; }
-  .hero-photo-wrap { width: 100%; height: 300px; }
-  .hero-cert-badge { left: 16px; bottom: -20px; }
-  .hero-ff-badge { right: 16px; top: 16px; }
-}
-
-/* ─── HOW IT WORKS ─── */
-.steps-grid {
+.stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2px;
-  background: var(--border-light);
   border-radius: 20px;
   overflow: hidden;
-  margin-top: 56px;
 }
-.step-card {
-  background: var(--surface);
-  padding: 48px 40px;
-  position: relative;
+.stat-card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  padding: 44px 36px;
 }
-.step-number {
-  font-family: var(--serif);
-  font-size: 64px;
-  line-height: 1;
-  color: rgba(110,78,214,.1);
-  position: absolute;
-  top: 24px;
-  right: 28px;
-  font-style: italic;
+.stat-card + .stat-card {
+  border-left: none;
 }
-.step-icon {
-  width: 52px; height: 52px;
-  background: var(--elevated);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-.step-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
-.step-body { font-size: 15px; line-height: 1.75; color: var(--text-mid); }
-@media (max-width: 760px) {
-  .steps-grid { grid-template-columns: 1fr; }
-}
-
-/* ─── FAMILYFORCE BADGE GRID ─── */
-.ff-section {
-  background: linear-gradient(160deg, var(--indigo-deep) 0%, #2D1B69 60%, #3D2580 100%);
-  padding: 100px 0;
-  position: relative;
-  overflow: hidden;
-}
-.ff-section::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 80% 20%, rgba(155,128,255,.15) 0%, transparent 60%);
-  pointer-events: none;
-}
-.ff-label { color: rgba(155,128,255,.8); }
-.ff-heading { color: #FFFFFF; margin-bottom: 16px; }
-.ff-sub { color: rgba(255,255,255,.6); font-size: 17px; line-height: 1.7; max-width: 560px; margin-bottom: 56px; }
-.badge-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
-  margin-bottom: 32px;
-}
-.badge-card {
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 16px;
-  padding: 28px 20px;
-  text-align: center;
-  transition: background .2s, transform .2s;
-  cursor: default;
-}
-@media (hover:hover) { .badge-card.earned:hover { background: rgba(255,255,255,.1); transform: translateY(-4px); } }
-.badge-card.locked { opacity: .4; }
-
-/* FREE sticker */
-.badge-card { position: relative; }
-.badge-free-sticker {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #22C55E;
-  color: #fff;
-  font-size: 9px;
+.stat-number {
+  font-family: var(--display);
+  font-size: clamp(56px, 8vw, 88px);
   font-weight: 800;
-  letter-spacing: .12em;
-  padding: 3px 7px;
-  border-radius: 100px;
-  text-transform: uppercase;
+  color: #A78BFF;
   line-height: 1;
+  margin-bottom: 18px;
+  letter-spacing: -.03em;
 }
-
-/* Coming soon cards */
-.badge-grid--coming { margin-top: 0; margin-bottom: 0; }
-.badge-card.coming {
-  opacity: .35;
-  cursor: default;
-  pointer-events: none;
-}
-.badge-card.coming .badge-icon {
-  background: rgba(255,255,255,.06);
-  color: rgba(255,255,255,.4);
-}
-.badge-card.coming .badge-name { color: rgba(255,255,255,.5); }
-.badge-card.coming .badge-topic { color: rgba(255,255,255,.25); }
-.badge-icon {
-  width: 56px; height: 56px;
-  border-radius: 50%;
-  margin: 0 auto 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-}
-.badge-card.earned .badge-icon { background: linear-gradient(135deg, #7C5CFC, #9B80FF); }
-.badge-card.locked .badge-icon { background: rgba(255,255,255,.08); }
-.badge-name { font-size: 13px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px; }
-.badge-topic { font-size: 11px; color: rgba(255,255,255,.45); }
-.badge-card.earned .badge-topic { color: rgba(155,128,255,.8); }
-.badge-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: var(--radius-pill);
-  padding: 6px 14px;
-  font-size: 11px;
-  font-weight: 600;
-  color: rgba(255,255,255,.4);
-  margin: 4px;
-}
-.badge-coming-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
-.coming-label { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.3); margin-bottom: 12px; }
-@media (max-width: 760px) {
-  .badge-grid { grid-template-columns: repeat(3, 1fr); }
-  .badge-grid .badge-card:nth-child(n+4):nth-child(-n+5) { display: none; }
-  .badge-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-/* ─── COMING SOON BOOK CARD ─── */
-.book-card--coming {
-  opacity: .55;
-  pointer-events: none;
-  cursor: default;
-}
-.book-coming-pill {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 4px 10px;
-}
-
-/* ─── GIFT SECTION ─── */
-.gift-section { padding: 80px 0; }
-.gift-card {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 64px;
-  align-items: center;
-  background: linear-gradient(135deg, #1a0a3e 0%, #2d1065 100%);
-  border-radius: 28px;
-  padding: 64px;
-  border: 1px solid rgba(110,78,214,.3);
-}
-.gift-eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(155,128,255,.8); margin-bottom: 16px; display: block; }
-.gift-heading { font-family: var(--serif); font-size: clamp(28px,4vw,40px); font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 16px; }
-.gift-body { font-size: 16px; color: rgba(255,255,255,.7); line-height: 1.7; margin-bottom: 24px; max-width: 460px; }
-.gift-pricing { margin-bottom: 28px; }
-.gift-price-item { font-size: 15px; color: rgba(255,255,255,.6); }
-.gift-price-item strong { color: #fff; }
-.gift-open-btn { font-size: 15px; padding: 14px 28px; }
-.gift-note { font-size: 12px; color: rgba(255,255,255,.35); margin-top: 12px; }
-
-/* Gift preview card */
-.gift-right { display: flex; align-items: center; justify-content: center; }
-.gift-preview { perspective: 800px; }
-.gift-preview-card {
-  background: linear-gradient(145deg, #fff 0%, #f0ebff 100%);
-  border-radius: 20px;
-  padding: 32px 28px;
-  width: 240px;
-  text-align: center;
-  box-shadow: 0 24px 60px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.1);
-  transform: rotate(-2deg);
-}
-.gift-preview-icon { font-size: 36px; margin-bottom: 12px; }
-.gift-preview-to { font-size: 12px; color: #666; margin-bottom: 4px; }
-.gift-preview-to strong { color: #1a0a3e; }
-.gift-preview-title { font-size: 15px; font-weight: 700; color: #1a0a3e; margin-bottom: 8px; line-height: 1.3; }
-.gift-preview-from { font-size: 13px; color: #555; margin-bottom: 16px; }
-.gift-preview-badge {
-  display: inline-block;
-  background: #6E4ED6;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  padding: 4px 12px;
-  border-radius: 100px;
-}
-
-/* Gift modal */
-.gift-modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(10,5,30,.8);
-  backdrop-filter: blur(6px);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-.gift-modal-overlay[hidden] { display: none; }
-.gift-modal {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 48px;
-  width: 100%;
-  max-width: 560px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-}
-.gift-modal-close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  color: var(--text-dim);
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  font-size: 14px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.gift-modal-title { font-family: var(--serif); font-size: 26px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-.gift-modal-sub { font-size: 15px; color: var(--text-mid); margin-bottom: 32px; line-height: 1.6; }
-.gift-form { display: flex; flex-direction: column; gap: 28px; }
-.gift-fieldset { border: none; padding: 0; margin: 0; }
-.gift-legend { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 16px; display: block; }
-.gift-book-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.gift-book-option {
-  border: 2px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 14px;
-  cursor: pointer;
-  transition: border-color .15s, background .15s;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.gift-book-option input[type="radio"] { display: none; }
-.gift-book-option:has(input:checked) { border-color: var(--terra); background: rgba(110,78,214,.07); }
-.gift-book-name { font-size: 13px; font-weight: 700; color: var(--text); }
-.gift-book-price { font-size: 12px; color: var(--terra-dark); font-weight: 600; }
-.gift-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-.gift-row:last-child { margin-bottom: 0; }
-.gift-label { font-size: 13px; font-weight: 600; color: var(--text-mid); }
-.gift-optional { font-weight: 400; color: var(--text-dim); }
-.gift-input {
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  font-size: 14px;
-  color: var(--text);
-  font-family: var(--sans);
-  width: 100%;
-  box-sizing: border-box;
-  transition: border-color .15s;
-}
-.gift-input:focus { outline: none; border-color: var(--terra); }
-.gift-textarea { resize: vertical; min-height: 80px; }
-.gift-submit-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.gift-total { font-size: 15px; color: var(--text-mid); }
-.gift-total strong { color: var(--text); font-size: 18px; }
-.gift-submit-btn { white-space: nowrap; }
-.gift-submit-note { font-size: 11.5px; color: var(--text-dim); text-align: center; margin-top: -12px; }
-
-@media (max-width: 860px) {
-  .gift-card { grid-template-columns: 1fr; padding: 40px 32px; gap: 40px; }
-  .gift-right { display: none; }
-  .gift-book-grid { grid-template-columns: 1fr 1fr; }
-}
-@media (max-width: 480px) {
-  .gift-modal { padding: 32px 24px; }
-  .gift-submit-row { flex-direction: column; align-items: stretch; }
-  .gift-book-grid { grid-template-columns: 1fr; }
-}
-
-/* ─── BETA: retail price strikethrough ─── */
-.book-retail-strike {
-  font-size: 12px;
-  color: var(--text-dim);
-  text-decoration: line-through;
-  font-weight: 500;
-  margin-right: 2px;
-}
-
-/* ─── BOOK BADGE EARN LINE ─── */
-.book-badge-earn {
-  font-size: 11.5px;
-  color: var(--text-dim);
-  margin-top: auto;
-  padding-top: 10px;
-}
-.book-badge-earn strong { color: var(--terra-dark); font-weight: 600; }
-
-/* ─── BOOK LIBRARY ─── */
-.book-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-top: 48px;
-}
-.book-card {
-  background: var(--surface);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-card);
-  padding: 28px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  transition: transform .25s var(--ease), box-shadow .25s;
-  text-decoration: none;
-  color: inherit;
-  position: relative;
-  overflow: hidden;
-}
-@media (hover:hover) { .book-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(110,78,214,.1); } }
-.book-card.is-free { background: #F5F2FF; }
-.book-card-accent { height: 3px; border-radius: 2px; margin-bottom: 4px; }
-.book-age-pill {
-  display: inline-flex;
-  align-items: center;
-  background: var(--elevated);
-  border-radius: var(--radius-pill);
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-dim);
-  width: fit-content;
-}
-.book-title { font-size: 18px; font-weight: 700; color: var(--text); line-height: 1.3; }
-.book-tag { font-size: 13px; color: var(--text-dim); line-height: 1.5; flex-grow: 1; }
-.book-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 4px;
-}
-.book-price { font-size: 15px; font-weight: 700; color: var(--text); }
-.book-free-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: var(--terra);
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
-  letter-spacing: .04em;
-}
-.book-arrow { color: var(--terra); font-size: 18px; font-weight: 700; }
-@media (max-width: 900px) { .book-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px) { .book-grid { grid-template-columns: 1fr; } }
-
-/* ─── WHO IT'S FOR ─── */
-.audience-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-top: 48px;
-}
-.audience-card {
-  background: var(--surface);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-card);
-  padding: 36px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: relative;
-  overflow: hidden;
-  transition: box-shadow .2s;
-}
-.audience-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity .2s;
-  pointer-events: none;
-}
-.audience-card.primary::before { background: linear-gradient(160deg, rgba(110,78,214,.04), transparent); }
-@media (hover:hover) { .audience-card:hover { box-shadow: 0 12px 40px rgba(110,78,214,.1); } .audience-card:hover::before { opacity: 1; } }
-.audience-icon {
-  font-size: 36px;
-  line-height: 1;
-}
-.family-faces {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.family-face {
-  font-size: 28px;
-  line-height: 1;
-  display: inline-block;
-  transition: transform .2s var(--ease);
-}
-@media (hover: hover) {
-  .family-face:hover { transform: scale(1.2); }
-}
-.audience-tag {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--terra-dark);
-}
-.audience-title { font-size: 22px; font-weight: 700; color: var(--text); line-height: 1.3; }
-.audience-body { font-size: 15px; line-height: 1.75; color: var(--text-mid); }
-.audience-also { font-size: 13px; color: var(--terra-dark); font-weight: 600; font-style: italic; margin-top: 10px; }
-.audience-cta { margin-top: auto; padding-top: 20px; display: flex; flex-direction: column; gap: 8px; width: fit-content; }
-
-/* Pediatrician quote */
-.ped-quote {
-  border-left: 3px solid var(--terra);
-  padding: 20px 24px;
-  margin: 32px 0 0;
-  background: var(--elevated);
-  border-radius: 0 12px 12px 0;
-}
-.ped-quote-text {
+.stat-body {
   font-size: 15px;
-  line-height: 1.75;
-  color: var(--text-mid);
-  font-style: italic;
-  margin-bottom: 14px;
+  color: rgba(255,255,255,.55);
+  line-height: 1.7;
 }
-.ped-quote-attribution { display: flex; flex-direction: column; gap: 3px; }
-.ped-quote-name { font-size: 13px; font-weight: 700; color: var(--text); }
-.ped-quote-title { font-size: 12px; color: var(--text-dim); }
-@media (max-width: 760px) { .audience-grid { grid-template-columns: 1fr; } }
-
-/* Expecting parents card — full-width below the 3-col row */
-.expecting-card {
-  grid-column: 1 / -1;
-  background: linear-gradient(135deg, #F4F0FC 0%, #EDE6FF 100%);
-  border-color: rgba(110,78,214,.2);
-}
-.expecting-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 40px;
-  flex-wrap: wrap;
-}
-.expecting-copy { flex: 1; min-width: 260px; display: flex; flex-direction: column; gap: 14px; }
-.expecting-faces { font-size: 28px; letter-spacing: 4px; line-height: 1; }
-.expecting-stat-col {
-  display: flex;
-  gap: 32px;
-  flex-shrink: 0;
-}
-.expecting-stat { text-align: center; }
-.expecting-stat-num {
-  font-size: 40px;
-  font-weight: 700;
-  color: var(--terra);
-  line-height: 1;
-  font-family: var(--sans);
-  letter-spacing: -.02em;
-}
-.expecting-stat-label {
-  font-size: 12px;
-  color: var(--text-mid);
-  line-height: 1.5;
-  margin-top: 4px;
-  font-weight: 300;
-}
-@media (max-width: 560px) {
-  .expecting-stat-col { display: none; }
-}
-
-/* ─── JACK'S STORY ─── */
-.story-inner {
-  display: grid;
-  grid-template-columns: 400px 1fr;
-  gap: 80px;
-  align-items: center;
-}
-.story-photo {
-  width: 400px;
-  height: 480px;
-  border-radius: 24px;
-  background: linear-gradient(145deg, #E8E0FF 0%, #D4C8F8 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 32px;
-  gap: 8px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 24px 64px rgba(110,78,214,.15);
-}
-.story-photo-quote {
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  padding: 24px;
-  background: linear-gradient(transparent, rgba(30,18,72,.85));
-  border-radius: 0 0 24px 24px;
-}
-.story-photo-quote p {
-  font-family: var(--serif);
-  font-size: 15px;
-  font-style: italic;
+.stat-body strong {
   color: rgba(255,255,255,.9);
-  line-height: 1.6;
+  font-weight: 600;
 }
-.story-photo-quote cite { font-size: 12px; font-style: normal; color: rgba(255,255,255,.55); display: block; margin-top: 8px; }
-.story-label { margin-bottom: 12px; }
-.story-heading { margin-bottom: 20px; }
-.story-body { font-size: 17px; line-height: 1.85; color: var(--text-mid); margin-bottom: 16px; }
-.story-body strong { color: var(--text); font-weight: 600; }
-.story-sons {
-  display: flex;
-  gap: 16px;
-  margin-top: 32px;
-}
-.story-son {
-  flex: 1;
-  background: var(--elevated);
-  border-radius: 12px;
-  padding: 20px;
-}
-.story-son-label { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--terra-dark); margin-bottom: 8px; }
-.story-son-text { font-size: 14px; color: var(--text-mid); line-height: 1.6; }
 @media (max-width: 900px) {
-  .story-inner { grid-template-columns: 1fr; gap: 48px; }
-  .story-photo { width: 100%; height: 320px; }
+  .stats-grid { grid-template-columns: 1fr; border-radius: 16px; }
+  .stat-card + .stat-card { border-left: 1px solid rgba(255,255,255,.08); border-top: none; }
+  .stat-card { padding: 32px 28px; }
+}
+@media (max-width: 540px) {
+  .stats-grid { gap: 1px; }
 }
 
-/* ─── TESTIMONIALS ─── */
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-top: 48px;
+@media (max-width: 900px) {
+  .comp-grid { grid-template-columns: 1fr 1fr; }
 }
-.testimonial-card {
-  background: var(--surface);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-card);
-  padding: 32px 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  position: relative;
+@media (max-width: 540px) {
+  .comp-grid { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
 }
-.testimonial-stars { color: #F5A623; font-size: 13px; letter-spacing: 2px; }
-.testimonial-quote { font-size: 15px; line-height: 1.75; color: var(--text-mid); flex-grow: 1; font-style: italic; }
-.testimonial-quote::before { content: '\201C'; font-family: var(--serif); font-size: 40px; color: var(--terra); line-height: .8; display: block; margin-bottom: 8px; font-style: normal; }
-.testimonial-author { font-size: 13px; font-weight: 700; color: var(--text); }
-.testimonial-role { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-.testimonial-tag {
-  display: inline-flex;
-  width: fit-content;
-  align-items: center;
-  background: var(--elevated);
-  border-radius: var(--radius-pill);
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--terra-dark);
+
+/* ─── FINAL CTA ─── */
+.final {
+  padding: 96px var(--rx);
+  background: linear-gradient(160deg, var(--indigo-deep) 0%, #2D1A7A 50%, #4A2EA8 100%);
+  text-align: center;
 }
-@media (max-width: 560px) { .testimonials-grid { grid-template-columns: 1fr; } }
+.final-inner { max-width: 580px; margin: 0 auto; }
+.final-h2 {
+  font-family: var(--serif); font-size: clamp(30px, 5vw, 50px);
+  line-height: 1.1; letter-spacing: -.03em; color: #fff; margin-bottom: 16px;
+}
+.final-h2 em { font-style: italic; color: #A78BFF; }
+.final-sub { font-size: 16px; line-height: 1.75; color: rgba(255,255,255,.6); margin-bottom: 36px; }
+.final-btn {
+  display: inline-block; background: #fff; color: var(--terra-dark);
+  font-family: var(--sans); font-size: 16px; font-weight: 800;
+  padding: 17px 40px; border-radius: 100px; border: none; cursor: pointer;
+  text-decoration: none; transition: transform .2s, box-shadow .2s;
+  letter-spacing: -.01em;
+}
+@media (hover:hover) { .final-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.3); } }
+.final-note { margin-top: 16px; font-size: 12px; color: rgba(255,255,255,.35); }
+.final-trust {
+  margin-top: 28px; display: flex; align-items: center; justify-content: center;
+  gap: 20px; flex-wrap: wrap;
+}
+.final-trust-item {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12px; color: rgba(255,255,255,.45); font-weight: 500;
+}
 
 /* ─── FOOTER ─── */
 .site-footer {
@@ -1234,22 +672,22 @@ a { color: inherit; }
   padding: 56px 0 40px;
 }
 .footer-grid {
-  max-width: 1200px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 0 var(--space-x);
+  padding: 0 var(--rx);
   display: grid;
-  grid-template-columns: 1fr auto auto auto;
+  grid-template-columns: 1fr auto auto;
   gap: 48px;
   align-items: start;
   margin-bottom: 40px;
 }
-.footer-heading { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-ghost); margin-bottom: 14px; }
+.footer-heading { font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--text-ghost, #C2BFD0); margin-bottom: 14px; }
 .footer-link { display: block; font-size: 13px; color: var(--text-dim); text-decoration: none; margin-bottom: 10px; transition: color .2s; }
 @media (hover:hover) { .footer-link:hover { color: var(--terra); } }
 .footer-bottom {
-  max-width: 1200px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 20px var(--space-x) 0;
+  padding: 20px var(--rx) 0;
   border-top: 1px solid var(--border-light);
   display: flex;
   align-items: center;
@@ -1257,525 +695,203 @@ a { color: inherit; }
   gap: 12px;
   flex-wrap: wrap;
 }
-.footer-bottom small { font-size: 12px; color: var(--text-ghost); }
+.footer-bottom small { font-size: 12px; color: var(--text-ghost, #C2BFD0); }
 @media (max-width: 640px) { .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
 
-/* ─── REVEAL ANIMATIONS ─── */
-[data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
-[data-reveal].visible { opacity: 1; transform: translateY(0); }
-@media (prefers-reduced-motion: reduce) { [data-reveal] { opacity: 1; transform: none; transition: none; } }
+/* ─── REVEAL ─── */
+[data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity .5s ease, transform .5s ease; }
+[data-reveal].visible { opacity: 1; transform: none; }
+[data-d="1"] { transition-delay: .08s; }
+[data-d="2"] { transition-delay: .16s; }
+[data-d="3"] { transition-delay: .24s; }
+@media (prefers-reduced-motion: reduce) { [data-reveal] { opacity: 1; transform: none; } }
 
-/* ─── HERO ALREADY LINE ─── */
-.hero-already {
-  margin-top: 20px;
-  font-size: 13.5px;
-  color: var(--text-dim);
-  font-style: italic;
-  font-weight: 300;
-  max-width: 380px;
-}
 
-/* ─── AGE PICKER ─── */
-.age-picker {
-  max-width: 640px;
-  margin: 40px auto 48px;
-  text-align: center;
-}
-.age-picker-label {
-  font-size: 15px;
-  color: var(--text-mid);
-  font-weight: 400;
-  margin-bottom: 16px;
-}
-.age-picker-btns {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.age-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding: 12px 20px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-card);
-  background: var(--surface);
-  color: var(--text);
-  font-family: var(--sans);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: border-color .2s, background .2s, box-shadow .2s;
-  min-width: 100px;
-}
-.age-btn span {
-  font-size: 11px;
-  font-weight: 400;
-  color: var(--text-dim);
-}
-.age-btn:hover { border-color: var(--terra); background: var(--elevated); }
-.age-btn.active { border-color: var(--terra); background: var(--elevated); box-shadow: 0 0 0 3px rgba(110,78,214,.1); color: var(--terra-dark); }
-.age-btn.active span { color: var(--terra-dark); }
-.age-rec {
-  margin-top: 20px;
-  padding: 16px 20px;
-  background: var(--elevated);
-  border-radius: var(--radius-card);
-  border: 1px solid rgba(110,78,214,.15);
-  font-size: 14.5px;
-  color: var(--text);
-  line-height: 1.7;
-  display: none;
-}
-.age-rec.visible { display: block; }
-.age-rec strong { color: var(--terra-dark); }
-.age-rec a { color: var(--terra-dark); text-decoration: underline; font-weight: 600; }
+/* ─── HOW IT WORKS ─── */
+.how { padding: 88px var(--rx) 96px; background: linear-gradient(180deg, #F7F4FF 0%, var(--bg) 100%); }
+.how-inner { max-width: var(--max); margin: 0 auto; }
+.how-header { margin-bottom: 56px; }
+.how-header .section-label { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--terra); margin-bottom: 14px; display: block; }
+.how-header .section-title { font-family: var(--serif); font-size: clamp(28px, 4vw, 44px); line-height: 1.1; letter-spacing: -.025em; color: var(--text); margin-bottom: 12px; }
+.how-header .section-title em { font-style: italic; color: var(--terra); }
+.how-header .section-sub { font-size: 16px; line-height: 1.75; color: var(--text-mid); }
+.steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 56px; }
+@media (max-width: 900px) { .steps-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .steps-grid { grid-template-columns: 1fr; } }
+.step-card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 24px 20px 28px; position: relative; }
+.step-card::before { content: ''; position: absolute; top: 0; left: 24px; right: 24px; height: 2px; background: linear-gradient(90deg, var(--terra), #9B80FF); border-radius: 0 0 2px 2px; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: #F0EBFF; color: var(--terra); font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.step-icon { font-size: 28px; margin-bottom: 12px; display: block; }
+.step-title { font-family: var(--serif); font-size: 18px; letter-spacing: -.01em; margin-bottom: 8px; color: var(--text); }
+.step-body { font-size: 13px; line-height: 1.7; color: var(--text-mid); }
+.device-row { display: flex; align-items: flex-start; justify-content: center; gap: 24px; flex-wrap: wrap; }
+.device-card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 20px; flex: 1; min-width: 260px; max-width: 360px; box-shadow: 0 8px 40px rgba(110,78,214,.08); }
+.device-label { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.device-label-icon { font-size: 18px; }
+.device-label-text { font-size: 12px; font-weight: 700; color: var(--text-mid); }
+.mini-email-header { display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 1px solid #EDEBF2; margin-bottom: 14px; }
+.mini-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #6E4ED6, #9B80FF); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0; font-family: var(--sans); }
+.mini-from { font-size: 12px; font-weight: 700; color: var(--text); }
+.mini-date { font-size: 11px; color: var(--text-dim); }
+.mini-subject { font-family: var(--serif); font-size: 16px; color: var(--text); margin-bottom: 10px; letter-spacing: -.01em; }
+.mini-body { font-size: 12px; line-height: 1.65; color: var(--text-mid); margin-bottom: 12px; }
+.mini-window-row { border-radius: 8px; padding: 9px 11px; margin-bottom: 6px; display: flex; align-items: center; gap: 9px; font-size: 12px; font-weight: 600; }
+.mini-window-row.urgent { background: #FFFBEB; color: #92400E; border: 1px solid #FCD34D; }
+.mini-window-row.open   { background: #F0EBFF; color: #5B3CC4; border: 1px solid rgba(110,78,214,.15); }
+.mini-window-icon { font-size: 14px; flex-shrink: 0; }
+.mini-cal-btn { display: flex; align-items: center; justify-content: center; gap: 6px; background: var(--terra); color: #fff; padding: 10px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; width: 100%; margin-top: 10px; border: none; cursor: pointer; }
+.mini-cal-header { background: linear-gradient(135deg, #6E4ED6, #9B80FF); border-radius: 12px; padding: 14px 16px; margin-bottom: 12px; color: #fff; }
+.mini-cal-month { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; opacity: .8; margin-bottom: 2px; }
+.mini-cal-day { font-family: var(--serif); font-size: 36px; line-height: 1; margin-bottom: 2px; }
+.mini-cal-event { background: rgba(255,255,255,.18); border-radius: 8px; padding: 6px 10px; font-size: 11px; font-weight: 600; }
+.mini-cal-list { display: flex; flex-direction: column; gap: 8px; }
+.mini-cal-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 10px; border: 1px solid #EDEBF2; }
+.mini-cal-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.mini-cal-dot.purple { background: var(--terra); }
+.mini-cal-dot.gold   { background: #F59E0B; }
+.mini-cal-title { font-size: 12px; font-weight: 600; color: var(--text); }
+.mini-cal-time { font-size: 11px; color: var(--text-dim); }
+.cal-badges { display: flex; gap: 6px; margin-top: 14px; }
+.cal-badge { flex: 1; text-align: center; border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; font-size: 10px; font-weight: 700; color: var(--text-mid); }
 
-/* Highlight recommended book cards */
-.book-card.recommended {
-  border-color: var(--terra) !important;
-  box-shadow: 0 0 0 3px rgba(110,78,214,.12) !important;
-}
-.book-card.recommended::after {
-  content: '★ Recommended for you';
-  display: block;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--terra-dark);
-  margin-top: 8px;
-}
-.book-card.dimmed { opacity: .45; }
+/* ─── TESTIMONIALS ─── */
+.testimonials { padding: 80px var(--rx) 80px; background: var(--bg); }
+.testimonials-inner { max-width: var(--max); margin: 0 auto; }
+.testimonials-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--terra); margin-bottom: 32px; display: block; text-align: center; }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+@media (max-width: 760px) { .testimonials-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } }
+.testi-card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+.testi-stars { color: #F59E0B; font-size: 14px; letter-spacing: 2px; }
+.testi-quote { font-family: var(--serif); font-size: 16px; line-height: 1.55; color: var(--text); letter-spacing: -.01em; flex: 1; font-style: italic; }
+.testi-quote strong { font-style: normal; font-weight: 600; color: var(--terra-dark); }
+.testi-author { display: flex; align-items: center; gap: 10px; }
+.testi-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.testi-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.testi-meta { font-size: 11px; color: var(--text-dim); }
 
-/* ─── JACK CREDENTIALS STRIP ─── */
-.jack-creds {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 20px;
-  margin-top: 4px;
-}
-.jack-cred {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-mid);
-}
+/* ─── GIFT SECTION ─── */
+.gift-section { padding: 88px var(--rx) 96px; background: linear-gradient(180deg, #FFF8F0 0%, var(--bg) 100%); }
+.gift-inner { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+@media (max-width: 768px) { .gift-inner { grid-template-columns: 1fr; gap: 40px; } }
+.gift-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--terra); margin-bottom: 14px; display: block; }
+.gift-h2 { font-family: var(--serif); font-size: clamp(28px, 4vw, 44px); line-height: 1.1; letter-spacing: -.025em; color: var(--text); margin-bottom: 16px; }
+.gift-h2 em { font-style: italic; color: var(--terra); }
+.gift-body { font-size: 16px; line-height: 1.8; color: var(--text-mid); margin-bottom: 20px; }
+.gift-cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+.gift-card { display: flex; align-items: flex-start; gap: 14px; background: #fff; border: 1px solid var(--border); border-radius: 16px; padding: 16px 18px; }
+.gift-card-icon { font-size: 24px; flex-shrink: 0; }
+.gift-card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.gift-card-desc { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+.gift-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--terra); color: #fff; font-family: var(--sans); font-size: 15px; font-weight: 700; padding: 14px 28px; border-radius: 100px; border: none; cursor: pointer; text-decoration: none; transition: background .2s, transform .2s; letter-spacing: .01em; }
+@media (hover:hover) { .btn-primary:hover { background: var(--terra-dark); transform: translateY(-1px); } }
+.btn-ghost-v { display: inline-flex; align-items: center; background: transparent; color: var(--terra); font-family: var(--sans); font-size: 15px; font-weight: 600; padding: 14px 28px; border-radius: 100px; border: 1.5px solid rgba(110,78,214,.3); cursor: pointer; text-decoration: none; transition: border-color .2s, background .2s; }
+@media (hover:hover) { .btn-ghost-v:hover { border-color: var(--terra); background: #F0EBFF; } }
+.gift-visual { background: linear-gradient(135deg, var(--indigo-deep), #2D1A7A); border-radius: 24px; padding: 32px; text-align: center; box-shadow: 0 20px 60px rgba(30,18,72,.25); }
+.gift-tag-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(167,139,255,.2); border: 1px solid rgba(167,139,255,.3); border-radius: 100px; padding: 6px 16px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #C4B5FD; margin-bottom: 20px; }
+.gift-amount { font-family: var(--serif); font-size: 56px; color: #fff; line-height: 1; margin-bottom: 4px; }
+.gift-amount-sub { font-size: 14px; color: rgba(255,255,255,.5); margin-bottom: 24px; }
+.gift-perks { display: flex; flex-direction: column; gap: 10px; text-align: left; margin-bottom: 24px; }
+.gift-perk { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.07); border-radius: 10px; padding: 10px 14px; font-size: 13px; color: rgba(255,255,255,.8); }
+.gift-perk-check { color: #A78BFF; font-size: 14px; flex-shrink: 0; }
+.gift-btn { display: block; width: 100%; text-align: center; background: #fff; color: var(--terra-dark); font-family: var(--sans); font-size: 14px; font-weight: 800; padding: 14px; border-radius: 100px; border: none; cursor: pointer; text-decoration: none; }
 
-/* ─── NEWBORN CALLOUT ─── */
-.newborn-callout {
-  background: rgba(110,78,214,.08);
-  border: 1px solid rgba(110,78,214,.15);
-  border-radius: var(--radius-input);
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 400px;
-}
-.newborn-callout-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--terra-dark);
-}
-.newborn-callout-items {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-.newborn-callout-items span {
-  font-size: 13.5px;
-  color: var(--text);
-  font-weight: 400;
-}
+/* ─── ABOUT JACK ─── */
+.about-jack { padding: 88px var(--rx) 96px; background: var(--bg); }
+.about-jack-inner { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+@media (max-width: 768px) { .about-jack-inner { grid-template-columns: 1fr; gap: 40px; } }
+.about-jack-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--terra); margin-bottom: 14px; display: block; }
+.about-jack-h2 { font-family: var(--serif); font-size: clamp(28px, 4vw, 44px); line-height: 1.1; letter-spacing: -.025em; color: var(--text); margin-bottom: 24px; }
+.about-jack-body { font-size: 16px; line-height: 1.8; color: var(--text-mid); margin-bottom: 16px; }
+.about-jack-creds { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; }
+.about-jack-cred { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--text-mid); }
+.about-jack-cred-check { color: var(--terra); font-size: 14px; }
+.sons-table { background: #F7F4FF; border: 1px solid rgba(110,78,214,.12); border-radius: 16px; overflow: hidden; }
+.sons-header { display: grid; grid-template-columns: 1fr 24px 1fr; background: rgba(110,78,214,.08); padding: 12px 20px; }
+.sons-header-label { font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: var(--terra); }
+.sons-header-label.right { text-align: right; color: #059669; }
+.sons-rows { padding: 8px 0; }
+.sons-row { display: grid; grid-template-columns: 1fr 24px 1fr; align-items: center; padding: 9px 20px; border-bottom: 1px solid rgba(110,78,214,.07); }
+.sons-row:last-child { border-bottom: none; }
+.sons-cell { font-size: 13px; line-height: 1.4; }
+.sons-cell.bad  { color: var(--text-dim); text-decoration: line-through; }
+.sons-cell.good { color: var(--text); font-weight: 500; text-align: right; }
+.sons-arrow { text-align: center; color: var(--text-dim); font-size: 12px; }
+.sons-icon-bad  { color: #DC2626; font-size: 13px; display: block; margin-bottom: 1px; }
+.sons-icon-good { color: #059669; font-size: 13px; display: block; margin-bottom: 1px; }
 
-/* ─── EXPECTING TESTIMONIAL ─── */
-.testimonial-card--featured {
-  border-color: rgba(110,78,214,.25);
-  background: linear-gradient(135deg, #F8F5FF 0%, #fff 100%);
-}
-.testimonial-tag--expecting {
-  background: rgba(110,78,214,.1);
-  color: var(--terra-dark);
-}
+/* Course mockup */
+.course-mockup { background: #F0EBFF; border-radius: 24px; padding: 20px; }
+.course-browser { background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 40px rgba(110,78,214,.12); }
+.course-chrome { background: #F7F4FF; border-bottom: 1px solid #E5E2EC; padding: 10px 14px; display: flex; align-items: center; gap: 6px; }
+.course-chrome-dot { width: 9px; height: 9px; border-radius: 50%; }
+.course-url { font-size: 10px; color: var(--text-dim); margin-left: 8px; background: #fff; border-radius: 4px; padding: 3px 8px; border: 1px solid #E5E2EC; flex: 1; }
+.course-body { padding: 16px; }
+.course-progress-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.course-chapter-label { font-size: 11px; color: var(--text-mid); font-weight: 500; }
+.course-pct { font-size: 11px; font-weight: 700; color: var(--terra); }
+.course-prog-bar { height: 5px; background: #E5E2EC; border-radius: 100px; margin-bottom: 12px; overflow: hidden; }
+.course-prog-fill { height: 100%; width: 46%; background: linear-gradient(90deg, var(--terra), #9B80FF); border-radius: 100px; }
+.course-steps { display: flex; gap: 5px; margin-bottom: 14px; flex-wrap: wrap; }
+.course-step { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+.course-step.done { background: #059669; color: #fff; }
+.course-step.current { background: #F0EBFF; border: 2px solid var(--terra); color: var(--terra); font-weight: 700; }
+.course-step.locked { background: #F7F4FF; border: 1px solid #E5E2EC; color: var(--text-dim); font-size: 8px; }
+.course-card { border: 1px solid #E5E2EC; border-radius: 12px; padding: 14px; }
+.course-card-chapter { font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--terra); margin-bottom: 6px; }
+.course-card-quote { font-size: 11px; font-style: italic; color: var(--text-mid); line-height: 1.55; margin-bottom: 10px; }
+.course-science-label { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); margin-bottom: 4px; }
+.course-science-text { font-size: 11px; color: var(--text-mid); line-height: 1.55; }
 
-/* ─── TRUST BAR ─── */
-.trust-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 12px 20px;
-  padding: 20px max(var(--space-page-x), 16px);
-  background: var(--surface);
-  border-bottom: 1px solid var(--border-light);
-}
-.trust-item {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text-mid);
-  white-space: nowrap;
-}
-.trust-dot {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--text-ghost);
-  flex-shrink: 0;
-}
-@media (max-width: 640px) { .trust-dot { display: none; } .trust-bar { justify-content: flex-start; } }
+/* ─── LIBRARY ─── */
+.library-section { padding: 88px var(--rx) 96px; background: linear-gradient(180deg, #F7F4FF 0%, var(--bg) 100%); }
+.library-inner { max-width: var(--max); margin: 0 auto; }
+.library-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--terra); margin-bottom: 14px; display: block; }
+.library-h2 { font-family: var(--serif); font-size: clamp(28px, 4vw, 44px); line-height: 1.1; letter-spacing: -.025em; color: var(--text); margin-bottom: 12px; }
+.library-h2 em { font-style: italic; color: var(--terra); }
+.library-sub { font-size: 16px; line-height: 1.75; color: var(--text-mid); margin-bottom: 40px; max-width: 580px; }
+.library-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 28px; }
+@media (max-width: 900px) { .library-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 600px) { .library-grid { grid-template-columns: repeat(2, 1fr); } }
+.lib-card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 20px 16px 22px; text-align: center; transition: transform .2s, box-shadow .2s; }
+@media (hover:hover) { .lib-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(110,78,214,.1); } }
+.lib-card-emoji { font-size: 32px; margin-bottom: 10px; display: block; }
+.lib-card-title { font-family: var(--serif); font-size: 15px; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+.lib-card-meta { font-size: 11px; color: var(--text-dim); margin-bottom: 14px; }
+.lib-card-btn { display: block; background: #F0EBFF; color: var(--terra); font-family: var(--sans); font-size: 12px; font-weight: 700; padding: 7px 12px; border-radius: 100px; border: none; cursor: pointer; text-decoration: none; width: 100%; }
+.library-note { font-size: 14px; color: var(--text-mid); }
+.library-note strong { color: var(--text); font-weight: 600; }
 
-/* ─── SOCIAL PROOF TICKER ─── */
-.ticker-wrap {
-  overflow: hidden;
-  background: var(--elevated);
-  border-bottom: 1px solid var(--border-light);
-  padding: 10px 0;
-  white-space: nowrap;
-}
-.ticker-track {
-  display: inline-flex;
-  align-items: center;
-  gap: 20px;
-  animation: ticker-scroll 40s linear infinite;
-}
-.ticker-wrap:hover .ticker-track { animation-play-state: paused; }
-.ticker-item {
-  font-size: 12.5px;
-  color: var(--text-mid);
-  font-weight: 300;
-  flex-shrink: 0;
-}
-.ticker-item strong { font-weight: 600; color: var(--terra-dark); }
-.ticker-sep { color: var(--text-ghost); flex-shrink: 0; }
-@keyframes ticker-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ticker-track { animation: none; }
-  .ticker-wrap { overflow-x: auto; }
-}
-
-/* ─── BEFORE / AFTER COMPARISON ─── */
-.before-after {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: start;
-  gap: 24px;
-  margin-top: 32px;
-  padding: 28px 32px;
-  background: var(--elevated);
-  border-radius: var(--radius-card);
-  border: 1px solid var(--border-light);
-}
-.ba-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  margin-bottom: 14px;
-}
-.ba-before .ba-label { color: var(--text-dim); }
-.ba-after .ba-label { color: var(--terra-dark); }
-.ba-list {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.ba-list li {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--text-mid);
-  padding-left: 18px;
-  position: relative;
-  font-weight: 300;
-}
-.ba-before .ba-list li::before { content: '✕'; position: absolute; left: 0; color: #C0B8D0; font-size: 11px; top: 2px; }
-.ba-after  .ba-list li::before { content: '✓'; position: absolute; left: 0; color: var(--terra); font-size: 11px; top: 2px; }
-.ba-after .ba-list li { color: var(--text); }
-.ba-divider {
-  font-size: 20px;
-  color: var(--terra);
-  padding-top: 28px;
-  opacity: .5;
-}
-@media (max-width: 560px) {
-  .before-after { grid-template-columns: 1fr; }
-  .ba-divider { display: none; }
-}
-
-/* ─── SCOUT PROMO SECTION ─── */
-.scout-promo {
-  margin: 0 max(var(--space-x), 16px);
-  border-radius: 24px;
-  overflow: hidden;
-  background: linear-gradient(135deg, #1E1248 0%, #2D1B69 55%, #3D2A80 100%);
-  position: relative;
-}
-.scout-promo::before {
-  content: '';
-  position: absolute;
-  top: -120px; right: -80px;
-  width: 500px; height: 500px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(124,92,252,.18) 0%, transparent 70%);
-  pointer-events: none;
-}
-.scout-promo-inner {
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 64px;
-  align-items: center;
-  padding: 72px 64px;
-  position: relative;
-  z-index: 1;
-}
-.scout-promo-eyebrow {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: linear-gradient(135deg, #6E4ED6, #9B80FF, #7C5CFC, #6E4ED6);
-  background-size: 300% 100%;
-  animation: kicker-shimmer 3s ease infinite;
-  border-radius: 100px; padding: 6px 16px;
-  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: #fff; margin-bottom: 24px;
-  box-shadow: 0 0 28px rgba(124,92,252,.45);
-}
-@keyframes kicker-shimmer { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-.scout-promo-dot {
-  width: 7px; height: 7px; border-radius: 50%;
-  background: rgba(255,255,255,.9); flex-shrink: 0; position: relative;
-}
-.scout-promo-dot::after {
-  content: ''; position: absolute; inset: -3px; border-radius: 50%;
-  background: rgba(255,255,255,.4);
-  animation: scout-pulse 1.6s ease-out infinite;
-}
-@keyframes scout-pulse { 0%{transform:scale(1);opacity:.8} 100%{transform:scale(2.8);opacity:0} }
-.scout-promo-h2 {
-  font-family: var(--serif);
-  font-size: clamp(28px, 3.5vw, 44px);
-  line-height: 1.1;
-  letter-spacing: -.025em;
-  color: #fff;
-  margin-bottom: 16px;
-}
-.scout-promo-h2 em { font-style: italic; color: #A78BFF; }
-.scout-promo-sub {
-  font-size: 16px;
-  line-height: 1.75;
-  color: rgba(255,255,255,.6);
-  margin-bottom: 32px;
-  max-width: 440px;
-}
-.scout-promo-benefits {
-  display: flex; flex-direction: column; gap: 12px;
-  margin-bottom: 36px;
-}
-.scout-promo-benefit {
-  display: flex; align-items: center; gap: 12px;
-  font-size: 14px; color: rgba(255,255,255,.8); font-weight: 500;
-}
-.scout-promo-benefit-icon {
-  width: 28px; height: 28px; border-radius: 8px;
-  background: rgba(167,139,255,.2);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; flex-shrink: 0;
-}
-.scout-promo-actions {
-  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-}
-.scout-promo-btn-primary {
-  display: inline-flex; align-items: center;
-  background: #fff; color: var(--terra-dark);
-  font-family: var(--sans); font-size: 15px; font-weight: 800;
-  padding: 14px 28px; border-radius: 100px; text-decoration: none;
-  transition: transform .2s, box-shadow .2s;
-  letter-spacing: -.01em;
-}
-@media (hover:hover) { .scout-promo-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.25); } }
-.scout-promo-btn-secondary {
-  font-size: 14px; font-weight: 500; color: rgba(255,255,255,.55);
-  text-decoration: none; transition: color .2s;
-}
-@media (hover:hover) { .scout-promo-btn-secondary:hover { color: #fff; } }
-
-/* Scout promo — right side card */
-.sp-card {
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 20px;
-  overflow: hidden;
-}
-.sp-card-header {
-  background: rgba(255,255,255,.06);
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  padding: 14px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.sp-card-label {
-  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-  color: rgba(255,255,255,.45);
-}
-.sp-card-age {
-  background: rgba(167,139,255,.2); color: #C4B5FD;
-  font-size: 11px; font-weight: 700;
-  padding: 3px 10px; border-radius: 100px;
-  border: 1px solid rgba(167,139,255,.25);
-}
-.sp-card-body { padding: 8px 0 4px; }
-.sp-window {
-  display: flex; align-items: flex-start; gap: 14px;
-  padding: 14px 20px;
-  border-bottom: 1px solid rgba(255,255,255,.06);
-}
-.sp-window:last-of-type { border-bottom: none; }
-.sp-window-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
-.sp-window-content { flex: 1; }
-.sp-window-tag {
-  font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-  margin-bottom: 3px;
-}
-.sp-window-tag.urgent { color: #FBBF24; }
-.sp-window-tag.open { color: #A78BFF; }
-.sp-window-tag.coming { color: rgba(255,255,255,.3); }
-.sp-window-title { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.35; margin-bottom: 3px; }
-.sp-window-desc { font-size: 12px; color: rgba(255,255,255,.45); line-height: 1.5; }
-.sp-card-footer {
-  padding: 14px 20px;
-  border-top: 1px solid rgba(255,255,255,.08);
-}
-.sp-progress-meta {
-  display: flex; justify-content: space-between;
-  font-size: 11px; color: rgba(255,255,255,.4); margin-bottom: 7px;
-}
-.sp-progress-meta span:last-child { color: #A78BFF; font-weight: 700; }
-.sp-bar { height: 4px; background: rgba(255,255,255,.1); border-radius: 2px; }
-.sp-bar-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, #7C5CFC, #A78BFF); width: 44%; }
-
-@media (max-width: 1000px) {
-  .scout-promo-inner { grid-template-columns: 1fr; gap: 40px; padding: 52px 40px; }
-  .sp-card { max-width: 480px; }
-}
-@media (max-width: 600px) {
-  .scout-promo-inner { padding: 40px 28px; }
-  .scout-promo { margin: 0 16px; border-radius: 20px; }
-}
-
-/* ─── EMAIL CAPTURE ─── */
-.email-section {
-  background: linear-gradient(135deg, #1E1248 0%, #2D1B69 60%, #3D2A80 100%);
-  border-radius: var(--radius-container);
-  margin: 0 max(var(--space-page-x), 16px);
-}
-.email-inner {
-  max-width: 600px;
-}
-.email-form {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.email-input {
-  flex: 1;
-  min-width: 220px;
-  padding: 16px 20px;
-  border-radius: var(--radius-pill);
-  border: 1.5px solid rgba(255,255,255,.15);
-  background: rgba(255,255,255,.08);
-  color: #fff;
-  font-family: var(--sans);
-  font-size: 15px;
-  outline: none;
-  transition: border-color .2s;
-}
-.email-input::placeholder { color: rgba(255,255,255,.35); }
-.email-input:focus { border-color: rgba(155,128,255,.6); }
-.email-submit { white-space: nowrap; }
-
-/* ─── FAQ ─── */
-.faq-list {
-  max-width: 720px;
-  border-top: 1px solid var(--border);
-}
-.faq-item {
-  border-bottom: 1px solid var(--border);
-}
-.faq-question {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 22px 0;
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text);
-  cursor: pointer;
-  list-style: none;
-  gap: 16px;
-  transition: color .2s;
-}
-.faq-question::-webkit-details-marker { display: none; }
-.faq-question::marker { display: none; }
-.faq-question::after {
-  content: '+';
-  font-size: 20px;
-  font-weight: 300;
-  color: var(--terra);
-  flex-shrink: 0;
-  transition: transform .25s var(--ease);
-}
-.faq-item[open] .faq-question::after { transform: rotate(45deg); }
-.faq-item[open] .faq-question { color: var(--terra-dark); }
-.faq-answer { padding-bottom: 20px; }
-.faq-answer p {
-  font-size: 15px;
-  line-height: 1.8;
-  color: var(--text-mid);
-  font-weight: 300;
-}
-@media (hover: hover) { .faq-question:hover { color: var(--terra); } }
+/* ─── GET STARTED / NEW CTA ─── */
+.cta-new { padding: 96px var(--rx) 96px; background: linear-gradient(160deg, var(--indigo-deep) 0%, #2D1A7A 50%, #4A2EA8 100%); text-align: center; }
+.cta-new-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: #A78BFF; margin-bottom: 14px; display: block; }
+.cta-new-h2 { font-family: var(--serif); font-size: clamp(30px, 5vw, 50px); line-height: 1.1; letter-spacing: -.03em; color: #fff; margin-bottom: 16px; }
+.cta-new-h2 em { font-style: italic; color: #A78BFF; }
+.cta-new-sub { font-size: 16px; line-height: 1.75; color: rgba(255,255,255,.6); margin: 0 auto 32px; max-width: 520px; }
+.cta-urgency { max-width: 540px; margin: 0 auto 28px; background: rgba(167,139,255,.15); border: 1px solid rgba(167,139,255,.25); border-radius: 14px; padding: 16px 22px; font-size: 15px; color: rgba(255,255,255,.8); line-height: 1.65; }
+.cta-urgency strong { color: #fff; }
+.cta-price-anchor { font-size: 13px; color: rgba(255,255,255,.35); margin-bottom: 28px; }
+.pricing-pills { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+.pricing-pill { background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.15); border-radius: 20px; padding: 20px 28px; min-width: 200px; text-align: center; cursor: pointer; transition: border-color .2s, background .2s; position: relative; }
+.pricing-pill.best { border-color: #A78BFF; background: rgba(167,139,255,.12); }
+.pricing-best-tag { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #7C5CFC, #A78BFF); color: #fff; font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; padding: 3px 12px; border-radius: 100px; white-space: nowrap; }
+.pricing-period { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: rgba(255,255,255,.45); margin-bottom: 6px; }
+.pricing-amount { font-family: var(--serif); font-size: 36px; color: #fff; line-height: 1; margin-bottom: 4px; }
+.pricing-monthly-note { font-size: 12px; color: rgba(255,255,255,.5); }
+.cta-btn-wrap { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 32px; }
+.cta-btn-main { display: inline-flex; align-items: center; background: #fff; color: var(--terra-dark); font-family: var(--sans); font-size: 17px; font-weight: 800; padding: 17px 40px; border-radius: 100px; border: none; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s; letter-spacing: -.01em; }
+@media (hover:hover) { .cta-btn-main:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.3); } }
+.cta-note-small { font-size: 13px; color: rgba(255,255,255,.4); }
+.cta-trust-row { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
+.cta-trust-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: rgba(255,255,255,.45); }
+.cta-trust-check { color: #A78BFF; }
 </style>
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NWDKH78LWB"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-NWDKH78LWB');
-  </script>
-  <script>
-    // Capture ?ref= referral param and persist for checkout
-    (function () {
-      var p = new URLSearchParams(window.location.search)
-      var ref = p.get('ref') || p.get('promo')
-      if (ref && /^[A-Za-z]+-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/.test(ref)) {
-        localStorage.setItem('scout_referral_code', ref.toUpperCase())
-      }
-    })()
-  </script>
 </head>
-
 <body>
 
-<!-- ─── DOWNLOAD BAR ─── -->
-<div class="dl-bar" role="banner" aria-label="Download counter">
-  <span class="dl-bar-dot" aria-hidden="true"></span>
-  Downloaded 5,000+ times
-  <a href="#library">See all playbooks</a>
-</div>
-
-<!-- ─── NAV ─── -->
+<!-- ════════════════════════════════════════════════
+     NAV
+     ════════════════════════════════════════════════ -->
 <nav class="nav" aria-label="Main navigation">
   <div class="nav-inner">
     <a href="index.html" class="logo" aria-label="FamilyForce Home">
@@ -1785,11 +901,8 @@ a { color: inherit; }
       <span>Family<span class="logo-s">Force</span></span>
     </a>
     <ul class="nav-links" role="list">
-      <li><a href="#library">Playbooks</a></li>
-      <li><a href="scout.html">Scout</a></li>
-      <li><a href="sign-in.html?mode=signin">Sign In</a></li>
     </ul>
-    <a href="sign-in.html" class="btn-nav">Get It Free</a>
+    <a href="sign-in.html" class="btn-nav">Try Free for 1 Month</a>
     <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
       <span></span>
       <span></span>
@@ -1807,1068 +920,653 @@ a { color: inherit; }
     <button class="mobile-menu-close" id="mobile-close-btn" aria-label="Close menu">✕</button>
   </div>
   <ul class="mobile-menu-links" role="list">
-    <li><a href="#library">Playbooks</a></li>
-    <li><a href="scout.html">Scout</a></li>
-    <li><a href="sign-in.html?mode=signin">Sign In</a></li>
   </ul>
   <div class="mobile-menu-cta">
-    <a href="sign-in.html">Get It Free →</a>
+    <a href="sign-in.html">Try Free for 1 Month →</a>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════
-     SOCIAL PROOF TICKER
-     ═══════════════════════════════════════════════════════════ -->
-<div class="ticker-wrap" aria-hidden="true">
-  <div class="ticker-track">
-    <span class="ticker-item">🏅 Marcus T. just earned the <strong>Sleep Champion</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 Daniel R. just earned the <strong>Potty Pro</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 Priya K. just earned the <strong>Digital Guardian</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 Tom H. just earned the <strong>Tantrum Tamer</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 Sarah M. just earned the <strong>Good Eater Guide</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 James W. just earned the <strong>Sleep Champion</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 Claire B. just earned the <strong>Potty Pro</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <!-- Duplicate for seamless loop -->
-    <span class="ticker-item">🏅 Marcus T. just earned the <strong>Sleep Champion</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 Daniel R. just earned the <strong>Potty Pro</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 Priya K. just earned the <strong>Digital Guardian</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 Tom H. just earned the <strong>Tantrum Tamer</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 Sarah M. just earned the <strong>Good Eater Guide</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 James W. just earned the <strong>Sleep Champion</strong> badge</span>
-    <span class="ticker-sep">·</span>
-    <span class="ticker-item">🏅 Claire B. just earned the <strong>Potty Pro</strong> badge</span>
-    <span class="ticker-sep">·</span>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     HERO
-     ═══════════════════════════════════════════════════════════ -->
-<section class="hero" aria-label="Hero">
+<!-- ════════════════════════════════════════════════
+     HERO — Widget front and centre
+     ════════════════════════════════════════════════ -->
+<section class="hero">
   <div class="hero-inner">
-
-    <!-- Left: Copy -->
-    <div>
-      <div class="hero-eyebrow" data-reveal data-d="0">
-        <svg width="12" height="12" viewBox="0 0 14 16" fill="none" aria-hidden="true">
-          <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        For dads who want to get it right
-      </div>
-
-      <h1 class="hero-title" data-reveal data-d="1">
-        Be the dad who <em>actually</em> did the reading.
-      </h1>
-
-      <p class="hero-sub" data-reveal data-d="2">
-        Pick a topic. One hour. Make informed decisions.
-      </p>
-
-      <div class="hero-actions" data-reveal data-d="3">
-        <a href="sign-in.html" class="btn-primary">
-          Get Free Access
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <a href="#library" class="btn-ghost">
-          See all playbooks
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path d="M10 4v12M4 10l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
-
-      <div class="hero-meta" data-reveal data-d="4">
-        <div class="hero-stat">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-            <path d="M10 2l2.4 5 5.6.8-4 3.9.9 5.5L10 14.5l-4.9 2.7.9-5.5L2 7.8l5.6-.8L10 2z" fill="#F5A623"/>
-          </svg>
-          Free to start
-        </div>
-        <div class="hero-stat-dot" aria-hidden="true"></div>
-        <div class="hero-stat">Under an hour (yes, really)</div>
-        <div class="hero-stat-dot" aria-hidden="true"></div>
-        <div class="hero-stat">Certificate included (show your partner)</div>
-      </div>
-      <p class="hero-already" data-reveal data-d="5">Already in the thick of it? Good. Most parents find this at exactly the right moment.</p>
+    <div class="hero-kicker">
+      <div class="hero-kicker-dot"></div>
+      FamilyForce Scout
     </div>
 
-    <!-- Right: Jack photo + floating badges -->
-    <div class="hero-visual" data-reveal data-d="2" aria-hidden="true">
-      <div class="hero-photo-wrap">
-        <img
-          src="images/hero-dad.jpg"
-          alt="Jack Hartley with his infant son"
-          class="hero-photo-img"
-          loading="eager"
-          decoding="async"
-        />
-        <div class="hero-photo-overlay"></div>
+    <h1 class="hero-h1" data-reveal>
+      Every month, Scout tells you exactly<br>what your child needs —<br>and puts it <em>in your calendar.</em>
+    </h1>
+
+    <p class="hero-sub" data-reveal data-d="1">
+      The first three years are full of time sensitive developmental windows. Some are open for months. Others close in weeks. Scout makes sure you never find out too late.
+    </p>
+
+    <!-- THE WIDGET -->
+    <div class="hero-widget-wrap" data-reveal data-d="2">
+      <div class="w-header">
+        <div class="w-eyebrow">
+          <svg width="10" height="11" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#A78BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Live milestone preview
+        </div>
+        <div class="w-title">What's open <em>for your child right now</em></div>
       </div>
 
-      <!-- Floating cert badge -->
-      <div class="hero-cert-badge">
-        <div class="hero-cert-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M9 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="12" cy="12" r="9" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
-          </svg>
+      <div class="w-personas">
+        <div class="w-persona" id="p0" onclick="selectPersona(0)">
+          <span class="w-persona-icon">🤱</span>
+          <span class="w-persona-label">Expecting</span>
+          <span class="w-persona-sub">~8 weeks out</span>
         </div>
-        <div class="hero-cert-text">
-          <strong>Certificate earned!</strong>
-          <span>Sleep Training Playbook</span>
+        <div class="w-persona" id="p1" onclick="selectPersona(1)">
+          <span class="w-persona-icon">👶</span>
+          <span class="w-persona-label">5 months old</span>
+          <span class="w-persona-sub">22 weeks</span>
+        </div>
+        <div class="w-persona" id="p2" onclick="selectPersona(2)">
+          <span class="w-persona-icon">🧒</span>
+          <span class="w-persona-label">1 year old</span>
+          <span class="w-persona-sub">52 weeks</span>
         </div>
       </div>
 
-      <!-- FamilyForce score -->
-      <div class="hero-ff-badge">
-        <div class="hero-ff-badge-label">FamilyForce</div>
-        <div class="hero-ff-badge-value">3</div>
-        <div class="hero-ff-badge-sub">badges earned</div>
+      <div class="w-divider"></div>
+
+      <div class="w-stage-row">
+        <div class="w-stage-pill"><div class="w-stage-dot"></div><span id="w-stage"></span></div>
+        <div class="w-stage-desc" id="w-stage-desc"></div>
+      </div>
+
+      <div class="w-windows" id="w-windows"></div>
+
+      <div class="w-cta">
+        <a href="sign-in.html" class="w-cta-btn">Get my full personalised digest →</a>
+        <div class="w-cta-note">1 month free · no card required · cancel anytime</div>
       </div>
     </div>
 
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════
-     TRUST BAR
-     ═══════════════════════════════════════════════════════════ -->
-<div class="trust-bar" role="list" aria-label="Key facts">
-  <div class="trust-item" role="listitem">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12l2 2 4-4" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#6E4ED6" stroke-width="1.5"/></svg>
-    <span>500+ peer-reviewed sources</span>
-  </div>
-  <div class="trust-dot" aria-hidden="true"></div>
-  <div class="trust-item" role="listitem">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="2" width="12" height="16" rx="1.5" stroke="#6E4ED6" stroke-width="1.5"/><rect x="8" y="6" width="12" height="16" rx="1.5" stroke="#6E4ED6" stroke-width="1.5" fill="rgba(110,78,214,.06)"/></svg>
-    <span>Cited. Verifiable. Not a blog.</span>
-  </div>
-  <div class="trust-dot" aria-hidden="true"></div>
-  <div class="trust-item" role="listitem">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="#6E4ED6" stroke-width="1.5"/><path d="M12 7v5l3 3" stroke="#6E4ED6" stroke-width="1.5" stroke-linecap="round"/></svg>
-    <span>Under an hour per topic</span>
-  </div>
-  <div class="trust-dot" aria-hidden="true"></div>
-  <div class="trust-item" role="listitem">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l2.4 5 5.6.8-4 3.9.9 5.5L10 14.5l-4.9 2.7.9-5.5L2 7.8l5.6-.8L10 2z" fill="#6E4ED6"/></svg>
-    <span>Quiz + certificate included</span>
-  </div>
-  <div class="trust-dot" aria-hidden="true"></div>
-  <div class="trust-item" role="listitem">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2C8 2 5 5 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-4-3-7-7-7z" stroke="#6E4ED6" stroke-width="1.5"/></svg>
-    <span>All playbooks free during beta</span>
-  </div>
-  <div class="trust-dot" aria-hidden="true"></div>
-  <div class="trust-item" role="listitem">
-    <span style="font-size:14px">🤰</span>
-    <span>Perfect for expecting parents</span>
-  </div>
-</div>
-
-<div class="divider" style="width:min(80%,960px)" role="separator" aria-hidden="true"></div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     HOW IT WORKS
-     ═══════════════════════════════════════════════════════════ -->
-<section class="section" id="how-it-works" aria-label="How it works">
-  <div class="wrap">
-    <div style="max-width:640px;margin:0 auto;text-align:center;margin-bottom:0" data-reveal>
-      <p class="label" style="margin-bottom:16px">How It Works</p>
-      <h2 class="heading" style="margin-bottom:16px">You've got an hour.<br>That's enough.</h2>
-      <p class="body-text" style="font-size:17px">Three steps. No fluff. Know exactly what to do.</p>
-    </div>
-
-    <div class="steps-grid" data-reveal>
-
-      <div class="step-card">
-        <span class="step-number" aria-hidden="true">1</span>
-        <div class="step-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M4 6h16M4 10h12M4 14h8" stroke="#6E4ED6" stroke-width="1.8" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <p class="step-title">Choose a Topic</p>
-        <p class="step-body">Pick the thing that's hard. Sleep, tantrums, potty, feeding, screen time. Start wherever you are.</p>
+    <div class="hero-trust" data-reveal data-d="3">
+      <div class="hero-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        197 milestones tracked
       </div>
-
-      <div class="step-card">
-        <span class="step-number" aria-hidden="true">2</span>
-        <div class="step-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="4" width="14" height="18" rx="2" stroke="#6E4ED6" stroke-width="1.5"/>
-            <path d="M7 9h8M7 13h5" stroke="#6E4ED6" stroke-width="1.5" stroke-linecap="round"/>
-            <circle cx="18" cy="18" r="4" fill="#6E4ED6"/>
-            <path d="M16.5 18l1 1 2-2" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <p class="step-title">Do the Course</p>
-        <p class="step-body">Evidence-backed research. Chapter by chapter. Earn your certificate.</p>
+      <div class="hero-trust-dot"></div>
+      <div class="hero-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        AAP · CDC · WHO sourced
       </div>
-
-      <div class="step-card">
-        <span class="step-number" aria-hidden="true">3</span>
-        <div class="step-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12 3l1.8 5.4H19l-4.9 3.5 1.9 5.6L12 14l-4.9 3.5 1.9-5.6L4 8.4h5.2z" stroke="#6E4ED6" stroke-width="1.5" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <p class="step-title">Know What You're Doing</p>
-        <p class="step-body">The hard moments don't go away. You just know what to do when they show up.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<div class="divider" style="width:min(80%,960px)" role="separator" aria-hidden="true"></div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     FAMILYFORCE BADGE GRID (badges only shown on mobile fallback - section removed, badges folded into library)
-     ═══════════════════════════════════════════════════════════ -->
-<section class="ff-section" aria-label="Build your FamilyForce" style="display:none">
-  <div class="wrap">
-    <div class="badge-grid" data-reveal>
-      <div class="badge-card earned">
-        <span class="badge-free-sticker">FREE</span>
-        <div class="badge-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <rect x="3" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
-            <rect x="14" y="3" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
-            <rect x="3" y="14" width="7" height="7" rx="1.5" stroke="#fff" stroke-width="1.5"/>
-            <path d="M14 17.5h7M17.5 14v7" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <p class="badge-name">Digital Guardian</p>
-        <p class="badge-topic">Screen Time</p>
-      </div>
-      <div class="badge-card earned">
-        <div class="badge-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <path d="M12 3C8 3 5 7 5 11c0 5 5 9 7 10 2-1 7-5 7-10 0-4-3-8-7-8z" stroke="#fff" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <p class="badge-name">Potty Pro</p>
-        <p class="badge-topic">Potty Training</p>
-      </div>
-      <div class="badge-card earned">
-        <div class="badge-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <path d="M3 12C3 7 7 3 12 3s9 4 9 9-4 9-9 9-9-4-9-9z" stroke="#fff" stroke-width="1.5"/>
-            <path d="M12 7v5l3 3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <p class="badge-name">Sleep Champion</p>
-        <p class="badge-topic">Sleep Training</p>
-      </div>
-      <div class="badge-card earned">
-        <div class="badge-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2z" stroke="#fff" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <p class="badge-name">Tantrum Tamer</p>
-        <p class="badge-topic">Tantrums</p>
-      </div>
-      <div class="badge-card earned">
-        <div class="badge-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
-            <path d="M12 3c-1 3-4 5-4 9a4 4 0 008 0c0-4-3-6-4-9z" stroke="#fff" stroke-width="1.5"/>
-            <path d="M9 17v2M15 17v2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <p class="badge-name">Good Eater Guide</p>
-        <p class="badge-topic">Feeding</p>
-      </div>
-    </div>
-
-    <!-- Coming soon -->
-    <div data-reveal>
-      <p class="coming-label">Coming soon</p>
-      <div class="badge-grid badge-grid--coming">
-        <div class="badge-card coming">
-          <div class="badge-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="9" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/></svg>
-          </div>
-          <p class="badge-name">Sibling Starter</p>
-          <p class="badge-topic">Siblings</p>
-        </div>
-        <div class="badge-card coming">
-          <div class="badge-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19V5h16v14H4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M8 9h8M8 13h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </div>
-          <p class="badge-name">First Reader</p>
-          <p class="badge-topic">Raising a Reader</p>
-        </div>
-        <div class="badge-card coming">
-          <div class="badge-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
-          </div>
-          <p class="badge-name">Calm Authority</p>
-          <p class="badge-topic">Discipline</p>
-        </div>
-        <div class="badge-card coming">
-          <div class="badge-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 6V4M16 6V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </div>
-          <p class="badge-name">AI Ready</p>
-          <p class="badge-topic">AI &amp; Kids</p>
-        </div>
-        <div class="badge-card coming">
-          <div class="badge-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 8v4l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </div>
-          <p class="badge-name">More soon</p>
-          <p class="badge-topic">Stay tuned</p>
-        </div>
-      </div>
-      <div class="badge-coming-row" style="display:none">
-        <span class="badge-pill">Siblings</span>
-        <span class="badge-pill">Raising a Reader</span>
-        <span class="badge-pill">Discipline</span>
-        <span class="badge-pill">AI &amp; Kids</span>
-        <span class="badge-pill">Bullying</span>
-        <span class="badge-pill">Homework</span>
-        <span class="badge-pill">+ more coming</span>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════════════════════
-     BOOK LIBRARY
-     ═══════════════════════════════════════════════════════════ -->
-<section class="section" id="library" aria-label="Playbook library">
-  <div class="wrap">
-    <div style="max-width:640px;margin:0 auto;text-align:center" data-reveal>
-      <p class="label" style="margin-bottom:16px">The Library</p>
-      <h2 class="heading" style="margin-bottom:16px">Ready to Level Up</h2>
-      <p class="body-text" style="font-size:17px">One hour of research-backed reading, a quiz, and a certificate. We add new topics regularly based on what parents are asking for.</p>
-    </div>
-
-    <!-- Age picker -->
-    <div class="age-picker" data-reveal>
-      <p class="age-picker-label">Not sure where to start? How old is your little one?</p>
-      <div class="age-picker-btns" role="group" aria-label="Select your child's age">
-        <button class="age-btn" onclick="pickAge(this,'expecting')">Expecting <span>Due soon</span></button>
-        <button class="age-btn" onclick="pickAge(this,'newborn')">Newborn <span>0–6m</span></button>
-        <button class="age-btn" onclick="pickAge(this,'baby')">Baby <span>6–18m</span></button>
-        <button class="age-btn" onclick="pickAge(this,'toddler')">Toddler <span>1–3yr</span></button>
-        <button class="age-btn" onclick="pickAge(this,'child')">Child <span>3–6yr</span></button>
-        <button class="age-btn" onclick="pickAge(this,'schoolage')">School Age <span>6yr+</span></button>
-      </div>
-      <div id="age-rec" class="age-rec" aria-live="polite"></div>
-    </div>
-
-    <div class="book-grid" id="book-grid-v2" data-reveal></div>
-
-    <!-- Coming soon book cards -->
-    <div data-reveal style="margin-top:48px">
-      <p class="coming-label" style="color:var(--text-dim);margin-bottom:16px">Coming soon</p>
-      <div class="book-grid" id="book-grid-coming"></div>
-    </div>
-
-  </div>
-</section>
-
-<div class="divider" style="width:min(80%,960px)" role="separator" aria-hidden="true"></div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     GIFT A PLAYBOOK (hidden during beta — no payment yet)
-     ═══════════════════════════════════════════════════════════ -->
-<section class="section gift-section" aria-label="Gift a playbook" style="display:none">
-  <div class="wrap">
-    <div class="gift-card" data-reveal>
-      <div class="gift-left">
-        <span class="gift-eyebrow">🎁 Give the gift of a prepared dad</span>
-        <h2 class="gift-heading">Baby showers. Better than Netflix.<br>Just because.</h2>
-        <p class="gift-body">A FamilyForce playbook is available instantly. One hour of reading that actually changes how he shows up. No wrapping required.</p>
-        <div class="gift-pricing">
-          <span class="gift-price-item">Any single playbook: <strong>$14.99</strong></span>
-        </div>
-        <button class="btn gift-open-btn" onclick="openGiftModal()">Gift a Playbook →</button>
-        <p class="gift-note">Delivered instantly. Redeemable anytime.</p>
-      </div>
-      <div class="gift-right" aria-hidden="true">
-        <div class="gift-preview">
-          <div class="gift-preview-card">
-            <div class="gift-preview-icon">🎁</div>
-            <p class="gift-preview-to">To: <strong>Dad</strong></p>
-            <p class="gift-preview-title">Sleep Training Playbook</p>
-            <p class="gift-preview-from">From: Sarah ❤️</p>
-            <div class="gift-preview-badge">FamilyForce gift</div>
-          </div>
-        </div>
+      <div class="hero-trust-dot"></div>
+      <div class="hero-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Whole family included
       </div>
     </div>
   </div>
 </section>
 
-<!-- GIFT MODAL -->
-<div class="gift-modal-overlay" id="giftModalOverlay" role="dialog" aria-modal="true" aria-label="Gift a playbook" hidden>
-  <div class="gift-modal" id="giftModal">
-    <button class="gift-modal-close" onclick="closeGiftModal()" aria-label="Close">✕</button>
-    <h2 class="gift-modal-title">🎁 Gift a Playbook</h2>
-    <p class="gift-modal-sub">Pick a playbook, add a message, and it lands in their inbox instantly.</p>
-
-    <form class="gift-form" onsubmit="submitGift(event)">
-      <!-- Step 1: Choose playbook -->
-      <fieldset class="gift-fieldset">
-        <legend class="gift-legend">Choose a playbook</legend>
-        <div class="gift-book-grid" id="gift-book-options"></div>
-      </fieldset>
-
-      <!-- Step 2: Recipient -->
-      <fieldset class="gift-fieldset">
-        <legend class="gift-legend">Who's it for?</legend>
-        <div class="gift-row">
-          <label class="gift-label" for="gift-to-name">Their name</label>
-          <input class="gift-input" id="gift-to-name" type="text" placeholder="e.g. Marcus" required autocomplete="off">
-        </div>
-        <div class="gift-row">
-          <label class="gift-label" for="gift-to-email">Their email</label>
-          <input class="gift-input" id="gift-to-email" type="email" placeholder="e.g. marcus@email.com" required autocomplete="email">
-        </div>
-      </fieldset>
-
-      <!-- Step 3: From + message -->
-      <fieldset class="gift-fieldset">
-        <legend class="gift-legend">From</legend>
-        <div class="gift-row">
-          <label class="gift-label" for="gift-from-name">Your name</label>
-          <input class="gift-input" id="gift-from-name" type="text" placeholder="e.g. Sarah" required autocomplete="given-name">
-        </div>
-        <div class="gift-row">
-          <label class="gift-label" for="gift-message">Personal message <span class="gift-optional">(optional)</span></label>
-          <textarea class="gift-input gift-textarea" id="gift-message" placeholder="e.g. You've got this, babe. Read before Friday." rows="3" maxlength="200"></textarea>
-        </div>
-      </fieldset>
-
-      <div class="gift-submit-row">
-        <div class="gift-total">Total: <strong id="gift-total-price">$14.99</strong></div>
-        <button type="submit" class="btn gift-submit-btn">Proceed to Payment →</button>
+<!-- HOW SCOUT WORKS -->
+<section class="how" id="how" aria-labelledby="how-h2">
+  <div class="how-inner">
+    <div class="how-header" data-reveal>
+      <span class="section-label">How Scout works</span>
+      <h2 class="section-title" id="how-h2">One email. One calendar invite. <em>Every month.</em></h2>
+      <p class="section-sub">Scout does the tracking for you. You just show up for your child.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card" data-reveal>
+        <div class="step-num">1</div>
+        <span class="step-icon">👶</span>
+        <div class="step-title">Add your child</div>
+        <p class="step-body">Enter your child's date of birth (or due date — Scout covers expecting parents too). Takes 30 seconds.</p>
       </div>
-      <p class="gift-submit-note">You'll be asked to create a free account (or sign in) before checkout.</p>
-    </form>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     SCOUT PROMO
-     ═══════════════════════════════════════════════════════════ -->
-<div class="scout-promo" style="margin-top:0;margin-bottom:80px" data-reveal>
-  <div class="scout-promo-inner">
-
-    <!-- Left: Copy -->
-    <div>
-      <div class="scout-promo-eyebrow">
-        <div class="scout-promo-dot"></div>
-        FamilyForce Scout
+      <div class="step-card" data-reveal data-d="1">
+        <div class="step-num">2</div>
+        <span class="step-icon">🗺️</span>
+        <div class="step-title">Scout maps your windows</div>
+        <p class="step-body">Scout cross references 196 clinical windows against your child's exact age and surfaces what's open, closing, and coming up.</p>
       </div>
-      <h2 class="scout-promo-h2">
-        Your child has 200+ developmental<br>windows. <em>Don't miss one.</em>
-      </h2>
-      <p class="scout-promo-sub">
-        Every month has a job. Peanut introduction. Sleep training. Speech screening. Scout tracks the calendar for your child's exact age and tells you what's open right now.
-      </p>
-      <div class="scout-promo-benefits">
-        <div class="scout-promo-benefit">
-          <div class="scout-promo-benefit-icon">🎯</div>
-          Personalised to your child's exact age, updates every month
-        </div>
-        <div class="scout-promo-benefit">
-          <div class="scout-promo-benefit-icon">⚠️</div>
-          Alerts you before windows close, not after
-        </div>
-        <div class="scout-promo-benefit">
-          <div class="scout-promo-benefit-icon">👨‍👩‍👧</div>
-          Whole family included, one subscription, everyone on the same page
-        </div>
+      <div class="step-card" data-reveal data-d="2">
+        <div class="step-num">3</div>
+        <span class="step-icon">📬</span>
+        <div class="step-title">Monthly email + calendar invite</div>
+        <p class="step-body">Each month you get a clear email summary and a calendar reminder — ready to add to Google Calendar, Apple Calendar, or any calendar app.</p>
       </div>
-      <div class="scout-promo-actions">
-        <a href="scout.html" class="scout-promo-btn-primary">Learn about Scout →</a>
-        <a href="sign-in.html" class="scout-promo-btn-secondary">Try Scout free</a>
+      <div class="step-card" data-reveal data-d="3">
+        <div class="step-num">4</div>
+        <span class="step-icon">✅</span>
+        <div class="step-title">Track and personalize</div>
+        <p class="step-body">Mark what you've done in the dashboard. Your next email gets smarter — flagging gaps and adjusting to your child's actual progress.</p>
       </div>
     </div>
-
-    <!-- Right: Mini product card -->
-    <div>
-      <div class="sp-card">
-        <div class="sp-card-header">
-          <span class="sp-card-label">FamilyForce Scout</span>
-          <span class="sp-card-age">🌱 14 months</span>
+    <div class="device-row" data-reveal>
+      <div class="device-card">
+        <div class="device-label">
+          <span class="device-label-icon">📧</span>
+          <span class="device-label-text">Monthly email</span>
         </div>
-        <div class="sp-card-body">
-          <div class="sp-window">
-            <div class="sp-window-icon">🥜</div>
-            <div class="sp-window-content">
-              <div class="sp-window-tag urgent">⚠ Don't miss this</div>
-              <div class="sp-window-title">Peanut introduction window is open</div>
-              <div class="sp-window-desc">Up to 86% reduction in peanut allergy when introduced at 4–11 months. Window closes soon.</div>
-            </div>
-          </div>
-          <div class="sp-window">
-            <div class="sp-window-icon">💬</div>
-            <div class="sp-window-content">
-              <div class="sp-window-tag open">This month</div>
-              <div class="sp-window-title">First words: what to listen for</div>
-              <div class="sp-window-desc">10+ words by 18 months. Here's what counts — and what to flag.</div>
-            </div>
-          </div>
-          <div class="sp-window">
-            <div class="sp-window-icon">🚶</div>
-            <div class="sp-window-content">
-              <div class="sp-window-tag coming">Ongoing</div>
-              <div class="sp-window-title">Independent walking</div>
-              <div class="sp-window-desc">Normal range: 9–18 months. Still open — no action needed yet.</div>
-            </div>
+        <div class="mini-email-header">
+          <div class="mini-avatar">FF</div>
+          <div>
+            <div class="mini-from">FamilyForce Scout</div>
+            <div class="mini-date">April 1, 2026</div>
           </div>
         </div>
-        <div class="sp-card-footer">
-          <div class="sp-progress-meta">
-            <span>Current window</span>
-            <span>4 / 9 milestones</span>
-          </div>
-          <div class="sp-bar"><div class="sp-bar-fill"></div></div>
-        </div>
+        <div class="mini-subject">Emma's April windows (7 months)</div>
+        <div class="mini-body">3 windows open this month. 1 closing in 12 days — action needed.</div>
+        <div class="mini-window-row urgent"><span class="mini-window-icon">⚠️</span> Peanut introduction — closes Apr 12</div>
+        <div class="mini-window-row open"><span class="mini-window-icon">🌱</span> First solid foods — open all month</div>
+        <div class="mini-window-row open"><span class="mini-window-icon">💬</span> Babbling response — open this month</div>
+        <button class="mini-cal-btn">📅 Add to my calendar</button>
       </div>
-    </div>
-
-  </div>
-</div>
-
-<div class="divider" style="width:min(80%,960px)" role="separator" aria-hidden="true"></div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     WHO IT'S FOR
-     ═══════════════════════════════════════════════════════════ -->
-<section class="section" aria-label="Who it's for">
-  <div class="wrap">
-    <div style="max-width:640px;margin:0 auto;text-align:center" data-reveal>
-      <p class="label" style="margin-bottom:16px">Built For</p>
-      <h2 class="heading" style="margin-bottom:12px">Built for the whole family. Especially the dad who needs a nudge.</h2>
-      <p style="font-size:17px;color:var(--text-mid);font-weight:300">The best time to read these isn't at 2am. It's now, before the chaos hits.</p>
-    </div>
-
-    <div class="audience-grid" data-reveal>
-
-      <div class="audience-card primary">
-        <div class="audience-icon">👨</div>
-        <p class="audience-tag">For Dads</p>
-        <p class="audience-title">Start here. Earn your first badge.</p>
-        <p class="audience-body">Pick a topic. Read the thing. Pass the quiz. Feel weirdly proud of yourself for reasons you cannot fully explain.</p>
-        <div class="audience-cta">
-          <a href="sign-in.html" class="btn-primary" style="width:fit-content;font-size:14px;padding:12px 24px">Create Free Account</a>
+      <div class="device-card">
+        <div class="device-label">
+          <span class="device-label-icon">📅</span>
+          <span class="device-label-text">Calendar invite (any app)</span>
         </div>
-      </div>
-
-      <div class="audience-card">
-        <div class="audience-icon">👩</div>
-        <p class="audience-tag">For Moms</p>
-        <p class="audience-title">You've been carrying this long enough.</p>
-        <p class="audience-body">Forward a playbook to your partner. No explanation needed. They read it, take the quiz, earn the badge. You finally get someone on the same page.</p>
-        <p class="audience-also">Most moms read it too. Not just their partners.</p>
-        <div class="audience-cta">
-          <a href="sign-in.html" class="btn-primary" style="font-size:14px;padding:10px 24px">Create Free Account</a>
+        <div class="mini-cal-header">
+          <div class="mini-cal-month">April 2026</div>
+          <div class="mini-cal-day">8</div>
+          <div class="mini-cal-event">⚠️ Peanut intro window closes — Emma</div>
         </div>
-      </div>
-
-      <div class="audience-card">
-        <div class="family-faces" aria-hidden="true">
-          <span class="family-face" title="Grandpa">👴</span>
-          <span class="family-face" title="Grandma">👵</span>
-          <span class="family-face" title="Uncle / Aunt">🧑</span>
-          <span class="family-face" title="Sibling / Friend">🧑‍🤝‍🧑</span>
-        </div>
-        <p class="audience-tag">For Family &amp; Friends</p>
-        <p class="audience-title">The gift that actually gets used.</p>
-        <p class="audience-body">New parents in the family? A brother who could use a nudge? A friend who just announced a pregnancy? FamilyForce playbooks are the gift that lands. Subtler than advice, more useful than another baby gadget.</p>
-        <div class="audience-cta">
-          <a href="sign-in.html" class="btn-primary" style="font-size:14px;padding:10px 24px">Create Free Account</a>
-        </div>
-      </div>
-
-
-
-    </div>
-  </div>
-</section>
-
-<div class="divider" style="width:min(80%,960px)" role="separator" aria-hidden="true"></div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     JACK'S STORY
-     ═══════════════════════════════════════════════════════════ -->
-<section class="section" aria-label="About Jack">
-  <div class="wrap">
-    <div class="story-inner">
-
-      <div class="story-photo" aria-hidden="true">
-        <div class="hero-mockup" style="height:100%;" aria-label="FamilyForce course preview">
-          <div class="mockup-chrome">
-            <div class="mockup-dots"><span></span><span></span><span></span></div>
-            <div class="mockup-url">getfamilyforce.com/course</div>
-          </div>
-          <div class="mockup-body">
+        <div class="mini-cal-list">
+          <div class="mini-cal-item">
+            <div class="mini-cal-dot gold"></div>
             <div>
-              <div class="mkp-progress-meta"><span>Chapter 6 of 13</span><span style="color:var(--terra);font-weight:700;">46% complete</span></div>
-              <div class="mkp-bar"><div class="mkp-bar-fill" style="width:46%"></div></div>
-              <div class="mkp-roadmap">
-                <div class="mkp-dot done">✓</div>
-                <div class="mkp-dot done">✓</div>
-                <div class="mkp-dot done">✓</div>
-                <div class="mkp-dot done">✓</div>
-                <div class="mkp-dot done">✓</div>
-                <div class="mkp-dot current">🌙</div>
-                <div class="mkp-dot">🤝</div>
-                <div class="mkp-dot">🍼</div>
-                <div class="mkp-dot">⛅</div>
-                <div class="mkp-dot">🛏️</div>
-                <div class="mkp-dot">📉</div>
-                <div class="mkp-dot">🚶</div>
-                <div class="mkp-dot">🌅</div>
-              </div>
+              <div class="mini-cal-title">Peanut introduction window</div>
+              <div class="mini-cal-time">Closes April 12 · All family reminded</div>
             </div>
-            <div class="mkp-card">
-              <div class="mkp-eyebrow">Chapter 6 · 🌙 Game Night</div>
-              <div class="mkp-story">
-                <p>"Night one. Bath at 6:40. Books. 'I love you, it's time to sleep.' Put him in the crib. He looked at me. I walked out and closed the door."</p>
-              </div>
-              <div class="mkp-science">
-                <div class="mkp-science-lbl">The Science</div>
-                <p>Over 80% of children show significant improvement within the first week. Night two being harder is the documented low point — strongest predictor that night three drops sharply.</p>
-              </div>
-              <div class="mkp-question">
-                <div class="mkp-q-lbl">Check Your Understanding</div>
-                <div class="mkp-q-text">Night two is harder than night one. What does the research say?</div>
-                <div class="mkp-option correct">✓ Extinction burst — night three will almost certainly be shorter</div>
-                <div class="mkp-option">The method isn't working — switch now</div>
-              </div>
-              <div class="mkp-try">
-                <div class="mkp-try-lbl">✋ Try This</div>
-                <div class="mkp-try-text">Set timers: 3 min, 5 min, then 10 min. Label them "Check in — do not pick up."</div>
-              </div>
+          </div>
+          <div class="mini-cal-item">
+            <div class="mini-cal-dot purple"></div>
+            <div>
+              <div class="mini-cal-title">First solid foods — start this month</div>
+              <div class="mini-cal-time">Open through May 15</div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div>
-        <p class="label story-label" data-reveal>The Dad Behind It</p>
-        <h2 class="heading-md story-heading" data-reveal>He got it wrong the first time.<br>Then he did the reading.</h2>
-        <p class="story-body" data-reveal>Jack Hartley is a father of two boys and holds an MBA. His first son was the experiment. His second son was what happened after Jack immersed himself in the research: clinical studies, academic journals, pediatric guidelines, books, podcasts, and more late-night conversations with other parents than he can count. He cross-referenced the conflicting advice, cut through the noise, and figured out what actually holds up.</p>
-        <p class="story-body" data-reveal>He wrote the playbooks he wished he'd had. Short enough to finish. Specific enough to act on. Every claim cited so you and your partner can check his work.</p>
-        <div class="jack-creds" data-reveal>
-          <div class="jack-cred"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12l2 2 4-4" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#6E4ED6" stroke-width="1.5"/></svg>MBA</div>
-          <div class="jack-cred"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12l2 2 4-4" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#6E4ED6" stroke-width="1.5"/></svg>500+ peer-reviewed studies</div>
-          <div class="jack-cred"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12l2 2 4-4" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#6E4ED6" stroke-width="1.5"/></svg>Father of two</div>
-          <div class="jack-cred"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12l2 2 4-4" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="#6E4ED6" stroke-width="1.5"/></svg>All citations verifiable</div>
+        <div class="cal-badges">
+          <div class="cal-badge">📱 Google</div>
+          <div class="cal-badge">🍎 Apple</div>
+          <div class="cal-badge">📋 Outlook</div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <div class="before-after" data-reveal>
-          <div class="ba-col ba-before">
-            <p class="ba-label">First Son</p>
-            <ul class="ba-list">
-              <li>"Good luck buddy"</li>
-              <li>Months of trial and error</li>
-              <li>Googling at 2am</li>
-              <li>"We'll figure it out"</li>
-              <li>Experiment. Survived. Has the stories.</li>
-            </ul>
+<!-- ════════════════════════════════════════════════
+     COMPARISON — The "smart parents use all four" section
+     ════════════════════════════════════════════════ -->
+<section class="comparison">
+  <div class="comparison-intro" data-reveal>
+    <span class="section-label">Why Scout</span>
+    <h2 class="comparison-title">Most great parents<br>use <em>all four of these.</em></h2>
+    <p class="comparison-sub">Your family, your doctor, your parenting books, your own good instincts. None of that goes away. Scout is the layer that ties it all together, specifically for your child's age, right now.</p>
+  </div>
+
+  <div class="comp-grid">
+
+    <!-- Option 1: Family, Friends & Your Gut (moved to first) -->
+    <div class="comp-card alt" data-reveal data-d="1">
+      <div class="comp-head">
+        <span class="comp-option-icon">🫂</span>
+        <div class="comp-badge">Where everyone starts</div>
+        <div class="comp-option">Family, Friends & Your Gut</div>
+        <div class="comp-cost">
+          <strong>Free, always</strong>
+          and genuinely underrated
+        </div>
+      </div>
+      <div class="comp-pain">
+        Your instincts are real. So is the advice from your mom, your neighbour, and the parent group chat. Collectively, this is still the most used parenting resource on the planet.
+      </div>
+      <div class="comp-footer">
+        <div class="comp-footer-line">Trust your people.</div>
+      </div>
+    </div>
+
+    <!-- Option 2: Doctor visits -->
+    <div class="comp-card alt" data-reveal data-d="2">
+      <div class="comp-head">
+        <span class="comp-option-icon">🩺</span>
+        <div class="comp-badge">Essential</div>
+        <div class="comp-option">Your Pediatrician</div>
+        <div class="comp-cost">
+          <strong>Irreplaceable</strong>
+          keep every appointment
+        </div>
+      </div>
+      <div class="comp-pain">
+        The gold standard. They catch things nobody else will. But they have 15 minutes, a few times a year, with zero visibility into what's happening between visits.
+      </div>
+      <div class="comp-footer">
+        <div class="comp-footer-line">Keep every appointment.</div>
+      </div>
+    </div>
+
+    <!-- Option 3: Parenting books -->
+    <div class="comp-card alt" data-reveal data-d="3">
+      <div class="comp-head">
+        <span class="comp-option-icon">📚</span>
+        <div class="comp-badge">Great foundation</div>
+        <div class="comp-option">Parenting Books</div>
+        <div class="comp-cost">
+          <strong>Worth every page</strong>
+          the big picture, beautifully written
+        </div>
+      </div>
+      <div class="comp-pain">
+        Deep, thoughtful, genuinely useful. Just doesn't know that your kid turned 14 weeks yesterday and the peanut window opened last Tuesday.
+      </div>
+      <div class="comp-footer">
+        <div class="comp-footer-line">Read them all.</div>
+      </div>
+    </div>
+
+    <!-- Option 4: Scout -->
+    <div class="comp-card scout" data-reveal data-d="4">
+      <div class="comp-head">
+        <span class="comp-option-icon">🌱</span>
+        <div class="comp-badge">The missing layer</div>
+        <div class="comp-option" style="color:#fff">FamilyForce Scout</div>
+        <div class="comp-cost" style="color:rgba(255,255,255,.6)">
+          <strong style="color:#fff">$6.67/mo</strong>
+          billed $79.99/year · 1 month free
+        </div>
+      </div>
+      <div class="comp-pain" style="color:rgba(255,255,255,.65)">
+        Everything you're already doing, with a layer that knows your child's exact age, tracks the open windows, and tells you what matters this month. Not in general. Right now.
+      </div>
+      <div class="comp-footer" style="border-top:1px solid rgba(255,255,255,.1)">
+        <a href="sign-in.html" style="display:block;text-align:center;background:#fff;color:var(--terra-dark);font-weight:700;font-size:13px;padding:12px;border-radius:100px;text-decoration:none;transition:transform .15s">Start Free for 1 Month →</a>
+      </div>
+    </div>
+
+  </div><!-- /comp-grid -->
+</section>
+
+<!-- WHAT PARENTS SAY -->
+<section class="testimonials" aria-labelledby="testi-heading">
+  <div class="testimonials-inner">
+    <span class="testimonials-eyebrow" id="testi-heading">What parents say</span>
+    <div class="testimonials-grid">
+      <div class="testi-card" data-reveal>
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"I had no idea the <strong>peanut introduction window</strong> was even a thing. Scout flagged it at 4 months and we acted in time. Our pediatrician said we did exactly the right thing."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#EDE9FE">👩</div>
+          <div>
+            <div class="testi-name">Sarah M.</div>
+            <div class="testi-meta">Mom of Emma, 7 months · Hong Kong</div>
           </div>
-          <div class="ba-divider" aria-hidden="true">→</div>
-          <div class="ba-col ba-after">
-            <p class="ba-label">Second Son</p>
-            <ul class="ba-list">
-              <li>"Here's the plan"</li>
-              <li>Done in a long weekend</li>
-              <li>Sleeping at 2am</li>
-              <li>Certificate on the fridge</li>
-              <li>Got the prepared version. Doing suspiciously well.</li>
-            </ul>
+        </div>
+      </div>
+      <div class="testi-card" data-reveal data-d="1">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"I'm a planner. Scout was the first thing I set up after the 12-week scan. <strong>Knowing what's coming makes me feel in control</strong> — not overwhelmed. My husband is on it too."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#FCE7F3">🤰</div>
+          <div>
+            <div class="testi-name">Priya K.</div>
+            <div class="testi-meta">Expecting, 28 weeks · Singapore</div>
           </div>
         </div>
       </div>
-
+      <div class="testi-card" data-reveal data-d="2">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"We're both working full time with a 10 month old. <strong>The calendar invite is the killer feature</strong> — it's already in my schedule before I even think about it. Nothing falls through the cracks."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#DBEAFE">👨</div>
+          <div>
+            <div class="testi-name">David &amp; Rachel T.</div>
+            <div class="testi-meta">Parents of Liam, 10 months · London</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<div class="divider" style="width:min(80%,960px)" role="separator" aria-hidden="true"></div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     TESTIMONIALS
-     ═══════════════════════════════════════════════════════════ -->
-<section class="section" aria-label="Testimonials">
-  <div class="wrap">
-    <div style="max-width:640px;margin:0 auto;text-align:center" data-reveal>
-      <p class="label" style="margin-bottom:16px">Reviews</p>
-      <h2 class="heading" style="margin-bottom:12px">The dads who did the reading.<br>And the moms who sent it to them.</h2>
-      <p style="font-size:15px;color:var(--text-dim);font-style:italic">Verified. Certified. Slightly smug.</p>
+<!-- PERFECT GIFT -->
+<section class="gift-section" aria-labelledby="gift-h2">
+  <div class="gift-inner">
+    <div data-reveal>
+      <span class="gift-eyebrow">Perfect gift</span>
+      <h2 class="gift-h2" id="gift-h2">The best baby shower gift<br>isn't a onesie. <em>It's a year of Scout.</em></h2>
+      <p class="gift-body">New parents don't need more stuff. They need someone to tell them what matters, when it matters — so they can focus on what only they can do: show up for their child.</p>
+      <div class="gift-cards">
+        <div class="gift-card">
+          <div class="gift-card-icon">🤰</div>
+          <div>
+            <div class="gift-card-title">Expecting parents</div>
+            <div class="gift-card-desc">Scout covers the pre birth period too — with prep windows before baby arrives and a full year of reminders from day one.</div>
+          </div>
+        </div>
+        <div class="gift-card">
+          <div class="gift-card-icon">🎁</div>
+          <div>
+            <div class="gift-card-title">Baby shower gift</div>
+            <div class="gift-card-desc">Give a year of Scout — something that stays useful long after the onesies are outgrown and the bibs have been donated.</div>
+          </div>
+        </div>
+        <div class="gift-card">
+          <div class="gift-card-icon">👨‍👩‍👧‍👦</div>
+          <div>
+            <div class="gift-card-title">For the busy family</div>
+            <div class="gift-card-desc">Working parents, single parents, grandparents — Scout is built for people who can't afford to miss a thing but barely have time to breathe.</div>
+          </div>
+        </div>
+      </div>
+      <div class="gift-ctas">
+        <a href="/scout-signup.html" class="btn-primary">Start your free trial →</a>
+        <a href="/scout-gift.html" class="btn-ghost-v">Give as a gift →</a>
+      </div>
     </div>
-
-    <div class="testimonials-grid" data-reveal>
-
-      <div class="testimonial-card">
-        <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
-        <span class="testimonial-tag">Mom</span>
-        <p class="testimonial-quote">I sent my husband the screen time playbook with zero context. He read it, passed the quiz, and texted me the certificate. I did not expect that. He did not stop talking about it for a week.</p>
-        <div>
-          <p class="testimonial-author">Priya K.</p>
-          <p class="testimonial-role">Mother of two. London, UK.</p>
+    <div data-reveal data-d="1">
+      <div class="gift-visual">
+        <div class="gift-tag-pill">🎁 Baby shower gift</div>
+        <div class="gift-amount">$79.99</div>
+        <div class="gift-amount-sub">Full year of Scout · One time gift</div>
+        <div class="gift-perks">
+          <div class="gift-perk"><span class="gift-perk-check">✓</span> 138 reminders in year 1</div>
+          <div class="gift-perk"><span class="gift-perk-check">✓</span> Email + calendar invite every month</div>
+          <div class="gift-perk"><span class="gift-perk-check">✓</span> Share with up to 5 family members</div>
+          <div class="gift-perk"><span class="gift-perk-check">✓</span> Access to all 5 free playbooks</div>
+          <div class="gift-perk"><span class="gift-perk-check">✓</span> Pre birth prep windows included</div>
         </div>
+        <a href="/scout-gift.html" class="gift-btn">Give Scout as a gift →</a>
       </div>
-
-      <div class="testimonial-card">
-        <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
-        <span class="testimonial-tag">Dad</span>
-        <p class="testimonial-quote">I texted my wife the certificate. She said "did you actually read it?" I said yes. She said "the whole thing?" I said yes. She has not questioned me since.</p>
-        <div>
-          <p class="testimonial-author">Daniel R.</p>
-          <p class="testimonial-role">Father of two. Chicago, IL.</p>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
-        <span class="testimonial-tag">Mom</span>
-        <p class="testimonial-quote">He started saying things like "the research actually says" in conversations. At first I thought it was annoying. Then I realized he was right. It's still a little annoying.</p>
-        <div>
-          <p class="testimonial-author">Sarah M.</p>
-          <p class="testimonial-role">Mother of one. Melbourne, AU.</p>
-        </div>
-      </div>
-
-      <div class="testimonial-card">
-        <div class="testimonial-stars" aria-label="5 stars">★★★★★</div>
-        <span class="testimonial-tag">Expecting Dad</span>
-        <p class="testimonial-quote">Read Sleep Training and Feeding before our son arrived. The first month was still hard. I wasn't figuring it out as we went. We had a plan. That felt completely different.</p>
-        <div>
-          <p class="testimonial-author">Ryan P.</p>
-          <p class="testimonial-role">First-time dad. Denver, CO.</p>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════════════════
-     EMAIL CAPTURE
-     ═══════════════════════════════════════════════════════════ -->
-<section class="section email-section" aria-label="Get your free playbook">
-  <div class="wrap">
-    <div class="email-inner" data-reveal>
-      <p class="label" style="margin-bottom:16px;color:rgba(255,255,255,.5)">Start here</p>
-      <h2 class="heading" style="margin-bottom:16px;color:#fff">Free access to all 5 playbooks.<br>No card required.</h2>
-      <p style="font-size:17px;color:rgba(255,255,255,.65);margin-bottom:36px;max-width:480px">Create your free account. Read any playbook, take the quiz, and earn your badge. All in your profile.</p>
-      <a href="sign-in.html" class="btn-primary email-submit" style="display:inline-flex;align-items:center;gap:10px;font-size:16px;padding:18px 40px">
-        Create your free account
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="M4 10h12M12 5l5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </a>
-      <p style="margin-top:20px;font-size:12px;color:rgba(255,255,255,.3)">Your quiz results and certificates live in your profile. Already have an account? <a href="sign-in.html" style="color:rgba(155,128,255,.7);text-decoration:underline">Sign in</a>.</p>
+<!-- THE DAD BEHIND IT -->
+<section class="about-jack" aria-labelledby="about-jack-h2">
+  <div class="about-jack-inner">
+
+    <!-- Course mockup -->
+    <div data-reveal>
+      <div class="course-mockup">
+        <div class="course-browser">
+          <div class="course-chrome">
+            <div class="course-chrome-dot" style="background:#FF605C"></div>
+            <div class="course-chrome-dot" style="background:#FFBD44;margin-left:4px"></div>
+            <div class="course-chrome-dot" style="background:#00CA4E;margin-left:4px"></div>
+            <div class="course-url">getfamilyforce.com/course</div>
+          </div>
+          <div class="course-body">
+            <div class="course-progress-row">
+              <span class="course-chapter-label">Chapter 6 of 13</span>
+              <span class="course-pct">46% complete</span>
+            </div>
+            <div class="course-prog-bar"><div class="course-prog-fill"></div></div>
+            <div class="course-steps">
+              <div class="course-step done">✓</div>
+              <div class="course-step done">✓</div>
+              <div class="course-step done">✓</div>
+              <div class="course-step done">✓</div>
+              <div class="course-step done">✓</div>
+              <div class="course-step current">6</div>
+              <div class="course-step locked">🌙</div>
+              <div class="course-step locked">🍼</div>
+              <div class="course-step locked">🛏️</div>
+              <div class="course-step locked">📊</div>
+              <div class="course-step locked">👁️</div>
+              <div class="course-step locked">🏁</div>
+              <div class="course-step locked">🎓</div>
+            </div>
+            <div class="course-card">
+              <div class="course-card-chapter">Chapter 6 · 🌙 Game Night</div>
+              <div class="course-card-quote">"Night one. Bath at 6:40. Books. 'I love you, it's time to sleep.' Put him in the crib. He looked at me. I walked out and closed the door."</div>
+              <div class="course-science-label">The Science</div>
+              <div class="course-science-text">Over 80% of children show significant improvement within the first week. Night two being harder is the documented low point — strongest predictor that night three drops sharply.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text -->
+    <div data-reveal data-d="1">
+      <span class="about-jack-eyebrow">The dad behind it</span>
+      <h2 class="about-jack-h2" id="about-jack-h2">He got it wrong the first time.<br>Then he did the reading.</h2>
+      <p class="about-jack-body">Jack Hartley is a father of two boys and holds an MBA. His first son was the experiment. His second son was what happened after Jack immersed himself in the research: clinical studies, academic journals, pediatric guidelines, books, podcasts, and more late night conversations with other parents than he can count. He cross referenced the conflicting advice, cut through the noise, and figured out what actually holds up.</p>
+      <p class="about-jack-body">He wrote the playbooks he wished he'd had. Short enough to finish. Specific enough to act on. Every claim cited so you and your partner can check his work.</p>
+      <div class="about-jack-creds">
+        <div class="about-jack-cred"><span class="about-jack-cred-check">⊙</span> MBA</div>
+        <div class="about-jack-cred"><span class="about-jack-cred-check">⊙</span> 500+ peer reviewed studies</div>
+        <div class="about-jack-cred"><span class="about-jack-cred-check">⊙</span> Father of two</div>
+        <div class="about-jack-cred"><span class="about-jack-cred-check">⊙</span> All citations verifiable</div>
+      </div>
+      <div class="sons-table">
+        <div class="sons-header">
+          <span class="sons-header-label">First Son</span>
+          <span></span>
+          <span class="sons-header-label right">Second Son</span>
+        </div>
+        <div class="sons-rows">
+          <div class="sons-row">
+            <span class="sons-cell bad">"Good luck buddy"</span>
+            <span class="sons-arrow">→</span>
+            <span class="sons-cell good">"Here's the plan"</span>
+          </div>
+          <div class="sons-row">
+            <span class="sons-cell bad">Months of trial and error</span>
+            <span class="sons-arrow">→</span>
+            <span class="sons-cell good">Done in a long weekend</span>
+          </div>
+          <div class="sons-row">
+            <span class="sons-cell bad">Googling at 2am</span>
+            <span class="sons-arrow">→</span>
+            <span class="sons-cell good">Sleeping at 2am</span>
+          </div>
+          <div class="sons-row">
+            <span class="sons-cell bad">"We'll figure it out"</span>
+            <span class="sons-arrow">→</span>
+            <span class="sons-cell good">Certificate on the fridge</span>
+          </div>
+          <div class="sons-row">
+            <span class="sons-cell bad">Experiment. Survived. Has the stories.</span>
+            <span class="sons-arrow">→</span>
+            <span class="sons-cell good">Got the prepared version. Doing suspiciously well.</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<div class="divider" style="width:min(80%,960px)" role="separator" aria-hidden="true"></div>
+<!-- FREE LIBRARY -->
+<section class="library-section" aria-labelledby="library-h2">
+  <div class="library-inner">
+    <div data-reveal>
+      <span class="library-eyebrow">Free library</span>
+      <h2 class="library-h2" id="library-h2">Start with the free books.<br><em>No strings attached.</em></h2>
+      <p class="library-sub">Every FamilyForce playbook is free. Each one is under an hour, research backed, and written by Jack — plain English, no fluff. Complete a playbook and earn a certificate.</p>
+    </div>
+    <div class="library-grid">
+      <div class="lib-card" data-reveal>
+        <span class="lib-card-emoji">💤</span>
+        <div class="lib-card-title">Sleep Training</div>
+        <div class="lib-card-meta">0–12 months · 45 min read</div>
+        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
+      </div>
+      <div class="lib-card" data-reveal data-d="1">
+        <span class="lib-card-emoji">🚽</span>
+        <div class="lib-card-title">Potty Training</div>
+        <div class="lib-card-meta">18–36 months · 40 min read</div>
+        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
+      </div>
+      <div class="lib-card" data-reveal data-d="2">
+        <span class="lib-card-emoji">⚡</span>
+        <div class="lib-card-title">Tantrums</div>
+        <div class="lib-card-meta">12–36 months · 35 min read</div>
+        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
+      </div>
+      <div class="lib-card" data-reveal data-d="3">
+        <span class="lib-card-emoji">🥦</span>
+        <div class="lib-card-title">Feeding</div>
+        <div class="lib-card-meta">4–24 months · 40 min read</div>
+        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
+      </div>
+      <div class="lib-card" data-reveal>
+        <span class="lib-card-emoji">📱</span>
+        <div class="lib-card-title">Screen Time</div>
+        <div class="lib-card-meta">0–36 months · 35 min read</div>
+        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
+      </div>
+    </div>
+    <p class="library-note" data-reveal><strong>All 5 playbooks are free.</strong> Always. Scout is the subscription — the books are our gift to you.</p>
+  </div>
+</section>
 
-<!-- ═══════════════════════════════════════════════════════════
+<!-- GET STARTED -->
+<section class="final">
+  <div class="final-inner">
+    <h2 class="final-h2" data-reveal>
+      The window is<br><em>open right now.</em>
+    </h2>
+    <p class="final-sub" data-reveal data-d="1">First month free. No card required. Add your child and get your first digest in under 60 seconds.</p>
+    <a href="/scout-signup.html" class="final-btn" data-reveal data-d="2">Try Scout Free for a Month</a>
+    <p class="final-note">$79.99/year after your free trial. That's $6.67/month. Cancel anytime.</p>
+    <div class="final-trust" data-reveal data-d="3">
+      <div class="final-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        No card required
+      </div>
+      <div class="hero-trust-dot" style="background:rgba(255,255,255,.2)"></div>
+      <div class="final-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Cancel anytime
+      </div>
+      <div class="hero-trust-dot" style="background:rgba(255,255,255,.2)"></div>
+      <div class="final-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Whole family included
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════
      FOOTER
-     ═══════════════════════════════════════════════════════════ -->
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <a href="index.html" class="logo" style="margin-bottom:14px;font-size:20px;display:inline-flex;align-items:center;gap:6px" aria-label="FamilyForce Home">
-          <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span><span style="color:var(--text)">Family</span><span style="color:var(--terra);margin-left:1px">Force</span></span>
-        </a>
-        <p style="font-family:var(--sans);font-size:13px;color:var(--text-dim);max-width:260px;line-height:1.7;font-weight:300;margin-top:8px">Research-backed parenting guides for parents who do the work.</p>
-
-      </div>
-      <nav aria-label="Playbook links">
-        <p class="footer-heading">Playbooks</p>
-        <a href="playbook-free-screentime.html" class="footer-link">Screen Time — Free</a>
-        <a href="playbook-potty-training.html" class="footer-link">Potty Training — Free</a>
-        <a href="playbook-sleep.html" class="footer-link">Sleep Training — Free</a>
-        <a href="playbook-tantrum.html" class="footer-link">Tantrums — Free</a>
-        <a href="playbook-feeding.html" class="footer-link">Feeding — Free</a>
-        <a href="#library" class="footer-link">All Playbooks</a>
-      </nav>
-      <nav aria-label="Product links">
-        <p class="footer-heading">Product</p>
-        <a href="scout.html" class="footer-link">Scout</a>
-      </nav>
-      <nav aria-label="Company links">
-        <p class="footer-heading">Company</p>
-        <a href="contact.html" class="footer-link">Contact</a>
-        <a href="privacy.html" class="footer-link">Privacy</a>
-        <a href="terms.html" class="footer-link">Terms</a>
-      </nav>
-    </div>
-    <div class="footer-bottom">
-      <small>&#169; 2026 FamilyForce Inc.</small>
-      <small>getfamilyforce.com</small>
-    </div>
+     ════════════════════════════════════════════════ -->
+<footer style="background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px))">
+  <div style="max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+    <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none" aria-label="FamilyForce home">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-family:var(--sans);font-size:16px;font-weight:700;color:rgba(255,255,255,.9)">Family<span style="color:#A78BFF">Force</span></span>
+    </a>
+    <nav style="display:flex;gap:24px" aria-label="Footer links">
+      <a href="https://www.getfamilyforce.com/privacy" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Privacy</a>
+      <a href="https://www.getfamilyforce.com/terms"   style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Terms</a>
+      <a href="https://www.getfamilyforce.com/contact" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Support</a>
+    </nav>
+    <span style="font-size:12px;color:rgba(255,255,255,.25)">© 2026 FamilyForce. All rights reserved.</span>
   </div>
 </footer>
 
-<!-- ═══════════════════════════════════════════════════════════
-     JAVASCRIPT
-     ═══════════════════════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════════
+     WIDGET JS
+     ════════════════════════════════════════════════ -->
 <script>
-/* ─── BOOK GRID ─── */
-// BETA: all playbooks free during soft launch; retailPrice shown struck-through for value anchoring
-const BETA_MODE = true;
-
-const books = [
-  { title:'Screen Time',    age:'0-6',  color:'#9B80FF', retailPrice:'$14.99', tag:'What the data actually says',        badge:'Digital Guardian',  href:'playbook-free-screentime.html' },
-  { title:'Potty Training', age:'2-3',  color:'#6E4ED6', retailPrice:'$14.99', tag:'40+ expert sources distilled',       badge:'Potty Pro',          href:'playbook-potty-training.html' },
-  { title:'Sleep Training', age:'0-3',  color:'#5B7BB5', retailPrice:'$14.99', tag:'The science of infant sleep',         badge:'Sleep Champion',     href:'playbook-sleep.html' },
-  { title:'Tantrums',       age:'1-4',  color:'#7C5CFC', retailPrice:'$14.99', tag:'Emotional regulation strategies',     badge:'Tantrum Tamer',      href:'playbook-tantrum.html' },
-  { title:'Feeding',        age:'0-3',  color:'#5BA88E', retailPrice:'$14.99', tag:'From first solids to picky eating',   badge:'Good Eater Guide',   href:'playbook-feeding.html' },
+const PERSONAS = [
+  {
+    stage: 'Expecting',
+    stageDesc: '~8 weeks to go',
+    windows: [
+      { status:'urgent', icon:'🏥', tag:'Do this now',   title:'Choose your pediatrician',        desc:'Book your meet the doctor appointment before the baby arrives. Most practices book out 4 to 6 weeks.',                       badge:'Due now' },
+      { status:'urgent', icon:'🚗', tag:'Do this now',   title:'Install the car seat',             desc:'Must be installed and inspected before discharge. 72% of seats are installed incorrectly. Get it checked.',              badge:'Due now' },
+      { status:'open',   icon:'🧠', tag:'Window open',   title:'Infant CPR class',                 desc:'One session. Most hospitals run them monthly. You\'ll never regret knowing this.',                                        badge:'Book now' },
+      { status:'open',   icon:'📋', tag:'Coming soon',   title:'Newborn screening tests',          desc:'PKU, hearing, cardiac, done at the hospital within 24 to 48 hours of birth.',                                              badge:'At birth' },
+      { status:'open',   icon:'🛏️', tag:'Do before birth', title:'Safe sleep setup',                  desc:'Firm surface, no loose bedding, room sharing (not bed sharing). Set it up now. You won\'t have bandwidth after.',      badge:'Before birth' },
+      { status:'open',   icon:'🤱', tag:'Book now',       title:'Lactation consultant',              desc:'Line one up before delivery. Feeding issues are far easier to prevent than fix at 3am with a screaming newborn.',       badge:'Book now' },
+    ]
+  },
+  {
+    stage: 'Infant stage',
+    stageDesc: '5 months old · 22 weeks',
+    windows: [
+      { status:'urgent', icon:'🥜', tag:'⚠ Act this month', title:'Peanut window open now',          desc:'Ideal: 4 to 6 months. This is your moment. One spoonful of peanut butter puree could prevent a lifelong allergy.',          badge:'Closing soon' },
+      { status:'open',   icon:'😴', tag:'Opens in 4 weeks',  title:'Sleep training window approaching', desc:'6 to 9 months is fastest and lowest stress. Start building a consistent bedtime routine right now.',                        badge:'Coming fast' },
+      { status:'open',   icon:'🦷', tag:'Due this month',    title:'First dental visit',                desc:'AAP recommends the first visit by 12 months. Paediatric dentists book out. Schedule ahead.',                          badge:'Book ahead' },
+      { status:'open',   icon:'👁️', tag:'Due at 6 months',   title:'6 month vision check',              desc:'Strabismus and amblyopia are most treatable when caught early. Ask at your 6 month well child visit.',                 badge:'Next visit' },
+      { status:'coming', icon:'💬', tag:'Coming up',         title:'Speech milestones',                 desc:'5+ words at 12 months, 10 by 15 months. Start counting now. Earlier detection changes outcomes.',                    badge:'At 12 months' },
+      { status:'urgent', icon:'🥣', tag:'⚠ Window open now',  title:'Start solids, don\'t wait',        desc:'The 4 to 6 month window is ideal. Waiting past 6 months increases texture aversion and iron deficiency risk.',             badge:'This month' },
+    ]
+  },
+  {
+    stage: 'Toddler stage',
+    stageDesc: '1 year old · 52 weeks',
+    windows: [
+      { status:'urgent', icon:'💬', tag:'⚠ Watch now',       title:'Speech window',                    desc:'10 to 25 words by 18 months. You\'re 6 months away. If you\'re not hearing new words weekly, flag it now.',              badge:'6 months left' },
+      { status:'urgent', icon:'🦷', tag:'⚠ Overdue',         title:'First dental visit',               desc:'AAP recommends by 12 months. If not done, book this week. Early cavities affect adult teeth.',                       badge:'Book now' },
+      { status:'open',   icon:'🚽', tag:'Window opening',     title:'Potty training readiness signs',   desc:'Signs begin at 18 to 24 months. The earlier you know what to look for, the smoother the process.',                       badge:'In 6 months' },
+      { status:'open',   icon:'📚', tag:'Critical window',    title:'Read every day',                   desc:'Vocabulary at age 3 predicts reading ability at age 8. 15 minutes a day. The highest ROI parenting habit.',          badge:'Every day' },
+      { status:'open',   icon:'🍽️', tag:'Watch now',          title:'Food texture progression',         desc:'Toddlers should be on family foods by 12 months. Purees past 12 months can cause lasting texture aversion.',          badge:'Act now' },
+      { status:'closed', icon:'😴', tag:'✗ Window closed',    title:'Sleep training optimal window',    desc:'Easiest window was 6 to 9 months. Still possible now, just harder. Scout has a protocol for this age.',                  badge:'Closed at 9mo' },
+    ]
+  }
 ];
 
-const grid = document.getElementById('book-grid-v2');
-if (grid) {
-  books.forEach(b => {
-    const card = document.createElement('a');
-    card.href = b.href;
-    card.className = 'book-card is-free';
-    card.setAttribute('aria-label', b.title + ' Playbook - Free during beta');
-    card.innerHTML = `
-      <div class="book-card-accent" style="background:${b.color}"></div>
-      <span class="book-age-pill">Ages ${b.age}</span>
-      <p class="book-title">${b.title}</p>
-      <p class="book-tag">${b.tag}</p>
-      <p class="book-badge-earn">🏅 Earn: <strong>${b.badge}</strong></p>
-      <div class="book-footer">
-        <span class="book-retail-strike">${b.retailPrice}</span>
-        <span class="book-free-pill">&#9733; FREE</span>
-        <span class="book-arrow" aria-hidden="true">&#8594;</span>
-      </div>`;
-    grid.appendChild(card);
+let current = 0;
+
+function selectPersona(i) {
+  current = i;
+  document.querySelectorAll('.w-persona').forEach((el, idx) => el.classList.toggle('active', idx === i));
+  render();
+}
+
+function render() {
+  const p = PERSONAS[current];
+  document.getElementById('w-stage').textContent      = p.stage;
+  document.getElementById('w-stage-desc').textContent = p.stageDesc;
+  const list = document.getElementById('w-windows');
+  list.innerHTML = '';
+  p.windows.forEach(w => {
+    const el = document.createElement('div');
+    el.className = 'w-row ' + w.status;
+    el.innerHTML =
+      '<div class="w-row-icon">' + w.icon + '</div>' +
+      '<div class="w-row-body">' +
+        '<div class="w-row-tag">' + w.tag + '</div>' +
+        '<div class="w-row-title">' + w.title + '</div>' +
+        '<div class="w-row-desc">' + w.desc + '</div>' +
+      '</div>' +
+      '<div class="w-row-badge">' + w.badge + '</div>';
+    list.appendChild(el);
   });
 }
 
-/* ─── GIFT MODAL ─── */
-function openGiftModal() {
-  const overlay = document.getElementById('giftModalOverlay');
-  overlay.hidden = false;
-  document.body.style.overflow = 'hidden';
-  overlay.querySelector('.gift-modal-close').focus();
-}
-function closeGiftModal() {
-  const overlay = document.getElementById('giftModalOverlay');
-  overlay.hidden = true;
-  document.body.style.overflow = '';
-}
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGiftModal(); });
-document.getElementById('giftModalOverlay')?.addEventListener('click', e => {
-  if (e.target === document.getElementById('giftModalOverlay')) closeGiftModal();
-});
-
-// Populate gift book options
-const giftBooks = [
-  { title: 'Potty Training', price: '$14.99' },
-  { title: 'Sleep Training', price: '$14.99' },
-  { title: 'Tantrums',       price: '$14.99' },
-  { title: 'Feeding',        price: '$14.99' },
-];
-const giftBookGrid = document.getElementById('gift-book-options');
-if (giftBookGrid) {
-  giftBooks.forEach((b, i) => {
-    const label = document.createElement('label');
-    label.className = 'gift-book-option';
-    label.innerHTML = `
-      <input type="radio" name="gift-book" value="${b.title}" ${i === 0 ? 'checked' : ''}>
-      <span class="gift-book-name">${b.title}</span>
-      <span class="gift-book-price">${b.price}</span>`;
-    giftBookGrid.appendChild(label);
-  });
-}
-
-function submitGift(e) {
-  e.preventDefault();
-  // Route to sign-in for account creation, then checkout
-  window.location.href = 'sign-in.html';
-}
-
-/* ─── COMING SOON BOOKS ─── */
-const comingSoon = [
-  { title:'The Newborn Playbook', age:'0-4w', color:'#F97316', tag:'What to actually do in the first four weeks',     badge:'Newborn Ready'    },
-  { title:'Siblings',         age:'1-5',  color:'#C084FC', tag:'Preparing for and surviving the second child',   badge:'Sibling Starter'  },
-  { title:'Raising a Reader', age:'2-6',  color:'#F59E0B', tag:'Building a love of books before school starts',      badge:'First Reader'     },
-  { title:'Discipline',       age:'2-7',  color:'#EF4444', tag:'Boundaries, consequences, and staying calm',          badge:'Calm Authority'   },
-  { title:'AI &amp; Kids',    age:'4-10', color:'#06B6D4', tag:'What every parent needs to know right now',           badge:'AI Ready'         },
-  { title:'Homework',         age:'5-10', color:'#10B981', tag:'Routines, motivation, and ending the nightly battle', badge:'Study Coach'      },
-];
-
-const comingGrid = document.getElementById('book-grid-coming');
-if (comingGrid) {
-  comingSoon.forEach(b => {
-    const card = document.createElement('div');
-    card.className = 'book-card book-card--coming';
-    card.setAttribute('aria-label', b.title + ' (Coming Soon)');
-    card.innerHTML = `
-      <div class="book-card-accent" style="background:${b.color};opacity:.4"></div>
-      <span class="book-age-pill" style="opacity:.5">Ages ${b.age}</span>
-      <p class="book-title" style="opacity:.5">${b.title}</p>
-      <p class="book-tag" style="opacity:.5">${b.tag}</p>
-      <p class="book-badge-earn" style="opacity:.4">🔒 Earn: <strong>${b.badge}</strong></p>
-      <div class="book-footer">
-        <span class="book-coming-pill">Coming Soon</span>
-      </div>`;
-    comingGrid.appendChild(card);
-  });
-}
-
-/* ─── SCROLL REVEAL ─── */
-const observer = new IntersectionObserver((entries) => {
+// Reveal on scroll
+const observer = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
 }, { threshold: 0.1 });
 document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
-/* ─── AGE PICKER ─── */
-const ageRecs = {
-  expecting: {
-    titles: ['The Newborn Playbook', 'Sleep Training', 'Feeding', 'Screen Time'],
-    msg: `<strong>The Newborn Playbook is coming — and it was written for exactly this moment.</strong> While you wait, start with Sleep Training and Feeding. Both cover from day one. One hour now, and you show up prepared. <a href="sign-in.html">Create your free account →</a>`
-  },
-  newborn: {
-    titles: ['Sleep Training', 'Feeding', 'Screen Time'],
-    msg: `<strong>Start with Sleep Training and Feeding.</strong> Both cover from day one: the science of infant sleep and introducing feeds. Screen Time is free and good to have read before screens enter the picture. <a href="sign-in.html">Create your free account →</a>`
-  },
-  baby: {
-    titles: ['Sleep Training', 'Feeding', 'Tantrums', 'Screen Time'],
-    msg: `<strong>Start with Sleep Training and Feeding</strong>. Still highly relevant at this stage. Tantrums is worth reading now before it starts. Screen Time is free and closer than you think. <a href="sign-in.html">Create your free account →</a>`
-  },
-  toddler: {
-    titles: ['Potty Training', 'Tantrums', 'Sleep Training', 'Screen Time'],
-    msg: `<strong>Start with Potty Training or Tantrums</strong>. These are your stage. Sleep Training still applies if nights are rough. Screen Time is free and very relevant at this age. <a href="sign-in.html">Create your free account →</a>`
-  },
-  child: {
-    titles: ['Screen Time', 'Tantrums'],
-    msg: `<strong>Start with Screen Time</strong>. It's free and covers ages 2–6. Tantrums is still relevant at this stage, especially for emotional regulation. <a href="sign-in.html">Get the Screen Time Playbook free →</a>`
-  },
-  schoolage: {
-    titles: ['Screen Time', 'Homework', 'AI &amp; Kids', 'Discipline'],
-    msg: `<strong>Screen Time is your best starting point</strong>. Free, and directly relevant at this age. <strong>Homework, Discipline, and AI &amp; Kids</strong> are coming soon and built exactly for this stage. <a href="sign-in.html">Create your free account and we'll notify you →</a>`
-  }
-};
+// Init widget
+selectPersona(0);
 
-function pickAge(btn, stage) {
-  // Update buttons
-  document.querySelectorAll('.age-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
-  // Show recommendation
-  const rec = document.getElementById('age-rec');
-  rec.innerHTML = ageRecs[stage].msg;
-  rec.classList.add('visible');
-
-  // Highlight book cards
-  const recommended = ageRecs[stage].titles;
-  document.querySelectorAll('.book-card').forEach(card => {
-    const title = card.querySelector('.book-title')?.textContent?.trim() || card.getAttribute('aria-label') || '';
-    const isRec = recommended.some(r => title.includes(r));
-    card.classList.toggle('recommended', isRec);
-    card.classList.toggle('dimmed', !isRec);
-  });
-
-  // Scroll to grid
-  document.getElementById('book-grid-v2').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-/* ─── AUTH ROUTING ─── */
-// All free/paid CTAs route through sign-in.html which handles both
-// new account creation and returning user sign-in.
-
-/* ─── SHARE COPY ─── */
-function copyShareText(btn) {
-  const msg = "Hey, found this. Free parenting courses — sleep training, potty training, tantrums, feeding, screen time. About an hour each. You get a certificate at the end. getfamilyforce.com";
-  navigator.clipboard.writeText(msg).then(() => {
-    btn.textContent = '✓ Copied! Now send it.';
-    btn.style.color = 'var(--terra)';
-    setTimeout(() => {
-      btn.textContent = '📋 Copy message to send your partner';
-      btn.style.color = 'var(--terra-dark)';
-    }, 3000);
-  }).catch(() => {
-    // Fallback for older browsers
-    const ta = document.createElement('textarea');
-    ta.value = msg;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    btn.textContent = '✓ Copied! Now send it.';
-    setTimeout(() => { btn.textContent = '📋 Copy message to send your partner'; }, 3000);
-  });
-}
-
-/* ─── MOBILE MENU ─── */
-(function() {
-  const hamburger  = document.getElementById('hamburger-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const closeBtn   = document.getElementById('mobile-close-btn');
-  if (!hamburger || !mobileMenu) return;
-  function open() {
+// Mobile menu
+const hamburger = document.getElementById('hamburger-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const mobileClose = document.getElementById('mobile-close-btn');
+if (hamburger && mobileMenu) {
+  hamburger.addEventListener('click', () => {
     mobileMenu.classList.add('open');
     hamburger.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
-    requestAnimationFrame(() => closeBtn.focus());
-  }
-  function close() {
+  });
+  mobileClose.addEventListener('click', () => {
     mobileMenu.classList.remove('open');
     hamburger.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
-    hamburger.focus();
-  }
-  hamburger.addEventListener('click', open);
-  closeBtn.addEventListener('click', close);
-  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && mobileMenu.classList.contains('open')) close(); });
-})();
-</script>
-
-<!-- Session check: redirect sign-in links to dashboard if already signed in -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-(function() {
-  var sb = supabase.createClient(
-    'https://ewjqbafaxeasyvknxmof.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
-  );
-  sb.auth.getSession().then(function(res) {
-    if (!res.data.session) return;
-    // Swap all sign-in links → dashboard
-    document.querySelectorAll('a[href="sign-in.html"]').forEach(function(a) {
-      a.href = 'dashboard.html';
-      // Update nav "Sign In" label → "My Library"
-      if (a.textContent.trim() === 'Sign In') {
-        a.textContent = 'My Library';
-      }
-    });
   });
-})();
+}
 </script>
 
 </body>
