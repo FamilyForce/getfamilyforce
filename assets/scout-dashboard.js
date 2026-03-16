@@ -131,7 +131,7 @@
         })
         list.appendChild(addItem)
       }
-      // Child selector toggle
+      // Child selector toggle (sidebar — desktop)
       var wrapper = document.getElementById('childSelectorWrap')
       if (btn && wrapper && list) {
         btn.addEventListener('click', function (e) {
@@ -141,6 +141,50 @@
         })
         document.addEventListener('click', function () { list.classList.remove('open') })
         document.addEventListener('touchstart', function () { list.classList.remove('open') }, { passive: true })
+      }
+
+      // Mobile child pill selector (phones/tablets — sidebar is hidden)
+      var mobilePill   = document.getElementById('mobileChildName')
+      var mobileHeader = document.getElementById('mobileChildHeader')
+      if (mobilePill && mobileHeader) {
+        // Create a dedicated mobile dropdown (separate from sidebar dropdown)
+        var mobileDropdown = document.getElementById('mobileChildDropdown')
+        if (!mobileDropdown) {
+          mobileDropdown = document.createElement('div')
+          mobileDropdown.id = 'mobileChildDropdown'
+          mobileDropdown.className = 'child-dropdown'
+          mobileDropdown.style.cssText = 'position:absolute;top:100%;left:12px;right:12px;min-width:auto;z-index:300'
+          mobileHeader.style.position = 'relative'
+          mobileHeader.appendChild(mobileDropdown)
+        }
+        // Populate mobile dropdown items
+        mobileDropdown.innerHTML = ''
+        children.forEach(function (c) {
+          var item = document.createElement('div')
+          item.className = 'child-dropdown-item' + (c.id === _child.id ? ' active' : '')
+          item.textContent = c.name
+          item.addEventListener('click', function () {
+            _child = c
+            localStorage.setItem('scout_active_child_id', c.id)
+            window.location.reload()
+          })
+          mobileDropdown.appendChild(item)
+        })
+        var addMobileItem = document.createElement('div')
+        addMobileItem.className = 'child-dropdown-item add'
+        addMobileItem.textContent = '+ Add a child'
+        addMobileItem.addEventListener('click', function () {
+          window.location.href = '/scout-dashboard/child.html'
+        })
+        mobileDropdown.appendChild(addMobileItem)
+        // Wire toggle — but only if there are multiple children (no point if just one)
+        mobilePill.style.cursor = 'pointer'
+        mobilePill.addEventListener('click', function (e) {
+          e.stopPropagation()
+          mobileDropdown.classList.toggle('open')
+        })
+        document.addEventListener('click', function () { mobileDropdown.classList.remove('open') })
+        document.addEventListener('touchstart', function () { mobileDropdown.classList.remove('open') }, { passive: true })
       }
     },
 
@@ -472,13 +516,16 @@
           if (ed.classList.contains('open')) ed.querySelector('textarea').focus()
         }
       })
-      // Char count + auto-save
+      // Char count + auto-grow + auto-save
       container.addEventListener('input', function (e) {
         if (!e.target.classList.contains('note-textarea')) return
         var wid   = e.target.dataset.wid
         var count = document.getElementById('noteCount-' + wid)
         var len   = e.target.value.length
         if (count) count.textContent = len + ' / 500'
+        // Auto-grow textarea
+        e.target.style.height = 'auto'
+        e.target.style.height = Math.min(e.target.scrollHeight, 240) + 'px'
       })
       container.addEventListener('blur', function (e) {
         if (!e.target.classList.contains('note-textarea')) return
@@ -691,13 +738,35 @@
         if (e.key === 'Escape') ScoutDash.closeModal()
       })
 
-      // Swipe down to close (mobile)
-      var startY = 0
-      var sheet  = overlay.querySelector('.modal-sheet')
+      // Swipe down to close (mobile) — with visual drag feedback
+      var startY  = 0
+      var dragging = false
+      var sheet   = overlay.querySelector('.modal-sheet')
       if (sheet) {
-        sheet.addEventListener('touchstart', function (e) { startY = e.touches[0].clientY }, { passive: true })
+        sheet.addEventListener('touchstart', function (e) {
+          startY   = e.touches[0].clientY
+          dragging = true
+          sheet.style.transition = 'none'
+        }, { passive: true })
+        sheet.addEventListener('touchmove', function (e) {
+          if (!dragging) return
+          var delta = e.touches[0].clientY - startY
+          if (delta > 0) sheet.style.transform = 'translateY(' + delta + 'px)'
+        }, { passive: true })
         sheet.addEventListener('touchend', function (e) {
-          if (e.changedTouches[0].clientY - startY > 80) ScoutDash.closeModal()
+          dragging = false
+          sheet.style.transition = ''
+          var delta = e.changedTouches[0].clientY - startY
+          if (delta > 80) {
+            ScoutDash.closeModal()
+          } else {
+            sheet.style.transform = '' // snap back (CSS transition takes over)
+          }
+        }, { passive: true })
+        sheet.addEventListener('touchcancel', function () {
+          dragging = false
+          sheet.style.transition = ''
+          sheet.style.transform = ''
         }, { passive: true })
       }
     },
