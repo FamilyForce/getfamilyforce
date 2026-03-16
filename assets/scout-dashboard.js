@@ -200,36 +200,49 @@
 
     /* ── Window data ─────────────────────────────────────────── */
     loadWindows: function (childId, dob, cb) {
-      var ageW   = ScoutDash.ageWeeks(dob)
+      var ageW      = ScoutDash.ageWeeks(dob)
       var lookahead = ageW + 8
 
-      // Load milestone windows + progress in parallel
-      Promise.all([
-        sb.from('milestone_windows')
-          .select('*')
-          .lte('open_age_weeks', lookahead)
-          .gte('close_age_weeks', ageW - 4)  // include recently closed (for missed state)
-          .order('open_age_weeks'),
-        sb.from('window_progress')
-          .select('*')
-          .eq('child_id', childId)
-      ]).then(function (results) {
-        var windows  = results[0].data || []
-        var progress = results[1].data || []
-        // Build a progress map: window_id → {status, notes}
-        var progMap = {}
-        progress.forEach(function (p) { progMap[p.window_id] = p })
-        // Attach progress to each window
-        windows.forEach(function (w) {
-          w._progress = progMap[w.id] || null
-          w._status   = w._progress ? w._progress.status : 'open'
-          w._note     = w._progress ? (w._progress.notes || '') : ''
+      // NOTE: Promise.all([supabaseQuery, supabaseQuery]) is unreliable with Supabase JS v2
+      // thenables (see commit 8bc0314). Use sequential .then() chaining instead.
+      sb.from('milestone_windows')
+        .select('*')
+        .lte('open_age_weeks', lookahead)
+        .gte('close_age_weeks', Math.max(0, ageW - 4))
+        .order('open_age_weeks')
+        .then(function (winRes) {
+          var windows = winRes.data || []
+          if (winRes.error) console.warn('[loadWindows] milestone_windows error:', winRes.error)
+
+          sb.from('window_progress')
+            .select('*')
+            .eq('child_id', childId)
+            .then(function (progRes) {
+              var progress = progRes.data || []
+              if (progRes.error) console.warn('[loadWindows] window_progress error:', progRes.error)
+
+              // Build progress map: window_id → progress row
+              var progMap = {}
+              progress.forEach(function (p) { progMap[p.window_id] = p })
+              // Attach progress to each window
+              windows.forEach(function (w) {
+                w._progress = progMap[w.id] || null
+                w._status   = w._progress ? w._progress.status : 'open'
+                w._note     = w._progress ? (w._progress.notes || '') : ''
+              })
+              if (typeof cb === 'function') cb(windows, ageW)
+            })
+            .catch(function (e) {
+              console.error('[loadWindows] window_progress fetch failed:', e)
+              // Return windows without progress rather than failing entirely
+              windows.forEach(function (w) { w._progress = null; w._status = 'open'; w._note = '' })
+              if (typeof cb === 'function') cb(windows, ageW)
+            })
         })
-        if (typeof cb === 'function') cb(windows, ageW)
-      }).catch(function (e) {
-        console.error('[loadWindows] Failed:', e)
-        if (typeof cb === 'function') cb(null, ageW, e)
-      })
+        .catch(function (e) {
+          console.error('[loadWindows] milestone_windows fetch failed:', e)
+          if (typeof cb === 'function') cb(null, ageW, e)
+        })
     },
 
     sectionWindows: function (windows, ageW) {
