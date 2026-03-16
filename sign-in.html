@@ -1699,9 +1699,9 @@ button { font: inherit; cursor: pointer; }
     }
   };
 
-  /* ── Persist ?next param ── */
+  /* ── Persist ?next / ?redirect param (both accepted) ── */
   var params = new URLSearchParams(window.location.search);
-  var next = params.get('next');
+  var next = params.get('next') || params.get('redirect'); // gift redeem uses ?redirect=
   if (next) sessionStorage.setItem('ff_signin_next', next);
 
   /* ── Capture inbound referral / promo code (from share links or gift emails) ── */
@@ -1799,7 +1799,33 @@ button { font: inherit; cursor: pointer; }
         return;
       }
       try { localStorage.setItem('ff_user_email', email); } catch(_) {}
-      window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+      var signedInUser = res.data.session.user;
+      // Check children + intent before routing — same logic as OAuth/hash path
+      sb.from('children').select('id').eq('user_id', signedInUser.id).limit(1)
+        .then(function(childRes) {
+          var hasChildren = childRes.data && childRes.data.length > 0;
+          if (!hasChildren) {
+            // No child setup yet (new user or abandoned onboarding) → route to setup
+            routeAfterSignup();
+          } else {
+            var intent = sessionStorage.getItem('ff_intent');
+            if (intent === 'subscribe') {
+              // Trial-end CTA — skip auth card, go straight to payment
+              var authCard = document.querySelector('.auth-card');
+              if (authCard) authCard.style.display = 'none';
+              var planIntent = sessionStorage.getItem('ff_plan_intent');
+              var payHeading = document.getElementById('payment-heading');
+              var paySub     = document.getElementById('payment-sub');
+              if (payHeading) payHeading.textContent = 'Continue your Scout subscription';
+              if (paySub) paySub.textContent = planIntent === 'annual'
+                ? 'Annual plan — $79.99/year. That\'s $6.67/month. One payment, no monthly reminders.'
+                : 'Monthly plan — $9.99/month. Cancel any time.';
+              showStep('payment');
+            } else {
+              window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+            }
+          }
+        });
     });
   });
 
@@ -1839,9 +1865,23 @@ button { font: inherit; cursor: pointer; }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
       // Mount Stripe Card Element when payment step becomes visible
-      if (stepId === 'payment') mountStripeElement();
+      if (stepId === 'payment') {
+        mountStripeElement();
+        autoApplyReferralCode();
+      }
     }
   };
+
+  /* ── Auto-apply referral code from localStorage on payment step ── */
+  function autoApplyReferralCode() {
+    var code = localStorage.getItem('scout_referral_code');
+    if (!code || !code.trim()) return;
+    var input = document.getElementById('promo-code');
+    if (!input || input.value) return; // don't overwrite if user already typed something
+    input.value = code.trim().toUpperCase();
+    // Trigger full validation so discount is applied correctly
+    if (typeof window.applyPromoCode === 'function') window.applyPromoCode();
+  }
 
   /* ── On page load: detect URL params + post-confirmation redirect ── */
   (function() {
@@ -2084,7 +2124,7 @@ button { font: inherit; cursor: pointer; }
       }
       if (ageYears > 4) {
         dobEl.style.borderColor = '#EF4444';
-        showChildError('Scout tracks developmental windows from birth to 36 months. ' + name + ' is outside that age range. Scout may not be the right fit right now — but check back for new content.');
+        showChildError('Scout tracks developmental windows from birth to 4 years old. ' + name + ' is outside that age range right now.');
         return;
       }
     }

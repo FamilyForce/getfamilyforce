@@ -158,12 +158,14 @@ Deno.serve(async (req: Request) => {
     const dob    = isExpecting ? (dueDate as string) : (childDob as string)
 
     // 3. Insert child record
+    // Dedup by name + dob (not dob alone) to support twins with the same birthday
     step = 'insert-child'
     const { data: existingChild } = await sb
       .from('children')
       .select('id')
       .eq('user_id', user.id)
-      .eq('dob', dob)
+      .eq('name',    name)
+      .eq('dob',     dob)
       .limit(1)
       .maybeSingle()
 

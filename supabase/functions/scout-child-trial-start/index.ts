@@ -72,18 +72,64 @@ Deno.serve(async (req: Request) => {
     if (authErr || !user) return err(401, 'Invalid or expired session', step)
 
     // 2. Parse + validate child
+    // Accepts either:
+    //   { childId }  — existing child (from family settings dashboard)
+    //   { childName, childDob, childGender, isExpecting?, dueDate? }  — create + start (from signup success "add another child")
     step = 'validate-child'
-    const { childId } = await req.json()
-    if (!childId) return err(400, 'childId is required', step)
+    const body = await req.json()
+    const { childId: bodyChildId, childName, childDob, childGender, isExpecting, dueDate } = body
 
-    const { data: child, error: childErr } = await sb
-      .from('children')
-      .select('id, name, dob, user_id')
-      .eq('id', childId)
-      .eq('user_id', user.id)
-      .single()
+    let childId: string
+    let child: { id: string; name: string; dob: string; user_id: string }
 
-    if (childErr || !child) return err(404, 'Child not found or does not belong to this user', step)
+    if (bodyChildId) {
+      // Existing child path
+      const { data: existingChild, error: childErr } = await sb
+        .from('children')
+        .select('id, name, dob, user_id')
+        .eq('id', bodyChildId)
+        .eq('user_id', user.id)
+        .single()
+      if (childErr || !existingChild) return err(404, 'Child not found or does not belong to this user', step)
+      childId = existingChild.id
+      child   = existingChild
+
+    } else if (childName && (childDob || dueDate)) {
+      // Create child path (from signup "add another child" flow)
+      if (!childName.trim()) return err(400, 'childName is required', step)
+      const name   = childName.trim().slice(0, 50)
+      const gender = childGender === 'boy' ? 'boy' : childGender === 'girl' ? 'girl' : 'other'
+      const dob    = isExpecting ? dueDate : childDob
+
+      if (!dob) return err(400, isExpecting ? 'dueDate is required' : 'childDob is required', step)
+
+      // Dedup by name + dob (supports twins)
+      const { data: maybeExisting } = await sb
+        .from('children')
+        .select('id, name, dob, user_id')
+        .eq('user_id', user.id)
+        .eq('name', name)
+        .eq('dob', dob)
+        .maybeSingle()
+
+      if (maybeExisting) {
+        childId = maybeExisting.id
+        child   = maybeExisting
+      } else {
+        const childRow: Record<string, unknown> = { user_id: user.id, name, dob, gender }
+        if (isExpecting) { childRow.is_expecting = true; childRow.due_date = dueDate }
+        const { data: newChild, error: insertErr } = await sb
+          .from('children')
+          .insert(childRow)
+          .select('id, name, dob, user_id')
+          .single()
+        if (insertErr || !newChild) throw new Error(`Failed to create child: ${insertErr?.message}`)
+        childId = newChild.id
+        child   = newChild
+      }
+    } else {
+      return err(400, 'Either childId or childName+childDob is required', step)
+    }
 
     // 3. Check no existing subscription for this child
     step = 'check-existing'
