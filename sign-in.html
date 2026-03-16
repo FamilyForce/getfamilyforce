@@ -1868,16 +1868,22 @@ button { font: inherit; cursor: pointer; }
               // Clean the hash from the URL
               history.replaceState(null, '', window.location.pathname + window.location.search);
               var user = res.data.session.user;
-              // New user (created in last 30s) → show intent screen
-              // Returning user → go straight to dashboard
-              var createdAt  = user.created_at ? new Date(user.created_at).getTime() : 0;
-              var isNewUser  = (Date.now() - createdAt) < 30000;
-              if (isNewUser) {
-                generateAndSaveReferralCode(user.id, user.email);
-                routeAfterSignup();
-              } else {
-                window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
-              }
+              generateAndSaveReferralCode(user.id, user.email);
+              // Use DB state to detect new users — NOT a 30-second timestamp.
+              // A user needs onboarding if they have no children set up yet.
+              // This correctly handles email confirmation (minutes/hours after signup)
+              // and Google OAuth for both new and returning users.
+              sb.from('children').select('id').eq('user_id', user.id).limit(1)
+                .then(function(childRes) {
+                  var hasChildren = childRes.data && childRes.data.length > 0;
+                  if (!hasChildren) {
+                    // New user — show Scout onboarding
+                    routeAfterSignup();
+                  } else {
+                    // Returning user — go straight to dashboard
+                    window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+                  }
+                });
             }
           });
         }, 300);
@@ -1891,7 +1897,17 @@ button { font: inherit; cursor: pointer; }
     if (!sb) return;
     sb.auth.getSession().then(function(res) {
       if (res.data && res.data.session) {
-        routeAfterSignup();
+        var user = res.data.session.user;
+        generateAndSaveReferralCode(user.id, user.email);
+        sb.from('children').select('id').eq('user_id', user.id).limit(1)
+          .then(function(childRes) {
+            var hasChildren = childRes.data && childRes.data.length > 0;
+            if (!hasChildren) {
+              routeAfterSignup();
+            } else {
+              window.location.href = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+            }
+          });
       } else {
         alert('No confirmed session found yet. Please click the link in your email first.');
       }
