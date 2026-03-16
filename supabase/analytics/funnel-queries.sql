@@ -39,7 +39,13 @@ WHERE occurred_at >= NOW() - INTERVAL '30 days';
 
 
 -- Drop-off rates between each step
-WITH funnel AS (
+SELECT
+  signups,
+  ROUND(100.0 * digests     / NULLIF(signups,     0), 1) AS "signup_to_digest_pct",
+  ROUND(100.0 * email_opens / NULLIF(digests,     0), 1) AS "digest_to_email_open_pct",
+  ROUND(100.0 * dash_opens  / NULLIF(email_opens, 0), 1) AS "email_open_to_dashboard_pct",
+  ROUND(100.0 * dash_opens  / NULLIF(signups,     0), 1) AS "overall_activation_pct"
+FROM (
   SELECT
     COUNT(DISTINCT CASE WHEN event_type = 'signup_completed'  THEN user_id END) AS signups,
     COUNT(DISTINCT CASE WHEN event_type = 'first_digest_sent' THEN user_id END) AS digests,
@@ -49,14 +55,7 @@ WITH funnel AS (
     COUNT(DISTINCT CASE WHEN event_type = 'dashboard_opened'  THEN user_id END) AS dash_opens
   FROM scout_events
   WHERE occurred_at >= NOW() - INTERVAL '30 days'
-)
-SELECT
-  signups,
-  ROUND(100.0 * digests    / NULLIF(signups,    0), 1) AS "signup→digest_%",
-  ROUND(100.0 * email_opens / NULLIF(digests,   0), 1) AS "digest→email_open_%",
-  ROUND(100.0 * dash_opens  / NULLIF(email_opens, 0), 1) AS "email_open→dashboard_%",
-  ROUND(100.0 * dash_opens  / NULLIF(signups,   0), 1) AS "overall_activation_%"
-FROM funnel;
+) f;
 
 
 -- ─────────────────────────────────────────────────────────────────────────────
