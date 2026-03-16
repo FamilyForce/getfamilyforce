@@ -138,10 +138,25 @@ Deno.serve(async (req: Request) => {
       // ── Subscription updated ────────────────────────────────
       case 'customer.subscription.updated': {
         const sub = event.data.object
+
+        // If Stripe status is 'active' but cancel_at_period_end=true,
+        // keep our 'cancelling' status — don't overwrite it.
+        let dbStatus = STATUS_MAP[sub.status] ?? sub.status
+        if (sub.status === 'active' && sub.cancel_at_period_end === true) {
+          dbStatus = 'cancelling'
+        }
+
+        // Derive plan from Stripe price metadata if available
+        const planFromStripe = sub.metadata?.plan
+          ?? (sub.items?.data?.[0]?.price?.recurring?.interval === 'year' ? 'annual' : 'monthly')
+
         await sb.from('scout_subscriptions').update({
-          status:     STATUS_MAP[sub.status] ?? sub.status,
-          trial_end:  sub.trial_end  ? new Date(sub.trial_end  * 1000).toISOString() : null,
-          period_end: sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : null,
+          status:               dbStatus,
+          cancel_at_period_end: sub.cancel_at_period_end ?? false,
+          plan:                 planFromStripe,
+          trial_end:            sub.trial_end  ? new Date(sub.trial_end  * 1000).toISOString() : null,
+          period_end:           sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : null,
+          updated_at:           new Date().toISOString(),
         }).eq('stripe_sub_id', sub.id)
         break
       }
@@ -181,12 +196,32 @@ Deno.serve(async (req: Request) => {
       }
 
       // ── Subscription cancelled ──────────────────────────────
+      // Fires when cancel_at_period_end=true period finally ends,
+      // or when cancelled immediately via Stripe Dashboard.
       case 'customer.subscription.deleted': {
         const sub = event.data.object
-        await sb.from('scout_subscriptions').update({
-          status:     'cancelled',
-          period_end: sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : null,
-        }).eq('stripe_sub_id', sub.id)
+
+        const { data: dbSub } = await sb
+          .from('scout_subscriptions')
+          .update({
+            status:               'cancelled',
+            cancel_at_period_end: false,
+            period_end:           sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : null,
+            updated_at:           new Date().toISOString(),
+          })
+          .eq('stripe_sub_id', sub.id)
+          .select('user_id, child_id, plan')
+          .maybeSingle()
+
+        // Log event
+        if (dbSub) {
+          await sb.from('scout_events').insert({
+            user_id:    dbSub.user_id,
+            child_id:   dbSub.child_id,
+            event_type: 'subscription_ended',
+            properties: { plan: dbSub.plan, source: 'stripe_webhook' },
+          }).catch(() => {})
+        }
         break
       }
 
@@ -202,14 +237,26 @@ Deno.serve(async (req: Request) => {
 
       // ── Payment succeeded ───────────────────────────────────
       // On first payment after trial conversion: update status + fire digest immediately.
+      // On renewal: update period_end so settings page shows correct next billing date.
       case 'invoice.paid': {
         const invoice = event.data.object
         if (!invoice.subscription) break
         if ((invoice.amount_paid ?? 0) > 0) {
-          // Update status to active
+          // Fetch Stripe subscription to get current_period_end
+          const stripeSub = await stripeGet(stripeKey, `/subscriptions/${invoice.subscription}`)
+          const newPeriodEnd = stripeSub.current_period_end
+            ? new Date(stripeSub.current_period_end * 1000).toISOString()
+            : null
+
+          // Update status to active + refresh period_end
           const { data: updatedSub } = await sb
             .from('scout_subscriptions')
-            .update({ status: 'active' })
+            .update({
+              status:               'active',
+              cancel_at_period_end: false,
+              period_end:           newPeriodEnd,
+              updated_at:           new Date().toISOString(),
+            })
             .eq('stripe_sub_id', invoice.subscription)
             .select('user_id, status')
             .maybeSingle()
