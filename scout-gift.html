@@ -39,23 +39,79 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 
 /* ─── NAV ─── */
 .nav {
-  position: sticky; top: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 24px;
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 1000;
   background: rgba(250,250,250,.92);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
 }
-.nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-.nav-logo-mark { width: 28px; height: 28px; background: var(--terra); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
-.nav-logo-mark svg { width: 14px; height: 14px; fill: #fff; }
-.nav-logo-text { font-size: 15px; font-weight: 700; color: var(--text); }
-.nav-logo-sub { font-size: 13px; font-weight: 500; color: var(--terra); margin-left: 2px; }
+.nav-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 24px; height: 72px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.logo {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--sans); font-size: 17px; font-weight: 700;
+  text-decoration: none; color: var(--text); letter-spacing: -.01em; flex-shrink: 0;
+}
+.logo-s { color: var(--terra); }
+.nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: color .2s; }
+@media (hover:hover) { .nav-links a:hover { color: var(--terra); } }
+.btn-nav {
+  background: var(--terra); color: #fff; font-family: var(--sans);
+  font-size: 13px; font-weight: 700; padding: 10px 20px; border-radius: 100px;
+  border: none; cursor: pointer; text-decoration: none;
+  display: inline-flex; align-items: center; transition: background .2s, transform .2s;
+  white-space: nowrap;
+}
+@media (hover:hover) { .btn-nav:hover { background: var(--terra-dark); transform: translateY(-1px); } }
+@media (max-width: 640px) { .nav-links { display: none; } .btn-nav { display: none; } }
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; padding: 10px; cursor: pointer; border-radius: 8px; margin-left: 4px;
+}
+.hamburger span { display: block; height: 1.5px; background: var(--text); border-radius: 1px; transition: transform .3s, opacity .3s; }
+.hamburger span:nth-child(1) { width: 20px; }
+.hamburger span:nth-child(2) { width: 14px; }
+@media (max-width: 640px) { .hamburger { display: flex; } }
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 1001;
+  background: rgba(250,250,252,.97); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  display: flex; flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0);
+  opacity: 0; visibility: hidden; transform: translateY(8px);
+  transition: opacity .25s, visibility .25s, transform .3s; pointer-events: none;
+}
+.mobile-menu.open { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+.mobile-menu-header {
+  display: flex; justify-content: space-between; align-items: center;
+  height: 64px; padding: 0 20px; border-bottom: 1px solid var(--border);
+}
+.mobile-menu-close {
+  background: none; border: none; font-size: 18px; color: var(--text-dim);
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; border-radius: 8px;
+}
+.mobile-menu-links { flex: 1; padding: 20px; list-style: none; }
+.mobile-menu-links li a {
+  display: flex; align-items: center; min-height: 56px; padding: 12px 0;
+  border-bottom: 1px solid var(--border); font-size: 18px; font-weight: 500;
+  color: var(--text); text-decoration: none; font-family: var(--sans);
+}
+.mobile-menu-links li:last-child a { border-bottom: none; }
+.mobile-menu-cta { padding: 20px; padding-bottom: max(20px, env(safe-area-inset-bottom, 0px)); }
+.mobile-menu-cta a {
+  display: block; text-align: center; background: var(--terra); color: #fff;
+  padding: 16px; border-radius: 100px; font-weight: 700; font-size: 16px;
+  text-decoration: none; font-family: var(--sans);
+}
 
 /* ─── HERO ─── */
 .hero {
   max-width: 680px; margin: 0 auto;
-  padding: 64px 24px 48px;
+  padding: calc(72px + 56px) 24px 48px;
   text-align: center;
 }
 .hero-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--terra); margin-bottom: 16px; }
@@ -171,15 +227,40 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 <body>
 
 <!-- NAV -->
-<nav class="nav">
-  <a href="/index.html" class="nav-logo">
-    <div class="nav-logo-mark">
-      <svg viewBox="0 0 14 14"><path d="M7 1L13 5V9L7 13L1 9V5L7 1Z"/></svg>
-    </div>
-    <span class="nav-logo-text">FamilyForce</span>
-    <span class="nav-logo-sub">Scout</span>
-  </a>
+<nav class="nav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/index.html" class="logo" aria-label="FamilyForce Home">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Family<span class="logo-s">Force</span></span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="/sign-in.html">Sign In</a></li>
+    </ul>
+    <a href="/sign-in.html?intent=trial" class="btn-nav">Try Free for 1 Month</a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span><span></span>
+    </button>
+  </div>
 </nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="mobile-menu-header">
+    <a href="/index.html" class="logo" style="font-size:17px">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Family<span class="logo-s">Force</span></span>
+    </a>
+    <button class="mobile-menu-close" id="mobile-close-btn" aria-label="Close menu">✕</button>
+  </div>
+  <ul class="mobile-menu-links" role="list">
+    <li><a href="/sign-in.html">Sign In</a></li>
+  </ul>
+  <div class="mobile-menu-cta">
+    <a href="/sign-in.html?intent=trial">Try Free for 1 Month →</a>
+  </div>
+</div>
 
 <!-- REDEEM BANNER (shown when ?redeem=CODE in URL) -->
 <div class="redeem-banner" id="redeemBanner">
@@ -516,6 +597,41 @@ function submitRedeem() {
   })
 }
 </script>
+
+<script>
+const hamburger = document.getElementById('hamburger-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const mobileClose = document.getElementById('mobile-close-btn');
+if (hamburger && mobileMenu) {
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  });
+  mobileClose.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  });
+}
+</script>
+
+<footer style="background:#1E1248;border-top:1px solid rgba(255,255,255,.08);padding:20px 24px;padding-bottom:max(20px,env(safe-area-inset-bottom,0px))">
+  <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+    <a href="/index.html" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none" aria-label="FamilyForce home">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-family:'Outfit',system-ui,sans-serif;font-size:16px;font-weight:700;color:rgba(255,255,255,.9)">Family<span style="color:#A78BFF">Force</span></span>
+    </a>
+    <nav style="display:flex;gap:24px" aria-label="Footer links">
+      <a href="https://www.getfamilyforce.com/privacy" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Privacy</a>
+      <a href="https://www.getfamilyforce.com/terms"   style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Terms</a>
+      <a href="https://www.getfamilyforce.com/contact" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Support</a>
+    </nav>
+    <span style="font-size:12px;color:rgba(255,255,255,.25)">© 2026 FamilyForce. All rights reserved.</span>
+  </div>
+</footer>
 
 </body>
 </html>
