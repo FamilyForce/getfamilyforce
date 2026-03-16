@@ -1661,6 +1661,12 @@ button { font: inherit; cursor: pointer; }
   var next = params.get('next');
   if (next) sessionStorage.setItem('ff_signin_next', next);
 
+  /* ── Capture inbound referral / promo code (from share links or gift emails) ── */
+  var inboundRef = params.get('ref') || params.get('promo');
+  if (inboundRef && /^[A-Za-z]+-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/.test(inboundRef)) {
+    localStorage.setItem('scout_referral_code', inboundRef.toUpperCase());
+  }
+
   /* ── Detect returning user mode from ?mode= param ── */
   var modeParam = params.get('mode');
   if (modeParam === 'create') signinSwitchMode('create');

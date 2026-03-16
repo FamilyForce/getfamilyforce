@@ -1754,6 +1754,16 @@ a { color: inherit; }
     gtag('js', new Date());
     gtag('config', 'G-NWDKH78LWB');
   </script>
+  <script>
+    // Capture ?ref= referral param and persist for checkout
+    (function () {
+      var p = new URLSearchParams(window.location.search)
+      var ref = p.get('ref') || p.get('promo')
+      if (ref && /^[A-Za-z]+-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/.test(ref)) {
+        localStorage.setItem('scout_referral_code', ref.toUpperCase())
+      }
+    })()
+  </script>
 </head>
 
 <body>

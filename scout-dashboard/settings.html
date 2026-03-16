@@ -86,11 +86,30 @@
     <div id="stripeFormWrap" style="display:none;margin-bottom:24px">
       <div class="settings-card" style="padding:24px">
         <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px" id="stripeFormTitle">Subscribe to Scout</p>
+
+        <!-- Referral code banner (shown if code present in localStorage) -->
+        <div id="referralAppliedBanner" style="display:none;background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <span style="font-size:13px;color:#15803D">🎉 Referral code <strong id="referralAppliedCode"></strong> applied — 25% off your first payment</span>
+          <button onclick="removeReferralCode()" style="background:none;border:none;font-size:12px;color:var(--text-dim);cursor:pointer;white-space:nowrap;padding:0">Remove</button>
+        </div>
+
         <div class="form-field">
           <label class="form-label">Card details</label>
           <div id="stripeCardEl" style="padding:13px 14px;border:1.5px solid var(--border);border-radius:10px;background:var(--surface)"></div>
           <p style="font-size:12px;color:var(--red);margin-top:6px;display:none" id="stripeCardErr"></p>
         </div>
+
+        <!-- Manual referral code entry (collapsed by default) -->
+        <div style="margin-bottom:16px">
+          <button onclick="toggleReferralEntry()" style="background:none;border:none;font-size:13px;color:var(--terra);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px" id="referralEntryToggle">Have a referral code?</button>
+          <div id="referralEntryWrap" style="display:none;margin-top:10px;display:flex;gap:8px;align-items:flex-start">
+            <input id="referralCodeInput" type="text" placeholder="FRIEND-XXXX-XXXX" maxlength="20"
+              style="flex:1;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:var(--surface);color:var(--text)">
+            <button onclick="applyReferralCode()" style="padding:10px 16px;background:var(--terra);color:#fff;border:none;border-radius:10px;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">Apply</button>
+          </div>
+          <p id="referralCodeErr" style="font-size:12px;color:var(--red);margin-top:6px;display:none"></p>
+        </div>
+
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn btn-primary" id="stripeSubmitBtn" onclick="submitSubscribe()">Subscribe →</button>
           <button class="btn btn-secondary" onclick="cancelStripeForm()">Cancel</button>
@@ -313,6 +332,7 @@ function openStripeForm(plan) {
     ? 'Subscribe annually — $79.99/year'
     : 'Subscribe monthly — $9.99/month'
   document.getElementById('stripeFormWrap').scrollIntoView({ behavior: 'smooth' })
+  initReferralBanner()
 
   if (!_stripe) {
     _stripe = Stripe(STRIPE_PK)
@@ -357,7 +377,11 @@ function submitSubscribe() {
         fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-convert', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-          body: JSON.stringify({ paymentMethodId: result.paymentMethod.id, plan: _checkoutPlan }),
+          body: JSON.stringify({
+            paymentMethodId: result.paymentMethod.id,
+            plan: _checkoutPlan,
+            referralCode: localStorage.getItem('scout_referral_code') || undefined,
+          }),
         }).then(function (r) { return r.json() }).then(function (data) {
           if (!data.ok) {
             errEl.style.display = 'block'; errEl.textContent = data.error || 'Payment failed.'
@@ -414,6 +438,68 @@ function _genReferralCode() {
     return s
   }
   return 'FRIEND-' + seg() + '-' + seg()
+}
+
+// ── Referral code helpers ─────────────────────────────────────
+function initReferralBanner() {
+  var code = localStorage.getItem('scout_referral_code')
+  var banner = document.getElementById('referralAppliedBanner')
+  var codeEl = document.getElementById('referralAppliedCode')
+  if (!banner) return
+  if (code && code.trim()) {
+    if (codeEl) codeEl.textContent = code.trim().toUpperCase()
+    banner.style.display = 'flex'
+    // Hide manual entry toggle since code is already applied
+    var toggle = document.getElementById('referralEntryToggle')
+    if (toggle) toggle.style.display = 'none'
+    var wrap = document.getElementById('referralEntryWrap')
+    if (wrap) wrap.style.display = 'none'
+  } else {
+    banner.style.display = 'none'
+  }
+}
+
+function removeReferralCode() {
+  localStorage.removeItem('scout_referral_code')
+  var banner = document.getElementById('referralAppliedBanner')
+  if (banner) banner.style.display = 'none'
+  var toggle = document.getElementById('referralEntryToggle')
+  if (toggle) toggle.style.display = ''
+}
+
+function toggleReferralEntry() {
+  var wrap = document.getElementById('referralEntryWrap')
+  var toggle = document.getElementById('referralEntryToggle')
+  if (!wrap) return
+  var open = wrap.style.display === 'flex'
+  wrap.style.display = open ? 'none' : 'flex'
+  if (toggle) toggle.textContent = open ? 'Have a referral code?' : 'Cancel'
+}
+
+function applyReferralCode() {
+  var input = document.getElementById('referralCodeInput')
+  var errEl = document.getElementById('referralCodeErr')
+  var code  = (input ? input.value.trim().toUpperCase() : '')
+  if (errEl) { errEl.style.display = 'none'; errEl.textContent = '' }
+  if (!code) {
+    if (errEl) { errEl.textContent = 'Please enter a referral code.'; errEl.style.display = 'block' }
+    return
+  }
+  // Basic format check: FRIEND-XXXX-XXXX or SCOUT-XXXX-XXXX
+  if (!/^[A-Z]+-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)) {
+    if (errEl) { errEl.textContent = 'That code does not look right. Check the format (e.g. FRIEND-AB12-CD34).'; errEl.style.display = 'block' }
+    return
+  }
+  localStorage.setItem('scout_referral_code', code)
+  var banner = document.getElementById('referralAppliedBanner')
+  var codeEl = document.getElementById('referralAppliedCode')
+  if (codeEl) codeEl.textContent = code
+  if (banner) banner.style.display = 'flex'
+  var wrap = document.getElementById('referralEntryWrap')
+  if (wrap) wrap.style.display = 'none'
+  var toggle = document.getElementById('referralEntryToggle')
+  if (toggle) toggle.style.display = 'none'
+  if (errEl) { errEl.style.display = 'none' }
 }
 
 function loadReferralCode() {

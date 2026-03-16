@@ -138,7 +138,7 @@ Deno.serve(async (req: Request) => {
     // ── Parse body ────────────────────────────────────────────────────────────
     step = 'parse'
     const body = await req.json()
-    const { paymentMethodId, plan, childId } = body
+    const { paymentMethodId, plan, childId, referralCode } = body
     if (plan !== 'annual' && plan !== 'monthly') return err(400, 'plan must be annual or monthly', step)
 
     const isAdditionalChild = !!childId
@@ -154,6 +154,34 @@ Deno.serve(async (req: Request) => {
       return err(500, 'Monthly price ID not configured. Set STRIPE_PRICE_MONTHLY in Supabase secrets.', step)
     }
     const priceId = plan === 'annual' ? priceAnnual : priceMonthly
+
+    // ── Validate referral code (non-blocking — discount is best-effort) ───────
+    step = 'referral-check'
+    let appliedCoupon: string | null = null
+    let referrerUserId: string | null = null
+    if (referralCode && typeof referralCode === 'string') {
+      const cleanCode = referralCode.trim().toUpperCase()
+      const referralCouponId = Deno.env.get('STRIPE_REFERRAL_COUPON_ID')
+      if (referralCouponId && /^[A-Z]+-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(cleanCode)) {
+        try {
+          const { data: refOwner } = await sb
+            .from('profiles')
+            .select('id')
+            .eq('referral_code', cleanCode)
+            .neq('id', user.id)   // can't use your own code
+            .maybeSingle()
+          if (refOwner) {
+            appliedCoupon   = referralCouponId
+            referrerUserId  = refOwner.id
+            console.log(`[scout-convert] Referral code ${cleanCode} valid — applying coupon ${appliedCoupon}`)
+          } else {
+            console.log(`[scout-convert] Referral code ${cleanCode} not found or self-referral`)
+          }
+        } catch (e) {
+          console.error('[scout-convert] Referral lookup failed (non-blocking):', e)
+        }
+      }
+    }
 
     // ══════════════════════════════════════════════════════════════════════════
     // PATH A — Additional child subscription (child #2+)
@@ -240,6 +268,7 @@ Deno.serve(async (req: Request) => {
         customer:                          customerId!,
         'items[0][price]':                 priceId,
         trial_end:                         trialEndUnix,
+        ...(appliedCoupon ? { coupon: appliedCoupon } : {}),
         'payment_settings[save_default_payment_method]': 'on_subscription',
         'metadata[supabase_user_id]':      user.id,
         'metadata[child_id]':              childId,
@@ -275,6 +304,8 @@ Deno.serve(async (req: Request) => {
           trial_end:             trialEnd.toISOString(),
           bonus_eligible:        bonusEligible,
           days_until_birthday:   daysUntilBirthday,
+          referral_code:         referralCode ?? null,
+          coupon_applied:        appliedCoupon ?? null,
         },
       })
 
@@ -288,6 +319,20 @@ Deno.serve(async (req: Request) => {
             days_until_birthday:   daysUntilBirthday,
           },
         })
+      }
+
+      if (appliedCoupon && referrerUserId && referralCode) {
+        await sb.from('scout_events').insert({
+          user_id:    user.id,
+          child_id:   childId,
+          event_type: 'referral_attributed',
+          properties: {
+            referral_code:    referralCode.trim().toUpperCase(),
+            referrer_user_id: referrerUserId,
+            coupon_id:        appliedCoupon,
+            plan,
+          },
+        }).catch(() => { /* non-blocking */ })
       }
 
       // Fire digest for this child
@@ -377,6 +422,7 @@ Deno.serve(async (req: Request) => {
     const subscription = await stripeReq(stripeKey, 'POST', '/subscriptions', {
       customer:          customerId!,
       'items[0][price]': priceId,
+      ...(appliedCoupon ? { coupon: appliedCoupon } : {}),
       'payment_settings[save_default_payment_method]': 'on_subscription',
       'metadata[supabase_user_id]': user.id,
       'metadata[plan]':             plan,
@@ -415,11 +461,28 @@ Deno.serve(async (req: Request) => {
       event_type: 'trial_converted',
       properties: {
         plan,
-        stripe_sub_id: subscription.id,
-        price_id:      priceId,
-        period_end:    periodEnd,
+        stripe_sub_id:  subscription.id,
+        price_id:       priceId,
+        period_end:     periodEnd,
+        referral_code:  referralCode ?? null,
+        coupon_applied: appliedCoupon ?? null,
       },
     })
+
+    // Log referral attribution if a valid code was used
+    if (appliedCoupon && referrerUserId && referralCode) {
+      await sb.from('scout_events').insert({
+        user_id:    user.id,
+        child_id:   eventChildId,
+        event_type: 'referral_attributed',
+        properties: {
+          referral_code:    referralCode.trim().toUpperCase(),
+          referrer_user_id: referrerUserId,
+          coupon_id:        appliedCoupon,
+          plan,
+        },
+      }).catch(() => { /* non-blocking */ })
+    }
 
     // Fire digest immediately
     step = 'trigger-digest'
