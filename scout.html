@@ -1025,8 +1025,8 @@ a { color: inherit; text-decoration: none; }
         <!-- Event body -->
         <div class="w-cal-body">
           <div class="w-cal-meta-row">
-            <div class="w-cal-date-chip" id="w-date-chip">📅 Arrives on your child's birthday</div>
-            <div class="w-cal-child-chip" id="w-child-chip">👶 5 months old</div>
+            <div class="w-cal-date-chip">📅 Arrives monthly</div>
+            <div class="w-cal-child-chip">✦ Personalized by exact age</div>
             <div class="w-cal-reminder-chip">🔔 7-day reminder included</div>
           </div>
           <div class="w-agenda-label">Windows open this month</div>
@@ -1593,8 +1593,6 @@ function render() {
   const chipEl  = document.getElementById('w-child-chip');
   if (titleEl) titleEl.textContent = 'Scout Digest';
   if (chipEl)  chipEl.textContent  = p.stageDesc;
-  const dateChip = document.getElementById('w-date-chip');
-  if (dateChip) dateChip.textContent = '📅 ' + mon + ' ' + yr + ' digest';
 
   // Render agenda items
   const list = document.getElementById('w-windows');
