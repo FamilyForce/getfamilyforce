@@ -440,6 +440,13 @@ Deno.serve(async (req: Request) => {
 
     await telegramAlert(`Gift sold: ${plan} plan — ${buyerEmail} → ${recipientEmail} — code ${giftCode}`)
 
+    // Log gift_purchased event (no user_id — anonymous buyer)
+    await sb.from('scout_events').insert({
+      user_id:    null,
+      event_type: 'gift_purchased',
+      properties: { plan, amount: priceInfo.amount, buyer_email: buyerEmail },
+    }).catch(() => {})
+
     return new Response(JSON.stringify({
       ok: true, giftCode, referralCode,
       recipientEmail, plan,

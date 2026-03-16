@@ -336,6 +336,14 @@ Deno.serve(async (req: Request) => {
         properties: { months, weeks, messageId, top_window: topWindow?.title ?? null },
       })
 
+      // Also log trial_churned — 30 days past trial_end without converting = churned
+      await sb.from('scout_events').insert({
+        user_id:    userId,
+        child_id:   child.id,
+        event_type: 'trial_churned',
+        properties: { months, days_since_trial_end: 30 },
+      }).catch(() => {})
+
       results.reengagement.sent++
       console.log(`[scout-trial-end] Re-engagement sent for user ${userId} (${months}mo)`)
 

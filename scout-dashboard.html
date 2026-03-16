@@ -274,6 +274,16 @@ document.addEventListener('DOMContentLoaded', function () {
     if (new URLSearchParams(window.location.search).get('arrived') === '1' && child.is_expecting) {
       openArrivalModal()
     }
+    // 5B: log dashboard_opened event
+    var sb = ScoutDash.getSb()
+    if (sb && user) {
+      var src = document.referrer && document.referrer.indexOf('resend') > -1 ? 'email' : (new URLSearchParams(window.location.search).get('utm_source') || 'direct')
+      sb.from('scout_events').insert({
+        user_id: user.id, child_id: child ? child.id : null,
+        event_type: 'dashboard_opened',
+        properties: { source: src }
+      }).catch(function(){})
+    }
   })
 })
 
@@ -425,6 +435,18 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
     || (sub.status === 'active' && sub.period_end && new Date(sub.period_end) < new Date())
   if (noAccess) {
     html += renderPaywall(name, ageM)
+    // 5B: log paywall_shown
+    ;(function() {
+      var sb = ScoutDash.getSb(); var user = ScoutDash.getUser(); var child = ScoutDash.getChild()
+      if (sb && user) {
+        var daysAgo = sub && sub.trial_end ? Math.round((Date.now() - new Date(sub.trial_end).getTime()) / 86400000) : null
+        sb.from('scout_events').insert({
+          user_id: user.id, child_id: child ? child.id : null,
+          event_type: 'paywall_shown',
+          properties: { days_since_trial_end: daysAgo, sub_status: sub ? sub.status : null }
+        }).catch(function(){})
+      }
+    })()
   } else if (sections.comingUp.length > 0) {
     var comingCards = '<div class="window-grid">'
     sections.comingUp.forEach(function (w) { comingCards += ScoutDash.renderCard(w, { preview: true }) })
