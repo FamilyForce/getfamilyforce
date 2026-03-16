@@ -9,6 +9,59 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/scout-dashboard.css">
+<style>
+/* ─── Subscribe gate (step 2 for additional children) ─── */
+.subscribe-gate {
+  display: none;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-card); padding: 28px;
+  margin-top: 8px;
+}
+.subscribe-gate.visible { display: block; }
+.subscribe-gate-icon { font-size: 32px; margin-bottom: 12px; }
+.subscribe-gate-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.subscribe-gate-sub {
+  font-size: 14px; color: var(--text-mid); line-height: 1.6;
+  margin-bottom: 24px; max-width: 480px;
+}
+.subscribe-gate-catchup {
+  background: var(--terra-tint); color: var(--terra);
+  border-radius: var(--radius-pill); padding: 7px 14px;
+  font-size: 13px; font-weight: 600;
+  display: inline-block; margin-bottom: 24px;
+}
+.plan-toggle {
+  display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.plan-option {
+  flex: 1; min-width: 140px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-card);
+  padding: 14px 16px; cursor: pointer; transition: all .15s;
+  background: var(--surface);
+}
+.plan-option.selected { border-color: var(--terra); background: var(--terra-tint); }
+.plan-option-label { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.plan-option-price { font-size: 22px; font-weight: 800; color: var(--terra); }
+.plan-option-per   { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+.plan-option-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  background: var(--terra); color: #fff; border-radius: var(--radius-pill);
+  padding: 2px 8px; margin-left: 6px; vertical-align: middle;
+}
+.card-field-wrap {
+  border: 1.5px solid var(--border); border-radius: var(--radius-card);
+  padding: 14px 16px; margin-bottom: 20px; background: var(--surface);
+}
+.card-field-label { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-bottom: 8px; }
+#cardElement { min-height: 20px; }
+.card-use-existing {
+  font-size: 13px; color: var(--text-mid); background: var(--bg);
+  border: 1px solid var(--border); border-radius: var(--radius-pill);
+  padding: 6px 14px; display: inline-flex; align-items: center; gap: 6px;
+  margin-bottom: 16px; cursor: default;
+}
+.subscribe-note { font-size: 12px; color: var(--text-dim); margin-top: 14px; line-height: 1.6; }
+</style>
 </head>
 <body>
 
@@ -21,7 +74,7 @@
   <aside class="scout-sidebar">
     <a href="/scout-dashboard.html" class="sidebar-logo">
       <div class="sidebar-logo-mark"><svg viewBox="0 0 14 14"><path d="M7 1L13 5V9L7 13L1 9V5L7 1Z"/></svg></div>
-      <div><div class="sidebar-logo-name">FamilyForce</div><div class="sidebar-logo-product">Scout</div></div>
+      <div><div class="sidebar-logo-name">FamilyForce</div><div class="sidebar-logo-product" id="sidebarProductLabel">Scout</div></div>
     </a>
     <div class="sidebar-child">
       <div id="childSelectorWrap" style="position:relative">
@@ -73,6 +126,50 @@
       <button class="btn btn-primary btn-full" id="saveBtn" onclick="saveChild()" style="margin-top:8px">Save →</button>
 
     </div>
+
+    <!-- Step 2: Subscribe (shown for child #2+ only) -->
+    <div class="subscribe-gate" id="subscribeGate">
+      <div class="subscribe-gate-icon">🔭</div>
+      <h2 class="subscribe-gate-title" id="subscribeGateTitle">One more step</h2>
+      <p class="subscribe-gate-sub" id="subscribeGateSub">Scout tracks one child per subscription. To start tracking <strong id="subscribeChildName"></strong>, choose a plan below.</p>
+      <span class="subscribe-gate-catchup" id="catchupLabel">📅 Catch-up period is free until first monthly birthday</span>
+
+      <!-- Plan toggle -->
+      <div class="plan-toggle">
+        <div class="plan-option selected" id="planAnnual" onclick="selectPlan('annual')">
+          <div class="plan-option-label">Annual <span class="plan-option-badge">Best value</span></div>
+          <div class="plan-option-price">$79.99</div>
+          <div class="plan-option-per">per year · $6.67/month</div>
+        </div>
+        <div class="plan-option" id="planMonthly" onclick="selectPlan('monthly')">
+          <div class="plan-option-label">Monthly</div>
+          <div class="plan-option-price">$9.99</div>
+          <div class="plan-option-per">per month</div>
+        </div>
+      </div>
+
+      <!-- Card entry (hidden if user already has a payment method on file) -->
+      <div id="cardEntryWrap">
+        <div class="card-field-wrap">
+          <div class="card-field-label">Card details</div>
+          <div id="cardElement"></div>
+        </div>
+      </div>
+      <div id="existingCardWrap" style="display:none">
+        <div class="card-use-existing" id="existingCardLabel">
+          💳 Using your card on file
+        </div>
+      </div>
+
+      <p class="form-error" id="subscribeError"></p>
+
+      <button class="btn btn-primary btn-full" id="subscribeBtn" onclick="subscribeForChild()">
+        Subscribe for <span id="subscribeBtnName"></span> →
+      </button>
+
+      <p class="subscribe-note">Your catch-up period is free. You will be billed once it ends. Cancel any time from Settings.</p>
+    </div>
+
   </main>
 </div>
 
@@ -89,10 +186,17 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.stripe.com/v3/"></script>
 <script src="/assets/scout-dashboard.js"></script>
 <script>
-var _editChildId = null
-var _selectedGender = null
+var _editChildId     = null
+var _selectedGender  = null
+var _newChildId      = null    // set after insert, used by subscribe step
+var _newChildDob     = null
+var _selectedPlan    = 'annual'
+var _stripe          = null
+var _cardElement     = null
+var _hasExistingPM   = false   // true if user already has a Stripe customer with default PM
 
 document.addEventListener('DOMContentLoaded', function () {
   // Set max date (today)
@@ -176,11 +280,31 @@ function saveChild() {
     promise = sb.from('children').update(payload).eq('id', _editChildId)
   } else {
     sb.auth.getUser().then(function (res) {
-      payload.user_id = res.data.user.id
-      sb.from('children').insert(payload).select('id').single().then(function (r) {
-        if (r.error) { showSaveErr(r.error.message, btn); return }
-        localStorage.setItem('scout_active_child_id', r.data.id)
-        window.location.href = '/scout-dashboard.html'
+      var userId = res.data.user.id
+      payload.user_id = userId
+
+      // Count existing children to detect child #2+
+      sb.from('children').select('id', { count: 'exact', head: true }).eq('user_id', userId).then(function (countRes) {
+        var existingCount = countRes.count || 0
+
+        sb.from('children').insert(payload).select('id').single().then(function (r) {
+          if (r.error) { showSaveErr(r.error.message, btn); return }
+
+          var newId = r.data.id
+          localStorage.setItem('scout_active_child_id', newId)
+
+          if (existingCount === 0) {
+            // First child — go straight to dashboard
+            window.location.href = '/scout-dashboard.html'
+          } else {
+            // Child #2+ — show subscribe gate
+            _newChildId  = newId
+            _newChildDob = dobVal
+            showSubscribeGate(nameVal, dobVal, userId)
+            btn.disabled    = false
+            btn.textContent = 'Save →'
+          }
+        })
       })
     })
     return
@@ -198,6 +322,151 @@ function showSaveErr(msg, btn) {
   saveErr.classList.add('show')
   btn.disabled    = false
   btn.textContent = 'Save →'
+}
+
+// ── Subscribe gate helpers ────────────────────────────────────────────────────
+
+function selectPlan(plan) {
+  _selectedPlan = plan
+  document.getElementById('planAnnual').classList.toggle('selected',  plan === 'annual')
+  document.getElementById('planMonthly').classList.toggle('selected', plan === 'monthly')
+}
+
+function nextMonthlyBirthday(dob, fromDate) {
+  var bd = new Date(Date.UTC(fromDate.getUTCFullYear(), fromDate.getUTCMonth(), dob.getUTCDate()))
+  if (bd <= fromDate) { bd.setUTCMonth(bd.getUTCMonth() + 1) }
+  return bd
+}
+
+function showSubscribeGate(childName, dobVal, userId) {
+  // Scroll form up, hide it, show gate
+  document.getElementById('childForm').style.display = 'none'
+  var gate = document.getElementById('subscribeGate')
+  gate.classList.add('visible')
+
+  // Update copy
+  document.getElementById('subscribeChildName').textContent = childName
+  document.getElementById('subscribeGateTitle').textContent  = 'One more step for ' + childName
+  document.getElementById('subscribeBtnName').textContent    = childName
+
+  // Calculate catch-up label
+  var today = new Date()
+  var dob   = new Date(dobVal + 'T00:00:00Z')
+  var next  = nextMonthlyBirthday(dob, today)
+  var days  = Math.ceil((next - today) / 86400000)
+  var opts  = { month: 'short', day: 'numeric', timeZone: 'UTC' }
+  var dateStr = next.toLocaleDateString('en-US', opts)
+  var label = '📅 Free until ' + dateStr
+  if (days <= 7) label += ' · Bonus month included'
+  document.getElementById('catchupLabel').textContent = label
+
+  // Check if user has existing payment method
+  var sb = window._supabaseClient
+  sb.from('scout_subscriptions')
+    .select('stripe_customer_id')
+    .eq('user_id', userId)
+    .not('stripe_customer_id', 'is', null)
+    .limit(1)
+    .maybeSingle()
+    .then(function (res) {
+      if (res.data && res.data.stripe_customer_id) {
+        // Existing customer — skip card entry
+        _hasExistingPM = true
+        document.getElementById('cardEntryWrap').style.display = 'none'
+        document.getElementById('existingCardWrap').style.display = 'block'
+      } else {
+        // New card needed — init Stripe Elements
+        _hasExistingPM = false
+        initStripeCard()
+      }
+    })
+
+  gate.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
+function initStripeCard() {
+  var STRIPE_PK = 'pk_test_51TAQTZRF5ve13fCKDmbO62d5eyQD1P5elKFxqb10rtEr7kMJ3myKneIpZs26oxTYafC2s1Q796gUnHxa0LuuDkX600u23YbO8I'
+  _stripe = window.Stripe ? window.Stripe(STRIPE_PK) : null
+  if (!_stripe) return
+  var elements = _stripe.elements()
+  _cardElement = elements.create('card', {
+    style: {
+      base: {
+        fontFamily: "'Outfit', sans-serif",
+        fontSize: '15px',
+        color: '#1a1a2e',
+        '::placeholder': { color: '#9CA3AF' },
+      }
+    }
+  })
+  _cardElement.mount('#cardElement')
+}
+
+function subscribeForChild() {
+  var btn = document.getElementById('subscribeBtn')
+  var errEl = document.getElementById('subscribeError')
+  errEl.classList.remove('show')
+  btn.disabled    = true
+  btn.textContent = 'Processing…'
+
+  var sb      = window._supabaseClient
+  var session = null
+
+  sb.auth.getSession().then(function (res) {
+    session = res.data && res.data.session
+    if (!session) { window.location.href = '/sign-in.html'; return }
+
+    if (_hasExistingPM) {
+      // No card needed — call convert directly
+      callConvert(session.access_token, null, btn, errEl)
+    } else {
+      if (!_stripe || !_cardElement) {
+        errEl.textContent = 'Payment system not loaded. Please refresh and try again.'
+        errEl.classList.add('show')
+        btn.disabled    = false
+        btn.textContent = 'Subscribe for ' + document.getElementById('subscribeBtnName').textContent + ' →'
+        return
+      }
+      _stripe.createPaymentMethod({ type: 'card', card: _cardElement }).then(function (result) {
+        if (result.error) {
+          errEl.textContent = result.error.message
+          errEl.classList.add('show')
+          btn.disabled    = false
+          btn.textContent = 'Subscribe for ' + document.getElementById('subscribeBtnName').textContent + ' →'
+          return
+        }
+        callConvert(session.access_token, result.paymentMethod.id, btn, errEl)
+      })
+    }
+  })
+}
+
+function callConvert(token, paymentMethodId, btn, errEl) {
+  var body = { plan: _selectedPlan, childId: _newChildId }
+  if (paymentMethodId) body.paymentMethodId = paymentMethodId
+
+  fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-convert', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+    body:    JSON.stringify(body),
+  })
+  .then(function (r) { return r.json() })
+  .then(function (data) {
+    if (!data.ok) {
+      errEl.textContent = data.error || 'Something went wrong. Please try again.'
+      errEl.classList.add('show')
+      btn.disabled    = false
+      btn.textContent = 'Subscribe for ' + document.getElementById('subscribeBtnName').textContent + ' →'
+      return
+    }
+    window.location.href = '/scout-dashboard.html'
+  })
+  .catch(function (e) {
+    errEl.textContent = 'Network error. Please try again.'
+    errEl.classList.add('show')
+    btn.disabled    = false
+    btn.textContent = 'Subscribe for ' + document.getElementById('subscribeBtnName').textContent + ' →'
+  })
 }
 </script>
 </body>

@@ -1,19 +1,34 @@
 // ═══════════════════════════════════════════════════════════════
-// FamilyForce Scout — Trial Conversion Edge Function
-// Converts a trialing user to a paid subscriber.
-// Called from the paywall CTA when the user enters card details.
+// FamilyForce Scout — Trial Conversion + Additional Child Subscription
+// Converts a trialing user to a paid subscriber (child #1)
+// OR adds a new paid subscription for an additional child (child #2+).
 //
-// POST body: { paymentMethodId, plan: 'annual' | 'monthly' }
+// POST body:
+//   { paymentMethodId, plan: 'annual' | 'monthly' }         ← trial conversion (child #1)
+//   { paymentMethodId?, plan, childId }                      ← new child subscription
+//     paymentMethodId is optional for child #2+ if user already has a Stripe customer+PM
+//
 // Auth: Bearer session token
 //
-// Flow:
-//   1. Auth check + verify user has a trialing subscription
-//   2. Find or create Stripe customer
-//   3. Attach payment method
-//   4. Create Stripe subscription (no trial — immediate billing)
-//   5. Update scout_subscriptions: status = 'active', stripe IDs
-//   6. Fire scout-digest immediately (no wait for cron)
-//   7. Log trial_converted to scout_events
+// Trial conversion flow (child #1):
+//   1. Auth + verify trialing subscription exists
+//   2. Find/create Stripe customer, attach PM
+//   3. Create Stripe subscription (immediate billing)
+//   4. Update scout_subscriptions row: status=active + child_id
+//   5. Fire scout-digest immediately
+//   6. Log trial_converted event
+//
+// Additional child flow (child #2+):
+//   1. Auth + validate childId belongs to user
+//   2. Verify child doesn't already have an active subscription
+//   3. Find existing Stripe customer (reuse from child #1 sub)
+//   4. Attach PM if provided; else use customer's existing default PM
+//   5. Calculate catch-up period: trial_end = nextMonthlyBirthday(childDob, today)
+//      Bonus month: if first birthday ≤7 days away, extend by one more month
+//   6. Create Stripe subscription with trial_end (catch-up period is free)
+//   7. INSERT new scout_subscriptions row (child_id, status=trialing, trial_end)
+//   8. Fire scout-digest for this child
+//   9. Log child_subscription_added event
 //
 // Deploy: supabase functions deploy scout-convert
 // Secrets: STRIPE_SECRET_KEY, STRIPE_PRICE_ANNUAL, STRIPE_PRICE_MONTHLY,
@@ -29,9 +44,8 @@ const CORS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-// Default price IDs — override via env vars when Stripe prices are created
-const DEFAULT_PRICE_ANNUAL  = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'  // existing annual price
-const DEFAULT_PRICE_MONTHLY = ''                                   // set STRIPE_PRICE_MONTHLY in secrets
+const DEFAULT_PRICE_ANNUAL  = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'
+const DEFAULT_PRICE_MONTHLY = ''  // set STRIPE_PRICE_MONTHLY in secrets
 
 function err(status: number, msg: string, step = '') {
   return new Response(JSON.stringify({ ok: false, error: msg, step }), {
@@ -78,6 +92,26 @@ async function telegramAlert(message: string): Promise<void> {
   } catch { /* non-critical */ }
 }
 
+// Returns the next monthly birthday on or after fromDate
+// e.g. child born Jan 15, fromDate = Mar 3 → Mar 15
+function nextMonthlyBirthday(dob: Date, fromDate: Date): Date {
+  const bd = new Date(Date.UTC(
+    fromDate.getUTCFullYear(),
+    fromDate.getUTCMonth(),
+    dob.getUTCDate()
+  ))
+  if (bd <= fromDate) {
+    bd.setUTCMonth(bd.getUTCMonth() + 1)
+  }
+  return bd
+}
+
+function oneMonthForward(d: Date): Date {
+  const r = new Date(d)
+  r.setUTCMonth(r.getUTCMonth() + 1)
+  return r
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
   if (req.method !== 'POST')    return err(405, 'Method not allowed')
@@ -85,7 +119,7 @@ Deno.serve(async (req: Request) => {
   let step = 'init'
 
   try {
-    // 1. Auth
+    // ── Auth ─────────────────────────────────────────────────────────────────
     step = 'auth'
     const authHeader = req.headers.get('Authorization')
     if (!authHeader?.startsWith('Bearer ')) return err(401, 'Missing auth token', step)
@@ -101,30 +135,218 @@ Deno.serve(async (req: Request) => {
     if (authErr || !user) return err(401, 'Invalid or expired session', step)
     if (!user.email)      return err(400, 'User has no email address', step)
 
-    // 2. Parse body
+    // ── Parse body ────────────────────────────────────────────────────────────
     step = 'parse'
     const body = await req.json()
-    const { paymentMethodId, plan } = body
-    if (!paymentMethodId)                    return err(400, 'paymentMethodId is required', step)
+    const { paymentMethodId, plan, childId } = body
     if (plan !== 'annual' && plan !== 'monthly') return err(400, 'plan must be annual or monthly', step)
 
-    // 3. Verify user has a trialing subscription (not already active)
+    const isAdditionalChild = !!childId
+
+    // ── Price IDs ─────────────────────────────────────────────────────────────
+    step = 'price-select'
+    const stripeKey    = Deno.env.get('STRIPE_SECRET_KEY')
+    if (!stripeKey) return err(500, 'Stripe key not configured', step)
+
+    const priceAnnual  = Deno.env.get('STRIPE_PRICE_ANNUAL')  || DEFAULT_PRICE_ANNUAL
+    const priceMonthly = Deno.env.get('STRIPE_PRICE_MONTHLY') || DEFAULT_PRICE_MONTHLY
+    if (plan === 'monthly' && !priceMonthly) {
+      return err(500, 'Monthly price ID not configured. Set STRIPE_PRICE_MONTHLY in Supabase secrets.', step)
+    }
+    const priceId = plan === 'annual' ? priceAnnual : priceMonthly
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // PATH A — Additional child subscription (child #2+)
+    // ══════════════════════════════════════════════════════════════════════════
+    if (isAdditionalChild) {
+      step = 'validate-child'
+      const { data: child, error: childErr } = await sb
+        .from('children')
+        .select('id, name, dob, user_id')
+        .eq('id', childId)
+        .eq('user_id', user.id)
+        .single()
+
+      if (childErr || !child) return err(404, 'Child not found or does not belong to this user', step)
+
+      // Check child doesn't already have an active subscription
+      step = 'check-existing-sub'
+      const { data: existingSub } = await sb
+        .from('scout_subscriptions')
+        .select('id, status')
+        .eq('user_id', user.id)
+        .eq('child_id', childId)
+        .maybeSingle()
+
+      if (existingSub && (existingSub.status === 'active' || existingSub.status === 'trialing')) {
+        return err(409, 'This child already has an active subscription', step)
+      }
+
+      // Get user's existing Stripe customer from their first subscription
+      step = 'get-existing-customer'
+      const { data: primarySub } = await sb
+        .from('scout_subscriptions')
+        .select('stripe_customer_id')
+        .eq('user_id', user.id)
+        .not('stripe_customer_id', 'is', null)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle()
+
+      let customerId = primarySub?.stripe_customer_id as string | null
+
+      if (!customerId) {
+        // No customer yet — create one (edge case: user never converted child #1)
+        const search = await stripeReq(stripeKey, 'GET',
+          `/customers/search?query=email:'${encodeURIComponent(user.email)}'&limit=1`)
+        if (search.data?.length > 0) {
+          customerId = search.data[0].id
+        } else {
+          const customer = await stripeReq(stripeKey, 'POST', '/customers', {
+            email:                        user.email,
+            'metadata[supabase_user_id]': user.id,
+          })
+          customerId = customer.id
+        }
+      }
+
+      // Attach new PM if provided; otherwise use customer's existing default
+      if (paymentMethodId) {
+        step = 'pm-attach'
+        await stripeReq(stripeKey, 'POST', `/payment_methods/${paymentMethodId}/attach`, {
+          customer: customerId,
+        })
+        step = 'pm-set-default'
+        await stripeReq(stripeKey, 'POST', `/customers/${customerId!}`, {
+          'invoice_settings[default_payment_method]': paymentMethodId,
+        })
+      }
+
+      // Calculate catch-up period (same logic as scout-trial-start)
+      step = 'catchup-period'
+      const today  = new Date()
+      const dob    = new Date(child.dob + 'T00:00:00Z')
+      let   trialEnd = nextMonthlyBirthday(dob, today)
+      const daysUntilBirthday = Math.ceil((trialEnd.getTime() - today.getTime()) / 86400000)
+      const bonusEligible = daysUntilBirthday <= 7
+      if (bonusEligible) {
+        trialEnd = oneMonthForward(trialEnd)
+      }
+
+      // Create Stripe subscription — trial period = catch-up window (no charge until trialEnd)
+      step = 'stripe-subscription'
+      const trialEndUnix = Math.floor(trialEnd.getTime() / 1000)
+      const subscription = await stripeReq(stripeKey, 'POST', '/subscriptions', {
+        customer:                          customerId!,
+        'items[0][price]':                 priceId,
+        trial_end:                         trialEndUnix,
+        'payment_settings[save_default_payment_method]': 'on_subscription',
+        'metadata[supabase_user_id]':      user.id,
+        'metadata[child_id]':              childId,
+        'metadata[plan]':                  plan,
+      })
+
+      // INSERT new subscription row for this child
+      step = 'db-insert'
+      const periodEnd = subscription.current_period_end
+        ? new Date(subscription.current_period_end * 1000).toISOString()
+        : null
+
+      await sb.from('scout_subscriptions').insert({
+        user_id:            user.id,
+        child_id:           childId,
+        status:             'trialing',   // trial = catch-up period
+        stripe_customer_id: customerId,
+        stripe_sub_id:      subscription.id,
+        trial_end:          trialEnd.toISOString(),
+        period_end:         periodEnd,
+      })
+
+      // Log event
+      step = 'log-event'
+      await sb.from('scout_events').insert({
+        user_id:    user.id,
+        child_id:   childId,
+        event_type: 'child_subscription_added',
+        properties: {
+          plan,
+          stripe_sub_id:        subscription.id,
+          price_id:              priceId,
+          trial_end:             trialEnd.toISOString(),
+          bonus_eligible:        bonusEligible,
+          days_until_birthday:   daysUntilBirthday,
+        },
+      })
+
+      if (bonusEligible) {
+        await sb.from('scout_events').insert({
+          user_id:    user.id,
+          child_id:   childId,
+          event_type: 'trial_bonus_eligible',
+          properties: {
+            bonus_birthday:        trialEnd.toISOString().split('T')[0],
+            days_until_birthday:   daysUntilBirthday,
+          },
+        })
+      }
+
+      // Fire digest for this child
+      step = 'trigger-digest'
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+      const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      fetch(`${supabaseUrl}/functions/v1/scout-digest`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${serviceKey}` },
+        body: JSON.stringify({ userId: user.id, childId }),
+      }).catch(e => console.error('[scout-convert] digest trigger failed:', e.message))
+
+      await telegramAlert(`🎉 Additional child subscription: user=${user.email}, child=${child.name}, plan=${plan}, bonus=${bonusEligible}`)
+
+      console.log(`[scout-convert] Added child subscription: user=${user.id}, child=${childId}, plan=${plan}`)
+
+      return new Response(JSON.stringify({
+        ok:             true,
+        mode:           'additional_child',
+        plan,
+        childId,
+        trialEnd:       trialEnd.toISOString(),
+        bonusEligible,
+        subscriptionId: subscription.id,
+      }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
+    }
+
+    // ══════════════════════════════════════════════════════════════════════════
+    // PATH B — Trial conversion (child #1)
+    // ══════════════════════════════════════════════════════════════════════════
+
+    if (!paymentMethodId) return err(400, 'paymentMethodId is required', 'parse')
+
+    // Verify user has a trialing subscription
     step = 'verify-trial'
     const { data: sub } = await sb
       .from('scout_subscriptions')
-      .select('status, stripe_customer_id')
+      .select('id, status, stripe_customer_id, child_id')
       .eq('user_id', user.id)
+      .is('child_id', null)          // prefer legacy/null-child row first
       .maybeSingle()
 
-    if (!sub) return err(404, 'No Scout subscription found for this user', step)
-    if (sub.status === 'active') return err(409, 'Subscription is already active', step)
+    // Fallback: find any trialing row for this user
+    const subToConvert = sub ?? (await sb
+      .from('scout_subscriptions')
+      .select('id, status, stripe_customer_id, child_id')
+      .eq('user_id', user.id)
+      .eq('status', 'trialing')
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .maybeSingle()
+    ).data
 
-    // 4. Stripe: find or create customer
+    if (!subToConvert) return err(404, 'No Scout subscription found for this user', step)
+    if (subToConvert.status === 'active') return err(409, 'Subscription is already active', step)
+
+    // Find or create Stripe customer
     step = 'stripe-customer'
-    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
-    if (!stripeKey) return err(500, 'Stripe key not configured', step)
-
-    let customerId = sub.stripe_customer_id as string | null
+    let customerId = subToConvert.stripe_customer_id as string | null
 
     if (!customerId) {
       const search = await stripeReq(stripeKey, 'GET',
@@ -133,36 +355,24 @@ Deno.serve(async (req: Request) => {
         customerId = search.data[0].id
       } else {
         const customer = await stripeReq(stripeKey, 'POST', '/customers', {
-          email:                      user.email,
+          email:                        user.email,
           'metadata[supabase_user_id]': user.id,
         })
         customerId = customer.id
       }
     }
 
-    // 5. Attach payment method
+    // Attach PM
     step = 'pm-attach'
     await stripeReq(stripeKey, 'POST', `/payment_methods/${paymentMethodId}/attach`, {
       customer: customerId,
     })
-
     step = 'pm-set-default'
     await stripeReq(stripeKey, 'POST', `/customers/${customerId!}`, {
       'invoice_settings[default_payment_method]': paymentMethodId,
     })
 
-    // 6. Select price ID
-    step = 'price-select'
-    const priceAnnual  = Deno.env.get('STRIPE_PRICE_ANNUAL')  || DEFAULT_PRICE_ANNUAL
-    const priceMonthly = Deno.env.get('STRIPE_PRICE_MONTHLY') || DEFAULT_PRICE_MONTHLY
-
-    if (plan === 'monthly' && !priceMonthly) {
-      return err(500, 'Monthly price ID not configured. Set STRIPE_PRICE_MONTHLY in Supabase secrets.', step)
-    }
-
-    const priceId = plan === 'annual' ? priceAnnual : priceMonthly
-
-    // 7. Create Stripe subscription — no trial, charge immediately
+    // Create Stripe subscription — no trial, charge immediately
     step = 'stripe-subscription'
     const subscription = await stripeReq(stripeKey, 'POST', '/subscriptions', {
       customer:          customerId!,
@@ -172,7 +382,7 @@ Deno.serve(async (req: Request) => {
       'metadata[plan]':             plan,
     })
 
-    // 8. Update scout_subscriptions
+    // Update subscription row
     step = 'db-update'
     const periodEnd = subscription.current_period_end
       ? new Date(subscription.current_period_end * 1000).toISOString()
@@ -183,21 +393,25 @@ Deno.serve(async (req: Request) => {
       stripe_customer_id: customerId,
       stripe_sub_id:      subscription.id,
       period_end:         periodEnd,
-    }).eq('user_id', user.id)
+    }).eq('id', subToConvert.id)
 
-    // 9. Log trial_converted to scout_events
+    // Determine child_id for event logging
     step = 'log-event'
-    const { data: child } = await sb
-      .from('children')
-      .select('id')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: true })
-      .limit(1)
-      .maybeSingle()
+    let eventChildId = subToConvert.child_id as string | null
+    if (!eventChildId) {
+      const { data: firstChild } = await sb
+        .from('children')
+        .select('id')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle()
+      eventChildId = firstChild?.id ?? null
+    }
 
     await sb.from('scout_events').insert({
       user_id:    user.id,
-      child_id:   child?.id ?? null,
+      child_id:   eventChildId,
       event_type: 'trial_converted',
       properties: {
         plan,
@@ -207,33 +421,25 @@ Deno.serve(async (req: Request) => {
       },
     })
 
-    // 10. Fire scout-digest immediately — don't make them wait until next cron
+    // Fire digest immediately
     step = 'trigger-digest'
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-
     fetch(`${supabaseUrl}/functions/v1/scout-digest`, {
       method:  'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': `Bearer ${serviceKey}`,
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${serviceKey}` },
       body: JSON.stringify({}),
-    }).catch(e => {
-      console.error('[scout-convert] Failed to trigger digest:', e.message)
-    })
+    }).catch(e => console.error('[scout-convert] digest trigger failed:', e.message))
 
     console.log(`[scout-convert] Converted user ${user.id} to ${plan} plan`)
 
     return new Response(JSON.stringify({
       ok:             true,
+      mode:           'trial_conversion',
       plan,
       subscriptionId: subscription.id,
       periodEnd,
-    }), {
-      status: 200,
-      headers: { ...CORS, 'Content-Type': 'application/json' },
-    })
+    }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
 
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e)

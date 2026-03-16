@@ -82,6 +82,9 @@
       var mobileChildName = document.getElementById('mobileChildName')
       if (btn) btn.textContent = _child.name + ' ▾'
       if (mobileChildName) mobileChildName.textContent = _child.name + ' ▾'
+      // Sidebar product label: "Mike's Scout"
+      var productLabel = document.getElementById('sidebarProductLabel')
+      if (productLabel) productLabel.textContent = _child.name + '\u2019s Scout'
       if (list) {
         list.innerHTML = ''
         children.forEach(function (c) {
@@ -117,8 +120,15 @@
 
     /* ── Subscription ────────────────────────────────────────── */
     _loadSubscription: function (cb) {
-      sb.from('scout_subscriptions').select('*').eq('user_id', _user.id).maybeSingle().then(function (res) {
-        _sub = res.data || null
+      // Fetch all subscription rows for this user, then pick the one matching
+      // the active child (child_id match), falling back to legacy rows (child_id null)
+      sb.from('scout_subscriptions').select('*').eq('user_id', _user.id).then(function (res) {
+        var rows = res.data || []
+        // Prefer exact child_id match; fall back to null child_id (legacy/first-child rows)
+        var match = rows.find(function (r) { return r.child_id === _child.id })
+                 || rows.find(function (r) { return !r.child_id })
+                 || null
+        _sub = match
         if (typeof cb === 'function') cb()
       })
     },
