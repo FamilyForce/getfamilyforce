@@ -232,72 +232,112 @@ a { color: inherit; text-decoration: none; }
 .hero-trust-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.25); }
 
 /* ── Widget internals ── */
-.w-header { padding: 22px 22px 14px; }
-.w-eyebrow {
-  font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
-  color: #A78BFF; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
-}
-.w-title {
-  font-family: var(--serif); font-size: 20px; line-height: 1.25;
-  color: #fff; letter-spacing: -.015em;
-}
-.w-title em { font-style: italic; color: #A78BFF; }
+/* ── Widget: persona tabs ── */
 .w-personas {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 7px; padding: 0 22px 14px;
+  gap: 7px; padding: 16px 16px 12px;
 }
 .w-persona {
   background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12);
-  border-radius: 14px; padding: 11px 8px; text-align: center;
+  border-radius: 12px; padding: 10px 8px; text-align: center;
   cursor: pointer; transition: all .2s; user-select: none;
 }
 .w-persona:hover { background: rgba(255,255,255,.12); }
-.w-persona.active {
-  background: rgba(167,139,255,.18); border-color: #A78BFF;
-}
+.w-persona.active { background: rgba(167,139,255,.18); border-color: #A78BFF; }
 .w-persona-icon { font-size: 20px; display: block; margin-bottom: 5px; }
 .w-persona-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.88); display: block; line-height: 1.3; }
 .w-persona.active .w-persona-label { color: #C4B5FD; }
 .w-persona-sub { font-size: 10px; color: rgba(255,255,255,.38); display: block; margin-top: 2px; }
 .w-persona.active .w-persona-sub { color: rgba(167,139,255,.6); }
+
+/* ── Calendar invite card ── */
 .w-divider { height: 1px; background: rgba(255,255,255,.08); }
-.w-stage-row { padding: 11px 22px 7px; display: flex; align-items: center; gap: 9px; }
-.w-stage-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(167,139,255,.15); border: 1px solid rgba(167,139,255,.25);
-  border-radius: 100px; padding: 4px 11px;
-  font-size: 11px; font-weight: 700; color: #C4B5FD;
+.w-cal-invite {
+  margin: 0 14px 6px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px; overflow: hidden;
 }
-.w-stage-dot { width: 5px; height: 5px; border-radius: 50%; background: #A78BFF; flex-shrink: 0; }
-.w-stage-desc { font-size: 11px; color: rgba(255,255,255,.38); }
-.w-windows { padding: 2px 14px 6px; display: flex; flex-direction: column; gap: 5px; }
-.w-row {
-  display: flex; gap: 10px; align-items: flex-start;
-  border-radius: 11px; padding: 10px 11px;
+.w-cal-header {
+  background: linear-gradient(135deg, rgba(110,78,214,.5) 0%, rgba(79,52,170,.5) 100%);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  padding: 14px 16px; display: flex; align-items: center; gap: 12px;
 }
-.w-row.urgent { background: rgba(251,191,36,.1);  border: 1px solid rgba(251,191,36,.2); }
-.w-row.open   { background: rgba(167,139,255,.1); border: 1px solid rgba(167,139,255,.16); }
-.w-row.closed { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); opacity: .55; }
-.w-row.coming { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); }
-.w-row-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
-.w-row-body { flex: 1; min-width: 0; }
-.w-row-tag { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
-.w-row.urgent .w-row-tag { color: #FBBF24; }
-.w-row.open   .w-row-tag { color: #A78BFF; }
-.w-row.closed .w-row-tag, .w-row.coming .w-row-tag { color: rgba(255,255,255,.3); }
-.w-row-title { font-size: 12.5px; font-weight: 700; line-height: 1.3; margin-bottom: 1px; }
-.w-row.closed .w-row-title { color: rgba(255,255,255,.38); }
-.w-row:not(.closed) .w-row-title { color: #fff; }
-.w-row-desc { font-size: 11px; line-height: 1.5; }
-.w-row.closed .w-row-desc { color: rgba(255,255,255,.25); }
-.w-row:not(.closed) .w-row-desc { color: rgba(255,255,255,.52); }
-.w-row-badge {
-  flex-shrink: 0; font-size: 9.5px; font-weight: 700; padding: 3px 8px;
-  border-radius: 100px; white-space: nowrap; align-self: flex-start; margin-top: 1px;
+.w-cal-icon {
+  width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px;
 }
-.w-row.urgent .w-row-badge { background: rgba(251,191,36,.15); color: #FBBF24; border: 1px solid rgba(251,191,36,.25); }
-.w-row.open   .w-row-badge { background: rgba(167,139,255,.18); color: #C4B5FD; border: 1px solid rgba(167,139,255,.25); }
-.w-row.closed .w-row-badge, .w-row.coming .w-row-badge { background: rgba(255,255,255,.05); color: rgba(255,255,255,.3); border: 1px solid rgba(255,255,255,.08); }
+.w-cal-event-title { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.3; }
+.w-cal-organizer { font-size: 10.5px; color: rgba(255,255,255,.5); margin-top: 2px; }
+.w-cal-body { padding: 12px 14px 10px; }
+.w-cal-meta-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
+}
+.w-cal-date-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(167,139,255,.15); border: 1px solid rgba(167,139,255,.22);
+  border-radius: 20px; padding: 3px 10px;
+  font-size: 10.5px; font-weight: 700; color: #C4B5FD;
+}
+.w-cal-child-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px; padding: 3px 10px;
+  font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,.65);
+}
+.w-cal-reminder-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 20px; padding: 3px 10px;
+  font-size: 10px; color: rgba(255,255,255,.38);
+}
+.w-agenda-label {
+  font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.3); margin-bottom: 7px; padding-left: 2px;
+}
+.w-agenda { display: flex; flex-direction: column; gap: 3px; }
+.w-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 9px;
+  border-left: 3px solid transparent;
+}
+.w-item.urgent { background: rgba(251,191,36,.09);  border-left-color: #FBBF24; }
+.w-item.open   { background: rgba(167,139,255,.09); border-left-color: #A78BFF; }
+.w-item.coming { background: rgba(255,255,255,.03); border-left-color: rgba(255,255,255,.12); }
+.w-item.closed { background: rgba(255,255,255,.02); border-left-color: rgba(255,255,255,.06); opacity: .45; }
+.w-item-icon { font-size: 15px; flex-shrink: 0; }
+.w-item-title { flex: 1; font-size: 12px; font-weight: 600; color: #fff; line-height: 1.3; }
+.w-item.closed .w-item-title { color: rgba(255,255,255,.35); }
+.w-item-badge {
+  flex-shrink: 0; font-size: 9px; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px; white-space: nowrap;
+}
+.w-item.urgent .w-item-badge { background: rgba(251,191,36,.15); color: #FBBF24; border: 1px solid rgba(251,191,36,.22); }
+.w-item.open   .w-item-badge { background: rgba(167,139,255,.15); color: #C4B5FD; border: 1px solid rgba(167,139,255,.22); }
+.w-item.coming .w-item-badge,
+.w-item.closed .w-item-badge { background: rgba(255,255,255,.04); color: rgba(255,255,255,.28); border: 1px solid rgba(255,255,255,.08); }
+
+/* ── RSVP / CTA section ── */
+.w-rsvp {
+  padding: 10px 14px 14px; border-top: 1px solid rgba(255,255,255,.08);
+  margin-top: 6px;
+}
+.w-rsvp-label {
+  font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.28); margin-bottom: 8px;
+}
+.w-rsvp-btns { display: flex; gap: 6px; margin-bottom: 9px; }
+.w-rsvp-btn {
+  flex: 1; padding: 8px 6px; border-radius: 8px; text-align: center;
+  font-family: var(--sans); font-size: 11.5px; font-weight: 700;
+  cursor: pointer; border: none; transition: all .15s;
+}
+.w-rsvp-btn.accept { background: rgba(255,255,255,.9); color: #3D2A9E; }
+.w-rsvp-btn.accept:hover { background: #fff; }
+.w-rsvp-btn.maybe  { background: rgba(255,255,255,.07); color: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.12); }
+.w-rsvp-btn.decline{ background: rgba(255,255,255,.04); color: rgba(255,255,255,.35); border: 1px solid rgba(255,255,255,.08); }
+.w-cta-note { text-align: center; font-size: 10px; color: rgba(255,255,255,.25); }
+
+/* legacy .w-cta-btn kept in case referenced elsewhere */
 .w-cta {
   padding: 14px 16px 18px; border-top: 1px solid rgba(255,255,255,.09); margin-top: 5px;
   display: flex; flex-direction: column; gap: 7px;
@@ -948,14 +988,8 @@ a { color: inherit; text-decoration: none; }
 
     <!-- THE WIDGET -->
     <div class="hero-widget-wrap" data-reveal data-d="2">
-      <div class="w-header">
-        <div class="w-eyebrow">
-          <svg width="10" height="11" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#A78BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Live milestone preview
-        </div>
-        <div class="w-title">What's open <em>for your child right now</em></div>
-      </div>
 
+      <!-- Age selector tabs -->
       <div class="w-personas">
         <div class="w-persona" id="p0" onclick="selectPersona(0)">
           <span class="w-persona-icon">🤱</span>
@@ -976,17 +1010,41 @@ a { color: inherit; text-decoration: none; }
 
       <div class="w-divider"></div>
 
-      <div class="w-stage-row">
-        <div class="w-stage-pill"><div class="w-stage-dot"></div><span id="w-stage"></span></div>
-        <div class="w-stage-desc" id="w-stage-desc"></div>
-      </div>
+      <!-- Calendar invite card -->
+      <div class="w-cal-invite">
 
-      <div class="w-windows" id="w-windows"></div>
+        <!-- Event header (like Google Calendar event colour bar) -->
+        <div class="w-cal-header">
+          <div class="w-cal-icon">📅</div>
+          <div>
+            <div class="w-cal-event-title" id="w-cal-title">Scout Digest — April 2026</div>
+            <div class="w-cal-organizer">FamilyForce Scout · Recurring monthly</div>
+          </div>
+        </div>
 
-      <div class="w-cta">
-        <a href="sign-in.html?intent=trial" class="w-cta-btn">Get my full personalised digest →</a>
-        <div class="w-cta-note">1 month free · no card required · cancel anytime</div>
-      </div>
+        <!-- Event body -->
+        <div class="w-cal-body">
+          <div class="w-cal-meta-row">
+            <div class="w-cal-date-chip">📅 Arrives on your child's birthday</div>
+            <div class="w-cal-child-chip" id="w-child-chip">👶 5 months old</div>
+            <div class="w-cal-reminder-chip">🔔 7-day reminder included</div>
+          </div>
+          <div class="w-agenda-label">Windows open this month</div>
+          <div class="w-agenda" id="w-windows"></div>
+        </div>
+
+        <!-- RSVP / CTA -->
+        <div class="w-rsvp">
+          <div class="w-rsvp-label">Going?</div>
+          <div class="w-rsvp-btns">
+            <a href="sign-in.html?intent=trial" class="w-rsvp-btn accept">✓ Add to Calendar</a>
+            <button class="w-rsvp-btn maybe" onclick="selectPersona((current+1)%3)">? Maybe</button>
+            <button class="w-rsvp-btn decline" disabled>✕ Decline</button>
+          </div>
+          <div class="w-cta-note">1 month free · no card required · cancel anytime</div>
+        </div>
+
+      </div><!-- /w-cal-invite -->
     </div>
 
     <div class="hero-trust" data-reveal data-d="3">
@@ -1525,21 +1583,27 @@ function selectPersona(i) {
 
 function render() {
   const p = PERSONAS[current];
-  document.getElementById('w-stage').textContent      = p.stage;
-  document.getElementById('w-stage-desc').textContent = p.stageDesc;
+
+  // Update event title and child chip
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const now = new Date();
+  const mon = months[now.getMonth()];
+  const yr  = now.getFullYear();
+  const titleEl = document.getElementById('w-cal-title');
+  const chipEl  = document.getElementById('w-child-chip');
+  if (titleEl) titleEl.textContent = 'Scout Digest — ' + mon + ' ' + yr;
+  if (chipEl)  chipEl.textContent  = p.stageDesc;
+
+  // Render agenda items
   const list = document.getElementById('w-windows');
   list.innerHTML = '';
   p.windows.forEach(w => {
     const el = document.createElement('div');
-    el.className = 'w-row ' + w.status;
+    el.className = 'w-item ' + w.status;
     el.innerHTML =
-      '<div class="w-row-icon">' + w.icon + '</div>' +
-      '<div class="w-row-body">' +
-        '<div class="w-row-tag">' + w.tag + '</div>' +
-        '<div class="w-row-title">' + w.title + '</div>' +
-        '<div class="w-row-desc">' + w.desc + '</div>' +
-      '</div>' +
-      '<div class="w-row-badge">' + w.badge + '</div>';
+      '<div class="w-item-icon">' + w.icon + '</div>' +
+      '<div class="w-item-title">' + w.title + '</div>' +
+      '<div class="w-item-badge">' + w.badge + '</div>';
     list.appendChild(el);
   });
 }
