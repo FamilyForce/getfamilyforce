@@ -217,8 +217,10 @@
       sb.from('scout_subscriptions').select('*').eq('user_id', _user.id).then(function (res) {
         var rows = res.data || []
         // Prefer exact child_id match; fall back to null child_id (legacy/first-child rows)
-        var match = rows.find(function (r) { return r.child_id === _child.id })
+        // Guard: _child may be null on library/settings pages with no child set up
+        var match = (_child ? rows.find(function (r) { return r.child_id === _child.id }) : null)
                  || rows.find(function (r) { return !r.child_id })
+                 || rows[0]
                  || null
         _sub = match
         if (typeof cb === 'function') cb()
