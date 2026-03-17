@@ -67,16 +67,29 @@ Deno.serve(async (req: Request) => {
     }
 
     // 2. Cascade Delete in DB
-    // scout_subscriptions, window_progress, scout_digest_log have FKs to user_id/child_id
-    // We'll delete children first to trigger cascade on family_members and progress
-    await sb.from('window_progress').delete().eq('user_id', user.id)
-    await sb.from('scout_digest_log').delete().eq('user_id', user.id)
-    await sb.from('scout_events').delete().eq('user_id', user.id)
-    await sb.from('scout_subscriptions').delete().eq('user_id', user.id)
+    // Get child IDs first (needed to null out scout_gifts)
+    const { data: userChildren } = await sb.from('children').select('id').eq('user_id', user.id)
+    const childIds = (userChildren || []).map((c: { id: string }) => c.id)
+
+    // Non-cascading tables — clear first to avoid FK constraint errors
+    if (childIds.length > 0) {
+      // scout_gifts.child_id has ON DELETE NO ACTION — null it out rather than delete (gift records stay for accounting)
+      await sb.from('scout_gifts').update({ child_id: null }).in('child_id', childIds)
+      // user_progress if it exists
+      await sb.from('user_progress').delete().eq('user_id', user.id).catch(() => {})
+    }
+
+    // user-level deletes
+    await sb.from('window_progress').delete().eq('user_id', user.id).catch(() => {})
+    await sb.from('scout_digest_log').delete().eq('user_id', user.id).catch(() => {})
+    await sb.from('scout_events').delete().eq('user_id', user.id).catch(() => {})
+    await sb.from('scout_subscriptions').delete().eq('user_id', user.id).catch(() => {})
+
+    // Delete children — cascades to family_members, window_progress (child_id), scout_digest_log (child_id)
     await sb.from('children').delete().eq('user_id', user.id)
-    
+
     // 3. Delete Profile
-    await sb.from('profiles').delete().eq('id', user.id)
+    await sb.from('profiles').delete().eq('id', user.id).catch(() => {})
 
     // 4. Delete Auth User (Service Role required)
     const { error: delErr } = await sb.auth.admin.deleteUser(user.id)
