@@ -373,7 +373,7 @@ function renderHome(child, sub) {
       document.getElementById('windowSections').innerHTML =
         '<div class="error-state">' +
         '<p class="error-state-title">Could not display windows.</p>' +
-        '<p class="error-state-text">Please refresh and try again.</p>' +
+        '<p class="error-state-text" style="font-family:monospace;font-size:11px;word-break:break-all">' + (e && e.message ? e.message : String(e)) + '</p>' +
         '<button class="btn btn-secondary" onclick="window.location.reload()" style="margin-top:12px">Retry</button>' +
         '</div>'
       return
