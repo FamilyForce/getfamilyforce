@@ -285,8 +285,47 @@ Deno.serve(async (req: Request) => {
   try {
     step = 'parse'
     const body = await req.json()
+    // ── validate-coupon action (called before purchase to show live discount) ──
+    if (body.action === 'validate-coupon') {
+      const { code, plan: vPlan } = body
+      if (!code || !vPlan) return err(400, 'code and plan required', 'validate-coupon')
+      const stripeKey = Deno.env.get('STRIPE_SECRET_KEY') ?? ''
+      if (!stripeKey) return err(500, 'Stripe not configured', 'validate-coupon')
+      try {
+        const params = new URLSearchParams({ code, active: 'true' })
+        const res = await stripeReq(stripeKey, 'GET', `/promotion_codes?${params}`)
+        const promos = res.data ?? []
+        if (!promos.length || !promos[0].coupon) {
+          return new Response(JSON.stringify({ ok: false, error: 'Invalid or expired promo code.' }), {
+            headers: { 'Content-Type': 'application/json', ...CORS }, status: 200
+          })
+        }
+        const coupon = promos[0].coupon
+        const pct    = coupon.percent_off  ?? 0
+        const fixed  = coupon.amount_off   ?? 0  // cents
+        const base   = PRICES[vPlan as 'annual' | 'triennial' | 'monthly']
+        if (!base) return err(400, 'invalid plan', 'validate-coupon')
+        const discountedAmount = fixed
+          ? Math.max(0, base.amount - fixed)
+          : Math.round(base.amount * (1 - pct / 100))
+        const label = pct ? `${pct}% off` : `$${(fixed / 100).toFixed(2)} off`
+        return new Response(JSON.stringify({
+          ok: true,
+          label,
+          originalAmount:     base.amount,
+          discountedAmount,
+          originalDisplay:    base.display,
+          discountedDisplay:  '$' + (discountedAmount / 100).toFixed(2),
+          stripePromoId:      promos[0].id,
+        }), { headers: { 'Content-Type': 'application/json', ...CORS }, status: 200 })
+      } catch (_e) {
+        return err(500, 'Could not validate code.', 'validate-coupon')
+      }
+    }
+
     const { buyerName, buyerEmail, recipientName, recipientEmail,
-            personalMessage, plan, paymentMethodId } = body
+            personalMessage, plan, paymentMethodId,
+            promoCode, stripePromoId } = body
 
     if (!buyerName || !buyerEmail)        return err(400, 'buyerName and buyerEmail are required', step)
     if (!recipientName || !recipientEmail) return err(400, 'recipientName and recipientEmail are required', step)
@@ -324,10 +363,27 @@ Deno.serve(async (req: Request) => {
       'invoice_settings[default_payment_method]': paymentMethodId,
     })
 
-    // 3. Create PaymentIntent (one-time charge — not a subscription)
+    // 3a. Apply coupon discount (server-side re-validation to prevent tampering)
+    let appliedAmount  = priceInfo.amount
+    let appliedPromoId: string | undefined
+    if (stripePromoId) {
+      try {
+        const reCheck = await stripeReq(stripeKey, 'GET', `/promotion_codes/${stripePromoId}`)
+        if (reCheck.id && reCheck.active && reCheck.coupon) {
+          appliedPromoId = reCheck.id
+          const pct   = reCheck.coupon.percent_off ?? 0
+          const fixed = reCheck.coupon.amount_off  ?? 0
+          appliedAmount = fixed
+            ? Math.max(0, priceInfo.amount - fixed)
+            : Math.round(priceInfo.amount * (1 - pct / 100))
+        }
+      } catch (_e) { /* ignore — charge full price */ }
+    }
+
+    // 3b. Create PaymentIntent (one-time charge — not a subscription)
     step = 'stripe-payment'
     const pi = await stripeReq(stripeKey, 'POST', '/payment_intents', {
-      amount:         priceInfo.amount,
+      amount:         appliedAmount,
       currency:       'usd',
       customer:       customerId,
       payment_method: paymentMethodId,
@@ -391,6 +447,7 @@ Deno.serve(async (req: Request) => {
       recipient_email:          recipientEmail,
       recipient_name:           recipientName,
       personal_message:         personalMessage ?? null,
+      promo_code:               promoCode ?? null,
       stripe_payment_intent_id: pi.id,
       stripe_referral_code:     referralCode,
       expires_at:               expiresAt.toISOString(),

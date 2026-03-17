@@ -7,3 +7,7 @@ ALTER TABLE scout_gifts
 ALTER TABLE scout_gifts
   ADD CONSTRAINT scout_gifts_plan_check
   CHECK (plan IN ('annual', 'triennial', 'monthly'));
+
+-- Add promo_code column to scout_gifts (stores code used at purchase time)
+ALTER TABLE scout_gifts
+  ADD COLUMN IF NOT EXISTS promo_code text;

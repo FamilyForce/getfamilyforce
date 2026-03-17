@@ -222,6 +222,23 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
   .field-row { grid-template-columns: 1fr; }
   .plan-toggle { flex-direction: column; }
 }
+
+/* ── Coupon code ── */
+.coupon-row { display: flex; gap: 8px; align-items: flex-start; }
+.coupon-row input { flex: 1; }
+.coupon-apply {
+  flex-shrink: 0; padding: 12px 18px; border-radius: 10px;
+  background: var(--terra-tint); border: 1.5px solid rgba(110,78,214,.25);
+  color: var(--terra); font-family: var(--sans); font-size: 14px; font-weight: 700;
+  cursor: pointer; white-space: nowrap; transition: all .15s;
+}
+.coupon-apply:hover { background: rgba(110,78,214,.15); }
+.coupon-apply:disabled { opacity: .5; cursor: default; }
+.coupon-feedback { font-size: 12.5px; margin-top: 6px; display: none; }
+.coupon-feedback.success { color: #16A34A; }
+.coupon-feedback.error   { color: #DC2626; }
+.price-original { text-decoration: line-through; color: var(--text-dim); margin-right: 6px; }
+
 </style>
 </head>
 <body>
@@ -400,6 +417,14 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
     <div class="form-section">
       <p class="section-title">Payment</p>
       <div class="field">
+        <label>Promo code <span style="font-weight:400;color:var(--text-dim)">(optional)</span></label>
+        <div class="coupon-row">
+          <input type="text" id="promoCode" placeholder="e.g. FRIEND-AB12-CD34" autocomplete="off" style="text-transform:uppercase">
+          <button class="coupon-apply" id="couponApplyBtn" onclick="applyPromo()">Apply</button>
+        </div>
+        <p class="coupon-feedback" id="couponFeedback"></p>
+      </div>
+      <div class="field">
         <label>Card details</label>
         <div class="stripe-element" id="stripeElement"></div>
         <p class="card-error" id="cardError"></p>
@@ -449,7 +474,8 @@ const STRIPE_PK     = 'pk_test_51TAQTZRF5ve13fCKDmbO62d5eyQD1P5elKFxqb10rtEr7kMJ
 
 var stripe      = null
 var stripeCard  = null
-var selectedPlan = 'annual'
+var selectedPlan  = 'annual'
+var appliedPromo  = null  // { code, stripePromoId, label, discountedAmount, discountedDisplay, originalDisplay }
 var redeemCode   = null
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
@@ -521,6 +547,57 @@ function selectPlan(plan) {
 }
 
 // ─── Purchase submit ──────────────────────────────────────────────────────────
+function applyPromo() {
+  var code = document.getElementById('promoCode').value.trim().toUpperCase()
+  var fb   = document.getElementById('couponFeedback')
+  var btn  = document.getElementById('couponApplyBtn')
+  if (!code) { showCouponError('Please enter a promo code.'); return }
+
+  btn.disabled    = true
+  btn.textContent = 'Checking…'
+  fb.style.display = 'none'
+  appliedPromo = null
+  updateBtnPrice()
+
+  fetch(SUPABASE_URL + '/functions/v1/scout-gift-purchase', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ action: 'validate-coupon', code, plan: selectedPlan }),
+  })
+  .then(function (r) { return r.json() })
+  .then(function (data) {
+    btn.disabled    = false
+    btn.textContent = 'Apply'
+    if (!data.ok) { showCouponError(data.error || 'Invalid or expired promo code.'); return }
+    appliedPromo = data
+    fb.className     = 'coupon-feedback success'
+    fb.style.display = 'block'
+    fb.innerHTML     = '✓ ' + data.label + ' applied — new price: <strong>' + data.discountedDisplay + '</strong>'
+    updateBtnPrice()
+  })
+  .catch(function () {
+    btn.disabled    = false
+    btn.textContent = 'Apply'
+    showCouponError('Could not validate code. Please try again.')
+  })
+}
+
+function showCouponError(msg) {
+  var fb = document.getElementById('couponFeedback')
+  fb.className     = 'coupon-feedback error'
+  fb.style.display = 'block'
+  fb.textContent   = msg
+  appliedPromo     = null
+  updateBtnPrice()
+}
+
+function updateBtnPrice() {
+  var base   = { annual: '$79.99', triennial: '$199.99', monthly: '$9.99' }
+  var btn    = document.getElementById('submitBtn')
+  var price  = appliedPromo ? appliedPromo.discountedDisplay : base[selectedPlan]
+  btn.textContent = 'Send gift — ' + price + ' →'
+}
+
 function submitGift() {
   var recipientName  = document.getElementById('recipientName').value.trim()
   var recipientEmail = document.getElementById('recipientEmail').value.trim()
@@ -560,6 +637,8 @@ function submitGift() {
         personalMessage: personalMsg || undefined,
         plan:            selectedPlan,
         paymentMethodId: result.paymentMethod.id,
+        promoCode:       appliedPromo ? document.getElementById('promoCode').value.trim().toUpperCase() : undefined,
+        stripePromoId:   appliedPromo ? appliedPromo.stripePromoId : undefined,
       }),
     })
     .then(function (r) { return r.json() })
