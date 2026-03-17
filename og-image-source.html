@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Instrument+Serif:ital@0;1&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    background: #0E0B1A;
+    font-family: 'Outfit', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  /* Background glow */
+  .glow-left {
+    position: absolute;
+    top: -120px; left: -80px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(110,78,214,0.35) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .glow-right {
+    position: absolute;
+    bottom: -100px; right: -60px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(167,139,255,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Grid dots */
+  .dots {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .inner {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 96px;
+    width: 100%;
+  }
+
+  /* Logo */
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+  }
+  .logo-mark {
+    width: 32px;
+    height: 36px;
+  }
+  .logo-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.92);
+    letter-spacing: -0.01em;
+  }
+  .logo-text span { color: #A78BFF; }
+
+  /* Badge */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(110,78,214,0.25);
+    border: 1px solid rgba(167,139,255,0.35);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #C4B5FD;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .badge-dot {
+    width: 6px; height: 6px;
+    background: #A78BFF;
+    border-radius: 50%;
+  }
+
+  /* Headline */
+  h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: 64px;
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: #fff;
+    margin-bottom: 20px;
+    max-width: 780px;
+  }
+  h1 em {
+    font-style: italic;
+    color: #C4B5FD;
+  }
+
+  /* Sub */
+  p {
+    font-size: 22px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.5;
+    max-width: 640px;
+  }
+
+  /* Right side — stat card */
+  .stat-card {
+    position: absolute;
+    right: 88px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 40px 44px;
+    text-align: center;
+    width: 240px;
+    backdrop-filter: blur(12px);
+  }
+  .stat-number {
+    font-family: 'Instrument Serif', serif;
+    font-size: 80px;
+    font-weight: 400;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+  .stat-divider {
+    width: 40px;
+    height: 1px;
+    background: rgba(255,255,255,0.12);
+    margin: 20px auto;
+  }
+  .stat-sub {
+    font-size: 12px;
+    color: #A78BFF;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* Trial badge bottom */
+  .trial-pill {
+    position: absolute;
+    bottom: 44px;
+    right: 88px;
+    background: linear-gradient(135deg, #6E4ED6, #9B7FFF);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 22px;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+  }
+</style>
+</head>
+<body>
+  <div class="dots"></div>
+  <div class="glow-left"></div>
+  <div class="glow-right"></div>
+
+  <div class="inner">
+    <div class="logo">
+      <svg class="logo-mark" viewBox="0 0 14 16" fill="none">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="logo-text">Family<span>Force</span> Scout</div>
+    </div>
+
+    <div class="badge">
+      <div class="badge-dot"></div>
+      Developmental milestone tracking
+    </div>
+
+    <h1>Your child has 196<br><em>early developmental</em><br>windows.</h1>
+    <p>Know what's open. Know what's closing.<br>Know exactly what to do — this month.</p>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-number">196</div>
+    <div class="stat-label">developmental<br>windows tracked</div>
+    <div class="stat-divider"></div>
+    <div class="stat-sub">Birth → Age 3</div>
+  </div>
+
+  <div class="trial-pill">1 month free · no card required</div>
+</body>
+</html>

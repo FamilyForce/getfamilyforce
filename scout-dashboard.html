@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260317g">
+<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260317h">
 <style>
 /* ── Pre-birth mode ──────────────────────────────────────── */
 .prebirth-countdown {
@@ -265,10 +265,47 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/scout-dashboard.js?v=20260317g"></script>
+<script src="/assets/scout-dashboard.js?v=20260317h"></script>
 <script>
+// TEMP DEBUG — remove after diagnosing
+(function() {
+  var dbg = document.createElement('div')
+  dbg.id = 'scout-debug'
+  dbg.style.cssText = 'position:fixed;bottom:16px;right:16px;background:#1E1248;color:#fff;font-size:11px;font-family:monospace;padding:10px 14px;border-radius:8px;z-index:9999;max-width:340px;line-height:1.6;box-shadow:0 2px 16px rgba(0,0,0,.4)'
+  dbg.textContent = 'Debug: loading...'
+  document.body.appendChild(dbg)
+
+  function dbgLog(msg) {
+    var el = document.getElementById('scout-debug')
+    if (el) el.innerHTML += '<br>' + msg
+  }
+
+  var sb2 = window.supabase ? window.supabase.createClient(
+    'https://ewjqbafaxeasyvknxmof.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+  ) : null
+
+  if (!sb2) { dbgLog('❌ supabase not loaded'); return }
+  dbgLog('✓ supabase loaded')
+
+  sb2.auth.getSession().then(function(res) {
+    var s = res.data && res.data.session
+    if (!s) { dbgLog('❌ no session'); return }
+    dbgLog('✓ session: ' + (s.user && s.user.email))
+    dbgLog('token_exp: ' + new Date((s.expires_at||0)*1000).toISOString().substr(11,8))
+
+    sb2.from('children').select('id,name').eq('user_id', s.user.id).then(function(r) {
+      dbgLog('children: ' + JSON.stringify(r.data) + (r.error?' ERR:'+r.error.message:''))
+    })
+    sb2.from('milestone_windows').select('id',{count:'exact',head:true}).then(function(r) {
+      dbgLog('windows count: ' + r.count + (r.error?' ERR:'+r.error.message:''))
+    })
+  })
+})()
+
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('home', function (user, child, sub) {
+    document.getElementById('scout-debug') && (document.getElementById('scout-debug').innerHTML += '<br>✓ onReady fired, child=' + (child&&child.name))
     renderHome(child, sub)
     // ?arrived=1 deep-link from pre-birth reminder email — open arrival modal immediately
     if (new URLSearchParams(window.location.search).get('arrived') === '1' && child.is_expecting) {
