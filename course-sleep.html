@@ -237,7 +237,7 @@ p+p{margin-top:12px;}
   <div class="header-inner">
     <a href="index.html" class="header-logo"><svg class="logo-chevron" width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="logo-f">Family</span><span class="logo-s">Force</span></a>
     <span class="header-course-name">Sleep Training Course</span>
-    <a href="dashboard.html" class="header-back">← Dashboard</a>
+    <a href="/scout-dashboard/library.html" class="header-back">← Dashboard</a>
   </div>
 </header>
 <main class="main" id="app"></main>
@@ -802,7 +802,7 @@ function renderComplete(app){
     const pdfBtn=el('button','btn btn-secondary');pdfBtn.textContent='📄  Download Full Book';
   pdfBtn.onclick=()=>{const a=document.createElement('a');a.href='assets/downloads/sleep-training-playbook.epub';a.download='Sleep-Training-Playbook-Jack-Hartley.epub';a.click();};actions.appendChild(pdfBtn);
   const dashBtn=el('button','btn btn-ghost');dashBtn.textContent='← Back to Dashboard';
-  dashBtn.onclick=()=>{window.location.href='dashboard.html';};actions.appendChild(dashBtn);
+  dashBtn.onclick=()=>{window.location.href='/scout-dashboard/library.html';};actions.appendChild(dashBtn);
   app.appendChild(actions);
 
   const actionCard=el('div','card no-print');
