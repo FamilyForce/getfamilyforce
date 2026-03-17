@@ -290,7 +290,7 @@ solid foods, peanut intro, top allergens, cow's milk transition, 4-month sleep r
 | 3 | `safety-room-sharing` | Room-sharing without bed-sharing — AAP recommendation | 0 | 0 | 26 | advisory | 1 |
 | 4 | `safety-swaddle-transition` | Swaddle transition — stop when rolling signs appear | 12 | 14 | 17 | advisory | 1 |
 | 5 | `safety-infant-cpr` | Parent infant CPR training | 0 | 0 | 17 | advisory | 1 |
-| 6 | `safety-car-seat-install-check` | Car seat installation check — rear-facing, before birth/discharge | 0 | 0 | 4 | advisory | 1 |
+| 6 | `safety-car-seat-install-check` | Car seat installation check, rear facing, before first drive | 0 | 0 | 4 | advisory | 1 |
 | 7 | `safety-rear-facing-as-long-as-possible` | Stay rear-facing as long as possible — not just to age 2 | 0 | 0 | 104 | advisory | 2 |
 | 8 | `safety-babyproofing` | Babyproof the home — before crawling begins | 17 | 26 | 34 | advisory | 1 |
 | 9 | `safety-water-supervision` | Water safety — never leave unattended near water, any depth | 26 | 52 | 156 | advisory | 1 |

@@ -877,11 +877,11 @@ It's never too late to take this class. If you're past 4 months and haven't done
 **Urgency:** advisory | **Priority:** 1
 
 **Why it matters:**
-Car accidents are the leading cause of injury death for children in the US. The first car ride, hospital to home, happens before most parents feel ready, and research shows that up to 75% of car seats are installed incorrectly. An incorrectly installed car seat in a crash provides substantially less protection. Installation needs to happen before the baby is born, not in the hospital parking lot.
+Car accidents are a leading cause of injury death for young children globally. The first car ride, hospital to home, happens before most parents feel ready, and research shows that up to 75% of car seats are installed incorrectly. An incorrectly installed seat provides substantially less protection. Installation needs to happen before the baby is born, not in the hospital parking lot.
 
 **What to do:**
 * Install the car seat rear facing before the due date, and have it checked
-* Free car seat inspections are available at many fire stations and through Safe Kids Worldwide (safekids.org)
+* Free car seat inspections are available through many fire stations, hospitals, and child road safety programs. Search "[your country] car seat inspection" to find a local service.
 * The seat should not move more than 1 inch in any direction when you tug at the base
 
 **What not to worry about:**
@@ -890,7 +890,7 @@ You don't need the most expensive car seat. The safest seat is any correctly ins
 **Missed window guidance:**
 If your baby is already here and the seat hasn't been checked: get it checked before the next car trip. Most inspections take 15 minutes.
 
-**Source:** NHTSA Child Passenger Safety Guidelines (2024); AAP Car Seat Safety; Safe Kids Worldwide, Installation Statistics
+**Source:** NHTSA Child Passenger Safety Guidelines (2024); AAP Car Seat Safety; Safe Kids Worldwide, Installation Statistics; road safety guidelines vary by country — follow your local transport authority
 
 ---
 
@@ -1058,6 +1058,8 @@ The 3–5 day visit is primarily about weight. Newborns lose up to 10% of their 
 
 **Source:** AAP Periodicity Schedule 2024; AAP Newborn Discharge Guidelines
 
+_Visit timing above follows the AAP schedule (US). Your country's well-child check schedule may have slightly different timing or names — UK uses the PCHR schedule, Australia uses the Blue Book, HK uses MCH clinics. The developmental milestones and questions to ask are universal._
+
 ---
 
 ## `screening-visit-2months`
@@ -1079,6 +1081,8 @@ The 2 month visit is a developmental milestone check and the start of the vaccin
 * What should we expect at 4 months?
 
 **Source:** AAP Periodicity Schedule 2024; CDC Immunization Schedule 2024
+
+_Visit timing above follows the AAP schedule (US). Your country's well-child check schedule may have slightly different timing or names — UK uses the PCHR schedule, Australia uses the Blue Book, HK uses MCH clinics. The developmental milestones and questions to ask are universal._
 
 ---
 
@@ -1102,6 +1106,8 @@ The 4 month visit covers head control, rolling readiness, responsive feeding, an
 
 **Source:** AAP Periodicity Schedule 2024; AAP Iron Supplementation Guidance
 
+_Visit timing above follows the AAP schedule (US). Your country's well-child check schedule may have slightly different timing or names — UK uses the PCHR schedule, Australia uses the Blue Book, HK uses MCH clinics. The developmental milestones and questions to ask are universal._
+
 ---
 
 ## `screening-visit-6months`
@@ -1123,6 +1129,8 @@ The 6 month visit assesses sitting with support, babbling, hand to hand transfer
 
 **Source:** AAP Periodicity Schedule 2024; AAP Early Allergen Introduction Guidance
 
+_Visit timing above follows the AAP schedule (US). Your country's well-child check schedule may have slightly different timing or names — UK uses the PCHR schedule, Australia uses the Blue Book, HK uses MCH clinics. The developmental milestones and questions to ask are universal._
+
 ---
 
 ## `screening-visit-9months`
@@ -1143,6 +1151,8 @@ The 9 month visit is the first formal developmental screening using a standardiz
 * When should first words appear?
 
 **Source:** AAP Periodicity Schedule 2024; ASQ 3 Developmental Screening
+
+_Visit timing above follows the AAP schedule (US). Your country's well-child check schedule may have slightly different timing or names — UK uses the PCHR schedule, Australia uses the Blue Book, HK uses MCH clinics. The developmental milestones and questions to ask are universal._
 
 ---
 
@@ -1166,6 +1176,8 @@ The 12 month visit is one of the most important in the first year. It assesses w
 
 **Source:** AAP Periodicity Schedule 2024; CDC 12 Month Milestones
 
+_Visit timing above follows the AAP schedule (US). Your country's well-child check schedule may have slightly different timing or names — UK uses the PCHR schedule, Australia uses the Blue Book, HK uses MCH clinics. The developmental milestones and questions to ask are universal._
+
 ---
 
 ## `screening-visit-15months`
@@ -1188,6 +1200,8 @@ The 15 month visit assesses walking, word count (target: 10+ words), pointing, a
 
 **Source:** AAP Periodicity Schedule 2024; CDC 15 Month Milestones (2022 update)
 
+_Visit timing above follows the AAP schedule (US). Your country's well-child check schedule may have slightly different timing or names — UK uses the PCHR schedule, Australia uses the Blue Book, HK uses MCH clinics. The developmental milestones and questions to ask are universal._
+
 ---
 
 ## `screening-visit-18months-autism`
@@ -1196,7 +1210,7 @@ The 15 month visit assesses walking, word count (target: 10+ words), pointing, a
 **Urgency:** screening | **Priority:** 1
 
 **Why it matters:**
-The 18 month visit is the first formal autism screening using the M CHAT R/F. It also assesses vocabulary (target: 10–20 words), two word combinations emerging, walking, and behavior. The M CHAT is not a diagnosis, it identifies children who need further evaluation. Early identification before 24 months produces substantially better outcomes. Vaccines: hepatitis A (dose 2 if not given), influenza.
+The 18 month visit is the first formal autism screening, typically using the M-CHAT-R/F or an equivalent standardised tool. (M-CHAT is used widely across US, Australia, and internationally; your provider may use a different validated instrument.) It also assesses vocabulary (target: 10–20 words), two word combinations emerging, walking, and behavior. The M CHAT is not a diagnosis, it identifies children who need further evaluation. Early identification before 24 months produces substantially better outcomes. Vaccines: hepatitis A (dose 2 if not given), influenza.
 
 **What to do:**
 * Complete the M CHAT questionnaire honestly, don't answer what you wish were true
@@ -1210,6 +1224,8 @@ The 18 month visit is the first formal autism screening using the M CHAT R/F. It
 
 **Source:** AAP Autism Screening Policy; Robins et al. (2014), M CHAT R/F Validation; CDC Autism Screening Guidelines
 
+_Visit timing above follows the AAP schedule (US). Your country's well-child check schedule may have slightly different timing or names — UK uses the PCHR schedule, Australia uses the Blue Book, HK uses MCH clinics. The developmental milestones and questions to ask are universal._
+
 ---
 
 ## `screening-visit-24months-autism`
@@ -1218,7 +1234,7 @@ The 18 month visit is the first formal autism screening using the M CHAT R/F. It
 **Urgency:** screening | **Priority:** 1
 
 **Why it matters:**
-The 24 month visit includes a second autism screen (M CHAT R/F or equivalent). It also assesses vocabulary (target: 50+ words), two word combinations, social play, and the tantrum pattern. This is the most comprehensive developmental assessment in the first two years and often the first time significant language delay becomes clearly visible.
+The 24 month visit includes a second autism screen (M-CHAT-R/F or an equivalent standardised tool). It also assesses vocabulary (target: 50+ words), two word combinations, social play, and the tantrum pattern. This is the most comprehensive developmental assessment in the first two years and often the first time significant language delay becomes clearly visible.
 
 **What to do:**
 * Complete the developmental questionnaire accurately
@@ -1231,6 +1247,8 @@ The 24 month visit includes a second autism screen (M CHAT R/F or equivalent). I
 * What's the waitlist situation for speech therapy referrals?
 
 **Source:** AAP Autism Screening Policy; CDC 24 Month Milestones; M CHAT R/F
+
+_Visit timing above follows the AAP schedule (US). Your country's well-child check schedule may have slightly different timing or names — UK uses the PCHR schedule, Australia uses the Blue Book, HK uses MCH clinics. The developmental milestones and questions to ask are universal._
 
 ---
 
@@ -1254,6 +1272,8 @@ The 30 month visit was added to the AAP schedule specifically for developmental 
 
 **Source:** AAP Periodicity Schedule 2024 (30 month addition); CDC 30 Month Milestones
 
+_Visit timing above follows the AAP schedule (US). Your country's well-child check schedule may have slightly different timing or names — UK uses the PCHR schedule, Australia uses the Blue Book, HK uses MCH clinics. The developmental milestones and questions to ask are universal._
+
 ---
 
 ## `screening-visit-36months`
@@ -1275,6 +1295,8 @@ The 36 month visit marks the end of the most intensive developmental surveillanc
 * What should we focus on before age 4?
 
 **Source:** AAP Periodicity Schedule 2024; CDC 36 Month Milestones
+
+_Visit timing above follows the AAP schedule (US). Your country's well-child check schedule may have slightly different timing or names — UK uses the PCHR schedule, Australia uses the Blue Book, HK uses MCH clinics. The developmental milestones and questions to ask are universal._
 
 ---
 
@@ -3467,7 +3489,7 @@ If you have a nagging feeling that your child's hearing is not quite right, act 
 **Urgency:** advisory | **Priority:** 2
 
 **Why it matters:**
-The AAP and NHTSA recommend keeping children rear facing until they reach the maximum height or weight limit of their rear facing car seat, not just until age 2. Rear facing is significantly safer in frontal crashes (the most common type) because it distributes crash forces across the entire back, head, and neck. Turning forward facing too early exposes the neck and spine to forces they are not yet developed enough to handle safely.
+Keep children rear facing until they reach the maximum height or weight limit of their specific seat, not until an arbitrary age. Age 2 is sometimes cited as a minimum benchmark, but it is not a target. Rear facing is significantly safer in frontal crashes because it distributes crash forces across the entire back, head, and neck. Check your country's road safety guidelines for the legal minimum, then go beyond it as long as your seat allows.
 
 **What to do:**
 * Check the weight and height limit of your specific seat, not a generic age guideline
@@ -3480,7 +3502,7 @@ Folded legs are safe. Discomfort from a cramped position is not a reason to swit
 **Missed window guidance:**
 If you have already turned your child forward facing, ensure the forward facing seat is correctly installed and the harness is properly fitted at the correct slot height.
 
-**Source:** NHTSA (2024); AAP Car Seat Safety Policy; Insurance Institute for Highway Safety
+**Source:** NHTSA (2024); AAP Car Seat Safety Policy; Insurance Institute for Highway Safety; equivalent guidance from Transport for NSW (Australia), UK Road Safety Trust, Transport Canada
 
 ---
 
@@ -3561,7 +3583,7 @@ If you have already transitioned too early and are dealing with nightly escapes,
 **Urgency:** advisory | **Priority:** 2
 
 **Why it matters:**
-When a child has outgrown the rear facing limits of their seat (by height or weight, not by age), they transition to a forward facing harness seat. This is still significantly safer than a booster. The forward facing harness should be used until the child outgrows it as well, usually around 40 to 65 lbs depending on the seat.
+When a child has outgrown the rear facing limits of their seat (by height or weight, not by age), they transition to a forward facing harness seat. This is still significantly safer than a booster. The forward facing harness should be used until the child outgrows it as well. Weight limits vary by seat and country — check your specific seat's manual and your local road safety guidelines.
 
 **What to do:**
 * Check your seat's rear facing limit: if your child's head is within 1 inch of the top of the seat, they have outgrown it
@@ -3574,7 +3596,7 @@ There is no hurry to move to a booster. A forward facing harness is much safer t
 **Missed window guidance:**
 If your child is already in a booster before age 4 or before reaching 40 lbs, move them back to a harnessed seat if possible.
 
-**Source:** NHTSA (2024); AAP Car Seat Guideline; Insurance Institute for Highway Safety
+**Source:** NHTSA (2024); AAP Car Seat Guideline; Insurance Institute for Highway Safety; follow your country's transport authority for legal requirements
 
 
 ---
