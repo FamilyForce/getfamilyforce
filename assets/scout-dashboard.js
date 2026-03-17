@@ -682,7 +682,7 @@
         var prompt  = document.getElementById('datePrompt-' + wid)
         var dateInp = document.getElementById('dateInput-' + wid)
 
-        if ((newStatus === 'completed' || newStatus === 'in_progress') && prompt && dateInp) {
+        if (newStatus === 'completed' && prompt && dateInp) {
           // Show date prompt — save is deferred until user clicks Save
           dateInp.value = new Date().toISOString().split('T')[0]
           prompt.classList.add('show')
@@ -690,7 +690,7 @@
           return
         }
 
-        // skipped / reverted to open — save immediately, no date needed
+        // in_progress / skipped / reverted to open — save immediately, no date prompt
         if (newStatus === 'skipped') {
           setTimeout(function () { ScoutDash._moveToDone(card, wid) }, 800)
         }
