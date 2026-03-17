@@ -53,12 +53,31 @@
           window.location.href = '/sign-in.html?redirect=' + encodeURIComponent(window.location.pathname)
           return
         }
-        _user = session.user
-        ScoutDash._initNav(pageName)
-        ScoutDash._loadChild(function () {
-          ScoutDash._loadSubscription(function () {
-            ScoutDash._renderTrialBanner()
-            fireReady()
+        // setSession forces a token refresh if the access token has expired.
+        // Without this, getSession() returns a cached (possibly expired) token,
+        // which causes RLS to see auth.uid()=null and all user-scoped queries return empty.
+        sb.auth.setSession({
+          access_token:  session.access_token,
+          refresh_token: session.refresh_token,
+        }).then(function (refreshRes) {
+          var live = (refreshRes.data && refreshRes.data.session) || session
+          _user = live.user
+          ScoutDash._initNav(pageName)
+          ScoutDash._loadChild(function () {
+            ScoutDash._loadSubscription(function () {
+              ScoutDash._renderTrialBanner()
+              fireReady()
+            })
+          })
+        }, function () {
+          // setSession failed — still try with the original session
+          _user = session.user
+          ScoutDash._initNav(pageName)
+          ScoutDash._loadChild(function () {
+            ScoutDash._loadSubscription(function () {
+              ScoutDash._renderTrialBanner()
+              fireReady()
+            })
           })
         })
       }, function (err) {
