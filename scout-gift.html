@@ -348,6 +348,12 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
           <p class="plan-card-label">1 year of Scout</p>
           <p class="plan-card-saving">$6.67/month</p>
         </div>
+        <div class="plan-card" id="planTriennial" onclick="selectPlan('triennial')">
+          <div class="plan-card-badge" style="background:#22C55E;color:#fff">Birth to 3 years</div>
+          <p class="plan-card-price">$199.99</p>
+          <p class="plan-card-label">3 years of Scout</p>
+          <p class="plan-card-saving">$5.56/month · save $40</p>
+        </div>
         <div class="plan-card" id="planMonthly" onclick="selectPlan('monthly')">
           <p class="plan-card-price">$9.99</p>
           <p class="plan-card-label">1 month of Scout</p>
@@ -542,7 +548,7 @@ function submitGift() {
       errEl.style.display = 'block'
       errEl.textContent   = result.error.message
       btn.disabled    = false
-      btn.textContent = selectedPlan === 'annual' ? 'Send gift — $79.99 →' : 'Send gift — $9.99 →'
+      btn.textContent = { annual: 'Send gift — $79.99 →', triennial: 'Send gift — $199.99 →', monthly: 'Send gift — $9.99 →' }[selectedPlan] || 'Send gift →'
       return
     }
 
@@ -562,7 +568,7 @@ function submitGift() {
         errEl.style.display = 'block'
         errEl.textContent   = data.error || 'Payment failed. Please try again.'
         btn.disabled    = false
-        btn.textContent = selectedPlan === 'annual' ? 'Send gift — $79.99 →' : 'Send gift — $9.99 →'
+        btn.textContent = { annual: 'Send gift — $79.99 →', triennial: 'Send gift — $199.99 →', monthly: 'Send gift — $9.99 →' }[selectedPlan] || 'Send gift →'
         return
       }
       // Success
@@ -580,7 +586,7 @@ function submitGift() {
       if (nameEl) nameEl.textContent = recipientName
 
       // Build copyable share message
-      var planLabel = selectedPlan === 'annual' ? 'a full year' : 'a month'
+      var planLabel = selectedPlan === 'annual' ? 'a full year' : selectedPlan === 'triennial' ? '3 full years (birth to age 3)' : 'a month'
       var shareEl   = document.getElementById('shareMessage')
       if (shareEl) {
         var redeemUrl = 'https://getfamilyforce.com/scout-gift.html?redeem=' + data.giftCode
@@ -600,7 +606,7 @@ function submitGift() {
       errEl.style.display = 'block'
       errEl.textContent   = 'Network error. Please try again.'
       btn.disabled    = false
-      btn.textContent = selectedPlan === 'annual' ? 'Send gift — $79.99 →' : 'Send gift — $9.99 →'
+      btn.textContent = { annual: 'Send gift — $79.99 →', triennial: 'Send gift — $199.99 →', monthly: 'Send gift — $9.99 →' }[selectedPlan] || 'Send gift →'
     })
   })
 }

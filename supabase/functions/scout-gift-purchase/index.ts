@@ -31,8 +31,9 @@ const CORS = {
 }
 
 const PRICES = {
-  annual:  { amount: 7999, display: '$79.99', label: '1-year Scout subscription', months: 12 },
-  monthly: { amount:  999, display: '$9.99',  label: '1-month Scout subscription', months: 1  },
+  annual:     { amount: 7999,  display: '$79.99',  label: '1-year Scout subscription',  months: 12 },
+  triennial: { amount: 19999, display: '$199.99', label: '3-year Scout subscription',  months: 36 },
+  monthly:   { amount:  999,  display: '$9.99',   label: '1-month Scout subscription', months: 1  },
 }
 
 // ─── Gift code generator ──────────────────────────────────────────────────────
@@ -76,13 +77,13 @@ async function stripeReq(key: string, method: string, path: string, body?: Recor
 function buildGiftEmail(opts: {
   recipientName: string
   buyerName:     string
-  plan:          'annual' | 'monthly'
+  plan:          'annual' | 'triennial' | 'monthly'
   personalMessage?: string
   redeemUrl:     string
   siteUrl:       string
 }): string {
   const { recipientName, buyerName, plan, personalMessage, redeemUrl, siteUrl } = opts
-  const planLabel = plan === 'annual' ? 'one year' : 'one month'
+  const planLabel = plan === 'annual' ? 'one year' : plan === 'triennial' ? 'three years' : 'one month'
   const preheader = `${buyerName} gave you ${planLabel} of FamilyForce Scout — developmental milestone tracking for your child.`
 
   return `<!DOCTYPE html>
@@ -196,12 +197,12 @@ function buildConfirmEmail(opts: {
   buyerName:      string
   recipientName:  string
   recipientEmail: string
-  plan:           'annual' | 'monthly'
+  plan:           'annual' | 'triennial' | 'monthly'
   referralCode:   string
   siteUrl:        string
 }): string {
   const { buyerName, recipientName, recipientEmail, plan, referralCode, siteUrl } = opts
-  const planLabel = plan === 'annual' ? '1-year' : '1-month'
+  const planLabel = plan === 'annual' ? '1-year' : plan === 'triennial' ? '3-year' : '1-month'
   const discount  = '25%'
 
   return `<!DOCTYPE html>
@@ -289,10 +290,10 @@ Deno.serve(async (req: Request) => {
 
     if (!buyerName || !buyerEmail)        return err(400, 'buyerName and buyerEmail are required', step)
     if (!recipientName || !recipientEmail) return err(400, 'recipientName and recipientEmail are required', step)
-    if (plan !== 'annual' && plan !== 'monthly') return err(400, 'plan must be annual or monthly', step)
+    if (!['annual','triennial','monthly'].includes(plan)) return err(400, 'plan must be annual, triennial or monthly', step)
     if (!paymentMethodId)                  return err(400, 'paymentMethodId is required', step)
 
-    const priceInfo = PRICES[plan as 'annual' | 'monthly']
+    const priceInfo = PRICES[plan as 'annual' | 'triennial' | 'monthly']
     const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')!
     const siteUrl   = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
 
