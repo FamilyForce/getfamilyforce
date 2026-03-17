@@ -389,8 +389,7 @@
         })
         Promise.all(sends).then(function () {
           localStorage.setItem(self._QUEUE_KEY, JSON.stringify(remaining))
-          if (remaining.length === 0 && q.length > 0)
-            /* flushed offline queue */
+          // if (remaining.length === 0 && q.length > 0) { /* flushed offline queue */ }
         })
       })
     },
