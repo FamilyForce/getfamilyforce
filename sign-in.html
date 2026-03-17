@@ -1356,7 +1356,7 @@ button { font: inherit; cursor: pointer; }
         </div>
 
         <button class="step-btn-primary" id="start-trial-btn" onclick="startFreeTrial()">Start my free trial →</button>
-        <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">Not ready? <a href="dashboard.html" style="color:var(--terra)">Browse the free library instead →</a></p>
+        <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">Not ready? <a href="scout-dashboard/library.html" style="color:var(--terra)">Browse the free library instead →</a></p>
         <p style="font-size:11px;color:var(--text-ghost);text-align:center;margin-top:6px">No credit card. You can add more children later.</p>
       </div>
     </div>
@@ -1989,7 +1989,7 @@ button { font: inherit; cursor: pointer; }
       currentIntent = 'trial';
       handleIntent('trial');
     } else if (intent === 'library') {
-      window.location.href = 'scout-dashboard.html';
+      window.location.href = 'scout-dashboard/library.html';
     } else {
       showStep('intent');
     }
@@ -2001,8 +2001,8 @@ button { font: inherit; cursor: pointer; }
     sessionStorage.setItem('ff_intent', intent);
 
     if (intent === 'library') {
-      // Go straight to dashboard — no intermediate screen
-      window.location.href = 'scout-dashboard.html';
+      // Go straight to library — no child setup needed
+      window.location.href = 'scout-dashboard/library.html';
     } else if (intent === 'trial') {
       showStep('child');
     }

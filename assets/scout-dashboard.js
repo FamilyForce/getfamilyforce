@@ -67,9 +67,25 @@
         if (_finalized) { console.warn('[Scout] _loadChild finalize called twice — ignoring duplicate'); return }
         _finalized = true
         if (children.length === 0) {
-          if (!window.location.pathname.includes('/child')) {
-            window.location.href = '/scout-dashboard/child.html'
+          var path = window.location.pathname
+          // Library and settings work fine without a child — don't force setup
+          var noChildOk = path.includes('/library') || path.includes('/settings')
+          if (!path.includes('/child') && !noChildOk) {
+            // Check intent — if user chose library, send them there instead of child setup
+            var intent = sessionStorage.getItem('ff_intent')
+            if (intent === 'library') {
+              window.location.href = '/scout-dashboard/library.html'
+            } else {
+              window.location.href = '/scout-dashboard/child.html'
+            }
+            return
           }
+          // On library/settings with no child — update header to prompt setup, then continue
+          var btn = document.getElementById('childSelectorBtn')
+          var pill = document.getElementById('mobileChildName')
+          if (btn)  btn.textContent = '+ Add child'
+          if (pill) pill.textContent = '+ Add child'
+          if (typeof cb === 'function') cb()
           return
         }
         var found = children.find(function (c) { return c.id === savedId })
