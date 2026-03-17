@@ -155,10 +155,11 @@
   display: inline-flex; align-items: center; gap: 6px;
   padding: 9px 16px; border-radius: var(--radius-pill);
   font-family: var(--sans); font-size: 13px; font-weight: 600;
-  text-decoration: none; cursor: default;
+  text-decoration: none; cursor: pointer;
   background: #DCFCE7; color: #16A34A;
-  border: 1.5px solid #BBF7D0;
+  border: 1.5px solid #BBF7D0; transition: background .15s, border-color .15s;
 }
+@media (hover: hover) { .lib-btn-completed:hover { background: #BBF7D0; border-color: #86EFAC; } }
 
 /* Scout tag showing which windows link here */
 .lib-scout-tag {
@@ -576,13 +577,15 @@ function renderBadges() {
         freeBadge.className = 'lib-badge-completed'
         freeBadge.innerHTML = '<svg width="10" height="10" viewBox="0 0 16 16" fill="none"><path d="M2 8l4 4 8-8" stroke="#16A34A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Completed'
       }
-      // Swap Take course button → ✓ Completed (non-link)
+      // Swap Take course button → ✓ Course complete (still a link to view certificate)
       var courseBtn = card.querySelector('.lib-btn-primary')
       if (courseBtn) {
-        var span = document.createElement('span')
-        span.className = 'lib-btn-completed'
-        span.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M2 8l4 4 8-8" stroke="#16A34A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Course complete'
-        courseBtn.parentNode.replaceChild(span, courseBtn)
+        var courseHref = courseBtn.getAttribute('href') || '#'
+        var link = document.createElement('a')
+        link.href = courseHref
+        link.className = 'lib-btn lib-btn-completed'
+        link.innerHTML = '<svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M2 8l4 4 8-8" stroke="#16A34A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Course complete'
+        courseBtn.parentNode.replaceChild(link, courseBtn)
       }
     }
   })
