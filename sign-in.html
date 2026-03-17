@@ -1838,6 +1838,11 @@ button { font: inherit; cursor: pointer; }
     var isAuthStep = (stepId === 'auth');
 
     if (card) card.style.display = isAuthStep ? '' : 'none';
+
+    // Hide nav buttons on confirm-email step — user just needs to check inbox
+    var nav = document.getElementById('nav');
+    if (nav) nav.style.display = (stepId === 'confirm-email') ? 'none' : '';
+
     steps.forEach(function(s) {
       s.classList.remove('active');
     });
