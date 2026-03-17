@@ -549,15 +549,16 @@ function loadReferralCode() {
     .then(function (res) {
       var code = res.data && res.data.referral_code
 
-      if (!code) {
-        // Generate and save a new code
+      var isValidFormat = code && /^FRIEND-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)
+
+      if (!code || !isValidFormat) {
+        // Generate a new FRIEND-XXXX-XXXX code (migrates old format codes too)
         code = _genReferralCode()
         ScoutDash.getSb()
           .from('profiles')
           .upsert({ id: user.id, referral_code: code }, { onConflict: 'id' })
           .then(function (r) {
             if (r.error) {
-              // Conflict means another code was saved first — reload
               loadReferralCode()
               return
             }
