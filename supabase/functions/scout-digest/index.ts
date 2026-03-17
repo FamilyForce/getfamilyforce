@@ -316,7 +316,7 @@ Deno.serve(async (req: Request) => {
         ],
         attachments: [{
           filename:     `scout-${child.name.toLowerCase().replace(/\s+/g, '-')}-month${months}.ics`,
-          content:      btoa(icsString),
+          content:      btoa(new TextEncoder().encode(icsString).reduce((s, b) => s + String.fromCharCode(b), '')),
           content_type: 'text/calendar',
         }],
       }

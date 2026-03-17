@@ -236,7 +236,9 @@ Deno.serve(async (req: Request) => {
 
     if (!resendKey) throw new Error('RESEND_API_KEY not configured')
 
-    const icsBase64  = btoa(icsString)
+    // btoa() only handles Latin1 — use TextEncoder for Unicode-safe Base64
+    const icsBytes  = new TextEncoder().encode(icsString)
+    const icsBase64 = btoa(icsBytes.reduce((s, b) => s + String.fromCharCode(b), ''))
     const resendBody: Record<string, unknown> = {
       from:    `${fromName} <${fromEmail}>`,
       to:      [user.email],
