@@ -65,11 +65,19 @@
           </div>
           <span style="font-size:13px;color:var(--text-dim)">Always on</span>
         </div>
-        <div class="settings-row">
-          <div>
+        <div class="settings-row" style="flex-wrap:wrap;gap:10px">
+          <div style="flex:1;min-width:0">
             <p class="settings-row-label">Update email address</p>
+            <div id="emailChangeForm" style="display:none;margin-top:10px">
+              <input type="email" id="newEmailInput" class="form-input" placeholder="New email address" style="width:100%;margin-bottom:8px" autocomplete="off">
+              <div style="display:flex;gap:8px">
+                <button class="btn btn-primary" id="saveEmailBtn" onclick="saveEmail()" style="padding:8px 18px;font-size:13px;height:auto">Save</button>
+                <button class="btn btn-ghost" onclick="cancelEmailChange()" style="padding:8px 14px;font-size:13px;height:auto;color:var(--text-dim)">Cancel</button>
+              </div>
+              <p id="emailChangeMsg" style="margin-top:8px;font-size:13px;display:none"></p>
+            </div>
           </div>
-          <a href="#" class="settings-row-link" id="updateEmailLink">Change →</a>
+          <a href="#" class="settings-row-link" id="updateEmailLink" onclick="toggleEmailForm(event)">Change →</a>
         </div>
       </div>
     </div>
@@ -557,6 +565,56 @@ function applyReferralCode() {
   var toggle = document.getElementById('referralEntryToggle')
   if (toggle) toggle.style.display = 'none'
   if (errEl) { errEl.style.display = 'none' }
+}
+
+function toggleEmailForm(e) {
+  if (e) e.preventDefault()
+  var form = document.getElementById('emailChangeForm')
+  var link = document.getElementById('updateEmailLink')
+  if (!form) return
+  var visible = form.style.display !== 'none'
+  form.style.display = visible ? 'none' : 'block'
+  if (link) link.style.display = visible ? '' : 'none'
+  if (!visible) {
+    var inp = document.getElementById('newEmailInput')
+    if (inp) { inp.value = ''; inp.focus() }
+    var msg = document.getElementById('emailChangeMsg')
+    if (msg) msg.style.display = 'none'
+  }
+}
+
+function cancelEmailChange() {
+  var form = document.getElementById('emailChangeForm')
+  var link = document.getElementById('updateEmailLink')
+  if (form) form.style.display = 'none'
+  if (link) link.style.display = ''
+}
+
+function saveEmail() {
+  var inp  = document.getElementById('newEmailInput')
+  var msg  = document.getElementById('emailChangeMsg')
+  var btn  = document.getElementById('saveEmailBtn')
+  var email = inp ? inp.value.trim() : ''
+  if (!email || !email.includes('@')) {
+    if (msg) { msg.textContent = 'Please enter a valid email address.'; msg.style.color = 'var(--red)'; msg.style.display = 'block' }
+    return
+  }
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…' }
+  if (msg) msg.style.display = 'none'
+  ScoutDash.getSb().auth.updateUser({ email: email }).then(function (res, err) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Save' }
+    if ((res && res.error) || err) {
+      var e = (res && res.error) || err
+      if (msg) { msg.textContent = e.message || 'Could not update email. Please try again.'; msg.style.color = 'var(--red)'; msg.style.display = 'block' }
+      return
+    }
+    if (msg) {
+      msg.textContent = 'Check your new inbox — a confirmation link has been sent to ' + email + '.'
+      msg.style.color = 'var(--text-mid)'
+      msg.style.display = 'block'
+    }
+    if (inp) inp.value = ''
+  })
 }
 
 function loadReferralCode() {
