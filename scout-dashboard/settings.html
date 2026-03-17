@@ -263,12 +263,12 @@ function renderSettings(user, child, sub) {
   if (emailEl) emailEl.textContent = user.email
 
   // Load existing display name
-  ScoutDash.getSb().from('profiles').select('display_name').eq('id', user.id).maybeSingle().then(function (res) {
+  ScoutDash.getSb().from('profiles').select('name').eq('id', user.id).maybeSingle().then(function (res) {
     var nameInput = document.getElementById('displayNameInput')
     var nameInput = document.getElementById('displayNameInput')
     if (nameInput) {
       // Prefer Supabase value; fall back to certificate name set on dashboard.html
-      var stored = (res.data && res.data.display_name) || localStorage.getItem('ff_user_name') || ''
+      var stored = (res.data && res.data.name) || localStorage.getItem('ff_user_name') || ''
       if (stored) nameInput.value = stored
     }
   })
@@ -471,7 +471,7 @@ function saveDisplayName() {
   var name  = input ? input.value.trim() : ''
   if (!name) return
   var user = ScoutDash.getUser()
-  ScoutDash.getSb().from('profiles').upsert({ id: user.id, display_name: name }, { onConflict: 'id' }).then(function (res) {
+  ScoutDash.getSb().from('profiles').upsert({ id: user.id, name: name }, { onConflict: 'id' }).then(function (res) {
     if (res.error) { ScoutDash.toast('Could not save name.', 'error'); return }
     // Mirror to ff_user_name so it populates the certificate name on /dashboard.html
     localStorage.setItem('ff_user_name', name)
