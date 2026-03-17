@@ -56,7 +56,7 @@
       <p class="family-invite-sub">Add up to 4 family members to your account. Everyone can view the same windows, mark progress, and add notes -- all under one subscription.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <input type="email" class="form-input" id="inviteEmail" placeholder="partner@email.com" style="flex:1;min-width:200px" autocomplete="off">
-        <button class="btn btn-primary" onclick="sendInvite()">Send invite →</button>
+        <button class="btn btn-primary" id="sendInviteBtn" onclick="sendInvite()">Send invite →</button>
       </div>
       <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Invite expires after 7 days. Maximum 5 members per Family Circle.</p>
       <p style="font-size:13px;color:var(--red);margin-top:8px;display:none" id="inviteError"></p>
@@ -247,6 +247,9 @@ function sendInvite() {
   var child = ScoutDash.getChild()
   var user  = ScoutDash.getUser()
 
+  var btn = document.getElementById('sendInviteBtn')
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…' }
+
   ScoutDash.getSb().auth.getSession().then(function (res) {
     var tok = res.data && res.data.session && res.data.session.access_token
     fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-invite', {
@@ -259,6 +262,7 @@ function sendInvite() {
         inviterName:  user.email,
       }),
     }).then(function (r) { return r.json() }).then(function (data) {
+      if (btn) { btn.disabled = false; btn.textContent = 'Send invite →' }
       if (!data.ok) {
         errEl.textContent = data.error || 'Could not send invite.'
         errEl.style.display = 'block'
@@ -269,6 +273,7 @@ function sendInvite() {
       // Reload members list
       loadFamilyCircle(user, child)
     }).catch(function () {
+      if (btn) { btn.disabled = false; btn.textContent = 'Send invite →' }
       errEl.textContent = 'Network error. Please try again.'
       errEl.style.display = 'block'
     })
