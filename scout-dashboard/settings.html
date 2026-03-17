@@ -68,6 +68,7 @@
         <div class="settings-row" style="flex-wrap:wrap;gap:10px">
           <div style="flex:1;min-width:0">
             <p class="settings-row-label">Update email address</p>
+            <p class="settings-row-sub" id="currentEmailDisplay" style="margin-top:2px"></p>
             <div id="emailChangeForm" style="display:none;margin-top:10px">
               <input type="email" id="newEmailInput" class="form-input" placeholder="New email address" style="width:100%;margin-bottom:8px" autocomplete="off">
               <div style="display:flex;gap:8px">
@@ -269,6 +270,8 @@ function renderSettings(user, child, sub) {
   // Account section
   var emailEl = document.getElementById('accountEmail')
   if (emailEl) emailEl.textContent = user.email
+  var currentEmailDisplay = document.getElementById('currentEmailDisplay')
+  if (currentEmailDisplay) currentEmailDisplay.textContent = user.email
 
   // Load existing display name
   ScoutDash.getSb().from('profiles').select('name').eq('id', user.id).maybeSingle().then(function (res) {
@@ -609,7 +612,7 @@ function saveEmail() {
       return
     }
     if (msg) {
-      msg.textContent = 'Check your new inbox — a confirmation link has been sent to ' + email + '.'
+      msg.textContent = 'Confirmation sent to ' + email + '. Click the link in that email to complete the change. Your current address stays active until then.'
       msg.style.color = 'var(--text-mid)'
       msg.style.display = 'block'
     }
