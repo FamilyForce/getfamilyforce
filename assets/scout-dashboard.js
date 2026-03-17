@@ -492,7 +492,11 @@
       // Attribution line (shown when progress has been set)
       var attrHtml = ''
       if (!isPreview && w._progress && w._status !== 'open') {
-        var name = w._progress.updated_by_name || ''
+        // If the action was by the current user, show their current display name
+        var isMe = w._progress.updated_by_user_id && _user && w._progress.updated_by_user_id === _user.id
+        var name = isMe
+          ? (localStorage.getItem('ff_user_name') || w._progress.updated_by_name || '')
+          : (w._progress.updated_by_name || '')
         var date = w._progress.completed_date
           ? ScoutDash._fmtDate(w._progress.completed_date)
           : ''
