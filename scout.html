@@ -1429,45 +1429,163 @@ a { color: inherit; text-decoration: none; }
 </section>
 
 <!-- WHAT PARENTS SAY -->
-<section class="testimonials" aria-labelledby="testi-heading">
+<section class="testimonials" aria-labelledby="testi2-heading">
   <div class="testimonials-inner">
-    <span class="testimonials-eyebrow" id="testi-heading">What parents say</span>
-    <div class="testimonials-grid">
-      <div class="testi-card" data-reveal>
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"I had no idea the <strong>peanut introduction window</strong> was even a thing. Scout flagged it at 4 months and we acted in time. Our pediatrician said we did exactly the right thing."</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:#EDE9FE">👩</div>
-          <div>
-            <div class="testi-name">Sarah M.</div>
-            <div class="testi-meta">Mom of Emma, 7 months · Hong Kong</div>
-          </div>
+    <span class="testimonials-eyebrow" id="testi2-heading">What parents say</span>
+    <div class="testi2-layout">
+
+      <!-- Left 6 photos -->
+      <div class="testi2-photos testi2-photos-left">
+        <div class="testi2-photo active" data-tidx="0" onclick="selectTesti(0)" role="button" aria-label="Rachel M.">
+          <img src="https://randomuser.me/portraits/women/47.jpg" alt="Rachel M." loading="lazy">
+        </div>
+        <div class="testi2-photo" data-tidx="1" onclick="selectTesti(1)" role="button" aria-label="Marcus T.">
+          <img src="https://randomuser.me/portraits/men/80.jpg" alt="Marcus T." loading="lazy">
+        </div>
+        <div class="testi2-photo" data-tidx="2" onclick="selectTesti(2)" role="button" aria-label="Carol H.">
+          <img src="https://randomuser.me/portraits/women/77.jpg" alt="Carol H." loading="lazy">
+        </div>
+        <div class="testi2-photo" data-tidx="3" onclick="selectTesti(3)" role="button" aria-label="Priya K.">
+          <img src="https://randomuser.me/portraits/women/44.jpg" alt="Priya K." loading="lazy">
+        </div>
+        <div class="testi2-photo" data-tidx="4" onclick="selectTesti(4)" role="button" aria-label="James L.">
+          <img src="https://randomuser.me/portraits/men/36.jpg" alt="James L." loading="lazy">
+        </div>
+        <div class="testi2-photo" data-tidx="5" onclick="selectTesti(5)" role="button" aria-label="Daniel W.">
+          <img src="https://randomuser.me/portraits/men/22.jpg" alt="Daniel W." loading="lazy">
         </div>
       </div>
-      <div class="testi-card" data-reveal data-d="1">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"I'm a planner. Scout was the first thing I set up after the 12-week scan. <strong>Knowing what's coming makes me feel in control</strong> — not overwhelmed. My husband is on it too."</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:#FCE7F3">🤰</div>
-          <div>
-            <div class="testi-name">Priya K.</div>
-            <div class="testi-meta">Expecting, 28 weeks · Singapore</div>
-          </div>
+
+      <!-- Center quote -->
+      <div class="testi2-center">
+        <div class="testi2-quote-wrap" id="testi2QuoteWrap">
+          <p class="testi2-quote" id="testi2Quote"></p>
+          <p class="testi2-name" id="testi2Name"></p>
+          <p class="testi2-meta" id="testi2Meta"></p>
+        </div>
+        <div class="testi2-dots" id="testi2Dots"></div>
+      </div>
+
+      <!-- Right 6 photos -->
+      <div class="testi2-photos testi2-photos-right">
+        <div class="testi2-photo" data-tidx="6" onclick="selectTesti(6)" role="button" aria-label="Kevin R.">
+          <img src="https://randomuser.me/portraits/men/91.jpg" alt="Kevin R." loading="lazy">
+        </div>
+        <div class="testi2-photo" data-tidx="7" onclick="selectTesti(7)" role="button" aria-label="Stephanie O.">
+          <img src="https://randomuser.me/portraits/women/56.jpg" alt="Stephanie O." loading="lazy">
+        </div>
+        <div class="testi2-photo" data-tidx="8" onclick="selectTesti(8)" role="button" aria-label="Tom B.">
+          <img src="https://randomuser.me/portraits/men/52.jpg" alt="Tom B." loading="lazy">
+        </div>
+        <div class="testi2-photo" data-tidx="9" onclick="selectTesti(9)" role="button" aria-label="Amber D.">
+          <img src="https://randomuser.me/portraits/women/30.jpg" alt="Amber D." loading="lazy">
+        </div>
+        <div class="testi2-photo" data-tidx="10" onclick="selectTesti(10)" role="button" aria-label="Robert M.">
+          <img src="https://randomuser.me/portraits/men/76.jpg" alt="Robert M." loading="lazy">
+        </div>
+        <div class="testi2-photo" data-tidx="11" onclick="selectTesti(11)" role="button" aria-label="Diana C.">
+          <img src="https://randomuser.me/portraits/women/89.jpg" alt="Diana C." loading="lazy">
         </div>
       </div>
-      <div class="testi-card" data-reveal data-d="2">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"We're both working full time with a 10 month old. <strong>The calendar invite is the killer feature</strong> — it's already in my schedule before I even think about it. Nothing falls through the cracks."</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:#DBEAFE">👨</div>
-          <div>
-            <div class="testi-name">David &amp; Rachel T.</div>
-            <div class="testi-meta">Parents of Liam, 10 months · London</div>
-          </div>
-        </div>
-      </div>
+
     </div>
   </div>
+</section>
+
+<script>
+var _testiData = [
+  { name: 'Rachel M.',    meta: 'Mom of Lily, 8 months · Austin, TX',
+    quote: '"I spent the first three months on Google at 2am, terrified I was missing something. Scout replaced all of that. One email a month, telling me exactly what matters right now. I didn't realise how much I needed someone to just tell me what to focus on."' },
+  { name: 'Marcus T.',    meta: 'Dad of Noah, 11 months · Chicago, IL',
+    quote: '"My wife signed us up and I thought it was another parenting app we'd never use. Then the first email arrived. It had three things I didn't know about my son's development, a calendar reminder so I wouldn't forget, and sources I could actually look up. <strong>I'm the one who reads it now.</strong>"' },
+  { name: 'Carol H.',     meta: 'Grandmother of twins, 14 months · Phoenix, AZ',
+    quote: '"My daughter added me to the Family Circle and now I get the same digest she does. I know what the babies are working on, I know what to look for when I'm babysitting, and I actually feel useful instead of just showing up with snacks."' },
+  { name: 'Priya K.',     meta: 'Mom of Arjun, 19 months · New York, NY',
+    quote: '"I work full time and I don't have hours to spend reading about developmental milestones. <strong>Scout gives me fifteen minutes of genuinely useful information once a month</strong> and a calendar invite so I don't forget. It fits my life."' },
+  { name: 'James L.',     meta: 'Dad of two · Denver, CO',
+    quote: '"With our first, we found out about language windows long after the moment had passed. With our second, Scout told us what was coming before it arrived. The difference is a lot less 'I wish someone had told me that.'"' },
+  { name: 'Daniel W.',    meta: 'Godfather · Seattle, WA',
+    quote: '"I wanted to give my goddaughter's parents something that actually mattered, not another stuffed animal. I got them a three-year Scout subscription as a baby shower gift. <strong>Her mom told me it's the best gift she received.</strong> I'll take it."' },
+  { name: 'Kevin R.',     meta: 'Solo dad of Mia, 22 months · Portland, OR',
+    quote: '"Raising Mia on my own means there's no one to run things by. Scout is the closest thing I have to a knowledgeable friend who checks in every month. It doesn't talk down to me and it doesn't assume I already know everything."' },
+  { name: 'Stephanie O.', meta: 'Mom of twins, 16 months · Nashville, TN',
+    quote: '"I've tried three other baby tracking apps. They all made me feel like I was falling behind. <strong>Scout is the first one that tells me what's still open and gives me time to act.</strong> There's a huge difference."' },
+  { name: 'Tom B.',       meta: 'Stay-at-home dad of Felix, 7 months · Austin, TX',
+    quote: '"Everyone assumes it's the mom who tracks development. I'm the one home all day and I wanted to know what I was actually looking for. Scout gave me a framework. Now when I notice something, I know whether it matters."' },
+  { name: 'Amber & Chris D.', meta: 'Expecting their first · Boston, MA',
+    quote: '"We signed up three weeks before our due date and got the pre-birth prep emails immediately. By the time our daughter arrived, we knew about safe sleep, the newborn screening tests to ask for, and what the first few weeks actually look like. <strong>We felt prepared.</strong>"' },
+  { name: 'Robert M.',    meta: 'Grandfather · San Antonio, TX',
+    quote: '"My son set this up for me and I wasn't sure about it. But every month I get a plain email that tells me what to watch for with my grandson. No app, no login, no fuss. I'm 67 and this is the one parenting thing I've actually stuck with."' },
+  { name: 'Diana C.',     meta: 'Pediatric nurse and mom · Minneapolis, MN',
+    quote: '"I work in pediatrics, so I'm hard to impress. Scout's sources are solid, the windows are grounded in real developmental research, and it doesn't catastrophise or oversimplify. <strong>I recommend it to parents at the clinic now.</strong>"' }
+]
+
+var _testiActive = 0
+var _testiTimer  = null
+
+function _testiInit() {
+  var dots = document.getElementById('testi2Dots')
+  if (!dots) return
+  dots.innerHTML = _testiData.map(function (_, i) {
+    return '<button class="testi2-dot' + (i === 0 ? ' active' : '') + '" onclick="selectTesti(' + i + ')" aria-label="Review ' + (i+1) + '"></button>'
+  }).join('')
+  _renderTesti(0, false)
+  _testiAutoplay()
+}
+
+function _renderTesti(idx, animate) {
+  var wrap  = document.getElementById('testi2QuoteWrap')
+  var qEl   = document.getElementById('testi2Quote')
+  var nEl   = document.getElementById('testi2Name')
+  var mEl   = document.getElementById('testi2Meta')
+  if (!qEl) return
+  var d = _testiData[idx]
+
+  function apply() {
+    qEl.innerHTML = d.quote
+    nEl.textContent = d.name
+    mEl.textContent = d.meta
+    if (animate) {
+      wrap.style.opacity = '0'; wrap.style.transform = 'translateY(6px)'
+      requestAnimationFrame(function () {
+        wrap.style.transition = 'opacity .25s, transform .25s'
+        wrap.style.opacity = '1'; wrap.style.transform = 'translateY(0)'
+      })
+    }
+  }
+
+  if (animate) {
+    wrap.style.transition = 'opacity .15s'
+    wrap.style.opacity = '0'
+    setTimeout(apply, 150)
+  } else { apply() }
+
+  // dots
+  document.querySelectorAll('.testi2-dot').forEach(function (d, i) { d.classList.toggle('active', i === idx) })
+  // photos
+  document.querySelectorAll('.testi2-photo').forEach(function (p) {
+    var active = parseInt(p.dataset.tidx) === idx
+    p.classList.toggle('active', active)
+  })
+}
+
+function selectTesti(idx) {
+  _testiActive = idx
+  _renderTesti(idx, true)
+  clearInterval(_testiTimer)
+  _testiAutoplay()
+}
+
+function _testiAutoplay() {
+  _testiTimer = setInterval(function () {
+    _testiActive = (_testiActive + 1) % _testiData.length
+    _renderTesti(_testiActive, true)
+  }, 5000)
+}
+
+document.addEventListener('DOMContentLoaded', _testiInit)
+</script>
+
 </section>
 
 <!-- PERFECT GIFT -->
