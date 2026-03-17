@@ -1134,7 +1134,7 @@ a { color: inherit; text-decoration: none; }
   .research-card-icon { font-size: 1.2rem; }
   .research-card-label { font-size: .72rem; font-weight: 700; color: var(--ink); }
   .research-card-count { font-family: var(--serif); font-size: 1.4rem; color: var(--terra); }
-  .research-card-sub { font-size: .68rem; color: var(--muted); line-height: 1.4; }
+  .research-card-sub { font-size: .75rem; color: var(--muted); line-height: 1.4; }
 
   /* ── SCOUT LAUNCH ── */
   .scout-launch { background: var(--white); border: 1.5px solid var(--border); border-radius: 20px;
@@ -1179,16 +1179,34 @@ a { color: inherit; text-decoration: none; }
   .footer-links a { font-size: .8rem; color: var(--muted); text-decoration: none; }
   .footer-links a:hover { color: var(--terra); }
 
+  /* ── Tablet: calendar stacks at 760px ── */
+  @media (max-width: 760px) {
+    .calendar-visual { grid-template-columns: 1fr; }
+  }
+
   @media (max-width: 640px) {
+    /* Hero */
+    .about-hero { padding: 48px var(--rx) 40px; }
+    /* Story sections */
+    .story-section { padding: 40px 0; }
+    /* Pull quote */
+    .pull-quote { padding: 20px 20px; }
+    /* Stats bar */
     .stats-bar { display: grid; grid-template-columns: repeat(2, 1fr); border-radius: 16px; }
     .stat-item:nth-child(2) { border-right: none; }
     .stat-item:nth-child(3) { border-top: 1.5px solid var(--border); }
     .stat-item:nth-child(4) { border-top: 1.5px solid var(--border); border-right: none; }
-    .calendar-visual { grid-template-columns: 1fr; }
+    /* Grids */
     .research-visual { grid-template-columns: repeat(2, 1fr); }
     .roadmap { grid-template-columns: 1fr; }
+    /* Scout launch card */
     .scout-launch { flex-direction: column; text-align: center; }
     .nav-links { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    /* Scout launch card stacks on narrow phones */
+    .scout-launch { align-items: flex-start; text-align: left; }
   }
 
 </style>
