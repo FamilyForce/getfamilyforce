@@ -162,30 +162,38 @@ Deno.serve(async (req: Request) => {
       trial_end: trialEnd.toISOString(),
     })
 
-    // 6. Log events
+    // 6. Log events (non-fatal — scout_events table may not exist in all environments)
     step = 'log-events'
-    await sb.from('scout_events').insert({
-      user_id:    user.id,
-      child_id:   childId,
-      event_type: 'trial_start',
-      properties: {
-        trial_end:           trialEnd.toISOString(),
-        days_until_birthday: daysUntil,
-        bonus_eligible:      bonusEligible,
-        additional_child:    true,
-      },
-    })
-
-    if (bonusEligible) {
+    try {
       await sb.from('scout_events').insert({
         user_id:    user.id,
         child_id:   childId,
-        event_type: 'trial_bonus_eligible',
+        event_type: 'trial_start',
         properties: {
-          bonus_birthday:      trialEnd.toISOString().split('T')[0],
+          trial_end:           trialEnd.toISOString(),
           days_until_birthday: daysUntil,
+          bonus_eligible:      bonusEligible,
+          additional_child:    true,
         },
       })
+    } catch (logErr) {
+      console.warn('[scout-child-trial-start] scout_events insert failed (table may not exist):', logErr)
+    }
+
+    if (bonusEligible) {
+      try {
+        await sb.from('scout_events').insert({
+          user_id:    user.id,
+          child_id:   childId,
+          event_type: 'trial_bonus_eligible',
+          properties: {
+            bonus_birthday:      trialEnd.toISOString().split('T')[0],
+            days_until_birthday: daysUntil,
+          },
+        })
+      } catch (logErr) {
+        console.warn('[scout-child-trial-start] trial_bonus_eligible insert failed:', logErr)
+      }
     }
 
     console.log(`[scout-child-trial-start] Trial started: user=${user.id}, child=${childId}, trialEnd=${trialEnd.toISOString()}, bonus=${bonusEligible}`)

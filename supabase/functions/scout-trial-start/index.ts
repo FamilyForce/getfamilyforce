@@ -226,36 +226,44 @@ Deno.serve(async (req: Request) => {
 
     if (subErr) throw new Error(`Failed to create subscription: ${subErr.message}`)
 
-    // 6. Log to scout_events
+    // 6. Log to scout_events (non-fatal — table may not exist yet in all environments)
     step = 'log-event'
-    await sb.from('scout_events').insert({
-      user_id:    user.id,
-      child_id:   childId,
-      event_type: 'trial_started',
-      properties: {
-        child_name:    name,
-        child_dob:     dob,
-        child_gender:  gender,
-        trial_end:     trialEnd.toISOString(),
-        days_until_first_birthday: daysUntilEnd,
-        bonus_month:   bonusMonth,
-        duration_ms:   Date.now() - jobStart,
-      },
-    })
+    try {
+      await sb.from('scout_events').insert({
+        user_id:    user.id,
+        child_id:   childId,
+        event_type: 'trial_started',
+        properties: {
+          child_name:    name,
+          child_dob:     dob,
+          child_gender:  gender,
+          trial_end:     trialEnd.toISOString(),
+          days_until_first_birthday: daysUntilEnd,
+          bonus_month:   bonusMonth,
+          duration_ms:   Date.now() - jobStart,
+        },
+      })
+    } catch (logErr) {
+      // Non-fatal: event logging must never block trial creation
+      console.warn('[scout-trial-start] scout_events insert failed (table may not exist):', logErr)
+    }
 
     // 6b. If bonus month: log trial_bonus_eligible so scout-digest knows to fire
     //     for this user on the intermediate birthday (nextBday)
     if (bonusMonth) {
-      step = 'log-bonus-event'
-      await sb.from('scout_events').insert({
-        user_id:    user.id,
-        child_id:   childId,
-        event_type: 'trial_bonus_eligible',
-        properties: {
-          bonus_birthday:      nextBday.toISOString().split('T')[0],  // YYYY-MM-DD
-          days_until_birthday: daysUntilEnd,
-        },
-      })
+      try {
+        await sb.from('scout_events').insert({
+          user_id:    user.id,
+          child_id:   childId,
+          event_type: 'trial_bonus_eligible',
+          properties: {
+            bonus_birthday:      nextBday.toISOString().split('T')[0],  // YYYY-MM-DD
+            days_until_birthday: daysUntilEnd,
+          },
+        })
+      } catch (logErr) {
+        console.warn('[scout-trial-start] trial_bonus_eligible insert failed:', logErr)
+      }
       console.log(`[scout-trial-start] Bonus month granted for user ${user.id} — next birthday ${nextBday.toISOString().split('T')[0]} in ${daysUntilEnd} days`)
     }
 
