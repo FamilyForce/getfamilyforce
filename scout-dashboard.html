@@ -363,32 +363,11 @@ function renderHome(child, sub) {
         '</div>'
       return
     }
+    // ── Step 1: render content (innerHTML) — if this throws, show error ──
+    var sections
     try {
-    var sections = ScoutDash.sectionWindows(windows, ageW)
-    renderSections(sections, windows, child, sub, ageM, name)
-    ScoutDash.initLazyCards()
-    ScoutDash._updateProgressBar(windows)
-    ScoutDash.wireActions(child.id, windows)
-    ScoutDash.wireNotes(child.id)
-    ScoutDash.wireModal(windows)
-    wireModalActions(windows, child.id)
-    wireDoneAccordion()
-    showOnboarding()
-    // Store childId globally for modal note flush on close
-    window._scoutChildId = child.id
-
-    // First-visit welcome state
-    var hasActions = windows.some(function (w) { return w._status && w._status !== 'open' })
-    if (!hasActions) {
-      var welcomeHtml =
-        '<div class="welcome-card">' +
-        '<p class="welcome-card-title">Welcome to Scout.</p>' +
-        '<p class="welcome-card-text">' + name + ' has ' + (sections.closing.length + sections.thisMonth.length) + ' open windows right now. ' + (sections.closing.length > 0 ? 'Start with the ones marked ⚠️ Closing soon.' : 'Tap any window to learn more and mark your progress.') + '</p>' +
-        '</div>'
-      var progressWrap = document.querySelector('.progress-bar-wrap')
-      if (progressWrap) progressWrap.style.display = 'none'
-      document.getElementById('windowSections').insertAdjacentHTML('beforebegin', welcomeHtml)
-    }
+      sections = ScoutDash.sectionWindows(windows, ageW)
+      renderSections(sections, windows, child, sub, ageM, name)
     } catch (e) {
       console.error('[Scout] renderSections threw:', e)
       document.getElementById('windowSections').innerHTML =
@@ -397,7 +376,35 @@ function renderHome(child, sub) {
         '<p class="error-state-text">Please refresh and try again.</p>' +
         '<button class="btn btn-secondary" onclick="window.location.reload()" style="margin-top:12px">Retry</button>' +
         '</div>'
+      return
     }
+
+    // ── Step 2: wire interactions — failures here log to console only,
+    //   never overwrite the already-rendered window cards ──
+    window._scoutChildId = child.id
+    try { ScoutDash.initLazyCards() }           catch(e) { console.warn('[Scout] initLazyCards:', e) }
+    try { ScoutDash._updateProgressBar(windows) } catch(e) { console.warn('[Scout] updateProgressBar:', e) }
+    try { ScoutDash.wireActions(child.id, windows) } catch(e) { console.warn('[Scout] wireActions:', e) }
+    try { ScoutDash.wireNotes(child.id) }        catch(e) { console.warn('[Scout] wireNotes:', e) }
+    try { ScoutDash.wireModal(windows) }         catch(e) { console.warn('[Scout] wireModal:', e) }
+    try { wireModalActions(windows, child.id) }  catch(e) { console.warn('[Scout] wireModalActions:', e) }
+    try { wireDoneAccordion() }                  catch(e) { console.warn('[Scout] wireDoneAccordion:', e) }
+    try { showOnboarding() }                     catch(e) { console.warn('[Scout] showOnboarding:', e) }
+
+    // First-visit welcome card
+    try {
+      var hasActions = windows.some(function (w) { return w._status && w._status !== 'open' })
+      if (!hasActions) {
+        var welcomeHtml =
+          '<div class="welcome-card">' +
+          '<p class="welcome-card-title">Welcome to Scout.</p>' +
+          '<p class="welcome-card-text">' + name + ' has ' + (sections.closing.length + sections.thisMonth.length) + ' open windows right now. ' + (sections.closing.length > 0 ? 'Start with the ones marked ⚠️ Closing soon.' : 'Tap any window to learn more and mark your progress.') + '</p>' +
+          '</div>'
+        var progressWrap = document.querySelector('.progress-bar-wrap')
+        if (progressWrap) progressWrap.style.display = 'none'
+        document.getElementById('windowSections').insertAdjacentHTML('beforebegin', welcomeHtml)
+      }
+    } catch(e) { console.warn('[Scout] welcome card:', e) }
   })
 
   // Sidebar trial info
