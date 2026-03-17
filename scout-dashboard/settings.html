@@ -634,15 +634,15 @@ function signOut() {
     var sb = ScoutDash.getSb()
     if (sb) {
       sb.auth.signOut().then(function () {
-        window.location.href = '/sign-in.html'
+        window.location.href = '/sign-in.html?signedout=1'
       }, function () {
-        window.location.href = '/sign-in.html'
+        window.location.href = '/sign-in.html?signedout=1'
       })
     } else {
-      window.location.href = '/sign-in.html'
+      window.location.href = '/sign-in.html?signedout=1'
     }
   } catch (e) {
-    window.location.href = '/sign-in.html'
+    window.location.href = '/sign-in.html?signedout=1'
   }
 }
 

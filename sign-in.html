@@ -1062,8 +1062,9 @@ button { font: inherit; cursor: pointer; }
     );
     // Already signed in? Go straight to dashboard
     // — but NOT if there's a session hash in the URL (post-confirmation/OAuth redirect)
-    //   that case is handled by the hash detection code below
-    if (window.location.hash.indexOf('access_token') === -1) {
+    // — and NOT if ?signedout=1 (user just signed out — session may still be clearing)
+    var _justSignedOut = new URLSearchParams(window.location.search).get('signedout') === '1';
+    if (!_justSignedOut && window.location.hash.indexOf('access_token') === -1) {
       window._supabaseClient.auth.getSession().then(({ data }) => {
         if (data.session) window.location.replace('scout-dashboard.html');
       });
