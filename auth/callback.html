@@ -82,6 +82,18 @@
           return;
         }
 
+        // Supabase info message (e.g. "Confirmation link accepted. Please proceed to confirm link sent to the other email")
+        const message = params.get('message');
+        if (message) {
+          document.getElementById('spinner') && (document.getElementById('spinner').style.display = 'none');
+          const friendly = message.replace(/\+/g, ' ');
+          const isEmailChange = friendly.toLowerCase().includes('confirm') || friendly.toLowerCase().includes('email');
+          document.getElementById('msg').innerHTML = isEmailChange
+            ? '✓ ' + friendly + '<br><br><a href="../scout-dashboard/settings.html" style="color:var(--terra);font-weight:700">Back to settings →</a>'
+            : friendly;
+          return;
+        }
+
         const type   = params.get('type') || new URLSearchParams(window.location.search).get('type') || '';
 
         // Let Supabase process the hash and establish session

@@ -1634,6 +1634,21 @@ a { color: inherit; text-decoration: none; }
      WIDGET JS
      ════════════════════════════════════════════════ -->
 <script>
+// Intercept Supabase auth redirects that land on the homepage
+// (email change confirmations, error fragments, access_token, etc.)
+;(function() {
+  var h = window.location.hash;
+  if (h && (
+    h.indexOf('message=') !== -1 ||
+    h.indexOf('error=') !== -1 ||
+    h.indexOf('access_token=') !== -1 ||
+    h.indexOf('type=') !== -1
+  )) {
+    window.location.replace('/auth/callback.html' + h);
+  }
+})();
+</script>
+<script>
 const PERSONAS = [
   {
     stage: 'Expecting',
