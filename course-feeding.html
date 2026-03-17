@@ -548,7 +548,7 @@ function userName(){return localStorage.getItem('ff_user_name')||window._sbUserE
 function render(){
   saveState(STATE);
   const app=document.getElementById('app');
-  app.innerHTML='';app.className='fade-in';
+  app.innerHTML='';app.className='main fade-in';
   if(STATE.screen==='chapter'||STATE.screen==='question')renderProgress(app);
   switch(STATE.screen){
     case'welcome':renderWelcome(app);break;

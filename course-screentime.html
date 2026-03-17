@@ -1058,7 +1058,7 @@ function render() {
   saveState(STATE);
   const app = document.getElementById('app');
   app.innerHTML = '';
-  app.className = 'fade-in';
+  app.className = 'main fade-in';
 
   // Progress bar + roadmap (not on welcome or complete)
   if (STATE.screen === 'chapter' || STATE.screen === 'question') {
