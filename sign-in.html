@@ -2164,8 +2164,14 @@ button { font: inherit; cursor: pointer; }
           if (btn) { btn.disabled = false; btn.textContent = 'Start my free trial →'; }
           // Show user-facing error
           var msg = data.error || 'Something went wrong. Please try again.';
-          if (msg.includes('4 years')) {
+          if (msg.includes('4 years') || msg.includes('not more than 4')) {
             msg = 'Scout tracks developmental windows from birth to 36 months. ' + name + ' is outside that age range.';
+          } else if (msg.includes('future')) {
+            msg = 'Date of birth can\'t be in the future. If you\'re expecting, check the "I\'m expecting" box above.';
+          } else if (msg.includes('Invalid or expired session')) {
+            msg = 'Your session expired. Please refresh the page and try again.';
+          } else if (msg === 'Something went wrong') {
+            msg = 'Something went wrong. Please try again.';
           }
           showChildError(msg);
           return;
