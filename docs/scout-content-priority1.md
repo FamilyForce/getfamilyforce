@@ -3485,7 +3485,7 @@ If you have already turned your child forward facing, ensure the forward facing 
 ---
 
 ## `safety-poison-control`
-**Title:** Save the poison control number now
+**Title:** Save your local poison control number
 **Open:** Week 0 | **Peak:** Week 0 | **Close:** Week 52
 **Urgency:** advisory | **Priority:** 2
 
@@ -3493,7 +3493,9 @@ If you have already turned your child forward facing, ensure the forward facing 
 Poisoning is one of the top causes of accidental injury in children under 5. Most poisoning calls to poison control involve household products (cleaning supplies, medications, vitamins, batteries) found by mobile toddlers. Having the number already saved means you are not searching for it while your child is in distress.
 
 **What to do:**
-* US Poison Control: 1 800 222 1222. Save it in your phone now.
+* US: 1-800-222-1222 | UK: 111 | Australia: 13 11 26 | HK: 2382 5111 | Canada: find at 1-800-268-9017
+* Not sure? Find your country's number at poison.org or ask your pediatrician at your first visit.
+* Save it in your phone now, before you need it.
 * Ensure all medications (including vitamins) are in child resistant containers and stored out of reach
 * Button batteries (in remotes, key fobs, musical cards) are the most dangerous household poisoning risk, they cause severe internal burns within 2 hours if ingested
 

@@ -295,7 +295,7 @@ solid foods, peanut intro, top allergens, cow's milk transition, 4-month sleep r
 | 8 | `safety-babyproofing` | Babyproof the home — before crawling begins | 17 | 26 | 34 | advisory | 1 |
 | 9 | `safety-water-supervision` | Water safety — never leave unattended near water, any depth | 26 | 52 | 156 | advisory | 1 |
 | 10 | `safety-choking-awareness` | Choking hazard list — know it and review it | 0 | 17 | 208 | advisory | 1 |
-| 11 | `safety-poison-control` | Poison control number saved — 1-800-222-1222 (US) | 0 | 0 | 52 | advisory | 2 |
+| 11 | `safety-poison-control` | Save your local poison control number | 0 | 0 | 52 | advisory | 2 |
 | 12 | `safety-sunscreen-6months` | Sunscreen from 6 months — SPF 30+ on exposed skin | 26 | 26 | 156 | advisory | 2 |
 | 13 | `safety-crib-to-bed-transition` | Transitioning out of crib — timing matters for sleep | 78 | 104 | 130 | advisory | 2 |
 | 14 | `safety-forward-facing-transition` | Car seat: forward-facing transition — weight and height based | 104 | 130 | 156 | advisory | 2 |
