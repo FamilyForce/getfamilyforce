@@ -119,12 +119,18 @@
           var ownChildren = res.data || []
 
           // Step 2: try to load shared children via Family Circle (non-critical)
-          sb.from('family_members').select('owner_user_id').eq('member_user_id', _user.id)
+          // Query by child_id directly — set when invite is created
+          sb.from('family_members').select('child_id').eq('member_user_id', _user.id).eq('status', 'active')
             .then(function (fmRes) {
-              var ownerIds = (fmRes.data || []).map(function (m) { return m.owner_user_id })
-              if (ownerIds.length === 0) { finalize(ownChildren); return }
+              var childIds = (fmRes.data || []).map(function (m) { return m.child_id }).filter(Boolean)
+              if (childIds.length === 0) { finalize(ownChildren); return }
 
-              sb.from('children').select('*').in('user_id', ownerIds).order('created_at')
+              // Exclude any child already in ownChildren
+              var ownIds = ownChildren.map(function (c) { return c.id })
+              var sharedIds = childIds.filter(function (id) { return ownIds.indexOf(id) === -1 })
+              if (sharedIds.length === 0) { finalize(ownChildren); return }
+
+              sb.from('children').select('*').in('id', sharedIds).order('created_at')
                 .then(function (r) {
                   finalize(ownChildren.concat(r.data || []))
                 })

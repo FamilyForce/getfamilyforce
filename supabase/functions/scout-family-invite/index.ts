@@ -63,6 +63,7 @@ Deno.serve(async (req: Request) => {
     // 3. Create pending record
     await sb.from('family_members').insert({
       child_id:      childId,
+      owner_user_id: user.id,
       invited_email: inviteeEmail.toLowerCase().trim(),
       status:        'pending',
       invited_at:    new Date().toISOString(),
