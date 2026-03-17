@@ -540,10 +540,13 @@ function copyShareMessage() {
 
 function selectPlan(plan) {
   selectedPlan = plan
-  document.getElementById('planAnnual').classList.toggle('selected',  plan === 'annual')
-  document.getElementById('planMonthly').classList.toggle('selected', plan === 'monthly')
-  var btn = document.getElementById('submitBtn')
-  btn.textContent = plan === 'annual' ? 'Send gift — $79.99 →' : 'Send gift — $9.99 →'
+  document.getElementById('planAnnual').classList.toggle('selected',    plan === 'annual')
+  document.getElementById('planTriennial').classList.toggle('selected', plan === 'triennial')
+  document.getElementById('planMonthly').classList.toggle('selected',   plan === 'monthly')
+  appliedPromo = null
+  var fb = document.getElementById('couponFeedback')
+  if (fb) fb.style.display = 'none'
+  updateBtnPrice()
 }
 
 // ─── Purchase submit ──────────────────────────────────────────────────────────
