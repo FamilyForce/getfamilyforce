@@ -351,7 +351,7 @@
         Promise.all(sends).then(function () {
           localStorage.setItem(self._QUEUE_KEY, JSON.stringify(remaining))
           if (remaining.length === 0 && q.length > 0)
-            console.log('[Scout] Offline queue flushed (' + q.length + ' items)')
+            /* flushed offline queue */
         })
       })
     },
@@ -910,7 +910,7 @@
       var self = this
       // Flush any queued progress saves when coming back online
       window.addEventListener('online', function () {
-        console.log('[Scout] Back online — flushing progress queue')
+        /* back online — flushing progress queue */
         self._flushQueue()
       })
       // Flush on load in case there are queued items from a previous session

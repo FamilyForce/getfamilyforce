@@ -347,7 +347,7 @@
       window.ffSync.getUserId().then(uid => {
         if (uid) window.ffSync.saveProfile(uid, { onboarded_at: now });
       });
-      const next = sessionStorage.getItem('ff_signin_next') || 'dashboard.html';
+      const next = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
       sessionStorage.removeItem('ff_signin_next');
       window.location.href = next;
     }

@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- ═══════════════════════════════════════════════════════════
-     FAMILYFORCE SCOUT — v3 Design Mock-up
-     Concept: Airbnb early-days — make Scout the obvious choice
-     Designer brief: convince exhausted new parents in 5 scrolls
-     Stack: Vanilla HTML/CSS/JS · zero dependencies
-     ═══════════════════════════════════════════════════════════ -->
+<!-- FamilyForce Scout — index.html (homepage) -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light">
-<title>FamilyForce Scout: Know what your child needs. Right now.</title>
-<meta name="description" content="The first three years have critical windows. Scout tells you what's open, what's closing, and what to do, for your child's exact age. 1 month free.">
+<title>FamilyForce Scout — Track Your Child's Developmental Windows</title>
+<meta name="description" content="Scout tracks 196 developmental windows across your child's first 3 years — and tells you exactly what to do, month by month. Free trial, no card required.">
+<meta property="og:type"        content="website">
+<meta property="og:title"       content="FamilyForce Scout — Track Your Child's Developmental Windows">
+<meta property="og:description" content="Scout tracks 196 developmental windows across your child's first 3 years — and tells you exactly what to do, month by month. Free trial, no card required.">
+<meta property="og:url"         content="https://www.getfamilyforce.com/">
+<meta property="og:image"       content="https://www.getfamilyforce.com/images/og-scout.png">
+<meta name="twitter:card"       content="summary_large_image">
+<meta name="twitter:title"      content="FamilyForce Scout — Track Your Child's Developmental Windows">
+<meta name="twitter:description" content="Scout tracks 196 developmental windows across your child's first 3 years — and tells you exactly what to do, month by month.">
+<meta name="twitter:image"      content="https://www.getfamilyforce.com/images/og-scout.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1712,6 +1716,19 @@ document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
 
 // Init widget
 selectPersona(0);
+
+// ?deleted=1 — show confirmation after account deletion
+(function () {
+  if (new URLSearchParams(window.location.search).get('deleted') === '1') {
+    var toast = document.createElement('div');
+    toast.setAttribute('role', 'status');
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#1D1D1F;color:#fff;font-family:var(--sans,sans-serif);font-size:14px;font-weight:500;padding:14px 24px;border-radius:100px;box-shadow:0 8px 32px rgba(0,0,0,.25);z-index:9999;white-space:nowrap';
+    toast.textContent = '✓ Your account has been deleted.';
+    document.body.appendChild(toast);
+    history.replaceState(null, '', window.location.pathname);
+    setTimeout(function () { toast.style.transition = 'opacity .4s'; toast.style.opacity = '0'; setTimeout(function () { toast.remove(); }, 400); }, 4000);
+  }
+})();
 
 // Mobile menu
 const hamburger = document.getElementById('hamburger-btn');
