@@ -95,14 +95,14 @@ Deno.serve(async (req: Request) => {
     }
 
     // 4. Resolve display name for attribution
-    // Prefer profiles.display_name → fall back to email prefix
+    // Prefer profiles.name → fall back to email prefix
     const { data: profile } = await sb
       .from('profiles')
-      .select('display_name')
+      .select('name')
       .eq('id', user.id)
       .maybeSingle()
 
-    const displayName = profile?.display_name?.trim() ||
+    const displayName = profile?.name?.trim() ||
       (user.email ? user.email.split('@')[0] : 'Unknown')
 
     // 5. Verify the window exists
