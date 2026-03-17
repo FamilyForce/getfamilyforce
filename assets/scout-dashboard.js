@@ -58,8 +58,14 @@
     /* ── Child loading ───────────────────────────────────────── */
     _loadChild: function (cb) {
       var savedId = localStorage.getItem('scout_active_child_id')
+      // Guard: Supabase v2 thenables can fire both .then() AND .catch() on the
+      // same query in some edge cases (same bug as Promise.all — see commit 8bc0314).
+      // finalize must only run once or the whole page renders twice.
+      var _finalized = false
 
       function finalize(children) {
+        if (_finalized) { console.warn('[Scout] _loadChild finalize called twice — ignoring duplicate'); return }
+        _finalized = true
         if (children.length === 0) {
           if (!window.location.pathname.includes('/child')) {
             window.location.href = '/scout-dashboard/child.html'

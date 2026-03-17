@@ -337,8 +337,23 @@ function renderHome(child, sub) {
       '<div class="window-grid">' + skCard + skCard + skCard + skCard + '</div>'
   })()
 
+  // Safety net: if loadWindows never calls back (Supabase hang), show retry after 12s
+  var _windowsLoaded = false
+  var _windowsTimeout = setTimeout(function () {
+    if (_windowsLoaded) return
+    console.warn('[Scout] loadWindows timed out after 12s')
+    document.getElementById('windowSections').innerHTML =
+      '<div class="error-state">' +
+      '<p class="error-state-title">Taking longer than usual…</p>' +
+      '<p class="error-state-text">Check your connection and try again.</p>' +
+      '<button class="btn btn-secondary" onclick="window.location.reload()" style="margin-top:12px">Retry</button>' +
+      '</div>'
+  }, 12000)
+
   // Load windows
   ScoutDash.loadWindows(child.id, dob, function (windows, ageW, loadErr) {
+    clearTimeout(_windowsTimeout)
+    _windowsLoaded = true
     if (loadErr || !windows) {
       document.getElementById('windowSections').innerHTML =
         '<div class="error-state">' +
@@ -348,6 +363,7 @@ function renderHome(child, sub) {
         '</div>'
       return
     }
+    try {
     var sections = ScoutDash.sectionWindows(windows, ageW)
     renderSections(sections, windows, child, sub, ageM, name)
     ScoutDash.initLazyCards()
@@ -372,6 +388,15 @@ function renderHome(child, sub) {
       var progressWrap = document.querySelector('.progress-bar-wrap')
       if (progressWrap) progressWrap.style.display = 'none'
       document.getElementById('windowSections').insertAdjacentHTML('beforebegin', welcomeHtml)
+    }
+    } catch (e) {
+      console.error('[Scout] renderSections threw:', e)
+      document.getElementById('windowSections').innerHTML =
+        '<div class="error-state">' +
+        '<p class="error-state-title">Could not display windows.</p>' +
+        '<p class="error-state-text">Please refresh and try again.</p>' +
+        '<button class="btn btn-secondary" onclick="window.location.reload()" style="margin-top:12px">Retry</button>' +
+        '</div>'
     }
   })
 
