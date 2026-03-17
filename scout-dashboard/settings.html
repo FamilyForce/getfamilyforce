@@ -604,7 +604,7 @@ function saveEmail() {
   }
   if (btn) { btn.disabled = true; btn.textContent = 'Saving…' }
   if (msg) msg.style.display = 'none'
-  ScoutDash.getSb().auth.updateUser({ email: email }).then(function (res, err) {
+  ScoutDash.getSb().auth.updateUser({ email: email }, { emailRedirectTo: 'https://www.getfamilyforce.com/auth/callback.html' }).then(function (res, err) {
     if (btn) { btn.disabled = false; btn.textContent = 'Save' }
     if ((res && res.error) || err) {
       var e = (res && res.error) || err

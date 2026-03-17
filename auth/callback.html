@@ -67,9 +67,21 @@
 
     async function handleCallback() {
       try {
-        // Parse hash for type
+        // Parse hash for type — check for error fragments first
         const hash   = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
+
+        const errorCode = params.get('error_code') || params.get('error');
+        if (errorCode) {
+          const desc = (params.get('error_description') || errorCode).replace(/\+/g, ' ');
+          const isExpired = errorCode === 'otp_expired' || desc.toLowerCase().includes('expired');
+          document.getElementById('spinner') && (document.getElementById('spinner').style.display = 'none');
+          document.getElementById('msg').innerHTML = isExpired
+            ? 'That link has expired. <a href="../scout-dashboard/settings.html" style="color:var(--terra);font-weight:700">Go back to settings</a> and request a new one.'
+            : 'Something went wrong: ' + desc + '. <a href="../sign-in.html" style="color:var(--terra);font-weight:700">Try again →</a>';
+          return;
+        }
+
         const type   = params.get('type') || new URLSearchParams(window.location.search).get('type') || '';
 
         // Let Supabase process the hash and establish session
