@@ -562,14 +562,14 @@ button { font: inherit; cursor: pointer; }
    Two-column at ≥ 900px, stacked below.
    ═══════════════════════════════════════════════════════════ */
 .contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 80px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 64px;
 }
 
 /* Form column */
-.contact-form-col { min-width: 0; } .form-card { max-width: 560px; margin-left: auto; margin-right: auto; }
+.contact-form-col { width: 100%; max-width: 600px; } .form-card { max-width: 600px; margin-left: auto; margin-right: auto; }
 
 /* ═══════════════════════════════════════════════════════════
    12. CONTACT FORM
@@ -761,7 +761,7 @@ button { font: inherit; cursor: pointer; }
 /* ═══════════════════════════════════════════════════════════
    13. FAQ / ACCORDION
    ═══════════════════════════════════════════════════════════ */
-.faq-col { min-width: 0; }
+.faq-col { width: 100%; max-width: 700px; }
 
 .faq-heading {
   font-family: var(--sans);
@@ -983,15 +983,7 @@ button { font: inherit; cursor: pointer; }
     padding-bottom: 56px;
   }
 
-  /* Stack form and FAQ vertically */
-  .contact-grid {
-    grid-template-columns: 1fr;
-    gap: 52px;
-  }
-
-  /* Move FAQ above form on compact (form first on mobile) */
-  .faq-col { order: 2; }
-  .contact-form-col { order: 1; }
+.contact-grid { gap: 40px; }
 
   .form-card { padding: 32px 28px 28px; }
 
