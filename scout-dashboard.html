@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function () {
         user_id: user.id, child_id: child ? child.id : null,
         event_type: 'dashboard_opened',
         properties: { source: src }
-      }).catch(function(){})
+      }).then(function(){}, function(){})
     }
   })
 })
@@ -373,7 +373,7 @@ function renderHome(child, sub) {
       document.getElementById('windowSections').innerHTML =
         '<div class="error-state">' +
         '<p class="error-state-title">Could not display windows.</p>' +
-        '<p class="error-state-text" style="font-family:monospace;font-size:11px;word-break:break-all">' + (e && e.message ? e.message : String(e)) + '</p>' +
+        '<p class="error-state-text">Please refresh and try again.</p>' +
         '<button class="btn btn-secondary" onclick="window.location.reload()" style="margin-top:12px">Retry</button>' +
         '</div>'
       return
@@ -488,7 +488,7 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
           user_id: user.id, child_id: child ? child.id : null,
           event_type: 'paywall_shown',
           properties: { days_since_trial_end: daysAgo, sub_status: sub ? sub.status : null }
-        }).catch(function(){})
+        }).then(function(){}, function(){})
       }
     })()
   } else if (sections.comingUp.length > 0) {
