@@ -484,6 +484,7 @@
         ? '<div class="date-prompt" id="datePrompt-' + w.id + '">' +
           '<span class="date-prompt-label">📅 When did this happen?</span>' +
           '<input type="date" class="date-prompt-input" id="dateInput-' + w.id + '" max="' + new Date().toISOString().split('T')[0] + '">' +
+          '<button class="date-prompt-save btn btn-primary" data-save-date="' + w.id + '" style="padding:5px 14px;font-size:13px;height:32px;min-width:64px">Save</button>' +
           '<button class="date-prompt-dismiss" data-dismiss-date="' + w.id + '">✕</button>' +
           '</div>'
         : ''
@@ -593,11 +594,61 @@
     wireActions: function (childId, windowsRef, container) {
       container = container || document
       container.addEventListener('click', function (e) {
-        // Dismiss date prompt
+        // Save date prompt — user confirmed date, now persist
+        var saveDate = e.target.closest('[data-save-date]')
+        if (saveDate) {
+          var swid    = saveDate.dataset.saveDate
+          var swin    = windowsRef.find(function (w) { return w.id === swid })
+          var scard   = saveDate.closest('.window-card')
+          var sInp    = document.getElementById('dateInput-' + swid)
+          var sDp     = document.getElementById('datePrompt-' + swid)
+          var sBtns   = scard ? scard.querySelectorAll('[data-action]') : []
+          if (!swin || !scard) return
+          var selDate = (sInp && sInp.value) ? sInp.value : null
+          var sStatus = swin._status  // already set optimistically
+          if (sDp) sDp.classList.remove('show')
+          scard.style.opacity = '0.6'
+          scard.style.pointerEvents = 'none'
+          ScoutDash.saveProgress(swid, sStatus, childId, selDate, function (err, data) {
+            scard.style.opacity = ''
+            scard.style.pointerEvents = ''
+            if (err) {
+              ScoutDash.toast('Could not save. Please try again.', 'error')
+              swin._status = 'open'
+              sBtns.forEach(function (b) { b.classList.remove('active-done', 'active-progress', 'active-skip') })
+              scard.classList.remove('state-in-progress', 'state-done', 'state-skipped')
+            } else {
+              if (sStatus === 'completed' || sStatus === 'skipped') {
+                setTimeout(function () { ScoutDash._moveToDone(scard, swid) }, 400)
+              }
+              if (data && data.updatedByName) {
+                if (!swin._progress) swin._progress = {}
+                swin._progress.updated_by_name = data.updatedByName
+                swin._progress.completed_date  = data.completedDate || null
+                swin._status = sStatus
+                ScoutDash._updateCardAttribution(scard, data.updatedByName, data.completedDate)
+              }
+            }
+            ScoutDash._updateProgressBar(windowsRef)
+          })
+          return
+        }
+
+        // Dismiss date prompt — revert optimistic UI
         var dismiss = e.target.closest('[data-dismiss-date]')
         if (dismiss) {
-          var dp = document.getElementById('datePrompt-' + dismiss.dataset.dismissDate)
+          var dwid  = dismiss.dataset.dismissDate
+          var dwin  = windowsRef.find(function (w) { return w.id === dwid })
+          var dcard = dismiss.closest('.window-card')
+          var dp    = document.getElementById('datePrompt-' + dwid)
           if (dp) dp.classList.remove('show')
+          if (dwin) dwin._status = 'open'
+          if (dcard) {
+            dcard.querySelectorAll('[data-action]').forEach(function (b) {
+              b.classList.remove('active-done', 'active-progress', 'active-skip')
+            })
+            dcard.classList.remove('state-in-progress', 'state-done', 'state-skipped')
+          }
           return
         }
 
@@ -627,39 +678,33 @@
         if (newStatus === 'in_progress')  card.classList.add('state-in-progress')
         if (newStatus === 'completed' || newStatus === 'skipped') card.classList.add('state-done')
 
-        // Show date prompt for done/in-progress; hide for skip/open
+        // Show date prompt for done/in-progress; skipped/open save immediately
         var prompt  = document.getElementById('datePrompt-' + wid)
         var dateInp = document.getElementById('dateInput-' + wid)
-        if (prompt && dateInp) {
-          if (newStatus === 'completed' || newStatus === 'in_progress') {
-            dateInp.value = new Date().toISOString().split('T')[0]
-            prompt.classList.add('show')
-          } else {
-            prompt.classList.remove('show')
-          }
+
+        if ((newStatus === 'completed' || newStatus === 'in_progress') && prompt && dateInp) {
+          // Show date prompt — save is deferred until user clicks Save
+          dateInp.value = new Date().toISOString().split('T')[0]
+          prompt.classList.add('show')
+          // Don't save yet — wireActions save-date handler below handles it
+          return
         }
 
-        // If done/skipped: move to Done section after short delay
-        if (newStatus === 'completed' || newStatus === 'skipped') {
+        // skipped / reverted to open — save immediately, no date needed
+        if (newStatus === 'skipped') {
           setTimeout(function () { ScoutDash._moveToDone(card, wid) }, 800)
         }
-
-        // Persist (with today as default date)
-        var selectedDate = (dateInp && dateInp.value) ? dateInp.value : null
-        // In-flight indicator: briefly dim the card
         card.style.opacity = '0.6'
         card.style.pointerEvents = 'none'
-        ScoutDash.saveProgress(wid, newStatus, childId, selectedDate, function (err, data) {
+        ScoutDash.saveProgress(wid, newStatus, childId, null, function (err, data) {
           card.style.opacity = ''
           card.style.pointerEvents = ''
           if (err) {
             ScoutDash.toast('Could not save. Please try again.', 'error')
             win._status = 'open'
-            // Revert optimistic UI
             btns.forEach(function (b) { b.classList.remove('active-done', 'active-progress', 'active-skip') })
             card.classList.remove('state-in-progress', 'state-done', 'state-skipped')
           } else {
-            // Store attribution data back on the window object
             if (data && data.updatedByName) {
               if (!win._progress) win._progress = {}
               win._progress.updated_by_name = data.updatedByName
