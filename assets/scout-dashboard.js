@@ -68,19 +68,14 @@
         _finalized = true
         if (children.length === 0) {
           var path = window.location.pathname
-          // Library and settings work fine without a child — don't force setup
-          var noChildOk = path.includes('/library') || path.includes('/settings')
-          if (!path.includes('/child') && !noChildOk) {
-            // Check intent — if user chose library, send them there instead of child setup
-            var intent = sessionStorage.getItem('ff_intent')
-            if (intent === 'library') {
-              window.location.href = '/scout-dashboard/library.html'
-            } else {
-              window.location.href = '/scout-dashboard/child.html'
-            }
+          // child.html handles its own setup flow — don't interrupt it
+          if (path.includes('/child')) {
+            if (typeof cb === 'function') cb()
             return
           }
-          // On library/settings with no child — update header to prompt setup, then continue
+          // All other pages (home, library, settings, history, family):
+          // update the child selector to show "+ Add child" and let
+          // each page's onReady handle the no-child empty state
           var btn = document.getElementById('childSelectorBtn')
           var pill = document.getElementById('mobileChildName')
           if (btn)  btn.textContent = '+ Add child'

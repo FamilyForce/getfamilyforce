@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260317c">
+<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260317d">
 <style>
 /* ── Pre-birth mode ──────────────────────────────────────── */
 .prebirth-countdown {
@@ -265,7 +265,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/scout-dashboard.js?v=20260317c"></script>
+<script src="/assets/scout-dashboard.js?v=20260317d"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('home', function (user, child, sub) {
@@ -288,6 +288,21 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 function renderHome(child, sub) {
+  // ── No child set up yet ──────────────────────────────────────
+  if (!child) {
+    var header = document.getElementById('pageHeader')
+    if (header) header.innerHTML = '<h1 class="page-header-child">Welcome to Scout</h1>'
+    var sections = document.getElementById('windowSections')
+    if (sections) sections.innerHTML =
+      '<div class="end-state" style="text-align:center;padding:48px 24px;">' +
+      '<div style="font-size:48px;margin-bottom:16px;">🌱</div>' +
+      '<p class="end-state-title" style="margin-bottom:8px;">Set up Scout to get started</p>' +
+      '<p class="end-state-text" style="margin-bottom:24px;">Add your child\'s birthday and Scout will track their developmental windows from birth to age 3.</p>' +
+      '<a href="/scout-dashboard/child.html" class="btn btn-primary" style="display:inline-block;padding:12px 28px;border-radius:100px;background:#6E4ED6;color:#fff;font-weight:700;text-decoration:none;font-size:15px;">Set up Scout →</a>' +
+      '</div>'
+    return
+  }
+
   var name = child.name
 
   // ── Pre-birth mode ──────────────────────────────────────────
