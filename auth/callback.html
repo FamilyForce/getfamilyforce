@@ -89,6 +89,29 @@
           const next       = sessionStorage.getItem('ff_signin_next') || null;
           const intent     = sessionStorage.getItem('ff_intent') || null;
 
+          // — Family invite acceptance —
+          const inviteChild = localStorage.getItem('ff_invite_child');
+          const inviteEmail = localStorage.getItem('ff_invite_email');
+          if (inviteChild && inviteEmail) {
+            localStorage.removeItem('ff_invite_child');
+            localStorage.removeItem('ff_invite_email');
+            // Link this user to the invited child via the edge function
+            try {
+              const FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
+              await fetch(FUNCTIONS_URL + '/scout-family-accept', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + data.session.access_token,
+                },
+                body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
+              });
+            } catch (e) { console.warn('[invite] accept failed:', e); }
+            // Skip child setup — go straight to dashboard
+            window.location.href = '../scout-dashboard.html';
+            return;
+          }
+
           // Check if user has completed onboarding (has children)
           const { data: children } = await sb.from('children').select('id').eq('user_id', user.id).limit(1);
           const hasChildren = children && children.length > 0;

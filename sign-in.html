@@ -1063,6 +1063,16 @@ button { font: inherit; cursor: pointer; }
     // Already signed in? Go straight to dashboard
     // — but NOT if there's a session hash in the URL (post-confirmation/OAuth redirect)
     // — and NOT if ?signedout=1 (user just signed out — session may still be clearing)
+    // Persist family invite params through the auth flow
+    (function() {
+      var p = new URLSearchParams(window.location.search);
+      var ic = p.get('invite_child'), ie = p.get('invite_email');
+      if (ic && ie) {
+        localStorage.setItem('ff_invite_child', ic);
+        localStorage.setItem('ff_invite_email', ie);
+      }
+    })();
+
     var _justSignedOut = new URLSearchParams(window.location.search).get('signedout') === '1';
     if (!_justSignedOut && window.location.hash.indexOf('access_token') === -1) {
       window._supabaseClient.auth.getSession().then(({ data }) => {
