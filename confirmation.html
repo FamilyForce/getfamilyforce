@@ -878,17 +878,23 @@ button { font: inherit; cursor: pointer; }
   <!-- ═══════════════════════════════════════════════════════════
        SIMPLE FOOTER — logo + copyright only
        ═══════════════════════════════════════════════════════════ -->
-  <footer class="conf-footer" role="contentinfo">
-    <div class="conf-footer-inner">
-      <a href="index.html" class="logo" style="font-size:17px" aria-label="FamilyForce — Home">
-        <svg width="11" height="13" viewBox="0 0 14 16" fill="none" aria-hidden="true">
-          <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span class="logo-f">Family</span><span class="logo-s">Force</span>
-      </a>
-      <small>© 2026 FamilyForce Inc.</small>
-    </div>
-  </footer>
+  <footer style="background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px))">
+  <div style="max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+    <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none" aria-label="FamilyForce home">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-family:var(--sans);font-size:16px;font-weight:700;color:rgba(255,255,255,.9)">Family<span style="color:#A78BFF">Force</span></span>
+    </a>
+    <nav style="display:flex;gap:24px" aria-label="Footer links">
+      <a href="/about.html" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">About Us</a>
+      <a href="https://www.getfamilyforce.com/privacy" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Privacy</a>
+      <a href="https://www.getfamilyforce.com/terms"   style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Terms</a>
+      <a href="https://www.getfamilyforce.com/contact" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Support</a>
+    </nav>
+    <span style="font-size:12px;color:rgba(255,255,255,.25)">© 2026 FamilyForce. All rights reserved.</span>
+  </div>
+</footer>
 
 </div><!-- /.conf-page -->
 

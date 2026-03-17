@@ -1,22 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- ═══════════════════════════════════════════════════════════
-     FAMILYFORCE SCOUT — v3 Design Mock-up
-     Concept: Airbnb early-days — make Scout the obvious choice
-     Designer brief: convince exhausted new parents in 5 scrolls
-     Stack: Vanilla HTML/CSS/JS · zero dependencies
-     ═══════════════════════════════════════════════════════════ -->
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light">
-<title>FamilyForce Scout: Know what your child needs. Right now.</title>
-<meta name="description" content="The first three years have critical windows. Scout tells you what's open, what's closing, and what to do, for your child's exact age. 1 month free.">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Jack — FamilyForce</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
 /* ─── TOKENS ─── */
 :root {
@@ -232,72 +222,112 @@ a { color: inherit; text-decoration: none; }
 .hero-trust-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.25); }
 
 /* ── Widget internals ── */
-.w-header { padding: 22px 22px 14px; }
-.w-eyebrow {
-  font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
-  color: #A78BFF; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
-}
-.w-title {
-  font-family: var(--serif); font-size: 20px; line-height: 1.25;
-  color: #fff; letter-spacing: -.015em;
-}
-.w-title em { font-style: italic; color: #A78BFF; }
+/* ── Widget: persona tabs ── */
 .w-personas {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 7px; padding: 0 22px 14px;
+  gap: 7px; padding: 16px 16px 12px;
 }
 .w-persona {
   background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12);
-  border-radius: 14px; padding: 11px 8px; text-align: center;
+  border-radius: 12px; padding: 10px 8px; text-align: center;
   cursor: pointer; transition: all .2s; user-select: none;
 }
 .w-persona:hover { background: rgba(255,255,255,.12); }
-.w-persona.active {
-  background: rgba(167,139,255,.18); border-color: #A78BFF;
-}
+.w-persona.active { background: rgba(167,139,255,.18); border-color: #A78BFF; }
 .w-persona-icon { font-size: 20px; display: block; margin-bottom: 5px; }
 .w-persona-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,.88); display: block; line-height: 1.3; }
 .w-persona.active .w-persona-label { color: #C4B5FD; }
 .w-persona-sub { font-size: 10px; color: rgba(255,255,255,.38); display: block; margin-top: 2px; }
 .w-persona.active .w-persona-sub { color: rgba(167,139,255,.6); }
+
+/* ── Calendar invite card ── */
 .w-divider { height: 1px; background: rgba(255,255,255,.08); }
-.w-stage-row { padding: 11px 22px 7px; display: flex; align-items: center; gap: 9px; }
-.w-stage-pill {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: rgba(167,139,255,.15); border: 1px solid rgba(167,139,255,.25);
-  border-radius: 100px; padding: 4px 11px;
-  font-size: 11px; font-weight: 700; color: #C4B5FD;
+.w-cal-invite {
+  margin: 0 14px 6px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 16px; overflow: hidden;
 }
-.w-stage-dot { width: 5px; height: 5px; border-radius: 50%; background: #A78BFF; flex-shrink: 0; }
-.w-stage-desc { font-size: 11px; color: rgba(255,255,255,.38); }
-.w-windows { padding: 2px 14px 6px; display: flex; flex-direction: column; gap: 5px; }
-.w-row {
-  display: flex; gap: 10px; align-items: flex-start;
-  border-radius: 11px; padding: 10px 11px;
+.w-cal-header {
+  background: linear-gradient(135deg, rgba(110,78,214,.5) 0%, rgba(79,52,170,.5) 100%);
+  border-bottom: 1px solid rgba(255,255,255,.1);
+  padding: 14px 16px; display: flex; align-items: center; gap: 12px; text-align: left;
 }
-.w-row.urgent { background: rgba(251,191,36,.1);  border: 1px solid rgba(251,191,36,.2); }
-.w-row.open   { background: rgba(167,139,255,.1); border: 1px solid rgba(167,139,255,.16); }
-.w-row.closed { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); opacity: .55; }
-.w-row.coming { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07); }
-.w-row-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
-.w-row-body { flex: 1; min-width: 0; }
-.w-row-tag { font-size: 9px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 2px; }
-.w-row.urgent .w-row-tag { color: #FBBF24; }
-.w-row.open   .w-row-tag { color: #A78BFF; }
-.w-row.closed .w-row-tag, .w-row.coming .w-row-tag { color: rgba(255,255,255,.3); }
-.w-row-title { font-size: 12.5px; font-weight: 700; line-height: 1.3; margin-bottom: 1px; }
-.w-row.closed .w-row-title { color: rgba(255,255,255,.38); }
-.w-row:not(.closed) .w-row-title { color: #fff; }
-.w-row-desc { font-size: 11px; line-height: 1.5; }
-.w-row.closed .w-row-desc { color: rgba(255,255,255,.25); }
-.w-row:not(.closed) .w-row-desc { color: rgba(255,255,255,.52); }
-.w-row-badge {
-  flex-shrink: 0; font-size: 9.5px; font-weight: 700; padding: 3px 8px;
-  border-radius: 100px; white-space: nowrap; align-self: flex-start; margin-top: 1px;
+.w-cal-icon {
+  width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px;
 }
-.w-row.urgent .w-row-badge { background: rgba(251,191,36,.15); color: #FBBF24; border: 1px solid rgba(251,191,36,.25); }
-.w-row.open   .w-row-badge { background: rgba(167,139,255,.18); color: #C4B5FD; border: 1px solid rgba(167,139,255,.25); }
-.w-row.closed .w-row-badge, .w-row.coming .w-row-badge { background: rgba(255,255,255,.05); color: rgba(255,255,255,.3); border: 1px solid rgba(255,255,255,.08); }
+.w-cal-event-title { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.3; }
+.w-cal-organizer { font-size: 10.5px; color: rgba(255,255,255,.5); margin-top: 2px; }
+.w-cal-body { padding: 12px 14px 10px; }
+.w-cal-meta-row {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;
+}
+.w-cal-date-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(167,139,255,.15); border: 1px solid rgba(167,139,255,.22);
+  border-radius: 20px; padding: 3px 10px;
+  font-size: 10.5px; font-weight: 700; color: #C4B5FD;
+}
+.w-cal-child-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px; padding: 3px 10px;
+  font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,.65);
+}
+.w-cal-reminder-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 20px; padding: 3px 10px;
+  font-size: 10px; color: rgba(255,255,255,.38);
+}
+.w-agenda-label {
+  font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.3); margin-bottom: 7px; padding-left: 2px;
+}
+.w-agenda { display: flex; flex-direction: column; gap: 3px; }
+.w-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 9px;
+  border-left: 3px solid transparent;
+}
+.w-item.urgent { background: rgba(251,191,36,.09);  border-left-color: #FBBF24; }
+.w-item.open   { background: rgba(167,139,255,.09); border-left-color: #A78BFF; }
+.w-item.coming { background: rgba(255,255,255,.03); border-left-color: rgba(255,255,255,.12); }
+.w-item.closed { background: rgba(255,255,255,.02); border-left-color: rgba(255,255,255,.06); opacity: .45; }
+.w-item-icon { font-size: 15px; flex-shrink: 0; }
+.w-item-title { flex: 1; font-size: 12px; font-weight: 600; color: #fff; line-height: 1.3; }
+.w-item.closed .w-item-title { color: rgba(255,255,255,.35); }
+.w-item-badge {
+  flex-shrink: 0; font-size: 9px; font-weight: 700;
+  padding: 2px 7px; border-radius: 20px; white-space: nowrap;
+}
+.w-item.urgent .w-item-badge { background: rgba(251,191,36,.15); color: #FBBF24; border: 1px solid rgba(251,191,36,.22); }
+.w-item.open   .w-item-badge { background: rgba(167,139,255,.15); color: #C4B5FD; border: 1px solid rgba(167,139,255,.22); }
+.w-item.coming .w-item-badge,
+.w-item.closed .w-item-badge { background: rgba(255,255,255,.04); color: rgba(255,255,255,.28); border: 1px solid rgba(255,255,255,.08); }
+
+/* ── RSVP / CTA section ── */
+.w-rsvp {
+  padding: 10px 14px 14px; border-top: 1px solid rgba(255,255,255,.08);
+  margin-top: 6px;
+}
+.w-rsvp-label {
+  font-size: 9px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.28); margin-bottom: 8px;
+}
+.w-rsvp-btns { display: flex; gap: 6px; margin-bottom: 9px; }
+.w-rsvp-btn {
+  flex: 1; padding: 8px 6px; border-radius: 8px; text-align: center;
+  font-family: var(--sans); font-size: 11.5px; font-weight: 700;
+  cursor: pointer; border: none; transition: all .15s;
+}
+.w-rsvp-btn.accept { background: rgba(255,255,255,.9); color: #3D2A9E; }
+.w-rsvp-btn.accept:hover { background: #fff; }
+.w-rsvp-btn.maybe  { background: rgba(255,255,255,.07); color: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.12); }
+.w-rsvp-btn.decline{ background: rgba(255,255,255,.04); color: rgba(255,255,255,.35); border: 1px solid rgba(255,255,255,.08); }
+.w-cta-note { text-align: center; font-size: 10px; color: rgba(255,255,255,.25); }
+
+/* legacy .w-cta-btn kept in case referenced elsewhere */
 .w-cta {
   padding: 14px 16px 18px; border-top: 1px solid rgba(255,255,255,.09); margin-top: 5px;
   display: flex; flex-direction: column; gap: 7px;
@@ -333,6 +363,136 @@ a { color: inherit; text-decoration: none; }
   .w-personas { grid-template-columns: 1fr; }
   .w-persona { display: flex; align-items: center; gap: 10px; text-align: left; padding: 10px 14px; }
   .w-persona-icon { font-size: 22px; margin-bottom: 0; flex-shrink: 0; }
+}
+
+
+/* ═══════════════════════════════════════════
+   HOW SCOUT WORKS — v2 timeline
+   ═══════════════════════════════════════════ */
+.how-timeline { position: relative; display: flex; flex-direction: column; }
+.how-timeline::before {
+  content: ''; position: absolute;
+  left: 23px; top: 52px; bottom: 52px; width: 2px;
+  background: linear-gradient(to bottom, var(--terra) 0%, rgba(110,78,214,.1) 100%);
+}
+.hiw-step {
+  display: grid; grid-template-columns: 48px 1fr 1fr;
+  gap: 0 48px; padding: 48px 0;
+  border-bottom: 1px solid var(--border); position: relative;
+}
+.hiw-step:last-child { border-bottom: none; }
+.hiw-step-num {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--terra); color: #fff;
+  font-size: 17px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; position: relative; z-index: 1;
+  box-shadow: 0 0 0 5px #F7F4FF, 0 0 0 6px rgba(110,78,214,.2);
+  align-self: flex-start;
+}
+.hiw-step-text { padding-top: 6px; }
+.hiw-outcome {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--terra); margin-bottom: 8px;
+}
+.hiw-title {
+  font-family: var(--serif); font-size: clamp(20px, 2.5vw, 26px); font-weight: 400;
+  color: var(--text); margin-bottom: 12px; line-height: 1.2;
+}
+.hiw-body { font-size: 15px; color: var(--text-mid); line-height: 1.75; }
+.hiw-visual {
+  background: var(--bg); border: 1.5px solid var(--border); border-radius: 20px;
+  padding: 22px; overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,.04);
+}
+/* Step 3 hero treatment */
+.hiw-step.hiw-hero {
+  background: #F0EBFF; border-radius: 24px;
+  padding: 48px; margin: 12px 0; border-bottom: none;
+}
+.hiw-step.hiw-hero .hiw-step-num {
+  box-shadow: 0 0 0 5px #F0EBFF, 0 0 0 6px rgba(110,78,214,.2);
+}
+.hiw-step.hiw-hero .hiw-visual {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  background: transparent; border: none; box-shadow: none; padding: 0;
+}
+.hiw-step.hiw-hero .hiw-visual > div {
+  background: #fff; border: 1.5px solid rgba(110,78,214,.12);
+  border-radius: 16px; padding: 18px;
+  box-shadow: 0 4px 20px rgba(110,78,214,.08);
+}
+/* Step 1 form */
+.hiw-f-label { font-size: 11px; font-weight: 700; color: var(--text-dim); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 5px; }
+.hiw-f-input {
+  background: #fff; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 11px 14px; font-family: var(--sans); font-size: 14px; color: var(--text);
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+}
+.hiw-f-input.active { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(110,78,214,.1); }
+.hiw-f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+.hiw-f-submit {
+  background: var(--terra); color: #fff; border: none; border-radius: 100px;
+  padding: 13px; font-family: var(--sans); font-size: 14px; font-weight: 700;
+  text-align: center; width: 100%; cursor: pointer; margin-top: 4px;
+}
+.hiw-f-note { font-size: 11px; color: var(--text-dim); text-align: center; margin-top: 8px; }
+/* Step 2 window list */
+.hiw-age-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.hiw-age-badge {
+  background: #F0EBFF; border: 1.5px solid rgba(110,78,214,.2);
+  color: var(--terra); font-size: 11px; font-weight: 700;
+  padding: 4px 12px; border-radius: 100px;
+}
+.hiw-age-label { font-size: 12px; color: var(--text-dim); }
+.hiw-wl { display: flex; flex-direction: column; gap: 6px; }
+.hiw-wl-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 11px; border-radius: 10px;
+  border-left: 3px solid transparent;
+}
+.hiw-wl-item.closing { background: #FFFBEB; border-left-color: #F59E0B; }
+.hiw-wl-item.open    { background: #F0EBFF; border-left-color: var(--terra); }
+.hiw-wl-item.coming  { background: var(--bg); border-left-color: var(--border); }
+.hiw-wl-title { flex: 1; font-size: 12.5px; font-weight: 600; color: var(--text); }
+.hiw-wl-item.coming .hiw-wl-title { color: var(--text-dim); }
+.hiw-wl-chip { font-size: 9.5px; font-weight: 700; padding: 2px 8px; border-radius: 100px; white-space: nowrap; }
+.hiw-wl-item.closing .hiw-wl-chip { background: #FEF3C7; color: #92400E; }
+.hiw-wl-item.open    .hiw-wl-chip { background: rgba(110,78,214,.1); color: #5B3CC4; }
+.hiw-wl-item.coming  .hiw-wl-chip { background: var(--border); color: var(--text-dim); }
+.hiw-wl-count { font-size: 11px; color: var(--text-dim); margin-top: 10px; padding-left: 2px; }
+/* Step 3 email + calendar */
+.hiw-vsec-label { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; }
+/* Step 4 dashboard */
+.hiw-prog-row { font-size: 11px; color: var(--text-dim); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.hiw-prog-row span:last-child { color: #22C55E; font-weight: 700; }
+.hiw-prog-track { height: 6px; background: var(--border); border-radius: 100px; overflow: hidden; margin-bottom: 16px; }
+.hiw-prog-fill { height: 100%; background: #22C55E; border-radius: 100px; width: 40%; }
+.hiw-dc { display: flex; flex-direction: column; gap: 6px; }
+.hiw-dc-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 10px;
+  border: 1.5px solid var(--border); background: #fff;
+}
+.hiw-dc-card.done     { border-color: #22C55E; background: #F0FDF4; }
+.hiw-dc-card.progress { border-color: #F59E0B; background: #FFFBEB; }
+.hiw-dc-title { flex: 1; font-size: 12.5px; font-weight: 600; color: var(--text); }
+.hiw-dc-card.done .hiw-dc-title { color: var(--text-mid); text-decoration: line-through; }
+.hiw-dc-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; }
+.hiw-dc-card.done     .hiw-dc-badge { background: #F0FDF4; color: #15803D; border: 1px solid rgba(34,197,94,.2); }
+.hiw-dc-card.progress .hiw-dc-badge { background: #FFFBEB; color: #92400E; border: 1px solid rgba(245,158,11,.25); }
+.hiw-dc-card          .hiw-dc-badge { background: #F0EBFF; color: var(--terra); border: 1px solid rgba(110,78,214,.2); }
+/* Responsive */
+@media (max-width: 900px) {
+  .how-timeline::before { display: none; }
+  .hiw-step { grid-template-columns: 48px 1fr; }
+  .hiw-step .hiw-visual { grid-column: 2; }
+}
+@media (max-width: 640px) {
+  .hiw-step { grid-template-columns: 40px 1fr; gap: 12px 14px; padding: 32px 0; }
+  .hiw-step .hiw-visual { grid-column: 1 / -1; }
+  .hiw-step.hiw-hero { padding: 28px 20px; margin: 8px 0; }
+  .hiw-step.hiw-hero .hiw-visual { grid-template-columns: 1fr; }
 }
 
 /* How Scout Works — device cards */
@@ -769,6 +929,16 @@ a { color: inherit; text-decoration: none; }
 .testi-name { font-size: 13px; font-weight: 700; color: var(--text); }
 .testi-meta { font-size: 11px; color: var(--text-dim); }
 
+}
+.testi-card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 14px; }
+.testi-stars { color: #F59E0B; font-size: 14px; letter-spacing: 2px; }
+.testi-quote { font-family: var(--serif); font-size: 16px; line-height: 1.55; color: var(--text); letter-spacing: -.01em; flex: 1; font-style: italic; }
+.testi-quote strong { font-style: normal; font-weight: 600; color: var(--terra-dark); }
+.testi-author { display: flex; align-items: center; gap: 10px; }
+.testi-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.testi-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.testi-meta { font-size: 11px; color: var(--text-dim); }
+
 /* ─── GIFT SECTION ─── */
 .gift-section { padding: 88px var(--rx) 96px; background: linear-gradient(180deg, #FFF8F0 0%, var(--bg) 100%); }
 .gift-inner { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
@@ -885,13 +1055,147 @@ a { color: inherit; text-decoration: none; }
 .cta-trust-row { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
 .cta-trust-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: rgba(255,255,255,.45); }
 .cta-trust-check { color: #A78BFF; }
+
+  /* ── ABOUT PAGE ── */
+  /* ── HERO ── */
+  .about-hero { padding: 80px var(--rx) 64px; text-align: center; }
+  .about-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--terra); margin-bottom: 20px; display: block; }
+  .about-h1 { font-family: var(--serif); font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 400; line-height: 1.1; color: var(--ink); margin-bottom: 24px; }
+  .about-h1 em { font-style: italic; color: var(--terra); }
+  .about-tagline { font-size: 1.15rem; color: var(--muted); max-width: 560px; margin: 0 auto 48px; line-height: 1.6; }
+
+  /* Stats bar */
+  .stats-bar { display: inline-flex; gap: 0; border: 1.5px solid var(--border);
+    border-radius: 14px; overflow: hidden; background: var(--white); }
+  .stat-item { padding: 16px 28px; text-align: center; border-right: 1.5px solid var(--border); }
+  .stat-item:last-child { border-right: none; }
+  .stat-num { font-family: var(--serif); font-size: 1.9rem; font-weight: 400; color: var(--terra); display: block; }
+  .stat-label { font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--muted); margin-top: 2px; display: block; }
+
+  /* ── STORY BODY ── */
+  .story-wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--rx); }
+
+  .story-section { padding: 56px 0; border-top: 1px solid var(--border); }
+  .story-section:first-child { border-top: none; }
+
+  .section-num { font-size: .75rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--terra); margin-bottom: 12px; display: block; }
+  .section-title { font-family: var(--serif); font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 400; line-height: 1.2; margin-bottom: 24px; }
+  .section-title em { font-style: italic; }
+
+  .story-p { font-size: 1.05rem; line-height: 1.8; color: #374151; margin-bottom: 18px; }
+  .story-p:last-child { margin-bottom: 0; }
+  .story-p strong { color: var(--ink); font-weight: 600; }
+
+  /* Pull quote */
+  .pull-quote { margin: 40px 0; padding: 28px 32px; border-left: 4px solid var(--terra);
+    background: #F5F3FF; border-radius: 0 12px 12px 0; }
+  .pull-quote p { font-family: var(--serif); font-size: 1.35rem; font-style: italic;
+    line-height: 1.5; color: var(--ink); }
+
+  /* ── CALENDAR VISUAL ── */
+  .calendar-visual { margin: 48px 0 0; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .cal-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .cal-header { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+  .cal-header-title { font-size: .8rem; font-weight: 700; color: var(--ink); }
+  .cal-label { font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    padding: 3px 9px; border-radius: 100px; }
+  .cal-label-before { background: #FEF3C7; color: #92400E; }
+  .cal-label-after { background: #EDE9FE; color: var(--terra-d); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; }
+  .cal-day-name { font-size: .6rem; font-weight: 600; text-align: center; padding: 8px 0 4px;
+    color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+  .cal-cell { aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+    font-size: .72rem; font-weight: 500; color: var(--muted); position: relative; cursor: default; }
+  .cal-cell.empty { color: transparent; }
+  .cal-cell.today { background: var(--terra); color: #fff; border-radius: 50%; font-weight: 700; }
+  .cal-cell.event { color: var(--ink); font-weight: 600; }
+  .cal-cell.event::after { content: ''; position: absolute; bottom: 3px; left: 50%;
+    transform: translateX(-50%); width: 4px; height: 4px; border-radius: 50%; }
+  .cal-cell.ev-purple::after { background: var(--terra); }
+  .cal-cell.ev-amber::after  { background: var(--amber); }
+  .cal-cell.ev-green::after  { background: var(--green); }
+  .cal-event-list { padding: 10px 14px 14px; display: flex; flex-direction: column; gap: 6px; }
+  .cal-event-row { display: flex; align-items: flex-start; gap: 8px; font-size: .72rem; line-height: 1.3; }
+  .cal-event-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 3px; }
+  .cal-event-text { color: #374151; }
+  .cal-empty-msg { padding: 16px 14px; font-size: .78rem; color: var(--muted); font-style: italic;
+    text-align: center; border-top: 1px solid var(--border); }
+  .cal-caption { font-size: .75rem; color: var(--muted); text-align: center; margin-top: 10px; }
+
+  /* ── RESEARCH VISUAL ── */
+  .research-visual { margin: 48px 0 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .research-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 12px;
+    padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+  .research-card-icon { font-size: 1.2rem; }
+  .research-card-label { font-size: .72rem; font-weight: 700; color: var(--ink); }
+  .research-card-count { font-family: var(--serif); font-size: 1.4rem; color: var(--terra); }
+  .research-card-sub { font-size: .68rem; color: var(--muted); line-height: 1.4; }
+
+  /* ── SCOUT LAUNCH ── */
+  .scout-launch { background: var(--white); border: 1.5px solid var(--border); border-radius: 20px;
+    padding: 28px 32px; margin: 48px 0 0; display: flex; align-items: center; gap: 24px; }
+  .scout-launch-icon { width: 52px; height: 52px; background: #EDE9FE; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0; }
+  .scout-launch-title { font-weight: 700; font-size: 1rem; color: var(--ink); margin-bottom: 4px; }
+  .scout-launch-desc { font-size: .875rem; color: var(--muted); line-height: 1.5; }
+
+  /* ── ROADMAP ── */
+  .roadmap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 40px 0 0; }
+  .roadmap-item { background: var(--white); border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 18px; }
+  .roadmap-item.done { border-color: #C4B5FD; background: #F5F3FF; }
+  .roadmap-status { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 100px; display: inline-block; margin-bottom: 10px; }
+  .status-live { background: #DCFCE7; color: #166534; }
+  .status-next { background: #FEF3C7; color: #92400E; }
+  .status-future { background: #F3F4F6; color: var(--muted); }
+  .roadmap-title { font-weight: 700; font-size: .875rem; color: var(--ink); margin-bottom: 4px; }
+  .roadmap-desc { font-size: .75rem; color: var(--muted); line-height: 1.4; }
+
+  /* ── SIGN-OFF ── */
+  .signoff { padding: 72px var(--rx) 80px; text-align: center; }
+  .signoff-phrase { font-family: var(--serif); font-size: clamp(2rem, 5vw, 3.2rem);
+    font-style: italic; color: var(--ink); margin-bottom: 32px; }
+  .signoff-sig { font-family: var(--serif); font-size: 1.6rem; color: var(--terra); margin-bottom: 6px; }
+  .signoff-role { font-size: .85rem; color: var(--muted); letter-spacing: .05em; margin-bottom: 40px; }
+  .signoff-cta { display: inline-flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+  .btn-primary { background: var(--terra); color: #fff; font-weight: 600; font-size: .9rem;
+    padding: 13px 26px; border-radius: 100px; text-decoration: none; transition: background .15s; }
+  .btn-primary:hover { background: var(--terra-d); }
+  .btn-ghost { border: 1.5px solid var(--terra); color: var(--terra); font-weight: 600;
+    font-size: .9rem; padding: 12px 26px; border-radius: 100px; text-decoration: none; transition: opacity .15s; }
+  .btn-ghost:hover { opacity: .75; }
+
+  /* ── FOOTER ── */
+  .footer { border-top: 1px solid var(--border); padding: 28px var(--rx);
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .footer-copy { font-size: .8rem; color: var(--muted); }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { font-size: .8rem; color: var(--muted); text-decoration: none; }
+  .footer-links a:hover { color: var(--terra); }
+
+  @media (max-width: 640px) {
+    .stats-bar { display: grid; grid-template-columns: repeat(2, 1fr); border-radius: 16px; }
+    .stat-item:nth-child(2) { border-right: none; }
+    .stat-item:nth-child(3) { border-top: 1.5px solid var(--border); }
+    .stat-item:nth-child(4) { border-top: 1.5px solid var(--border); border-right: none; }
+    .calendar-visual { grid-template-columns: 1fr; }
+    .research-visual { grid-template-columns: repeat(2, 1fr); }
+    .roadmap { grid-template-columns: 1fr; }
+    .scout-launch { flex-direction: column; text-align: center; }
+    .nav-links { display: none; }
+  }
+
 </style>
 </head>
 <body>
 
-<!-- ════════════════════════════════════════════════
-     NAV
-     ════════════════════════════════════════════════ -->
+<!-- NAV -->
 <nav class="nav" aria-label="Main navigation">
   <div class="nav-inner">
     <a href="index.html" class="logo" aria-label="FamilyForce Home">
@@ -901,8 +1205,9 @@ a { color: inherit; text-decoration: none; }
       <span>Family<span class="logo-s">Force</span></span>
     </a>
     <ul class="nav-links" role="list">
+      <li><a href="/scout-gift.html">Give as a gift 🎁</a></li>
     </ul>
-    <a href="sign-in.html" class="btn-nav">Try Free for 1 Month</a>
+    <a href="sign-in.html?intent=trial" class="btn-nav">Try Free for 1 Month</a>
     <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
       <span></span>
       <span></span>
@@ -910,549 +1215,235 @@ a { color: inherit; text-decoration: none; }
   </div>
 </nav>
 
-<!-- Mobile Menu -->
-<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
-  <div class="mobile-menu-header">
-    <a href="index.html" class="logo" style="font-size:17px">
-      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span>Family<span class="logo-s">Force</span></span>
-    </a>
-    <button class="mobile-menu-close" id="mobile-close-btn" aria-label="Close menu">✕</button>
+<!-- HERO -->
+<section class="about-hero">
+  <span class="about-eyebrow">The dad behind it</span>
+  <h1 class="about-h1">Hi. I'm Jack.<br><em>Here's my story.</em></h1>
+  <p class="about-tagline">I have two sons. Their early childhoods were very different experiences. The difference wasn't love. It wasn't effort. It was preparation.</p>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num">2</span>
+      <span class="stat-label">Sons</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">500+</span>
+      <span class="stat-label">Studies read</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">196</span>
+      <span class="stat-label">Windows mapped</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">1</span>
+      <span class="stat-label">Calendar system</span>
+    </div>
   </div>
-  <ul class="mobile-menu-links" role="list">
-  </ul>
-  <div class="mobile-menu-cta">
-    <a href="sign-in.html">Try Free for 1 Month →</a>
+
+  <!-- Audience strip: all three personas see themselves -->
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:32px">
+    <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:10px 18px;font-size:.82rem;font-weight:600;color:var(--ink)">
+      🤰 <span>Expecting a baby</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:10px 18px;font-size:.82rem;font-weight:600;color:var(--ink)">
+      🍼 <span>Baby already here</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:10px 18px;font-size:.82rem;font-weight:600;color:var(--ink)">
+      👴 <span>Grandparent or family member</span>
+    </div>
   </div>
+  <p style="font-size:.82rem;color:var(--muted);margin-top:14px">Scout works for all of you. You can start at any point.</p>
+</section>
+
+<!-- STORY -->
+<div class="story-wrap">
+
+  <!-- Section 1: First Son -->
+  <div class="story-section">
+    <span class="section-num">01</span>
+    <h2 class="section-title">First Son. <em>I winged it.</em></h2>
+    <p class="story-p">With my First Son, my wife and I had no system and no plan. Just good intentions and a habit of reacting to whatever came next. There were a lot of fires. Some we caught. Some we didn't.</p>
+    <p class="story-p">Looking back, I missed developmental windows I didn't even know existed. Not because I didn't care. Because nobody told me they were there.</p>
+    <p class="story-p">My First Son is fine. Kids are resilient. But the experience didn't have to be that hard.</p>
+
+    <div class="pull-quote">
+      <p>"The developmental windows are real. The research is solid. Most parents just don't know they're there until they've already passed."</p>
+    </div>
+  </div>
+
+  <!-- Section 2: The Research -->
+  <div class="story-section">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Before Second Son. <em>I went deep.</em></h2>
+    <p class="story-p">Before we had our second, I decided to do what I do with everything else that matters: research it. I hold an MBA. When I have a problem I want to solve, I go deep. My wife and I wanted to be more prepared this time. So we were.</p>
+    <p class="story-p">So I went deep. Clinical papers. Peer reviewed studies. Academic journals. Books. Podcasts. Parent forums. Conversations with pediatricians and other parents who had been through it.</p>
+    <p class="story-p">What I found surprised me. Early childhood development isn't mysterious. There's an enormous body of research on exactly what matters, when it matters, and what parents can actually do about it. The problem isn't a lack of information. It's the noise.</p>
+    <p class="story-p">So I did what the MBA trains you to do: strip it down to what the evidence actually supports. I identified the key developmental windows, the moments when a specific kind of engagement has an outsized effect, and I built a system around them.</p>
+
+    <!-- Research visual -->
+    <div class="research-visual">
+      <div class="research-card">
+        <div class="research-card-icon">📄</div>
+        <div class="research-card-count">500+</div>
+        <div class="research-card-label">Studies reviewed</div>
+        <div class="research-card-sub">Clinical papers, peer reviewed research, academic journals</div>
+      </div>
+      <div class="research-card">
+        <div class="research-card-icon">📚</div>
+        <div class="research-card-count">40+</div>
+        <div class="research-card-label">Books read</div>
+        <div class="research-card-sub">Child development, pediatric guidelines, parenting research</div>
+      </div>
+      <div class="research-card">
+        <div class="research-card-icon">🎙️</div>
+        <div class="research-card-count">100+</div>
+        <div class="research-card-label">Hours of podcasts</div>
+        <div class="research-card-sub">Expert interviews, pediatrician discussions, parent forums</div>
+      </div>
+      <div class="research-card">
+        <div class="research-card-icon">🧹</div>
+        <div class="research-card-count">196</div>
+        <div class="research-card-label">Windows identified</div>
+        <div class="research-card-sub">After removing noise and conflicting advice</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Second Son — the calendar -->
+  <div class="story-section">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Second Son. <em>We had a system.</em></h2>
+    <p class="story-p">I put everything into a calendar. Every important milestone, every window, every prompt. I shared it with my wife. We had reminders ready before the moment arrived, not after.</p>
+    <p class="story-p">It wasn't perfect. Parenting never is. But the experience was fundamentally different. Calmer. More intentional. Less "I wish I'd known that six months ago."</p>
+
+    <!-- Before / After calendar -->
+    <div class="calendar-visual">
+      <!-- Before: First Son, no system -->
+      <div class="cal-card">
+        <div class="cal-header">
+          <span class="cal-header-title">Month 7 — First Son</span>
+          <span class="cal-label cal-label-before">No system</span>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-day-name">Mo</div><div class="cal-day-name">Tu</div><div class="cal-day-name">We</div>
+          <div class="cal-day-name">Th</div><div class="cal-day-name">Fr</div><div class="cal-day-name">Sa</div>
+          <div class="cal-day-name">Su</div>
+          <div class="cal-cell empty"></div><div class="cal-cell">1</div><div class="cal-cell">2</div>
+          <div class="cal-cell">3</div><div class="cal-cell">4</div><div class="cal-cell">5</div><div class="cal-cell">6</div>
+          <div class="cal-cell">7</div><div class="cal-cell">8</div><div class="cal-cell today">9</div>
+          <div class="cal-cell">10</div><div class="cal-cell">11</div><div class="cal-cell">12</div><div class="cal-cell">13</div>
+          <div class="cal-cell">14</div><div class="cal-cell">15</div><div class="cal-cell">16</div>
+          <div class="cal-cell">17</div><div class="cal-cell">18</div><div class="cal-cell">19</div><div class="cal-cell">20</div>
+          <div class="cal-cell">21</div><div class="cal-cell">22</div><div class="cal-cell">23</div>
+          <div class="cal-cell">24</div><div class="cal-cell">25</div><div class="cal-cell">26</div><div class="cal-cell">27</div>
+          <div class="cal-cell">28</div><div class="cal-cell">29</div><div class="cal-cell">30</div>
+          <div class="cal-cell">31</div><div class="cal-cell empty"></div><div class="cal-cell empty"></div>
+        </div>
+        <div class="cal-empty-msg">No milestones tracked. No reminders set.</div>
+      </div>
+
+      <!-- After: Second Son, Scout system -->
+      <div class="cal-card">
+        <div class="cal-header">
+          <span class="cal-header-title">Month 7 — Second Son</span>
+          <span class="cal-label cal-label-after">Scout system</span>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-day-name">Mo</div><div class="cal-day-name">Tu</div><div class="cal-day-name">We</div>
+          <div class="cal-day-name">Th</div><div class="cal-day-name">Fr</div><div class="cal-day-name">Sa</div>
+          <div class="cal-day-name">Su</div>
+          <div class="cal-cell empty"></div><div class="cal-cell event ev-purple">1</div><div class="cal-cell">2</div>
+          <div class="cal-cell">3</div><div class="cal-cell">4</div><div class="cal-cell">5</div><div class="cal-cell">6</div>
+          <div class="cal-cell">7</div><div class="cal-cell">8</div><div class="cal-cell today">9</div>
+          <div class="cal-cell">10</div><div class="cal-cell event ev-amber">11</div><div class="cal-cell">12</div><div class="cal-cell">13</div>
+          <div class="cal-cell event ev-purple">14</div><div class="cal-cell">15</div><div class="cal-cell">16</div>
+          <div class="cal-cell">17</div><div class="cal-cell">18</div><div class="cal-cell event ev-green">19</div><div class="cal-cell">20</div>
+          <div class="cal-cell">21</div><div class="cal-cell">22</div><div class="cal-cell">23</div>
+          <div class="cal-cell event ev-amber">24</div><div class="cal-cell">25</div><div class="cal-cell">26</div><div class="cal-cell">27</div>
+          <div class="cal-cell">28</div><div class="cal-cell event ev-purple">29</div><div class="cal-cell">30</div>
+          <div class="cal-cell">31</div><div class="cal-cell empty"></div><div class="cal-cell empty"></div>
+        </div>
+        <div class="cal-event-list">
+          <div class="cal-event-row">
+            <div class="cal-event-dot" style="background:var(--terra)"></div>
+            <div class="cal-event-text"><strong>Peanut introduction window</strong> — open until month 11</div>
+          </div>
+          <div class="cal-event-row">
+            <div class="cal-event-dot" style="background:var(--amber)"></div>
+            <div class="cal-event-text"><strong>Babbling + back-and-forth</strong> — closing in 3 weeks</div>
+          </div>
+          <div class="cal-event-row">
+            <div class="cal-event-dot" style="background:var(--green)"></div>
+            <div class="cal-event-text"><strong>9-month developmental review</strong> — schedule now</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="cal-caption">The same month. One calendar had nothing. The other had a system.</p>
+  </div>
+
+  <!-- Section 4: What happened next -->
+  <div class="story-section">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Then friends started asking.</h2>
+    <p class="story-p">I shared the calendar with a few friends who were expecting. They wanted it. I shared it with more people. More people started asking.</p>
+    <p class="story-p">That's when I realised: the research exists. The windows are real. But there's no good tool that puts it all together, personalises it to your child's exact age, and delivers it at the right moment, before the window closes.</p>
+    <p class="story-p">So I built one.</p>
+
+    <div class="scout-launch">
+      <div class="scout-launch-icon">🔭</div>
+      <div>
+        <div class="scout-launch-title">Introducing Scout</div>
+        <div class="scout-launch-desc">A monthly digest, personalised to your child's age, delivered as an email and a calendar invite. It tells you what matters right now, what you can do about it, and how long you have. Nothing more.</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:14px">
+          <span style="font-size:.78rem;color:var(--terra);font-weight:600">🤰 Covers the pre-birth period too</span>
+          <span style="font-size:.78rem;color:var(--terra);font-weight:600">👴 Grandparents can join the Family Circle</span>
+          <span style="font-size:.78rem;color:var(--terra);font-weight:600">🍼 Start at any age, up to 3 years</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <!-- Section 5: What's next -->
+  <div class="story-section">
+    <span class="section-num">05</span>
+    <h2 class="section-title">We're just <em>getting started.</em></h2>
+    <p class="story-p">The premise is simple. But if you have a child under three, I think you'll find it genuinely useful. I built it because I needed it. Other parents wanted it. That's usually how the right products start.</p>
+    <p class="story-p">The roadmap is long. But the foundation is solid, the research is real, and the goal is clear: help parents stay on track during the years that matter most.</p>
+
+    <div class="roadmap">
+      <div class="roadmap-item done">
+        <span class="roadmap-status status-live">Live now</span>
+        <div class="roadmap-title">Scout — Birth to Age 3</div>
+        <div class="roadmap-desc">196 developmental windows. Monthly email digest. Calendar invites. Family sharing.</div>
+      </div>
+      <div class="roadmap-item">
+        <span class="roadmap-status status-next">Coming next</span>
+        <div class="roadmap-title">Extended age range</div>
+        <div class="roadmap-desc">Windows from age 3 to 6. School readiness, social development, early learning.</div>
+      </div>
+      <div class="roadmap-item">
+        <span class="roadmap-status status-future">On the roadmap</span>
+        <div class="roadmap-title">Mobile app</div>
+        <div class="roadmap-desc">Faster access, push notifications, and deeper progress tracking on the go.</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
-<!-- ════════════════════════════════════════════════
-     HERO — Widget front and centre
-     ════════════════════════════════════════════════ -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-kicker">
-      <div class="hero-kicker-dot"></div>
-      FamilyForce Scout
-    </div>
-
-    <h1 class="hero-h1" data-reveal>
-      Every month, Scout tells you exactly<br>what your child needs —<br>and puts it <em>in your calendar.</em>
-    </h1>
-
-    <p class="hero-sub" data-reveal data-d="1">
-      The first three years are full of time sensitive developmental windows. Some are open for months. Others close in weeks. Scout makes sure you never find out too late.
-    </p>
-
-    <!-- THE WIDGET -->
-    <div class="hero-widget-wrap" data-reveal data-d="2">
-      <div class="w-header">
-        <div class="w-eyebrow">
-          <svg width="10" height="11" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#A78BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Live milestone preview
-        </div>
-        <div class="w-title">What's open <em>for your child right now</em></div>
-      </div>
-
-      <div class="w-personas">
-        <div class="w-persona" id="p0" onclick="selectPersona(0)">
-          <span class="w-persona-icon">🤱</span>
-          <span class="w-persona-label">Expecting</span>
-          <span class="w-persona-sub">~8 weeks out</span>
-        </div>
-        <div class="w-persona" id="p1" onclick="selectPersona(1)">
-          <span class="w-persona-icon">👶</span>
-          <span class="w-persona-label">5 months old</span>
-          <span class="w-persona-sub">22 weeks</span>
-        </div>
-        <div class="w-persona" id="p2" onclick="selectPersona(2)">
-          <span class="w-persona-icon">🧒</span>
-          <span class="w-persona-label">1 year old</span>
-          <span class="w-persona-sub">52 weeks</span>
-        </div>
-      </div>
-
-      <div class="w-divider"></div>
-
-      <div class="w-stage-row">
-        <div class="w-stage-pill"><div class="w-stage-dot"></div><span id="w-stage"></span></div>
-        <div class="w-stage-desc" id="w-stage-desc"></div>
-      </div>
-
-      <div class="w-windows" id="w-windows"></div>
-
-      <div class="w-cta">
-        <a href="sign-in.html" class="w-cta-btn">Get my full personalised digest →</a>
-        <div class="w-cta-note">1 month free · no card required · cancel anytime</div>
-      </div>
-    </div>
-
-    <div class="hero-trust" data-reveal data-d="3">
-      <div class="hero-trust-item">
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        197 milestones tracked
-      </div>
-      <div class="hero-trust-dot"></div>
-      <div class="hero-trust-item">
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        AAP · CDC · WHO sourced
-      </div>
-      <div class="hero-trust-dot"></div>
-      <div class="hero-trust-item">
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Whole family included
-      </div>
-    </div>
+<!-- SIGN-OFF -->
+<section class="signoff">
+  <p class="signoff-phrase">"Stay on track."</p>
+  <p class="signoff-sig">Jack Hartley</p>
+  <p class="signoff-role">Founder, FamilyForce · MBA · Dad of two</p>
+  <div class="signoff-cta">
+    <a href="/sign-in.html?intent=trial" class="btn-primary">Start your free trial →</a>
   </div>
 </section>
 
-<!-- HOW SCOUT WORKS -->
-<section class="how" id="how" aria-labelledby="how-h2">
-  <div class="how-inner">
-    <div class="how-header" data-reveal>
-      <span class="section-label">How Scout works</span>
-      <h2 class="section-title" id="how-h2">One email. One calendar invite. <em>Every month.</em></h2>
-      <p class="section-sub">Scout does the tracking for you. You just show up for your child.</p>
-    </div>
-    <div class="steps-grid">
-      <div class="step-card" data-reveal>
-        <div class="step-num">1</div>
-        <span class="step-icon">👶</span>
-        <div class="step-title">Add your child</div>
-        <p class="step-body">Enter your child's date of birth (or due date — Scout covers expecting parents too). Takes 30 seconds.</p>
-      </div>
-      <div class="step-card" data-reveal data-d="1">
-        <div class="step-num">2</div>
-        <span class="step-icon">🗺️</span>
-        <div class="step-title">Scout maps your windows</div>
-        <p class="step-body">Scout cross references 196 clinical windows against your child's exact age and surfaces what's open, closing, and coming up.</p>
-      </div>
-      <div class="step-card" data-reveal data-d="2">
-        <div class="step-num">3</div>
-        <span class="step-icon">📬</span>
-        <div class="step-title">Monthly email + calendar invite</div>
-        <p class="step-body">Each month you get a clear email summary and a calendar reminder — ready to add to Google Calendar, Apple Calendar, or any calendar app.</p>
-      </div>
-      <div class="step-card" data-reveal data-d="3">
-        <div class="step-num">4</div>
-        <span class="step-icon">✅</span>
-        <div class="step-title">Track and personalize</div>
-        <p class="step-body">Mark what you've done in the dashboard. Your next email gets smarter — flagging gaps and adjusting to your child's actual progress.</p>
-      </div>
-    </div>
-    <div class="device-row" data-reveal>
-      <div class="device-card">
-        <div class="device-label">
-          <span class="device-label-icon">📧</span>
-          <span class="device-label-text">Monthly email</span>
-        </div>
-        <div class="mini-email-header">
-          <div class="mini-avatar">FF</div>
-          <div>
-            <div class="mini-from">FamilyForce Scout</div>
-            <div class="mini-date">April 1, 2026</div>
-          </div>
-        </div>
-        <div class="mini-subject">Emma's April windows (7 months)</div>
-        <div class="mini-body">3 windows open this month. 1 closing in 12 days — action needed.</div>
-        <div class="mini-window-row urgent"><span class="mini-window-icon">⚠️</span> Peanut introduction — closes Apr 12</div>
-        <div class="mini-window-row open"><span class="mini-window-icon">🌱</span> First solid foods — open all month</div>
-        <div class="mini-window-row open"><span class="mini-window-icon">💬</span> Babbling response — open this month</div>
-        <button class="mini-cal-btn">📅 Add to my calendar</button>
-      </div>
-      <div class="device-card">
-        <div class="device-label">
-          <span class="device-label-icon">📅</span>
-          <span class="device-label-text">Calendar invite (any app)</span>
-        </div>
-        <div class="mini-cal-header">
-          <div class="mini-cal-month">April 2026</div>
-          <div class="mini-cal-day">8</div>
-          <div class="mini-cal-event">⚠️ Peanut intro window closes — Emma</div>
-        </div>
-        <div class="mini-cal-list">
-          <div class="mini-cal-item">
-            <div class="mini-cal-dot gold"></div>
-            <div>
-              <div class="mini-cal-title">Peanut introduction window</div>
-              <div class="mini-cal-time">Closes April 12 · All family reminded</div>
-            </div>
-          </div>
-          <div class="mini-cal-item">
-            <div class="mini-cal-dot purple"></div>
-            <div>
-              <div class="mini-cal-title">First solid foods — start this month</div>
-              <div class="mini-cal-time">Open through May 15</div>
-            </div>
-          </div>
-        </div>
-        <div class="cal-badges">
-          <div class="cal-badge">📱 Google</div>
-          <div class="cal-badge">🍎 Apple</div>
-          <div class="cal-badge">📋 Outlook</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════
-     COMPARISON — The "smart parents use all four" section
-     ════════════════════════════════════════════════ -->
-<section class="comparison">
-  <div class="comparison-intro" data-reveal>
-    <span class="section-label">Why Scout</span>
-    <h2 class="comparison-title">Most great parents<br>use <em>all four of these.</em></h2>
-    <p class="comparison-sub">Your family, your doctor, your parenting books, your own good instincts. None of that goes away. Scout is the layer that ties it all together, specifically for your child's age, right now.</p>
-  </div>
-
-  <div class="comp-grid">
-
-    <!-- Option 1: Family, Friends & Your Gut (moved to first) -->
-    <div class="comp-card alt" data-reveal data-d="1">
-      <div class="comp-head">
-        <span class="comp-option-icon">🫂</span>
-        <div class="comp-badge">Where everyone starts</div>
-        <div class="comp-option">Family, Friends & Your Gut</div>
-        <div class="comp-cost">
-          <strong>Free, always</strong>
-          and genuinely underrated
-        </div>
-      </div>
-      <div class="comp-pain">
-        Your instincts are real. So is the advice from your mom, your neighbour, and the parent group chat. Collectively, this is still the most used parenting resource on the planet.
-      </div>
-      <div class="comp-footer">
-        <div class="comp-footer-line">Trust your people.</div>
-      </div>
-    </div>
-
-    <!-- Option 2: Doctor visits -->
-    <div class="comp-card alt" data-reveal data-d="2">
-      <div class="comp-head">
-        <span class="comp-option-icon">🩺</span>
-        <div class="comp-badge">Essential</div>
-        <div class="comp-option">Your Pediatrician</div>
-        <div class="comp-cost">
-          <strong>Irreplaceable</strong>
-          keep every appointment
-        </div>
-      </div>
-      <div class="comp-pain">
-        The gold standard. They catch things nobody else will. But they have 15 minutes, a few times a year, with zero visibility into what's happening between visits.
-      </div>
-      <div class="comp-footer">
-        <div class="comp-footer-line">Keep every appointment.</div>
-      </div>
-    </div>
-
-    <!-- Option 3: Parenting books -->
-    <div class="comp-card alt" data-reveal data-d="3">
-      <div class="comp-head">
-        <span class="comp-option-icon">📚</span>
-        <div class="comp-badge">Great foundation</div>
-        <div class="comp-option">Parenting Books</div>
-        <div class="comp-cost">
-          <strong>Worth every page</strong>
-          the big picture, beautifully written
-        </div>
-      </div>
-      <div class="comp-pain">
-        Deep, thoughtful, genuinely useful. Just doesn't know that your kid turned 14 weeks yesterday and the peanut window opened last Tuesday.
-      </div>
-      <div class="comp-footer">
-        <div class="comp-footer-line">Read them all.</div>
-      </div>
-    </div>
-
-    <!-- Option 4: Scout -->
-    <div class="comp-card scout" data-reveal data-d="4">
-      <div class="comp-head">
-        <span class="comp-option-icon">🌱</span>
-        <div class="comp-badge">The missing layer</div>
-        <div class="comp-option" style="color:#fff">FamilyForce Scout</div>
-        <div class="comp-cost" style="color:rgba(255,255,255,.6)">
-          <strong style="color:#fff">$6.67/mo</strong>
-          billed $79.99/year · 1 month free
-        </div>
-      </div>
-      <div class="comp-pain" style="color:rgba(255,255,255,.65)">
-        Everything you're already doing, with a layer that knows your child's exact age, tracks the open windows, and tells you what matters this month. Not in general. Right now.
-      </div>
-      <div class="comp-footer" style="border-top:1px solid rgba(255,255,255,.1)">
-        <a href="sign-in.html" style="display:block;text-align:center;background:#fff;color:var(--terra-dark);font-weight:700;font-size:13px;padding:12px;border-radius:100px;text-decoration:none;transition:transform .15s">Start Free for 1 Month →</a>
-      </div>
-    </div>
-
-  </div><!-- /comp-grid -->
-</section>
-
-<!-- WHAT PARENTS SAY -->
-<section class="testimonials" aria-labelledby="testi-heading">
-  <div class="testimonials-inner">
-    <span class="testimonials-eyebrow" id="testi-heading">What parents say</span>
-    <div class="testimonials-grid">
-      <div class="testi-card" data-reveal>
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"I had no idea the <strong>peanut introduction window</strong> was even a thing. Scout flagged it at 4 months and we acted in time. Our pediatrician said we did exactly the right thing."</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:#EDE9FE">👩</div>
-          <div>
-            <div class="testi-name">Sarah M.</div>
-            <div class="testi-meta">Mom of Emma, 7 months · Hong Kong</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card" data-reveal data-d="1">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"I'm a planner. Scout was the first thing I set up after the 12-week scan. <strong>Knowing what's coming makes me feel in control</strong> — not overwhelmed. My husband is on it too."</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:#FCE7F3">🤰</div>
-          <div>
-            <div class="testi-name">Priya K.</div>
-            <div class="testi-meta">Expecting, 28 weeks · Singapore</div>
-          </div>
-        </div>
-      </div>
-      <div class="testi-card" data-reveal data-d="2">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">"We're both working full time with a 10 month old. <strong>The calendar invite is the killer feature</strong> — it's already in my schedule before I even think about it. Nothing falls through the cracks."</p>
-        <div class="testi-author">
-          <div class="testi-avatar" style="background:#DBEAFE">👨</div>
-          <div>
-            <div class="testi-name">David &amp; Rachel T.</div>
-            <div class="testi-meta">Parents of Liam, 10 months · London</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PERFECT GIFT -->
-<section class="gift-section" aria-labelledby="gift-h2">
-  <div class="gift-inner">
-    <div data-reveal>
-      <span class="gift-eyebrow">Perfect gift</span>
-      <h2 class="gift-h2" id="gift-h2">The best baby shower gift<br>isn't a onesie. <em>It's a year of Scout.</em></h2>
-      <p class="gift-body">New parents don't need more stuff. They need someone to tell them what matters, when it matters — so they can focus on what only they can do: show up for their child.</p>
-      <div class="gift-cards">
-        <div class="gift-card">
-          <div class="gift-card-icon">🤰</div>
-          <div>
-            <div class="gift-card-title">Expecting parents</div>
-            <div class="gift-card-desc">Scout covers the pre birth period too — with prep windows before baby arrives and a full year of reminders from day one.</div>
-          </div>
-        </div>
-        <div class="gift-card">
-          <div class="gift-card-icon">🎁</div>
-          <div>
-            <div class="gift-card-title">Baby shower gift</div>
-            <div class="gift-card-desc">Give a year of Scout — something that stays useful long after the onesies are outgrown and the bibs have been donated.</div>
-          </div>
-        </div>
-        <div class="gift-card">
-          <div class="gift-card-icon">👨‍👩‍👧‍👦</div>
-          <div>
-            <div class="gift-card-title">For the busy family</div>
-            <div class="gift-card-desc">Working parents, single parents, grandparents — Scout is built for people who can't afford to miss a thing but barely have time to breathe.</div>
-          </div>
-        </div>
-      </div>
-      <div class="gift-ctas">
-        <a href="/scout-signup.html" class="btn-primary">Start your free trial →</a>
-        <a href="/scout-gift.html" class="btn-ghost-v">Give as a gift →</a>
-      </div>
-    </div>
-    <div data-reveal data-d="1">
-      <div class="gift-visual">
-        <div class="gift-tag-pill">🎁 Baby shower gift</div>
-        <div class="gift-amount">$79.99</div>
-        <div class="gift-amount-sub">Full year of Scout · One time gift</div>
-        <div class="gift-perks">
-          <div class="gift-perk"><span class="gift-perk-check">✓</span> 138 reminders in year 1</div>
-          <div class="gift-perk"><span class="gift-perk-check">✓</span> Email + calendar invite every month</div>
-          <div class="gift-perk"><span class="gift-perk-check">✓</span> Share with up to 5 family members</div>
-          <div class="gift-perk"><span class="gift-perk-check">✓</span> Access to all 5 free playbooks</div>
-          <div class="gift-perk"><span class="gift-perk-check">✓</span> Pre birth prep windows included</div>
-        </div>
-        <a href="/scout-gift.html" class="gift-btn">Give Scout as a gift →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- THE DAD BEHIND IT -->
-<section class="about-jack" aria-labelledby="about-jack-h2">
-  <div class="about-jack-inner">
-
-    <!-- Course mockup -->
-    <div data-reveal>
-      <div class="course-mockup">
-        <div class="course-browser">
-          <div class="course-chrome">
-            <div class="course-chrome-dot" style="background:#FF605C"></div>
-            <div class="course-chrome-dot" style="background:#FFBD44;margin-left:4px"></div>
-            <div class="course-chrome-dot" style="background:#00CA4E;margin-left:4px"></div>
-            <div class="course-url">getfamilyforce.com/course</div>
-          </div>
-          <div class="course-body">
-            <div class="course-progress-row">
-              <span class="course-chapter-label">Chapter 6 of 13</span>
-              <span class="course-pct">46% complete</span>
-            </div>
-            <div class="course-prog-bar"><div class="course-prog-fill"></div></div>
-            <div class="course-steps">
-              <div class="course-step done">✓</div>
-              <div class="course-step done">✓</div>
-              <div class="course-step done">✓</div>
-              <div class="course-step done">✓</div>
-              <div class="course-step done">✓</div>
-              <div class="course-step current">6</div>
-              <div class="course-step locked">🌙</div>
-              <div class="course-step locked">🍼</div>
-              <div class="course-step locked">🛏️</div>
-              <div class="course-step locked">📊</div>
-              <div class="course-step locked">👁️</div>
-              <div class="course-step locked">🏁</div>
-              <div class="course-step locked">🎓</div>
-            </div>
-            <div class="course-card">
-              <div class="course-card-chapter">Chapter 6 · 🌙 Game Night</div>
-              <div class="course-card-quote">"Night one. Bath at 6:40. Books. 'I love you, it's time to sleep.' Put him in the crib. He looked at me. I walked out and closed the door."</div>
-              <div class="course-science-label">The Science</div>
-              <div class="course-science-text">Over 80% of children show significant improvement within the first week. Night two being harder is the documented low point — strongest predictor that night three drops sharply.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Text -->
-    <div data-reveal data-d="1">
-      <span class="about-jack-eyebrow">The dad behind it</span>
-      <h2 class="about-jack-h2" id="about-jack-h2">He got it wrong the first time.<br>Then he did the reading.</h2>
-      <p class="about-jack-body">Jack Hartley is a father of two boys and holds an MBA. His first son was the experiment. His second son was what happened after Jack immersed himself in the research: clinical studies, academic journals, pediatric guidelines, books, podcasts, and more late night conversations with other parents than he can count. He cross referenced the conflicting advice, cut through the noise, and figured out what actually holds up.</p>
-      <p class="about-jack-body">He wrote the playbooks he wished he'd had. Short enough to finish. Specific enough to act on. Every claim cited so you and your partner can check his work.</p>
-      <div class="about-jack-creds">
-        <div class="about-jack-cred"><span class="about-jack-cred-check">⊙</span> MBA</div>
-        <div class="about-jack-cred"><span class="about-jack-cred-check">⊙</span> 500+ peer reviewed studies</div>
-        <div class="about-jack-cred"><span class="about-jack-cred-check">⊙</span> Father of two</div>
-        <div class="about-jack-cred"><span class="about-jack-cred-check">⊙</span> All citations verifiable</div>
-      </div>
-      <div class="sons-table">
-        <div class="sons-header">
-          <span class="sons-header-label">First Son</span>
-          <span></span>
-          <span class="sons-header-label right">Second Son</span>
-        </div>
-        <div class="sons-rows">
-          <div class="sons-row">
-            <span class="sons-cell bad">"Good luck buddy"</span>
-            <span class="sons-arrow">→</span>
-            <span class="sons-cell good">"Here's the plan"</span>
-          </div>
-          <div class="sons-row">
-            <span class="sons-cell bad">Months of trial and error</span>
-            <span class="sons-arrow">→</span>
-            <span class="sons-cell good">Done in a long weekend</span>
-          </div>
-          <div class="sons-row">
-            <span class="sons-cell bad">Googling at 2am</span>
-            <span class="sons-arrow">→</span>
-            <span class="sons-cell good">Sleeping at 2am</span>
-          </div>
-          <div class="sons-row">
-            <span class="sons-cell bad">"We'll figure it out"</span>
-            <span class="sons-arrow">→</span>
-            <span class="sons-cell good">Certificate on the fridge</span>
-          </div>
-          <div class="sons-row">
-            <span class="sons-cell bad">Experiment. Survived. Has the stories.</span>
-            <span class="sons-arrow">→</span>
-            <span class="sons-cell good">Got the prepared version. Doing suspiciously well.</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FREE LIBRARY -->
-<section class="library-section" aria-labelledby="library-h2">
-  <div class="library-inner">
-    <div data-reveal>
-      <span class="library-eyebrow">Free library</span>
-      <h2 class="library-h2" id="library-h2">Start with the free books.<br><em>No strings attached.</em></h2>
-      <p class="library-sub">Every FamilyForce playbook is free. Each one is under an hour, research backed, and written by Jack — plain English, no fluff. Complete a playbook and earn a certificate.</p>
-    </div>
-    <div class="library-grid">
-      <div class="lib-card" data-reveal>
-        <span class="lib-card-emoji">💤</span>
-        <div class="lib-card-title">Sleep Training</div>
-        <div class="lib-card-meta">0–12 months · 45 min read</div>
-        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
-      </div>
-      <div class="lib-card" data-reveal data-d="1">
-        <span class="lib-card-emoji">🚽</span>
-        <div class="lib-card-title">Potty Training</div>
-        <div class="lib-card-meta">18–36 months · 40 min read</div>
-        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
-      </div>
-      <div class="lib-card" data-reveal data-d="2">
-        <span class="lib-card-emoji">⚡</span>
-        <div class="lib-card-title">Tantrums</div>
-        <div class="lib-card-meta">12–36 months · 35 min read</div>
-        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
-      </div>
-      <div class="lib-card" data-reveal data-d="3">
-        <span class="lib-card-emoji">🥦</span>
-        <div class="lib-card-title">Feeding</div>
-        <div class="lib-card-meta">4–24 months · 40 min read</div>
-        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
-      </div>
-      <div class="lib-card" data-reveal>
-        <span class="lib-card-emoji">📱</span>
-        <div class="lib-card-title">Screen Time</div>
-        <div class="lib-card-meta">0–36 months · 35 min read</div>
-        <a href="/scout-dashboard/library.html" class="lib-card-btn">Read free →</a>
-      </div>
-    </div>
-    <p class="library-note" data-reveal><strong>All 5 playbooks are free.</strong> Always. Scout is the subscription — the books are our gift to you.</p>
-  </div>
-</section>
-
-<!-- GET STARTED -->
-<section class="final">
-  <div class="final-inner">
-    <h2 class="final-h2" data-reveal>
-      The window is<br><em>open right now.</em>
-    </h2>
-    <p class="final-sub" data-reveal data-d="1">First month free. No card required. Add your child and get your first digest in under 60 seconds.</p>
-    <a href="/scout-signup.html" class="final-btn" data-reveal data-d="2">Try Scout Free for a Month</a>
-    <p class="final-note">$79.99/year after your free trial. That's $6.67/month. Cancel anytime.</p>
-    <div class="final-trust" data-reveal data-d="3">
-      <div class="final-trust-item">
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        No card required
-      </div>
-      <div class="hero-trust-dot" style="background:rgba(255,255,255,.2)"></div>
-      <div class="final-trust-item">
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Cancel anytime
-      </div>
-      <div class="hero-trust-dot" style="background:rgba(255,255,255,.2)"></div>
-      <div class="final-trust-item">
-        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Whole family included
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════
-     FOOTER
-     ════════════════════════════════════════════════ -->
+<!-- FOOTER -->
 <footer style="background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px))">
   <div style="max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
     <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none" aria-label="FamilyForce home">
@@ -1470,105 +1461,6 @@ a { color: inherit; text-decoration: none; }
     <span style="font-size:12px;color:rgba(255,255,255,.25)">© 2026 FamilyForce. All rights reserved.</span>
   </div>
 </footer>
-
-<!-- ════════════════════════════════════════════════
-     WIDGET JS
-     ════════════════════════════════════════════════ -->
-<script>
-const PERSONAS = [
-  {
-    stage: 'Expecting',
-    stageDesc: '~8 weeks to go',
-    windows: [
-      { status:'urgent', icon:'🏥', tag:'Do this now',   title:'Choose your pediatrician',        desc:'Book your meet the doctor appointment before the baby arrives. Most practices book out 4 to 6 weeks.',                       badge:'Due now' },
-      { status:'urgent', icon:'🚗', tag:'Do this now',   title:'Install the car seat',             desc:'Must be installed and inspected before discharge. 72% of seats are installed incorrectly. Get it checked.',              badge:'Due now' },
-      { status:'open',   icon:'🧠', tag:'Window open',   title:'Infant CPR class',                 desc:'One session. Most hospitals run them monthly. You\'ll never regret knowing this.',                                        badge:'Book now' },
-      { status:'open',   icon:'📋', tag:'Coming soon',   title:'Newborn screening tests',          desc:'PKU, hearing, cardiac, done at the hospital within 24 to 48 hours of birth.',                                              badge:'At birth' },
-      { status:'open',   icon:'🛏️', tag:'Do before birth', title:'Safe sleep setup',                  desc:'Firm surface, no loose bedding, room sharing (not bed sharing). Set it up now. You won\'t have bandwidth after.',      badge:'Before birth' },
-      { status:'open',   icon:'🤱', tag:'Book now',       title:'Lactation consultant',              desc:'Line one up before delivery. Feeding issues are far easier to prevent than fix at 3am with a screaming newborn.',       badge:'Book now' },
-    ]
-  },
-  {
-    stage: 'Infant stage',
-    stageDesc: '5 months old · 22 weeks',
-    windows: [
-      { status:'urgent', icon:'🥜', tag:'⚠ Act this month', title:'Peanut window open now',          desc:'Ideal: 4 to 6 months. This is your moment. One spoonful of peanut butter puree could prevent a lifelong allergy.',          badge:'Closing soon' },
-      { status:'open',   icon:'😴', tag:'Opens in 4 weeks',  title:'Sleep training window approaching', desc:'6 to 9 months is fastest and lowest stress. Start building a consistent bedtime routine right now.',                        badge:'Coming fast' },
-      { status:'open',   icon:'🦷', tag:'Due this month',    title:'First dental visit',                desc:'AAP recommends the first visit by 12 months. Paediatric dentists book out. Schedule ahead.',                          badge:'Book ahead' },
-      { status:'open',   icon:'👁️', tag:'Due at 6 months',   title:'6 month vision check',              desc:'Strabismus and amblyopia are most treatable when caught early. Ask at your 6 month well child visit.',                 badge:'Next visit' },
-      { status:'coming', icon:'💬', tag:'Coming up',         title:'Speech milestones',                 desc:'5+ words at 12 months, 10 by 15 months. Start counting now. Earlier detection changes outcomes.',                    badge:'At 12 months' },
-      { status:'urgent', icon:'🥣', tag:'⚠ Window open now',  title:'Start solids, don\'t wait',        desc:'The 4 to 6 month window is ideal. Waiting past 6 months increases texture aversion and iron deficiency risk.',             badge:'This month' },
-    ]
-  },
-  {
-    stage: 'Toddler stage',
-    stageDesc: '1 year old · 52 weeks',
-    windows: [
-      { status:'urgent', icon:'💬', tag:'⚠ Watch now',       title:'Speech window',                    desc:'10 to 25 words by 18 months. You\'re 6 months away. If you\'re not hearing new words weekly, flag it now.',              badge:'6 months left' },
-      { status:'urgent', icon:'🦷', tag:'⚠ Overdue',         title:'First dental visit',               desc:'AAP recommends by 12 months. If not done, book this week. Early cavities affect adult teeth.',                       badge:'Book now' },
-      { status:'open',   icon:'🚽', tag:'Window opening',     title:'Potty training readiness signs',   desc:'Signs begin at 18 to 24 months. The earlier you know what to look for, the smoother the process.',                       badge:'In 6 months' },
-      { status:'open',   icon:'📚', tag:'Critical window',    title:'Read every day',                   desc:'Vocabulary at age 3 predicts reading ability at age 8. 15 minutes a day. The highest ROI parenting habit.',          badge:'Every day' },
-      { status:'open',   icon:'🍽️', tag:'Watch now',          title:'Food texture progression',         desc:'Toddlers should be on family foods by 12 months. Purees past 12 months can cause lasting texture aversion.',          badge:'Act now' },
-      { status:'closed', icon:'😴', tag:'✗ Window closed',    title:'Sleep training optimal window',    desc:'Easiest window was 6 to 9 months. Still possible now, just harder. Scout has a protocol for this age.',                  badge:'Closed at 9mo' },
-    ]
-  }
-];
-
-let current = 0;
-
-function selectPersona(i) {
-  current = i;
-  document.querySelectorAll('.w-persona').forEach((el, idx) => el.classList.toggle('active', idx === i));
-  render();
-}
-
-function render() {
-  const p = PERSONAS[current];
-  document.getElementById('w-stage').textContent      = p.stage;
-  document.getElementById('w-stage-desc').textContent = p.stageDesc;
-  const list = document.getElementById('w-windows');
-  list.innerHTML = '';
-  p.windows.forEach(w => {
-    const el = document.createElement('div');
-    el.className = 'w-row ' + w.status;
-    el.innerHTML =
-      '<div class="w-row-icon">' + w.icon + '</div>' +
-      '<div class="w-row-body">' +
-        '<div class="w-row-tag">' + w.tag + '</div>' +
-        '<div class="w-row-title">' + w.title + '</div>' +
-        '<div class="w-row-desc">' + w.desc + '</div>' +
-      '</div>' +
-      '<div class="w-row-badge">' + w.badge + '</div>';
-    list.appendChild(el);
-  });
-}
-
-// Reveal on scroll
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-}, { threshold: 0.1 });
-document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
-
-// Init widget
-selectPersona(0);
-
-// Mobile menu
-const hamburger = document.getElementById('hamburger-btn');
-const mobileMenu = document.getElementById('mobile-menu');
-const mobileClose = document.getElementById('mobile-close-btn');
-if (hamburger && mobileMenu) {
-  hamburger.addEventListener('click', () => {
-    mobileMenu.classList.add('open');
-    hamburger.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-  });
-  mobileClose.addEventListener('click', () => {
-    mobileMenu.classList.remove('open');
-    hamburger.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  });
-}
-</script>
 
 </body>
 </html>
