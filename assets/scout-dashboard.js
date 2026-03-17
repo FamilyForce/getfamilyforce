@@ -23,9 +23,29 @@
   window.ScoutDash = {
     /* Call on every page DOMContentLoaded */
     init: function (pageName, onReady) {
+      if (!window.supabase) {
+        console.error('[ScoutDash] Supabase JS not loaded — retrying in 500ms')
+        setTimeout(function () { ScoutDash.init(pageName, onReady) }, 500)
+        return
+      }
       sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
       window._supabaseClient = sb
       _toast = document.getElementById('toastContainer')
+
+      var _readyFired = false
+      function fireReady() {
+        if (_readyFired) return
+        _readyFired = true
+        if (typeof onReady === 'function') onReady(_user, _child, _sub)
+      }
+
+      // Safety net: if the Supabase chain hangs for >10s, fire onReady anyway
+      setTimeout(function () {
+        if (!_readyFired) {
+          console.warn('[ScoutDash] init timed out — firing onReady with partial data')
+          fireReady()
+        }
+      }, 10000)
 
       sb.auth.getSession().then(function (res) {
         var session = res.data && res.data.session
@@ -38,9 +58,12 @@
         ScoutDash._loadChild(function () {
           ScoutDash._loadSubscription(function () {
             ScoutDash._renderTrialBanner()
-            if (typeof onReady === 'function') onReady(_user, _child, _sub)
+            fireReady()
           })
         })
+      }, function (err) {
+        console.error('[ScoutDash] getSession failed:', err)
+        window.location.href = '/sign-in.html?redirect=' + encodeURIComponent(window.location.pathname)
       })
     },
 
@@ -218,6 +241,9 @@
                  || rows[0]
                  || null
         _sub = match
+        if (typeof cb === 'function') cb()
+      }, function (err) {
+        console.warn('[ScoutDash] _loadSubscription failed:', err)
         if (typeof cb === 'function') cb()
       })
     },
