@@ -630,9 +630,20 @@ function shareReferralLink() {
 
 // ── Sign out ──────────────────────────────────────────────────────────────────
 function signOut() {
-  ScoutDash.getSb().auth.signOut().then(function () {
+  try {
+    var sb = ScoutDash.getSb()
+    if (sb) {
+      sb.auth.signOut().then(function () {
+        window.location.href = '/sign-in.html'
+      }, function () {
+        window.location.href = '/sign-in.html'
+      })
+    } else {
+      window.location.href = '/sign-in.html'
+    }
+  } catch (e) {
     window.location.href = '/sign-in.html'
-  })
+  }
 }
 
 // ── Cancel subscription ───────────────────────────────────────────────────────
