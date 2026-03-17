@@ -363,9 +363,24 @@ function subRow(label, value) {
 function openStripeForm(plan) {
   _checkoutPlan = plan
   document.getElementById('stripeFormWrap').style.display = 'block'
-  document.getElementById('stripeFormTitle').textContent = plan === 'annual'
-    ? 'Subscribe annually — $79.99/year'
-    : 'Subscribe monthly — $9.99/month'
+
+  // Show discounted price in heading if a referral code is stored
+  var titleEl   = document.getElementById('stripeFormTitle')
+  var refCode   = localStorage.getItem('scout_referral_code')
+  var hasRef    = refCode && /^FRIEND-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(refCode.trim().toUpperCase())
+  var origAnnual   = 79.99, discAnnual   = (origAnnual   * 0.75).toFixed(2)
+  var origMonthly  = 9.99,  discMonthly  = (origMonthly  * 0.75).toFixed(2)
+
+  if (hasRef) {
+    titleEl.innerHTML = plan === 'annual'
+      ? 'Subscribe annually — <span style="text-decoration:line-through;opacity:.45;font-weight:400">$' + origAnnual.toFixed(2) + '</span> <span style="color:#16A34A;font-weight:700">$' + discAnnual + '</span>/year'
+      : 'Subscribe monthly — <span style="text-decoration:line-through;opacity:.45;font-weight:400">$' + origMonthly.toFixed(2) + '</span> <span style="color:#16A34A;font-weight:700">$' + discMonthly + '</span>/month'
+  } else {
+    titleEl.textContent = plan === 'annual'
+      ? 'Subscribe annually — $79.99/year'
+      : 'Subscribe monthly — $9.99/month'
+  }
+
   document.getElementById('stripeFormWrap').scrollIntoView({ behavior: 'smooth' })
   initReferralBanner()
 
@@ -500,6 +515,13 @@ function removeReferralCode() {
   if (banner) banner.style.display = 'none'
   var toggle = document.getElementById('referralEntryToggle')
   if (toggle) toggle.style.display = ''
+  // Reset heading to original price
+  var titleEl = document.getElementById('stripeFormTitle')
+  if (titleEl && _checkoutPlan) {
+    titleEl.textContent = _checkoutPlan === 'annual'
+      ? 'Subscribe annually — $79.99/year'
+      : 'Subscribe monthly — $9.99/month'
+  }
 }
 
 function toggleReferralEntry() {
