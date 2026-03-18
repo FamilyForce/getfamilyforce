@@ -140,7 +140,7 @@ Deno.serve(async (req: Request) => {
     // 7. Upsert window_progress
     const { error: upsertErr } = await sb
       .from('window_progress')
-      .upsert(payload, { onConflict: 'user_id,child_id,window_id' })
+      .upsert(payload, { onConflict: 'child_id,window_id' })
 
     if (upsertErr) {
       console.error('[scout-progress] Upsert error:', upsertErr.message)

@@ -265,7 +265,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/scout-dashboard.js?v=20260318d"></script>
+<script src="/assets/scout-dashboard.js?v=20260318e"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('home', function (user, child, sub) {
@@ -493,15 +493,32 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
     var _nextBday      = nextMonthlyBirthday(child.dob)
     var nextDigestDays = Math.round((_nextBday - new Date()) / 86400000)
     var nextDigestStr  = nextDigestDays <= 7 ? 'in ' + nextDigestDays + ' day' + (nextDigestDays === 1 ? '' : 's') : 'next month'
-    closingContent = '<div class="heads-up-banner">These window' + (sections.closing.length === 1 ? '' : 's') + ' close when ' + name + ' turns ' + (ageM + 1) + ' months. Worth doing before the next digest lands ' + nextDigestStr + '.</div>'
+    var _overdueCount  = sections.closing.filter(function (w) { return w._sectionTag === 'overdue' }).length
+    var _closingCount  = sections.closing.length - _overdueCount
+    // Banner text: only mention closing windows (not overdue — they have their own card label)
+    if (_closingCount > 0) {
+      closingContent = '<div class="heads-up-banner">These window' + (_closingCount === 1 ? '' : 's') + ' close when ' + name + ' turns ' + (ageM + 1) + ' months. Worth doing before the next digest lands ' + nextDigestStr + '.</div>'
+    } else {
+      closingContent = ''
+    }
     closingContent += '<div class="window-grid">'
     sections.closing.forEach(function (w) { closingContent += ScoutDash.renderCard(w) })
     closingContent += '</div>'
+    // Section count label: split closing vs overdue
+    var _sectionCountLabel = ''
+    if (_closingCount > 0 && _overdueCount > 0) {
+      _sectionCountLabel = _closingCount + ' closing · ' + _overdueCount + ' overdue'
+    } else if (_overdueCount > 0) {
+      _sectionCountLabel = _overdueCount + ' overdue'
+    } else {
+      _sectionCountLabel = _closingCount + ' closing this month'
+    }
   } else {
     closingContent = '<p class="section-empty">No windows closing soon — you\'re on track.</p>'
+    var _sectionCountLabel = '0 closing this month'
   }
   html += collapsibleSection('closing',
-    '<span class="section-label section-label-closing">Heads up</span><span class="section-count">(' + sections.closing.length + ' closing this month)</span>',
+    '<span class="section-label section-label-closing">Heads up</span><span class="section-count">(' + _sectionCountLabel + ')</span>',
     closingContent,
     false)  // default collapsed
 

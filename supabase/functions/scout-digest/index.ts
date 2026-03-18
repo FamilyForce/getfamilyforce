@@ -205,11 +205,10 @@ Deno.serve(async (req: Request) => {
 
       if (winErr) throw new Error(`Window query failed: ${winErr.message}`)
 
-      // 3I — Active track: fetch user's completed windows for this child
+      // 3I — Active track: fetch all progress for this child (shared across family)
       const { data: progressRows } = await sb
         .from('window_progress')
         .select('window_id, status')
-        .eq('user_id', userId)
         .eq('child_id', child.id)
         .in('status', ['completed', 'skipped'])
 
@@ -235,6 +234,27 @@ Deno.serve(async (req: Request) => {
         console.log(`[scout-digest] No windows for child ${child.id} at ${weeks}w — skipping`)
         results.skipped++
         continue
+      }
+
+      // 3J — Overdue in_progress: windows still marked in_progress but already closed
+      // Step 1: get window_ids the child has marked in_progress
+      const { data: inProgressRows } = await sb
+        .from('window_progress')
+        .select('window_id')
+        .eq('child_id', child.id)
+        .eq('status', 'in_progress')
+
+      const inProgressIds = (inProgressRows ?? []).map((r: { window_id: string }) => r.window_id)
+
+      // Step 2: of those, find any whose developmental window has already closed
+      let overdueWindows: { title: string; urgency: string }[] = []
+      if (inProgressIds.length > 0) {
+        const { data: overdueData } = await sb
+          .from('milestone_windows')
+          .select('id, title, urgency')
+          .in('id', inProgressIds)
+          .lt('close_age_weeks', weeks)   // window has already closed for this child's age
+        overdueWindows = (overdueData ?? []).map(w => ({ title: w.title, urgency: w.urgency }))
       }
 
       // 6. Build subject line
@@ -270,6 +290,7 @@ Deno.serve(async (req: Request) => {
         aboveFold:      aboveFold as DigestWindow[],
         allWindowCount: openWindows.length > 0 ? openWindows.length : allWindows.length,
         closingCount,
+        overdueWindows,
         nextEventDate:  nextBirthday,
         dashboardUrl:   dashUrl,
         siteUrl,

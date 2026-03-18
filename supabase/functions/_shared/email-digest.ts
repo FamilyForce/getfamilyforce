@@ -33,11 +33,12 @@ export interface DigestEmailOptions {
   aboveFold:       DigestWindow[]
   allWindowCount:  number
   closingCount:    number
+  overdueWindows?: { title: string; urgency: string }[]  // in_progress windows whose window has closed
   nextEventDate:   Date
   dashboardUrl:    string
   siteUrl:         string
   userId:          string
-  digestType:      'signup' | 'monthly'
+  digestType:      'signup' | 'monthly' | 'birth_signup'
 }
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
@@ -145,8 +146,8 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
 export function buildDigestEmail(opts: DigestEmailOptions): string {
   const {
     childName, parentName, childGender, ageMonths, aboveFold,
-    allWindowCount, closingCount, nextEventDate, dashboardUrl,
-    siteUrl, userId, digestType,
+    allWindowCount, closingCount, overdueWindows = [], nextEventDate,
+    dashboardUrl, siteUrl, userId, digestType,
   } = opts
 
   const His = cap(pronoun(childGender, 'possess'))
@@ -204,6 +205,31 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ${openWindows.map(w => windowCard(w, ageMonths, dashboardUrl, false)).join('')}` : ''
 
   const remainingCount = allWindowCount - aboveFold.length
+
+  // Overdue section — only shown in monthly digests when in_progress windows have closed
+  const overdueSectionHtml = overdueWindows.length > 0 ? `
+  <tr>
+    <td style="padding-bottom:32px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:14px">
+        <tr>
+          <td style="padding:20px 22px">
+            <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:#D97706;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">Still in progress</p>
+            ${overdueWindows.map(w => `
+            <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:8px">
+              <tr>
+                <td style="padding:10px 14px;background:#fff;border-radius:10px;border:1px solid #FDE68A">
+                  <p style="font-family:Arial,sans-serif;font-size:14px;color:#1D1D1F;margin:0;font-weight:600">${w.title}</p>
+                  <p style="font-family:Arial,sans-serif;font-size:12px;color:#D97706;margin:4px 0 0">This window has closed — mark it done or skip it in the dashboard.</p>
+                </td>
+              </tr>
+            </table>`).join('')}
+            <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textMid};margin:12px 0 0;line-height:1.6">These were in progress when the window closed. Head to the dashboard to mark them done or skip them.</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>` : ''
+
   const dashboardCTA = remainingCount > 0 ? `
   <tr>
     <td style="padding-bottom:32px">
@@ -293,6 +319,9 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
               <!-- Windows -->
               ${closingSection}
               ${openSection}
+
+              <!-- Overdue in_progress windows -->
+              ${overdueSectionHtml}
 
               <!-- Dashboard CTA -->
               ${dashboardCTA}
