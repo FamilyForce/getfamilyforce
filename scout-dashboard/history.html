@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260318c">
+<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260318m">
 </head>
 <body>
 
@@ -50,7 +50,11 @@
 
     <h1 class="page-title">History</h1>
 
-    <input type="search" class="history-search" id="historySearch" placeholder="Search windows and notes…" aria-label="Search history">
+    <div style="position:relative">
+      <input type="search" class="history-search" id="historySearch" placeholder="Search windows and notes…" aria-label="Search history" style="padding-right:40px">
+      <button id="historySearchClear" aria-label="Clear search"
+        style="display:none;position:absolute;right:4px;top:50%;transform:translateY(-50%);background:none;border:none;min-width:44px;min-height:44px;display:none;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);font-size:18px">✕</button>
+    </div>
 
     <div id="historyList"><div class="loading-state">Loading history…</div></div>
 
@@ -61,7 +65,8 @@
       <div class="bottom-nav-inner">
     <a href="/scout-dashboard.html"          class="bottom-nav-item" data-nav="home"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Scout</a>
     <a href="/scout-dashboard/library.html"  class="bottom-nav-item" data-nav="library"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></span>Library</a>
-    <a href="/scout-dashboard/family.html"   class="bottom-nav-item" data-nav="family"><span class="bottom-nav-icon">👨‍👩‍👧</span>Family</a>
+    <a href="/scout-dashboard/history.html"  class="bottom-nav-item" data-nav="history"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>History</a>
+    <a href="/scout-dashboard/family.html"   class="bottom-nav-item" data-nav="family"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Family</a>
     <a href="/scout-dashboard/settings.html" class="bottom-nav-item" data-nav="settings"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2.5" fill="var(--bg)"/><circle cx="15" cy="12" r="2.5" fill="var(--bg)"/><circle cx="9" cy="18" r="2.5" fill="var(--bg)"/></svg></span>Settings</a>
   </div>
 </nav>
@@ -69,7 +74,7 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/scout-dashboard.js?v=20260318i"></script>
+<script src="/assets/scout-dashboard.js?v=20260318l"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('history', function (user, child, sub) {
@@ -218,7 +223,19 @@ function expandNote(el, full) {
 
 // Search
 document.addEventListener('DOMContentLoaded', function () {
-  var search = document.getElementById('historySearch')
+  var search     = document.getElementById('historySearch')
+  var clearBtn   = document.getElementById('historySearchClear')
+  if (search && clearBtn) {
+    search.addEventListener('input', function () {
+      clearBtn.style.display = search.value ? 'flex' : 'none'
+    })
+    clearBtn.addEventListener('click', function () {
+      search.value = ''
+      clearBtn.style.display = 'none'
+      renderHistory(_allMonths, ScoutDash.getChild())
+      search.focus()
+    })
+  }
   if (search) {
     search.addEventListener('input', function () {
       var q = search.value.toLowerCase().trim()
