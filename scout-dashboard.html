@@ -255,7 +255,7 @@
     <p class="arrival-modal-sub" id="arrivalModalSub">Enter your baby's actual date of birth to start Scout tracking.</p>
     <label class="arrival-modal-label" for="arrivalDobInput">Date of birth</label>
     <input type="date" class="arrival-modal-input" id="arrivalDobInput">
-    <p class="arrival-modal-hint">The trial clock starts from today. Your first month is always free.</p>
+    <p class="arrival-modal-hint">Enter the actual birth date — early, on time, or late. Scout tracks from the real birthday.</p>
     <p class="arrival-modal-error" id="arrivalModalError"></p>
     <div class="arrival-modal-actions">
       <button class="btn btn-secondary" onclick="closeArrivalModal()" style="flex:1">Cancel</button>
@@ -650,9 +650,10 @@ function renderPreBirthMode(child, sub) {
     countdownHtml =
       '<div class="prebirth-countdown">' +
       '<div class="prebirth-countdown-emoji">🤰</div>' +
-      '<div>' +
+      '<div style="flex:1">' +
       '<div class="prebirth-countdown-title">Due ' + dueFmt + '</div>' +
       '<div class="prebirth-countdown-sub">Prepare now. Scout starts tracking from the moment ' + ScoutDash._esc(name) + ' arrives.</div>' +
+      '<button onclick="openArrivalModal()" style="margin-top:10px;background:none;border:none;padding:0;font-size:13px;color:var(--terra);font-weight:600;cursor:pointer;font-family:inherit;text-decoration:underline">Already arrived? Confirm now →</button>' +
       '</div>' +
       '<div style="text-align:center;margin-left:auto;flex-shrink:0">' +
       '<div class="prebirth-countdown-days">' + daysLeft + '</div>' +
