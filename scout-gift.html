@@ -135,6 +135,8 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 
 /* ─── MAIN LAYOUT ─── */
 .page-wrap { max-width: 600px; margin: 0 auto; padding: 0 24px 80px; }
+/* In redeem mode, hero is hidden so page-wrap needs top padding */
+.page-wrap.redeem-mode { padding-top: 32px; }
 
 /* ─── PLAN TOGGLE ─── */
 .plan-toggle { display: flex; gap: 10px; margin-bottom: 24px; }
@@ -211,8 +213,9 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 /* ─── REDEEM FLOW ─── */
 .redeem-banner {
   background: var(--terra); color: #fff;
-  border-radius: var(--radius-card); padding: 24px;
+  border-radius: 0; padding: 32px 24px 28px;
   text-align: center; margin-bottom: 32px; display: none;
+  margin-top: 72px; /* offset for fixed nav */
 }
 .redeem-banner h2 { font-family: var(--serif); font-size: 22px; font-weight: 400; margin-bottom: 8px; }
 .redeem-banner p { font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.6; }
@@ -495,6 +498,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('purchaseForm').style.display    = 'none'
     document.getElementById('redeemBanner').style.display    = 'block'
     document.getElementById('redeemForm').style.display      = 'block'
+    var pw = document.querySelector('.page-wrap')
+    if (pw) pw.classList.add('redeem-mode')
     return
   }
 
