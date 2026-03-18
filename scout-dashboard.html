@@ -490,7 +490,8 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
   // Closing soon — always shown, even when empty
   var closingContent
   if (sections.closing.length > 0) {
-    var nextDigestDays = Math.round((new Date(nextBday) - new Date()) / 86400000)
+    var _nextBday      = nextMonthlyBirthday(child.dob)
+    var nextDigestDays = Math.round((_nextBday - new Date()) / 86400000)
     var nextDigestStr  = nextDigestDays <= 7 ? 'in ' + nextDigestDays + ' day' + (nextDigestDays === 1 ? '' : 's') : 'next month'
     closingContent = '<div class="heads-up-banner">These window' + (sections.closing.length === 1 ? '' : 's') + ' close when ' + name + ' turns ' + (ageM + 1) + ' months. Worth doing before the next digest lands ' + nextDigestStr + '.</div>'
     closingContent += '<div class="window-grid">'
