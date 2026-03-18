@@ -28,7 +28,7 @@ import { nextMonthlyBirthday }  from '../_shared/ics-generator.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Headers': 'authorization, content-type',
+  'Access-Control-Allow-Headers': 'authorization, content-type, x-client-info, apikey',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
@@ -75,16 +75,21 @@ Deno.serve(async (req: Request) => {
   let   step     = 'init'
 
   try {
-    const sb = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-    )
+    const SUPABASE_URL  = Deno.env.get('SUPABASE_URL')!
+    const SERVICE_ROLE  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    const sb = createClient(SUPABASE_URL, SERVICE_ROLE)
 
-    // 1. Auth
+    // 1. Auth via REST API (service role + getUser SDK unreliable)
     step = 'auth'
-    const token = (req.headers.get('Authorization') ?? '').replace('Bearer ', '')
-    const { data: { user }, error: authErr } = await sb.auth.getUser(token)
-    if (authErr || !user) return err(401, 'Unauthorized', step)
+    const authHeader = req.headers.get('Authorization') ?? ''
+    if (!authHeader.startsWith('Bearer ')) return err(401, 'Missing auth token', step)
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: { 'Authorization': authHeader, 'apikey': SERVICE_ROLE },
+    })
+    if (!authRes.ok) return err(401, 'Unauthorized', step)
+    const authData = await authRes.json()
+    const userId = authData.id as string
+    if (!userId) return err(401, 'Unauthorized', step)
 
     // 2. Parse body
     step = 'parse'
@@ -108,7 +113,7 @@ Deno.serve(async (req: Request) => {
       .from('children')
       .select('id, name, dob, due_date, is_expecting, gender, user_id')
       .eq('id', childId)
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .single()
 
     if (childErr || !child) return err(404, 'Child not found', step)
@@ -137,7 +142,7 @@ Deno.serve(async (req: Request) => {
         updated_at:   now.toISOString(),
       })
       .eq('id', childId)
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
 
     if (updateErr) throw new Error(`Failed to update child: ${updateErr.message}`)
 
@@ -155,7 +160,7 @@ Deno.serve(async (req: Request) => {
     const { error: subErr } = await sb
       .from('scout_subscriptions')
       .upsert({
-        user_id:   user.id,
+        user_id:   userId,
         status:    'trialing',
         trial_end: trialEnd.toISOString(),
       }, { onConflict: 'user_id' })
@@ -166,7 +171,7 @@ Deno.serve(async (req: Request) => {
     step = 'log-event'
     try {
       await sb.from('scout_events').insert({
-        user_id:    user.id,
+        user_id:    userId,
         child_id:   childId,
         event_type: 'birth_confirmed',
         properties: {
@@ -193,7 +198,7 @@ Deno.serve(async (req: Request) => {
       type:   'INSERT',
       table:  'scout_subscriptions',
       record: {
-        user_id:      user.id,
+        user_id:      userId,
         status:       'trialing',
         trial_end:    trialEnd.toISOString(),
         early_signup: earlySignup,   // ICS + footer point to trialEnd date if birthday is close
@@ -210,11 +215,11 @@ Deno.serve(async (req: Request) => {
       body: JSON.stringify(deliveryPayload),
     }).catch(e => {
       console.error('[scout-confirm-arrival] Failed to trigger signup delivery:', e.message)
-      telegramAlert(`Failed to trigger post-birth digest for user ${user.id}: ${e.message}`)
+      telegramAlert(`Failed to trigger post-birth digest for user ${userId}: ${e.message}`)
     })
 
-    console.log(`[scout-confirm-arrival] Birth confirmed for user ${user.id}, child ${childId} (dob=${realDob}, trialEnd=${trialEnd.toISOString().split('T')[0]}, early=${earlySignup})`)
-    await telegramAlert(`🍼 Birth confirmed — user ${user.id}, ${child.name} born ${realDob} (due ${child.due_date})`)
+    console.log(`[scout-confirm-arrival] Birth confirmed for user ${userId}, child ${childId} (dob=${realDob}, trialEnd=${trialEnd.toISOString().split('T')[0]}, early=${earlySignup})`)
+    await telegramAlert(`🍼 Birth confirmed — user ${userId}, ${child.name} born ${realDob} (due ${child.due_date})`)
 
     return new Response(JSON.stringify({
       ok:           true,
