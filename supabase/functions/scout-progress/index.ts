@@ -42,6 +42,10 @@ Deno.serve(async (req: Request) => {
     const authHeader = req.headers.get('Authorization')
     if (!authHeader?.startsWith('Bearer ')) return err(401, 'Missing auth token')
 
+    // DEBUG: log token prefix to verify what's being sent
+    const tokenPreview = authHeader.replace('Bearer ', '').slice(0, 20)
+    console.log('[scout-progress] Auth header token prefix:', tokenPreview)
+
     const SUPABASE_URL           = Deno.env.get('SUPABASE_URL')!
     const SUPABASE_ANON_KEY      = Deno.env.get('SUPABASE_ANON_KEY')!
     const SUPABASE_SERVICE_ROLE  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -52,7 +56,8 @@ Deno.serve(async (req: Request) => {
       global: { headers: { Authorization: authHeader } },
     })
     const { data: { user }, error: authErr } = await userSb.auth.getUser()
-    if (authErr || !user) return err(401, 'Invalid or expired session')
+    console.log('[scout-progress] getUser result — user:', user?.id ?? 'null', '| error:', authErr?.message ?? 'none')
+    if (authErr || !user) return err(401, `Invalid or expired session: ${authErr?.message ?? 'no user'}`)
 
     // Admin client — used for all DB reads/writes (bypasses RLS where needed)
     const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE)
