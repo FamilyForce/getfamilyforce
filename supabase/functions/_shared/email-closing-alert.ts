@@ -1,73 +1,92 @@
 // ═══════════════════════════════════════════════════════════════
-// FamilyForce Scout — Closing-Window Alert Email Template (4C)
+// FamilyForce Scout — Closing-Window Alert Email Template (4C) v2
 // Shared by scout-alert edge function.
 //
 // Fires 7 days before child's next birthday when closing windows exist.
-// Short, urgent — scannable in 10 seconds on mobile.
+// Short, warm — one window card + soft "digest lands next week" close.
 //
-// Design:
-//   - Red alarm card header with ⚠️ "Act this week"
-//   - Closing window list with urgency badges + weeks left
-//   - Single CTA: open dashboard
-//   - Outlook VML button
+// Design v2:
+//   - Dark indigo header (matches digest + pre-birth welcome)
+//   - Amber "Heads up:" banner (no red, no fear triggers)
+//   - Window card(s) with "The move" action boxes
+//   - Single CTA: "Open Scout →"
+//   - Jack's blockquote signature
 // ═══════════════════════════════════════════════════════════════
+
+// ─── Palette ──────────────────────────────────────────────────────────────────
+const C = {
+  bg: '#F7F5FF', surface: '#FFFFFF', border: '#E5E2EC',
+  text: '#1D1D1F', textMid: '#5C5960', textDim: '#8A879A',
+  terra: '#6E4ED6', terraTint: '#F0EBFF', indigoDeep: '#1E1248',
+  amber: '#B45309', amberBg: '#FFFBEB', amberBorder: '#FDE68A',
+}
 
 export type AlertWindow = {
   title:             string
   urgency:           string
+  why_it_matters?:   string
+  what_to_do?:       string
   close_age_weeks:   number
   current_age_weeks: number
 }
 
 export function buildAlertEmail(opts: {
-  childName:     string
-  ageMonths:     number        // age they'll turn in 7 days
-  closingWindows: Array<{ title: string; urgency: string; close_age_weeks: number; current_age_weeks: number }>
-  dashboardUrl:  string
-  siteUrl:       string
-  userId:        string
+  childName:      string
+  parentName?:    string
+  ageMonths:      number        // age they'll turn in 7 days
+  closingWindows: AlertWindow[]
+  dashboardUrl:   string
+  siteUrl:        string
+  userId:         string
 }): string {
-  const { childName, ageMonths, closingWindows, dashboardUrl, siteUrl, userId } = opts
+  const { childName, parentName, ageMonths, closingWindows, dashboardUrl, siteUrl, userId } = opts
 
-  const urgencyColors = { clinical: '#DC2626', screening: '#2563EB', advisory: '#6B7280' }
-  const urgencyLabels = { clinical: 'Clinical', screening: 'Screening', advisory: 'Advisory' }
+  const greeting  = parentName ? `Hi ${parentName},` : 'Hi there,'
+  const windowCount = closingWindows.length
+  const subCount  = `${windowCount} window${windowCount === 1 ? '' : 's'} closing`
 
-  const preheader = `${closingWindows.length} window${closingWindows.length === 1 ? '' : 's'} close when ${childName} turns ${ageMonths} months in 7 days. Here is what to do before then.`
+  const preheader = `${childName} turns ${ageMonths} months in 7 days. ${windowCount} window${windowCount === 1 ? '' : 's'} ${windowCount === 1 ? 'is' : 'are'} worth doing this week.`
 
-  const windowRows = closingWindows.map(w => {
-    const urgencyBg  = { clinical: '#FEE2E2', screening: '#EFF6FF', advisory: '#F5F3FF' }
-    const urgencyFg  = { clinical: '#DC2626', screening: '#2563EB', advisory: '#6E4ED6' }
-    const urgencyLbl = { clinical: 'Clinical', screening: 'Screening', advisory: 'Advisory' }
-    const bg  = urgencyBg[w.urgency as keyof typeof urgencyBg]  ?? '#F5F3FF'
-    const fg  = urgencyFg[w.urgency as keyof typeof urgencyFg]  ?? '#6E4ED6'
-    const lbl = urgencyLbl[w.urgency as keyof typeof urgencyLbl] ?? 'Advisory'
-    const weeksLeft  = w.close_age_weeks - w.current_age_weeks
-    const borderColor = w.urgency === 'clinical' ? '#FECACA' : '#E5E2EC'
+  const windowCards = closingWindows.map(w => {
+    const weeksLeft   = w.close_age_weeks - w.current_age_weeks
+    const badgeLabel  = `${weeksLeft} week${weeksLeft === 1 ? '' : 's'} left`
+    const borderColor = w.urgency === 'clinical' ? C.amberBorder : C.border
+    const bodyText    = w.why_it_matters
+      ? w.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim()
+      : `This window closes when ${childName} turns ${ageMonths} months.`
+    const move = w.what_to_do
+      ? w.what_to_do.split('\n')[0].replace(/^[-•·]\s*/, '').trim()
+      : `Check this window in your Scout dashboard before ${childName}'s birthday next week.`
 
-    const urgencyNote = w.urgency === 'clinical'
-      ? '<p style="font-family:\'Outfit\',Arial,sans-serif;font-size:12px;color:#DC2626;font-weight:600;margin:4px 0 0">See your pediatrician if this has not happened yet.</p>'
-      : w.urgency === 'screening'
-      ? '<p style="font-family:\'Outfit\',Arial,sans-serif;font-size:12px;color:#2563EB;font-weight:600;margin:4px 0 0">Schedule the screening this week.</p>'
+    // Clinical windows get a stronger nudge in "The move"
+    const clinicalNote = w.urgency === 'clinical'
+      ? `<p style="font-family:Arial,sans-serif;font-size:13px;color:${C.amber};font-weight:600;margin:10px 0 0;line-height:1.5">If this hasn't happened yet, mention it at your next pediatrician visit.</p>`
       : ''
 
     return `
-    <tr>
-      <td style="background:#FFFFFF;border:1px solid ${borderColor};border-radius:12px;padding:16px">
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <tr>
-            <td><span style="display:inline-block;background:${bg};color:${fg};font-family:'Outfit',Arial,sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase">${lbl} · ${weeksLeft} week${weeksLeft === 1 ? '' : 's'} left</span></td>
-          </tr>
-          <tr><td style="height:6px"></td></tr>
-          <tr>
-            <td>
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;color:#1D1D1F;margin:0">${w.title}</p>
-              ${urgencyNote}
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-    <tr><td style="height:8px"></td></tr>`
+    <tr><td style="padding-bottom:16px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1px solid ${borderColor};border-radius:14px">
+        <tr><td style="padding:20px 22px">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="padding-bottom:8px">
+              <p style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:${C.text};margin:0;line-height:1.3">${w.title}
+                <span style="display:inline-block;background:${C.amberBg};color:${C.amber};border:1px solid ${C.amberBorder};font-size:11px;font-weight:700;padding:2px 10px;border-radius:100px;margin-left:8px">${badgeLabel}</span>
+              </p>
+            </td></tr>
+            <tr><td style="padding-bottom:14px"><p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${bodyText}</p></td></tr>
+            <tr><td>
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:10px">
+                <tr><td style="padding:12px 16px">
+                  <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p>
+                  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.6">${move}</p>
+                </td></tr>
+              </table>
+              ${clinicalNote}
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+    </td></tr>`
   }).join('')
 
   return `<!DOCTYPE html>
@@ -75,98 +94,87 @@ export function buildAlertEmail(opts: {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light only">
   <meta name="x-apple-disable-message-reformatting">
   <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
   <title>${childName} turns ${ageMonths} months in 7 days</title>
   <style>
     body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
     table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}
-    body{margin:0;padding:0;background:#F5F3FF;font-family:'Outfit',Arial,sans-serif}
+    body{margin:0;padding:0;background:${C.bg};font-family:Arial,sans-serif}
+    @media only screen and (max-width:480px){.email-body{padding:24px 18px!important}.hero-pad{padding:24px 20px 28px!important}}
   </style>
 </head>
-<body style="margin:0;padding:0;background:#F5F3FF">
+<body style="margin:0;padding:0;background:${C.bg}">
 
-  <div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">${preheader}&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;</div>
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all">
+  ${preheader}&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;
+</div>
 
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F3FF">
-    <tr>
-      <td align="center" style="padding:24px 12px 40px">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:${C.bg}">
+<tr><td align="center" style="padding:32px 16px">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;border-radius:20px;overflow:hidden;border:1px solid ${C.border}">
 
-          <!-- Wordmark -->
-          <tr>
-            <td style="padding:0 0 16px">
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td><p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;font-weight:700;color:#6E4ED6;letter-spacing:.12em;text-transform:uppercase;margin:0">FamilyForce Scout</p></td>
-                  <td align="right"><p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;margin:0">7-day alert</p></td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+<!-- HEADER -->
+<tr><td class="hero-pad" style="background:${C.indigoDeep};padding:32px 36px 36px">
+  <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 24px">Scout by FamilyForce</p>
+  <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${childName} turns ${ageMonths} months in 7 days.</p>
+  <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0">${subCount} &nbsp;&middot;&nbsp; digest arrives next week</p>
+</td></tr>
 
-          <!-- Hero — alarm card -->
-          <tr>
-            <td style="background:#FFF5F5;border:1.5px solid #FECACA;border-radius:16px;padding:24px">
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:700;color:#DC2626;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px">⚠️ Act this week</p>
-              <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:400;color:#1D1D1F;margin:0 0 10px;line-height:1.3">${childName} turns ${ageMonths} months in 7 days.</h1>
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0;line-height:1.6">${closingWindows.length} developmental window${closingWindows.length === 1 ? '' : 's'} close${closingWindows.length === 1 ? 's' : ''} this month. Once a window closes, it is gone.</p>
-            </td>
-          </tr>
-          <tr><td style="height:12px"></td></tr>
+<!-- BODY -->
+<tr><td class="email-body" style="background:${C.surface};padding:32px 36px">
+<table width="100%" cellpadding="0" cellspacing="0">
 
-          <!-- Closing windows -->
-          <tr><td><p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#8A879A;letter-spacing:.1em;text-transform:uppercase;margin:0 0 12px">Closing this month</p></td></tr>
-          ${windowRows}
-          <tr><td style="height:8px"></td></tr>
+<!-- Greeting -->
+<tr><td style="padding-bottom:24px;border-bottom:1px solid ${C.border}">
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.text};margin:0 0 14px;font-weight:600">${greeting}</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0;line-height:1.75">${childName}'s ${ageMonths}-month digest arrives next week. Before it does, ${windowCount === 1 ? 'there\'s one window' : `there are ${windowCount} windows`} worth doing this week.</p>
+</td></tr>
+<tr><td style="padding-bottom:16px"></td></tr>
 
-          <!-- CTA -->
-          <tr>
-            <td align="center">
-              <!--[if mso]>
-              <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
-                href="${dashboardUrl}"
-                style="height:44px;v-text-anchor:middle;width:280px;" arcsize="50%"
-                stroke="f" fillcolor="#6E4ED6">
-                <w:anchorlock/>
-                <center style="color:#ffffff;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;">See what to do for each window →</center>
-              </v:roundrect>
-              <![endif]-->
-              <!--[if !mso]><!-->
-              <a href="${dashboardUrl}" style="display:inline-block;background:#6E4ED6;color:#FFFFFF;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:100px;text-decoration:none;mso-hide:all">
-                See what to do for each window →
-              </a>
-              <!--<![endif]-->
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;text-align:center;margin:12px 0 0">Your ${ageMonths}-month digest arrives in 7 days on ${childName}'s birthday.</p>
-            </td>
-          </tr>
-          <tr><td style="height:32px"></td></tr>
-
-          <!-- Signature -->
-          <tr>
-            <td>
-              <p style="font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1D1D1F;margin:0 0 2px">Jack Hartley</p>
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 6px">Dad of two · Founder, FamilyForce</p>
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6;font-style:italic">Got it wrong with First Son. Got it right with Second Son. Make informed parenting decisions.</p>
-            </td>
-          </tr>
-          <tr><td style="height:32px"></td></tr>
-
-          <!-- Footer -->
-          <tr>
-            <td style="border-top:1px solid #E5E2EC;padding-top:20px">
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0 0 4px">FamilyForce Scout · <a href="${siteUrl}" style="color:#8A879A;text-decoration:none">${siteUrl.replace('https://', '')}</a></p>
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0"><a href="${siteUrl}/unsubscribe?user=${userId}" style="color:#8A879A;text-decoration:none">Unsubscribe</a></p>
-            </td>
-          </tr>
-
-        </table>
-      </td>
-    </tr>
+<!-- Heads up banner -->
+<tr><td style="padding-bottom:8px">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.amberBg};border:1px solid ${C.amberBorder};border-radius:10px">
+    <tr><td style="padding:12px 16px">
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.amber};margin:0;line-height:1.6">
+        <strong>Heads up:</strong> ${windowCount === 1 ? 'This window closes' : 'These windows close'} when ${childName} turns ${ageMonths} months. Worth a head start before the digest lands.
+      </p>
+    </td></tr>
   </table>
+</td></tr>
+<tr><td style="padding-bottom:8px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.amber};margin:0">Closing this month</p></td></tr>
 
-</body>
-</html>`
+${windowCards}
+
+<!-- CTA -->
+<tr><td style="padding-top:8px;padding-bottom:32px;text-align:center">
+  <a href="${dashboardUrl}" style="display:inline-block;background:${C.terra};color:#fff;font-family:Arial,sans-serif;font-size:14px;font-weight:700;padding:13px 32px;border-radius:100px;text-decoration:none">Open Scout &rarr;</a>
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};text-align:center;margin:12px 0 0">Your full ${ageMonths}-month digest arrives on ${childName}'s birthday.</p>
+</td></tr>
+
+<!-- Signature -->
+<tr><td style="border-top:1px solid ${C.border};padding-top:28px">
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.text};margin:0 0 3px;font-weight:600">Jack Hartley</p>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textDim};margin:0 0 16px">Dad of two &middot; Founder, FamilyForce</p>
+  <table cellpadding="0" cellspacing="0" style="border-left:3px solid ${C.border}">
+    <tr><td style="padding:6px 0 6px 14px">
+      <p style="font-family:Georgia,'Times New Roman',serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7;font-style:italic">&ldquo;I got it wrong with my first son. Got it right with my second &mdash; because I finally knew what to watch for. That&rsquo;s what Scout is.&rdquo;</p>
+    </td></tr>
+  </table>
+</td></tr>
+
+</table></td></tr>
+
+<!-- FOOTER -->
+<tr><td style="background:${C.bg};padding:20px 36px;border-top:1px solid ${C.border}">
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0 0 6px">FamilyForce &middot; getfamilyforce.com</p>
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0">
+    You're receiving this as a Scout subscriber.
+    &nbsp;<a href="${siteUrl}/unsubscribe?user=${userId}" style="color:${C.terra};text-decoration:none">Unsubscribe</a>
+  </p>
+</td></tr>
+
+</table></td></tr></table>
+</body></html>`
 }
-

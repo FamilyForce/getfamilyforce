@@ -176,10 +176,16 @@ Deno.serve(async (req: Request) => {
       const { data: { user } } = await sb.auth.admin.getUserById(userId)
       if (!user?.email) { results.skipped++; continue }
 
-      // 7. Build and send email
-      const subject = `${child.name} turns ${monthsAtBirthday} months in 7 days. ${windows.length} window${windows.length === 1 ? '' : 's'} closing.`
+      // 7. Fetch parent display name
+      const { data: profileData } = await sb.from('profiles').select('name').eq('id', userId).maybeSingle()
+      const parentName = profileData?.name?.trim() || undefined
+
+      // 8. Build and send email
+      const windowWord = windows.length === 1 ? 'window' : 'windows'
+      const subject = `${child.name} turns ${monthsAtBirthday} months in 7 days — ${windows.length} ${windowWord} worth doing this week`
       const html    = buildAlertEmail({
         childName:      child.name,
+        parentName,
         ageMonths:      monthsAtBirthday,
         closingWindows: annotated,
         dashboardUrl:   dashUrl,
