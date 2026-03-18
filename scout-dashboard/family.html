@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260317p">
+<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260318c">
 </head>
 <body>
 
@@ -116,7 +116,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/scout-dashboard.js?v=20260317p"></script>
+<script src="/assets/scout-dashboard.js?v=20260318i"></script>
 <script>
 var _isPrimary = false
 var _familyMemberId = null
@@ -133,37 +133,39 @@ function loadFamilyCircle(user, child) {
   var sb = ScoutDash.getSb()
 
   // Check if user is primary (owns the subscription/child) or partner
-  sb.from('family_members')
-    .select('*')
-    .eq('child_id', child.id)
-    .then(function (res) {
-      var members = res.data || []
-      _isPrimary  = child.user_id === user.id
+  // family_members uses owner_user_id (the child owner) — no child_id column
+  Promise.all([
+    sb.from('family_members').select('*').eq('owner_user_id', child.user_id),
+    sb.from('profiles').select('name').eq('id', child.user_id).maybeSingle(),
+  ]).then(function (results) {
+    var members     = results[0].data || []
+    var primaryName = (results[1].data && results[1].data.name && results[1].data.name.trim()) || 'Primary account'
+    _isPrimary      = child.user_id === user.id
 
-      if (_isPrimary) {
-        document.getElementById('inviteCard').style.display = 'block'
-      } else {
-        document.getElementById('leaveSection').style.display = 'block'
-        var me = members.find(function (m) { return m.member_user_id === user.id })
-        if (me) _familyMemberId = me.id
-      }
+    if (_isPrimary) {
+      document.getElementById('inviteCard').style.display = 'block'
+    } else {
+      document.getElementById('leaveSection').style.display = 'block'
+      var me = members.find(function (m) { return m.member_user_id === user.id })
+      if (me) _familyMemberId = me.id
+    }
 
-      renderMembers(members, user, child)
-    })
+    renderMembers(members, user, child, primaryName)
+  })
 }
 
-function renderMembers(members, user, child) {
+function renderMembers(members, user, child, primaryName) {
   var list = document.getElementById('membersList')
   if (!list) return
 
-  // Primary account holder (child owner)
+  // Primary account holder (child owner) — show their actual display name
   var html = renderMemberRow({
-    name:    child.name ? 'Primary account' : 'Primary',
-    email:   '',
+    name:      primaryName || 'Primary account',
+    email:     '',
     isPrimary: true,
-    isYou:   child.user_id === user.id,
-    status:  'active',
-    userId:  child.user_id,
+    isYou:     child.user_id === user.id,
+    status:    'active',
+    userId:    child.user_id,
   })
 
   // Partners (excluding primary)
@@ -250,34 +252,36 @@ function sendInvite() {
   var btn = document.getElementById('sendInviteBtn')
   if (btn) { btn.disabled = true; btn.textContent = 'Sending…' }
 
-  ScoutDash.getSb().auth.getSession().then(function (res) {
-    var tok = res.data && res.data.session && res.data.session.access_token
-    fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-invite', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-      body:    JSON.stringify({
-        inviteeEmail: email,
-        childId:      child.id,
-        childName:    child.name,
-        inviterName:  user.email,
-      }),
-    }).then(function (r) { return r.json() }).then(function (data) {
-      if (btn) { btn.disabled = false; btn.textContent = 'Send invite →' }
-      if (!data.ok) {
-        errEl.textContent = data.error || 'Could not send invite.'
+  // Get display name from profiles first, fall back to email prefix
+  ScoutDash.getSb().from('profiles').select('name').eq('id', user.id).maybeSingle()
+    .then(function (profileRes) {
+      var inviterName = (profileRes.data && profileRes.data.name && profileRes.data.name.trim())
+        || user.email.split('@')[0]
+      return ScoutDash.getSb().functions.invoke('scout-family-invite', {
+        body: {
+          inviteeEmail: email,
+          childId:      child.id,
+          childName:    child.name,
+          inviterName:  inviterName,
+        },
+      }).then(function (res) {
+        if (btn) { btn.disabled = false; btn.textContent = 'Send invite →' }
+        var data = res.data
+        var err  = res.error
+        if (err || !data || !data.ok) {
+          errEl.textContent = (data && data.error) || 'Could not send invite.'
+          errEl.style.display = 'block'
+          return
+        }
+        emailEl.value = ''
+        ScoutDash.toast('Invite sent to ' + email, 'success')
+        loadFamilyCircle(user, child)
+      }).catch(function () {
+        if (btn) { btn.disabled = false; btn.textContent = 'Send invite →' }
+        errEl.textContent = 'Network error. Please try again.'
         errEl.style.display = 'block'
-        return
-      }
-      emailEl.value = ''
-      ScoutDash.toast('Invite sent to ' + email, 'success')
-      // Reload members list
-      loadFamilyCircle(user, child)
-    }).catch(function () {
-      if (btn) { btn.disabled = false; btn.textContent = 'Send invite →' }
-      errEl.textContent = 'Network error. Please try again.'
-      errEl.style.display = 'block'
+      })
     })
-  })
 }
 
 function removeMember(memberId) {
