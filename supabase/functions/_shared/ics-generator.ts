@@ -131,7 +131,7 @@ function buildDescription(
 
   lines.push(`Open Scout \u2192 ${dashboardUrl}`)
   lines.push('')
-  lines.push(`\u2014 Jack at FamilyForce`)
+  lines.push(`\u2014 FamilyForce`)
 
   return lines.join('\n')
 }

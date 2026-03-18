@@ -458,7 +458,7 @@ Deno.serve(async (req: Request) => {
     const redeemUrl    = `${siteUrl}/scout-gift.html?redeem=${giftCode}`
     const resendKey    = Deno.env.get('RESEND_API_KEY')!
     const fromEmail    = Deno.env.get('RESEND_FROM_EMAIL') ?? 'scout@getfamilyforce.com'
-    const fromName     = Deno.env.get('RESEND_FROM_NAME')  ?? 'Jack at FamilyForce'
+    const fromName     = Deno.env.get('RESEND_FROM_NAME')  ?? 'FamilyForce'
 
     const giftHtml = buildGiftEmail({
       recipientName, buyerName, plan,

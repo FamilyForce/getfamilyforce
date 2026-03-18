@@ -249,7 +249,7 @@ Deno.serve(async (req: Request) => {
     step = 'send-email'
     const resendKey  = Deno.env.get('RESEND_API_KEY')
     const fromEmail  = Deno.env.get('RESEND_FROM_EMAIL')  ?? 'scout@getfamilyforce.com'
-    const fromName   = Deno.env.get('RESEND_FROM_NAME')   ?? 'Jack at FamilyForce'
+    const fromName   = Deno.env.get('RESEND_FROM_NAME')   ?? 'FamilyForce'
     const bccEmail   = Deno.env.get('RESEND_BCC_EMAIL')   ?? ''
 
     if (!resendKey) throw new Error('RESEND_API_KEY not configured')

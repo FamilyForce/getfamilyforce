@@ -92,7 +92,7 @@ Deno.serve(async (req: Request) => {
 
   const resendKey = Deno.env.get('RESEND_API_KEY')!
   const fromEmail = Deno.env.get('RESEND_FROM_EMAIL') ?? 'scout@getfamilyforce.com'
-  const fromName  = Deno.env.get('RESEND_FROM_NAME')  ?? 'Jack at FamilyForce'
+  const fromName  = Deno.env.get('RESEND_FROM_NAME')  ?? 'FamilyForce'
   const bccEmail  = Deno.env.get('RESEND_BCC_EMAIL')  ?? ''
   const siteUrl   = Deno.env.get('SITE_URL')           ?? 'https://getfamilyforce.com'
   const dashUrl   = `${siteUrl}/scout-dashboard`
