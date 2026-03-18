@@ -265,23 +265,47 @@
       var banner = document.getElementById('trialBanner')
       if (!banner || !_sub) return
       if (_sub.status !== 'trialing') { banner.style.display = 'none'; return }
-      var end      = new Date(_sub.trial_end)
-      var now      = new Date()
-      var days     = Math.ceil((end - now) / 86400000)
-      var dateStr  = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-      var daysStr  = days > 0 ? days + ' day' + (days === 1 ? '' : 's') : 'today'
-      var textEl   = banner.querySelector('.trial-banner-text')
-      if (textEl) textEl.textContent = 'Free trial ends ' + dateStr + ' (' + daysStr + ')'
+
+      var end     = new Date(_sub.trial_end)
+      var now     = new Date()
+      var days    = Math.ceil((end - now) / 86400000)
+      var dateStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      var daysStr = days > 0 ? days + ' day' + (days === 1 ? '' : 's') : 'today'
+
       // Check if user dismissed within last 24h
       var dismissKey = 'scout_trial_banner_dismissed'
       var dismissed  = localStorage.getItem(dismissKey)
       if (dismissed && (Date.now() - parseInt(dismissed)) < 86400000) return
-      banner.style.display = 'flex'
-      var closeBtn = banner.querySelector('.trial-banner-close')
-      if (closeBtn) closeBtn.addEventListener('click', function () {
-        banner.style.display = 'none'
-        localStorage.setItem(dismissKey, Date.now().toString())
-      })
+
+      // Check if this is a gift subscription — changes text + hides Subscribe link
+      if (sb && _user) {
+        sb.from('scout_gifts').select('id').eq('redeemed_by', _user.id).maybeSingle()
+          .then(function (res) {
+            var isGift   = !!(res.data && res.data.id)
+            var textEl   = banner.querySelector('.trial-banner-text')
+            var subLink  = banner.querySelector('.trial-banner-link')
+            if (textEl) textEl.textContent = isGift
+              ? 'Gift subscription ends ' + dateStr + ' (' + daysStr + ')'
+              : 'Free trial ends ' + dateStr + ' (' + daysStr + ')'
+            if (subLink) subLink.style.display = isGift ? 'none' : ''
+            banner.style.display = 'flex'
+            var closeBtn = banner.querySelector('.trial-banner-close')
+            if (closeBtn) closeBtn.addEventListener('click', function () {
+              banner.style.display = 'none'
+              localStorage.setItem(dismissKey, Date.now().toString())
+            })
+          })
+          .catch(function () {
+            // Fallback — show generic trial text
+            var textEl = banner.querySelector('.trial-banner-text')
+            if (textEl) textEl.textContent = 'Free trial ends ' + dateStr + ' (' + daysStr + ')'
+            banner.style.display = 'flex'
+          })
+      } else {
+        var textEl = banner.querySelector('.trial-banner-text')
+        if (textEl) textEl.textContent = 'Free trial ends ' + dateStr + ' (' + daysStr + ')'
+        banner.style.display = 'flex'
+      }
     },
 
     /* ── Age helpers ─────────────────────────────────────────── */
