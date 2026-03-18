@@ -391,17 +391,13 @@
       var self = this
       var q = JSON.parse(localStorage.getItem(self._QUEUE_KEY) || '[]')
       if (!q.length) return
-      var tok = _token
-      if (!tok) return;
       var remaining = []
       var sends = q.map(function (item) {
-        return fetch(FUNCTIONS_URL + '/scout-progress', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-          body:    JSON.stringify(item),
-        }).then(function (r) { return r.json() }).then(function (d) {
-          if (!d.ok) remaining.push(item)
-        }).catch(function () { remaining.push(item) })
+        return sb.functions.invoke('scout-progress', { body: item })
+          .then(function (res) {
+            var d = res.data
+            if (!d || !d.ok) remaining.push(item)
+          }).catch(function () { remaining.push(item) })
       })
       Promise.all(sends).then(function () {
         localStorage.setItem(self._QUEUE_KEY, JSON.stringify(remaining))
@@ -416,46 +412,42 @@
       if (completedDate) body.completedDate = completedDate
 
       if (!navigator.onLine) {
-        // Queue for later, treat as optimistic success
         self._enqueue(body)
         if (typeof cb === 'function') cb(null, { ok: true, queued: true })
         return
       }
 
-      var tok = _token
-      if (!tok) {
-        self._enqueue(body)
-        if (typeof cb === 'function') cb(null, { ok: true, queued: true })
-        return
-      }
-      fetch(FUNCTIONS_URL + '/scout-progress', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-        body: JSON.stringify(body),
-      }).then(function (r) { return r.json() }).then(function (d) {
-        if (typeof cb === 'function') cb(d.ok ? null : (d.error || 'Error'), d)
-      }).catch(function () {
-        // Network failure — queue it
-        self._enqueue(body)
-        if (typeof cb === 'function') cb(null, { ok: true, queued: true })
-      })
+      sb.functions.invoke('scout-progress', { body: body })
+        .then(function (res) {
+          var d = res.data
+          var err = res.error
+          if (err) {
+            self._enqueue(body)
+            if (typeof cb === 'function') cb(null, { ok: true, queued: true })
+            return
+          }
+          if (typeof cb === 'function') cb(d && d.ok ? null : ((d && d.error) || 'Error'), d)
+        }).catch(function () {
+          self._enqueue(body)
+          if (typeof cb === 'function') cb(null, { ok: true, queued: true })
+        })
     },
 
     saveNote: function (windowId, notes, childId, cb) {
-      var tok = _token
-      if (!tok) { if (typeof cb === 'function') cb('No active session'); return }
-      fetch(FUNCTIONS_URL + '/scout-progress', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-        body: JSON.stringify({ windowId: windowId, childId: childId, notes: notes }),
-      }).then(function (r) {
-        if (!r.ok) console.error('[Scout] saveNote HTTP error:', r.status, r.statusText)
-        return r.json()
-      }).then(function (d) {
-        if (!d.ok) console.error('[Scout] saveNote API error:', d.error)
-        if (typeof cb === 'function') cb(d.ok ? null : (d.error || 'Error'))
+      sb.functions.invoke('scout-progress', {
+        body: { windowId: windowId, childId: childId, notes: notes },
+      }).then(function (res) {
+        var d = res.data
+        var err = res.error
+        if (err) {
+          console.error('[Scout] saveNote invoke error:', err.message)
+          if (typeof cb === 'function') cb(err.message)
+          return
+        }
+        if (!d || !d.ok) console.error('[Scout] saveNote API error:', d && d.error)
+        if (typeof cb === 'function') cb(d && d.ok ? null : ((d && d.error) || 'Error'))
       }).catch(function (e) {
-        console.error('[Scout] saveNote fetch failed:', e.message)
+        console.error('[Scout] saveNote failed:', e.message)
         if (typeof cb === 'function') cb(e.message)
       })
     },
