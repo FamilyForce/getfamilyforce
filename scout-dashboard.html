@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260317p">
+<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260318a">
 <style>
 /* ── Pre-birth mode ──────────────────────────────────────── */
 .prebirth-countdown {
@@ -265,7 +265,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/scout-dashboard.js?v=20260317p"></script>
+<script src="/assets/scout-dashboard.js?v=20260318a"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('home', function (user, child, sub) {
@@ -412,14 +412,44 @@ function renderHome(child, sub) {
       if (!hasActions) {
         var welcomeHtml =
           '<div class="welcome-card">' +
-          '<p class="welcome-card-title">Welcome to Scout.</p>' +
-          '<p class="welcome-card-text">' + name + ' has ' + (sections.closing.length + sections.thisMonth.length) + ' open windows right now. ' + (sections.closing.length > 0 ? 'Start with the ones marked ⚠️ Closing soon.' : 'Tap any window to learn more and mark your progress.') + '</p>' +
+          '<p class="welcome-card-title">' + name + ' is ' + ageM + ' month' + (ageM === 1 ? '' : 's') + ' old. Here\'s where to start.</p>' +
+          '<p class="welcome-card-text">' + (sections.closing.length > 0 ? '<strong>' + sections.closing.length + ' window' + (sections.closing.length === 1 ? '' : 's') + ' are closing this month</strong> \u2014 start there. ' : '') + 'Tap any window to see what to do and mark your progress.</p>' +
           '</div>'
         var progressWrap = document.querySelector('.progress-bar-wrap')
         if (progressWrap) progressWrap.style.display = 'none'
         document.getElementById('windowSections').insertAdjacentHTML('beforebegin', welcomeHtml)
       }
     } catch(e) { console.warn('[Scout] welcome card:', e) }
+
+    // Family Circle streak — show if a partner has marked windows recently
+    try {
+      var sb2 = ScoutDash.getSb()
+      var u2  = ScoutDash.getUser()
+      if (sb2 && u2 && child) {
+        var sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString()
+        sb2.from('window_progress')
+          .select('updated_by_user_id, updated_by_name, updated_at')
+          .eq('child_id', child.id)
+          .neq('updated_by_user_id', u2.id)
+          .gte('updated_at', sevenDaysAgo)
+          .then(function(res) {
+            var rows = res.data || []
+            if (rows.length > 0) {
+              var partnerName = rows[0].updated_by_name || 'Your partner'
+              var streakEl = document.createElement('div')
+              streakEl.className = 'family-streak'
+              streakEl.innerHTML =
+                '<div class="family-streak-icon">✔</div>' +
+                '<div>' +
+                  '<div class="family-streak-title">' + ScoutDash._esc(partnerName) + ' marked ' + rows.length + ' window' + (rows.length === 1 ? '' : 's') + ' this week.</div>' +
+                  '<div class="family-streak-sub">You\'re both tracking ' + ScoutDash._esc(name) + '\'s progress.</div>' +
+                '</div>'
+              var sections2 = document.getElementById('windowSections')
+              if (sections2) sections2.insertAdjacentElement('beforebegin', streakEl)
+            }
+          })
+      }
+    } catch(e) { console.warn('[Scout] family streak:', e) }
   })
 
   // Sidebar trial info
@@ -460,14 +490,17 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
   // Closing soon — always shown, even when empty
   var closingContent
   if (sections.closing.length > 0) {
-    closingContent = '<div class="window-grid">'
+    var nextDigestDays = Math.round((new Date(nextBday) - new Date()) / 86400000)
+    var nextDigestStr  = nextDigestDays <= 7 ? 'in ' + nextDigestDays + ' day' + (nextDigestDays === 1 ? '' : 's') : 'next month'
+    closingContent = '<div class="heads-up-banner">These window' + (sections.closing.length === 1 ? '' : 's') + ' close when ' + name + ' turns ' + (ageM + 1) + ' months. Worth doing before the next digest lands ' + nextDigestStr + '.</div>'
+    closingContent += '<div class="window-grid">'
     sections.closing.forEach(function (w) { closingContent += ScoutDash.renderCard(w) })
     closingContent += '</div>'
   } else {
     closingContent = '<p class="section-empty">No windows closing soon — you\'re on track.</p>'
   }
   html += collapsibleSection('closing',
-    '<span class="section-label section-label-closing">⚠️ Closing soon</span><span class="section-count">(' + sections.closing.length + ')</span>',
+    '<span class="section-label section-label-closing">Heads up</span><span class="section-count">(' + sections.closing.length + ' closing this month)</span>',
     closingContent,
     false)  // default collapsed
 
@@ -536,20 +569,22 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
 function renderPaywall(name, ageM) {
   var nextM = ageM + 1
   return '<div class="paywall-card">' +
-    '<p class="paywall-title">' + name + '\'s ' + nextM + '-month windows are ready.</p>' +
+    '<p class="paywall-title">' + name + '\'s ' + nextM + '-month windows are ready when you are.</p>' +
+    '<p class="paywall-sub">The next digest is queued for ' + name + '\'s ' + nextM + '-month birthday. Subscribe to receive it.</p>' +
     '<div class="paywall-blur-row">' +
     '<div class="paywall-blur-pill">Introduce texture variety in solids</div>' +
     '<div class="paywall-blur-pill">Separation anxiety response</div>' +
     '</div>' +
-    '<p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px">Subscribe to continue.</p>' +
     '<div class="paywall-plans">' +
     '<button class="paywall-plan-btn paywall-plan-annual" onclick="startCheckout(\'annual\')">' +
-    '<span>Annual — $79.99/year</span><span class="paywall-plan-badge">Recommended</span>' +
+    '<span>Annual \u2014 $79.99/year</span><span class="paywall-plan-badge">Best value</span>' +
     '</button>' +
     '<button class="paywall-plan-btn paywall-plan-monthly" onclick="startCheckout(\'monthly\')">' +
-    '<span>Monthly — $9.99/month</span>' +
+    '<span>Monthly \u2014 $9.99/month</span>' +
     '</button>' +
-    '</div></div>'
+    '</div>' +
+    '<p class="paywall-note">No card was required to start. The windows already in your dashboard are yours to keep.</p>' +
+    '</div>'
 }
 
 // ── Pre-birth mode ─────────────────────────────────────────────────────────

@@ -483,7 +483,19 @@
           '</div>'
       }
 
-      var missedHtml = w._sectionTag === 'missed' ? '<p class="card-missed-label">⚠️ This window has closed.</p>' : ''
+      var missedHtml = w._sectionTag === 'missed' ? '<p class="card-missed-label">This window has closed.</p>' : ''
+
+      // "The move" — shown when what_to_do is present and card is not history/preview
+      var moveHtml = ''
+      if (!isPreview && !isHistory && w.what_to_do && w.what_to_do.trim()) {
+        var moveLine = w.what_to_do.split('\n')[0].replace(/^[-•·]\s*/, '').trim()
+        if (moveLine) {
+          moveHtml = '<div class="card-move">' +
+            '<div class="card-move-label">The move</div>' +
+            '<div class="card-move-text">' + ScoutDash._esc(moveLine) + '</div>' +
+            '</div>'
+        }
+      }
 
       // Date picker prompt (shown after marking done/in-progress)
       var datePromptHtml = (!isPreview && !isHistory)
@@ -526,6 +538,7 @@
         missedHtml +
         '<p class="card-title" data-modal-open="' + w.id + '">' + ScoutDash._esc(w.title) + '</p>' +
         '<p class="card-hook">' + ScoutDash._esc(hook) + '</p>' +
+        moveHtml +
         actionsHtml + datePromptHtml + attrHtml + noteHtml +
         '</div>'
     },

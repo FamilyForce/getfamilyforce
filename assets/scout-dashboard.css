@@ -241,14 +241,66 @@ input, textarea, select { font-family: var(--sans); }
 
 /* ─── WELCOME STATE ──────────────────────────────────────────────────────── */
 .welcome-card {
-  background: var(--terra-tint);
-  border-left: 3px solid var(--terra);
-  border-radius: 0 var(--radius-card) var(--radius-card) 0;
-  padding: 16px 20px;
+  background: var(--indigo-deep, #1E1248);
+  border-radius: var(--radius-card);
+  padding: 20px 22px;
   margin-bottom: 24px;
 }
-.welcome-card-title { font-size: 15px; font-weight: 600; color: var(--terra-deep); margin-bottom: 4px; }
-.welcome-card-text { font-size: 14px; color: var(--text-mid); line-height: 1.6; }
+.welcome-card-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 400;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.welcome-card-text { font-size: 14px; color: rgba(255,255,255,.65); line-height: 1.7; }
+.welcome-card-text strong { color: rgba(255,255,255,.9); }
+
+/* ─── HEADS UP BANNER (inside closing section) ───────────────────────────── */
+.heads-up-banner {
+  background: var(--amber-bg, #FFFBEB);
+  border: 1px solid var(--amber-border, #FDE68A);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 13px;
+  color: var(--amber, #B45309);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+/* ─── THE MOVE BOX (inside window cards) ─────────────────────────────────── */
+.card-move {
+  background: var(--terra-tint);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.card-move-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 5px;
+}
+.card-move-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+
+/* ─── FAMILY CIRCLE STREAK ───────────────────────────────────────────────── */
+.family-streak {
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.family-streak-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.family-streak-title { font-weight: 600; color: #16A34A; margin-bottom: 2px; }
+.family-streak-sub { color: var(--text-mid); }
 
 /* ─── TRIAL BANNER (top of page) ─────────────────────────────────────────── */
 .trial-banner {
@@ -271,7 +323,7 @@ input, textarea, select { font-family: var(--sans); }
 .section-label {
   font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
 }
-.section-label-closing { color: var(--red); }
+.section-label-closing { color: var(--amber, #B45309); }
 .section-label-month   { color: var(--text-mid); }
 .section-label-coming  { color: var(--text-dim); }
 .section-label-done    { color: var(--text-dim); }
@@ -347,7 +399,7 @@ input, textarea, select { font-family: var(--sans); }
   cursor: pointer;
 }
 .card-hook { font-size: 14px; color: var(--text-mid); line-height: 1.5; margin-bottom: 14px; }
-.card-missed-label { font-size: 12px; font-weight: 600; color: var(--red); margin-bottom: 8px; }
+.card-missed-label { font-size: 12px; font-weight: 500; color: var(--amber, #B45309); margin-bottom: 8px; }
 
 /* Action buttons */
 .card-actions { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -414,7 +466,9 @@ input, textarea, select { font-family: var(--sans); }
   padding: 28px;
   margin-top: 28px;
 }
-.paywall-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+.paywall-title { font-family: var(--serif); font-size: 20px; font-weight: 400; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+.paywall-sub { font-size: 14px; color: var(--text-mid); margin-bottom: 20px; line-height: 1.65; }
+.paywall-note { font-size: 12px; color: var(--text-dim); margin-top: 12px; line-height: 1.6; }
 .paywall-blur-row { display: flex; gap: 8px; margin-bottom: 20px; }
 .paywall-blur-pill {
   background: var(--elevated); border-radius: var(--radius-pill);
