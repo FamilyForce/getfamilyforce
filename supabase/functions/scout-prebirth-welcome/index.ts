@@ -35,152 +35,149 @@ function err(status: number, msg: string) {
   })
 }
 
-// ─── Email HTML ───────────────────────────────────────────────────────────────
+
+// ─── Palette ──────────────────────────────────────────────────────────────────
+const C = {
+  bg: '#F7F5FF', surface: '#FFFFFF', border: '#E5E2EC',
+  text: '#1D1D1F', textMid: '#5C5960', textDim: '#8A879A',
+  terra: '#6E4ED6', terraTint: '#F0EBFF', indigoDeep: '#1E1248',
+  amber: '#B45309', amberBg: '#FFFBEB', amberBorder: '#FDE68A',
+}
+
+// ─── Email HTML (v2) ──────────────────────────────────────────────────────────
 function buildWelcomeEmail(opts: {
   childName:    string
+  parentName?:  string
   dueDate:      Date
   daysLeft:     number
-  windows:      Array<{ title: string; why_it_matters: string; urgency: string }>
+  windows:      Array<{ title: string; why_it_matters: string; what_to_do?: string; urgency: string }>
   dashboardUrl: string
   siteUrl:      string
   userId:       string
 }): string {
-  const { childName, dueDate, daysLeft, windows, dashboardUrl, siteUrl, userId } = opts
+  const { childName, parentName, dueDate, daysLeft, windows, dashboardUrl, siteUrl, userId } = opts
 
   const dueFmt  = dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
-  const todayStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+  const greeting = parentName ? `Hi ${parentName},` : 'Hi there,'
 
-  const windowItems = windows.map(w => {
-    const badgeBg = w.urgency === 'clinical' ? '#FEE2E2' : w.urgency === 'screening' ? '#EFF6FF' : '#F5F3FF'
-    const badgeFg = w.urgency === 'clinical' ? '#DC2626' : w.urgency === 'screening' ? '#2563EB' : '#6E4ED6'
-    const lbl     = w.urgency === 'clinical' ? 'Clinical' : w.urgency === 'screening' ? 'Screening' : 'Advisory'
+  const windowCards = windows.map(w => {
+    const sentences = w.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||')
+    const excerpt   = sentences.slice(0, 2).join(' ').trim()
+    const move      = w.what_to_do ? w.what_to_do.split('\n')[0].replace(/^[-•·]\s*/, '').trim() : ''
     return `
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:10px">
-      <tr>
-        <td style="background:#FFFFFF;border:1px solid #E5E2EC;border-radius:12px;padding:18px">
-          <span style="display:inline-block;background:${badgeBg};color:${badgeFg};font-family:'Outfit',Arial,sans-serif;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">${lbl}</span>
-          <h3 style="font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;color:#1D1D1F;margin:0 0 6px">${w.title}</h3>
-          <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6">${w.why_it_matters}</p>
-          <a href="${dashboardUrl}" style="display:inline-block;margin-top:10px;font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#6E4ED6;font-weight:600;text-decoration:none">See this in your tracker →</a>
-        </td>
-      </tr>
-    </table>`
+    <tr><td style="padding-bottom:16px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1px solid ${C.border};border-radius:14px">
+        <tr><td style="padding:20px 22px">
+          <table width="100%" cellpadding="0" cellspacing="0">
+            <tr><td style="padding-bottom:8px"><p style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:${C.text};margin:0;line-height:1.3">${w.title}</p></td></tr>
+            <tr><td style="padding-bottom:14px"><p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${excerpt}</p></td></tr>
+            ${move ? `<tr><td><table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:10px"><tr><td style="padding:12px 16px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p><p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.6">${move}</p></td></tr></table></td></tr>` : ''}
+          </table>
+        </td></tr>
+      </table>
+    </td></tr>`
   }).join('')
 
-  const noWindowsMsg = windows.length === 0
-    ? `<p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 16px;line-height:1.6">Your prep windows will open as your due date gets closer. We'll email you on the ${dueDate.getUTCDate()}th of each month with what's ready.</p>`
+  const noWindowNote = windows.length === 0
+    ? `<tr><td style="padding-bottom:24px"><p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.75">Your prep windows open as the due date gets closer. We'll check in again as ${childName}'s arrival approaches.</p></td></tr>`
     : ''
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Welcome to Scout — ${childName} arrives in ${daysLeft} days</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light only">
+  <title>Scout — ${childName} arrives in ${daysLeft} days</title>
   <style>
-    body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
-    body{margin:0;padding:0;background:#F5F3FF;font-family:'Outfit',Arial,sans-serif}
+    body{margin:0;padding:0;background:${C.bg};font-family:Arial,sans-serif}
+    @media only screen and (max-width:480px){.email-body{padding:24px 18px!important}.hero-pad{padding:24px 20px 28px!important}}
   </style>
 </head>
-<body style="margin:0;padding:0;background:#F5F3FF">
+<body style="margin:0;padding:0;background:${C.bg}">
 
-  <!-- Preheader -->
-  <div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">${childName} arrives in ${daysLeft} days. Here are your preparation windows — and what happens when the baby arrives.&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;</div>
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all">
+  ${childName} arrives in ${daysLeft} days. Here are your prep windows and what happens when the baby arrives.&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌
+</div>
 
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F3FF">
-    <tr>
-      <td align="center" style="padding:24px 12px 40px">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:${C.bg}">
+<tr><td align="center" style="padding:32px 16px">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;border-radius:20px;overflow:hidden;border:1px solid ${C.border}">
 
-          <!-- Wordmark -->
-          <tr>
-            <td style="padding:0 0 16px">
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;font-weight:700;color:#6E4ED6;letter-spacing:.12em;text-transform:uppercase;margin:0">FamilyForce Scout</p>
-            </td>
-          </tr>
+<!-- HEADER -->
+<tr><td class="hero-pad" style="background:${C.indigoDeep};padding:32px 36px 36px">
+  <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 24px">Scout by FamilyForce</p>
+  <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${childName} arrives in ${daysLeft} days.</p>
+  <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0">Due ${dueFmt} &nbsp;·&nbsp; ${windows.length > 0 ? `${windows.length} prep window${windows.length > 1 ? 's' : ''} open` : 'Prep windows open soon'}</p>
+</td></tr>
 
-          <!-- Hero -->
-          <tr>
-            <td style="background:#FFFFFF;border-radius:16px;padding:28px">
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 6px">${todayStr}</p>
-              <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:400;color:#1D1D1F;margin:0 0 10px;line-height:1.3">${childName} arrives in ${daysLeft} day${daysLeft === 1 ? '' : 's'}.</h1>
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:15px;color:#5C5960;margin:0;line-height:1.6">You're in the right place. Scout tracks developmental windows from birth to 3 years — and before birth, it helps you prepare. Here's what's open right now.</p>
-            </td>
-          </tr>
-          <tr><td style="height:12px"></td></tr>
+<!-- BODY -->
+<tr><td class="email-body" style="background:${C.surface};padding:32px 36px">
+<table width="100%" cellpadding="0" cellspacing="0">
 
-          ${windows.length > 0 ? `
-          <!-- Prep windows -->
-          <tr>
-            <td style="background:#F9F8FD;border:1.5px solid #E5E2EC;border-radius:16px;padding:20px 20px 10px">
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#8A879A;letter-spacing:.1em;text-transform:uppercase;margin:0 0 16px">Your preparation windows</p>
-              ${windowItems}
-            </td>
-          </tr>
-          <tr><td style="height:12px"></td></tr>` : ''}
+<!-- Greeting -->
+<tr><td style="padding-bottom:24px;border-bottom:1px solid ${C.border}">
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.text};margin:0 0 14px;font-weight:600">${greeting}</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0 0 10px;line-height:1.75">Welcome to Scout. ${childName} arrives in ${daysLeft} days — which means there are a few things worth doing now, before you're too tired to think straight.</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0;line-height:1.75">I got a lot of this wrong with my first son because nobody told me what actually mattered in advance. Here's the short list.</p>
+</td></tr>
+<tr><td style="padding-bottom:24px"></td></tr>
 
-          ${noWindowsMsg ? `<tr><td style="background:#F9F8FD;border-radius:12px;padding:18px">${noWindowsMsg}</td></tr><tr><td style="height:12px"></td></tr>` : ''}
+${windows.length > 0 ? `<tr><td style="padding-bottom:10px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.textDim};margin:0">Do before ${dueFmt}</p></td></tr>` : ''}
+${noWindowNote}
+${windowCards}
 
-          <!-- What happens at birth -->
-          <tr>
-            <td style="background:#EDE9FF;border-radius:16px;padding:24px">
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#6E4ED6;letter-spacing:.1em;text-transform:uppercase;margin:0 0 12px">When ${childName} arrives</p>
-              <table width="100%" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td style="padding:8px 0;border-top:1px solid #D4C8F8">
-                    <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#3D2A9E;margin:0;line-height:1.6"><strong>1.</strong> Open the Scout dashboard and confirm your baby arrived.</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:8px 0;border-top:1px solid #D4C8F8">
-                    <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#3D2A9E;margin:0;line-height:1.6"><strong>2.</strong> Your first month of Scout is free — no card needed.</p>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:8px 0;border-top:1px solid #D4C8F8">
-                    <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#3D2A9E;margin:0;line-height:1.6"><strong>3.</strong> At the end of the first month, you choose a plan to keep going.</p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <tr><td style="height:12px"></td></tr>
-
-          <!-- CTA -->
-          <tr>
-            <td style="background:#F0EBFF;border-radius:16px;padding:24px;text-align:center">
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 16px">View your prep checklist and mark windows as you go.</p>
-              <a href="${dashboardUrl}" style="display:inline-block;background:#6E4ED6;color:#FFFFFF;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;padding:12px 28px;border-radius:100px;text-decoration:none">Open Scout dashboard →</a>
-            </td>
-          </tr>
-          <tr><td style="height:32px"></td></tr>
-
-          <!-- Signature -->
-          <tr>
-            <td>
-              <p style="font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1D1D1F;margin:0 0 2px">Jack Hartley</p>
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 6px">Dad of two · Founder, FamilyForce</p>
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6;font-style:italic">Got it wrong with First Son. Got it right with Second Son. Make informed parenting decisions.</p>
-            </td>
-          </tr>
-          <tr><td style="height:32px"></td></tr>
-
-          <!-- Footer -->
-          <tr>
-            <td style="border-top:1px solid #E5E2EC;padding-top:20px">
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0 0 4px">FamilyForce Scout · <a href="${siteUrl}" style="color:#8A879A;text-decoration:none">${siteUrl.replace('https://', '')}</a></p>
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0">You're receiving this because you signed up for Scout. · <a href="${siteUrl}/unsubscribe?user=${userId}" style="color:#8A879A;text-decoration:none">Unsubscribe</a></p>
-            </td>
-          </tr>
-
-        </table>
-      </td>
-    </tr>
+<!-- What happens after birth -->
+<tr><td style="padding-bottom:32px">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:14px">
+    <tr><td style="padding:22px">
+      <p style="font-family:Arial,sans-serif;font-size:13px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 14px">When ${childName} arrives</p>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr><td style="padding:10px 0;border-top:1px solid #D4C8F8">
+          <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.65"><strong>1.</strong> Come back to Scout and confirm your baby arrived. 196 developmental windows open immediately.</p>
+        </td></tr>
+        <tr><td style="padding:10px 0;border-top:1px solid #D4C8F8">
+          <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.65"><strong>2.</strong> Your first month is free — no card needed. Your first digest email arrives automatically.</p>
+        </td></tr>
+        <tr><td style="padding:10px 0;border-top:1px solid #D4C8F8">
+          <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.65"><strong>3.</strong> Every month after that, on your baby's birthday, a new digest lands in your inbox.</p>
+        </td></tr>
+      </table>
+    </td></tr>
   </table>
+</td></tr>
 
-</body>
-</html>`
+<!-- CTA -->
+<tr><td style="padding-bottom:32px;text-align:center">
+  <a href="${dashboardUrl}" style="display:inline-block;background:${C.terra};color:#fff;font-family:Arial,sans-serif;font-size:14px;font-weight:700;padding:13px 32px;border-radius:100px;text-decoration:none">View your prep checklist →</a>
+</td></tr>
+
+<!-- Signature -->
+<tr><td style="border-top:1px solid ${C.border};padding-top:28px">
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.text};margin:0 0 3px;font-weight:600">Jack Hartley</p>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textDim};margin:0 0 16px">Dad of two · Founder, FamilyForce</p>
+  <table cellpadding="0" cellspacing="0" style="border-left:3px solid ${C.border}">
+    <tr><td style="padding:6px 0 6px 14px">
+      <p style="font-family:Georgia,'Times New Roman',serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7;font-style:italic">"I got it wrong with my first son. Got it right with my second — because I finally knew what to watch for. That's what Scout is."</p>
+    </td></tr>
+  </table>
+</td></tr>
+
+</table></td></tr>
+
+<!-- FOOTER -->
+<tr><td style="background:${C.bg};padding:20px 36px;border-top:1px solid ${C.border}">
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0 0 6px">FamilyForce · getfamilyforce.com</p>
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0">
+    You're receiving this because you signed up for Scout.
+    &nbsp;<a href="${siteUrl}/unsubscribe?user=${userId}" style="color:${C.terra};text-decoration:none">Unsubscribe</a>
+  </p>
+</td></tr>
+
+</table></td></tr></table>
+</body></html>`
 }
+
 
 // ─── Main handler ─────────────────────────────────────────────────────────────
 Deno.serve(async (req: Request) => {
@@ -251,14 +248,20 @@ Deno.serve(async (req: Request) => {
     .gte('close_age_weeks', ageWeeks)
     .order('priority', { ascending: true })
 
-  // 6. Build + send email
-  const subject = `Welcome to Scout — ${child.name} arrives in ${daysLeft} day${daysLeft === 1 ? '' : 's'}`
+  // 6. Fetch parent display name
+  const { data: profileData } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
+  const parentName = profileData?.name?.trim() || undefined
+
+  // 7. Build + send email
+  const daysStr = daysLeft === 1 ? 'tomorrow' : `in ${daysLeft} days`
+  const subject = `${child.name} arrives ${daysStr} — your Scout prep list`
 
   const html = buildWelcomeEmail({
     childName:    child.name,
+    parentName,
     dueDate:      due,
     daysLeft,
-    windows:      (windows ?? []) as Array<{ title: string; why_it_matters: string; urgency: string }>,
+    windows:      (windows ?? []) as Array<{ title: string; why_it_matters: string; what_to_do?: string; urgency: string }>,
     dashboardUrl: dashUrl,
     siteUrl,
     userId:       user.id,

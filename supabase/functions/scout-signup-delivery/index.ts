@@ -189,9 +189,14 @@ Deno.serve(async (req: Request) => {
     const subjectLine = buildDigestSubject(child.name, months, aboveFold, weeks)
     const closingCount = aboveFold.filter(w => w.close_age_weeks - weeks <= 4).length
 
+    // 6b. Fetch parent display name
+    const { data: profileData } = await sb.from('profiles').select('name').eq('id', userId).maybeSingle()
+    const parentName = profileData?.name?.trim() || undefined
+
     // 7. Build email HTML
     const emailHtml = buildDigestEmail({
       childName:      child.name,
+      parentName,
       childGender:    child.gender,
       ageMonths:      months,
       aboveFold:      aboveFold as DigestWindow[],

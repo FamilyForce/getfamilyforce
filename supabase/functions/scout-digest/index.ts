@@ -259,13 +259,33 @@ Deno.serve(async (req: Request) => {
       }
 
       // 6. Build subject line
-      const subjectLine  = buildDigestSubject(child.name, months, aboveFold, weeks)
+      const subjectLine  = buildDigestSubject(child.name, months, aboveFold, weeks, 'monthly')
       const closingCount = aboveFold.filter((w: MilestoneWindow) => w.close_age_weeks - weeks <= 4).length
+
+      // 6b. Fetch parent display name + active family circle members
+      const [profileRes, familyRes] = await Promise.all([
+        sb.from('profiles').select('name').eq('id', userId).maybeSingle(),
+        sb.from('family_members')
+          .select('member_user_id')
+          .eq('child_id', child.id)
+          .eq('status', 'active'),
+      ])
+      const ownerName = profileRes.data?.name?.trim() || null
+      const memberIds = (familyRes.data || []).map((m: { member_user_id: string }) => m.member_user_id).filter(Boolean)
+      let parentName = ownerName
+      if (memberIds.length > 0) {
+        const { data: memberProfiles } = await sb.from('profiles').select('name').in('id', memberIds)
+        const memberNames = (memberProfiles || []).map((p: { name: string }) => p.name?.trim()).filter(Boolean)
+        if (memberNames.length > 0 && ownerName) {
+          parentName = ownerName + ' and ' + memberNames[0]
+        }
+      }
 
       // 7. Build email HTML
       const nextBirthday = nextMonthlyBirthday(childDob, now)
       const html = buildDigestEmail({
         childName:      child.name,
+        parentName:     parentName || undefined,
         childGender:    child.gender,
         ageMonths:      months,
         aboveFold:      aboveFold as DigestWindow[],
