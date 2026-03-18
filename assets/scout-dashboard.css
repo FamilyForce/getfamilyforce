@@ -366,6 +366,15 @@ input, textarea, select { font-family: var(--sans); }
 .window-card.state-missed-clinical {
   border-left: 3px solid var(--red);
 }
+/* in_progress window whose developmental window has since closed — elevated urgency */
+.window-card.state-overdue {
+  border-left: 3px solid #D97706;
+  background: #FFFBEB;
+}
+.card-overdue-label {
+  font-size: 12px; font-weight: 600; color: #D97706;
+  margin-bottom: 8px;
+}
 
 /* Card header row */
 .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 10px; }

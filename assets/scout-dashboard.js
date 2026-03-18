@@ -353,8 +353,12 @@
         var isClosing = isActive && (w.close_age_weeks - ageW) <= 4
         var isComing  = w.open_age_weeks > ageW && w.open_age_weeks <= ageW + 8
         var isMissed  = w.close_age_weeks < ageW && w.urgency === 'clinical' && st !== 'completed'
+        // in_progress windows that have aged out: always keep visible with elevated urgency
+        // regardless of urgency tier — stays until user marks done or skip
+        var isOverdue = w.close_age_weeks < ageW && st === 'in_progress'
 
-        if (isMissed)         { w._sectionTag = 'missed';  thisMonth.push(w) }
+        if (isOverdue)        { w._sectionTag = 'overdue'; closing.push(w) }
+        else if (isMissed)    { w._sectionTag = 'missed';  thisMonth.push(w) }
         else if (isClosing)   { w._sectionTag = 'closing'; closing.push(w) }
         else if (isActive)    { w._sectionTag = 'month';   thisMonth.push(w) }
         else if (isComing)    { w._sectionTag = 'coming';  comingUp.push(w) }
@@ -457,7 +461,8 @@
       if (w._status === 'in_progress') stateClass = 'state-in-progress'
       else if (w._status === 'completed' || w._status === 'skipped') stateClass = 'state-done'
       else if (isPreview)  stateClass = 'state-coming'
-      if (w._sectionTag === 'missed') stateClass = 'state-missed-clinical'
+      if (w._sectionTag === 'missed')   stateClass = 'state-missed-clinical'
+      if (w._sectionTag === 'overdue')  stateClass = 'state-overdue'
 
       var actionsHtml = ''
       if (!isPreview && !isHistory) {
@@ -483,7 +488,8 @@
           '</div>'
       }
 
-      var missedHtml = w._sectionTag === 'missed' ? '<p class="card-missed-label">This window has closed.</p>' : ''
+      var missedHtml  = w._sectionTag === 'missed'  ? '<p class="card-missed-label">This window has closed.</p>' : ''
+      var overdueHtml = w._sectionTag === 'overdue' ? '<p class="card-overdue-label">⚠ Window closed — mark as done or skip.</p>' : ''
 
       // "The move" — shown when what_to_do is present and card is not history/preview
       var moveHtml = ''
@@ -535,7 +541,7 @@
         '</div>' +
         (!isHistory ? '<button class="card-expand" data-modal-open="' + w.id + '" aria-label="Open detail for ' + ScoutDash._esc(w.title) + '">↗</button>' : '') +
         '</div>' +
-        missedHtml +
+        missedHtml + overdueHtml +
         '<p class="card-title" data-modal-open="' + w.id + '">' + ScoutDash._esc(w.title) + '</p>' +
         '<p class="card-hook">' + ScoutDash._esc(hook) + '</p>' +
         moveHtml +
