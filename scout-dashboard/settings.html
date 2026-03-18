@@ -317,16 +317,38 @@ function renderSubCard(sub, child) {
   }
 
   var statusLabel = { trialing: 'Free trial', active: 'Active', cancelling: 'Active (cancels soon)', cancelled: 'Cancelled' }[sub.status] || sub.status
-  var html = subRow('Status', statusLabel)
+  var html = subRow('Status', statusLabel)  // overwritten below once gift check resolves
 
   if (sub.status === 'trialing') {
     var end  = new Date(sub.trial_end)
     var days = Math.ceil((end - new Date()) / 86400000)
-    html += subRow('Trial ends', end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + ' (' + days + ' days)')
-    html += '<div class="settings-row">' +
+    var endFmt = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+
+    // Check if this is a gifted subscription — changes status label + hides subscribe buttons
+    var _sb = ScoutDash.getSb()
+    var _user = ScoutDash.getUser()
+    if (_sb && _user) {
+      _sb.from('scout_gifts').select('id').eq('redeemed_by', _user.id).maybeSingle()
+        .then(function (res) {
+          var isGift = !!(res.data && res.data.id)
+          var statusRow = card.querySelector('[data-row="status"]')
+          if (statusRow && isGift) statusRow.querySelector('.settings-row-value').textContent = 'Gifted'
+          var endsLabel = card.querySelector('[data-row="ends"]')
+          if (endsLabel) endsLabel.querySelector('.settings-row-label').textContent = isGift ? 'Gift ends' : 'Trial ends'
+          if (isGift) {
+            // Hide subscribe section for gift users
+            var subscribeSections = card.querySelectorAll('[data-gift-hide]')
+            subscribeSections.forEach(function (el) { el.style.display = 'none' })
+          }
+        })
+    }
+
+    html = subRow('Status', statusLabel, 'status') +
+      subRow('Trial ends', endFmt + ' (' + days + ' days)', 'ends') +
+      '<div class="settings-row" data-gift-hide>' +
       '<div><p class="settings-row-label">Subscribe now</p><p class="settings-row-sub">Keep Scout going after your trial ends.</p></div>' +
       '</div>' +
-      '<div class="settings-row" style="flex-direction:column;gap:10px;align-items:stretch">' +
+      '<div class="settings-row" style="flex-direction:column;gap:10px;align-items:stretch" data-gift-hide>' +
       '<button class="btn btn-primary" onclick="openStripeForm(\'annual\')">Annual — $79.99 <span style="font-size:11px;opacity:.8;margin-left:4px">Recommended</span></button>' +
       '<button class="btn btn-secondary" onclick="openStripeForm(\'monthly\')">Monthly — $9.99</button>' +
       '</div>'
@@ -366,8 +388,9 @@ function renderSubCard(sub, child) {
   card.innerHTML = html
 }
 
-function subRow(label, value) {
-  return '<div class="settings-row"><p class="settings-row-label">' + label + '</p><span class="settings-row-value">' + value + '</span></div>'
+function subRow(label, value, dataRow) {
+  var attr = dataRow ? ' data-row="' + dataRow + '"' : ''
+  return '<div class="settings-row"' + attr + '><p class="settings-row-label">' + label + '</p><span class="settings-row-value">' + value + '</span></div>'
 }
 
 // ── Stripe subscribe ──────────────────────────────────────────────────────────
