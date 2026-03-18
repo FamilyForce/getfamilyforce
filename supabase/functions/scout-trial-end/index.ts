@@ -175,12 +175,15 @@ Deno.serve(async (req: Request) => {
       const monthlyCta = `${siteUrl}/sign-in.html?intent=subscribe&plan=monthly`
 
       // 9. Build email
-      const subject  = months === 12
-        ? `${child.name} turns 1 today. Two things.`
-        : `${child.name} turns ${months} months today. Here is what comes next.`
-      const preview  = 'Your trial ends today. The next digest is ready when you are.'
+      const { data: teProfileData } = await sb.from('profiles').select('name').eq('id', userId).maybeSingle()
+      const parentName = teProfileData?.name?.trim() || undefined
+
+      const subject = months === 12
+        ? `${child.name} turns 1 today -- your Scout trial ends today`
+        : `${child.name} turns ${months} months today -- your Scout trial ends today`
       const html     = buildTrialEndEmail({
         childName:      child.name,
+        parentName,
         childGender:    child.gender,
         ageMonths:      months,
         weeksSinceJoin: wks,
