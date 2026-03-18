@@ -442,9 +442,16 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
           body: JSON.stringify({ windowId: windowId, childId: childId, notes: notes }),
-        }).then(function (r) { return r.json() }).then(function (d) {
+        }).then(function (r) {
+          if (!r.ok) console.error('[Scout] saveNote HTTP error:', r.status, r.statusText)
+          return r.json()
+        }).then(function (d) {
+          if (!d.ok) console.error('[Scout] saveNote API error:', d.error)
           if (typeof cb === 'function') cb(d.ok ? null : (d.error || 'Error'))
-        }).catch(function (e) { if (typeof cb === 'function') cb(e.message) })
+        }).catch(function (e) {
+          console.error('[Scout] saveNote fetch failed:', e.message)
+          if (typeof cb === 'function') cb(e.message)
+        })
       })
     },
 
@@ -609,8 +616,14 @@
         if (stat) { stat.className = 'note-status saving'; stat.textContent = 'Saving…' }
         ScoutDash.saveNote(wid, text, childId, function (err) {
           if (stat) {
-            if (err) { stat.className = 'note-status error'; stat.textContent = 'Could not save. Tap to retry.' }
-            else     { stat.className = 'note-status saved'; stat.textContent = 'Saved' }
+            if (err) {
+              console.error('[Scout] saveNote failed:', err)
+              stat.className = 'note-status error'
+              stat.textContent = 'Could not save. Tap to retry.'
+            } else {
+              stat.className = 'note-status saved'
+              stat.textContent = 'Saved'
+            }
           }
           // Update lastSaved so closeModal flush knows this is already persisted
           var modalTA = document.getElementById('modalNoteTA')
