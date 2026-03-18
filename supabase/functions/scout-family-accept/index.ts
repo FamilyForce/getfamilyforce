@@ -16,7 +16,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Headers': 'authorization, content-type',
+  'Access-Control-Allow-Headers': 'authorization, content-type, x-client-info, apikey',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
@@ -34,13 +34,17 @@ Deno.serve(async (req: Request) => {
     const authHeader = req.headers.get('Authorization')
     if (!authHeader?.startsWith('Bearer ')) return err(401, 'Missing auth token')
 
-    const sb = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-    )
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
+    const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
-    const { data: { user }, error: authErr } = await sb.auth.getUser(authHeader.replace('Bearer ', ''))
-    if (authErr || !user) return err(401, 'Invalid session')
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: { 'Authorization': authHeader, 'apikey': SERVICE_ROLE },
+    })
+    if (!authRes.ok) return err(401, 'Invalid or expired session')
+    const authData = await authRes.json()
+    const userId = authData.id as string
+
+    const sb = createClient(SUPABASE_URL, SERVICE_ROLE)
 
     const { childId, inviteEmail } = await req.json()
     if (!childId || !inviteEmail) return err(400, 'Missing childId or inviteEmail')
@@ -66,9 +70,9 @@ Deno.serve(async (req: Request) => {
     const { error: updateErr } = await sb
       .from('family_members')
       .update({
-        member_user_id: user.id,
+        member_user_id: userId,
         status:         'active',
-        joined_at:      new Date().toISOString(),
+        accepted_at:    new Date().toISOString(),
       })
       .eq('id', invite.id)
 
