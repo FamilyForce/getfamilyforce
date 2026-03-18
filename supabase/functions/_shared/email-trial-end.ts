@@ -254,108 +254,137 @@ export function buildTrialEndEmail(opts: {
 }
 
 // ─── Build re-engagement email HTML ───────────────────────────────────────────
+
+// ─── Palette (re-engagement shares the v2 palette) ────────────────────────────
+const C_RE = {
+  bg: '#F7F5FF', surface: '#FFFFFF', border: '#E5E2EC',
+  text: '#1D1D1F', textMid: '#5C5960', textDim: '#8A879A',
+  terra: '#6E4ED6', terraTint: '#F0EBFF', indigoDeep: '#1E1248',
+}
+
+// ─── Build re-engagement email HTML (v2) ──────────────────────────────────────
 export function buildReengagementEmail(opts: {
   childName:    string
+  parentName?:  string
   ageMonths:    number
   topWindow:    { title: string; why_it_matters: string; what_to_do: string } | null
   subscribeCta: string
   siteUrl:      string
   userId:       string
 }): string {
-  const { childName, ageMonths, topWindow, subscribeCta, siteUrl, userId } = opts
+  const { childName, parentName, ageMonths, topWindow, subscribeCta, siteUrl, userId } = opts
   const nextMonth = ageMonths + 1
+  const greeting  = parentName ? `Hi ${parentName},` : 'Hi there,'
 
-  const windowBlock = topWindow
-    ? `
-    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px">
-      <tr>
-        <td style="background:#FFFFFF;border:1px solid #E5E2EC;border-radius:12px;padding:20px">
-          <p style="font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:600;color:#1D1D1F;margin:0 0 8px">${topWindow.title}</p>
-          <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0;line-height:1.7">${topWindow.why_it_matters}</p>
-          ${topWindow.what_to_do ? `<p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:12px 0 0;line-height:1.7">${topWindow.what_to_do.split('\n').slice(0, 3).join(' ')}</p>` : ''}
-        </td>
-      </tr>
-    </table>`
-    : ''
+  const preheader = `${childName} turned ${ageMonths} months a month ago. One window I want to flag before ${nextMonth} months passes.`
 
-  const todayStr = new Date().toLocaleDateString('en-US', {
-    month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
-  })
+  const bodyText = topWindow
+    ? topWindow.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim()
+    : `There are still open windows for ${childName} at ${ageMonths} months.`
+
+  const move = topWindow?.what_to_do
+    ? topWindow.what_to_do.split('\n')[0].replace(/^[-•·]\s*/, '').trim()
+    : `Open Scout to see ${childName}'s open windows for this month.`
+
+  const windowCard = topWindow ? `
+  <tr><td style="padding-bottom:28px">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:${C_RE.surface};border:1px solid ${C_RE.border};border-radius:14px">
+      <tr><td style="padding:20px 22px">
+        <table width="100%" cellpadding="0" cellspacing="0">
+          <tr><td style="padding-bottom:8px"><p style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:${C_RE.text};margin:0;line-height:1.3">${topWindow.title}</p></td></tr>
+          <tr><td style="padding-bottom:14px"><p style="font-family:Arial,sans-serif;font-size:14px;color:${C_RE.textMid};margin:0;line-height:1.7">${bodyText}</p></td></tr>
+          <tr><td>
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:${C_RE.terraTint};border-radius:10px">
+              <tr><td style="padding:12px 16px">
+                <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C_RE.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p>
+                <p style="font-family:Arial,sans-serif;font-size:14px;color:${C_RE.text};margin:0;line-height:1.6">${move}</p>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </td></tr>` : ''
 
   return `<!DOCTYPE html>
 <html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="light only">
   <meta name="x-apple-disable-message-reformatting">
   <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
   <title>${childName} turned ${ageMonths} months a month ago</title>
   <style>
     body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
     table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}
-    body{margin:0;padding:0;background:#F5F3FF;font-family:'Outfit',Arial,sans-serif}
+    body{margin:0;padding:0;background:${C_RE.bg};font-family:Arial,sans-serif}
+    @media only screen and (max-width:480px){.email-body{padding:24px 18px!important}.hero-pad{padding:24px 20px 28px!important}}
   </style>
 </head>
-<body style="margin:0;padding:0;background:#F5F3FF">
+<body style="margin:0;padding:0;background:${C_RE.bg}">
 
-  <div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">${childName} turned ${ageMonths} months a month ago. One window I want to flag before ${nextMonth} months passes.&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;</div>
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all">
+  ${preheader}&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;
+</div>
 
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F3FF">
-    <tr>
-      <td align="center" style="padding:24px 12px 40px">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:${C_RE.bg}">
+<tr><td align="center" style="padding:32px 16px">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;border-radius:20px;overflow:hidden;border:1px solid ${C_RE.border}">
 
-          <tr><td style="padding:0 0 16px"><p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;font-weight:700;color:#6E4ED6;letter-spacing:.12em;text-transform:uppercase;margin:0">FamilyForce Scout</p></td></tr>
+<!-- HEADER -->
+<tr><td class="hero-pad" style="background:${C_RE.indigoDeep};padding:32px 36px 36px">
+  <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 24px">Scout by FamilyForce</p>
+  <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${childName} is ${ageMonths} months old.</p>
+  <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0">One window before you go.</p>
+</td></tr>
 
-          <tr>
-            <td style="background:#FFFFFF;border-radius:16px;padding:28px">
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 6px">${todayStr}</p>
-              <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:400;color:#1D1D1F;margin:0 0 10px;line-height:1.3">${childName} turned ${ageMonths} months a month ago.</h1>
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:15px;color:#5C5960;margin:0;line-height:1.6">You did not subscribe to Scout after the trial. That is completely fine.</p>
-            </td>
-          </tr>
-          <tr><td style="height:16px"></td></tr>
+<!-- BODY -->
+<tr><td class="email-body" style="background:${C_RE.surface};padding:32px 36px">
+<table width="100%" cellpadding="0" cellspacing="0">
 
-          <tr><td><p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 14px;line-height:1.6">One thing I want to flag before ${nextMonth} months passes:</p></td></tr>
+<!-- Greeting -->
+<tr><td style="padding-bottom:24px;border-bottom:1px solid ${C_RE.border}">
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C_RE.text};margin:0 0 14px;font-weight:600">${greeting}</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C_RE.textMid};margin:0 0 10px;line-height:1.75">You didn't subscribe to Scout after the trial -- which is completely fine.</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C_RE.textMid};margin:0;line-height:1.75">Before I go, one window I'd flag for ${ageMonths} months.</p>
+</td></tr>
+<tr><td style="padding-bottom:24px"></td></tr>
 
-          ${windowBlock}
+${windowCard}
 
-          <tr><td><p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 16px;line-height:1.6">If you want the rest of ${childName}'s windows for this month, they are waiting.</p></td></tr>
+<!-- CTA -->
+<tr><td style="padding-bottom:32px;text-align:center">
+  <a href="${subscribeCta}" style="display:inline-block;background:${C_RE.terra};color:#fff;font-family:Arial,sans-serif;font-size:14px;font-weight:700;padding:13px 30px;border-radius:100px;text-decoration:none">See ${childName}'s ${nextMonth}-month windows &rarr;</a>
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:${C_RE.textDim};margin:10px 0 0">$9.99/month or $79.99/year. Annual saves 33%.</p>
+</td></tr>
 
-          <tr>
-            <td align="center">
-              <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${subscribeCta}" style="height:44px;v-text-anchor:middle;width:300px;" arcsize="50%" stroke="f" fillcolor="#6E4ED6"><w:anchorlock/><center style="color:#ffffff;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;">See ${childName}'s ${nextMonth}-month windows →</center></v:roundrect><![endif]-->
-              <!--[if !mso]><!-->
-              <a href="${subscribeCta}" style="display:inline-block;background:#6E4ED6;color:#FFFFFF;font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:100px;text-decoration:none;mso-hide:all">See ${childName}'s ${nextMonth}-month windows →</a>
-              <!--<![endif]-->
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;text-align:center;margin:12px 0 0">${PRICE_MONTHLY_DISPLAY}/month or ${PRICE_ANNUAL_DISPLAY}/year. Annual is better value.</p>
-            </td>
-          </tr>
-          <tr><td style="height:24px"></td></tr>
+<!-- Sign-off -->
+<tr><td style="padding-bottom:32px">
+  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C_RE.textMid};margin:0;line-height:1.75">If now isn't the right time, this is the last email from Scout.</p>
+</td></tr>
 
-          <tr><td><p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0;line-height:1.6">If now is not the right time, no more emails from Scout.</p></td></tr>
-          <tr><td style="height:32px"></td></tr>
-
-          <tr><td>
-            <p style="font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1D1D1F;margin:0 0 2px">Jack Hartley</p>
-            <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 6px">Dad of two · Founder, FamilyForce</p>
-            <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0;line-height:1.6;font-style:italic">Got it wrong with First Son. Got it right with Second Son. Make informed parenting decisions.</p>
-          </td></tr>
-          <tr><td style="height:32px"></td></tr>
-
-          <tr>
-            <td style="border-top:1px solid #E5E2EC;padding-top:20px">
-              <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0"><a href="${siteUrl}/unsubscribe?user=${userId}" style="color:#8A879A;text-decoration:none">Stop all Scout emails</a></p>
-            </td>
-          </tr>
-
-        </table>
-      </td>
-    </tr>
+<!-- Signature -->
+<tr><td style="border-top:1px solid ${C_RE.border};padding-top:28px">
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C_RE.text};margin:0 0 3px;font-weight:600">Jack Hartley</p>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:${C_RE.textDim};margin:0 0 16px">Dad of two &middot; Founder, FamilyForce</p>
+  <table cellpadding="0" cellspacing="0" style="border-left:3px solid ${C_RE.border}">
+    <tr><td style="padding:6px 0 6px 14px">
+      <p style="font-family:Georgia,'Times New Roman',serif;font-size:14px;color:${C_RE.textMid};margin:0;line-height:1.7;font-style:italic">&ldquo;I got it wrong with my first son. Got it right with my second &mdash; because I finally knew what to watch for. That&rsquo;s what Scout is.&rdquo;</p>
+    </td></tr>
   </table>
+</td></tr>
 
-</body>
-</html>`
+</table></td></tr>
+
+<!-- FOOTER -->
+<tr><td style="background:${C_RE.bg};padding:20px 36px;border-top:1px solid ${C_RE.border}">
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:${C_RE.textDim};margin:0 0 6px">FamilyForce &middot; getfamilyforce.com</p>
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:${C_RE.textDim};margin:0">
+    <a href="${siteUrl}/unsubscribe?user=${userId}" style="color:${C_RE.terra};text-decoration:none">Stop all Scout emails</a>
+  </p>
+</td></tr>
+
+</table></td></tr></table>
+</body></html>`
 }
-

@@ -300,9 +300,13 @@ Deno.serve(async (req: Request) => {
 
       const topWindow = windows?.[0] ?? null
 
+      const { data: reProfileData } = await sb.from('profiles').select('name').eq('id', userId).maybeSingle()
+      const parentName = reProfileData?.name?.trim() || undefined
+
       const subscribeCta = `${siteUrl}/sign-in.html?intent=subscribe&plan=annual`
       const html         = buildReengagementEmail({
         childName: child.name,
+        parentName,
         ageMonths: months,
         topWindow,
         subscribeCta,
@@ -310,7 +314,7 @@ Deno.serve(async (req: Request) => {
         userId,
       })
 
-      const subject = `${child.name} is ${months + 1} months. One window you might want to know about.`
+      const subject = `${child.name} is ${months} months -- one window before you go`
 
       const messageId = await sendEmail({
         to:      user.email,
