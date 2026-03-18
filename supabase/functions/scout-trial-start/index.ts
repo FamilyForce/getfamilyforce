@@ -201,19 +201,31 @@ Deno.serve(async (req: Request) => {
       childId = newChild.id
     }
 
-    // 4. Calculate trial_end = child's next MONTHLY birthday
+    // 4. Calculate trial_end
     step = 'calculate-trial-end'
-    const dobDate      = new Date(dob + 'T00:00:00Z')
-    const now          = new Date()
-    const birthDay     = dobDate.getUTCDate()
-    const nextBday     = nextMonthlyBirthday(dobDate, now)
-    const daysUntilEnd = Math.floor((nextBday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+    const now = new Date()
 
-    // Early signup: if next birthday is within 7 days, extend trial to the birthday after that.
-    // The signup digest will be sent immediately but the ICS + footer will point to the later date,
-    // so the user effectively skips the near birthday and gets 1 digest (sent now) pointing forward.
-    const earlySignup = daysUntilEnd <= 7
-    const trialEnd    = earlySignup ? oneMonthForward(nextBday, birthDay) : nextBday
+    // For expecting parents: trial hasn't started yet — it begins when birth is confirmed
+    // via scout-confirm-arrival (Option A). Set trial_end = null so the dashboard
+    // knows not to show a countdown banner.
+    // For born children: trial_end = child's next monthly birthday (one free digest).
+    let trialEnd:   Date | null = null
+    let earlySignup             = false
+
+    if (!isExpecting) {
+      const dobDate      = new Date(dob + 'T00:00:00Z')
+      const birthDay     = dobDate.getUTCDate()
+      const nextBday     = nextMonthlyBirthday(dobDate, now)
+      const daysUntilEnd = Math.floor((nextBday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+
+      // Early signup: if next birthday is within 7 days, skip ahead one month.
+      earlySignup = daysUntilEnd <= 7
+      trialEnd    = earlySignup ? oneMonthForward(nextBday, birthDay) : nextBday
+
+      if (earlySignup) {
+        console.log(`[scout-trial-start] Early signup for user ${user.id} — next birthday ${nextBday.toISOString().split('T')[0]} in ${daysUntilEnd} days. Trial end pushed to ${trialEnd.toISOString().split('T')[0]}.`)
+      }
+    }
 
     // 5. Upsert scout_subscriptions
     step = 'upsert-subscription'
@@ -222,12 +234,12 @@ Deno.serve(async (req: Request) => {
       .upsert({
         user_id:   user.id,
         status:    'trialing',
-        trial_end: trialEnd.toISOString(),
+        trial_end: trialEnd ? trialEnd.toISOString() : null,
       }, { onConflict: 'user_id' })
 
     if (subErr) throw new Error(`Failed to create subscription: ${subErr.message}`)
 
-    // 6. Log to scout_events (non-fatal — table may not exist yet in all environments)
+    // 6. Log to scout_events (non-fatal)
     step = 'log-event'
     try {
       await sb.from('scout_events').insert({
@@ -235,38 +247,34 @@ Deno.serve(async (req: Request) => {
         child_id:   childId,
         event_type: 'trial_started',
         properties: {
-          child_name:    name,
-          child_dob:     dob,
-          child_gender:  gender,
-          trial_end:     trialEnd.toISOString(),
-          days_until_first_birthday: daysUntilEnd,
-          early_signup:  earlySignup,
-          duration_ms:   Date.now() - jobStart,
+          child_name:   name,
+          child_dob:    dob,
+          child_gender: gender,
+          is_expecting: isExpecting,
+          trial_end:    trialEnd ? trialEnd.toISOString() : null,
+          early_signup: earlySignup,
+          duration_ms:  Date.now() - jobStart,
         },
       })
     } catch (logErr) {
-      // Non-fatal: event logging must never block trial creation
-      console.warn('[scout-trial-start] scout_events insert failed (table may not exist):', logErr)
+      console.warn('[scout-trial-start] scout_events insert failed:', logErr)
     }
 
-    if (earlySignup) {
-      console.log(`[scout-trial-start] Early signup for user ${user.id} — next birthday ${nextBday.toISOString().split('T')[0]} in ${daysUntilEnd} days. Signup digest will point to ${trialEnd.toISOString().split('T')[0]}.`)
-    }
-
-    // 7. Fire scout-signup-delivery (async — do not await, don't block the response)
+    // 7. Fire scout-signup-delivery (async — do not await)
+    // For expecting parents: sends the pre-birth welcome digest (prenatal windows).
+    // For born children: sends the first post-birth digest.
     step = 'trigger-delivery'
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
-    // Simulate a DB webhook payload that scout-signup-delivery expects
     const deliveryPayload = {
       type:   'INSERT',
       table:  'scout_subscriptions',
       record: {
         user_id:      user.id,
         status:       'trialing',
-        trial_end:    trialEnd.toISOString(),
-        early_signup: earlySignup,  // true = birthday within 7 days; ICS should skip to trialEnd date
+        trial_end:    trialEnd ? trialEnd.toISOString() : null,
+        early_signup: earlySignup,
       },
     }
 
@@ -282,14 +290,14 @@ Deno.serve(async (req: Request) => {
       telegramAlert(`Failed to trigger signup delivery for user ${user.id}: ${e.message}`)
     })
 
-    // Return immediately — delivery happens in the background
     return new Response(JSON.stringify({
       ok:         true,
       childId,
-      trialEnd:   trialEnd.toISOString(),
-      trialEndFormatted: trialEnd.toLocaleDateString('en-US', {
+      isExpecting,
+      trialEnd:          trialEnd ? trialEnd.toISOString() : null,
+      trialEndFormatted: trialEnd ? trialEnd.toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
-      }),
+      }) : null,
       earlySignup,
     }), {
       status:  200,

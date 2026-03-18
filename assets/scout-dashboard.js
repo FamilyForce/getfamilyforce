@@ -266,6 +266,10 @@
       if (!banner || !_sub) return
       if (_sub.status !== 'trialing') { banner.style.display = 'none'; return }
 
+      // Expecting parents: trial hasn't started yet (trial_end is null until birth confirmed).
+      // Hide the banner entirely — it's irrelevant until the baby arrives.
+      if (!_sub.trial_end || (_child && _child.is_expecting)) { banner.style.display = 'none'; return }
+
       var end     = new Date(_sub.trial_end)
       var now     = new Date()
       var days    = Math.ceil((end - now) / 86400000)
