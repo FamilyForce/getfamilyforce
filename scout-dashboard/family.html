@@ -158,54 +158,70 @@ function renderMembers(members, user, child, primaryName) {
   var list = document.getElementById('membersList')
   if (!list) return
 
-  // Primary account holder (child owner) — show their actual display name
-  var html = renderMemberRow({
-    name:      primaryName || 'Primary account',
-    email:     '',
-    isPrimary: true,
-    isYou:     child.user_id === user.id,
-    status:    'active',
-    userId:    child.user_id,
-  })
-
-  // Partners (excluding primary)
   var partners = members.filter(function (m) { return m.member_user_id !== child.user_id })
   _memberCount = 1 + partners.length
 
-  partners.forEach(function (m) {
-    html += renderMemberRow({
-      name:    m.invited_email || 'Partner',
-      email:   m.invited_email || '',
-      isPrimary: false,
-      isYou:   m.member_user_id === user.id,
-      status:  m.status || 'pending',
-      memberId: m.id,
+  // Fetch profile names for all partner member_user_ids so we can display real names
+  var memberIds = partners.map(function (m) { return m.member_user_id }).filter(Boolean)
+  var profileFetch = memberIds.length > 0
+    ? ScoutDash.getSb().from('profiles').select('id, name').in('id', memberIds)
+    : Promise.resolve({ data: [] })
+
+  profileFetch.then(function (profileRes) {
+    var profileMap = {}
+    ;(profileRes.data || []).forEach(function (p) { profileMap[p.id] = p.name })
+
+    // Primary account holder — show their actual display name
+    var html = renderMemberRow({
+      name:      primaryName || 'Primary account',
+      email:     '',
+      isPrimary: true,
+      isYou:     child.user_id === user.id,
+      status:    'active',
+      userId:    child.user_id,
     })
-  })
 
-  list.innerHTML = html || '<div style="padding:16px 20px;font-size:14px;color:var(--text-dim)">No partners added yet.</div>'
-
-  // Show/hide invite card based on limit
-  var inviteCard = document.getElementById('inviteCard')
-  var limitBanner = document.getElementById('inviteLimitBanner')
-  if (_isPrimary && inviteCard) {
-    if (_memberCount >= FAMILY_CIRCLE_MAX) {
-      inviteCard.style.display = 'none'
-      if (limitBanner) limitBanner.style.display = 'block'
-    } else {
-      inviteCard.style.display = 'block'
-      if (limitBanner) limitBanner.style.display = 'none'
-    }
-  }
-
-  // Wire remove buttons (primary only)
-  if (_isPrimary) {
-    list.querySelectorAll('[data-remove-member]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        removeMember(btn.dataset.removeMember)
+    partners.forEach(function (m) {
+      // Show: profile name → invited email → "Family member"
+      var profileName = profileMap[m.member_user_id]
+      var displayName = (profileName && profileName.trim())
+        || m.invited_email
+        || 'Family member'
+      var displayEmail = (!profileName && m.invited_email) ? '' : (m.invited_email || '')
+      html += renderMemberRow({
+        name:      displayName,
+        email:     displayEmail,
+        isPrimary: false,
+        isYou:     m.member_user_id === user.id,
+        status:    m.status || 'pending',
+        memberId:  m.id,
       })
     })
-  }
+
+    list.innerHTML = html || '<div style="padding:16px 20px;font-size:14px;color:var(--text-dim)">No partners added yet.</div>'
+
+    // Show/hide invite card based on limit
+    var inviteCard = document.getElementById('inviteCard')
+    var limitBanner = document.getElementById('inviteLimitBanner')
+    if (_isPrimary && inviteCard) {
+      if (_memberCount >= FAMILY_CIRCLE_MAX) {
+        inviteCard.style.display = 'none'
+        if (limitBanner) limitBanner.style.display = 'block'
+      } else {
+        inviteCard.style.display = 'block'
+        if (limitBanner) limitBanner.style.display = 'none'
+      }
+    }
+
+    // Wire remove buttons (primary only)
+    if (_isPrimary) {
+      list.querySelectorAll('[data-remove-member]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          removeMember(btn.dataset.removeMember)
+        })
+      })
+    }
+  })
 }
 
 function renderMemberRow(m) {
