@@ -47,9 +47,15 @@ Deno.serve(async (req: Request) => {
     // Decode claims directly from the JWT payload — no extra API call needed.
     const jwtPayload = (() => {
       try {
-        const [, b64] = authHeader.replace('Bearer ', '').split('.')
-        return JSON.parse(atob(b64.replace(/-/g, '+').replace(/_/g, '/')))
-      } catch { return null }
+        const [, b64url] = authHeader.replace('Bearer ', '').split('.')
+        // base64url → base64: replace chars + add required padding
+        const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/')
+          + '=='.slice(0, (4 - b64url.length % 4) % 4)
+        return JSON.parse(atob(b64))
+      } catch (e) {
+        console.error('[scout-progress] JWT decode failed:', e)
+        return null
+      }
     })()
 
     if (!jwtPayload?.sub) return err(401, 'Invalid token payload')
