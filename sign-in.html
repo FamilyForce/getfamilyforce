@@ -1742,11 +1742,18 @@ button { font: inherit; cursor: pointer; }
       var confirm = confirmEl.value;
       if (pw !== confirm) { fieldError('signin-confirm-error','Passwords don\'t match.'); confirmEl.focus(); return; }
       setLoading('Creating account…');
+      // Embed invite params in the redirect URL so they survive Mail → Safari context switches
+      var _inviteChild = localStorage.getItem('ff_invite_child');
+      var _inviteEmail = localStorage.getItem('ff_invite_email');
+      var _redirectUrl = 'https://getfamilyforce.com/sign-in.html';
+      if (_inviteChild && _inviteEmail) {
+        _redirectUrl += '?invite_child=' + encodeURIComponent(_inviteChild) + '&invite_email=' + encodeURIComponent(_inviteEmail);
+      }
       sb.auth.signUp({
         email: email,
         password: pw,
         options: {
-          emailRedirectTo: 'https://getfamilyforce.com/sign-in.html'
+          emailRedirectTo: _redirectUrl
         }
       }).then(function(res) {
         if (res.error) {
@@ -1764,8 +1771,21 @@ button { font: inherit; cursor: pointer; }
         if (res.data && res.data.session) {
           // Email confirmation disabled — session available immediately
           generateAndSaveReferralCode(res.data.session.user.id, email);
-          if (typeof routeAfterSignup === 'function') routeAfterSignup();
-          else window.location.href = 'scout-dashboard.html';
+          var _ic = localStorage.getItem('ff_invite_child');
+          var _ie = localStorage.getItem('ff_invite_email');
+          if (_ic && _ie) {
+            localStorage.removeItem('ff_invite_child');
+            localStorage.removeItem('ff_invite_email');
+            fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
+              body: JSON.stringify({ childId: _ic, inviteEmail: _ie }),
+            }).finally(function() { window.location.href = 'scout-dashboard.html'; });
+          } else if (typeof routeAfterSignup === 'function') {
+            routeAfterSignup();
+          } else {
+            window.location.href = 'scout-dashboard.html';
+          }
         } else {
           // Email confirmation required — show check-your-inbox step
           var confirmAddrEl = document.getElementById('confirm-email-address');
@@ -1798,7 +1818,17 @@ button { font: inherit; cursor: pointer; }
       sb.from('children').select('id').eq('user_id', signedInUser.id).limit(1)
         .then(function(childRes) {
           var hasChildren = childRes.data && childRes.data.length > 0;
-          if (!hasChildren) {
+          var _sic = localStorage.getItem('ff_invite_child');
+          var _sie = localStorage.getItem('ff_invite_email');
+          if (_sic && _sie) {
+            localStorage.removeItem('ff_invite_child');
+            localStorage.removeItem('ff_invite_email');
+            fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
+              body: JSON.stringify({ childId: _sic, inviteEmail: _sie }),
+            }).finally(function() { window.location.href = 'scout-dashboard.html'; });
+          } else if (!hasChildren) {
             // No child setup yet (new user or abandoned onboarding) → route to setup
             routeAfterSignup();
           } else {
