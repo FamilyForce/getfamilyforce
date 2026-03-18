@@ -434,11 +434,6 @@
     },
 
     saveNote: function (windowId, notes, childId, cb) {
-      // DEBUG: log session state before invoke
-      sb.auth.getSession().then(function(dbg) {
-        var s = dbg.data && dbg.data.session
-        console.log('[Scout] saveNote session before invoke:', s ? ('uid=' + s.user.id + ' exp=' + s.expires_at) : 'NULL')
-      })
       sb.functions.invoke('scout-progress', {
         body: { windowId: windowId, childId: childId, notes: notes },
       }).then(function (res) {
