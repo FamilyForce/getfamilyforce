@@ -1063,7 +1063,7 @@ button { font: inherit; cursor: pointer; }
     // Already signed in? Go straight to dashboard
     // — but NOT if there's a session hash in the URL (post-confirmation/OAuth redirect)
     // — and NOT if ?signedout=1 (user just signed out — session may still be clearing)
-    // Persist family invite params through the auth flow
+    // Persist family invite + gift params through the auth flow
     (function() {
       var p = new URLSearchParams(window.location.search);
       var ic = p.get('invite_child'), ie = p.get('invite_email');
@@ -1071,6 +1071,8 @@ button { font: inherit; cursor: pointer; }
         localStorage.setItem('ff_invite_child', ic);
         localStorage.setItem('ff_invite_email', ie);
       }
+      var gc = p.get('gift_code');
+      if (gc) localStorage.setItem('ff_gift_code', gc);
     })();
 
     var _justSignedOut = new URLSearchParams(window.location.search).get('signedout') === '1';
@@ -1742,12 +1744,15 @@ button { font: inherit; cursor: pointer; }
       var confirm = confirmEl.value;
       if (pw !== confirm) { fieldError('signin-confirm-error','Passwords don\'t match.'); confirmEl.focus(); return; }
       setLoading('Creating account…');
-      // Embed invite params in the redirect URL so they survive Mail → Safari context switches
+      // Embed invite/gift params in the redirect URL so they survive Mail → Safari context switches
       var _inviteChild = localStorage.getItem('ff_invite_child');
       var _inviteEmail = localStorage.getItem('ff_invite_email');
+      var _giftCode    = localStorage.getItem('ff_gift_code');
       var _redirectUrl = 'https://getfamilyforce.com/sign-in.html';
       if (_inviteChild && _inviteEmail) {
         _redirectUrl += '?invite_child=' + encodeURIComponent(_inviteChild) + '&invite_email=' + encodeURIComponent(_inviteEmail);
+      } else if (_giftCode) {
+        _redirectUrl += '?gift_code=' + encodeURIComponent(_giftCode);
       }
       sb.auth.signUp({
         email: email,
@@ -1771,9 +1776,13 @@ button { font: inherit; cursor: pointer; }
         if (res.data && res.data.session) {
           // Email confirmation disabled — session available immediately
           generateAndSaveReferralCode(res.data.session.user.id, email);
+          var _gc = localStorage.getItem('ff_gift_code');
           var _ic = localStorage.getItem('ff_invite_child');
           var _ie = localStorage.getItem('ff_invite_email');
-          if (_ic && _ie) {
+          if (_gc) {
+            localStorage.removeItem('ff_gift_code');
+            window.location.href = 'scout-gift.html?redeem=' + encodeURIComponent(_gc);
+          } else if (_ic && _ie) {
             localStorage.removeItem('ff_invite_child');
             localStorage.removeItem('ff_invite_email');
             fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
@@ -1942,6 +1951,14 @@ button { font: inherit; cursor: pointer; }
               // A user needs onboarding if they have no children set up yet.
               // This correctly handles email confirmation (minutes/hours after signup)
               // and Google OAuth for both new and returning users.
+              // If this is a gift redemption, redirect back to gift page
+              var giftCode = localStorage.getItem('ff_gift_code');
+              if (giftCode) {
+                localStorage.removeItem('ff_gift_code');
+                window.location.href = 'scout-gift.html?redeem=' + encodeURIComponent(giftCode);
+                return;
+              }
+
               // If this is an invite acceptance, handle it before routing
               var inviteChild = localStorage.getItem('ff_invite_child');
               var inviteEmail = localStorage.getItem('ff_invite_email');
@@ -1991,6 +2008,14 @@ button { font: inherit; cursor: pointer; }
       if (res.data && res.data.session) {
         var user = res.data.session.user;
         generateAndSaveReferralCode(user.id, user.email);
+
+        // Handle gift redemption before routing
+        var giftCode = localStorage.getItem('ff_gift_code');
+        if (giftCode) {
+          localStorage.removeItem('ff_gift_code');
+          window.location.href = 'scout-gift.html?redeem=' + encodeURIComponent(giftCode);
+          return;
+        }
 
         // Handle invite acceptance before routing
         var inviteChild = localStorage.getItem('ff_invite_child');

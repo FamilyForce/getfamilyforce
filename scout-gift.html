@@ -492,6 +492,9 @@ document.addEventListener('DOMContentLoaded', function () {
   redeemCode = params.get('redeem')
 
   if (redeemCode) {
+    // Persist gift code in localStorage so it survives email confirmation → fresh browser context
+    try { localStorage.setItem('ff_gift_code', redeemCode) } catch(_) {}
+
     // Show redeem flow instead of purchase form
     document.getElementById('heroSection').style.display     = 'none'
     document.getElementById('scoutExplainer').style.display  = 'none'
