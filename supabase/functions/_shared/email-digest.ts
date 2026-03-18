@@ -280,7 +280,10 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
 
 <!-- Hidden preheader -->
 <div style="display:none;max-height:0;overflow:hidden;mso-hide:all">
-  ${childName} at ${ageMonths} months — ${closingCount > 0 ? `${closingCount} window${closingCount > 1 ? 's' : ''} closing this month` : `${allWindowCount} open windows`}.
+  ${isExpecting
+    ? `${childName} hasn't arrived yet — ${allWindowCount} preparation window${allWindowCount !== 1 ? 's' : ''} open right now.`
+    : `${childName} at ${ageMonths} months — ${closingCount > 0 ? `${closingCount} window${closingCount > 1 ? 's' : ''} closing this month` : `${allWindowCount} open windows`}.`
+  }
   &nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌
 </div>
 
@@ -296,7 +299,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
               <tr>
                 <td>
                   <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 24px">Scout by FamilyForce</p>
-                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:400;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${childName} at ${ageMonths} months</p>
+                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:400;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${isExpecting ? `Getting ready for ${childName}` : `${childName} at ${ageMonths} months`}</p>
                   <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0;line-height:1.6">${allWindowCount} open developmental windows &nbsp;·&nbsp; ${closingCount > 0 ? `${closingCount} closing this month` : 'none closing this month'}</p>
                 </td>
               </tr>
