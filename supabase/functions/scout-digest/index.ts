@@ -266,8 +266,7 @@ Deno.serve(async (req: Request) => {
         sb.from('profiles').select('name').eq('id', userId).maybeSingle(),
         sb.from('family_members')
           .select('member_user_id')
-          .eq('child_id', child.id)
-          .eq('status', 'active'),
+          .eq('owner_user_id', userId),
       ])
       const ownerName = profileRes.data?.name?.trim() || null
       const memberIds = (familyRes.data || []).map((m: { member_user_id: string }) => m.member_user_id).filter(Boolean)

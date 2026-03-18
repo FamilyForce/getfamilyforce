@@ -72,19 +72,23 @@ create policy "Child owner can manage window progress"
   );
 
 -- Family members: full CRUD for shared child's progress
+-- family_members links owner_user_id → member_user_id (no child_id column)
+-- so we join through children to get from child → owner → member
 create policy "Family members can manage shared child progress"
   on window_progress for all
   using (
     exists (
       select 1 from family_members fm
-      where fm.child_id = window_progress.child_id
-        and fm.user_id = auth.uid()
+      join children c on c.user_id = fm.owner_user_id
+      where c.id = window_progress.child_id
+        and fm.member_user_id = auth.uid()
     )
   )
   with check (
     exists (
       select 1 from family_members fm
-      where fm.child_id = window_progress.child_id
-        and fm.user_id = auth.uid()
+      join children c on c.user_id = fm.owner_user_id
+      where c.id = window_progress.child_id
+        and fm.member_user_id = auth.uid()
     )
   );
