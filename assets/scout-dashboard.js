@@ -18,6 +18,7 @@
   var _child  = null   // active child object
   var _sub    = null   // scout_subscriptions row
   var _toast  = null   // toast container element
+  var _token  = null   // cached access token — kept fresh by onAuthStateChange
 
   /* ── Init ─────────────────────────────────────────────────── */
   window.ScoutDash = {
@@ -47,13 +48,19 @@
         }
       }, 10000)
 
+      // Keep _token fresh across refreshes — used by saveNote/saveProgress
+      sb.auth.onAuthStateChange(function (event, session) {
+        _token = session ? session.access_token : null
+      })
+
       sb.auth.getSession().then(function (res) {
         var session = res.data && res.data.session
         if (!session) {
           window.location.href = '/sign-in.html?redirect=' + encodeURIComponent(window.location.pathname)
           return
         }
-        _user = session.user
+        _token = session.access_token
+        _user  = session.user
         ScoutDash._initNav(pageName)
         ScoutDash._loadChild(function () {
           ScoutDash._loadSubscription(function () {
@@ -384,23 +391,20 @@
       var self = this
       var q = JSON.parse(localStorage.getItem(self._QUEUE_KEY) || '[]')
       if (!q.length) return
-      sb.auth.getSession().then(function (res) {
-        var tok = res.data && res.data.session && res.data.session.access_token
-        if (!tok) return
-        var remaining = []
-        var sends = q.map(function (item) {
-          return fetch(FUNCTIONS_URL + '/scout-progress', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-            body:    JSON.stringify(item),
-          }).then(function (r) { return r.json() }).then(function (d) {
-            if (!d.ok) remaining.push(item)
-          }).catch(function () { remaining.push(item) })
-        })
-        Promise.all(sends).then(function () {
-          localStorage.setItem(self._QUEUE_KEY, JSON.stringify(remaining))
-          // if (remaining.length === 0 && q.length > 0) { /* flushed offline queue */ }
-        })
+      var tok = _token
+      if (!tok) return;
+      var remaining = []
+      var sends = q.map(function (item) {
+        return fetch(FUNCTIONS_URL + '/scout-progress', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+          body:    JSON.stringify(item),
+        }).then(function (r) { return r.json() }).then(function (d) {
+          if (!d.ok) remaining.push(item)
+        }).catch(function () { remaining.push(item) })
+      })
+      Promise.all(sends).then(function () {
+        localStorage.setItem(self._QUEUE_KEY, JSON.stringify(remaining))
       })
     },
 
@@ -418,40 +422,41 @@
         return
       }
 
-      var session = sb.auth.getSession()
-      session.then(function (res) {
-        var tok = res.data && res.data.session && res.data.session.access_token
-        fetch(FUNCTIONS_URL + '/scout-progress', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-          body: JSON.stringify(body),
-        }).then(function (r) { return r.json() }).then(function (d) {
-          if (typeof cb === 'function') cb(d.ok ? null : (d.error || 'Error'), d)
-        }).catch(function () {
-          // Network failure — queue it
-          self._enqueue(body)
-          if (typeof cb === 'function') cb(null, { ok: true, queued: true })
-        })
+      var tok = _token
+      if (!tok) {
+        self._enqueue(body)
+        if (typeof cb === 'function') cb(null, { ok: true, queued: true })
+        return
+      }
+      fetch(FUNCTIONS_URL + '/scout-progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+        body: JSON.stringify(body),
+      }).then(function (r) { return r.json() }).then(function (d) {
+        if (typeof cb === 'function') cb(d.ok ? null : (d.error || 'Error'), d)
+      }).catch(function () {
+        // Network failure — queue it
+        self._enqueue(body)
+        if (typeof cb === 'function') cb(null, { ok: true, queued: true })
       })
     },
 
     saveNote: function (windowId, notes, childId, cb) {
-      sb.auth.getSession().then(function (res) {
-        var tok = res.data && res.data.session && res.data.session.access_token
-        fetch(FUNCTIONS_URL + '/scout-progress', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-          body: JSON.stringify({ windowId: windowId, childId: childId, notes: notes }),
-        }).then(function (r) {
-          if (!r.ok) console.error('[Scout] saveNote HTTP error:', r.status, r.statusText)
-          return r.json()
-        }).then(function (d) {
-          if (!d.ok) console.error('[Scout] saveNote API error:', d.error)
-          if (typeof cb === 'function') cb(d.ok ? null : (d.error || 'Error'))
-        }).catch(function (e) {
-          console.error('[Scout] saveNote fetch failed:', e.message)
-          if (typeof cb === 'function') cb(e.message)
-        })
+      var tok = _token
+      if (!tok) { if (typeof cb === 'function') cb('No active session'); return }
+      fetch(FUNCTIONS_URL + '/scout-progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+        body: JSON.stringify({ windowId: windowId, childId: childId, notes: notes }),
+      }).then(function (r) {
+        if (!r.ok) console.error('[Scout] saveNote HTTP error:', r.status, r.statusText)
+        return r.json()
+      }).then(function (d) {
+        if (!d.ok) console.error('[Scout] saveNote API error:', d.error)
+        if (typeof cb === 'function') cb(d.ok ? null : (d.error || 'Error'))
+      }).catch(function (e) {
+        console.error('[Scout] saveNote fetch failed:', e.message)
+        if (typeof cb === 'function') cb(e.message)
       })
     },
 
