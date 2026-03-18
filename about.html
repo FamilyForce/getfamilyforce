@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>About Jack — FamilyForce</title>
 <meta name="description" content="Jack Hartley got it wrong with his first son. He did the reading, built Scout, and got it right with his second. Here's the story behind FamilyForce.">
 <meta property="og:type"        content="website">
@@ -36,7 +36,7 @@
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; overscroll-behavior-x: hidden; }
 a { color: inherit; text-decoration: none; }
 ::selection { background: rgba(110,78,214,.15); }
 :focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; border-radius: 4px; }
@@ -1075,7 +1075,7 @@ a { color: inherit; text-decoration: none; }
   .about-tagline { font-size: 1.15rem; color: var(--muted); max-width: 560px; margin: 0 auto 48px; line-height: 1.6; }
 
   /* Stats bar */
-  .stats-bar { display: inline-flex; gap: 0; border: 1.5px solid var(--border);
+  .stats-bar { display: inline-flex; gap: 0; border: 1.5px solid var(--border); max-width: 100%; overflow: hidden;
     border-radius: 14px; overflow: hidden; background: var(--white); }
   .stat-item { padding: 16px 28px; text-align: center; border-right: 1.5px solid var(--border); }
   .stat-item:last-child { border-right: none; }
@@ -1173,10 +1173,10 @@ a { color: inherit; text-decoration: none; }
   .signoff-role { font-size: .85rem; color: var(--muted); letter-spacing: .05em; margin-bottom: 40px; }
   .signoff-cta { display: inline-flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
   .btn-primary { background: var(--terra); color: #fff; font-weight: 600; font-size: .9rem;
-    padding: 13px 26px; border-radius: 100px; text-decoration: none; transition: background .15s; }
+    padding: 13px 26px; border-radius: 100px; text-decoration: none; transition: background .15s; min-height: 44px; display: inline-flex; align-items: center; }
   .btn-primary:hover { background: var(--terra-d); }
   .btn-ghost { border: 1.5px solid var(--terra); color: var(--terra); font-weight: 600;
-    font-size: .9rem; padding: 12px 26px; border-radius: 100px; text-decoration: none; transition: opacity .15s; }
+    font-size: .9rem; padding: 12px 26px; border-radius: 100px; text-decoration: none; transition: opacity .15s; min-height: 44px; display: inline-flex; align-items: center; }
   .btn-ghost:hover { opacity: .75; }
 
   /* ── FOOTER ── */
@@ -1206,6 +1206,10 @@ a { color: inherit; text-decoration: none; }
     .stat-item:nth-child(4) { border-top: 1.5px solid var(--border); border-right: none; }
     /* Grids */
     .research-visual { grid-template-columns: repeat(2, 1fr); }
+
+  @media (max-width: 480px) {
+    .research-visual { grid-template-columns: 1fr; }
+  }
     .roadmap { grid-template-columns: 1fr; }
     /* Scout launch card */
     .scout-launch { flex-direction: column; text-align: center; }
@@ -1217,6 +1221,24 @@ a { color: inherit; text-decoration: none; }
     .scout-launch { align-items: flex-start; text-align: left; }
   }
 
+
+  /* ── Fix #11: audience pills stack on narrow phones ── */
+  .audience-strip {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 32px;
+  }
+  .audience-strip > div { display: flex; align-items: center; gap: 8px; background: #fff; border: 1.5px solid var(--border); border-radius: 100px; padding: 10px 18px; font-size: .82rem; font-weight: 600; }
+  @media (max-width: 440px) {
+    .audience-strip { flex-direction: column; align-items: center; }
+    .audience-strip > div { width: 100%; max-width: 300px; justify-content: center; }
+  }
+
+  /* ── Fix #18: hiw-f-input font-size 15px (was 14px) ── */
+  .hiw-f-input {
+    background: #fff; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 11px 14px; font-family: var(--sans); font-size: 15px; color: var(--text);
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+  }
+  .hiw-f-input.active { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(110,78,214,.1); }
 </style>
 </head>
 <body>
@@ -1233,13 +1255,31 @@ a { color: inherit; text-decoration: none; }
     <ul class="nav-links" role="list">
       <li><a href="/scout-gift.html">Give as a gift 🎁</a></li>
     </ul>
-    <a href="sign-in.html?intent=trial" class="btn-nav">Try Free for 1 Month</a>
+    <a href="sign-in.html?intent=trial" class="btn-nav">Try Scout Free</a>
     <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
       <span></span>
       <span></span>
     </button>
   </div>
 </nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="mobile-menu-header">
+    <a href="/about.html" class="logo" style="font-size:17px">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Family<span class="logo-s">Force</span></span>
+    </a>
+    <button class="mobile-menu-close" id="mobile-close-btn" aria-label="Close menu">✕</button>
+  </div>
+  <ul class="mobile-menu-links" role="list">
+    <li><a href="/index.html">Home</a></li>
+    <li><a href="/scout-gift.html">Give as a gift 🎁</a></li>
+  </ul>
+  <div class="mobile-menu-cta">
+    <a href="/sign-in.html?intent=trial">Try Scout Free →</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="about-hero">
@@ -1267,7 +1307,7 @@ a { color: inherit; text-decoration: none; }
   </div>
 
   <!-- Audience strip: all three personas see themselves -->
-  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:32px">
+  <div class="audience-strip">
     <div style="display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:10px 18px;font-size:.82rem;font-weight:600;color:var(--ink)">
       🤰 <span>Expecting a baby</span>
     </div>
@@ -1465,13 +1505,13 @@ a { color: inherit; text-decoration: none; }
   <p class="signoff-sig">Jack Hartley</p>
   <p class="signoff-role">Founder, FamilyForce · MBA · Dad of two</p>
   <div class="signoff-cta">
-    <a href="/sign-in.html?intent=trial" class="btn-primary">Start your free trial →</a>
+    <a href="/sign-in.html?intent=trial" class="btn-primary">Try Scout Free →</a>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer style="background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px))">
-  <div style="max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+  <div style="max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 24px">
     <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none" aria-label="FamilyForce home">
       <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
         <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1488,5 +1528,23 @@ a { color: inherit; text-decoration: none; }
   </div>
 </footer>
 
+<script>
+// Mobile menu
+const hamburger = document.getElementById('hamburger-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const mobileClose = document.getElementById('mobile-close-btn');
+if (hamburger && mobileMenu) {
+  hamburger.addEventListener('click', () => {
+    mobileMenu.classList.add('open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  });
+  mobileClose.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  });
+}
+</script>
 </body>
 </html>
