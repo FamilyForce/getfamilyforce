@@ -698,7 +698,8 @@ function renderPreBirthMode(child, sub) {
 // Silently flip is_expecting → false using due_date as DOB (auto-switch after 14 days overdue)
 // Auto-fires when child is 14+ days overdue — uses due date as realDob
 function silentArrivalConfirm(child, dueDate) {
-  ScoutDash.getSession().then(function (tok) {
+  ScoutDash.getSb().auth.getSession().then(function (r) {
+    var tok = r.data && r.data.session && r.data.session.access_token
     if (!tok) { window.location.reload(); return }
     fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-confirm-arrival', {
       method:  'POST',
@@ -763,7 +764,8 @@ function saveArrival() {
 
   var childId = _preBirthChild.id
 
-  ScoutDash.getSession().then(function (tok) {
+  ScoutDash.getSb().auth.getSession().then(function (r) {
+    var tok = r.data && r.data.session && r.data.session.access_token
     if (!tok) {
       errEl.textContent = 'Session expired. Please refresh and try again.'
       errEl.style.display = 'block'
