@@ -36,19 +36,26 @@ Deno.serve(async (req: Request) => {
   if (req.method !== 'POST')    return err(405, 'Method not allowed')
 
   try {
-    // 1. Auth
+    // 1. Auth — official Supabase edge function pattern:
+    //    user client with the request's token for auth validation,
+    //    separate admin client (service role) for DB operations.
     const authHeader = req.headers.get('Authorization')
     if (!authHeader?.startsWith('Bearer ')) return err(401, 'Missing auth token')
 
-    const sb = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-    )
+    const SUPABASE_URL           = Deno.env.get('SUPABASE_URL')!
+    const SUPABASE_ANON_KEY      = Deno.env.get('SUPABASE_ANON_KEY')!
+    const SUPABASE_SERVICE_ROLE  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
-    const { data: { user }, error: authErr } = await sb.auth.getUser(
-      authHeader.replace('Bearer ', '')
-    )
+    // User-scoped client — validates the session token
+    const userSb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: false },
+      global: { headers: { Authorization: authHeader } },
+    })
+    const { data: { user }, error: authErr } = await userSb.auth.getUser()
     if (authErr || !user) return err(401, 'Invalid or expired session')
+
+    // Admin client — used for all DB reads/writes (bypasses RLS where needed)
+    const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE)
 
     // 2. Parse and validate body
     const body = await req.json()
@@ -87,11 +94,12 @@ Deno.serve(async (req: Request) => {
     if (!child) return err(404, 'Child not found')
 
     if (child.user_id !== user.id) {
+      // family_members links owner_user_id → member_user_id (no child_id column)
       const { data: familyAccess } = await sb
         .from('family_members')
-        .select('id')
-        .eq('child_id', childId)
-        .eq('user_id', user.id)
+        .select('member_user_id')
+        .eq('owner_user_id', child.user_id)
+        .eq('member_user_id', user.id)
         .maybeSingle()
 
       if (!familyAccess) return err(403, 'You do not have access to this child\'s records')
