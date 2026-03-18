@@ -1912,6 +1912,29 @@ button { font: inherit; cursor: pointer; }
               // A user needs onboarding if they have no children set up yet.
               // This correctly handles email confirmation (minutes/hours after signup)
               // and Google OAuth for both new and returning users.
+              // If this is an invite acceptance, handle it before routing
+              var inviteChild = localStorage.getItem('ff_invite_child');
+              var inviteEmail = localStorage.getItem('ff_invite_email');
+              if (inviteChild && inviteEmail) {
+                // Call scout-family-accept to link user to the invited child
+                var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
+                localStorage.removeItem('ff_invite_child');
+                localStorage.removeItem('ff_invite_email');
+                fetch(FUNCTIONS_URL + '/scout-family-accept', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + res.data.session.access_token,
+                  },
+                  body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
+                }).then(function() {
+                  window.location.href = 'scout-dashboard.html';
+                }).catch(function() {
+                  window.location.href = 'scout-dashboard.html';
+                });
+                return;
+              }
+
               sb.from('children').select('id').eq('user_id', user.id).limit(1)
                 .then(function(childRes) {
                   var hasChildren = childRes.data && childRes.data.length > 0;
@@ -1938,6 +1961,29 @@ button { font: inherit; cursor: pointer; }
       if (res.data && res.data.session) {
         var user = res.data.session.user;
         generateAndSaveReferralCode(user.id, user.email);
+
+        // Handle invite acceptance before routing
+        var inviteChild = localStorage.getItem('ff_invite_child');
+        var inviteEmail = localStorage.getItem('ff_invite_email');
+        if (inviteChild && inviteEmail) {
+          var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
+          localStorage.removeItem('ff_invite_child');
+          localStorage.removeItem('ff_invite_email');
+          fetch(FUNCTIONS_URL + '/scout-family-accept', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + res.data.session.access_token,
+            },
+            body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
+          }).then(function() {
+            window.location.href = 'scout-dashboard.html';
+          }).catch(function() {
+            window.location.href = 'scout-dashboard.html';
+          });
+          return;
+        }
+
         sb.from('children').select('id').eq('user_id', user.id).limit(1)
           .then(function(childRes) {
             var hasChildren = childRes.data && childRes.data.length > 0;
