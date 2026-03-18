@@ -75,7 +75,7 @@ Deno.serve(async (req: Request) => {
     const inviteUrl = `${siteUrl}/sign-in.html?invite_child=${childId}&invite_email=${encodeURIComponent(email)}`
     const resendKey = Deno.env.get('RESEND_API_KEY')!
     const fromEmail = Deno.env.get('RESEND_FROM_EMAIL') ?? 'scout@getfamilyforce.com'
-    const fromName  = Deno.env.get('RESEND_FROM_NAME')  ?? 'Jack at FamilyForce'
+    const fromName  = Deno.env.get('RESEND_FROM_NAME')  ?? 'FamilyForce'
     const name      = (inviterName || '').trim() || 'Someone'
 
     const emailHtml = `
