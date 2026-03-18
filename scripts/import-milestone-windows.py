@@ -80,12 +80,12 @@ PREBIRTH_SLUGS = {
 
 # ─── Playbook link map: keywords in slug → playbook URL ───────────────────────
 PLAYBOOK_MAP = {
-    "sleep":      "getfamilyforce.com/playbook-sleep",
-    "potty":      "getfamilyforce.com/playbook-potty-training",
-    "feeding":    "getfamilyforce.com/playbook-feeding",
-    "tantrum":    "getfamilyforce.com/playbook-tantrum",
-    "screen":     "getfamilyforce.com/playbook-screen-time",
-    "breastfeed": "getfamilyforce.com/playbook-feeding",
+    "sleep":        "https://getfamilyforce.com/playbook-sleep.html",
+    "potty":        "https://getfamilyforce.com/playbook-potty-training.html",
+    "feeding":      "https://getfamilyforce.com/playbook-feeding.html",
+    "tantrum":      "https://getfamilyforce.com/playbook-tantrum.html",
+    "screen-time":  "https://getfamilyforce.com/playbook-screen-time.html",  # use 'screen-time' not 'screen' to avoid matching 'newborn-screening'
+    "breastfeed":   "https://getfamilyforce.com/playbook-feeding.html",
 }
 
 
