@@ -326,16 +326,22 @@
 
     /* ── Window data ─────────────────────────────────────────── */
     loadWindows: function (childId, dob, cb) {
-      var ageW      = ScoutDash.ageWeeks(dob)
-      var lookahead = ageW + 8
+      var ageW        = ScoutDash.ageWeeks(dob)
+      var lookahead   = ageW + 8
+      var isExpecting = ageW < 0
+      // For expecting parents (negative ageW), do NOT clamp the close floor to 0 —
+      // prenatal windows have negative close_age_weeks and would be missed otherwise.
+      var closeFloor  = isExpecting ? (ageW - 4) : Math.max(0, ageW - 4)
 
       // NOTE: Promise.all([supabaseQuery, supabaseQuery]) is unreliable with Supabase JS v2
       // thenables (see commit 8bc0314). Use sequential .then() chaining instead.
-      sb.from('milestone_windows')
+      var q = sb.from('milestone_windows')
         .select('*')
+        .eq('prenatal', isExpecting)   // prenatal filter keeps pre/post-birth windows separate
         .lte('open_age_weeks', lookahead)
-        .gte('close_age_weeks', Math.max(0, ageW - 4))
+        .gte('close_age_weeks', closeFloor)
         .order('open_age_weeks')
+      q
         .then(function (winRes) {
           var windows = winRes.data || []
           if (winRes.error) console.warn('[loadWindows] milestone_windows error:', winRes.error)

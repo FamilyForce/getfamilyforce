@@ -170,18 +170,23 @@ Deno.serve(async (req: Request) => {
     }
 
     // 5. Query open windows for child's age
+    // Expecting parents have negative weeks (weeks before birth).
+    // Prenatal windows use negative open/close_age_weeks.
     step = 'query-windows'
+    const isExpecting = weeks < 0
+
     const { data: windows, error: winErr } = await sb
       .from('milestone_windows')
       .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link')
       .eq('active', true)
+      .eq('prenatal', isExpecting)    // ← only prenatal windows for expecting; only post-birth for born
       .lte('open_age_weeks', weeks)
       .gte('close_age_weeks', weeks)
       .order('priority', { ascending: true })
 
     if (winErr) throw new Error(`Could not query windows: ${winErr.message}`)
     if (!windows || windows.length === 0) {
-      console.warn(`[scout-signup-delivery] No windows found for age ${weeks}w — sending empty digest`)
+      console.warn(`[scout-signup-delivery] No windows found for age ${weeks}w (expecting=${isExpecting}) — sending digest anyway`)
     }
 
     const allWindows   = (windows ?? []) as MilestoneWindow[]
@@ -191,7 +196,10 @@ Deno.serve(async (req: Request) => {
     step = 'build-email'
     const siteUrl     = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
     const dashUrl     = `${siteUrl}/scout-dashboard`
-    const subjectLine = buildDigestSubject(child.name, months, aboveFold, weeks)
+    // For expecting parents (negative months), use a pre-birth subject line
+    const subjectLine = isExpecting
+      ? `${child.name}'s arrival is coming — here's how to prepare`
+      : buildDigestSubject(child.name, months, aboveFold, weeks)
     const closingCount = aboveFold.filter(w => w.close_age_weeks - weeks <= 4).length
 
     // 6b. Determine the next birthday for the ICS + email footer.
@@ -209,11 +217,14 @@ Deno.serve(async (req: Request) => {
     const parentName = profileData?.name?.trim() || undefined
 
     // 7. Build email HTML
+    // For expecting parents, pass ageMonths=0 (treats as newborn-level content) +
+    // isExpecting flag so the template can customise the intro copy.
     const emailHtml = buildDigestEmail({
       childName:      child.name,
       parentName,
       childGender:    child.gender,
-      ageMonths:      months,
+      ageMonths:      isExpecting ? 0 : months,
+      isExpecting,
       aboveFold:      aboveFold as DigestWindow[],
       allWindowCount: allWindows.length,
       closingCount,

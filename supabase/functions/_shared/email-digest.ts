@@ -39,6 +39,7 @@ export interface DigestEmailOptions {
   siteUrl:         string
   userId:          string
   digestType:      'signup' | 'monthly' | 'birth_signup'
+  isExpecting?:    boolean   // true = expecting parent, pre-birth digest
 }
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
@@ -147,7 +148,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   const {
     childName, parentName, childGender, ageMonths, aboveFold,
     allWindowCount, closingCount, overdueWindows = [], nextEventDate,
-    dashboardUrl, siteUrl, userId, digestType,
+    dashboardUrl, siteUrl, userId, digestType, isExpecting = false,
   } = opts
 
   const His = cap(pronoun(childGender, 'possess'))
@@ -167,13 +168,17 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   // Greeting
   const greeting = parentName ? `Hi ${parentName},` : 'Hi there,'
 
-  // Opening paragraph varies by digest type
-  const openingParagraph = digestType === 'signup'
+  // Opening paragraph varies by digest type / expecting status
+  const openingParagraph = isExpecting
+    ? `Welcome to Scout. ${childName} hasn't arrived yet — but the preparation windows below are open right now, before birth. These are the things most parents wish they'd sorted earlier. You're already ahead.`
+    : digestType === 'signup'
     ? `This is ${childName}'s first Scout digest. It's the beginning of something that I wish I'd had with my first son — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now.`
     : `${childName} is ${ageMonths} months old. This is ${his} Scout digest for the month — a quick look at what's worth your attention right now, written to take about 5 minutes to read.`
 
   // Milestone context line (warm, not alarming)
-  const contextLine = ageMonths <= 2
+  const contextLine = isExpecting
+    ? `The preparation windows below close at birth. Most of them are quick — and much easier to do now than with a newborn in the room.`
+    : ageMonths <= 2
     ? `The first few months are a blur. You're doing better than you think.`
     : ageMonths <= 6
     ? `${ageMonths} months in. The fog is starting to lift — and ${his} development is picking up fast.`
