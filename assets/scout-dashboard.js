@@ -437,7 +437,7 @@
         fetch(FUNCTIONS_URL + '/scout-progress', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-          body: JSON.stringify({ window_id: windowId, child_id: childId, notes: notes }),
+          body: JSON.stringify({ windowId: windowId, childId: childId, notes: notes }),
         }).then(function (r) { return r.json() }).then(function (d) {
           if (typeof cb === 'function') cb(d.ok ? null : (d.error || 'Error'))
         }).catch(function (e) { if (typeof cb === 'function') cb(e.message) })

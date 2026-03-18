@@ -54,9 +54,12 @@ Deno.serve(async (req: Request) => {
     const body = await req.json()
     const { windowId, childId, status, notes, completedDate } = body
 
-    if (!windowId)                    return err(400, 'windowId is required')
-    if (!childId)                     return err(400, 'childId is required')
-    if (!VALID_STATUSES.has(status))  return err(400, `status must be one of: ${[...VALID_STATUSES].join(', ')}`)
+    if (!windowId)  return err(400, 'windowId is required')
+    if (!childId)   return err(400, 'childId is required')
+    // status is optional for note-only saves; if provided it must be valid
+    if (status !== undefined && !VALID_STATUSES.has(status)) {
+      return err(400, `status must be one of: ${[...VALID_STATUSES].join(', ')}`)
+    }
     if (notes && notes.length > 500)  return err(400, 'notes must be 500 characters or fewer')
 
     // Validate completedDate if provided
@@ -119,11 +122,13 @@ Deno.serve(async (req: Request) => {
       user_id:              user.id,
       child_id:             childId,
       window_id:            windowId,
-      status,
       updated_at:           new Date().toISOString(),
       updated_by_user_id:   user.id,
       updated_by_name:      displayName,
     }
+
+    // Only include status if provided (note-only saves should not overwrite existing status)
+    if (status !== undefined) payload.status = status
 
     // Only set notes if provided (don't overwrite existing note when just updating status)
     if (notes !== undefined) payload.notes = notes ?? null
