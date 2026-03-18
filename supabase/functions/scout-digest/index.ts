@@ -130,9 +130,7 @@ Deno.serve(async (req: Request) => {
 
   console.log(`[scout-digest] Starting — ${now.toISOString()}`)
 
-  // 1. Load all active subscriptions + trialing bonus-eligible users
-  const todayStr = now.toISOString().split('T')[0]  // YYYY-MM-DD
-
+  // 1. Load all active subscriptions
   const { data: activeSubs, error: subErr } = await sb
     .from('scout_subscriptions')
     .select('user_id, created_at')
@@ -143,27 +141,8 @@ Deno.serve(async (req: Request) => {
     return new Response(JSON.stringify({ ok: false, error: subErr.message }), { status: 500 })
   }
 
-  // Also load trialing users who have a bonus_birthday = today
-  // These users signed up within 7 days of their child's birthday and get a bonus digest
-  const { data: bonusEvents } = await sb
-    .from('scout_events')
-    .select('user_id')
-    .eq('event_type', 'trial_bonus_eligible')
-    .eq('properties->>bonus_birthday', todayStr)
-
-  const bonusUserIds = new Set((bonusEvents ?? []).map(e => e.user_id))
-
-  // Merge: active subs + bonus trialing users (deduplicated)
-  const activeSets  = new Set((activeSubs ?? []).map(s => s.user_id))
-  const allUserIds  = [
-    ...(activeSubs ?? []),
-    ...(bonusEvents ?? [])
-      .filter(e => !activeSets.has(e.user_id))  // don't double-add active users
-      .map(e => ({ user_id: e.user_id, created_at: now.toISOString() })),
-  ]
-
-  const subs = allUserIds
-  console.log(`[scout-digest] ${activeSubs?.length ?? 0} active + ${bonusUserIds.size} bonus trialing to check`)
+  const subs = activeSubs ?? []
+  console.log(`[scout-digest] ${subs.length} active subscriptions to check`)
 
   // ── Step 2: Load expecting users ──────────────────────────────────────────
   const { data: expectingChildren } = await sb

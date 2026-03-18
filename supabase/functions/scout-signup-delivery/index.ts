@@ -140,25 +140,30 @@ Deno.serve(async (req: Request) => {
     if (childErr) throw new Error(`Could not load child: ${childErr.message}`)
     if (!children || children.length === 0) throw new Error(`No child found for user ${userId}`)
 
-    const child     = children[0]
-    const childDob  = new Date(child.dob)
-    const now       = new Date()
-    const weeks     = ageInWeeks(childDob, now)
-    const months    = ageInMonths(childDob, now)
+    const child       = children[0]
+    const childDob    = new Date(child.dob)
+    const now         = new Date()
+    const weeks       = ageInWeeks(childDob, now)
+    const months      = ageInMonths(childDob, now)
+    const earlySignup  = record.early_signup  === true
+    // birth_signup = true when called from scout-confirm-arrival (post-birth first digest).
+    // Uses digest_type 'birth_signup' so it never collides with the pre-birth 'signup' log entry.
+    const birthSignup  = record.birth_signup  === true
+    const digestType   = birthSignup ? 'birth_signup' : 'signup'
 
-    // 4. Check deduplication — never send two signup digests to the same child
+    // 4. Check deduplication — never send two signup digests of the same type to the same child
     step = 'dedup-check'
     const currentMonth = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`
     const { data: existing } = await sb
       .from('scout_digest_log')
       .select('id')
       .eq('child_id', child.id)
-      .eq('digest_type', 'signup')
+      .eq('digest_type', digestType)
       .eq('digest_month', currentMonth)
       .limit(1)
 
     if (existing && existing.length > 0) {
-      console.log(`[scout-signup-delivery] Skipping duplicate signup digest for child ${child.id}`)
+      console.log(`[scout-signup-delivery] Skipping duplicate ${digestType} digest for child ${child.id}`)
       return new Response(JSON.stringify({ ok: true, skipped: 'duplicate' }), {
         status: 200, headers: { ...CORS, 'Content-Type': 'application/json' }
       })
@@ -189,7 +194,17 @@ Deno.serve(async (req: Request) => {
     const subjectLine = buildDigestSubject(child.name, months, aboveFold, weeks)
     const closingCount = aboveFold.filter(w => w.close_age_weeks - weeks <= 4).length
 
-    // 6b. Fetch parent display name
+    // 6b. Determine the next birthday for the ICS + email footer.
+    // If early_signup (child's next birthday is within 7 days), skip that birthday and
+    // point to the one after it — the user gets their signup digest now but it references
+    // the upcoming full month ahead rather than a birthday that's days away.
+    const nearBirthday = nextMonthlyBirthday(childDob, now)
+    const nextBirthday = earlySignup
+      ? nextMonthlyBirthday(childDob, new Date(nearBirthday.getTime() + 86_400_000))  // skip to month after
+      : nearBirthday
+    const nextMonths   = ageInMonths(childDob, nextBirthday)
+
+    // 6c. Fetch parent display name
     const { data: profileData } = await sb.from('profiles').select('name').eq('id', userId).maybeSingle()
     const parentName = profileData?.name?.trim() || undefined
 
@@ -202,17 +217,15 @@ Deno.serve(async (req: Request) => {
       aboveFold:      aboveFold as DigestWindow[],
       allWindowCount: allWindows.length,
       closingCount,
-      nextEventDate:  nextMonthlyBirthday(childDob, now),
+      nextEventDate:  nextBirthday,
       dashboardUrl:   dashUrl,
       siteUrl,
       userId,
-      digestType:     'signup',
+      digestType,
     })
 
     // 8. Generate .ics attachment
     step = 'build-ics'
-    const nextBirthday = nextMonthlyBirthday(childDob, now)
-    const nextMonths   = ageInMonths(childDob, nextBirthday)
 
     const icsWindows: IcsWindow[] = allWindows.map(w => ({
       slug:              w.slug,
@@ -252,7 +265,7 @@ Deno.serve(async (req: Request) => {
       tags:    [
         { name: 'user_id',     value: userId },
         { name: 'child_id',    value: child.id },
-        { name: 'digest_type', value: 'signup' },
+        { name: 'digest_type', value: digestType },
         { name: 'month',       value: currentMonth },
       ],
       attachments: [{
@@ -287,7 +300,7 @@ Deno.serve(async (req: Request) => {
       child_id:          child.id,
       digest_month:      currentMonth,
       child_age_months:  months,
-      digest_type:       'signup',
+      digest_type:       digestType,
       windows_included:  aboveFold.map(w => ({ id: w.id, slug: w.slug, title: w.title, urgency: w.urgency, priority: w.priority })),
       email_subject:     subjectLine,
       resend_message_id: resendMessageId,

@@ -696,12 +696,18 @@ function renderPreBirthMode(child, sub) {
 }
 
 // Silently flip is_expecting → false using due_date as DOB (auto-switch after 14 days overdue)
+// Auto-fires when child is 14+ days overdue — uses due date as realDob
 function silentArrivalConfirm(child, dueDate) {
-  var sb = ScoutDash.getSb ? ScoutDash.getSb() : window._supabaseClient
-  sb.from('children')
-    .update({ dob: dueDate, is_expecting: false })
-    .eq('id', child.id)
+  ScoutDash.getSession().then(function (tok) {
+    if (!tok) { window.location.reload(); return }
+    fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-confirm-arrival', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+      body:    JSON.stringify({ childId: child.id, realDob: dueDate }),
+    })
     .then(function () { window.location.reload() })
+    .catch(function () { window.location.reload() })
+  })
 }
 
 // Arrival modal open/close
@@ -740,50 +746,57 @@ function saveArrival() {
   var dobVal = input.value
 
   errEl.style.display = 'none'
-  if (!dobVal) { errEl.textContent = 'Please enter the date of birth.'; errEl.style.display = 'block'; return }
+  if (!dobVal) {
+    errEl.textContent = 'Please enter the date of birth.'
+    errEl.style.display = 'block'
+    return
+  }
   var d = new Date(dobVal + 'T00:00:00Z')
-  if (isNaN(d) || d > new Date()) { errEl.textContent = 'Please enter a valid date — must be today or earlier.'; errEl.style.display = 'block'; return }
+  if (isNaN(d) || d > new Date()) {
+    errEl.textContent = 'Please enter a valid date — must be today or earlier.'
+    errEl.style.display = 'block'
+    return
+  }
 
   btn.disabled    = true
   btn.textContent = 'Saving…'
 
-  var sb      = ScoutDash.getSb ? ScoutDash.getSb() : window._supabaseClient
   var childId = _preBirthChild.id
 
-  sb.from('children')
-    .update({ dob: dobVal, is_expecting: false })
-    .eq('id', childId)
-    .then(function (res) {
-      if (res.error) {
-        errEl.textContent = 'Could not save. Please try again.'
+  ScoutDash.getSession().then(function (tok) {
+    if (!tok) {
+      errEl.textContent = 'Session expired. Please refresh and try again.'
+      errEl.style.display = 'block'
+      btn.disabled    = false
+      btn.textContent = 'Confirm arrival →'
+      return
+    }
+
+    fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-confirm-arrival', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+      body:    JSON.stringify({ childId: childId, realDob: dobVal }),
+    })
+    .then(function (r) { return r.json() })
+    .then(function (data) {
+      if (!data.ok) {
+        errEl.textContent = data.error || 'Could not confirm arrival. Please try again.'
         errEl.style.display = 'block'
         btn.disabled    = false
         btn.textContent = 'Confirm arrival →'
         return
       }
-      // Start trial now that baby has arrived
-      sb.auth.getSession().then(function (r) {
-        var tok = r.data && r.data.session && r.data.session.access_token
-        if (tok) {
-          fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-child-trial-start', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
-            body:    JSON.stringify({ childId: childId }),
-          }).then(function () {
-            ScoutDash.toast('Welcome, ' + ScoutDash._esc(_preBirthChild.name) + '! 🎉 Scout is now tracking.')
-            closeArrivalModal()
-            window.location.reload()
-          }).catch(function () {
-            // Trial start failed — still reload, trial can be started later
-            closeArrivalModal()
-            window.location.reload()
-          })
-        } else {
-          closeArrivalModal()
-          window.location.reload()
-        }
-      })
+      ScoutDash.toast('Welcome, ' + ScoutDash._esc(_preBirthChild.name) + '! 🎉 Scout is now tracking.')
+      closeArrivalModal()
+      window.location.reload()
     })
+    .catch(function () {
+      errEl.textContent = 'Network error. Please try again.'
+      errEl.style.display = 'block'
+      btn.disabled    = false
+      btn.textContent = 'Confirm arrival →'
+    })
+  })
 }
 
 document.addEventListener('keydown', function (e) {

@@ -209,10 +209,11 @@ Deno.serve(async (req: Request) => {
     const nextBday     = nextMonthlyBirthday(dobDate, now)
     const daysUntilEnd = Math.floor((nextBday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 
-    // Bonus month: if next birthday is within 7 days, extend trial by one extra month
-    // so the user gets 2 digests instead of 1 during their trial
-    const bonusMonth = daysUntilEnd <= 7
-    const trialEnd   = bonusMonth ? oneMonthForward(nextBday, birthDay) : nextBday
+    // Early signup: if next birthday is within 7 days, extend trial to the birthday after that.
+    // The signup digest will be sent immediately but the ICS + footer will point to the later date,
+    // so the user effectively skips the near birthday and gets 1 digest (sent now) pointing forward.
+    const earlySignup = daysUntilEnd <= 7
+    const trialEnd    = earlySignup ? oneMonthForward(nextBday, birthDay) : nextBday
 
     // 5. Upsert scout_subscriptions
     step = 'upsert-subscription'
@@ -239,7 +240,7 @@ Deno.serve(async (req: Request) => {
           child_gender:  gender,
           trial_end:     trialEnd.toISOString(),
           days_until_first_birthday: daysUntilEnd,
-          bonus_month:   bonusMonth,
+          early_signup:  earlySignup,
           duration_ms:   Date.now() - jobStart,
         },
       })
@@ -248,23 +249,8 @@ Deno.serve(async (req: Request) => {
       console.warn('[scout-trial-start] scout_events insert failed (table may not exist):', logErr)
     }
 
-    // 6b. If bonus month: log trial_bonus_eligible so scout-digest knows to fire
-    //     for this user on the intermediate birthday (nextBday)
-    if (bonusMonth) {
-      try {
-        await sb.from('scout_events').insert({
-          user_id:    user.id,
-          child_id:   childId,
-          event_type: 'trial_bonus_eligible',
-          properties: {
-            bonus_birthday:      nextBday.toISOString().split('T')[0],  // YYYY-MM-DD
-            days_until_birthday: daysUntilEnd,
-          },
-        })
-      } catch (logErr) {
-        console.warn('[scout-trial-start] trial_bonus_eligible insert failed:', logErr)
-      }
-      console.log(`[scout-trial-start] Bonus month granted for user ${user.id} — next birthday ${nextBday.toISOString().split('T')[0]} in ${daysUntilEnd} days`)
+    if (earlySignup) {
+      console.log(`[scout-trial-start] Early signup for user ${user.id} — next birthday ${nextBday.toISOString().split('T')[0]} in ${daysUntilEnd} days. Signup digest will point to ${trialEnd.toISOString().split('T')[0]}.`)
     }
 
     // 7. Fire scout-signup-delivery (async — do not await, don't block the response)
@@ -276,7 +262,12 @@ Deno.serve(async (req: Request) => {
     const deliveryPayload = {
       type:   'INSERT',
       table:  'scout_subscriptions',
-      record: { user_id: user.id, status: 'trialing', trial_end: trialEnd.toISOString() },
+      record: {
+        user_id:      user.id,
+        status:       'trialing',
+        trial_end:    trialEnd.toISOString(),
+        early_signup: earlySignup,  // true = birthday within 7 days; ICS should skip to trialEnd date
+      },
     }
 
     fetch(`${supabaseUrl}/functions/v1/scout-signup-delivery`, {
@@ -299,7 +290,7 @@ Deno.serve(async (req: Request) => {
       trialEndFormatted: trialEnd.toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
       }),
-      bonusMonth,
+      earlySignup,
     }), {
       status:  200,
       headers: { ...CORS, 'Content-Type': 'application/json' },

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scout Dashboard — Mockup v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F5FF;
+  --surface: #FFFFFF;
+  --border: #E5E2EC;
+  --text: #1D1D1F;
+  --text-mid: #5C5960;
+  --text-dim: #8A879A;
+  --terra: #6E4ED6;
+  --terra-deep: #5B3CC4;
+  --terra-tint: #F0EBFF;
+  --indigo: #1E1248;
+  --amber: #B45309;
+  --amber-bg: #FFFBEB;
+  --amber-border: #FDE68A;
+  --green: #16A34A;
+  --green-bg: #F0FDF4;
+  --green-border: #BBF7D0;
+  --sans: 'Outfit', system-ui, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --radius: 14px;
+  --radius-pill: 100px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.5; }
+
+/* ── Layout ─────────────────────── */
+.layout { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 220px; flex-shrink: 0; background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 24px 16px; display: flex; flex-direction: column; gap: 6px;
+  position: sticky; top: 0; height: 100vh;
+}
+.sidebar-logo { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--terra); margin-bottom: 16px; }
+.sidebar-child { font-size: 14px; font-weight: 700; color: var(--text); padding: 8px 10px; background: var(--terra-tint); border-radius: 8px; margin-bottom: 8px; }
+.sidebar-child span { font-size: 12px; font-weight: 400; color: var(--text-dim); display: block; margin-top: 2px; }
+.nav-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-mid); padding: 8px 10px; border-radius: 8px; cursor: pointer; text-decoration: none; }
+.nav-item:hover { background: var(--bg); color: var(--text); }
+.nav-item.active { background: var(--terra-tint); color: var(--terra); font-weight: 600; }
+.nav-divider { height: 1px; background: var(--border); margin: 8px 0; }
+
+.main { flex: 1; padding: 32px 36px; max-width: 680px; }
+
+/* ── Page header ─────────────────── */
+.page-header { margin-bottom: 28px; }
+.page-title { font-family: var(--serif); font-size: 32px; font-weight: 400; color: var(--text); letter-spacing: -.01em; margin-bottom: 6px; }
+.page-meta { font-size: 14px; color: var(--text-dim); margin-bottom: 16px; }
+.page-meta a { color: var(--terra); text-decoration: none; font-weight: 500; }
+.page-meta strong { color: var(--text-mid); }
+
+/* ── Progress ────────────────────── */
+.progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.progress-bar { flex: 1; height: 6px; background: var(--border); border-radius: 100px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--terra); border-radius: 100px; width: 5%; transition: width .4s; }
+.progress-label { font-size: 13px; color: var(--text-dim); }
+.progress-label strong { color: var(--text-mid); }
+
+/* ── Welcome card (first visit) ─── */
+.welcome-card {
+  background: var(--indigo);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin-bottom: 24px;
+  color: #fff;
+}
+.welcome-card-title {
+  font-family: var(--serif);
+  font-size: 20px;
+  color: #fff;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.welcome-card-text {
+  font-size: 14px;
+  color: rgba(255,255,255,.65);
+  line-height: 1.7;
+}
+.welcome-card-text strong { color: rgba(255,255,255,.9); }
+
+/* ── Section headers ─────────────── */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; cursor: pointer; user-select: none;
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+}
+.section-header:first-of-type { border-top: none; margin-top: 0; }
+.section-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--text-dim); }
+.section-label-closing { color: var(--amber); }
+.section-label-done { color: var(--green); }
+.section-count { font-size: 12px; color: var(--text-dim); margin-left: 6px; }
+.section-arrow { font-size: 12px; color: var(--text-dim); transition: transform .2s; }
+
+/* ── Heads up banner ─────────────── */
+.heads-up-banner {
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-border);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 13px;
+  color: var(--amber);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+/* ── Window cards ────────────────── */
+.window-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: box-shadow .15s;
+}
+.window-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.window-card.closing { border-color: var(--amber-border); }
+.window-card.done { border-color: var(--green-border); opacity: .7; }
+
+.card-body { padding: 18px 20px; }
+.card-title { font-family: var(--serif); font-size: 18px; color: var(--text); margin-bottom: 6px; line-height: 1.3; display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+.card-badge {
+  display: inline-flex; align-items: center;
+  background: var(--amber-bg); color: var(--amber);
+  border: 1px solid var(--amber-border);
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  padding: 2px 10px; border-radius: 100px;
+  white-space: nowrap; margin-top: 3px;
+}
+.card-badge-done {
+  background: var(--green-bg); color: var(--green);
+  border-color: var(--green-border);
+}
+.card-why { font-size: 14px; color: var(--text-mid); line-height: 1.7; margin-bottom: 14px; }
+
+/* "The move" box */
+.card-move {
+  background: var(--terra-tint);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+.card-move-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--terra); margin-bottom: 5px;
+}
+.card-move-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+
+/* Action buttons */
+.card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.action-btn {
+  font-family: var(--sans); font-size: 12px; font-weight: 600;
+  padding: 6px 14px; border-radius: 100px; border: 1.5px solid var(--border);
+  background: var(--surface); color: var(--text-mid); cursor: pointer;
+  transition: all .15s;
+}
+.action-btn:hover { border-color: var(--terra); color: var(--terra); background: var(--terra-tint); }
+.action-btn.active-done { background: var(--green-bg); border-color: var(--green-border); color: var(--green); }
+.action-btn.active-progress { background: var(--terra-tint); border-color: var(--terra); color: var(--terra); }
+
+/* Attribution line */
+.card-attribution { font-size: 11px; color: var(--text-dim); margin-top: 10px; }
+
+/* Missed window */
+.card-missed-label {
+  font-size: 12px; color: var(--amber); font-weight: 500;
+  margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
+}
+
+/* ── Paywall card ────────────────── */
+.paywall-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-top: 4px;
+}
+.paywall-title { font-family: var(--serif); font-size: 22px; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+.paywall-sub { font-size: 14px; color: var(--text-mid); margin-bottom: 20px; line-height: 1.65; }
+.paywall-blur-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.paywall-blur-pill {
+  background: var(--bg); border-radius: 100px; padding: 6px 14px;
+  font-size: 13px; color: transparent; text-shadow: 0 0 8px rgba(0,0,0,.3);
+  user-select: none; filter: blur(3px);
+}
+.paywall-plan-btn {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; padding: 14px 18px; border-radius: 12px;
+  font-family: var(--sans); font-size: 15px; font-weight: 600; cursor: pointer;
+  border: 1.5px solid var(--border); background: var(--surface); color: var(--text);
+  margin-bottom: 8px; transition: all .15s;
+}
+.paywall-plan-btn.annual { background: var(--terra); border-color: var(--terra); color: #fff; }
+.paywall-plan-badge {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em;
+  background: rgba(255,255,255,.2); color: #fff; padding: 3px 10px; border-radius: 100px;
+}
+.paywall-note { font-size: 12px; color: var(--text-dim); margin-top: 10px; line-height: 1.6; }
+
+/* ── Family Circle streak ────────── */
+.family-streak {
+  background: var(--green-bg); border: 1px solid var(--green-border);
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 20px;
+  font-size: 13px; color: var(--green);
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.family-streak-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.family-streak-text strong { color: var(--green); }
+.family-streak-text { color: var(--text-mid); }
+
+/* ── History link ────────────────── */
+.history-link {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  font-size: 13px; font-weight: 500; color: var(--text-dim);
+  padding: 20px 0; border-top: 1px solid var(--border); text-decoration: none;
+  margin-top: 28px; transition: color .15s;
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">Scout</div>
+  <div class="sidebar-child">
+    Oliver
+    <span>2 months old</span>
+  </div>
+  <a class="nav-item active" href="#">🏠 Scout</a>
+  <a class="nav-item" href="#">📚 Free Library</a>
+  <div class="nav-divider"></div>
+  <a class="nav-item" href="#">👨‍👩‍👧 Family Circle</a>
+  <a class="nav-item" href="#">📋 History</a>
+  <a class="nav-item" href="#">⚙️ Settings</a>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- Page header -->
+  <div class="page-header">
+    <h1 class="page-title">Oliver</h1>
+    <p class="page-meta">
+      42 windows open right now &nbsp;&middot;&nbsp; 2 months old &nbsp;&middot;&nbsp;
+      Next digest: <a href="#">April 3</a> &mdash; <strong>16 days</strong>
+    </p>
+    <div class="progress-row">
+      <div class="progress-bar"><div class="progress-fill" style="width:5%"></div></div>
+      <span class="progress-label"><strong>2 addressed</strong> &nbsp;&middot;&nbsp; 42 open</span>
+    </div>
+  </div>
+
+  <!-- CHANGE 1: Welcome card in Jack's voice, no ⚠️ -->
+  <div class="welcome-card">
+    <p class="welcome-card-title">Oliver is 2 months old. Here's where to start.</p>
+    <p class="welcome-card-text">6 windows are closing this month &mdash; <strong>start there.</strong> The rest are open all month. Tap any window to see what to do and mark your progress.</p>
+  </div>
+
+  <!-- Family Circle streak (optional — shows when partner is active) -->
+  <div class="family-streak">
+    <div class="family-streak-icon">✔</div>
+    <div>
+      <strong>Sarah marked 3 windows this week.</strong>
+      <div class="family-streak-text">You and Sarah have addressed 2 windows together this month.</div>
+    </div>
+  </div>
+
+  <!-- CHANGE 2: "Heads up" section replaces "⚠️ CLOSING SOON" -->
+  <div class="section-header">
+    <div>
+      <span class="section-label section-label-closing">Heads up</span>
+      <span class="section-count">(6 closing this month)</span>
+    </div>
+    <span class="section-arrow">▾</span>
+  </div>
+
+  <!-- CHANGE 3: Amber banner inside closing section -->
+  <div class="heads-up-banner">
+    <strong>These 6 windows close when Oliver turns 3 months.</strong> Worth doing before the next digest lands.
+  </div>
+
+  <!-- Window card — closing, with "The move" box -->
+  <div class="window-card closing">
+    <div class="card-body">
+      <p class="card-title">
+        Introduce a bottle (breastfed babies)
+        <span class="card-badge">4 weeks left</span>
+      </p>
+      <p class="card-why">Around 6&ndash;8 weeks is the sweet spot. Before this, babies are still learning to breastfeed. After 3 months, many breastfed babies refuse a bottle entirely &mdash; and staying flexible about feeding makes a real difference when you return to work.</p>
+      <!-- CHANGE 3: "The move" box, matching email style -->
+      <div class="card-move">
+        <div class="card-move-label">The move</div>
+        <div class="card-move-text">Have someone other than the primary breastfeeder offer the bottle. Use a slow-flow nipple. Try when Oliver is hungry but not frantic. Once a day is enough.</div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn">▶ In progress</button>
+        <button class="action-btn">✓ Done</button>
+        <button class="action-btn">— Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Window card — closing, done state -->
+  <div class="window-card done">
+    <div class="card-body">
+      <p class="card-title">
+        Tummy time every day
+        <span class="card-badge card-badge-done">✓ Done</span>
+      </p>
+      <p class="card-why">Tummy time builds the muscles Oliver needs to roll, sit, and eventually walk. 2&ndash;3 minutes at a time, every day.</p>
+      <div class="card-attribution">Marked done by Sarah on Mar 12</div>
+    </div>
+  </div>
+
+  <!-- This month section -->
+  <div class="section-header" style="margin-top:20px">
+    <div>
+      <span class="section-label">This month</span>
+      <span class="section-count">(36)</span>
+    </div>
+    <span class="section-arrow">▾</span>
+  </div>
+
+  <div class="window-card">
+    <div class="card-body">
+      <p class="card-title">Talk to Oliver, not at him</p>
+      <p class="card-why">Language development starts now. Every time Oliver coos and you respond, you're building the neural architecture for speech. Babies who hear more conversational back-and-forth have measurably larger vocabularies at age 3.</p>
+      <div class="card-move">
+        <div class="card-move-label">The move</div>
+        <div class="card-move-text">Narrate everything. "I'm changing your diaper now. It's cold, I know." Then pause and wait. Even a blink counts. This is a conversation.</div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn">▶ In progress</button>
+        <button class="action-btn">✓ Done</button>
+        <button class="action-btn">— Skip</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="window-card">
+    <div class="card-body">
+      <p class="card-title">Respond to cries promptly</p>
+      <p class="card-why">Research consistently shows that prompt, responsive caregiving in the first months builds secure attachment &mdash; which predicts better emotional regulation, social skills, and resilience for decades.</p>
+      <div class="card-move">
+        <div class="card-move-label">The move</div>
+        <div class="card-move-text">You cannot spoil a 2-month-old. Responding quickly and consistently is the job right now. Let the dishes wait.</div>
+      </div>
+      <div class="card-actions">
+        <button class="action-btn active-progress">▶ In progress</button>
+        <button class="action-btn">✓ Done</button>
+        <button class="action-btn">— Skip</button>
+      </div>
+      <div class="card-attribution">In progress since Mar 10 &nbsp;&middot;&nbsp; You</div>
+    </div>
+  </div>
+
+  <!-- CHANGE 4: Paywall — warmer language, no "Subscribe to continue." -->
+  <!-- (shown when trial expires) -->
+  <div class="paywall-card" style="margin-top:20px">
+    <p class="paywall-title">Oliver's 3-month windows are ready when you are.</p>
+    <p class="paywall-sub">The next digest is queued for April 3 &mdash; Oliver's 3-month birthday. Subscribe to receive it.</p>
+    <div class="paywall-blur-row">
+      <div class="paywall-blur-pill">Introduce texture variety in solids</div>
+      <div class="paywall-blur-pill">Separation anxiety response</div>
+    </div>
+    <button class="paywall-plan-btn annual">
+      <span>Annual &mdash; $79.99/year</span>
+      <span class="paywall-plan-badge">Best value</span>
+    </button>
+    <button class="paywall-plan-btn">
+      <span style="color:var(--terra);font-weight:600">Monthly &mdash; $9.99/month</span>
+    </button>
+    <p class="paywall-note">No card was required to start. The windows already in your dashboard are yours to keep.</p>
+  </div>
+
+  <!-- Coming up section -->
+  <div class="section-header" style="margin-top:20px">
+    <div>
+      <span class="section-label">Coming up</span>
+      <span class="section-count">(8 next month)</span>
+    </div>
+    <span class="section-arrow">▾</span>
+  </div>
+
+  <!-- Addressed section -->
+  <div class="section-header">
+    <div>
+      <span class="section-label section-label-done">✓ Addressed</span>
+      <span class="section-count">(2)</span>
+    </div>
+    <span class="section-arrow">▾</span>
+  </div>
+
+  <!-- History link -->
+  <a href="#" class="history-link">📋 View full history →</a>
+
+</main>
+</div>
+</body>
+</html>
