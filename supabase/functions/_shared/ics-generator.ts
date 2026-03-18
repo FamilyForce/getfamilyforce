@@ -98,45 +98,47 @@ function buildDescription(
   const closing = windows.filter(
     w => w.close_age_weeks - w.current_age_weeks <= 4
   )
-  const checkIn = windows.filter(
+  const open = windows.filter(
     w => w.close_age_weeks - w.current_age_weeks > 4
   )
 
   const lines: string[] = []
 
-  lines.push(`${childName}'s ${ageMonths}-month developmental windows`)
+  lines.push(`${childName} is ${ageMonths} months old today.`)
+  lines.push('')
+  lines.push(`Your Scout digest for this month is in your inbox. Here's a quick look at what's open:`)
   lines.push('')
 
   if (closing.length > 0) {
-    lines.push('\u26a0\ufe0f CLOSING SOON — act this month:')
+    lines.push(`Worth doing this month (window closing soon):`)
     for (const w of closing) {
-      const weeksLeft = w.close_age_weeks - w.current_age_weeks
-      const label     = w.urgency === 'clinical' ? ' [important]' : ''
-      lines.push(`  \u2022 ${w.title}${label} (${weeksLeft}w left)`)
+      const weeksLeft = Math.round(w.close_age_weeks - w.current_age_weeks)
+      lines.push(`  \u2022 ${w.title} \u2014 ${weeksLeft}w left`)
     }
     lines.push('')
   }
 
-  if (checkIn.length > 0) {
-    lines.push('\u2705 CHECK IN THIS MONTH:')
-    for (const w of checkIn.slice(0, 8)) {  // cap at 8 for readability
+  if (open.length > 0) {
+    lines.push(`Also open this month:`)
+    for (const w of open.slice(0, 6)) {
       lines.push(`  \u2022 ${w.title}`)
     }
-    if (checkIn.length > 8) {
-      lines.push(`  ...and ${checkIn.length - 8} more in your dashboard`)
+    if (open.length > 6) {
+      lines.push(`  \u2022 ...and ${open.length - 6} more in your dashboard`)
     }
     lines.push('')
   }
 
-  lines.push(`Open your Scout dashboard:`)
-  lines.push(dashboardUrl)
+  lines.push(`Open Scout \u2192 ${dashboardUrl}`)
+  lines.push('')
+  lines.push(`\u2014 Jack at FamilyForce`)
 
   return lines.join('\n')
 }
 
 // ─── Build the SUMMARY (event title) ─────────────────────────────────────────
 function buildSummary(childName: string, ageMonths: number): string {
-  return `${childName}'s ${ageMonths}-month windows \u2014 act before today`
+  return `${childName} turns ${ageMonths} months today \u2014 Scout digest ready`
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
@@ -190,7 +192,7 @@ export function generateScoutIcs(options: GenerateIcsOptions): string {
     // ─── VALARM: 7-day advance reminder ───────────────────────────
     'BEGIN:VALARM',
     'ACTION:DISPLAY',
-    `DESCRIPTION:${escapeText(`${childName}'s milestone windows close in 7 days. Open Scout to review.`)}`,
+    `DESCRIPTION:${escapeText(`Heads up — one of ${childName}'s developmental windows closes in 7 days. Worth a quick look in Scout.`)}`,
     'TRIGGER:-P7D',
     'END:VALARM',
     'END:VEVENT',
