@@ -29,7 +29,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
-  'Access-Control-Allow-Headers': 'authorization, content-type',
+  'Access-Control-Allow-Headers': 'authorization, content-type, x-client-info, apikey',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
@@ -98,15 +98,17 @@ Deno.serve(async (req: Request) => {
     const authHeader = req.headers.get('Authorization')
     if (!authHeader?.startsWith('Bearer ')) return err(401, 'Missing auth token', step)
 
-    const sb = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-    )
+    const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
+    const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    const sb = createClient(SUPABASE_URL, SERVICE_ROLE)
 
-    const { data: { user }, error: authErr } = await sb.auth.getUser(
-      authHeader.replace('Bearer ', '')
-    )
-    if (authErr || !user) return err(401, 'Invalid or expired session', step)
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: { 'Authorization': authHeader, 'apikey': SERVICE_ROLE },
+    })
+    if (!authRes.ok) return err(401, 'Invalid or expired session', step)
+    const authData = await authRes.json()
+    const userId = authData.id as string
+    if (!userId) return err(401, 'Invalid or expired session', step)
 
     // 2. Parse body
     step = 'parse'
@@ -135,7 +137,7 @@ Deno.serve(async (req: Request) => {
     const { data: existingSub } = await sb
       .from('scout_subscriptions')
       .select('status')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .maybeSingle()
 
     if (existingSub?.status === 'active') {
@@ -152,7 +154,7 @@ Deno.serve(async (req: Request) => {
     const { data: existingChild } = await sb
       .from('children')
       .select('id')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .eq('dob', dob)
       .limit(1)
       .maybeSingle()
@@ -163,7 +165,7 @@ Deno.serve(async (req: Request) => {
     } else {
       const { data: newChild, error: childErr } = await sb
         .from('children')
-        .insert({ user_id: user.id, name, dob, gender })
+        .insert({ user_id: userId, name, dob, gender })
         .select('id')
         .single()
       if (childErr || !newChild) throw new Error(`Failed to create child: ${childErr?.message}`)
@@ -185,7 +187,7 @@ Deno.serve(async (req: Request) => {
     // 7. Upsert scout_subscriptions
     step = 'upsert-subscription'
     await sb.from('scout_subscriptions').upsert({
-      user_id:   user.id,
+      user_id:   userId,
       status:    'trialing',
       trial_end: trialEnd.toISOString(),
     }, { onConflict: 'user_id' })
@@ -193,14 +195,14 @@ Deno.serve(async (req: Request) => {
     // 8. Mark gift as redeemed
     step = 'mark-redeemed'
     await sb.from('scout_gifts').update({
-      redeemed_by:  user.id,
+      redeemed_by:  userId,
       redeemed_at:  new Date().toISOString(),
       child_id:     childId,
     }).eq('id', gift.id)
 
     // 9. Log to scout_events
     await sb.from('scout_events').insert({
-      user_id:    user.id,
+      user_id:    userId,
       child_id:   childId,
       event_type: 'gift_redeemed',
       properties: {
@@ -221,7 +223,7 @@ Deno.serve(async (req: Request) => {
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${serviceKey}` },
       body:    JSON.stringify({
         type: 'INSERT', table: 'scout_subscriptions',
-        record: { user_id: user.id, status: 'trialing', trial_end: trialEnd.toISOString() },
+        record: { user_id: userId, status: 'trialing', trial_end: trialEnd.toISOString() },
       }),
     }).catch(e => console.error('[scout-gift-redeem] Delivery trigger failed:', e.message))
 
