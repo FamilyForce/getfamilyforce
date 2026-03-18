@@ -1,0 +1,62 @@
+[functions.scout-progress]
+verify_jwt = false
+
+[functions.scout-child-trial-start]
+verify_jwt = false
+
+[functions.scout-child-update]
+verify_jwt = false
+
+[functions.scout-confirm-arrival]
+verify_jwt = false
+
+[functions.scout-trial-start]
+verify_jwt = false
+
+[functions.scout-signup-delivery]
+verify_jwt = false
+
+[functions.scout-prebirth-welcome]
+verify_jwt = false
+
+[functions.scout-cancel]
+verify_jwt = false
+
+[functions.scout-convert]
+verify_jwt = false
+
+[functions.scout-delete-account]
+verify_jwt = false
+
+[functions.scout-family-accept]
+verify_jwt = false
+
+[functions.scout-family-invite]
+verify_jwt = false
+
+[functions.scout-gift-purchase]
+verify_jwt = false
+
+[functions.scout-gift-redeem]
+verify_jwt = false
+
+[functions.scout-reactivate]
+verify_jwt = false
+
+[functions.scout-subscribe]
+verify_jwt = false
+
+[functions.scout-digest]
+verify_jwt = false
+
+[functions.scout-alert]
+verify_jwt = false
+
+[functions.scout-monitor]
+verify_jwt = false
+
+[functions.scout-trial-end]
+verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false
