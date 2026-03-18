@@ -40,34 +40,31 @@ Deno.serve(async (req: Request) => {
     //    user client with the request's token for auth validation,
     //    separate admin client (service role) for DB operations.
     const authHeader = req.headers.get('Authorization')
+    console.log('[scout-progress] v10 — auth header present:', !!authHeader)
     if (!authHeader?.startsWith('Bearer ')) return err(401, 'Missing auth token')
 
-    // Auth: Supabase gateway already validates the JWT cryptographically
-    // (verify_jwt=true is the default — function won't run if JWT is invalid).
-    // Decode claims directly from the JWT payload — no extra API call needed.
-    const jwtPayload = (() => {
-      try {
-        const [, b64url] = authHeader.replace('Bearer ', '').split('.')
-        // base64url → base64: replace chars + add required padding
-        const b64 = b64url.replace(/-/g, '+').replace(/_/g, '/')
-          + '=='.slice(0, (4 - b64url.length % 4) % 4)
-        return JSON.parse(atob(b64))
-      } catch (e) {
-        console.error('[scout-progress] JWT decode failed:', e)
-        return null
-      }
-    })()
+    const SUPABASE_URL          = Deno.env.get('SUPABASE_URL')!
+    const SUPABASE_SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
-    if (!jwtPayload?.sub) return err(401, 'Invalid token payload')
-    const userId = jwtPayload.sub as string
+    // Validate token via Supabase auth REST API directly — no SDK, no JWT decode
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        'Authorization': authHeader,
+        'apikey': SUPABASE_SERVICE_ROLE,
+      },
+    })
+    console.log('[scout-progress] auth REST status:', authRes.status)
+    if (!authRes.ok) {
+      const errBody = await authRes.text()
+      console.error('[scout-progress] auth failed:', authRes.status, errBody)
+      return err(401, `Session invalid: ${authRes.status}`)
+    }
+    const authData = await authRes.json()
+    const userId = authData.id as string
+    console.log('[scout-progress] userId:', userId)
 
-    const sb = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
-    )
-
-    // Use a proxy user object so downstream code stays unchanged
-    const user = { id: userId, email: jwtPayload.email as string | undefined }
+    const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE)
+    const user = { id: userId, email: authData.email as string | undefined }
 
     // 2. Parse and validate body
     const body = await req.json()
