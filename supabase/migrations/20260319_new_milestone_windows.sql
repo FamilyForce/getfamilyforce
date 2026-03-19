@@ -2,7 +2,7 @@
 -- Created: 2026-03-19
 -- Purpose: Fill thin months in toddler period (months 14-17, 19-23, 26-29, 31-35)
 
-INSERT INTO milestone_windows (slug, title, open_age_weeks, peak_age_weeks, close_age_weeks, urgency_tier, priority, window_type) VALUES
+INSERT INTO milestone_windows (slug, title, open_age_weeks, peak_age_weeks, close_age_weeks, urgency, priority, window_type) VALUES
   ('self-help-open-cup', 'Transition off the sippy cup to an open cup', 57, 69, 74, 'advisory', 3, 'milestone'),
   ('cognitive-cause-effect-exploration', 'Cause and effect play — switches, buttons, containers', 61, 69, 82, 'advisory', 3, 'milestone'),
   ('motor-stairs-descending', 'Walking downstairs with support', 66, 70, 78, 'advisory', 3, 'milestone'),
