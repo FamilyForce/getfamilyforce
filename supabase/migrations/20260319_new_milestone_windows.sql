@@ -1,9 +1,8 @@
 -- Migration: Add 18 new milestone windows to fill content gaps (months 14-35)
 -- Created: 2026-03-19
--- Purpose: Fill thin months in toddler period (months 14-17, 19-23, 26-29, 31-35)
 
 INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_weeks, close_age_weeks, urgency, priority, window_type, why_it_matters, what_to_do) VALUES
-  ('self-help-open-cup', 'Transition off the sippy cup to an open cup', 'self_help', 57, 69, 74, 'advisory', 3, 'milestone',
+  ('self-help-open-cup', 'Transition off the sippy cup to an open cup', 'motor', 57, 69, 74, 'advisory', 3, 'milestone',
    'The AAP recommends transitioning away from sippy cups by 18 months. Prolonged sippy cup use encourages a sucking pattern that is different from normal cup drinking, can affect dental arch development, and keeps children reliant on a vessel they should be outgrowing. The open cup builds true oral motor coordination.',
    '* Introduce a small, weighted open cup or a straw cup at one meal per day to start
 * Expect spills and keep portions small — an inch of water is plenty for practice
@@ -27,7 +26,7 @@ INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_w
 * Forward-facing descent with support comes around 18 to 24 months');
 
 INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_weeks, close_age_weeks, urgency, priority, window_type, why_it_matters, what_to_do) VALUES
-  ('self-help-self-dressing-assist', 'Helping with getting dressed — arms through sleeves, pulling up pants', 'self_help', 70, 78, 86, 'advisory', 3, 'milestone',
+  ('self-help-self-dressing-assist', 'Helping with getting dressed — arms through sleeves, pulling up pants', 'motor', 70, 78, 86, 'advisory', 3, 'milestone',
    'Around 17 to 20 months, children begin actively cooperating with dressing rather than going limp or squirming away. They push an arm through a sleeve, lift a foot for a sock, attempt to pull pants up. These are not just self-help skills — they are early steps in physical self-awareness, sequencing, and independence. Encouraging them now builds the groundwork for full dressing independence at 3 to 4 years.',
    '* Narrate each step: "Now we put this arm through here. Your turn — can you push your arm through?"
 * Give them the final step: start the sock yourself, then let them pull it up the last inch
@@ -35,7 +34,7 @@ INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_w
 * Celebrate every attempt: "You helped get dressed today!"');
 
 INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_weeks, close_age_weeks, urgency, priority, window_type, why_it_matters, what_to_do) VALUES
-  ('self-help-potty-readiness', 'Potty training readiness — signs to watch for before you start', 'self_help', 79, 95, 113, 'advisory', 2, 'milestone',
+  ('self-help-potty-readiness', 'Potty training readiness — signs to watch for before you start', 'cognitive', 79, 95, 113, 'advisory', 2, 'milestone',
    'Most children show readiness signs between 18 and 24 months, though the range runs from 18 to 36 months. Starting before a child is ready leads to a longer, more frustrating process with more accidents and more resistance. Waiting for readiness signs — rather than starting at a fixed age — is the single most reliable predictor of a faster, lower-conflict potty training experience. This is also the foundation of FamilyForce''s potty training playbook.',
    '* Watch for the key readiness signs: staying dry for 2 or more hours, signaling a need before going (not after), showing interest in the toilet or underwear, being able to follow simple two-step instructions, and being able to pull pants up and down
 * Do not start if the child cannot yet signal need — early training without signaling is toilet timing, not training
@@ -83,7 +82,7 @@ INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_w
 * Helmet from day one, always. It builds the habit before speed makes it necessary.');
 
 INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_weeks, close_age_weeks, urgency, priority, window_type, why_it_matters, what_to_do) VALUES
-  ('self-help-undressing-independently', 'Undressing independently — socks, shoes, and loose pants', 'self_help', 113, 121, 126, 'advisory', 3, 'milestone',
+  ('self-help-undressing-independently', 'Undressing independently — socks, shoes, and loose pants', 'motor', 113, 121, 126, 'advisory', 3, 'milestone',
    'Between 26 and 29 months, children develop the fine motor ability to undress themselves: pulling off socks, removing shoes (especially velcro), and pulling down loose pants. Undressing always precedes dressing — it requires less precision. This is a practical independence skill and is directly relevant to toilet training, where the ability to pull pants down quickly matters a great deal.',
    '* Let them undress themselves at bath time and bedtime — it takes longer but builds the skill
 * Velcro shoes and elastic waists are the right starting equipment
@@ -91,7 +90,7 @@ INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_w
 * Praise the effort: "You took your sock off all by yourself!"');
 
 INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_weeks, close_age_weeks, urgency, priority, window_type, why_it_matters, what_to_do) VALUES
-  ('self-help-tooth-brushing', 'Tooth brushing — child takes a turn', 'self_help', 117, 130, 139, 'advisory', 3, 'milestone',
+  ('self-help-tooth-brushing', 'Tooth brushing — child takes a turn', 'safety', 117, 130, 139, 'advisory', 3, 'milestone',
    'The American Academy of Pediatric Dentistry recommends brushing from the first tooth, done by the parent with a rice-grain amount of fluoride toothpaste. By 27 to 32 months, children are ready to hold the brush and take a turn. This is not just oral hygiene — it is a lifelong habit being formed. Children who brush independently (with supervision) from this age have significantly better dental outcomes than those who are passive recipients.',
    '* Parent brushes first, child takes a turn second — not the other way around. Their technique is not yet sufficient to do it alone.
 * Let them pick their toothbrush (character brushes work) and their toothpaste flavor
@@ -131,7 +130,7 @@ INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_w
 * Read books about starting school: "The Kissing Hand," "Wemberly Worried," "First Day Jitters"');
 
 INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_weeks, close_age_weeks, urgency, priority, window_type, why_it_matters, what_to_do) VALUES
-  ('self-help-dressing-simple-clothes', 'Dressing independently with simple clothes', 'self_help', 135, 147, 152, 'advisory', 3, 'milestone',
+  ('self-help-dressing-simple-clothes', 'Dressing independently with simple clothes', 'motor', 135, 147, 152, 'advisory', 3, 'milestone',
    'Between 31 and 35 months, most children can put on simple clothing independently: a shirt pulled over the head, pants with an elastic waist, socks, and velcro shoes. This is a significant independence milestone with practical implications — it is also a preschool readiness requirement. Children who can dress themselves have meaningfully more autonomy and self-confidence in the morning routine and in group care settings.',
    '* Start with the easiest items: loose pants and socks. Let them try while you narrate.
 * Teach front-from-back with a simple cue: "tag goes in the back"

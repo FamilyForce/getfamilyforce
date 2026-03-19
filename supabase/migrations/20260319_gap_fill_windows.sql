@@ -18,7 +18,7 @@ INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_w
 * Read books where characters help or comfort each other: "The Invisible String," "Llama Llama Red Pajama"');
 
 INSERT INTO milestone_windows (slug, title, category, open_age_weeks, peak_age_weeks, close_age_weeks, urgency, priority, window_type, why_it_matters, what_to_do) VALUES
-  ('self-help-daytime-dryness', 'Daytime dryness established — the finish line for potty training', 'self_help', 120, 130, 143, 'advisory', 2, 'milestone',
+  ('self-help-daytime-dryness', 'Daytime dryness established — the finish line for potty training', 'motor', 120, 130, 143, 'advisory', 2, 'milestone',
    'Most children achieve consistent daytime dryness — fewer than one accident per day, most days — between 24 and 33 months. This is the functional endpoint of daytime potty training. Nighttime dryness comes later and is a separate milestone entirely (many children are not reliably dry at night until age 5 or 6, which is normal). By 33 months, if daytime dryness is not yet established, it is worth discussing with a pediatrician — not because something is necessarily wrong, but to review technique, readiness factors, and rule out physical contributors.',
    '* If training is complete: maintain consistency in routine, especially at transitions (leaving the house, before nap, before bed)
 * If still in progress: review the readiness checklist from the potty training window. If readiness signs are present but training is stalling, try a fresh three-day intensive approach
