@@ -1546,7 +1546,7 @@ contactForm.addEventListener('submit', (e) => {
 
   fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/contact-form', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ' },
     body: JSON.stringify({
       first_name: nameInput.value.trim(),
       email: emailInput.value.trim(),
