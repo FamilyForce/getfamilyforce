@@ -171,6 +171,8 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   // Opening paragraph varies by digest type / expecting status
   const openingParagraph = isExpecting
     ? `Welcome to Scout. ${childName} hasn't arrived yet — but the preparation windows below are open right now, before birth. These are the things most parents wish they'd sorted earlier. You're already ahead.`
+    : digestType === 'birth_signup'
+    ? `${childName} is here. And there are ${allWindowCount} developmental windows open in the first month. That can feel like a lot — and honestly, it is. But that's exactly why Scout exists. We'll make sure you don't miss any of them. Let's nail the first month together.`
     : digestType === 'signup'
     ? `This is ${childName}'s first Scout digest. It's the beginning of something that I wish I'd had with my first son — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now.`
     : `${childName} is ${ageMonths} months old. This is ${his} Scout digest for the month — a quick look at what's worth your attention right now, written to take about 5 minutes to read.`
@@ -178,6 +180,8 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   // Milestone context line (warm, not alarming)
   const contextLine = isExpecting
     ? `The preparation windows below close at birth. Most of them are quick — and much easier to do now than with a newborn in the room.`
+    : digestType === 'birth_signup'
+    ? `The first few months are a blur. You're doing better than you think — and now you've got a system.`
     : ageMonths <= 2
     ? `The first few months are a blur. You're doing better than you think.`
     : ageMonths <= 6
@@ -413,6 +417,10 @@ export function buildDigestSubject(
   digestType: 'signup' | 'monthly' = 'monthly'
 ): string {
   const closing = aboveFold.filter(w => w.close_age_weeks - ageWeeks <= 4)
+
+  if (digestType === 'birth_signup') {
+    return `${childName} is here — let's nail month one 🎉`
+  }
 
   if (digestType === 'signup') {
     return `${childName}'s first Scout digest is here 🎉`
