@@ -20,12 +20,18 @@
   var ua = navigator.userAgent || '';
 
   var isInApp = (
-    /FBAN|FBAV|Instagram|TwitterAndroid|LinkedInApp|TikTok|Snapchat|Pinterest|Threads|GSA\/|Musical\.ly|Line\//.test(ua)
+    /FBAN|FBAV|Instagram|Twitter|LinkedInApp|TikTok|Snapchat|Pinterest|Threads|GSA\/|Musical\.ly|Line\//.test(ua)
     || (/Android/.test(ua) && /; wv\)/.test(ua))       // Android WebView flag
     || (/iPhone|iPad/.test(ua) && !/Safari\//.test(ua) && /AppleWebKit/.test(ua))  // iOS non-Safari WebKit
   );
 
   if (!isInApp) return;
+
+  // Guard: never interfere with an active auth redirect.
+  // Supabase returns #access_token=... or #refresh_token=... after OAuth/magic link.
+  // Redirecting here would drop the token and break sign-in.
+  var hash = window.location.hash || '';
+  if (/access_token|refresh_token|error_description/.test(hash)) return;
 
   var isIOS     = /iPhone|iPad|iPod/.test(ua);
   var isAndroid = /Android/.test(ua);
@@ -36,8 +42,13 @@
 
   // ─── Open-in-browser URL builders ─────────────────────────────────────────
   function chromeIntentUrl(url) {
-    // Opens URL directly in Chrome on Android
-    return 'intent://' + url.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end';
+    // Opens URL in Chrome on Android.
+    // S.browser_fallback_url: if Chrome isn't installed, fall back to system browser.
+    var encoded = encodeURIComponent(url);
+    return 'intent://' + url.replace(/^https?:\/\//, '')
+      + '#Intent;scheme=https;package=com.android.chrome'
+      + ';S.browser_fallback_url=' + encoded
+      + ';end';
   }
 
   function safariUrl(url) {
@@ -69,14 +80,17 @@
   function setupSignInPage() {
     var currentUrl = window.location.href;
 
-    // Attempt silent redirect immediately.
-    // iOS x-safari / Android intent will open the real browser.
-    // If the redirect is blocked (newer OS, strict WebView), the page stays
-    // loaded and the fallback UI below kicks in.
-    openInBrowser(currentUrl);
+    // Android: fire intent redirect immediately — works reliably if Chrome is installed.
+    // iOS: skip the silent x-safari attempt. Facebook/Instagram on iOS 15+ block it
+    // silently, causing a confusing delay. Show the gate immediately instead,
+    // and put x-safari on the button tap where it still helps for some browsers.
+    if (isAndroid) {
+      openInBrowser(currentUrl);
+    }
 
-    // Render fallback UI after a short delay — gives redirect a chance to fire.
-    // If user is still here, the redirect didn't work: show the prominent gate.
+    // Render gate UI.
+    // Android: after 300ms grace (gives intent redirect time to fire).
+    // iOS: immediately (no silent redirect to wait for).
     setTimeout(function () {
       // Hide Google button (non-functional in any WebView)
       var googleWrap = document.getElementById('signin-google-wrap');
@@ -139,7 +153,7 @@
         var insertAfter = logo ? logo.nextSibling : card.firstChild;
         card.insertBefore(gate, insertAfter);
       }
-    }, 150);
+    }, isAndroid ? 300 : 0);
   }
 
   // ─── Router: which page are we on? ────────────────────────────────────────
