@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Mock — Scout Intent Card</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --indigo:      #6E4ED6;
+    --indigo-deep: #3D2B8E;
+    --terra:       #6E4ED6;
+    --text:        #1D1D1F;
+    --text-mid:    #5C5960;
+    --text-dim:    #9B98A3;
+    --border:      #E5E2EC;
+    --surface:     #FFFFFF;
+    --elevated:    #F5F0FF;
+    --bg:          #F7F5FF;
+  }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: #e8e4f5;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+
+  /* ── Phone frame ── */
+  .phone-wrap {
+    width: 375px;
+    background: var(--bg);
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,.25);
+    border: 1px solid rgba(0,0,0,.08);
+  }
+
+  /* ── Nav ── */
+  .nav {
+    background: var(--bg);
+    padding: 18px 20px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-logo .chevron { color: var(--indigo); font-size: 18px; }
+  .nav-logo .force   { color: var(--indigo); }
+
+  /* ── Card ── */
+  .card {
+    margin: 20px 16px 24px;
+    background: var(--surface);
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  /* Header strip — dark indigo */
+  .card-header {
+    background: var(--indigo-deep);
+    padding: 22px 22px 20px;
+  }
+  .card-header-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.45);
+    margin-bottom: 8px;
+  }
+  .card-header-title {
+    font-family: 'Instrument Serif', Georgia, serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .card-header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,.6);
+    line-height: 1.5;
+  }
+
+  /* Body */
+  .card-body { padding: 20px 20px 0; }
+
+  /* How it works — 3 steps */
+  .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; }
+
+  .step-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .step-row:last-child { border-bottom: none; }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--elevated);
+    color: var(--indigo);
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .step-content {}
+  .step-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .step-desc {
+    font-size: 12px;
+    color: var(--text-mid);
+    line-height: 1.55;
+  }
+
+  /* Mini digest preview */
+  .digest-preview {
+    background: var(--elevated);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(110,78,214,.15);
+  }
+  .digest-preview-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--indigo);
+    margin-bottom: 8px;
+  }
+  .digest-preview-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(110,78,214,.1);
+  }
+  .digest-preview-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .digest-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-clinical  { background: #EF4444; }
+  .dot-screening { background: #F59E0B; }
+  .dot-advisory  { background: var(--indigo); }
+  .digest-preview-text { font-size: 12px; color: var(--text-mid); line-height: 1.4; }
+  .digest-preview-text strong { color: var(--text); font-weight: 600; }
+
+  /* Footer */
+  .card-footer { padding: 0 20px 22px; }
+
+  .cta-btn {
+    display: block;
+    width: 100%;
+    background: var(--indigo);
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 15px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    letter-spacing: -.01em;
+    margin-bottom: 12px;
+  }
+
+  .lib-link {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 4px;
+  }
+  .lib-link span { color: var(--indigo); font-weight: 600; }
+
+  /* Pill badges */
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .pill {
+    background: var(--elevated);
+    border: 1px solid rgba(110,78,214,.2);
+    border-radius: 100px;
+    padding: 5px 11px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--indigo);
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-wrap">
+
+  <!-- Nav -->
+  <div class="nav">
+    <div class="nav-logo">
+      <span class="chevron">∧</span>
+      Family<span class="force">Force</span>
+    </div>
+    <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
+      <rect width="20" height="2" rx="1" fill="#1D1D1F"/>
+      <rect y="6" width="14" height="2" rx="1" fill="#1D1D1F"/>
+      <rect y="12" width="17" height="2" rx="1" fill="#1D1D1F"/>
+    </svg>
+  </div>
+
+  <!-- Scout Intent Card -->
+  <div class="card">
+
+    <!-- Header -->
+    <div class="card-header">
+      <div class="card-header-eyebrow">Scout by FamilyForce</div>
+      <div class="card-header-title">The first 3 years have<br>more going on than you think.</div>
+      <div class="card-header-sub">Scout tracks every developmental window — so you don't have to remember.</div>
+    </div>
+
+    <!-- Body -->
+    <div class="card-body">
+
+      <!-- How it works — 3 steps -->
+      <div class="steps">
+        <div class="step-row">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Tell us your child's birthday</div>
+            <div class="step-desc">Works for newborns, toddlers, and babies who haven't arrived yet.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">Get a monthly email + calendar invite</div>
+            <div class="step-desc">Timed to your child's exact age. Shows up before the window closes — not after.</div>
+          </div>
+        </div>
+        <div class="step-row">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Never miss what matters</div>
+            <div class="step-desc">192 developmental windows from birth to age 3. All organised. All timed.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini digest preview -->
+      <div class="digest-preview">
+        <div class="digest-preview-label">This month's windows — example</div>
+        <div class="digest-preview-row">
+          <div class="digest-dot dot-clinical"></div>
+          <div class="digest-preview-text"><strong>18-month developmental screening</strong> — closes in 3 weeks</div>
+        </div>
+        <div class="digest-preview-row">
+          <div class="digest-dot dot-advisory"></div>
+          <div class="digest-preview-text"><strong>Introduce a cup</strong> — open now</div>
+        </div>
+        <div class="digest-preview-row">
+          <div class="digest-dot dot-advisory"></div>
+          <div class="digest-preview-text"><strong>Start a bedtime routine</strong> — open now</div>
+        </div>
+      </div>
+
+      <!-- Trust pills -->
+      <div class="pill-row">
+        <div class="pill">✓ Free to start</div>
+        <div class="pill">✓ No credit card</div>
+        <div class="pill">✓ Cancel anytime</div>
+      </div>
+
+    </div>
+
+    <!-- Footer CTA -->
+    <div class="card-footer">
+      <a href="#" class="cta-btn">Set up Scout — it's free →</a>
+      <a href="#" class="lib-link">Just browsing? <span>Explore the free library →</span></a>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
