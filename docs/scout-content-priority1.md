@@ -1736,7 +1736,7 @@ If your 18 month old is still on a bottle, it is time for a firm transition. Rep
 
 ## `nutrition-cows-milk-switch`
 **Title:** Switch to whole cow milk at 12 months
-**Open:** Week 52 | **Peak:** Week 52 | **Close:** Week 56
+**Open:** Week 52 | **Peak:** Week 52 | **Close:** Week 54
 **Urgency:** advisory | **Priority:** 2
 
 **Why it matters:**
