@@ -192,6 +192,17 @@ Deno.serve(async (req: Request) => {
     const allWindows   = (windows ?? []) as MilestoneWindow[]
     const aboveFold    = selectAboveFold(allWindows, weeks)
 
+    // For expecting parents: fetch total post-birth window count for the tease card
+    let postBirthWindowCount = 192  // default (matches current DB count)
+    if (isExpecting) {
+      const { count } = await sb
+        .from('milestone_windows')
+        .select('id', { count: 'exact', head: true })
+        .eq('active', true)
+        .eq('prenatal', false)
+      if (count !== null) postBirthWindowCount = count
+    }
+
     // 6. Build subject line
     step = 'build-email'
     const siteUrl     = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
@@ -225,6 +236,7 @@ Deno.serve(async (req: Request) => {
       childGender:    child.gender,
       ageMonths:      isExpecting ? 0 : months,
       isExpecting,
+      postBirthWindowCount,
       aboveFold:      aboveFold as DigestWindow[],
       allWindowCount: allWindows.length,
       closingCount,

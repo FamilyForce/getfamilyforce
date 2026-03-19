@@ -37,9 +37,10 @@ export interface DigestEmailOptions {
   nextEventDate:   Date
   dashboardUrl:    string
   siteUrl:         string
-  userId:          string
-  digestType:      'signup' | 'monthly' | 'birth_signup'
-  isExpecting?:    boolean   // true = expecting parent, pre-birth digest
+  userId:              string
+  digestType:          'signup' | 'monthly' | 'birth_signup'
+  isExpecting?:        boolean   // true = expecting parent, pre-birth digest
+  postBirthWindowCount?: number  // total post-birth windows — shown in pre-birth tease copy
 }
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
@@ -149,6 +150,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     childName, parentName, childGender, ageMonths, aboveFold,
     allWindowCount, closingCount, overdueWindows = [], nextEventDate,
     dashboardUrl, siteUrl, userId, digestType, isExpecting = false,
+    postBirthWindowCount = 192,
   } = opts
 
   const His = cap(pronoun(childGender, 'possess'))
@@ -170,7 +172,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
 
   // Opening paragraph varies by digest type / expecting status
   const openingParagraph = isExpecting
-    ? `Welcome to Scout. ${childName} hasn't arrived yet — but the preparation windows below are open right now, before birth. These are the things most parents wish they'd sorted earlier. You're already ahead.`
+    ? `Scout is designed for when your baby is born — covering every developmental milestone through the first three years. The ${postBirthWindowCount} windows we track all start at birth. But we wanted to be helpful before ${childName} arrives too, so below are a few things worth sorting now. It's not an exhaustive list — just the things that are genuinely easier to do before a newborn is in the room.`
     : digestType === 'birth_signup'
     ? `${childName} is here. And there are ${allWindowCount} developmental windows open in the first month. That can feel like a lot — and honestly, it is. But that's exactly why Scout exists. We'll make sure you don't miss any of them. Let's nail the first month together.`
     : digestType === 'signup'
@@ -362,9 +364,9 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                   <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.indigoDeep};border-radius:12px;overflow:hidden">
                     <tr>
                       <td style="padding:24px 28px">
-                        <p style="font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:400;color:#fff;margin:0 0 10px;line-height:1.3">Once ${childName} arrives, Scout really kicks in.</p>
+                        <p style="font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:400;color:#fff;margin:0 0 10px;line-height:1.3">When ${childName} is born, we have ${postBirthWindowCount} developmental windows to work through together. Get ready.</p>
                         <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 20px;line-height:1.7">
-                          The first month alone has more developmental windows than most parents realise. We'll send you a full digest the moment you confirm the birth — so nothing slips through the cracks.
+                          Confirm the birth in Scout and we'll send your first full digest straight away — everything worth your attention in month one, organised and ready to go.
                         </p>
                         <table cellpadding="0" cellspacing="0">
                           <tr>
