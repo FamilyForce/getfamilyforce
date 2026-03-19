@@ -502,26 +502,98 @@ button { font: inherit; cursor: pointer; }
 .step-h { font-family: var(--serif); font-size: 26px; font-weight: 700; letter-spacing: -.02em; color: var(--text); margin-bottom: 6px; line-height: 1.2; }
 .step-sub { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin-bottom: 28px; }
 
-/* Intent cards */
-.intent-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-.intent-card {
-  display: flex; align-items: center; gap: 16px;
-  padding: 18px 20px;
-  border: 1.5px solid var(--border);
-  border-radius: 14px;
-  cursor: pointer;
-  transition: border-color .15s, background .15s, box-shadow .15s;
-  background: var(--surface);
-  text-align: left; width: 100%;
+/* ── Scout tutorial card (intent step) ────────────────────────────────────── */
+/* Override step-card padding so the header can flush to edges */
+#step-intent .step-card { padding: 0; overflow: hidden; }
+
+.scout-card-header {
+  background: #3D2B8E;
+  padding: 24px 24px 20px;
 }
-@media (hover:hover) { .intent-card:hover { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(110,78,214,.08); } }
-.intent-card.selected { border-color: var(--terra); background: var(--elevated); }
-.intent-card-icon { font-size: 26px; flex-shrink: 0; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--elevated); border-radius: 10px; }
-.intent-card-text { flex: 1; }
-.intent-card-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
-.intent-card-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
-.intent-card-arrow { color: var(--terra); font-size: 18px; flex-shrink: 0; opacity: 0; transition: opacity .15s; }
-@media (hover:hover) { .intent-card:hover .intent-card-arrow { opacity: 1; } }
+.scout-card-eyebrow {
+  font-size: 10px; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 8px;
+}
+.scout-card-title {
+  font-family: var(--serif); font-size: 24px; font-weight: 400;
+  color: #fff; line-height: 1.2; margin-bottom: 6px;
+}
+.scout-card-sub { font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.55; }
+
+.scout-section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-dim);
+  padding: 18px 24px 10px;
+}
+
+.scout-section-rows { padding: 0 24px; }
+.scout-section-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.scout-section-row:last-child { border-bottom: none; }
+
+.scout-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 9px; border-radius: 100px;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+  white-space: nowrap; margin-top: 1px; line-height: 1.4;
+}
+.scout-badge-amber  { background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
+.scout-badge-indigo { background: var(--elevated); color: var(--terra); border: 1px solid rgba(110,78,214,.2); }
+.scout-badge-grey   { background: #F3F4F6; color: #6B7280; border: 1px solid #E5E7EB; }
+.scout-badge-green  { background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; }
+.scout-row-copy { font-size: 12px; color: var(--text-mid); line-height: 1.55; }
+
+.scout-gap { height: 8px; background: var(--bg); }
+
+.scout-actions-wrap { padding: 14px 24px 0; }
+.scout-actions-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
+}
+.scout-actions-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+.scout-action-pill {
+  background: var(--elevated); border: 1px solid rgba(110,78,214,.18);
+  border-radius: 100px; padding: 6px 12px;
+  font-size: 12px; font-weight: 600; color: var(--terra);
+  display: flex; align-items: center; gap: 5px;
+}
+
+.scout-family-tip {
+  margin: 0 24px; background: var(--elevated);
+  border-radius: 12px; padding: 14px 16px;
+  border: 1px solid rgba(110,78,214,.18);
+}
+.scout-family-tip-title {
+  font-size: 13px; font-weight: 700; color: var(--text);
+  margin-bottom: 4px; display: flex; align-items: center; gap: 6px;
+}
+.scout-family-tip-body { font-size: 12px; color: var(--text-mid); line-height: 1.6; }
+.scout-family-tip-body strong { color: var(--terra); font-weight: 600; }
+
+.scout-support {
+  padding: 14px 24px 0;
+  font-size: 12px; color: var(--text-dim); line-height: 1.6; text-align: center;
+}
+.scout-support a { color: var(--terra); font-weight: 600; text-decoration: none; }
+
+.scout-cta-wrap { padding: 18px 24px 24px; }
+.scout-cta-btn {
+  display: block; width: 100%;
+  background: var(--terra); color: #fff;
+  font-family: var(--sans); font-size: 16px; font-weight: 700;
+  padding: 16px; border-radius: 12px; border: none; cursor: pointer;
+  text-align: center; letter-spacing: -.01em;
+  min-height: 52px;
+}
+@media (hover:hover) { .scout-cta-btn:hover { background: #5B3CC4; } }
+
+/* Tablet: slightly more breathing room */
+@media (min-width: 540px) {
+  #step-intent .step-card { max-width: 520px; }
+  .scout-card-title { font-size: 26px; }
+}
 
 /* Child setup */
 .step-form-group { margin-bottom: 20px; }
@@ -1276,32 +1348,77 @@ button { font: inherit; cursor: pointer; }
     </div>
 
     <!-- ═══ STEP: INTENT ═══ -->
-    <div class="signup-step" id="step-intent" role="region" aria-label="Choose your path">
+    <div class="signup-step" id="step-intent" role="region" aria-label="Discover Scout">
       <div class="step-card">
-        <h2 class="step-h">What would you like to do?</h2>
-        <p class="step-sub">Pick one to get started. You can always do both.</p>
-        <div class="intent-grid">
 
-          <button class="intent-card" onclick="handleIntent('library')" aria-label="Browse the free library">
-            <div class="intent-card-icon">📖</div>
-            <div class="intent-card-text">
-              <div class="intent-card-title">Browse the free library</div>
-              <div class="intent-card-desc">Playbooks on potty training, sleep, feeding, tantrums and more. All free.</div>
-            </div>
-            <div class="intent-card-arrow">›</div>
-          </button>
-
-          <button class="intent-card" onclick="handleIntent('trial')" aria-label="Try Scout free until your child's next birthday">
-            <div class="intent-card-icon">🌱</div>
-            <div class="intent-card-text">
-              <div class="intent-card-title">Try Scout free</div>
-              <div class="intent-card-desc">Age-specific developmental windows for your child. Free until their next birthday. No credit card needed.</div>
-            </div>
-            <div class="intent-card-arrow">›</div>
-          </button>
-
+        <!-- Header -->
+        <div class="scout-card-header">
+          <div class="scout-card-eyebrow">Scout by FamilyForce</div>
+          <h2 class="scout-card-title">Discover Scout</h2>
+          <p class="scout-card-sub">Here's how your dashboard is organised — so you always know where to look.</p>
         </div>
-        <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:18px">Free until your child's next birthday. No credit card needed.</p>
+
+        <!-- Dashboard sections -->
+        <div class="scout-section-label">Your dashboard sections</div>
+        <div class="scout-section-rows">
+          <div class="scout-section-row">
+            <span class="scout-badge scout-badge-amber">⚠ Heads Up</span>
+            <span class="scout-row-copy">Windows closing soon. These need your attention now — act before they pass.</span>
+          </div>
+          <div class="scout-section-row">
+            <span class="scout-badge scout-badge-indigo">This Month</span>
+            <span class="scout-row-copy">Open windows timed to your child's exact age right now. Your main focus.</span>
+          </div>
+          <div class="scout-section-row">
+            <span class="scout-badge scout-badge-grey">Coming Up</span>
+            <span class="scout-row-copy">Windows opening in the next 8 weeks — so you can plan ahead.</span>
+          </div>
+          <div class="scout-section-row">
+            <span class="scout-badge scout-badge-green">✓ Addressed</span>
+            <span class="scout-row-copy">Windows you've marked as done or skipped. Keeps your dashboard clean.</span>
+          </div>
+        </div>
+
+        <div class="scout-gap"></div>
+
+        <!-- Actions -->
+        <div class="scout-section-label" style="padding-top:14px">For each window, you can</div>
+        <div class="scout-actions-wrap">
+          <div class="scout-actions-grid">
+            <div class="scout-action-pill">📖 Read more</div>
+            <div class="scout-action-pill">✅ Mark as done</div>
+            <div class="scout-action-pill">🔄 In progress</div>
+            <div class="scout-action-pill">⏭ Skip</div>
+            <div class="scout-action-pill">📝 Add a note</div>
+          </div>
+        </div>
+
+        <div class="scout-gap"></div>
+
+        <!-- Family Circle tip -->
+        <div class="scout-section-label" style="padding-top:14px">One more thing</div>
+        <div class="scout-family-tip">
+          <div class="scout-family-tip-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6E4ED6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Family Circle
+          </div>
+          <div class="scout-family-tip-body">
+            Scout is more helpful when everyone's on the same page. Invite your partner, grandparents, or nanny to share progress and notes. Add them in the <strong>Family Circle tab</strong>.
+          </div>
+        </div>
+
+        <!-- Support -->
+        <div class="scout-support">
+          Any questions? <a href="mailto:support@getfamilyforce.com">support@getfamilyforce.com</a>
+        </div>
+
+        <!-- CTA -->
+        <div class="scout-cta-wrap">
+          <button class="scout-cta-btn" onclick="handleIntent('trial')" aria-label="Let's go to the app">
+            Let's go to the app →
+          </button>
+        </div>
+
       </div>
     </div>
 
