@@ -638,7 +638,7 @@ function showSubscribeGate(childName, dobVal, userId) {
 
 function initStripeCard() {
   if (_cardElement) return  // already mounted
-  var STRIPE_PK = 'pk_test_51TAQTZRF5ve13fCKDmbO62d5eyQD1P5elKFxqb10rtEr7kMJ3myKneIpZs26oxTYafC2s1Q796gUnHxa0LuuDkX600u23YbO8I'
+  var STRIPE_PK = 'pk_live_51TAQTQIbsOmqAIBV8VA8gQdscdslvnT5xLC7sRvPaoy0W4dMhat9OnPaBJZFKn7iq4MorTbvjcPoTIYoxbn1ACnx00HJEpmwFH'
   _stripe = window.Stripe ? window.Stripe(STRIPE_PK) : null
   if (!_stripe) return
   var elements = _stripe.elements()
