@@ -354,12 +354,35 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                 </td>
               </tr>
 
-              <!-- Next digest teaser -->
+              <!-- Next digest teaser / birth CTA (expecting) -->
               <tr>
                 <td style="padding-bottom:32px">
+                  ${isExpecting ? `
+                  <!-- What happens after birth — tease + CTA -->
+                  <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.indigoDeep};border-radius:12px;overflow:hidden">
+                    <tr>
+                      <td style="padding:24px 28px">
+                        <p style="font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:400;color:#fff;margin:0 0 10px;line-height:1.3">Once ${childName} arrives, Scout really kicks in.</p>
+                        <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 20px;line-height:1.7">
+                          The first month alone has more developmental windows than most parents realise. We'll send you a full digest the moment you confirm the birth — so nothing slips through the cracks.
+                        </p>
+                        <table cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="background:#fff;border-radius:8px">
+                              <a href="${dashboardUrl}" style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:${C.indigo};text-decoration:none;display:block;padding:12px 24px">
+                                Confirm birth in Scout →
+                              </a>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                  ` : `
                   <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textDim};margin:0;line-height:1.65">
                     Next digest arrives on <strong style="color:${C.textMid}">${nextMonthName}</strong> — when ${childName} turns ${ageMonths + 1} months.
                   </p>
+                  `}
                 </td>
               </tr>
 
