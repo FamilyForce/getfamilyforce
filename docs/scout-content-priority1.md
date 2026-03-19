@@ -5308,3 +5308,437 @@ Knocking the tower down is part of playing with blocks, not the absence of const
 If your 3 year old shows no interest in any construction or stacking activity at all, mention it at the 36 month visit as part of fine motor and play development review.
 
 **Source:** Casey et al. (2008) — Block Play and Math Achievement; Hanline et al. (2010); CDC
+
+---
+
+## `self-help-open-cup`
+**Title:** Transition off the sippy cup to an open cup
+**Open:** Week 57 | **Peak:** Week 69 | **Close:** Week 74
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+The AAP recommends transitioning away from sippy cups by 18 months. Prolonged sippy cup use encourages a sucking pattern that is different from normal cup drinking, can affect dental arch development, and keeps children reliant on a vessel they should be outgrowing. The open cup builds true oral motor coordination.
+
+**What to do:**
+* Introduce a small, weighted open cup or a straw cup at one meal per day to start
+* Expect spills and keep portions small — an inch of water is plenty for practice
+* Let them hold it themselves even if it means a wet shirt; that is how it is learned
+* Keep the sippy for on-the-go if needed but phase it out at the table
+
+**What not to worry about:**
+Mess is part of the process. A 14 month old who spills constantly at cup practice is not behind, they are learning the physics of liquid.
+
+**Missed window guidance:**
+If your child is still exclusively on a sippy cup past 18 months, make the switch. Most children adapt within a week or two with consistent practice.
+
+**Source:** AAP Pediatric Nutrition; AAPD Oral Health Guidelines
+
+---
+
+## `cognitive-cause-effect-exploration`
+**Title:** Cause and effect play — switches, buttons, containers
+**Open:** Week 61 | **Peak:** Week 69 | **Close:** Week 82
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Between 14 and 19 months, toddlers enter a phase of obsessive cause and effect exploration. They flip light switches repeatedly. They open and close every drawer. They drop things off the high chair tray and watch them fall. This is not mischief. It is structured scientific inquiry. Each repetition confirms a hypothesis: if I do X, Y happens. This is the foundation of logical reasoning.
+
+**What to do:**
+* Allow the switch flipping, the drawer opening, the container dumping — within reason and safety
+* Narrate what is happening: "You pushed the button and the music started. You did that!"
+* Set up simple cause-effect toys: pop-up toys, push-button music, simple puzzles with feedback
+* Avoid stopping the behavior unless safety is involved
+
+**What not to worry about:**
+The repetition feels purposeless but is not. A toddler who dumps the container for the fifteenth time is running the same experiment to confirm consistent results. Let them confirm.
+
+**Missed window guidance:**
+This phase winds down naturally by 18 to 19 months as the child's interest shifts to more complex play. No intervention needed if it resolves on its own.
+
+**Source:** Piaget Sensorimotor Stage (1952); AAP Early Learning Guidelines
+
+---
+
+## `motor-stairs-descending`
+**Title:** Walking downstairs with support
+**Open:** Week 66 | **Peak:** Week 70 | **Close:** Week 78
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Going up stairs with support typically emerges around 12 to 13 months. Going down is harder and comes later — usually 15 to 18 months. Descending requires the child to shift weight forward onto a lower step while maintaining balance, a significantly more difficult coordination task. Until this is established, stairs remain a fall risk in both directions.
+
+**What to do:**
+* Teach feet-first descent: turn the child around to face the stairs and let them step down backward
+* Demonstrate and repeat the technique; backward descent is safer and comes first
+* Keep stair gates in place during this learning window — supervised practice is not the same as unsupervised access
+* Forward-facing descent with support comes around 18 to 24 months
+
+**What not to worry about:**
+Many children prefer to bump down on their bottoms for months before walking down. Bottom-scooting is a legitimate strategy, not a motor delay.
+
+**Missed window guidance:**
+If your 18-month-old cannot navigate stairs in any way (up or down) with or without support, mention it at the next well-child visit.
+
+**Source:** CDC Motor Milestones; AAP Safety Guidelines
+
+---
+
+## `self-help-self-dressing-assist`
+**Title:** Helping with getting dressed — arms through sleeves, pulling up pants
+**Open:** Week 70 | **Peak:** Week 78 | **Close:** Week 86
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Around 17 to 20 months, children begin actively cooperating with dressing rather than going limp or squirming away. They push an arm through a sleeve, lift a foot for a sock, attempt to pull pants up. These are not just self-help skills — they are early steps in physical self-awareness, sequencing, and independence. Encouraging them now builds the groundwork for full dressing independence at 3 to 4 years.
+
+**What to do:**
+* Narrate each step: "Now we put this arm through here. Your turn — can you push your arm through?"
+* Give them the final step: start the sock yourself, then let them pull it up the last inch
+* Use loose, easy clothing — elastic waists, stretchy materials — to reduce frustration
+* Celebrate every attempt: "You helped get dressed today!"
+
+**What not to worry about:**
+Speed is not the point at this stage. A five-minute dressing routine that involves the child is more valuable than a 90-second routine done entirely by the parent.
+
+**Missed window guidance:**
+No clinical concern if assistance takes longer to emerge. Some toddlers cooperate readily at 17 months, others not until 22 months. Wide normal range.
+
+**Source:** Gesell Institute of Child Development; AAP
+
+---
+
+## `self-help-potty-readiness`
+**Title:** Potty training readiness — signs to watch for before you start
+**Open:** Week 79 | **Peak:** Week 95 | **Close:** Week 113
+**Urgency:** advisory | **Priority:** 2
+
+**Why it matters:**
+Most children show readiness signs between 18 and 24 months, though the range runs from 18 to 36 months. Starting before a child is ready leads to a longer, more frustrating process with more accidents and more resistance. Waiting for readiness signs — rather than starting at a fixed age — is the single most reliable predictor of a faster, lower-conflict potty training experience. This is also the foundation of FamilyForce's potty training playbook.
+
+**What to do:**
+* Watch for the key readiness signs: staying dry for 2 or more hours, signaling a need before going (not after), showing interest in the toilet or underwear, being able to follow simple two-step instructions, and being able to pull pants up and down
+* Do not start if the child cannot yet signal need — early training without signaling is toilet timing, not training
+* Begin talking about the toilet naturally: let them see you use it, name body parts, read potty books
+* Buy a floor potty and leave it out without pressure; familiarity reduces fear when training begins
+
+**What not to worry about:**
+Later is not worse. A child who trains at 30 months trains faster than one started at 18 months who was not ready. The goal is readiness, not speed.
+
+**Missed window guidance:**
+If no readiness signs are present by 30 months, mention it at the next visit. Delay in readiness can occasionally indicate sensory processing differences or developmental factors worth reviewing.
+
+**Source:** Brazelton child-led approach (1962); AAP Toilet Training Guidelines; FamilyForce Potty Training Playbook
+
+---
+
+## `language-question-asking`
+**Title:** The question explosion — "What's that?" and "Why?"
+**Open:** Week 83 | **Peak:** Week 92 | **Close:** Week 100
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Between 20 and 23 months, most toddlers begin asking constant questions, most frequently "What's that?" followed shortly by "Why?" This is not random noise. It is a language acquisition strategy: the child is using you as a dictionary. Each question answered builds vocabulary and, more importantly, builds the understanding that words are tools for getting information. By 24 months the "why" questions shift from labeling to causal reasoning — a major cognitive leap.
+
+**What to do:**
+* Answer every question, even the obvious ones. "That's a mailbox. The mail carrier puts letters in it."
+* Resist the urge to answer with a question back ("What do you think it is?") at this stage — they are asking because they genuinely do not know
+* When you do not know the answer, say so and look it up together: "I don't know — let's find out"
+* Expect the same question multiple times. Repetition is how they cement new words.
+
+**What not to worry about:**
+The sheer volume of questions at this age — sometimes dozens per hour — is developmentally normal and temporary. It peaks and fades as vocabulary grows.
+
+**Missed window guidance:**
+A child who rarely or never asks questions by 22 to 24 months, especially combined with limited vocabulary, is worth raising at the 24-month visit.
+
+**Source:** Hart & Risley (1995) Meaningful Differences; Nelson (1973) language acquisition research
+
+---
+
+## `motor-throw-overarm`
+**Title:** Overarm throwing develops
+**Open:** Week 92 | **Peak:** Week 96 | **Close:** Week 108
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Early ball play (months 6 to 12) involves rolling and dropping. Around 21 to 25 months, children develop the shoulder rotation and weight shift needed for a true overarm throw. This is a significant bilateral coordination milestone: the throwing arm swings forward while the opposite leg steps forward. It also requires the child to release the object at the right moment, which requires timing and planning.
+
+**What to do:**
+* Demonstrate an overarm throw with a soft ball and invite them to copy
+* Use soft, light balls — foam, cloth, or a small rubber ball — in a space where the throw can go far
+* Throwing at a target (a bucket, a couch cushion on the floor) adds motivation and direction
+* Celebrate range and enthusiasm over accuracy — accuracy comes much later
+
+**What not to worry about:**
+Most toddlers throw with both feet planted for many months before developing the step-through technique. An in-place overarm throw is a fully legitimate first throw.
+
+**Missed window guidance:**
+No clinical concern if throwing is still under-arm or pushing at 25 months. Motor variation is wide. Note only if gross motor development is delayed broadly.
+
+**Source:** Gallahue & Ozmun (2006) Understanding Motor Development; CDC Motor Milestones
+
+---
+
+## `cognitive-draw-copy-lines`
+**Title:** Drawing and copying lines and circles
+**Open:** Week 92 | **Peak:** Week 100 | **Close:** Week 109
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Around 21 to 25 months, children move from scribbling (which is purposeful mark-making without a target form) to copying. They begin to produce vertical lines, horizontal lines, and eventually circles when shown a model. This is a significant fine motor and cognitive milestone: they must visually analyze a shape, plan the hand movement, and execute it. These are the same skills required for writing letters.
+
+**What to do:**
+* Draw a vertical line slowly and ask them to make one just like it
+* Use large crayons or chunky markers — they provide better grip feedback than thin pencils
+* Praise the attempt, not the result. A wobbly vertical line is a real vertical line.
+* Progress goes: vertical line → horizontal line → circle → cross. Do not rush the sequence.
+
+**What not to worry about:**
+Circles are harder than lines and may not appear until 24 to 27 months. A child who draws lines but not circles at 23 months is fully on track.
+
+**Missed window guidance:**
+If your child shows no interest in mark-making at all by 24 months, mention it at the next visit. Avoidance of drawing can sometimes reflect fine motor or sensory differences.
+
+**Source:** Beery VMI Developmental Norms; Gesell (1940) motor development sequence
+
+---
+
+## `cognitive-humor-jokes`
+**Title:** Using humor intentionally — first jokes and silly words
+**Open:** Week 109 | **Peak:** Week 117 | **Close:** Week 121
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Between 25 and 28 months, children begin using humor deliberately — saying the wrong word on purpose, making a funny face to get a reaction, turning a routine into a game with a punchline. This is one of the most significant markers of emerging theory of mind: the child understands that you have expectations, and they can subvert those expectations for effect. It is also the first evidence of social intelligence applied to entertainment.
+
+**What to do:**
+* Play along. When they call a dog a cat on purpose and wait for your reaction, give them the laugh. That is exactly what they are going for.
+* Introduce simple silly games: "Is your nose your elbow? Nooooo!" — let them take the joke role
+* Read silly books together: Julia Donaldson, Mo Willems. Toddler humor literature is its own genre.
+* Laugh at their jokes, including the ones that make no sense. The intent is what matters.
+
+**What not to worry about:**
+Toddler jokes are not funny to adults. That is fine. They are funny to toddlers. The developmental milestone is the intent, not the quality.
+
+**Missed window guidance:**
+No clinical concern if humor development is slower. Intentional humor is not a red-flag milestone. Note only if broader social and communication development seems limited.
+
+**Source:** Reddy (2001) theory of mind and humor development; Loizou (2005) infant humor
+
+---
+
+## `motor-tricycle-balance-bike`
+**Title:** Tricycle or balance bike — first wheeled independence
+**Open:** Week 113 | **Peak:** Week 121 | **Close:** Week 126
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Around 26 to 29 months, children develop the leg strength and coordination to pedal a tricycle or propel a balance bike. This is a major gross motor milestone and one of the most motivating forms of independent movement available to toddlers. Beyond the physical benefits, wheeled transport gives children a sense of spatial independence — they can move themselves somewhere they choose to go.
+
+**What to do:**
+* For balance bikes: no pedals, child propels by walking then lifts feet to glide. Start there if introducing from scratch.
+* For tricycles: position the seat so legs have a slight bend at the bottom of the pedal stroke
+* Start on a flat, smooth surface — grass is too hard, slopes are dangerous
+* Helmet from day one, always. It builds the habit before speed makes it necessary.
+
+**What not to worry about:**
+Pedaling coordination takes weeks or months to develop. A child who straddles a tricycle and walks it along without pedaling is a normal starting point.
+
+**Missed window guidance:**
+Tricycle pedaling that has not emerged by 30 months is worth noting as part of a broader gross motor review, not as a standalone concern.
+
+**Source:** AAP Physical Activity Guidelines; Gallahue & Ozmun Motor Development
+
+---
+
+## `self-help-undressing-independently`
+**Title:** Undressing independently — socks, shoes, and loose pants
+**Open:** Week 113 | **Peak:** Week 121 | **Close:** Week 126
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Between 26 and 29 months, children develop the fine motor ability to undress themselves: pulling off socks, removing shoes (especially velcro), and pulling down loose pants. Undressing always precedes dressing — it requires less precision. This is a practical independence skill and is directly relevant to toilet training, where the ability to pull pants down quickly matters a great deal.
+
+**What to do:**
+* Let them undress themselves at bath time and bedtime — it takes longer but builds the skill
+* Velcro shoes and elastic waists are the right starting equipment
+* Break it into steps and let them do the last part first: you loosen the shoe, they pull it off
+* Praise the effort: "You took your sock off all by yourself!"
+
+**What not to worry about:**
+Dressing takes much longer to develop than undressing. A child who can take clothes off but struggles to put them on is normal and developmentally correct.
+
+**Missed window guidance:**
+No ability to remove any clothing by 30 months may indicate fine motor difficulties worth reviewing at the next visit.
+
+**Source:** Gesell Developmental Schedules; AAP Developmental Milestones
+
+---
+
+## `self-help-tooth-brushing`
+**Title:** Tooth brushing — child takes a turn
+**Open:** Week 117 | **Peak:** Week 130 | **Close:** Week 139
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+The American Academy of Pediatric Dentistry recommends brushing from the first tooth, done by the parent with a rice-grain amount of fluoride toothpaste. By 27 to 32 months, children are ready to hold the brush and take a turn. This is not just oral hygiene — it is a lifelong habit being formed. Children who brush independently (with supervision) from this age have significantly better dental outcomes than those who are passive recipients.
+
+**What to do:**
+* Parent brushes first, child takes a turn second — not the other way around. Their technique is not yet sufficient to do it alone.
+* Let them pick their toothbrush (character brushes work) and their toothpaste flavor
+* Make it a routine, not a battle: same time, same sequence, every day
+* Electric toothbrushes are fine and often more effective at this age than manual
+
+**What not to worry about:**
+The child's brushing will be inadequate for years. That is fine. You are building the habit and the comfort, not relying on their technique.
+
+**Missed window guidance:**
+If your child has significant tooth brushing resistance past 36 months, discuss with your pediatric dentist. Sensory-based resistance to brushing is real and treatable.
+
+**Source:** AAPD Periodicity Guidelines; AAP Bright Futures Dental Guidelines
+
+---
+
+## `motor-handedness-emerging`
+**Title:** Dominant hand solidifies — and why you should not try to change it
+**Open:** Week 113 | **Peak:** Week 130 | **Close:** Week 139
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Between 26 and 32 months, most children settle into a consistent hand preference for drawing, eating, and throwing. This is neurological, not behavioral — the dominant hemisphere of the brain is establishing control over the contralateral hand. Approximately 10 percent of children are left-handed. Attempting to switch a child's dominant hand causes stress, disrupts motor learning, and in some cases has lasting effects on speech and language development.
+
+**What to do:**
+* Observe which hand the child naturally reaches with for drawing, spoon use, and throwing
+* Place objects in the midline — let them choose which hand to use, do not hand objects to the right hand specifically
+* If left-handedness is emerging, buy left-handed scissors when they reach preschool age
+* Tell grandparents and caregivers: this is not something to correct
+
+**What not to worry about:**
+Some children remain ambidextrous well past 30 months and settle into a preference closer to age 4 or 5. That is within normal range.
+
+**Missed window guidance:**
+No dominant hand by age 4 or 5 is worth noting. Strong hand preference before 18 months (especially if one side is significantly weaker) may warrant review for asymmetric motor development.
+
+**Source:** Coren (1992) The Left-Hander Syndrome; AAP Motor Development Guidelines
+
+---
+
+## `social-named-friendships`
+**Title:** Named friendships — "I want to play with Ella"
+**Open:** Week 131 | **Peak:** Week 139 | **Close:** Week 147
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Between 30 and 34 months, children begin to form specific social preferences — requesting particular children by name, showing excitement when they know a certain friend will be present, and expressing something that looks like genuine friendship. This is the emergence of selective social bonding beyond the family. It is one of the earliest signs of the social intelligence that will drive peer relationships throughout childhood.
+
+**What to do:**
+* Take the preference seriously. If they ask for Ella, try to arrange it.
+* Facilitate the playdate: same-age, low-key, short (60 to 90 minutes), small numbers (one friend is enough)
+* Stay nearby but let them navigate the social dynamic — resist the urge to direct the play
+* Debrief naturally afterward: "Did you have fun with Ella? What did you play?"
+
+**What not to worry about:**
+Toddler friendships do not look like adult friendships. There will be disputes, toy grabs, and emotional exits. These are normal and are how social skills are learned.
+
+**Missed window guidance:**
+No interest in any peer interaction by 36 months — not just preference, but complete disinterest in other children — is worth noting at the 36-month visit.
+
+**Source:** Hartup (1992) peer relations research; AAP Social Emotional Development
+
+---
+
+## `motor-balance-one-foot`
+**Title:** Balancing on one foot for 2 seconds
+**Open:** Week 131 | **Peak:** Week 143 | **Close:** Week 152
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Standing briefly on one foot is a balance milestone that emerges around 30 to 35 months. It requires the child to shift their center of gravity over a single support point while the raised leg is controlled — a demanding vestibular and proprioceptive task. This is the direct precursor to hopping, skipping, and the single-leg balance needed for kicking accuracy and stair climbing with alternating feet.
+
+**What to do:**
+* Make it a game: "Can you stand on one foot like a flamingo?"
+* Hold their hand at first and gradually reduce support
+* Count out loud while they balance — makes it concrete and motivating
+* Practice during normal routines: standing on one foot to put on a sock is a real-world application
+
+**What not to worry about:**
+Two seconds is the target by 36 months. Five or ten seconds comes later. Brief wobble-and-catch balancing counts.
+
+**Missed window guidance:**
+Unable to balance on either foot for any duration by 36 months is worth noting at the well-child visit as part of gross motor review.
+
+**Source:** Bayley Scales of Infant Development; CDC 3-Year Milestones
+
+---
+
+## `cognitive-preschool-readiness`
+**Title:** Preschool readiness — what to look for before the first day
+**Open:** Week 135 | **Peak:** Week 143 | **Close:** Week 147
+**Urgency:** advisory | **Priority:** 2
+
+**Why it matters:**
+Many children start preschool between ages 2.5 and 3. Preschool readiness is not about knowing colors or counting — it is about the skills that allow a child to function in a group setting: separating from parents without extended distress, following basic two-step instructions, communicating their needs verbally, and managing basic self-help tasks (going to the bathroom, washing hands, handling a snack). A child who is not ready will have a harder start, not a faster one.
+
+**What to do:**
+* Practice separation in low-stakes settings: grandparent visits, playdates without parents, church or community programs
+* Check the practical self-help list: can they pull pants up and down? Wash hands? Communicate hunger or need for the bathroom?
+* Visit the preschool together before the first day — familiarity dramatically reduces first-day anxiety
+* Read books about starting school: "The Kissing Hand," "Wemberly Worried," "First Day Jitters"
+
+**What not to worry about:**
+Some children cry at drop-off for weeks. That is not a sign of unreadiness — it is a sign of healthy attachment. The question is whether they can recover and engage once you are gone.
+
+**Missed window guidance:**
+No ability to separate from a parent in any context by 36 months — not just preschool but with any trusted adult — is worth discussing with your pediatrician.
+
+**Source:** AAP Bright Futures; Lightbridge Academy Preschool Readiness Checklist; Bowlby Attachment Theory
+
+---
+
+## `self-help-dressing-simple-clothes`
+**Title:** Dressing independently with simple clothes
+**Open:** Week 135 | **Peak:** Week 147 | **Close:** Week 152
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Between 31 and 35 months, most children can put on simple clothing independently: a shirt pulled over the head, pants with an elastic waist, socks, and velcro shoes. This is a significant independence milestone with practical implications — it is also a preschool readiness requirement. Children who can dress themselves have meaningfully more autonomy and self-confidence in the morning routine and in group care settings.
+
+**What to do:**
+* Start with the easiest items: loose pants and socks. Let them try while you narrate.
+* Teach front-from-back with a simple cue: "tag goes in the back"
+* Put out tomorrow's clothes the night before and let them get dressed independently in the morning — remove time pressure
+* Avoid buttons, snaps, and laces during the learning phase. Elastic and velcro only.
+
+**What not to worry about:**
+Clothes on backward and inside out are fine. The goal right now is independent execution, not wardrobe accuracy. Correct it calmly if needed.
+
+**Missed window guidance:**
+No ability to put on any clothing independently by 36 months may indicate fine motor challenges worth discussing at the 36-month visit.
+
+**Source:** Gesell Developmental Schedules; AAP Developmental Milestones
+
+---
+
+## `cognitive-number-quantity`
+**Title:** Understanding that numbers mean quantities — "give me two blocks"
+**Open:** Week 135 | **Peak:** Week 147 | **Close:** Week 152
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Many children can rote count to 10 by age 2 without understanding that the numbers represent quantities. Cardinal number understanding — knowing that "two" means exactly two objects — emerges between 30 and 35 months and is a fundamentally different cognitive achievement. It is one of the earliest building blocks of mathematical reasoning. Children who understand cardinality at this stage have consistently stronger math outcomes in primary school.
+
+**What to do:**
+* Play "give me" games: "Can you give me two crackers? Can you give me one more?"
+* Count objects together by pointing to each one: "One bear, two bears, three bears. Three bears!" (emphasizing the last number as the total)
+* Avoid drilling — embed counting in normal activities: setting the table, getting socks out of the drawer, counting steps on the stairs
+* Books with counting (Eric Carle's "The Very Hungry Caterpillar") reinforce this without pressure
+
+**What not to worry about:**
+Children often understand "one" and "two" before larger numbers. Being able to hand over "one" and "two" correctly while still grabbing a random handful for "four" is completely normal at 32 months.
+
+**Missed window guidance:**
+No understanding of any number quantity by 36 months is worth noting at the well-child visit as part of cognitive review.
+
+**Source:** Wynn (1992) infant number sense; Gelman & Gallistel (1978) counting principles; AAP Cognitive Milestones
+
+---
