@@ -428,7 +428,7 @@ No pointing by 12 months is one of the most significant developmental flags. Rai
 
 ## `language-mama-dada-specific`
 **Title:** Uses "mama" and "dada" specifically
-**Open:** Week 39 | **Peak:** Week 47 | **Close:** Week 56
+**Open:** Week 39 | **Peak:** Week 47 | **Close:** Week 52
 **Urgency:** clinical | **Priority:** 1
 
 **Why it matters:**
