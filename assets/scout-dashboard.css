@@ -327,8 +327,17 @@ input, textarea, select { font-family: var(--sans); }
 .section-label-month   { color: var(--text-mid); }
 .section-label-coming  { color: var(--text-dim); }
 .section-label-done    { color: var(--text-dim); }
+.section-label-habits  { color: var(--text-dim); }
 .section-count { font-size: 12px; color: var(--text-ghost); }
 .section-empty { font-size: 14px; color: var(--text-dim); padding: 12px 0; }
+
+/* Good habits this month */
+.habit-grid { display: flex; flex-direction: column; gap: 8px; }
+.habit-card { display: flex; align-items: flex-start; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.habit-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.habit-body { flex: 1; min-width: 0; }
+.habit-title { margin: 0 0 4px; font-size: 14px; font-weight: 600; color: var(--text-main); line-height: 1.4; }
+.habit-sub   { margin: 0; font-size: 13px; color: var(--text-dim); line-height: 1.5; }
 
 /* ─── WINDOW CARD GRID ───────────────────────────────────────────────────── */
 .window-grid {

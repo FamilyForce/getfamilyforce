@@ -179,6 +179,7 @@ Deno.serve(async (req: Request) => {
       .from('milestone_windows')
       .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link')
       .eq('active', true)
+      .eq('window_type', 'milestone')
       .eq('prenatal', isExpecting)    // ← only prenatal windows for expecting; only post-birth for born
       .lte('open_age_weeks', weeks)
       .gte('close_age_weeks', weeks)

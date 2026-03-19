@@ -161,6 +161,7 @@ Deno.serve(async (req: Request) => {
         .from('milestone_windows')
         .select('id, slug, title, urgency, close_age_weeks')
         .eq('active', true)
+        .eq('window_type', 'milestone')
         .lte('open_age_weeks', currentWeeks)
         .lte('close_age_weeks', weeksAtBirthday + 1)
         .gte('close_age_weeks', currentWeeks)       // still open right now

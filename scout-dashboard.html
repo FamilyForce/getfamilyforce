@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260318m">
+<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260319b">
 <style>
 /* ── Pre-birth mode ──────────────────────────────────────── */
 .prebirth-countdown {
@@ -152,6 +152,7 @@
 
     <!-- Window sections (populated by JS) -->
     <div id="windowSections"></div>
+    <div id="goodHabitsSection" style="display:none"></div>
 
     <!-- History link -->
     <div style="margin-top:32px;padding-top:20px;border-top:1px solid var(--border);text-align:center">
@@ -271,7 +272,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/scout-dashboard.js?v=20260319b"></script>
+<script src="/assets/scout-dashboard.js?v=20260319c"></script>
 <script>
 // Fix #8: Modal keyboard handling — adjust modal height when iOS keyboard opens
 ;(function() {
@@ -422,6 +423,13 @@ function renderHome(child, sub) {
     try { wireModalActions(windows, child.id) }  catch(e) { console.warn('[Scout] wireModalActions:', e) }
     // wireDoneAccordion removed — done section uses collapsibleSection/toggleSection
     try { showOnboarding() }                     catch(e) { console.warn('[Scout] showOnboarding:', e) }
+
+    // Load "Good habits this month"
+    try {
+      ScoutDash.loadReminders(ageW, function (reminders) {
+        try { renderReminders(reminders) } catch(e) { console.warn('[Scout] renderReminders:', e) }
+      })
+    } catch(e) { console.warn('[Scout] loadReminders:', e) }
 
     // First-visit welcome card
     try {
@@ -603,6 +611,38 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
     false)  // default collapsed
 
   document.getElementById('windowSections').innerHTML = html
+}
+
+function renderReminders(reminders) {
+  var wrap = document.getElementById('goodHabitsSection')
+  if (!wrap) return
+  if (!reminders || reminders.length === 0) { wrap.style.display = 'none'; return }
+
+  // Extract a one-liner from why_it_matters (first sentence, max 90 chars)
+  function oneLiner(text) {
+    if (!text) return ''
+    var s = text.replace(/\n/g, ' ').trim()
+    var dot = s.indexOf('.')
+    s = dot > 0 && dot < 120 ? s.substring(0, dot + 1) : s.substring(0, 90) + '…'
+    return s
+  }
+
+  var cards = reminders.map(function (r) {
+    return '<div class="habit-card">' +
+      '<div class="habit-icon">💡</div>' +
+      '<div class="habit-body">' +
+      '<p class="habit-title">' + r.title + '</p>' +
+      '<p class="habit-sub">' + oneLiner(r.why_it_matters) + '</p>' +
+      '</div></div>'
+  }).join('')
+
+  var content = '<div class="habit-grid">' + cards + '</div>'
+  wrap.innerHTML = collapsibleSection('habits',
+    '<span class="section-label section-label-habits">Good habits this month</span>' +
+    '<span class="section-count">(' + reminders.length + ')</span>',
+    content,
+    true)  // default collapsed
+  wrap.style.display = ''
 }
 
 function renderPaywall(name, ageM) {

@@ -341,6 +341,7 @@
       // thenables (see commit 8bc0314). Use sequential .then() chaining instead.
       var q = sb.from('milestone_windows')
         .select('*')
+        .eq('window_type', 'milestone')
         .eq('prenatal', isExpecting)   // prenatal filter keeps pre/post-birth windows separate
         .lte('open_age_weeks', lookahead)
         .gte('close_age_weeks', closeFloor)
@@ -378,6 +379,24 @@
         .catch(function (e) {
           console.error('[loadWindows] milestone_windows fetch failed:', e)
           if (typeof cb === 'function') cb(null, ageW, e)
+        })
+    },
+
+    loadReminders: function (ageW, cb) {
+      var sb = this.getSb()
+      if (!sb) { if (typeof cb === 'function') cb([]); return }
+      var closeFloor = Math.max(0, ageW - 4)
+      sb.from('milestone_windows')
+        .select('id, slug, title, why_it_matters')
+        .eq('window_type', 'reminder')
+        .eq('active', true)
+        .lte('open_age_weeks', ageW + 4)
+        .gte('close_age_weeks', closeFloor)
+        .order('open_age_weeks')
+        .then(function (res) {
+          if (typeof cb === 'function') cb(res.data || [])
+        }, function () {
+          if (typeof cb === 'function') cb([])
         })
     },
 

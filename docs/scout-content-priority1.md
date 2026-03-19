@@ -943,6 +943,7 @@ Water safety supervision is a rule that doesn't close. It remains essential unti
 ## `safety-choking-awareness`
 **Title:** Know the choking hazard list
 **Open:** Week 0 | **Peak:** Week 17 | **Close:** Week 208
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 1
 
 **Why it matters:**
@@ -1806,6 +1807,7 @@ If your toddler is drinking 30 or more ounces of milk a day, cut back by 4 ounce
 ## `nutrition-choking-hazards`
 **Title:** Know the choking hazard list and update at 12 months
 **Open:** Week 0 | **Peak:** Week 52 | **Close:** Week 65
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 2
 
 **Why it matters:**
@@ -2550,6 +2552,7 @@ This window is always open. If you haven't started, start today. The practice is
 ## `language-screen-time-displacement`
 **Title:** Screen time displaces language, minimize background TV
 **Open:** Week 0 | **Peak:** Week 0 | **Close:** Week 156
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 2
 
 **Why it matters:**
@@ -3225,6 +3228,7 @@ If your 2 year old shows no interest in doing anything for themselves and is pas
 ## `social-self-regulation`
 **Title:** Self regulation strategies, co regulation comes first
 **Open:** Week 78 | **Peak:** Week 91 | **Close:** Week 156
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 2
 
 **Why it matters:**
@@ -3459,6 +3463,7 @@ If vision screening was not done at 12 months, ask for it at the next visit. Alt
 ## `screening-hearing-rescreen`
 **Title:** Hearing re screen if any concern arises
 **Open:** Week 0 | **Peak:** Week 52 | **Close:** Week 156
+**Type:** reminder
 **Urgency:** screening | **Priority:** 2
 
 **Why it matters:**
@@ -3486,6 +3491,7 @@ If you have a nagging feeling that your child's hearing is not quite right, act 
 ## `safety-rear-facing-as-long-as-possible`
 **Title:** Stay rear facing as long as possible
 **Open:** Week 0 | **Peak:** Week 0 | **Close:** Week 104
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 2
 
 **Why it matters:**
@@ -3751,6 +3757,7 @@ If your 2 year old has no interest in utensils at all, it is worth noting at the
 ## `nutrition-juice-limit`
 **Title:** Limit juice, none under 12 months, max 4 oz after
 **Open:** Week 0 | **Peak:** Week 52 | **Close:** Week 104
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
@@ -3797,6 +3804,7 @@ If your 3 year old is still on whole milk and growing well, switching to 2% at a
 ## `nutrition-iron-rich-ongoing`
 **Title:** Keep iron rich foods in regular rotation
 **Open:** Week 26 | **Peak:** Week 52 | **Close:** Week 156
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
@@ -4083,6 +4091,7 @@ If your 3 year old cannot interact with a ball at all (catch, kick, or throw), m
 ## `language-bilingual-note`
 **Title:** Bilingual households, total vocabulary is what counts
 **Open:** Week 0 | **Peak:** Week 0 | **Close:** Week 156
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
@@ -4106,6 +4115,7 @@ Apply the same milestones but count total words across all languages. If the com
 ## `language-narrate-meals`
 **Title:** Narrate meals, builds vocabulary
 **Open:** Week 0 | **Peak:** Week 26 | **Close:** Week 104
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
@@ -4152,6 +4162,7 @@ If singing is not part of your routine yet, starting at any age has demonstrable
 ## `language-books-in-home`
 **Title:** 20 or more children's books in the home
 **Open:** Week 0 | **Peak:** Week 26 | **Close:** Week 104
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
@@ -4340,6 +4351,7 @@ If your 3 year old has no concept of day/night or today/tomorrow, it is worth no
 ## `cognitive-attention-span`
 **Title:** Build attention span through focused play
 **Open:** Week 0 | **Peak:** Week 52 | **Close:** Week 156
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
@@ -4363,6 +4375,7 @@ If your 2 year old cannot focus on any single activity for more than 1 to 2 minu
 ## `cognitive-outdoor-exploration`
 **Title:** Outdoor exploration builds cognitive development
 **Open:** Week 26 | **Peak:** Week 52 | **Close:** Week 156
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
@@ -4386,6 +4399,7 @@ If outdoor time is rare due to urban environment or climate, indoor sensory play
 ## `cognitive-music-rhythm`
 **Title:** Music and rhythm response
 **Open:** Week 0 | **Peak:** Week 12 | **Close:** Week 156
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
@@ -4505,6 +4519,7 @@ If your 3 to 4 year old is still completely unable to take turns or wait for a d
 ## `social-imaginary-friends`
 **Title:** Imaginary friends are normal and healthy
 **Open:** Week 130 | **Peak:** Week 156 | **Close:** Week 195
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
@@ -4528,6 +4543,7 @@ There is no intervention needed for imaginary friends. Simply support and engage
 ## `social-gratitude-empathy-practice`
 **Title:** Practice gratitude and empathy at the table
 **Open:** Week 104 | **Peak:** Week 117 | **Close:** Week 195
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
@@ -5273,6 +5289,7 @@ Jack
 ## `cognitive-block-play`
 **Title:** Block and construction play, spatial reasoning
 **Open:** Week 52 | **Peak:** Week 65 | **Close:** Week 130
+**Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
