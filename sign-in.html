@@ -1488,48 +1488,7 @@ button { font: inherit; cursor: pointer; }
      - Keyboard support
      ═══════════════════════════════════════════════════════════ -->
 <script>
-/* ─── IN-APP BROWSER DETECTION ─────────────────────────────────────────────
-   Google blocks OAuth (disallowed_useragent) in embedded WebViews.
-   Fix: hide Google button, make email sign-up the primary path (works
-   everywhere). Show a small "want Google?" link to open in real browser.
-   Affected: Facebook, Instagram, Gmail app, LinkedIn, TikTok, Twitter/X,
-             Android WebView (wv), Line, Snapchat, Pinterest, Threads.
-─────────────────────────────────────────────────────────────────────────── */
-(function () {
-  var ua = navigator.userAgent || '';
-  var isInApp = /FBAN|FBAV|Instagram|Twitter|LinkedInApp|TikTok|Line\/|Snapchat|Pinterest|Threads|GSA\/|Musical\.ly/.test(ua)
-             || (/Android/.test(ua) && /wv\)/.test(ua))
-             || (/iPhone|iPad/.test(ua) && !/Safari\//.test(ua) && /AppleWebKit/.test(ua));
 
-  if (!isInApp) return;
-
-  // Build the open-in-browser URL.
-  // Android: Chrome intent URL opens Chrome directly.
-  // iOS: regular URL shown as a tap-to-open link (iOS blocks programmatic Safari launch).
-  var pageUrl   = window.location.href;
-  var isAndroid = /Android/.test(ua);
-  var openUrl   = isAndroid
-    ? 'intent://' + pageUrl.replace(/^https?:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end'
-    : pageUrl;
-
-  document.addEventListener('DOMContentLoaded', function () {
-    var wrap = document.getElementById('signin-google-wrap');
-    if (!wrap) return;
-
-    // Hide Google button + divider entirely — email is the primary path here
-    wrap.style.display = 'none';
-
-    // Insert a subtle "prefer Google?" note below the email form
-    var form = document.getElementById('signin-form') || wrap.parentElement;
-    if (!form) return;
-    var note = document.createElement('p');
-    note.style.cssText = 'margin:18px 0 0;font-size:12px;color:#888;text-align:center;line-height:1.6';
-    note.innerHTML = 'Prefer signing in with Google? '
-      + '<a href="' + openUrl + '" style="color:#6E4ED6;font-weight:600;text-decoration:none">'
-      + 'Open in ' + (isAndroid ? 'Chrome' : 'Safari') + ' →</a>';
-    form.appendChild(note);
-  });
-}());
 
 /* ─── NAV SCROLL STATE ─── */
 (function () {
@@ -2786,5 +2745,6 @@ button { font: inherit; cursor: pointer; }
 })();
 </script>
 
+<script src="/assets/inapp-browser.js"></script>
 </body>
 </html>
