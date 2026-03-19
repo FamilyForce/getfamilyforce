@@ -1544,7 +1544,7 @@ contactForm.addEventListener('submit', (e) => {
   submitBtn.disabled = true;
   submitBtn.textContent = 'Sending…';
 
-  fetch('/api/contact', {
+  fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/contact-form', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
