@@ -860,8 +860,9 @@
     },
 
     _updateProgressBar: function (windowsRef) {
-      // Active windows only (not "coming up" previews)
-      var active     = windowsRef.filter(function (w) { return w._sectionTag !== 'coming' })
+      // Only count windows that appear in a visible section (have a _sectionTag set)
+      // This excludes ghost windows: recently closed, non-clinical, never shown in UI
+      var active     = windowsRef.filter(function (w) { return w._sectionTag && w._sectionTag !== 'coming' })
       var total      = active.length
       var completed  = active.filter(function (w) { return w._status === 'completed' || w._status === 'skipped' }).length
       var inProgress = active.filter(function (w) { return w._status === 'in_progress' }).length
