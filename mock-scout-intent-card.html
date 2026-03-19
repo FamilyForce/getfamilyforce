@@ -11,7 +11,6 @@
   :root {
     --indigo:      #6E4ED6;
     --indigo-deep: #3D2B8E;
-    --terra:       #6E4ED6;
     --text:        #1D1D1F;
     --text-mid:    #5C5960;
     --text-dim:    #9B98A3;
@@ -19,6 +18,11 @@
     --surface:     #FFFFFF;
     --elevated:    #F5F0FF;
     --bg:          #F7F5FF;
+    --amber:       #D97706;
+    --amber-bg:    #FFFBEB;
+    --amber-border:#FDE68A;
+    --green:       #16A34A;
+    --green-bg:    #F0FDF4;
   }
 
   body {
@@ -26,9 +30,9 @@
     background: #e8e4f5;
     min-height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
-    padding: 24px 16px;
+    padding: 32px 16px;
   }
 
   /* ── Phone frame ── */
@@ -51,177 +55,134 @@
     border-bottom: 1px solid var(--border);
   }
   .nav-logo {
-    font-family: 'Outfit', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    font-size: 16px; font-weight: 700; color: var(--text);
+    display: flex; align-items: center; gap: 5px;
   }
-  .nav-logo .chevron { color: var(--indigo); font-size: 18px; }
-  .nav-logo .force   { color: var(--indigo); }
+  .nav-logo .force { color: var(--indigo); }
+
+  /* ── Scroll area ── */
+  .scroll-area { max-height: 780px; overflow-y: auto; padding: 20px 16px 32px; }
+  .scroll-area::-webkit-scrollbar { display: none; }
 
   /* ── Card ── */
   .card {
-    margin: 20px 16px 24px;
     background: var(--surface);
     border-radius: 20px;
     border: 1px solid var(--border);
     overflow: hidden;
+    margin-bottom: 0;
   }
 
-  /* Header strip — dark indigo */
+  /* ── Header ── */
   .card-header {
     background: var(--indigo-deep);
     padding: 22px 22px 20px;
   }
-  .card-header-eyebrow {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: .14em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,.45);
-    margin-bottom: 8px;
+  .eyebrow {
+    font-size: 10px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 8px;
   }
-  .card-header-title {
+  .card-title {
     font-family: 'Instrument Serif', Georgia, serif;
-    font-size: 22px;
-    font-weight: 400;
-    color: #fff;
-    line-height: 1.25;
-    margin-bottom: 6px;
+    font-size: 24px; font-weight: 400; color: #fff;
+    line-height: 1.2; margin-bottom: 6px;
   }
-  .card-header-sub {
-    font-size: 13px;
-    color: rgba(255,255,255,.6);
-    line-height: 1.5;
+  .card-sub {
+    font-size: 13px; color: rgba(255,255,255,.6); line-height: 1.5;
   }
 
-  /* Body */
-  .card-body { padding: 20px 20px 0; }
+  /* ── Section label ── */
+  .section-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--text-dim);
+    padding: 18px 20px 10px;
+  }
 
-  /* How it works — 3 steps */
-  .steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; }
+  /* ── Section row (Heads Up / This Month / etc.) ── */
+  .section-rows { padding: 0 20px; }
 
-  .step-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 14px 0;
+  .section-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 13px 0;
     border-bottom: 1px solid var(--border);
   }
-  .step-row:last-child { border-bottom: none; }
+  .section-row:last-child { border-bottom: none; }
 
-  .step-num {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--elevated);
-    color: var(--indigo);
-    font-size: 12px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
+  .section-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 3px 9px; border-radius: 100px;
+    font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    white-space: nowrap;
   }
-  .step-content {}
-  .step-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 2px;
-  }
-  .step-desc {
-    font-size: 12px;
-    color: var(--text-mid);
-    line-height: 1.55;
-  }
+  .badge-amber  { background: var(--amber-bg);  color: var(--amber);  border: 1px solid var(--amber-border); }
+  .badge-indigo { background: var(--elevated);  color: var(--indigo); border: 1px solid rgba(110,78,214,.2); }
+  .badge-light  { background: #F3F4F6;          color: #6B7280;       border: 1px solid #E5E7EB; }
+  .badge-green  { background: var(--green-bg);  color: var(--green);  border: 1px solid #BBF7D0; }
 
-  /* Mini digest preview */
-  .digest-preview {
-    background: var(--elevated);
-    border-radius: 12px;
-    padding: 14px 16px;
-    margin-bottom: 20px;
-    border: 1px solid rgba(110,78,214,.15);
-  }
-  .digest-preview-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: var(--indigo);
-    margin-bottom: 8px;
-  }
-  .digest-preview-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 7px 0;
-    border-bottom: 1px solid rgba(110,78,214,.1);
-  }
-  .digest-preview-row:last-child { border-bottom: none; padding-bottom: 0; }
-  .digest-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .dot-clinical  { background: #EF4444; }
-  .dot-screening { background: #F59E0B; }
-  .dot-advisory  { background: var(--indigo); }
-  .digest-preview-text { font-size: 12px; color: var(--text-mid); line-height: 1.4; }
-  .digest-preview-text strong { color: var(--text); font-weight: 600; }
+  .section-copy {}
+  .section-copy strong { font-size: 13px; font-weight: 700; color: var(--text); display: block; margin-bottom: 2px; }
+  .section-copy span   { font-size: 12px; color: var(--text-mid); line-height: 1.5; display: block; }
 
-  /* Footer */
-  .card-footer { padding: 0 20px 22px; }
+  /* ── Divider ── */
+  .divider { height: 1px; background: var(--border); margin: 0 20px; }
+  .divider-full { height: 8px; background: var(--bg); }
 
-  .cta-btn {
-    display: block;
-    width: 100%;
-    background: var(--indigo);
-    color: #fff;
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px;
-    font-weight: 700;
-    padding: 15px;
-    border-radius: 12px;
-    border: none;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    letter-spacing: -.01em;
-    margin-bottom: 12px;
+  /* ── Action pills ── */
+  .actions-wrap { padding: 14px 20px 0; }
+  .actions-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
   }
-
-  .lib-link {
-    display: block;
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-dim);
-    text-decoration: none;
-    padding: 4px;
+  .actions-grid {
+    display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px;
   }
-  .lib-link span { color: var(--indigo); font-weight: 600; }
-
-  /* Pill badges */
-  .pill-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 18px;
-  }
-  .pill {
+  .action-pill {
     background: var(--elevated);
     border: 1px solid rgba(110,78,214,.2);
     border-radius: 100px;
-    padding: 5px 11px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--indigo);
+    padding: 6px 12px;
+    font-size: 12px; font-weight: 600; color: var(--indigo);
+    display: flex; align-items: center; gap: 5px;
   }
+  .action-pill .icon { font-size: 13px; }
+
+  /* ── Family tip ── */
+  .family-tip {
+    margin: 0 20px 0;
+    background: var(--elevated);
+    border-radius: 12px;
+    padding: 14px 16px;
+    border: 1px solid rgba(110,78,214,.18);
+  }
+  .family-tip-title {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    margin-bottom: 4px; display: flex; align-items: center; gap: 6px;
+  }
+  .family-tip-body {
+    font-size: 12px; color: var(--text-mid); line-height: 1.6;
+  }
+  .family-tip-body span { color: var(--indigo); font-weight: 600; }
+
+  /* ── Support line ── */
+  .support-line {
+    padding: 14px 20px 0;
+    font-size: 12px; color: var(--text-dim); line-height: 1.6; text-align: center;
+  }
+  .support-line a { color: var(--indigo); font-weight: 600; text-decoration: none; }
+
+  /* ── CTA ── */
+  .cta-wrap { padding: 18px 20px 22px; }
+  .cta-btn {
+    display: block; width: 100%;
+    background: var(--indigo); color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px; font-weight: 700;
+    padding: 15px; border-radius: 12px;
+    border: none; cursor: pointer;
+    text-align: center; text-decoration: none;
+    letter-spacing: -.01em;
+  }
+
 </style>
 </head>
 <body>
@@ -231,87 +192,101 @@
   <!-- Nav -->
   <div class="nav">
     <div class="nav-logo">
-      <span class="chevron">∧</span>
+      <svg width="12" height="14" viewBox="0 0 14 16" fill="none">
+        <path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
       Family<span class="force">Force</span>
     </div>
-    <svg width="20" height="14" viewBox="0 0 20 14" fill="none">
-      <rect width="20" height="2" rx="1" fill="#1D1D1F"/>
-      <rect y="6" width="14" height="2" rx="1" fill="#1D1D1F"/>
-      <rect y="12" width="17" height="2" rx="1" fill="#1D1D1F"/>
-    </svg>
   </div>
 
-  <!-- Scout Intent Card -->
+  <div class="scroll-area">
   <div class="card">
 
     <!-- Header -->
     <div class="card-header">
-      <div class="card-header-eyebrow">Scout by FamilyForce</div>
-      <div class="card-header-title">The first 3 years have<br>more going on than you think.</div>
-      <div class="card-header-sub">Scout tracks every developmental window — so you don't have to remember.</div>
+      <div class="eyebrow">Scout by FamilyForce</div>
+      <div class="card-title">Discover Scout</div>
+      <div class="card-sub">Here's how your dashboard is organised — so you always know where to look.</div>
     </div>
 
-    <!-- Body -->
-    <div class="card-body">
+    <!-- Section: Dashboard sections -->
+    <div class="section-label">Your dashboard sections</div>
+    <div class="section-rows">
 
-      <!-- How it works — 3 steps -->
-      <div class="steps">
-        <div class="step-row">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <div class="step-title">Tell us your child's birthday</div>
-            <div class="step-desc">Works for newborns, toddlers, and babies who haven't arrived yet.</div>
-          </div>
-        </div>
-        <div class="step-row">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <div class="step-title">Get a monthly email + calendar invite</div>
-            <div class="step-desc">Timed to your child's exact age. Shows up before the window closes — not after.</div>
-          </div>
-        </div>
-        <div class="step-row">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <div class="step-title">Never miss what matters</div>
-            <div class="step-desc">192 developmental windows from birth to age 3. All organised. All timed.</div>
-          </div>
+      <div class="section-row">
+        <div class="section-badge badge-amber">⚠ Heads Up</div>
+        <div class="section-copy">
+          <strong></strong>
+          <span>Windows closing soon. These need your attention now — act before they pass.</span>
         </div>
       </div>
 
-      <!-- Mini digest preview -->
-      <div class="digest-preview">
-        <div class="digest-preview-label">This month's windows — example</div>
-        <div class="digest-preview-row">
-          <div class="digest-dot dot-clinical"></div>
-          <div class="digest-preview-text"><strong>18-month developmental screening</strong> — closes in 3 weeks</div>
-        </div>
-        <div class="digest-preview-row">
-          <div class="digest-dot dot-advisory"></div>
-          <div class="digest-preview-text"><strong>Introduce a cup</strong> — open now</div>
-        </div>
-        <div class="digest-preview-row">
-          <div class="digest-dot dot-advisory"></div>
-          <div class="digest-preview-text"><strong>Start a bedtime routine</strong> — open now</div>
+      <div class="section-row">
+        <div class="section-badge badge-indigo">This Month</div>
+        <div class="section-copy">
+          <strong></strong>
+          <span>Open windows timed to your child's exact age right now. Your main focus.</span>
         </div>
       </div>
 
-      <!-- Trust pills -->
-      <div class="pill-row">
-        <div class="pill">✓ Free to start</div>
-        <div class="pill">✓ No credit card</div>
-        <div class="pill">✓ Cancel anytime</div>
+      <div class="section-row">
+        <div class="section-badge badge-light">Coming Up</div>
+        <div class="section-copy">
+          <strong></strong>
+          <span>Windows opening in the next 8 weeks. A heads-up so you can plan ahead.</span>
+        </div>
+      </div>
+
+      <div class="section-row">
+        <div class="section-badge badge-green">✓ Addressed</div>
+        <div class="section-copy">
+          <strong></strong>
+          <span>Windows you've marked as done or skipped. Keeps your dashboard clean.</span>
+        </div>
       </div>
 
     </div>
 
-    <!-- Footer CTA -->
-    <div class="card-footer">
-      <a href="#" class="cta-btn">Set up Scout — it's free →</a>
-      <a href="#" class="lib-link">Just browsing? <span>Explore the free library →</span></a>
+    <div class="divider-full"></div>
+
+    <!-- Section: Actions per window -->
+    <div class="section-label" style="padding-top:14px">For each window, you can</div>
+    <div class="actions-wrap">
+      <div class="actions-grid">
+        <div class="action-pill"><span class="icon">📖</span> Read more</div>
+        <div class="action-pill"><span class="icon">✅</span> Mark as done</div>
+        <div class="action-pill"><span class="icon">🔄</span> In progress</div>
+        <div class="action-pill"><span class="icon">⏭</span> Skip</div>
+        <div class="action-pill"><span class="icon">📝</span> Add a note</div>
+      </div>
+    </div>
+
+    <div class="divider-full"></div>
+
+    <!-- Family Circle tip -->
+    <div class="section-label" style="padding-top:14px">One more thing</div>
+    <div class="family-tip">
+      <div class="family-tip-title">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Family Circle
+      </div>
+      <div class="family-tip-body">
+        Scout is more helpful when everyone's on the same page. Invite your partner, grandparents, or nanny to share progress and notes. Add them in the <span>Family Circle tab</span>.
+      </div>
+    </div>
+
+    <!-- Support -->
+    <div class="support-line">
+      Questions? We're here — <a href="mailto:support@getfamilyforce.com">support@getfamilyforce.com</a>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-wrap">
+      <a href="#" class="cta-btn">Let's go to the app →</a>
     </div>
 
   </div>
+  </div><!-- end scroll-area -->
 
 </div>
 
