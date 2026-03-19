@@ -340,7 +340,7 @@
       // NOTE: Promise.all([supabaseQuery, supabaseQuery]) is unreliable with Supabase JS v2
       // thenables (see commit 8bc0314). Use sequential .then() chaining instead.
       var q = sb.from('milestone_windows')
-        .select('*')
+        .select('*, prep_tip')
         .eq('window_type', 'milestone')
         .eq('prenatal', isExpecting)   // prenatal filter keeps pre/post-birth windows separate
         .lte('open_age_weeks', lookahead)
@@ -545,6 +545,14 @@
           '</div>'
       }
 
+      var prepHtml = ''
+      if (isPreview && w.prep_tip) {
+        prepHtml = '<div class="card-prep">' +
+          '<div class="card-prep-label">How to prep</div>' +
+          '<div class="card-prep-text">' + ScoutDash._esc(w.prep_tip) + '</div>' +
+          '</div>'
+      }
+
       var missedHtml  = w._sectionTag === 'missed'  ? '<p class="card-missed-label">This window has closed.</p>' : ''
       var overdueHtml = w._sectionTag === 'overdue' ? '<p class="card-overdue-label">⚠ Window closed — mark as done or skip.</p>' : ''
 
@@ -601,7 +609,7 @@
         missedHtml + overdueHtml +
         '<p class="card-title" data-modal-open="' + w.id + '">' + ScoutDash._esc(w.title) + '</p>' +
         '<p class="card-hook">' + ScoutDash._esc(hook) + '</p>' +
-        moveHtml +
+        moveHtml + prepHtml +
         actionsHtml + datePromptHtml + attrHtml + noteHtml +
         '</div>'
     },

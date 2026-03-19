@@ -23,6 +23,7 @@ export interface DigestWindow {
   why_it_matters:    string
   what_to_do:        string
   playbook_link:     string | null
+  prep_tip:          string | null   // shown in "Get ready" section before window opens
 }
 
 export interface DigestEmailOptions {
@@ -31,6 +32,7 @@ export interface DigestEmailOptions {
   childGender:     string | null
   ageMonths:       number
   aboveFold:       DigestWindow[]
+  getReadyWindows: DigestWindow[]    // windows opening in next 4-8 weeks — shown in "Get ready" section
   allWindowCount:  number
   closingCount:    number
   overdueWindows?: { title: string; urgency: string }[]  // in_progress windows whose window has closed
@@ -144,10 +146,31 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
   </tr>`
 }
 
+// ─── Get ready item (lighter than a card) ──────────────────────────────────
+function getReadyItem(w: DigestWindow): string {
+  const tip = w.prep_tip || 'No special preparation needed — just know this is on the horizon.'
+  return `
+  <tr>
+    <td style="padding-bottom:16px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#F9F8FF;border:1px solid ${C.border};border-radius:12px">
+        <tr>
+          <td style="padding:16px 20px">
+            <p style="font-family:Georgia,'Times New Roman',serif;font-size:16px;color:${C.text};margin:0 0 6px;line-height:1.3;font-weight:600">${w.title}</p>
+            <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.6">
+              <strong style="color:${C.terra}">Prep:</strong> ${tip}
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>`
+}
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 export function buildDigestEmail(opts: DigestEmailOptions): string {
   const {
     childName, parentName, childGender, ageMonths, aboveFold,
+    getReadyWindows = [],
     allWindowCount, closingCount, overdueWindows = [], nextEventDate,
     dashboardUrl, siteUrl, userId, digestType, isExpecting = false,
     postBirthWindowCount = 192,
@@ -214,6 +237,10 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   const openSection = openWindows.length > 0 ? `
     <tr><td style="padding:${closing.length > 0 ? '8px' : '0'} 0 8px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.textDim};margin:0">Also worth knowing this month</p></td></tr>
     ${openWindows.map(w => windowCard(w, ageMonths, dashboardUrl, false)).join('')}` : ''
+
+  const getReadySection = getReadyWindows.length > 0 ? `
+    <tr><td style="padding:16px 0 8px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.terra};margin:0">Get ready for next month</p></td></tr>
+    ${getReadyWindows.map(w => getReadyItem(w)).join('')}` : ''
 
   const remainingCount = allWindowCount - aboveFold.length
 
@@ -333,6 +360,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
               <!-- Windows -->
               ${closingSection}
               ${openSection}
+              ${getReadySection}
 
               <!-- Overdue in_progress windows -->
               ${overdueSectionHtml}

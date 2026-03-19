@@ -56,6 +56,7 @@ interface MilestoneWindow {
   what_not_to_worry: string | null
   missed_window:     string | null
   playbook_link:     string | null
+  prep_tip:          string | null
 }
 
 // ─── Birthday check ───────────────────────────────────────────────────────────
@@ -197,7 +198,7 @@ Deno.serve(async (req: Request) => {
       // 5. Query open windows for this age
       const { data: windows, error: winErr } = await sb
         .from('milestone_windows')
-        .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link')
+        .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
         .eq('active', true)
         .eq('window_type', 'milestone')
         .lte('open_age_weeks', weeks)
@@ -205,6 +206,20 @@ Deno.serve(async (req: Request) => {
         .order('priority', { ascending: true })
 
       if (winErr) throw new Error(`Window query failed: ${winErr.message}`)
+
+      // 5b. Query "Get Ready" windows (opening in next 8 weeks)
+      const { data: readyData } = await sb
+        .from('milestone_windows')
+        .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
+        .eq('active', true)
+        .eq('window_type', 'milestone')
+        .gt('open_age_weeks', weeks)
+        .lte('open_age_weeks', weeks + 8)
+        .order('open_age_weeks', { ascending: true })
+        .order('priority', { ascending: true })
+        .limit(3)
+
+      const getReadyWindows = (readyData ?? []) as MilestoneWindow[]
 
       // 3I — Active track: fetch all progress for this child (shared across family)
       const { data: progressRows } = await sb
@@ -288,6 +303,7 @@ Deno.serve(async (req: Request) => {
         childGender:    child.gender,
         ageMonths:      months,
         aboveFold:      aboveFold as DigestWindow[],
+        getReadyWindows: getReadyWindows as DigestWindow[],
         allWindowCount: openWindows.length > 0 ? openWindows.length : allWindows.length,
         closingCount,
         overdueWindows,

@@ -55,6 +55,7 @@ interface MilestoneWindow {
   what_not_to_worry: string | null
   missed_window:     string | null
   playbook_link:     string | null
+  prep_tip:          string | null
 }
 
 type uuid = string
@@ -177,7 +178,7 @@ Deno.serve(async (req: Request) => {
 
     const { data: windows, error: winErr } = await sb
       .from('milestone_windows')
-      .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link')
+      .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
       .eq('active', true)
       .eq('window_type', 'milestone')
       .eq('prenatal', isExpecting)    // ← only prenatal windows for expecting; only post-birth for born
@@ -189,6 +190,21 @@ Deno.serve(async (req: Request) => {
     if (!windows || windows.length === 0) {
       console.warn(`[scout-signup-delivery] No windows found for age ${weeks}w (expecting=${isExpecting}) — sending digest anyway`)
     }
+
+    // 5b. Query "Get Ready" windows (opening in next 8 weeks)
+    const { data: readyData } = await sb
+      .from('milestone_windows')
+      .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
+      .eq('active', true)
+      .eq('window_type', 'milestone')
+      .eq('prenatal', isExpecting)
+      .gt('open_age_weeks', weeks)
+      .lte('open_age_weeks', weeks + 8)
+      .order('open_age_weeks', { ascending: true })
+      .order('priority', { ascending: true })
+      .limit(3)
+
+    const getReadyWindows = (readyData ?? []) as MilestoneWindow[]
 
     const allWindows   = (windows ?? []) as MilestoneWindow[]
     const aboveFold    = selectAboveFold(allWindows, weeks)
@@ -239,6 +255,7 @@ Deno.serve(async (req: Request) => {
       isExpecting,
       postBirthWindowCount,
       aboveFold:      aboveFold as DigestWindow[],
+      getReadyWindows: getReadyWindows as DigestWindow[],
       allWindowCount: allWindows.length,
       closingCount,
       nextEventDate:  nextBirthday,
