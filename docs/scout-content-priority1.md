@@ -5742,3 +5742,75 @@ No understanding of any number quantity by 36 months is worth noting at the well
 **Source:** Wynn (1992) infant number sense; Gelman & Gallistel (1978) counting principles; AAP Cognitive Milestones
 
 ---
+
+## `language-receptive-vocabulary`
+**Title:** Understands 50+ words — receptive language leads the way
+**Open:** Week 43 | **Peak:** Week 52 | **Close:** Week 61
+**Urgency:** advisory | **Priority:** 2
+
+**Why it matters:**
+Receptive language — words a child understands — always develops ahead of expressive language — words they can say. By 14 months, most children understand 50 or more words even though they may only say 5 to 10. This gap is normal and expected. However, a child who does not appear to understand common words, names, and simple instructions by 14 months is worth monitoring, as receptive delays can be an earlier indicator of language or hearing issues than expressive delays.
+
+**What to do:**
+* Test receptive vocabulary with natural prompts: "Where is the dog?" "Can you bring me the cup?" "Show me your shoes."
+* If the child looks, points, or retrieves the correct object, they understand it — even if they cannot say it
+* Continue narrating daily life: every word you use builds the receptive vocabulary bank
+* Read aloud daily — pointing to pictures and naming them builds word-to-object mapping
+
+**What not to worry about:**
+A 12 to 14 month old who says very few words but clearly understands what is being said is on a normal trajectory. Expressive language catches up.
+
+**Missed window guidance:**
+If your 14-month-old does not consistently respond to their own name, does not follow simple one-step instructions, and does not appear to understand common object names, bring it up at the 15-month visit. A hearing check is the first step.
+
+**Source:** Hart & Risley (1995); AAP Language Development Guidelines; CDC 12-Month Milestones
+
+---
+
+## `social-comforting-behavior`
+**Title:** Comforting others — offering a hug or toy when someone seems sad
+**Open:** Week 74 | **Peak:** Week 82 | **Close:** Week 95
+**Urgency:** advisory | **Priority:** 3
+
+**Why it matters:**
+Between 17 and 22 months, most toddlers begin showing early prosocial behavior: patting a crying person, offering their own comfort object to someone who appears distressed, or attempting to wipe someone's tears. This is not yet empathy in the adult sense — it is the earliest precursor to it. The child is registering emotional states in others and responding with a behavior intended to help. It is one of the most meaningful early social milestones, and one parents often miss because it appears spontaneous and brief.
+
+**What to do:**
+* When you are mildly upset or pretend to be, name the emotion and observe the child's response: "Oh, I bumped my knee. That hurt. I'm sad."
+* If they approach or offer something, receive it warmly: "Thank you, that helped. You are so caring."
+* Model comforting behavior explicitly: comfort a stuffed animal in front of them, narrate what you are doing
+* Read books where characters help or comfort each other: "The Invisible String," "Llama Llama Red Pajama"
+
+**What not to worry about:**
+Some children show comfort behaviors at 15 months, others not until 24 months. Wide normal range. A child who is engrossed in play when another person cries is not demonstrating a lack of empathy — they may simply not have noticed.
+
+**Missed window guidance:**
+Complete absence of any prosocial or comfort response to others by 24 months — combined with limited eye contact and communication — is worth raising at the 24-month visit as part of the broader social-emotional review.
+
+**Source:** Zahn-Waxler et al. (1992) prosocial development research; Eisenberg (2000) empathy development; AAP Social Emotional Milestones
+
+---
+
+## `self-help-daytime-dryness`
+**Title:** Daytime dryness established — the finish line for potty training
+**Open:** Week 120 | **Peak:** Week 130 | **Close:** Week 143
+**Urgency:** advisory | **Priority:** 2
+
+**Why it matters:**
+Most children achieve consistent daytime dryness — fewer than one accident per day, most days — between 24 and 33 months. This is the functional endpoint of daytime potty training. Nighttime dryness comes later and is a separate milestone entirely (many children are not reliably dry at night until age 5 or 6, which is normal). By 33 months, if daytime dryness is not yet established, it is worth discussing with a pediatrician — not because something is necessarily wrong, but to review technique, readiness factors, and rule out physical contributors.
+
+**What to do:**
+* If training is complete: maintain consistency in routine, especially at transitions (leaving the house, before nap, before bed)
+* If still in progress: review the readiness checklist from the potty training window. If readiness signs are present but training is stalling, try a fresh three-day intensive approach
+* Accidents are normal throughout this period — respond calmly, clean up together, no shame or punishment
+* Nighttime training is a separate milestone — pull-ups or training pants at night are fine indefinitely at this age
+
+**What not to worry about:**
+Nighttime accidents past age 3 are completely normal and are not a sign of failed training. Focus only on daytime dryness at this stage.
+
+**Missed window guidance:**
+If your 33-month-old has not begun showing any signs of toilet training progress despite months of effort and clear readiness signs, mention it at the next visit. Rarely, physical factors such as constipation, urinary tract issues, or sensory sensitivities are contributing. These are treatable once identified.
+
+**Source:** Brazelton (1962) child-led toilet training; AAP Toilet Training Guidelines; American Urogynecologic Society; FamilyForce Potty Training Playbook
+
+---
