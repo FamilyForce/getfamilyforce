@@ -503,12 +503,34 @@ button { font: inherit; cursor: pointer; }
 .step-sub { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin-bottom: 28px; }
 
 /* ── Scout tutorial card (intent step) ────────────────────────────────────── */
-/* Override step-card padding so the header can flush to edges */
-#step-intent .step-card { padding: 0; overflow: hidden; }
+/* Override step-card padding so the header can flush to edges.
+   overflow: visible (not hidden) — preserves box-shadow + allows scroll.
+   The header radius is handled by border-radius on scout-card-header itself. */
+#step-intent .step-card {
+  padding: 0;
+  overflow: visible;   /* do NOT use hidden — clips shadow + blocks scroll */
+}
+/* On small phones: card may be taller than viewport — make it scroll */
+@media (max-width: 480px) {
+  #step-intent .step-card {
+    max-height: calc(100svh - 100px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* Subtle bottom fade so user knows there's more below */
+    -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 48px), transparent 100%);
+    mask-image: linear-gradient(to bottom, black calc(100% - 48px), transparent 100%);
+  }
+  /* Remove the mask once scrolled near bottom (JS toggle) */
+  #step-intent .step-card.scrolled-end {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
 
 .scout-card-header {
   background: #3D2B8E;
   padding: 24px 24px 20px;
+  border-radius: 19px 19px 0 0;  /* matches step-card border-radius (20px) minus 1px border */
 }
 .scout-card-eyebrow {
   font-size: 10px; font-weight: 700; letter-spacing: .14em;
@@ -548,10 +570,7 @@ button { font: inherit; cursor: pointer; }
 .scout-gap { height: 8px; background: var(--bg); }
 
 .scout-actions-wrap { padding: 14px 24px 0; }
-.scout-actions-label {
-  font-size: 10px; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
-}
+/* .scout-actions-label removed — section uses .scout-section-label */
 .scout-actions-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
 .scout-action-pill {
   background: var(--elevated); border: 1px solid rgba(110,78,214,.18);
@@ -2020,6 +2039,20 @@ button { font: inherit; cursor: pointer; }
       if (target) {
         target.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      // Scout tutorial card: wire scroll-end detection to remove bottom fade mask
+      if (stepId === 'intent') {
+        var intentCard = document.querySelector('#step-intent .step-card');
+        if (intentCard) {
+          intentCard.scrollTop = 0;
+          intentCard.addEventListener('scroll', function onIntentScroll() {
+            var atBottom = intentCard.scrollHeight - intentCard.scrollTop <= intentCard.clientHeight + 32;
+            if (atBottom) {
+              intentCard.classList.add('scrolled-end');
+              intentCard.removeEventListener('scroll', onIntentScroll);
+            }
+          }, { passive: true });
+        }
       }
       // Mount Stripe Card Element when payment step becomes visible
       if (stepId === 'payment') {
