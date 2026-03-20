@@ -90,7 +90,7 @@ function loadHistory(child) {
   Promise.all([
     sb.from('window_progress').select('*').eq('child_id', child.id).order('updated_at', { ascending: false }),
     sb.from('milestone_windows').select('id, title, category, urgency, open_age_weeks, close_age_weeks'),
-    sb.from('scout_digest_log').select('sent_at, age_months').eq('user_id', user_id()).order('sent_at', { ascending: false }),
+    sb.from('scout_digest_log').select('sent_at, age_months').eq('user_id', user_id()).eq('child_id', child.id).order('sent_at', { ascending: false }),
   ]).then(function (results) {
     var progress = results[0].data || []
     var windows  = results[1].data || []
@@ -110,11 +110,10 @@ function loadHistory(child) {
     })
     progress = Object.values(dedupedMap)
 
-    // Group progress by month.
-    // Primary: use digest log entries as month buckets.
-    // Fallback: if no digests yet, group by the window's age range against child's current age.
+    // Build digest buckets (chronological order)
     var monthMap = {}
-    digests.forEach(function (d) {
+    var sortedDigests = digests.slice().sort(function (a, b) { return new Date(a.sent_at) - new Date(b.sent_at) })
+    sortedDigests.forEach(function (d) {
       var key = d.age_months
       if (!monthMap[key]) {
         var date  = new Date(d.sent_at)
@@ -123,55 +122,64 @@ function loadHistory(child) {
       }
     })
 
-    // Attach progress to digest-based month buckets where possible
+    // Assign each progress row to the digest period during which it was completed.
+    // Rule: find the most recent digest sent on or before updated_at.
+    // If completed before the first digest, use the first digest bucket.
+    // If no digests at all, fall through to the fallback below.
+    var childDob  = child.dob ? new Date(child.dob) : null
     var unmatched = []
     progress.forEach(function (p) {
       var w = winMap[p.window_id]
       if (!w) return
-      var targetMonth = null
-      Object.values(monthMap).forEach(function (m) {
-        var openM  = ScoutDash.weeksToMonths(w.open_age_weeks)
-        var closeM = ScoutDash.weeksToMonths(w.close_age_weeks)
-        if (m.ageMonths >= openM && m.ageMonths <= closeM) {
-          if (!targetMonth || m.ageMonths > targetMonth.ageMonths) targetMonth = m
+
+      if (sortedDigests.length === 0) { unmatched.push({ progress: p, window: w }); return }
+
+      var completedAt  = p.updated_at ? new Date(p.updated_at) : null
+      var targetBucket = null
+
+      if (completedAt) {
+        // Walk chronologically — keep the last digest whose sent_at <= completedAt
+        for (var i = 0; i < sortedDigests.length; i++) {
+          if (new Date(sortedDigests[i].sent_at) <= completedAt) targetBucket = monthMap[sortedDigests[i].age_months]
         }
-      })
-      if (targetMonth) {
-        targetMonth.windows.push({ progress: p, window: w })
+        // Completed before the first digest — assign to earliest bucket
+        if (!targetBucket) targetBucket = monthMap[sortedDigests[0].age_months]
+      } else {
+        // No timestamp — assign to most recent digest
+        targetBucket = monthMap[sortedDigests[sortedDigests.length - 1].age_months]
+      }
+
+      if (targetBucket) {
+        targetBucket.windows.push({ progress: p, window: w })
       } else {
         unmatched.push({ progress: p, window: w })
       }
     })
 
-    // Fallback: bucket unmatched progress by child's actual age at completion
-    // (uses updated_at - child.dob, clamped to the window's open/close range)
-    // This handles users who have marked windows before receiving their first digest.
+    // Fallback: no digests at all — bucket by child's actual age at completion.
+    // Uses calendar month arithmetic (exact, no week rounding) and the same
+    // "Month Year" label format as digest buckets for visual consistency.
     if (unmatched.length > 0) {
-      var childDob = child.dob ? new Date(child.dob) : null
       unmatched.forEach(function (e) {
         var w    = e.window
         var ageM = null
+        var labelStr = null
         if (childDob && e.progress.updated_at) {
           var completedAt = new Date(e.progress.updated_at)
-          // Calendar months — same logic as a birthday counter, avoids week rounding errors
-          var calMonths = (completedAt.getFullYear() - childDob.getFullYear()) * 12
-                        + (completedAt.getMonth() - childDob.getMonth())
+          var calMonths   = (completedAt.getFullYear() - childDob.getFullYear()) * 12
+                          + (completedAt.getMonth() - childDob.getMonth())
           if (completedAt.getDate() < childDob.getDate()) calMonths--
           var openM  = ScoutDash.weeksToMonths(w.open_age_weeks)
           var closeM = ScoutDash.weeksToMonths(w.close_age_weeks)
-          ageM = Math.max(openM, Math.min(closeM, calMonths))
+          ageM     = Math.max(openM, Math.min(closeM, calMonths))
+          labelStr = completedAt.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
         }
         // Last resort: window midpoint
         if (ageM === null) ageM = ScoutDash.weeksToMonths((w.open_age_weeks + w.close_age_weeks) / 2)
-        var key = 'progress-' + ageM
+        if (!labelStr) labelStr = ageM + ' month' + (ageM === 1 ? '' : 's')
+        var key = 'fallback-' + ageM
         if (!monthMap[key]) {
-          monthMap[key] = {
-            label:      ageM + ' month' + (ageM === 1 ? '' : 's'),
-            ageMonths:  ageM,
-            sentAt:     null,
-            windows:    [],
-            isFallback: true,
-          }
+          monthMap[key] = { label: labelStr, ageMonths: ageM, sentAt: null, windows: [], isFallback: true }
         }
         monthMap[key].windows.push(e)
       })
