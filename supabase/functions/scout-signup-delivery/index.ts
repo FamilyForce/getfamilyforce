@@ -151,12 +151,13 @@ Deno.serve(async (req: Request) => {
     const birthSignup  = record.birth_signup  === true
     const digestType   = birthSignup ? 'birth_signup' : 'signup'
 
-    // 4. Check deduplication — never send two signup digests of the same type to the same child
+    // 4. Check deduplication — per user+child+type+month
     step = 'dedup-check'
     const currentMonth = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`
     const { data: existing } = await sb
       .from('scout_digest_log')
       .select('id')
+      .eq('user_id', userId)
       .eq('child_id', child.id)
       .eq('digest_type', digestType)
       .eq('digest_month', currentMonth)
@@ -357,7 +358,83 @@ Deno.serve(async (req: Request) => {
       },
     })
 
-    // 12. Log job success
+    // 12. Send to active family circle members (non-fatal)
+    step = 'family-send'
+    try {
+      const { data: familyMembers } = await sb
+        .from('family_members')
+        .select('member_user_id')
+        .eq('owner_user_id', userId)
+        .eq('child_id', child.id)
+        .eq('status', 'active')
+
+      for (const member of (familyMembers ?? [])) {
+        try {
+          const memberId = member.member_user_id
+          if (!memberId) continue
+
+          // Per-member dedup
+          const { data: memberExisting } = await sb
+            .from('scout_digest_log')
+            .select('id')
+            .eq('user_id', memberId)
+            .eq('child_id', child.id)
+            .eq('digest_type', digestType)
+            .eq('digest_month', currentMonth)
+            .limit(1)
+            .maybeSingle()
+          if (memberExisting) continue
+
+          const { data: { user: memberUser } } = await sb.auth.admin.getUserById(memberId)
+          if (!memberUser?.email) continue
+
+          const memberResendBody: Record<string, unknown> = {
+            from:    `${fromName} <${fromEmail}>`,
+            to:      [memberUser.email],
+            subject: subjectLine,
+            html:    emailHtml,
+            tags: [
+              { name: 'user_id',        value: memberId },
+              { name: 'child_id',       value: child.id },
+              { name: 'digest_type',    value: digestType },
+              { name: 'month',          value: currentMonth },
+              { name: 'recipient_type', value: 'family_member' },
+            ],
+            attachments: resendBody.attachments,
+          }
+
+          const memberRes = await fetch('https://api.resend.com/emails', {
+            method:  'POST',
+            headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+            body:    JSON.stringify(memberResendBody),
+          })
+          if (!memberRes.ok) {
+            console.warn(`[scout-signup-delivery] Failed to send to family member ${memberId}`)
+            continue
+          }
+          const memberData = await memberRes.json()
+
+          await sb.from('scout_digest_log').insert({
+            user_id:           memberId,
+            child_id:          child.id,
+            digest_month:      currentMonth,
+            child_age_months:  months,
+            digest_type:       digestType,
+            windows_included:  aboveFold.map(w => ({ id: w.id, slug: w.slug, title: w.title, urgency: w.urgency, priority: w.priority })),
+            email_subject:     subjectLine,
+            resend_message_id: memberData.id,
+          })
+
+          console.log(`[scout-signup-delivery] Sent to family member ${memberId} for child ${child.id}`)
+        } catch (memberErr) {
+          console.warn(`[scout-signup-delivery] Error sending to family member ${member.member_user_id}:`, memberErr)
+        }
+      }
+    } catch (familyErr) {
+      console.warn(`[scout-signup-delivery] Error loading family members for user ${userId}:`, familyErr)
+    }
+
+    // 13. Log job success
     await sb.from('scout_events').insert({
       user_id:    userId,
       event_type: 'job_succeeded',

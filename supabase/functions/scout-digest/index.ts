@@ -178,11 +178,12 @@ Deno.serve(async (req: Request) => {
       // Skip if past 36 months — no more windows
       if (months > 36) { results.skipped++; continue }
 
-      // 4. Dedup check
+      // 4. Dedup check — per user (family members each get their own log entry)
       const currentMonth = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`
       const { data: existing } = await sb
         .from('scout_digest_log')
         .select('id')
+        .eq('user_id', userId)
         .eq('child_id', child.id)
         .eq('digest_type', 'monthly')
         .eq('digest_month', currentMonth)
@@ -398,6 +399,81 @@ Deno.serve(async (req: Request) => {
 
       results.sent++
       console.log(`[scout-digest] Sent monthly digest for ${child.name} (user ${userId}, ${months}mo, ${weeks}w)`)
+
+      // 13. Send to active family circle members
+      try {
+        const { data: familyMembers } = await sb
+          .from('family_members')
+          .select('member_user_id')
+          .eq('owner_user_id', userId)
+          .eq('child_id', child.id)
+          .eq('status', 'active')
+
+        for (const member of (familyMembers ?? [])) {
+          try {
+            const memberId = member.member_user_id
+            if (!memberId) continue
+
+            // Per-member dedup
+            const { data: memberExisting } = await sb
+              .from('scout_digest_log')
+              .select('id')
+              .eq('user_id', memberId)
+              .eq('child_id', child.id)
+              .eq('digest_type', 'monthly')
+              .eq('digest_month', currentMonth)
+              .limit(1)
+              .maybeSingle()
+            if (memberExisting) continue
+
+            const { data: { user: memberUser } } = await sb.auth.admin.getUserById(memberId)
+            if (!memberUser?.email) continue
+
+            const memberResendBody: Record<string, unknown> = {
+              from:    `${fromName} <${fromEmail}>`,
+              to:      [memberUser.email],
+              subject: subjectLine,
+              html,
+              tags: [
+                { name: 'user_id',        value: memberId },
+                { name: 'child_id',       value: child.id },
+                { name: 'digest_type',    value: 'monthly' },
+                { name: 'month',          value: currentMonth },
+                { name: 'recipient_type', value: 'family_member' },
+              ],
+              attachments: resendBody.attachments,
+            }
+
+            const memberRes  = await fetch('https://api.resend.com/emails', {
+              method:  'POST',
+              headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+              body:    JSON.stringify(memberResendBody),
+            })
+            if (!memberRes.ok) {
+              console.warn(`[scout-digest] Failed to send to family member ${memberId}`)
+              continue
+            }
+            const memberData = await memberRes.json()
+
+            await sb.from('scout_digest_log').insert({
+              user_id:           memberId,
+              child_id:          child.id,
+              digest_month:      currentMonth,
+              child_age_months:  months,
+              digest_type:       'monthly',
+              windows_included:  aboveFold.map(w => ({ id: w.id, slug: w.slug, title: w.title, urgency: w.urgency, priority: w.priority })),
+              email_subject:     subjectLine,
+              resend_message_id: memberData.id,
+            })
+
+            console.log(`[scout-digest] Sent to family member ${memberId} for child ${child.id}`)
+          } catch (memberErr) {
+            console.warn(`[scout-digest] Error sending to family member ${member.member_user_id}:`, memberErr)
+          }
+        }
+      } catch (familyErr) {
+        console.warn(`[scout-digest] Error loading family members for user ${userId}:`, familyErr)
+      }
 
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e)
