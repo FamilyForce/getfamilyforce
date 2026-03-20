@@ -286,7 +286,7 @@ function renderSettings(user, child, sub) {
   })
 
   var editChildLink = document.getElementById('editChildLink')
-  if (editChildLink && child) editChildLink.href = '/scout-dashboard/child.html?edit=' + child.id
+  if (editChildLink && child) editChildLink.href = '/scout-dashboard/child.html?edit=' + child.id + '&back=/scout-dashboard/settings.html'
 
   var updateEmailLink = document.getElementById('updateEmailLink')
   if (updateEmailLink) updateEmailLink.href = '#'

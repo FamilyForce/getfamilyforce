@@ -95,6 +95,7 @@
   <main class="scout-main">
 
     <a href="/scout-dashboard" id="backLink" class="page-back-link" style="display:none">← Back</a>
+    <!-- href updated by JS to ?back= param when present -->
     <h1 class="page-title" id="pageTitle">Add a child</h1>
 
     <div class="child-form" id="childForm">
@@ -137,7 +138,6 @@
       <p class="form-error" id="saveError"></p>
 
       <button class="btn btn-primary btn-full" id="saveBtn" onclick="saveChild()" style="margin-top:8px">Save →</button>
-      <a href="/scout-dashboard" id="cancelLink" class="btn-cancel-link" style="display:none;margin-top:12px;text-align:center;display:none">Cancel</a>
 
     </div>
 
@@ -274,13 +274,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var session = res.data && res.data.session
     if (!session) { window.location.href = '/sign-in.html'; return }
 
+    var _backUrl = new URLSearchParams(window.location.search).get('back') || '/scout-dashboard'
     if (_editChildId) {
       // Pre-fill form for editing
       document.getElementById('pageTitle').textContent = 'Edit child'
-      var backLink   = document.getElementById('backLink')
-      var cancelLink = document.getElementById('cancelLink')
-      if (backLink)   backLink.style.display   = 'inline-block'
-      if (cancelLink) cancelLink.style.display = 'block'
+      var backLink = document.getElementById('backLink')
+      if (backLink) { backLink.href = _backUrl; backLink.style.display = 'inline-block' }
       // Hide expecting toggle in edit mode (arrival flow handles that separately)
       var toggleWrap = document.getElementById('expectingToggle') && document.getElementById('expectingToggle').closest('div')
       if (toggleWrap) toggleWrap.style.display = 'none'
