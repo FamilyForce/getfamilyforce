@@ -347,7 +347,8 @@ input, textarea, select { font-family: var(--sans); }
 .section-label-done    { color: var(--text-dim); }
 .section-label-habits  { color: var(--text-dim); }
 .section-count { font-size: 12px; color: var(--text-ghost); }
-.section-empty { font-size: 14px; color: var(--text-dim); padding: 12px 0; }
+.section-empty   { font-size: 14px; color: var(--text-dim); padding: 12px 0; }
+.section-framing { font-size: 13px; color: var(--text-dim); padding: 10px 0 14px; line-height: 1.5; }
 
 /* Good habits this month */
 .habit-grid { display: flex; flex-direction: column; gap: 8px; }

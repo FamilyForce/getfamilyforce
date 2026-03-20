@@ -527,9 +527,14 @@ function collapsibleSection(key, labelHtml, contentHtml, defaultOpen) {
 
 function renderSections(sections, allWindows, child, sub, ageM, name) {
   // Update window count line
-  var totalOpen = sections.closing.length + sections.thisMonth.length
-  var countLine = document.getElementById('windowCountLine')
-  if (countLine) countLine.textContent = totalOpen + ' window' + (totalOpen === 1 ? '' : 's') + ' open right now · ' + ageM + ' month' + (ageM === 1 ? '' : 's') + ' old'
+  var totalOpen   = sections.closing.length + sections.thisMonth.length
+  var pickedCount = Math.min(5, totalOpen)
+  var countLine   = document.getElementById('windowCountLine')
+  if (countLine) {
+    countLine.textContent = totalOpen > 5
+      ? 'Scout highlighted ' + pickedCount + ' in this month\'s digest · ' + totalOpen + ' total open'
+      : totalOpen + ' window' + (totalOpen === 1 ? '' : 's') + ' open this month · ' + ageM + ' month' + (ageM === 1 ? '' : 's') + ' old'
+  }
 
   var html = ''
 
@@ -572,7 +577,11 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
   // This month
   var thisMonthContent
   if (sections.thisMonth.length > 0) {
-    thisMonthContent = '<div class="window-grid">'
+    // Framing note when total open exceeds what the digest surfaces
+    var framingNote = totalOpen > 5
+      ? '<p class="section-framing">Your digest covers the top ' + pickedCount + '. Everything else is here when you\'re ready.</p>'
+      : ''
+    thisMonthContent = framingNote + '<div class="window-grid">'
     sections.thisMonth.forEach(function (w) { thisMonthContent += ScoutDash.renderCard(w) })
     thisMonthContent += '</div>'
   } else {
