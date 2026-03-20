@@ -283,9 +283,10 @@ Deno.serve(async (req: Request) => {
 
     // 9. Send via Resend
     step = 'send-email'
-    const resendKey  = Deno.env.get('RESEND_API_KEY')
-    const fromEmail  = Deno.env.get('RESEND_FROM_EMAIL')  ?? 'scout@getfamilyforce.com'
-    const fromName   = Deno.env.get('RESEND_FROM_NAME')   ?? 'FamilyForce'
+    const resendKey   = Deno.env.get('RESEND_API_KEY')
+    const fromEmail   = Deno.env.get('RESEND_FROM_EMAIL')  ?? 'scout@getfamilyforce.com'
+    const fromName    = Deno.env.get('RESEND_FROM_NAME')   ?? 'FamilyForce'
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const bccEmail   = Deno.env.get('RESEND_BCC_EMAIL')   ?? ''
 
     if (!resendKey) throw new Error('RESEND_API_KEY not configured')
@@ -363,7 +364,7 @@ Deno.serve(async (req: Request) => {
     try {
       const { data: familyMembers } = await sb
         .from('family_members')
-        .select('member_user_id')
+        .select('member_user_id, unsubscribe_token')
         .eq('owner_user_id', userId)
         .eq('child_id', child.id)
         .eq('status', 'active')
@@ -388,11 +389,37 @@ Deno.serve(async (req: Request) => {
           const { data: { user: memberUser } } = await sb.auth.admin.getUserById(memberId)
           if (!memberUser?.email) continue
 
+          // Build per-member HTML with their own unsubscribe URL + family footer
+          const unsubUrl   = `${supabaseUrl}/functions/v1/scout-unsubscribe?t=${member.unsubscribe_token}`
+          const memberHtml = buildDigestEmail({
+            childName:      child.name,
+            parentName,
+            childGender:    child.gender,
+            ageMonths:      isExpecting ? 0 : months,
+            isExpecting,
+            postBirthWindowCount,
+            aboveFold:      aboveFold as DigestWindow[],
+            getReadyWindows: getReadyWindows as DigestWindow[],
+            allWindowCount: allWindows.length,
+            closingCount,
+            nextEventDate:  nextBirthday,
+            dashboardUrl:   dashUrl,
+            siteUrl,
+            userId:         memberId,
+            digestType,
+            unsubscribeUrl: unsubUrl,
+            recipientType:  'family_member',
+          })
+
           const memberResendBody: Record<string, unknown> = {
             from:    `${fromName} <${fromEmail}>`,
             to:      [memberUser.email],
             subject: subjectLine,
-            html:    emailHtml,
+            html:    memberHtml,
+            headers: {
+              'List-Unsubscribe':      `<${unsubUrl}>`,
+              'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+            },
             tags: [
               { name: 'user_id',        value: memberId },
               { name: 'child_id',       value: child.id },

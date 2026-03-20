@@ -44,6 +44,8 @@ export interface DigestEmailOptions {
   digestType:          'signup' | 'monthly' | 'birth_signup'
   isExpecting?:        boolean   // true = expecting parent, pre-birth digest
   postBirthWindowCount?: number  // total post-birth windows — shown in pre-birth tease copy
+  unsubscribeUrl?:     string    // family member one-click unsubscribe URL (omit for account owner)
+  recipientType?:      'owner' | 'family_member'  // controls footer copy
 }
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
@@ -546,10 +548,14 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
               FamilyForce · <a href="${siteUrl}" style="color:${C.textDim};text-decoration:none">getfamilyforce.com</a>
             </p>
             <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0;line-height:1.6">
-              You're receiving this because you're a Scout member.
-              &nbsp;<a href="${siteUrl}/scout-dashboard/settings" style="color:${C.terra};text-decoration:none">Manage preferences</a>
-              &nbsp;·&nbsp;
-              <a href="${siteUrl}/unsubscribe?user=${userId}" style="color:${C.terra};text-decoration:none">Unsubscribe</a>
+              ${opts.recipientType === 'family_member'
+                ? `You're receiving this because you were added to ${childName}'s family circle.`
+                : `You're receiving this because you're a Scout member.`}
+              ${opts.recipientType === 'family_member'
+                ? `&nbsp;<a href="${opts.unsubscribeUrl}" style="color:${C.terra};text-decoration:none">Unsubscribe</a>`
+                : `&nbsp;<a href="${siteUrl}/scout-dashboard/settings" style="color:${C.terra};text-decoration:none">Manage preferences</a>
+                   &nbsp;·&nbsp;
+                   <a href="${siteUrl}/unsubscribe?user=${userId}" style="color:${C.terra};text-decoration:none">Unsubscribe</a>`}
             </p>
           </td>
         </tr>
