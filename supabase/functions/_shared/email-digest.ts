@@ -442,6 +442,49 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                 </td>
               </tr>
 
+              <!-- "On the day" birth tips — expecting parents only -->
+              ${isExpecting ? `
+              <tr>
+                <td style="padding-bottom:32px">
+                  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px">
+                    <tr>
+                      <td style="padding:20px 22px">
+                        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#16A34A;margin:0 0 4px">On the day</p>
+                        <p style="font-family:Arial,sans-serif;font-size:13px;color:#374151;margin:0 0 16px;line-height:1.6">Four things worth deciding before you go in. You won't want to Google them in the delivery room.</p>
+
+                        <table width="100%" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td style="padding-bottom:14px">
+                              <p style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#111827;margin:0 0 2px">Skin-to-skin — ask for it immediately</p>
+                              <p style="font-family:Arial,sans-serif;font-size:13px;color:#4B5563;margin:0;line-height:1.6">Even for C-sections. Regulates ${childName}'s temperature, heart rate, and blood sugar. Promotes breastfeeding and bonding. Tell your OB or midwife before you go in so it's already the plan.</p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom:14px">
+                              <p style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#111827;margin:0 0 2px">Delayed cord clamping</p>
+                              <p style="font-family:Arial,sans-serif;font-size:13px;color:#4B5563;margin:0;line-height:1.6">Most hospitals do this now — wait at least 60 seconds before clamping. Transfers roughly 80ml of extra blood and iron to your baby. Ask explicitly even if it's standard practice at your hospital.</p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style="padding-bottom:14px">
+                              <p style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#111827;margin:0 0 2px">The golden hour</p>
+                              <p style="font-family:Arial,sans-serif;font-size:13px;color:#4B5563;margin:0;line-height:1.6">The first hour uninterrupted with your baby. Weighing, measuring, and vitamin K can usually wait. Ask the room to hold non-urgent procedures until after you've had that first hour together.</p>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <p style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#111827;margin:0 0 2px">Rooming-in</p>
+                              <p style="font-family:Arial,sans-serif;font-size:13px;color:#4B5563;margin:0;line-height:1.6">Keep ${childName} in the room with you rather than the nursery. Better for feeding cues, bonding, and breastfeeding. Hospitals often default to the nursery — you have to ask to keep ${him} close.</p>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              ` : ''}
+
               <!-- Next digest teaser / birth CTA (expecting) -->
               <tr>
                 <td style="padding-bottom:32px">
