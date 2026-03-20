@@ -278,7 +278,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
               <p style="font-family:Arial,sans-serif;font-size:32px;margin:0 0 8px">🏆</p>
               <p style="font-family:Georgia,'Times New Roman',serif;font-size:20px;color:${C.text};margin:0 0 8px;font-weight:400">All caught up.</p>
               <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.65">
-                ${childName} has ${allWindowCount} open windows this month and you've marked them all done. That's exceptional. Take the next month to keep the habits going.
+                ${childName} had ${allWindowCount} open window${allWindowCount === 1 ? '' : 's'} this month and you marked them all done. That's exceptional. Keep the habits going.
               </p>
             </td>
           </tr>
@@ -377,7 +377,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                 <td>
                   <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 24px">Scout by FamilyForce</p>
                   <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:400;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${isExpecting ? `Getting ready for ${childName}` : `${childName} at ${ageMonths} months`}</p>
-                  <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0;line-height:1.6">${allCaughtUp ? `All ${allWindowCount} windows completed this month 🏆` : `${allWindowCount} open developmental windows &nbsp;·&nbsp; ${closingCount > 0 ? `${closingCount} closing this month` : 'none closing this month'}`}</p>
+                  <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0;line-height:1.6">${allCaughtUp ? `All ${allWindowCount} window${allWindowCount === 1 ? '' : 's'} completed this month 🏆` : `${allWindowCount} open developmental window${allWindowCount === 1 ? '' : 's'} &nbsp;·&nbsp; ${closingCount > 0 ? `${closingCount} closing this month` : 'none closing this month'}`}</p>
                 </td>
               </tr>
             </table>
@@ -537,6 +537,10 @@ export function buildDigestSubject(
       timeLeft = weeksLeft === 1 ? '1 week left' : `${weeksLeft} weeks left`
     }
     return `${childName} at ${ageMonths} months — ${timeLeft} on ${w.title.toLowerCase()}`
+  }
+
+  if (aboveFold.length === 0) {
+    return `${childName} at ${ageMonths} months — you've done it all this month 🏆`
   }
 
   return `${childName} at ${ageMonths} months — ${aboveFold.length} things to know this month`

@@ -307,7 +307,7 @@ Deno.serve(async (req: Request) => {
         aboveFold:       aboveFold as DigestWindow[],
         getReadyWindows: getReadyWindows as DigestWindow[],
         completedWindows,
-        allWindowCount:  openWindows.length,
+        allWindowCount:  allWindows.length,
         closingCount,
         overdueWindows,
         nextEventDate:   nextBirthday,
