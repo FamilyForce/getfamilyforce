@@ -216,7 +216,7 @@ function renderHistory(months, child) {
       '<div class="history-month-header" onclick="toggleMonth(' + i + ')">' +
       '<div class="history-month-left">' +
       '<h3>' + m.label + '</h3>' +
-      '<p>' + child.name + ' at ' + m.ageMonths + ' month' + (m.ageMonths === 1 ? '' : 's') + '</p>' +
+      '<p>' + (m.ageMonths < 0 ? child.name + ' — before birth' : child.name + ' at ' + m.ageMonths + ' month' + (m.ageMonths === 1 ? '' : 's')) + '</p>' +
       '</div>' +
       '<div class="history-month-right">' +
       '<span class="history-month-stat">' + doneCount + ' completed</span>' +
