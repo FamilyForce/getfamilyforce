@@ -92,7 +92,7 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
   const weeksLeft = Math.round(w.close_age_weeks - ageWeeks)
 
   // Trim to 2 sentences
-  const sentences = w.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||')
+  const sentences = (w.why_it_matters || '').replace(/([.!?])\s+/g, '$1|||').split('|||')
   const excerpt   = sentences.slice(0, 2).join(' ').trim()
 
   // First action — only rendered if content exists
