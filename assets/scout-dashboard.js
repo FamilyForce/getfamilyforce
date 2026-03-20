@@ -372,9 +372,20 @@
               var progress = progRes.data || []
               if (progRes.error) console.warn('[loadWindows] window_progress error:', progRes.error)
 
-              // Build progress map: window_id → progress row
+              // Build progress map: window_id → best progress row across all family members
+              // Priority: completed = skipped > in_progress > open
+              var STATUS_RANK = { completed: 3, skipped: 3, in_progress: 2, open: 1 }
               var progMap = {}
-              progress.forEach(function (p) { progMap[p.window_id] = p })
+              progress.forEach(function (p) {
+                var existing = progMap[p.window_id]
+                if (!existing) {
+                  progMap[p.window_id] = p
+                } else {
+                  var newRank = STATUS_RANK[p.status] || 0
+                  var oldRank = STATUS_RANK[existing.status] || 0
+                  if (newRank > oldRank) progMap[p.window_id] = p
+                }
+              })
               // Attach progress to each window
               windows.forEach(function (w) {
                 w._progress = progMap[w.id] || null
