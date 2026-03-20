@@ -143,17 +143,28 @@ function loadHistory(child) {
       }
     })
 
-    // Fallback: bucket unmatched progress by window's peak age month
-    // (handles users who have marked windows before receiving their first digest)
+    // Fallback: bucket unmatched progress by child's actual age at completion
+    // (uses updated_at - child.dob, clamped to the window's open/close range)
+    // This handles users who have marked windows before receiving their first digest.
     if (unmatched.length > 0) {
+      var childDob = child.dob ? new Date(child.dob) : null
       unmatched.forEach(function (e) {
-        var w       = e.window
-        var peakM   = ScoutDash.weeksToMonths((w.open_age_weeks + w.close_age_weeks) / 2)
-        var key     = 'progress-' + peakM
+        var w    = e.window
+        var ageM = null
+        if (childDob && e.progress.updated_at) {
+          var completedAt      = new Date(e.progress.updated_at)
+          var ageWeeksActual   = (completedAt - childDob) / (7 * 24 * 60 * 60 * 1000)
+          var openM            = ScoutDash.weeksToMonths(w.open_age_weeks)
+          var closeM           = ScoutDash.weeksToMonths(w.close_age_weeks)
+          ageM = Math.max(openM, Math.min(closeM, ScoutDash.weeksToMonths(ageWeeksActual)))
+        }
+        // Last resort: window midpoint
+        if (ageM === null) ageM = ScoutDash.weeksToMonths((w.open_age_weeks + w.close_age_weeks) / 2)
+        var key = 'progress-' + ageM
         if (!monthMap[key]) {
           monthMap[key] = {
-            label:      peakM + ' month' + (peakM === 1 ? '' : 's'),
-            ageMonths:  peakM,
+            label:      ageM + ' month' + (ageM === 1 ? '' : 's'),
+            ageMonths:  ageM,
             sentAt:     null,
             windows:    [],
             isFallback: true,
