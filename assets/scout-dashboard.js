@@ -76,10 +76,26 @@
         } catch (_) {}
 
         ScoutDash._initNav(pageName)
-        ScoutDash._loadChild(function () {
-          ScoutDash._loadSubscription(function () {
-            ScoutDash._renderTrialBanner()
-            fireReady()
+
+        // Load profile name and cache as ff_user_name if not already set by user
+        var sb2 = window._supabaseClient
+        sb2.from('profiles').select('name').eq('id', _user.id).maybeSingle().then(function (pRes) {
+          var profileName = pRes.data && pRes.data.name && pRes.data.name.trim()
+          if (profileName && !localStorage.getItem('ff_user_name')) {
+            localStorage.setItem('ff_user_name', profileName)
+          }
+          ScoutDash._loadChild(function () {
+            ScoutDash._loadSubscription(function () {
+              ScoutDash._renderTrialBanner()
+              fireReady()
+            })
+          })
+        }).catch(function () {
+          ScoutDash._loadChild(function () {
+            ScoutDash._loadSubscription(function () {
+              ScoutDash._renderTrialBanner()
+              fireReady()
+            })
           })
         })
       }, function (err) {
@@ -607,9 +623,12 @@
       var attrHtml = ''
       if (!isPreview && w._progress && w._status !== 'open') {
         var isMe = w._progress.updated_by_user_id && _user && w._progress.updated_by_user_id === _user.id
-        var name = isMe
+        var rawName = isMe
           ? (localStorage.getItem('ff_user_name') || w._progress.updated_by_name || '')
           : (w._progress.updated_by_name || '')
+        // If name looks like an email / email prefix (contains @ or +), fall back to "You" for own actions
+        var looksLikeEmail = rawName && (rawName.indexOf('@') !== -1 || rawName.indexOf('+') !== -1)
+        var name = (isMe && looksLikeEmail) ? 'You' : rawName
         var date = w._progress.completed_date
           ? ScoutDash._fmtDate(w._progress.completed_date)
           : ''
