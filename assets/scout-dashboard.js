@@ -785,6 +785,18 @@
         var win    = windowsRef.find(function (w) { return w.id === wid })
         if (!win) return
 
+        // Block lower-rank actions when a family member already has a higher status
+        var STATUS_RANK = { completed: 3, skipped: 3, in_progress: 2, open: 1 }
+        var existingRank = STATUS_RANK[win._status] || 0
+        var actionRank   = STATUS_RANK[action] || 0
+        var markedByOther = win._progress && win._progress.updated_by_name &&
+                            win._progress.updated_by_user_id && _user &&
+                            win._progress.updated_by_user_id !== _user.id
+        if (markedByOther && existingRank >= 3 && actionRank < 3) {
+          ScoutDash.toast(win._progress.updated_by_name + ' already marked this done', 'info')
+          return
+        }
+
         // Toggle: if already active, revert to open
         var newStatus = (win._status === action) ? 'open' : action
         win._status = newStatus

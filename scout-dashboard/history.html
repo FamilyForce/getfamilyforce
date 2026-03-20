@@ -99,6 +99,17 @@ function loadHistory(child) {
     var winMap = {}
     windows.forEach(function (w) { winMap[w.id] = w })
 
+    // Deduplicate progress rows by window_id across family members — best status wins
+    var STATUS_RANK = { completed: 3, skipped: 3, in_progress: 2, open: 1 }
+    var dedupedMap = {}
+    progress.forEach(function (p) {
+      var existing = dedupedMap[p.window_id]
+      if (!existing || (STATUS_RANK[p.status] || 0) > (STATUS_RANK[existing.status] || 0)) {
+        dedupedMap[p.window_id] = p
+      }
+    })
+    progress = Object.values(dedupedMap)
+
     // Group progress by month.
     // Primary: use digest log entries as month buckets.
     // Fallback: if no digests yet, group by the window's age range against child's current age.
