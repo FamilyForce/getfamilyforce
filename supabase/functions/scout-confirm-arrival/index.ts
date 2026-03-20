@@ -11,11 +11,10 @@
 //   3. Validate realDob (past, within reasonable window of due_date)
 //   4. Update child: dob = realDob, is_expecting = false (due_date kept for reference)
 //   5. Reset trial_end = baby's next monthly birthday (Option A: trial clock resets at birth)
-//      Early signup rule: if next birthday ≤7 days away, extend by one month
 //   6. Upsert scout_subscriptions with new trial_end (status stays trialing)
 //   7. Log birth_confirmed to scout_events
 //   8. Fire scout-signup-delivery async — sends first real post-birth digest
-//   9. Return { ok: true, trialEnd, childId, earlySignup }
+//   9. Return { ok: true, trialEnd, childId }
 //
 // Deploy: supabase functions deploy scout-confirm-arrival
 //
@@ -39,14 +38,6 @@ function err(status: number, msg: string, step = '') {
 }
 
 // ─── Advance one monthly birthday forward ─────────────────────────────────────
-function oneMonthForward(date: Date, birthDay: number): Date {
-  const month = date.getUTCMonth()
-  const year  = date.getUTCFullYear()
-  const nextM = month === 11 ? 0 : month + 1
-  const nextY = month === 11 ? year + 1 : year
-  const days  = new Date(Date.UTC(nextY, nextM + 1, 0)).getUTCDate()
-  return new Date(Date.UTC(nextY, nextM, Math.min(birthDay, days)))
-}
 
 // ─── Telegram alert ───────────────────────────────────────────────────────────
 async function telegramAlert(message: string): Promise<void> {
@@ -147,13 +138,10 @@ Deno.serve(async (req: Request) => {
     if (updateErr) throw new Error(`Failed to update child: ${updateErr.message}`)
 
     // 6. Reset trial_end to baby's next monthly birthday (Option A — trial clock resets at birth)
-    //    Apply early signup rule: if next birthday ≤7 days away, extend by one extra month
     step = 'calculate-trial-end'
-    const birthDay     = realDobDate.getUTCDate()
     const nextBday     = nextMonthlyBirthday(realDobDate, now)
     const daysUntilEnd = Math.floor((nextBday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-    const earlySignup  = daysUntilEnd <= 7
-    const trialEnd     = earlySignup ? oneMonthForward(nextBday, birthDay) : nextBday
+    const trialEnd     = nextBday
 
     // 7. Upsert scout_subscriptions with new trial_end (status stays trialing)
     step = 'upsert-subscription'
@@ -180,7 +168,6 @@ Deno.serve(async (req: Request) => {
           days_from_due:             Math.round((realDobDate.getTime() - dueDate.getTime()) / 86400000),
           trial_end:                 trialEnd.toISOString(),
           days_until_first_birthday: daysUntilEnd,
-          early_signup:              earlySignup,
           duration_ms:               Date.now() - jobStart,
         },
       })
@@ -201,8 +188,7 @@ Deno.serve(async (req: Request) => {
         user_id:      userId,
         status:       'trialing',
         trial_end:    trialEnd.toISOString(),
-        early_signup: earlySignup,   // ICS + footer point to trialEnd date if birthday is close
-        birth_signup: true,          // tells signup-delivery to use digest_type 'birth_signup'
+        birth_signup: true,           // tells signup-delivery to use digest_type 'birth_signup'
       },
     }
 
@@ -218,7 +204,7 @@ Deno.serve(async (req: Request) => {
       telegramAlert(`Failed to trigger post-birth digest for user ${userId}: ${e.message}`)
     })
 
-    console.log(`[scout-confirm-arrival] Birth confirmed for user ${userId}, child ${childId} (dob=${realDob}, trialEnd=${trialEnd.toISOString().split('T')[0]}, early=${earlySignup})`)
+    console.log(`[scout-confirm-arrival] Birth confirmed for user ${userId}, child ${childId} (dob=${realDob}, trialEnd=${trialEnd.toISOString().split('T')[0]})`)
     await telegramAlert(`🍼 Birth confirmed — user ${userId}, ${child.name} born ${realDob} (due ${child.due_date})`)
 
     return new Response(JSON.stringify({
@@ -228,7 +214,6 @@ Deno.serve(async (req: Request) => {
       trialEndFormatted: trialEnd.toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
       }),
-      earlySignup,
     }), {
       status:  200,
       headers: { ...CORS, 'Content-Type': 'application/json' },
