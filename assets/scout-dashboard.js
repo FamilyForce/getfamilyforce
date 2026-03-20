@@ -594,12 +594,11 @@
         }
       }
 
-      // Date picker prompt (shown after marking done/in-progress)
+      // Inline date edit strip — hidden until user taps "edit date" in attribution
       var datePromptHtml = (!isPreview && !isHistory)
         ? '<div class="date-prompt" id="datePrompt-' + w.id + '">' +
-          '<span class="date-prompt-label">📅 When?</span>' +
+          '<span class="date-prompt-label">📅 Date done:</span>' +
           '<input type="date" class="date-prompt-input" id="dateInput-' + w.id + '" max="' + new Date().toISOString().split('T')[0] + '">' +
-          '<button class="date-prompt-save btn btn-primary" data-save-date="' + w.id + '" style="padding:5px 14px;font-size:13px;height:32px;min-width:80px">Confirm ✓</button>' +
           '<button class="date-prompt-dismiss" data-dismiss-date="' + w.id + '">✕</button>' +
           '</div>'
         : ''
@@ -607,7 +606,6 @@
       // Attribution line (shown when progress has been set)
       var attrHtml = ''
       if (!isPreview && w._progress && w._status !== 'open') {
-        // If the action was by the current user, show their current display name
         var isMe = w._progress.updated_by_user_id && _user && w._progress.updated_by_user_id === _user.id
         var name = isMe
           ? (localStorage.getItem('ff_user_name') || w._progress.updated_by_name || '')
@@ -619,7 +617,8 @@
           attrHtml = '<p class="card-attribution">' +
             (name ? '<span class="card-attribution-name">' + ScoutDash._esc(name) + '</span>' : '') +
             (name && date ? ' · ' : '') +
-            (date ? ScoutDash._esc(date) : '') +
+            (date ? '<span class="card-attribution-date">' + ScoutDash._esc(date) + '</span>' : '') +
+            (!isHistory ? ' · <button class="card-edit-date-btn" data-edit-date="' + w.id + '">edit date</button>' : '') +
             '</p>'
         }
       }
@@ -721,62 +720,29 @@
       container = container || document
       container.addEventListener('click', function (e) {
         // Save date prompt — user confirmed date, now persist
-        var saveDate = e.target.closest('[data-save-date]')
-        if (saveDate) {
-          var swid    = saveDate.dataset.saveDate
-          var swin    = windowsRef.find(function (w) { return w.id === swid })
-          var scard   = saveDate.closest('.window-card')
-          var sInp    = document.getElementById('dateInput-' + swid)
-          var sDp     = document.getElementById('datePrompt-' + swid)
-          var sBtns   = scard ? scard.querySelectorAll('[data-action]') : []
-          if (!swin || !scard) return
-          var selDate = (sInp && sInp.value) ? sInp.value : null
-          var sStatus = swin._status  // already set optimistically
-          if (sDp) sDp.classList.remove('show')
-          scard.classList.remove('save-pending')  // allow dim now — user confirmed
-          scard.style.opacity = '0.6'
-          scard.style.pointerEvents = 'none'
-          ScoutDash.saveProgress(swid, sStatus, childId, selDate, function (err, data) {
-            scard.style.opacity = ''
-            scard.style.pointerEvents = ''
-            if (err) {
-              ScoutDash.toast('Could not save. Please try again.', 'error')
-              swin._status = 'open'
-              sBtns.forEach(function (b) { b.classList.remove('active-done', 'active-progress', 'active-skip') })
-              scard.classList.remove('state-in-progress', 'state-done', 'state-skipped')
-            } else {
-              if (sStatus === 'completed' || sStatus === 'skipped') {
-                setTimeout(function () { ScoutDash._moveToDone(scard, swid) }, 400)
-              }
-              if (data && data.updatedByName) {
-                if (!swin._progress) swin._progress = {}
-                swin._progress.updated_by_name = data.updatedByName
-                swin._progress.completed_date  = data.completedDate || null
-                swin._status = sStatus
-                ScoutDash._updateCardAttribution(scard, data.updatedByName, data.completedDate)
-              }
-            }
-            ScoutDash._updateProgressBar(windowsRef)
-          })
+        // "Edit date" button — show the inline date picker
+        var editDate = e.target.closest('[data-edit-date]')
+        if (editDate) {
+          var ewid  = editDate.dataset.editDate
+          var ewin  = windowsRef.find(function (w) { return w.id === ewid })
+          var edp   = document.getElementById('datePrompt-' + ewid)
+          var eInp  = document.getElementById('dateInput-' + ewid)
+          if (edp && eInp) {
+            eInp.value = (ewin && ewin._progress && ewin._progress.completed_date)
+              ? ewin._progress.completed_date
+              : new Date().toISOString().split('T')[0]
+            edp.classList.add('show')
+            eInp.focus()
+          }
           return
         }
 
-        // Dismiss date prompt — revert optimistic UI
+        // Dismiss inline date picker — just hide it (progress already saved)
         var dismiss = e.target.closest('[data-dismiss-date]')
         if (dismiss) {
-          var dwid  = dismiss.dataset.dismissDate
-          var dwin  = windowsRef.find(function (w) { return w.id === dwid })
-          var dcard = dismiss.closest('.window-card')
-          var dp    = document.getElementById('datePrompt-' + dwid)
+          var dwid = dismiss.dataset.dismissDate
+          var dp   = document.getElementById('datePrompt-' + dwid)
           if (dp) dp.classList.remove('show')
-          if (dwin) dwin._status = 'open'
-          if (dcard) {
-            dcard.classList.remove('save-pending')  // restore normal state on cancel
-            dcard.querySelectorAll('[data-action]').forEach(function (b) {
-              b.classList.remove('active-done', 'active-progress', 'active-skip')
-            })
-            dcard.classList.remove('state-in-progress', 'state-done', 'state-skipped')
-          }
           return
         }
 
@@ -818,19 +784,7 @@
         if (newStatus === 'in_progress')  card.classList.add('state-in-progress')
         if (newStatus === 'completed' || newStatus === 'skipped') card.classList.add('state-done')
 
-        // Show date prompt for done/in-progress; skipped/open save immediately
-        var prompt  = document.getElementById('datePrompt-' + wid)
-        var dateInp = document.getElementById('dateInput-' + wid)
-
-        if (newStatus === 'completed' && prompt && dateInp) {
-          // Show date prompt — save is deferred until user clicks Save
-          dateInp.value = new Date().toISOString().split('T')[0]
-          prompt.classList.add('show')
-          card.classList.add('save-pending')   // suppress opacity dim until confirmed
-          // Don't save yet — wireActions save-date handler below handles it
-          return
-        }
-
+        // All statuses save immediately — no confirmation step
         // in_progress / skipped / reverted to open — save immediately, no date prompt
         if (newStatus === 'skipped') {
           setTimeout(function () { ScoutDash._moveToDone(card, wid) }, 800)
@@ -877,18 +831,22 @@
       })
     },
 
-    _updateCardAttribution: function (card, name, dateStr) {
-      var existing = card.querySelector('.card-attribution')
+    _updateCardAttribution: function (card, name, dateStr, isHistory) {
+      var existing  = card.querySelector('.card-attribution')
       var dateLabel = dateStr ? ScoutDash._fmtDate(dateStr) : ''
+      var wid       = card.dataset.windowId || ''
       var html = '<p class="card-attribution">' +
         (name ? '<span class="card-attribution-name">' + ScoutDash._esc(name) + '</span>' : '') +
         (name && dateLabel ? ' · ' : '') +
-        (dateLabel ? ScoutDash._esc(dateLabel) : '') +
+        (dateLabel ? '<span class="card-attribution-date">' + ScoutDash._esc(dateLabel) + '</span>' : '') +
+        (!isHistory && wid ? ' · <button class="card-edit-date-btn" data-edit-date="' + wid + '">edit date</button>' : '') +
         '</p>'
       if (existing) {
         existing.outerHTML = html
       } else {
-        card.insertAdjacentHTML('beforeend', html)
+        var dp = card.querySelector('.date-prompt')
+        if (dp) dp.insertAdjacentHTML('beforebegin', html)
+        else card.insertAdjacentHTML('beforeend', html)
       }
     },
 
