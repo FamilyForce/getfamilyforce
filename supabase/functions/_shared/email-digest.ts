@@ -33,6 +33,7 @@ export interface DigestEmailOptions {
   ageMonths:       number
   aboveFold:       DigestWindow[]
   getReadyWindows: DigestWindow[]    // windows opening in next 4-8 weeks — shown in "Get ready" section
+  completedWindows?: { title: string }[]  // windows completed since last digest — shown in "what you did" section
   allWindowCount:  number
   closingCount:    number
   overdueWindows?: { title: string; urgency: string }[]  // in_progress windows whose window has closed
@@ -171,10 +172,13 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   const {
     childName, parentName, childGender, ageMonths, aboveFold,
     getReadyWindows = [],
+    completedWindows = [],
     allWindowCount, closingCount, overdueWindows = [], nextEventDate,
     dashboardUrl, siteUrl, userId, digestType, isExpecting = false,
     postBirthWindowCount = 192,
   } = opts
+
+  const allCaughtUp = aboveFold.length === 0 && digestType === 'monthly'
 
   const His = cap(pronoun(childGender, 'possess'))
   const his = pronoun(childGender, 'possess')
@@ -207,6 +211,8 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `The preparation windows below close at birth. Most of them are quick — and much easier to do now than with a newborn in the room.`
     : digestType === 'birth_signup'
     ? `The first few months are a blur. You're doing better than you think — and now you've got a system.`
+    : allCaughtUp
+    ? `You've marked everything done this month. That's genuinely rare — and it shows. Here's a look back at what you covered, and a heads-up on what's coming next.`
     : ageMonths <= 2
     ? `The first few months are a blur. You're doing better than you think.`
     : ageMonths <= 6
@@ -243,6 +249,42 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ${getReadyWindows.map(w => getReadyItem(w)).join('')}` : ''
 
   const remainingCount = allWindowCount - aboveFold.length
+
+  // "What you did" section — completed windows (monthly digest only)
+  const completedSection = completedWindows.length > 0 ? `
+    <tr>
+      <td style="padding-bottom:24px">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.greenBg};border:1px solid #BBF7D0;border-radius:12px">
+          <tr>
+            <td style="padding:18px 20px">
+              <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.green};margin:0 0 12px">What you did this month</p>
+              ${completedWindows.map(w => `
+              <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0 0 6px;padding-left:18px;position:relative">
+                <span style="position:absolute;left:0;color:${C.green}">✓</span>${w.title}
+              </p>`).join('')}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>` : ''
+
+  // "All caught up" hero — replaces window sections when everything is done
+  const allCaughtUpSection = allCaughtUp ? `
+    <tr>
+      <td style="padding-bottom:24px">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.greenBg};border:1px solid #BBF7D0;border-radius:14px">
+          <tr>
+            <td style="padding:28px 24px;text-align:center">
+              <p style="font-family:Arial,sans-serif;font-size:32px;margin:0 0 8px">🏆</p>
+              <p style="font-family:Georgia,'Times New Roman',serif;font-size:20px;color:${C.text};margin:0 0 8px;font-weight:400">All caught up.</p>
+              <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.65">
+                ${childName} has ${allWindowCount} open windows this month and you've marked them all done. That's exceptional. Take the next month to keep the habits going.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>` : ''
 
   // Overdue section — only shown in monthly digests when in_progress windows have closed
   const overdueSectionHtml = overdueWindows.length > 0 ? `
@@ -315,6 +357,8 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
 <div style="display:none;max-height:0;overflow:hidden;mso-hide:all">
   ${isExpecting
     ? `${childName} hasn't arrived yet — ${allWindowCount} preparation window${allWindowCount !== 1 ? 's' : ''} open right now.`
+    : allCaughtUp
+    ? `${childName} at ${ageMonths} months — you've marked everything done. 🏆`
     : `${childName} at ${ageMonths} months — ${closingCount > 0 ? `${closingCount} window${closingCount > 1 ? 's' : ''} closing this month` : `${allWindowCount} open windows`}.`
   }
   &nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌
@@ -333,7 +377,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                 <td>
                   <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 24px">Scout by FamilyForce</p>
                   <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:400;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${isExpecting ? `Getting ready for ${childName}` : `${childName} at ${ageMonths} months`}</p>
-                  <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0;line-height:1.6">${allWindowCount} open developmental windows &nbsp;·&nbsp; ${closingCount > 0 ? `${closingCount} closing this month` : 'none closing this month'}</p>
+                  <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0;line-height:1.6">${allCaughtUp ? `All ${allWindowCount} windows completed this month 🏆` : `${allWindowCount} open developmental windows &nbsp;·&nbsp; ${closingCount > 0 ? `${closingCount} closing this month` : 'none closing this month'}`}</p>
                 </td>
               </tr>
             </table>
@@ -357,9 +401,9 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
               <!-- Spacer -->
               <tr><td style="padding-bottom:24px"></td></tr>
 
-              <!-- Windows -->
-              ${closingSection}
-              ${openSection}
+              <!-- Windows (or all-caught-up hero) -->
+              ${allCaughtUp ? allCaughtUpSection : closingSection + openSection}
+              ${completedSection}
               ${getReadySection}
 
               <!-- Overdue in_progress windows -->

@@ -243,9 +243,10 @@ Deno.serve(async (req: Request) => {
       const isActiveTrack = completedWindowIds.size > 0
 
       // 3I — Exclude completed/skipped from above-fold selection
-      const allWindows = (windows ?? []) as MilestoneWindow[]
+      const allWindows  = (windows ?? []) as MilestoneWindow[]
       const openWindows = allWindows.filter(w => !completedWindowIds.has(w.id))
-      const aboveFold  = selectAboveFold(openWindows.length > 0 ? openWindows : allWindows, weeks)
+      // No fallback — if everything is done, aboveFold is empty and email shows "all caught up"
+      const aboveFold   = selectAboveFold(openWindows, weeks)
 
       if (allWindows.length === 0) {
         console.log(`[scout-digest] No windows for child ${child.id} at ${weeks}w — skipping`)
@@ -299,20 +300,21 @@ Deno.serve(async (req: Request) => {
       // 7. Build email HTML
       const nextBirthday = nextMonthlyBirthday(childDob, now)
       const html = buildDigestEmail({
-        childName:      child.name,
-        parentName:     parentName || undefined,
-        childGender:    child.gender,
-        ageMonths:      months,
-        aboveFold:      aboveFold as DigestWindow[],
+        childName:       child.name,
+        parentName:      parentName || undefined,
+        childGender:     child.gender,
+        ageMonths:       months,
+        aboveFold:       aboveFold as DigestWindow[],
         getReadyWindows: getReadyWindows as DigestWindow[],
-        allWindowCount: openWindows.length > 0 ? openWindows.length : allWindows.length,
+        completedWindows,
+        allWindowCount:  openWindows.length,
         closingCount,
         overdueWindows,
-        nextEventDate:  nextBirthday,
-        dashboardUrl:   dashUrl,
+        nextEventDate:   nextBirthday,
+        dashboardUrl:    dashUrl,
         siteUrl,
         userId,
-        digestType:     'monthly',
+        digestType:      'monthly',
       })
 
       // 8. Generate .ics for next birthday
