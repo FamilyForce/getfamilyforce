@@ -77,13 +77,12 @@
 
         ScoutDash._initNav(pageName)
 
-        // Load profile name and cache as ff_user_name if not already set by user
+        // Load profile name and always refresh ff_user_name from DB so changes
+        // made on other devices stay in sync. Settings also writes locally.
         var sb2 = window._supabaseClient
         sb2.from('profiles').select('name').eq('id', _user.id).maybeSingle().then(function (pRes) {
           var profileName = pRes.data && pRes.data.name && pRes.data.name.trim()
-          if (profileName && !localStorage.getItem('ff_user_name')) {
-            localStorage.setItem('ff_user_name', profileName)
-          }
+          if (profileName) localStorage.setItem('ff_user_name', profileName)
           ScoutDash._loadChild(function () {
             ScoutDash._loadSubscription(function () {
               ScoutDash._renderTrialBanner()
@@ -626,8 +625,10 @@
         var rawName = isMe
           ? (localStorage.getItem('ff_user_name') || w._progress.updated_by_name || '')
           : (w._progress.updated_by_name || '')
-        // If name looks like an email / email prefix (contains @ or +), fall back to "You" for own actions
-        var looksLikeEmail = rawName && (rawName.indexOf('@') !== -1 || rawName.indexOf('+') !== -1)
+        // If name exactly matches the email prefix fallback (e.g. "jh.scholar1+209"),
+        // or contains @, show "You" for own actions — avoids leaking raw email addresses
+        var emailPrefix = _user && _user.email ? _user.email.split('@')[0] : null
+        var looksLikeEmail = rawName && (rawName.indexOf('@') !== -1 || rawName === emailPrefix)
         var name = (isMe && looksLikeEmail) ? 'You' : rawName
         var date = w._progress.completed_date
           ? ScoutDash._fmtDate(w._progress.completed_date)
