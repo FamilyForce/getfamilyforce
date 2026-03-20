@@ -225,19 +225,42 @@ Deno.serve(async (req: Request) => {
       // 3I — Active track: fetch all progress for this child (shared across family)
       const { data: progressRows } = await sb
         .from('window_progress')
-        .select('window_id, status')
+        .select('window_id, status, updated_at')
         .eq('child_id', child.id)
         .in('status', ['completed', 'skipped'])
 
       const completedWindowIds = new Set(
-        (progressRows ?? [])
-          .filter(p => p.status === 'completed' || p.status === 'skipped')
-          .map(p => p.window_id)
+        (progressRows ?? []).map(p => p.window_id)
       )
 
-      // 3I — "What you've done" section: completed windows from last month
+      // 3I — "What you've done" section: only windows completed SINCE the last digest
+      // Get last digest date for this child (any type) to use as the cutoff
+      const { data: lastDigestRow } = await sb
+        .from('scout_digest_log')
+        .select('created_at')
+        .eq('child_id', child.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+
+      const lastDigestDate = lastDigestRow?.created_at ? new Date(lastDigestRow.created_at) : null
+
+      // Build a map of window_id → most recent updated_at across all family members
+      const progressByWindow: Record<string, Date> = {}
+      for (const p of (progressRows ?? [])) {
+        const t = new Date(p.updated_at)
+        if (!progressByWindow[p.window_id] || t > progressByWindow[p.window_id]) {
+          progressByWindow[p.window_id] = t
+        }
+      }
+
       const completedWindows = (windows ?? [])
-        .filter(w => completedWindowIds.has(w.id))
+        .filter(w => {
+          if (!completedWindowIds.has(w.id)) return false
+          if (!lastDigestDate) return true   // first digest ever — show all completed
+          const completedAt = progressByWindow[w.id]
+          return completedAt && completedAt >= lastDigestDate
+        })
         .map(w => ({ title: w.title }))
 
       const isActiveTrack = completedWindowIds.size > 0
