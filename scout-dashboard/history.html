@@ -152,11 +152,14 @@ function loadHistory(child) {
         var w    = e.window
         var ageM = null
         if (childDob && e.progress.updated_at) {
-          var completedAt      = new Date(e.progress.updated_at)
-          var ageWeeksActual   = (completedAt - childDob) / (7 * 24 * 60 * 60 * 1000)
-          var openM            = ScoutDash.weeksToMonths(w.open_age_weeks)
-          var closeM           = ScoutDash.weeksToMonths(w.close_age_weeks)
-          ageM = Math.max(openM, Math.min(closeM, ScoutDash.weeksToMonths(ageWeeksActual)))
+          var completedAt = new Date(e.progress.updated_at)
+          // Calendar months — same logic as a birthday counter, avoids week rounding errors
+          var calMonths = (completedAt.getFullYear() - childDob.getFullYear()) * 12
+                        + (completedAt.getMonth() - childDob.getMonth())
+          if (completedAt.getDate() < childDob.getDate()) calMonths--
+          var openM  = ScoutDash.weeksToMonths(w.open_age_weeks)
+          var closeM = ScoutDash.weeksToMonths(w.close_age_weeks)
+          ageM = Math.max(openM, Math.min(closeM, calMonths))
         }
         // Last resort: window midpoint
         if (ageM === null) ageM = ScoutDash.weeksToMonths((w.open_age_weeks + w.close_age_weeks) / 2)
