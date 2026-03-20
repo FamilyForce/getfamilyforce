@@ -61,6 +61,20 @@
         }
         _token = session.access_token
         _user  = session.user
+
+        // Clear stale localStorage if a different user was previously active
+        try {
+          var _prevUid = localStorage.getItem('ff_user_id')
+          if (_prevUid && _prevUid !== _user.id) {
+            ['ff_progress','ff_user_name','ff_onboarded',
+             'ff_course_screentime_v1','ff_course_sleep_v1','ff_course_tantrum_v1',
+             'ff_course_feeding_v1','ff_course_potty_v1'].forEach(function (k) {
+              localStorage.removeItem(k)
+            })
+          }
+          localStorage.setItem('ff_user_id', _user.id)
+        } catch (_) {}
+
         ScoutDash._initNav(pageName)
         ScoutDash._loadChild(function () {
           ScoutDash._loadSubscription(function () {
