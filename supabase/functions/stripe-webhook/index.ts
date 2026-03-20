@@ -18,6 +18,20 @@ async function stripeGet(secretKey: string, path: string) {
   return res.json()
 }
 
+// ── Telegram alert helper ───────────────────────────────────────
+async function telegramAlert(message: string): Promise<void> {
+  const token  = Deno.env.get('TELEGRAM_BOT_TOKEN')
+  const chatId = Deno.env.get('TELEGRAM_CHAT_ID')
+  if (!token || !chatId) return
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: message }),
+    })
+  } catch { /* non-critical */ }
+}
+
 // ── Resend email helper ─────────────────────────────────────────
 async function sendEmail(resendKey: string, to: string, subject: string, html: string) {
   const res = await fetch('https://api.resend.com/emails', {
@@ -213,7 +227,7 @@ Deno.serve(async (req: Request) => {
           .select('user_id, child_id, plan')
           .maybeSingle()
 
-        // Log event
+        // Log event + admin alert
         if (dbSub) {
           await sb.from('scout_events').insert({
             user_id:    dbSub.user_id,
@@ -221,6 +235,7 @@ Deno.serve(async (req: Request) => {
             event_type: 'subscription_ended',
             properties: { plan: dbSub.plan, source: 'stripe_webhook' },
           }).catch(() => {})
+          await telegramAlert(`😢 Subscription cancelled · sub=${sub.id} · plan=${dbSub.plan}`)
         }
         break
       }
@@ -287,7 +302,8 @@ Deno.serve(async (req: Request) => {
               })
             }
 
-            // Fire digest in background
+            // Fire digest in background (scout-digest deduplicates via scout_digest_log
+            // so a double-fire from scout-convert is safe — second call is a no-op)
             fetch(`${supabaseUrl}/functions/v1/scout-digest`, {
               method:  'POST',
               headers: {
@@ -296,6 +312,17 @@ Deno.serve(async (req: Request) => {
               },
               body: JSON.stringify({}),
             }).catch(e => console.error('[stripe-webhook] Failed to trigger digest:', e.message))
+
+            // Notify admin — webhook-path conversion (scout-convert may have already alerted;
+            // this fires only when billing_reason = subscription_create and count was 0)
+            if ((count ?? 0) === 0) {
+              const amountFmt = ((invoice.amount_paid ?? 0) / 100).toFixed(2)
+              await telegramAlert(`💳 Payment confirmed (webhook)! $${amountFmt} · sub=${invoice.subscription}`)
+            }
+          } else if (updatedSub && invoice.billing_reason === 'subscription_cycle') {
+            // Renewal payment — notify admin
+            const amountFmt = ((invoice.amount_paid ?? 0) / 100).toFixed(2)
+            await telegramAlert(`🔄 Renewal payment received! $${amountFmt} · sub=${invoice.subscription}`)
           }
         }
         break

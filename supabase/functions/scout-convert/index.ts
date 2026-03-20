@@ -484,7 +484,8 @@ Deno.serve(async (req: Request) => {
       }).catch(() => { /* non-blocking */ })
     }
 
-    // Fire digest immediately
+    // Fire digest immediately (scout-digest has monthly dedup so double-fire from
+    // invoice.paid webhook is safe — second call will be a no-op)
     step = 'trigger-digest'
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -493,6 +494,9 @@ Deno.serve(async (req: Request) => {
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${serviceKey}` },
       body: JSON.stringify({}),
     }).catch(e => console.error('[scout-convert] digest trigger failed:', e.message))
+
+    // Notify admin
+    await telegramAlert(`💳 Trial converted! user=${user.email}, plan=${plan}`)
 
     console.log(`[scout-convert] Converted user ${user.id} to ${plan} plan`)
 
@@ -508,6 +512,13 @@ Deno.serve(async (req: Request) => {
     const msg = e instanceof Error ? e.message : String(e)
     console.error(`[scout-convert] Error at step=${step}:`, msg)
     await telegramAlert(`Error at step=${step}: ${msg}`)
+
+    // If Stripe subscription was already created but our DB write failed,
+    // give the user a reassuring message — payment went through, they just need to refresh.
+    const postChargeSteps = ['db-update', 'db-insert', 'log-event', 'trigger-digest']
+    if (postChargeSteps.includes(step)) {
+      return err(500, 'Your payment was received — please refresh the page in a moment and your access will be active.', step)
+    }
     return err(500, msg, step)
   }
 })
