@@ -768,6 +768,10 @@ input, textarea, select { font-family: var(--sans); }
 
 /* ─── PAGE TITLE ─────────────────────────────────────────────────────────── */
 .page-title { font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: 24px; }
+.page-back-link { display:inline-block; font-size:14px; color:var(--terra); font-weight:600; text-decoration:none; margin-bottom:12px; }
+.page-back-link:hover { text-decoration:underline; }
+.btn-cancel-link { font-size:14px; color:var(--text-dim); text-decoration:none; font-weight:500; cursor:pointer; }
+.btn-cancel-link:hover { color:var(--text); text-decoration:underline; }
 
 /* ─── LOADING STATE ──────────────────────────────────────────────────────── */
 .loading-state { text-align: center; padding: 60px 0; color: var(--text-dim); font-size: 14px; }
