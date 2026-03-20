@@ -95,8 +95,8 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
   const sentences = w.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||')
   const excerpt   = sentences.slice(0, 2).join(' ').trim()
 
-  // First action
-  const actionLine = w.what_to_do.split('\n')[0].replace(/^[-•·]\s*/, '').trim()
+  // First action — only rendered if content exists
+  const actionLine = (w.what_to_do || '').split('\n')[0].replace(/^[-•·]\s*/, '').trim()
 
   const closingBadge = isClosing
     ? `<span style="display:inline-block;background:${C.amberBg};color:${C.amber};border:1px solid ${C.amberBorder};font-size:11px;font-weight:700;padding:2px 10px;border-radius:100px;margin-left:8px;letter-spacing:.02em">Closes in ${weeksLeft}w</span>`
@@ -125,7 +125,8 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
                   <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${excerpt}</p>
                 </td>
               </tr>
-              <!-- Action box -->
+              <!-- Action box — only shown when what_to_do is populated -->
+              ${actionLine ? `
               <tr>
                 <td>
                   <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:10px">
@@ -137,7 +138,7 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
                     </tr>
                   </table>
                 </td>
-              </tr>
+              </tr>` : ''}
               ${guideLink}
             </table>
           </td>
