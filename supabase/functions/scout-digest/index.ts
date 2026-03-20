@@ -261,7 +261,7 @@ Deno.serve(async (req: Request) => {
           const completedAt = progressByWindow[w.id]
           return completedAt && completedAt >= lastDigestDate
         })
-        .map(w => ({ title: w.title }))
+        .map(w => ({ title: w.title, close_age_weeks: w.close_age_weeks }))
 
       const isActiveTrack = completedWindowIds.size > 0
 

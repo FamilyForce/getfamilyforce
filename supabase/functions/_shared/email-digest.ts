@@ -33,7 +33,7 @@ export interface DigestEmailOptions {
   ageMonths:       number
   aboveFold:       DigestWindow[]
   getReadyWindows: DigestWindow[]    // windows opening in next 4-8 weeks — shown in "Get ready" section
-  completedWindows?: { title: string }[]  // windows completed since last digest — shown in "what you did" section
+  completedWindows?: { title: string; close_age_weeks: number }[]  // windows completed since last digest — shown in "what you did" section
   allWindowCount:  number
   closingCount:    number
   overdueWindows?: { title: string; urgency: string }[]  // in_progress windows whose window has closed
@@ -250,18 +250,32 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
 
   const remainingCount = allWindowCount - aboveFold.length
 
-  // "What you did" section — completed windows (monthly digest only)
+  // "What you did" section — split into closing-this-month vs everything else
+  const closingDone  = completedWindows.filter(w => w.close_age_weeks - ageWeeks <= 4)
+  const regularDone  = completedWindows.filter(w => w.close_age_weeks - ageWeeks > 4)
+
   const completedSection = completedWindows.length > 0 ? `
     <tr>
       <td style="padding-bottom:24px">
         <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.greenBg};border:1px solid #BBF7D0;border-radius:12px">
           <tr>
             <td style="padding:18px 20px">
-              <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.green};margin:0 0 12px">What you did this month</p>
-              ${completedWindows.map(w => `
+              ${closingDone.length > 0 ? `
+              <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.green};margin:0 0 4px">Completed before ${closingDone.length === 1 ? 'it closed' : 'they closed'}</p>
+              <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textMid};margin:0 0 10px;line-height:1.5">${closingDone.length === 1 ? 'This window was' : 'These windows were'} closing this month. You got ${closingDone.length === 1 ? 'it' : 'them'} done in time.</p>
+              ${closingDone.map(w => `
+              <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0 0 6px;padding-left:18px;position:relative;font-weight:600">
+                <span style="position:absolute;left:0;color:${C.green}">✓</span>${w.title}
+              </p>`).join('')}
+              ${regularDone.length > 0 ? `<div style="border-top:1px solid #BBF7D0;margin:14px 0"></div>` : ''}
+              ` : ''}
+              ${regularDone.length > 0 ? `
+              <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.green};margin:0 0 10px">${closingDone.length > 0 ? 'Also completed' : 'What you did this month'}</p>
+              ${regularDone.map(w => `
               <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0 0 6px;padding-left:18px;position:relative">
                 <span style="position:absolute;left:0;color:${C.green}">✓</span>${w.title}
               </p>`).join('')}
+              ` : ''}
             </td>
           </tr>
         </table>
