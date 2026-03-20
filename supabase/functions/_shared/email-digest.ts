@@ -480,10 +480,19 @@ export function buildDigestSubject(
   }
 
   if (closing.length > 0) {
-    const w = closing[0]
-    const weeksLeft = Math.round(w.close_age_weeks - ageWeeks)
-    // Short, specific, not alarming
-    return `${childName} at ${ageMonths} months — ${weeksLeft} weeks left on ${w.title.toLowerCase()}`
+    const w        = closing[0]
+    const daysLeft = Math.round((w.close_age_weeks - ageWeeks) * 7)
+    // Express as days when < 14 days, weeks otherwise
+    let timeLeft: string
+    if (daysLeft <= 0) {
+      timeLeft = 'closing now'
+    } else if (daysLeft < 14) {
+      timeLeft = daysLeft === 1 ? '1 day left' : `${daysLeft} days left`
+    } else {
+      const weeksLeft = Math.round(daysLeft / 7)
+      timeLeft = weeksLeft === 1 ? '1 week left' : `${weeksLeft} weeks left`
+    }
+    return `${childName} at ${ageMonths} months — ${timeLeft} on ${w.title.toLowerCase()}`
   }
 
   return `${childName} at ${ageMonths} months — ${aboveFold.length} things to know this month`
