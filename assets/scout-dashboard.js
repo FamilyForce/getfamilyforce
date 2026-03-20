@@ -597,9 +597,9 @@
       // Date picker prompt (shown after marking done/in-progress)
       var datePromptHtml = (!isPreview && !isHistory)
         ? '<div class="date-prompt" id="datePrompt-' + w.id + '">' +
-          '<span class="date-prompt-label">📅 When did this happen?</span>' +
+          '<span class="date-prompt-label">📅 When?</span>' +
           '<input type="date" class="date-prompt-input" id="dateInput-' + w.id + '" max="' + new Date().toISOString().split('T')[0] + '">' +
-          '<button class="date-prompt-save btn btn-primary" data-save-date="' + w.id + '" style="padding:5px 14px;font-size:13px;height:32px;min-width:64px">Save</button>' +
+          '<button class="date-prompt-save btn btn-primary" data-save-date="' + w.id + '" style="padding:5px 14px;font-size:13px;height:32px;min-width:80px">Confirm ✓</button>' +
           '<button class="date-prompt-dismiss" data-dismiss-date="' + w.id + '">✕</button>' +
           '</div>'
         : ''
@@ -733,6 +733,7 @@
           var selDate = (sInp && sInp.value) ? sInp.value : null
           var sStatus = swin._status  // already set optimistically
           if (sDp) sDp.classList.remove('show')
+          scard.classList.remove('save-pending')  // allow dim now — user confirmed
           scard.style.opacity = '0.6'
           scard.style.pointerEvents = 'none'
           ScoutDash.saveProgress(swid, sStatus, childId, selDate, function (err, data) {
@@ -770,6 +771,7 @@
           if (dp) dp.classList.remove('show')
           if (dwin) dwin._status = 'open'
           if (dcard) {
+            dcard.classList.remove('save-pending')  // restore normal state on cancel
             dcard.querySelectorAll('[data-action]').forEach(function (b) {
               b.classList.remove('active-done', 'active-progress', 'active-skip')
             })
@@ -824,6 +826,7 @@
           // Show date prompt — save is deferred until user clicks Save
           dateInp.value = new Date().toISOString().split('T')[0]
           prompt.classList.add('show')
+          card.classList.add('save-pending')   // suppress opacity dim until confirmed
           // Don't save yet — wireActions save-date handler below handles it
           return
         }

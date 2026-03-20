@@ -386,6 +386,10 @@ input, textarea, select { font-family: var(--sans); }
 .window-card.state-skipped {
   opacity: .65;
 }
+/* Don't dim while the date confirm prompt is still open */
+.window-card.state-done.save-pending {
+  opacity: 1;
+}
 .window-card.state-coming {
   border-color: var(--border-light);
   opacity: .8;
