@@ -64,7 +64,7 @@ Deno.serve(async (req: Request) => {
   // 3. Load child — verify ownership
   const { data: child, error: childErr } = await sb
     .from('children')
-    .select('id, name, dob, gender, user_id')
+    .select('id, name, dob, gender, user_id, dob_changed_count, dob_original')
     .eq('id', childId)
     .eq('user_id', user.id)
     .single()
@@ -126,10 +126,18 @@ Deno.serve(async (req: Request) => {
   }
 
   // 5. Build update payload (only include provided fields)
-  const update: Record<string, string | null> = {}
+  const update: Record<string, string | number | null> = {}
   if (name)   update.name   = name
   if (newDob) update.dob    = newDob
   if (gender) update.gender = gender
+
+  if (dobChanging) {
+    const currentCount = (child as any).dob_changed_count ?? 0
+    update.dob_changed_count = currentCount + 1
+    update.dob_changed_at    = new Date().toISOString()
+    // Preserve the very first DOB as the baseline for range checks
+    if (!(child as any).dob_original) update.dob_original = originalDob
+  }
 
   if (Object.keys(update).length === 0) {
     return res({ ok: false, error: 'No fields to update', code: 'INVALID' }, 400)
@@ -179,5 +187,6 @@ Deno.serve(async (req: Request) => {
     dobLocked = !!postSub
   }
 
-  return res({ ok: true, dobLocked })
+  const newCount = dobChanging ? ((child as any).dob_changed_count ?? 0) + 1 : ((child as any).dob_changed_count ?? 0)
+  return res({ ok: true, dobLocked, dobChangedCount: newCount })
 })

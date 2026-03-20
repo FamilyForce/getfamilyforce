@@ -475,7 +475,20 @@ function saveChild() {
             : (data.error || 'Could not save. Please try again.')
           showSaveErr(errMsg, btn); return
         }
-        window.location.href = '/scout-dashboard.html'
+        // Soft friction: warn on 3rd+ DOB change (save succeeded — just flag it)
+        if (data.dobChangedCount >= 3) {
+          btn.disabled    = false
+          btn.textContent = 'Save →'
+          var saveErr2 = document.getElementById('saveError')
+          if (saveErr2) {
+            saveErr2.textContent = "Saved. You've changed this child's birthday " + data.dobChangedCount + ' times. If something seems wrong, email us at support@getfamilyforce.com.'
+            saveErr2.classList.add('show')
+            saveErr2.style.color = 'var(--terra)'
+          }
+          setTimeout(function () { window.location.href = _backUrl }, 4000)
+          return
+        }
+        window.location.href = _backUrl
       })
       .catch(function () { showSaveErr('Network error. Please try again.', btn) })
     })
