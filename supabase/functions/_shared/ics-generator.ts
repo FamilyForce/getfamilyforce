@@ -138,6 +138,8 @@ function buildDescription(
 
 // ─── Build the SUMMARY (event title) ─────────────────────────────────────────
 function buildSummary(childName: string, ageMonths: number): string {
+  if (ageMonths === 0) return `${childName}'s due date \u2014 Scout starts here`
+  if (ageMonths === 1) return `${childName} turns 1 month today \u2014 Scout digest ready`
   return `${childName} turns ${ageMonths} months today \u2014 Scout digest ready`
 }
 
