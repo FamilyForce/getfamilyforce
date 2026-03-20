@@ -205,7 +205,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `${childName} is here. And there are ${allWindowCount} developmental windows open in the first month. That can feel like a lot — and honestly, it is. But that's exactly why Scout exists. We'll make sure you don't miss any of them. Let's nail the first month together.`
     : digestType === 'signup'
     ? `This is ${childName}'s first Scout digest. It's the beginning of something that I wish I'd had with my first son — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now.`
-    : `${childName} is ${ageMonths} months old. This is ${his} Scout digest for the month — a quick look at what's worth your attention right now, written to take about 5 minutes to read.`
+    : `${childName} is ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'} old. This is ${his} Scout digest for the month — a quick look at what's worth your attention right now, written to take about 5 minutes to read.`
 
   // Milestone context line (warm, not alarming)
   const contextLine = isExpecting
