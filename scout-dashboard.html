@@ -272,6 +272,20 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// Auth guard — redirect unauthenticated users to sign-in
+;(function() {
+  var _sb = supabase.createClient(
+    'https://ewjqbafaxeasyvknxmof.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+  );
+  _sb.auth.getSession().then(function(result) {
+    if (!result.data || !result.data.session) {
+      window.location.replace('/sign-in.html?next=' + encodeURIComponent(window.location.pathname));
+    }
+  });
+})();
+</script>
 <script src="/assets/scout-dashboard.js?v=20260319d"></script>
 <script>
 // Fix #8: Modal keyboard handling — adjust modal height when iOS keyboard opens
