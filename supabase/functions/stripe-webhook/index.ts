@@ -8,7 +8,7 @@
 //   SUPABASE_URL              auto-set by Supabase
 //   SUPABASE_SERVICE_ROLE_KEY auto-set by Supabase
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.99.3'
 
 // ── Stripe REST helper (no SDK) ──────────────────────────────────
 async function stripeGet(secretKey: string, path: string) {
@@ -56,8 +56,13 @@ async function verifyStripeSignature(body: string, sig: string, secret: string):
     'raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
   )
   const sigBytes  = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload))
-  const expected  = Array.from(new Uint8Array(sigBytes)).map(b => b.toString(16).padStart(2, '0')).join('')
-  return expected === v1
+  // Constant-time comparison — prevents timing attacks on HMAC verification
+  const expected  = new Uint8Array(sigBytes)
+  const received  = new Uint8Array(v1.match(/.{2}/g)!.map(b => parseInt(b, 16)))
+  if (expected.length !== received.length) return false
+  return crypto.subtle.timingSafeEqual
+    ? crypto.subtle.timingSafeEqual(expected, received)
+    : expected.every((b, i) => b === received[i])  // fallback if timingSafeEqual unavailable
 }
 
 // ── Email templates ─────────────────────────────────────────────

@@ -8,7 +8,7 @@
 // Deploy: supabase functions deploy scout-billing-portal
 // Secrets: STRIPE_SECRET_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.99.3'
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',

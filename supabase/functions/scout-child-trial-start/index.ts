@@ -19,7 +19,7 @@
 // Deploy: supabase functions deploy scout-child-trial-start
 // ═══════════════════════════════════════════════════════════════
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.99.3'
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',

@@ -10,7 +10,7 @@
 // Returns: { ok: true, next_billing: ISO string, plan: string }
 // ═══════════════════════════════════════════════════════════════
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.99.3'
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',

@@ -15,7 +15,7 @@
 //          TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 // ═══════════════════════════════════════════════════════════════
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.99.3'
 import { buildAlertEmail, type AlertWindow } from '../_shared/email-closing-alert.ts'
 
 const CORS = {

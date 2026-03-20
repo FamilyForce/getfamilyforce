@@ -17,7 +17,7 @@
 // Deploy: supabase functions deploy scout-delete-account
 // ═══════════════════════════════════════════════════════════════
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.99.3'
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -56,13 +56,22 @@ Deno.serve(async (req: Request) => {
     const { data: { user }, error: authErr } = await sb.auth.getUser(authHeader.replace('Bearer ', ''))
     if (authErr || !user) return err(401, 'Invalid session')
 
-    // 1. Stripe Cleanup
+    // 1. Stripe Cleanup — cancel subscription + delete customer (GDPR right to erasure)
     const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')
     if (stripeKey) {
-      const { data: sub } = await sb.from('scout_subscriptions').select('stripe_subscription_id').eq('user_id', user.id).maybeSingle()
-      if (sub?.stripe_subscription_id) {
-        // Cancel at period end or immediately? For deletion, we do immediately.
-        await stripeReq(stripeKey, 'DELETE', `/subscriptions/${sub.stripe_subscription_id}`)
+      const { data: sub } = await sb
+        .from('scout_subscriptions')
+        .select('stripe_sub_id, stripe_customer_id')   // fix: was stripe_subscription_id (wrong column)
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      if (sub?.stripe_sub_id) {
+        // Cancel subscription immediately
+        try { await stripeReq(stripeKey, 'DELETE', `/subscriptions/${sub.stripe_sub_id}`) } catch (_) {}
+      }
+      if (sub?.stripe_customer_id) {
+        // Delete customer — removes payment method and all billing data from Stripe (GDPR)
+        try { await stripeReq(stripeKey, 'DELETE', `/customers/${sub.stripe_customer_id}`) } catch (_) {}
       }
     }
 

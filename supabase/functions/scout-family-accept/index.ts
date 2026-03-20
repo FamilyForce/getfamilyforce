@@ -12,7 +12,7 @@
 //   4. Ensure user has access to the child's subscription (read-only via family_members)
 // ═══════════════════════════════════════════════════════════════
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.99.3'
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',

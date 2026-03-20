@@ -519,7 +519,9 @@ function _genReferralCode() {
   var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'  // no O/0, I/1 to avoid confusion
   function seg() {
     var s = ''
-    for (var i = 0; i < 4; i++) s += chars[Math.floor(Math.random() * chars.length)]
+    var buf = new Uint8Array(4)
+    crypto.getRandomValues(buf)  // cryptographically random — was Math.random()
+    for (var i = 0; i < 4; i++) s += chars[buf[i] % chars.length]
     return s
   }
   return 'FRIEND-' + seg() + '-' + seg()
