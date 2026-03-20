@@ -238,10 +238,38 @@ Deno.serve(async (req: Request) => {
       console.warn('[scout-trial-start] scout_events insert failed:', logErr)
     }
 
-    // 7. Fire scout-signup-delivery (async — do not await)
+    // 7. Notify admin — new signup
+    step = 'notify-admin'
+    try {
+      const hkt = new Intl.DateTimeFormat('en-HK', {
+        timeZone:     'Asia/Hong_Kong',
+        dateStyle:    'medium',
+        timeStyle:    'short',
+      }).format(new Date())
+
+      const ageLabel = isExpecting
+        ? `expecting (due ${dueDate})`
+        : (() => {
+            const dobMs  = new Date(dob + 'T00:00:00Z').getTime()
+            const nowMs  = Date.now()
+            const months = Math.floor((nowMs - dobMs) / (1000 * 60 * 60 * 24 * 30.44))
+            return `${months}m old (born ${dob})`
+          })()
+
+      await telegramAlert(
+        `🎉 New Scout signup!\n\n` +
+        `👤 ${user.email}\n` +
+        `👶 ${name} — ${ageLabel}\n` +
+        `🕐 ${hkt} HKT`
+      )
+    } catch (notifyErr) {
+      console.warn('[scout-trial-start] admin notify failed:', notifyErr)
+    }
+
+    // 8. Fire scout-signup-delivery (async — do not await)
     // For expecting parents: sends the pre-birth welcome digest (prenatal windows).
     // For born children: sends the first post-birth digest.
-    step = 'trigger-delivery'
+    step = 'trigger-delivery'  // step 8
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
