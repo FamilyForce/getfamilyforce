@@ -337,6 +337,7 @@
       var born = new Date(dob + 'T00:00:00Z')
       var now  = new Date()
       var m = (now.getUTCFullYear() - born.getUTCFullYear()) * 12 + (now.getUTCMonth() - born.getUTCMonth())
+      if (now.getUTCDate() < born.getUTCDate()) m--  // birthday hasn't hit yet this month
       return Math.max(0, m)
     },
 
@@ -433,7 +434,7 @@
 
       windows.forEach(function (w) {
         var st = w._status
-        if (st === 'completed' || st === 'skipped') { done.push(w); return }
+        if (st === 'completed' || st === 'skipped') { w._sectionTag = 'done'; done.push(w); return }
         var isActive  = w.open_age_weeks <= ageW && w.close_age_weeks >= ageW
         var isClosing = isActive && (w.close_age_weeks - ageW) <= 4
         var isComing  = w.open_age_weeks > ageW && w.open_age_weeks <= ageW + 8
