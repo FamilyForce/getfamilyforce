@@ -163,8 +163,15 @@ function loadHistory(child) {
       })
     }
 
+    // Remove in_progress from all month buckets before rendering
+    Object.values(monthMap).forEach(function (m) {
+      m.windows = m.windows.filter(function (e) {
+        return e.progress.status === 'completed' || e.progress.status === 'skipped'
+      })
+    })
+
     _allMonths = Object.values(monthMap)
-      .filter(function (m) { return m.windows.length > 0 || !m.isFallback })
+      .filter(function (m) { return m.windows.length > 0 })
       .sort(function (a, b) { return b.ageMonths - a.ageMonths })
     renderHistory(_allMonths, child)
   })
@@ -182,7 +189,7 @@ function renderHistory(months, child) {
   }
   var html = ''
   months.forEach(function (m, i) {
-    var doneCount = m.windows.filter(function (e) { return e.progress.status === 'completed' }).length
+    var doneCount = m.windows.length  // already filtered to completed/skipped before renderHistory
     html += '<div class="history-month" id="histMonth-' + i + '">' +
       '<div class="history-month-header" onclick="toggleMonth(' + i + ')">' +
       '<div class="history-month-left">' +
@@ -190,8 +197,7 @@ function renderHistory(months, child) {
       '<p>' + child.name + ' at ' + m.ageMonths + ' month' + (m.ageMonths === 1 ? '' : 's') + '</p>' +
       '</div>' +
       '<div class="history-month-right">' +
-      '<span class="history-month-stat">' + m.windows.length + ' windows</span>' +
-      '<span class="history-month-stat">' + doneCount + ' done</span>' +
+      '<span class="history-month-stat">' + doneCount + ' completed</span>' +
       '<span class="history-month-arrow">▾</span>' +
       '</div>' +
       '</div>' +
