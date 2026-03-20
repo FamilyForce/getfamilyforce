@@ -248,7 +248,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     <tr><td style="padding:16px 0 8px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.terra};margin:0">Get ready for next month</p></td></tr>
     ${getReadyWindows.map(w => getReadyItem(w)).join('')}` : ''
 
-  const remainingCount = allWindowCount - aboveFold.length
+  const remainingCount = allCaughtUp ? 0 : allWindowCount - aboveFold.length
 
   // "What you did" section — split into closing-this-month vs everything else
   const closingDone  = completedWindows.filter(w => w.close_age_weeks - ageWeeks <= 4)
