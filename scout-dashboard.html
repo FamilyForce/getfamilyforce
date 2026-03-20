@@ -355,14 +355,18 @@ function renderHome(child, sub) {
     '<div class="progress-seg-track"><div class="progress-seg-green" id="segGreen" style="width:0%"></div><div class="progress-seg-amber" id="segAmber" style="width:0%"></div></div>' +
     '<div class="progress-legend" id="progressLegend"></div>' +
     '</div>' +
-    '<p class="page-header-meta" style="margin-top:10px">Next digest: <a href="/scout-dashboard/history.html" id="nextDigestLink"></a></p>'
+    (sub && sub.status === 'trialing'
+      ? '<p class="page-header-meta" style="margin-top:10px">Monthly digests unlock when you <a href="/scout-dashboard/settings.html">subscribe</a></p>'
+      : '<p class="page-header-meta" style="margin-top:10px">Next digest: <a href="/scout-dashboard/history.html" id="nextDigestLink"></a></p>')
 
-  // Next digest date (child's next monthly birthday)
-  var nextBday = nextMonthlyBirthday(dob)
-  var nextStr  = nextBday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
-  var daysTo   = Math.ceil((nextBday - new Date()) / 86400000)
-  var nextLink = document.getElementById('nextDigestLink')
-  if (nextLink) nextLink.textContent = nextStr + ' — ' + daysTo + ' day' + (daysTo === 1 ? '' : 's')
+  // Next digest date — paid subscribers only
+  if (!sub || sub.status !== 'trialing') {
+    var nextBday = nextMonthlyBirthday(dob)
+    var nextStr  = nextBday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
+    var daysTo   = Math.ceil((nextBday - new Date()) / 86400000)
+    var nextLink = document.getElementById('nextDigestLink')
+    if (nextLink) nextLink.textContent = nextStr + ' — ' + daysTo + ' day' + (daysTo === 1 ? '' : 's')
+  }
 
   // Over 36 months
   if (ageM > 36) {
@@ -539,7 +543,8 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
     var _closingCount  = sections.closing.length - _overdueCount
     // Banner text: only mention closing windows (not overdue — they have their own card label)
     if (_closingCount > 0) {
-      closingContent = '<div class="heads-up-banner">These window' + (_closingCount === 1 ? '' : 's') + ' close when ' + name + ' turns ' + (ageM + 1) + ' months. Worth doing before the next digest lands ' + nextDigestStr + '.</div>'
+      var _isTrial = sub && sub.status === 'trialing'
+      closingContent = '<div class="heads-up-banner">These window' + (_closingCount === 1 ? '' : 's') + ' close when ' + name + ' turns ' + (ageM + 1) + ' months.' + (_isTrial ? '' : ' Worth doing before the next digest lands ' + nextDigestStr + '.') + '</div>'
     } else {
       closingContent = ''
     }
