@@ -806,7 +806,7 @@
 
         // All statuses save immediately — no confirmation step
         // in_progress / skipped / reverted to open — save immediately, no date prompt
-        if (newStatus === 'skipped') {
+        if (newStatus === 'completed' || newStatus === 'skipped') {
           setTimeout(function () { ScoutDash._moveToDone(card, wid) }, 800)
         }
         card.style.opacity = '0.6'
