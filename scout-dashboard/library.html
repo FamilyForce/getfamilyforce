@@ -463,7 +463,7 @@ async function shareAchievements() {
     { key: 'feeding',        emoji: '🥦', name: 'Good Eater Guide',  bg: 'linear-gradient(135deg,#5BA88E,#4A9070)' },
   ]
 
-  var name = localStorage.getItem('ff_user_name') || 'A FamilyForce Parent'
+  var name     = localStorage.getItem('ff_user_name') || 'A FamilyForce Parent'
   var progress = {}
   try { progress = JSON.parse(localStorage.getItem('ff_progress') || '{}') } catch (_) {}
 

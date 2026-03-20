@@ -282,6 +282,17 @@
     if (!session?.user?.id) return;
     const userId = session.user.id;
 
+    /* Clear stale localStorage if a different user was previously signed in */
+    try {
+      const prevUserId = localStorage.getItem('ff_user_id');
+      if (prevUserId && prevUserId !== userId) {
+        localStorage.removeItem('ff_progress');
+        localStorage.removeItem('ff_user_name');
+        localStorage.removeItem('ff_onboarded');
+        Object.values(COURSE_SAVE_KEYS).forEach(function (k) { localStorage.removeItem(k); });
+      }
+    } catch (_) {}
+
     /* Store essentials from auth session */
     try {
       localStorage.setItem('ff_user_id',    userId);
