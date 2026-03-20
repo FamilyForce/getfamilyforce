@@ -56,16 +56,6 @@ function nextMonthlyBirthday(dob: Date, fromDate: Date): Date {
   return new Date(Date.UTC(nextYear, nextMonth, dayNextMonth))
 }
 
-// ─── Advance one monthly birthday forward ─────────────────────────────────────
-function oneMonthForward(date: Date, birthDay: number): Date {
-  const month = date.getUTCMonth()
-  const year  = date.getUTCFullYear()
-  const nextM = month === 11 ? 0 : month + 1
-  const nextY = month === 11 ? year + 1 : year
-  const days  = new Date(Date.UTC(nextY, nextM + 1, 0)).getUTCDate()
-  return new Date(Date.UTC(nextY, nextM, Math.min(birthDay, days)))
-}
-
 // ─── Validate date of birth ───────────────────────────────────────────────────
 function isValidDob(dob: string): boolean {
   if (!dob || !/^\d{4}-\d{2}-\d{2}$/.test(dob)) return false
@@ -209,22 +199,11 @@ Deno.serve(async (req: Request) => {
     // via scout-confirm-arrival (Option A). Set trial_end = null so the dashboard
     // knows not to show a countdown banner.
     // For born children: trial_end = child's next monthly birthday (one free digest).
-    let trialEnd:   Date | null = null
-    let earlySignup             = false
+    let trialEnd: Date | null = null
 
     if (!isExpecting) {
-      const dobDate      = new Date(dob + 'T00:00:00Z')
-      const birthDay     = dobDate.getUTCDate()
-      const nextBday     = nextMonthlyBirthday(dobDate, now)
-      const daysUntilEnd = Math.floor((nextBday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
-
-      // Early signup: if next birthday is within 7 days, skip ahead one month.
-      earlySignup = daysUntilEnd <= 7
-      trialEnd    = earlySignup ? oneMonthForward(nextBday, birthDay) : nextBday
-
-      if (earlySignup) {
-        console.log(`[scout-trial-start] Early signup for user ${user.id} — next birthday ${nextBday.toISOString().split('T')[0]} in ${daysUntilEnd} days. Trial end pushed to ${trialEnd.toISOString().split('T')[0]}.`)
-      }
+      const dobDate = new Date(dob + 'T00:00:00Z')
+      trialEnd      = nextMonthlyBirthday(dobDate, now)
     }
 
     // 5. Upsert scout_subscriptions
@@ -252,7 +231,6 @@ Deno.serve(async (req: Request) => {
           child_gender: gender,
           is_expecting: isExpecting,
           trial_end:    trialEnd ? trialEnd.toISOString() : null,
-          early_signup: earlySignup,
           duration_ms:  Date.now() - jobStart,
         },
       })
@@ -271,10 +249,9 @@ Deno.serve(async (req: Request) => {
       type:   'INSERT',
       table:  'scout_subscriptions',
       record: {
-        user_id:      user.id,
-        status:       'trialing',
-        trial_end:    trialEnd ? trialEnd.toISOString() : null,
-        early_signup: earlySignup,
+        user_id:   user.id,
+        status:    'trialing',
+        trial_end: trialEnd ? trialEnd.toISOString() : null,
       },
     }
 
@@ -298,7 +275,6 @@ Deno.serve(async (req: Request) => {
       trialEndFormatted: trialEnd ? trialEnd.toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
       }) : null,
-      earlySignup,
     }), {
       status:  200,
       headers: { ...CORS, 'Content-Type': 'application/json' },

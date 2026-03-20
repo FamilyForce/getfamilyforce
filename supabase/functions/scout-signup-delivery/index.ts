@@ -146,7 +146,6 @@ Deno.serve(async (req: Request) => {
     const now         = new Date()
     const weeks       = ageInWeeks(childDob, now)
     const months      = ageInMonths(childDob, now)
-    const earlySignup  = record.early_signup  === true
     // birth_signup = true when called from scout-confirm-arrival (post-birth first digest).
     // Uses digest_type 'birth_signup' so it never collides with the pre-birth 'signup' log entry.
     const birthSignup  = record.birth_signup  === true
@@ -231,13 +230,8 @@ Deno.serve(async (req: Request) => {
     const closingCount = aboveFold.filter(w => w.close_age_weeks - weeks <= 4).length
 
     // 6b. Determine the next birthday for the ICS + email footer.
-    // If early_signup (child's next birthday is within 7 days), skip that birthday and
-    // point to the one after it — the user gets their signup digest now but it references
-    // the upcoming full month ahead rather than a birthday that's days away.
-    const nearBirthday = nextMonthlyBirthday(childDob, now)
-    const nextBirthday = earlySignup
-      ? nextMonthlyBirthday(childDob, new Date(nearBirthday.getTime() + 86_400_000))  // skip to month after
-      : nearBirthday
+    // Always use the actual next monthly birthday — no skipping.
+    const nextBirthday = nextMonthlyBirthday(childDob, now)
     const nextMonths   = ageInMonths(childDob, nextBirthday)
 
     // 6c. Fetch parent display name
