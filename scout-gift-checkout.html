@@ -3,10 +3,17 @@
 <head>
 <!-- ═══════════════════════════════════════════════════════════
      FAMILYFORCE SCOUT — Gift Checkout Page
-     URL params: ?plan=monthly|annual|triennial  (pre-selects tier)
-                 ?redeem=CODE  (shows redeem flow instead)
-     3DS-safe two-step Stripe flow
-     Stack: Vanilla HTML/CSS/JS · zero dependencies
+     URL params:
+       ?plan=monthly|annual|triennial   pre-selects tier
+       ?redeem=CODE                     shows redeem flow
+     Fixes included:
+       1. Auth detection on redeem load (inline account panel)
+       2. Delivery scheduling (send now or pick a date)
+       3. Live gift card preview while typing
+       4. Wrong-email recovery copy
+       5. Pre-birth toggle on redeem (due date instead of DOB)
+       6. Order summary before payment
+       7. "Give another gift" on success
      ═══════════════════════════════════════════════════════════ -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -30,12 +37,14 @@
   --purple:      #6E4ED6;
   --purple-dark: #5B3CC4;
   --purple-tint: #F0EBFF;
+  --purple-mid:  #EAE3FF;
   --teal:        #0E9E8A;
   --teal-dark:   #0A7A6A;
   --teal-tint:   #E6FAF8;
   --gold:        #C9962A;
   --gold-light:  #F5E4B0;
   --indigo-deep: #1A0F3A;
+  --green:       #1A7A4A;
   --sans:        'Outfit', system-ui, sans-serif;
   --serif:       'Instrument Serif', Georgia, serif;
 }
@@ -43,103 +52,56 @@
 html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
 
-/* ── NAV ── */
-.nav {
-  background: rgba(255,255,255,.95);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border);
-}
-.nav-inner {
-  max-width: 860px; margin: 0 auto; padding: 0 24px; height: 56px;
-  display: flex; align-items: center; justify-content: space-between;
-}
+/* NAV */
+.nav { background: rgba(255,255,255,.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+.nav-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
 .nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-.nav-logo-mark {
-  width: 28px; height: 28px; border-radius: 8px; background: var(--purple);
-  display: flex; align-items: center; justify-content: center;
-}
+.nav-logo-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--purple); display: flex; align-items: center; justify-content: center; }
 .nav-logo-mark svg { width: 17px; height: 17px; display: block; }
 .nav-logo-name { font-weight: 700; font-size: 15px; color: var(--text); }
 .nav-back { font-size: 13px; color: var(--text-mid); text-decoration: none; font-weight: 500; }
 @media (hover:hover) { .nav-back:hover { color: var(--purple); } }
 
-/* ── WRAP ── */
-.wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+/* WRAP */
+.wrap { max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
 
-/* ── PAGE HERO ── */
-.page-hero { text-align: center; margin-bottom: 40px; }
-.hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--purple); margin-bottom: 16px;
-}
-.hero-title {
-  font-family: var(--serif); font-size: clamp(28px, 5vw, 40px);
-  line-height: 1.15; color: var(--text); margin-bottom: 14px;
-}
-.hero-title em { font-style: italic; color: var(--text); }
-.hero-sub { font-size: 16px; color: var(--text-mid); max-width: 500px; margin: 0 auto; line-height: 1.65; }
+/* PAGE HERO */
+.page-hero { text-align: center; margin-bottom: 32px; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--purple); margin-bottom: 14px; }
+.hero-title { font-family: var(--serif); font-size: clamp(26px, 5vw, 38px); line-height: 1.15; color: var(--text); margin-bottom: 12px; }
+.hero-title em { font-style: italic; }
+.hero-sub { font-size: 15px; color: var(--text-mid); max-width: 480px; margin: 0 auto; line-height: 1.65; }
 
-/* ── TIER CARDS ── */
-.tiers { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
-.tier-card {
-  background: var(--surface); border-radius: 16px; cursor: pointer;
-  border: 2px solid var(--border); overflow: hidden;
-  transition: border-color .15s, box-shadow .15s;
-  display: flex; align-items: stretch;
-}
+/* TIER CARDS */
+.tiers { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.tier-card { background: var(--surface); border-radius: 16px; cursor: pointer; border: 2px solid var(--border); overflow: hidden; transition: border-color .15s, box-shadow .15s; display: flex; align-items: stretch; }
 @media (hover:hover) { .tier-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); } }
-.tier-card:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
 .tier-card.sel-monthly  { border-color: var(--teal-dark); }
 .tier-card.sel-annual   { border-color: var(--purple); }
 .tier-card.sel-triennial { border-color: var(--gold); }
-
-/* Swatch */
-.tier-swatch {
-  width: 72px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: hidden;
-}
+.tier-swatch { width: 72px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
 .tier-swatch-monthly   { background: linear-gradient(135deg, #12B5A0, #0A7A6A); }
 .tier-swatch-annual    { background: linear-gradient(135deg, #7B5CE5, #3B1FA8); }
 .tier-swatch-triennial { background: linear-gradient(135deg, #1A0F3A, #2D1870); }
-.tier-swatch::before {
-  content: ''; position: absolute; width: 80px; height: 80px; border-radius: 50%;
-  top: -24px; right: -22px; pointer-events: none;
-}
+.tier-swatch::before { content: ''; position: absolute; width: 80px; height: 80px; border-radius: 50%; top: -24px; right: -22px; pointer-events: none; }
 .tier-swatch-monthly::before  { background: radial-gradient(circle, rgba(255,255,255,.2) 0%, transparent 65%); }
 .tier-swatch-annual::before   { background: radial-gradient(circle, rgba(255,255,255,.18) 0%, transparent 65%); }
 .tier-swatch-triennial::before { background: radial-gradient(circle, rgba(201,150,42,.22) 0%, transparent 65%); }
 .tier-swatch svg { width: 20px; height: 20px; position: relative; z-index: 2; }
-
-/* Info */
-.tier-info { flex: 1; padding: 16px 18px; }
-.tier-info-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-.tier-name { font-size: 16px; font-weight: 700; color: var(--text); }
-.tier-price { font-size: 18px; font-weight: 800; }
+.tier-info { flex: 1; padding: 14px 16px; }
+.tier-info-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; }
+.tier-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.tier-price { font-size: 17px; font-weight: 800; }
 .tier-price-monthly  { color: var(--teal-dark); }
 .tier-price-annual   { color: var(--purple); }
 .tier-price-triennial { color: var(--gold); }
-.tier-desc { font-size: 13px; color: var(--text-mid); line-height: 1.5; margin-bottom: 8px; }
-.tier-badge {
-  display: inline-block; font-size: 11px; font-weight: 700;
-  padding: 3px 10px; border-radius: 100px;
-}
+.tier-desc { font-size: 13px; color: var(--text-mid); line-height: 1.5; margin-bottom: 7px; }
+.tier-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 100px; }
 .tb-monthly  { background: var(--teal-tint); color: var(--teal-dark); }
 .tb-annual   { background: var(--purple-tint); color: var(--purple); }
 .tb-triennial { background: #1A0F3A; color: var(--gold-light); }
-
-/* Check */
-.tier-check-col {
-  width: 48px; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-}
-.tier-check {
-  width: 22px; height: 22px; border-radius: 50%;
-  border: 2px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  transition: all .15s;
-}
+.tier-check-col { width: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.tier-check { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; transition: all .15s; }
 .tier-check svg { display: none; }
 .tier-card.sel-monthly  .tier-check { background: var(--teal-dark);  border-color: var(--teal-dark); }
 .tier-card.sel-annual   .tier-check { background: var(--purple);      border-color: var(--purple); }
@@ -148,71 +110,109 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .tier-card.sel-annual   .tier-check svg,
 .tier-card.sel-triennial .tier-check svg { display: block; }
 
-/* ── FORM SECTION ── */
-.form-card {
-  background: var(--surface); border-radius: 20px;
-  border: 1px solid var(--border); padding: 28px;
+/* LIVE PREVIEW */
+.preview-wrap { margin-bottom: 20px; }
+.preview-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+.preview-card {
+  border-radius: 16px; overflow: hidden; position: relative;
+  aspect-ratio: 500/240; width: 100%;
+  box-shadow: 0 8px 32px rgba(0,0,0,.15);
+  transition: background .3s;
 }
-.form-card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-.form-card-sub   { font-size: 13px; color: var(--text-mid); margin-bottom: 24px; }
+.preview-monthly   { background: linear-gradient(135deg, #12B5A0 0%, #0A7A6A 55%, #065A50 100%); }
+.preview-annual    { background: linear-gradient(135deg, #7B5CE5 0%, #5B3CC4 55%, #3B1FA8 100%); }
+.preview-triennial { background: linear-gradient(135deg, #1A0F3A 0%, #2D1870 50%, #1A0F3A 100%); }
+.preview-orb { position: absolute; border-radius: 50%; pointer-events: none; }
+.preview-orb-1 { width: 45%; padding-top: 45%; top: -15%; right: -8%; }
+.preview-orb-2 { width: 28%; padding-top: 28%; bottom: -12%; left: -5%; }
+.preview-monthly .preview-orb-1, .preview-annual .preview-orb-1 { background: radial-gradient(circle, rgba(255,255,255,.15) 0%, transparent 70%); }
+.preview-triennial .preview-orb-1 { background: radial-gradient(circle, rgba(201,150,42,.18) 0%, transparent 65%); }
+.preview-monthly .preview-orb-2, .preview-annual .preview-orb-2 { background: radial-gradient(circle, rgba(255,255,255,.08) 0%, transparent 70%); }
+.preview-triennial .preview-orb-2 { background: radial-gradient(circle, rgba(201,150,42,.12) 0%, transparent 70%); }
+.preview-pat { position: absolute; inset: 0; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0); background-size: 20px 20px; pointer-events: none; }
+.preview-content { position: relative; z-index: 2; height: 100%; padding: 5% 6%; display: flex; flex-direction: column; justify-content: space-between; }
+.preview-top { display: flex; align-items: center; justify-content: space-between; }
+.preview-logo { font-size: 2.6%; font-weight: 800; letter-spacing: -.01em; }
+.preview-monthly .preview-logo, .preview-annual .preview-logo { color: rgba(255,255,255,.7); }
+.preview-triennial .preview-logo { color: rgba(245,228,176,.7); }
+.preview-badge { font-size: 2%; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: .8% 2.5%; border-radius: 100px; border: 1px solid; }
+.preview-monthly  .preview-badge { border-color: rgba(255,255,255,.3); color: rgba(255,255,255,.8); }
+.preview-annual   .preview-badge { border-color: rgba(255,255,255,.3); color: rgba(255,255,255,.8); }
+.preview-triennial .preview-badge { border-color: rgba(201,150,42,.4); color: var(--gold-light); }
+.preview-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 2% 0; }
+.preview-for { font-size: 2%; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1%; }
+.preview-monthly .preview-for, .preview-annual .preview-for { color: rgba(255,255,255,.55); }
+.preview-triennial .preview-for { color: rgba(245,228,176,.55); }
+.preview-name { font-family: var(--serif); font-size: 7%; font-weight: 400; line-height: 1.2; margin-bottom: 1%; }
+.preview-monthly .preview-name, .preview-annual .preview-name { color: #fff; }
+.preview-triennial .preview-name { color: var(--gold-light); }
+.preview-name.preview-placeholder { opacity: .4; font-style: italic; }
+.preview-from { font-size: 2.3%; font-style: italic; }
+.preview-monthly .preview-from, .preview-annual .preview-from { color: rgba(255,255,255,.6); }
+.preview-triennial .preview-from { color: rgba(245,228,176,.6); }
+.preview-code { font-size: 2.8%; font-weight: 800; letter-spacing: .18em; }
+.preview-monthly .preview-code, .preview-annual .preview-code { color: rgba(255,255,255,.5); }
+.preview-triennial .preview-code { color: rgba(245,228,176,.45); }
 
+/* FORM CARD */
+.form-card { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); padding: 28px; margin-bottom: 0; }
+.form-card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.form-card-sub { font-size: 13px; color: var(--text-mid); margin-bottom: 22px; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .form-field { margin-bottom: 14px; }
 .form-label { display: block; font-size: 12px; font-weight: 700; color: var(--text-mid); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
-.form-input {
-  width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
-  border-radius: 10px; font-family: var(--sans); font-size: 14px; color: var(--text);
-  background: var(--surface); transition: border-color .15s;
-  -webkit-appearance: none; appearance: none;
-}
+.form-input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-family: var(--sans); font-size: 14px; color: var(--text); background: var(--surface); transition: border-color .15s; -webkit-appearance: none; appearance: none; }
 .form-input:focus { outline: none; border-color: var(--purple); }
 textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 .form-hint { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
-.form-divider { height: 1px; background: var(--border); margin: 20px 0; }
+.form-divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+/* Char counter */
+.field-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
+.char-count { font-size: 11px; color: var(--text-dim); }
+.char-count.warn { color: #C0392B; }
+
+/* Delivery toggle */
+.delivery-toggle { display: flex; gap: 0; background: var(--bg); border-radius: 10px; border: 1.5px solid var(--border); overflow: hidden; }
+.dt-btn { flex: 1; padding: 9px 14px; font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--text-mid); background: none; border: none; cursor: pointer; transition: all .15s; }
+.dt-btn.dt-active { background: var(--surface); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.08); border-radius: 8px; margin: 3px; }
+.schedule-fields { display: none; margin-top: 12px; }
+.schedule-fields.open { display: block; }
 
 /* Promo */
 .promo-row { display: flex; gap: 8px; }
 .promo-row .form-input { flex: 1; text-transform: uppercase; letter-spacing: .05em; }
-.btn-promo {
-  padding: 11px 18px; background: var(--purple-tint); color: var(--purple);
-  border: none; border-radius: 10px; font-family: var(--sans);
-  font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
-}
+.btn-promo { padding: 11px 18px; background: var(--purple-tint); color: var(--purple); border: none; border-radius: 10px; font-family: var(--sans); font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 @media (hover:hover) { .btn-promo:hover { background: var(--purple); color: #fff; } }
 .promo-status { font-size: 13px; margin-top: 6px; min-height: 20px; }
-.promo-ok { color: var(--teal-dark); font-weight: 600; }
+.promo-ok  { color: var(--teal-dark); font-weight: 600; }
 .promo-err { color: #C0392B; }
 
 /* Stripe */
 .stripe-wrap { padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); transition: border-color .15s; }
 .stripe-wrap.focused { border-color: var(--purple); }
 
+/* Order summary */
+.order-summary { display: flex; align-items: center; justify-content: space-between; background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+.os-label { font-size: 14px; font-weight: 600; color: var(--text-mid); }
+.os-price { font-size: 18px; font-weight: 800; color: var(--text); }
+
 /* Submit */
-.btn-submit {
-  width: 100%; padding: 15px; background: var(--purple); color: #fff;
-  border: none; border-radius: 12px; font-family: var(--sans);
-  font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 4px;
-  transition: background .15s; letter-spacing: -.01em;
-}
+.btn-submit { width: 100%; padding: 15px; background: var(--purple); color: #fff; border: none; border-radius: 12px; font-family: var(--sans); font-size: 15px; font-weight: 800; cursor: pointer; transition: background .15s; letter-spacing: -.01em; }
 @media (hover:hover) { .btn-submit:hover:not(:disabled) { background: var(--purple-dark); } }
 .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
 .submit-note { font-size: 12px; color: var(--text-dim); text-align: center; margin-top: 10px; line-height: 1.6; }
 .form-err { font-size: 13px; color: #C0392B; display: none; padding: 10px 13px; background: #FDF0EE; border-radius: 8px; margin-bottom: 10px; }
 
-/* ── SUCCESS SCREEN ── */
+/* SUCCESS */
 #successScreen { display: none; }
-.success-header { text-align: center; margin-bottom: 32px; }
+.success-header { text-align: center; margin-bottom: 28px; }
 .success-icon { font-size: 52px; margin-bottom: 12px; }
 .success-title { font-family: var(--serif); font-size: 30px; margin-bottom: 8px; }
-.success-sub { font-size: 15px; color: var(--text-mid); line-height: 1.65; }
+.success-sub { font-size: 15px; color: var(--text-mid); line-height: 1.65; max-width: 440px; margin: 0 auto; }
 
-/* Gift card render */
-.gc-render-wrap { margin-bottom: 20px; }
-.gc-render {
-  border-radius: 18px; overflow: hidden; position: relative;
-  box-shadow: 0 20px 56px rgba(0,0,0,.22), 0 4px 12px rgba(0,0,0,.1);
-  aspect-ratio: 500/290; width: 100%;
-}
+/* Gift card rendered in full */
+.gc-render { border-radius: 18px; overflow: hidden; position: relative; box-shadow: 0 20px 56px rgba(0,0,0,.22); aspect-ratio: 500/290; width: 100%; margin-bottom: 16px; }
 .gc-monthly   { background: linear-gradient(135deg, #12B5A0 0%, #0A7A6A 55%, #065A50 100%); }
 .gc-annual    { background: linear-gradient(135deg, #7B5CE5 0%, #5B3CC4 55%, #3B1FA8 100%); }
 .gc-triennial { background: linear-gradient(135deg, #1A0F3A 0%, #2D1870 50%, #1A0F3A 100%); }
@@ -225,7 +225,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 .gc-annual   .gc-orb-2  { background: radial-gradient(circle, rgba(167,139,250,.3) 0%, transparent 70%); }
 .gc-triennial .gc-orb-1 { background: radial-gradient(circle, rgba(201,150,42,.18) 0%, transparent 65%); }
 .gc-triennial .gc-orb-2 { background: radial-gradient(circle, rgba(201,150,42,.12) 0%, transparent 70%); }
-.gc-pat { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.06) 1px, transparent 0); background-size: 22px 22px; }
+.gc-pat { position: absolute; inset: 0; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.06) 1px, transparent 0); background-size: 22px 22px; pointer-events: none; }
 .gc-div-line { position: absolute; bottom: 28%; left: 5.5%; right: 5.5%; height: 1px; }
 .gc-monthly .gc-div-line, .gc-annual .gc-div-line { background: rgba(255,255,255,.15); }
 .gc-triennial .gc-div-line { background: rgba(201,150,42,.22); }
@@ -240,8 +240,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 .gc-monthly .gc-logo-name, .gc-annual .gc-logo-name { color: rgba(255,255,255,.9); }
 .gc-triennial .gc-logo-name { color: rgba(245,228,176,.9); }
 .gc-tier-pill { font-size: 2%; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 1% 3%; border-radius: 100px; border: 1px solid; }
-.gc-monthly .gc-tier-pill  { border-color: rgba(255,255,255,.3); color: rgba(255,255,255,.85); background: rgba(255,255,255,.1); }
-.gc-annual  .gc-tier-pill  { border-color: rgba(255,255,255,.3); color: rgba(255,255,255,.85); background: rgba(255,255,255,.1); }
+.gc-monthly .gc-tier-pill, .gc-annual .gc-tier-pill { border-color: rgba(255,255,255,.3); color: rgba(255,255,255,.85); background: rgba(255,255,255,.1); }
 .gc-triennial .gc-tier-pill { border-color: rgba(201,150,42,.55); color: var(--gold-light); background: rgba(201,150,42,.15); }
 .gc-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 3% 0 2%; }
 .gc-for { font-size: 2%; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 1.5%; }
@@ -269,25 +268,23 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 .gc-monthly .gc-value-amt, .gc-annual .gc-value-amt { color: rgba(255,255,255,.95); }
 .gc-triennial .gc-value-amt { color: var(--gold-light); }
 
+/* Scheduled delivery banner */
+.scheduled-banner { background: #FFFBEB; border: 1.5px solid #F5D97A; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; display: none; }
+.scheduled-banner p { font-size: 13px; color: #7A5A00; margin: 0; }
+
 /* Success actions */
-.success-actions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-.btn-action {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 13px; border-radius: 12px; font-family: var(--sans);
-  font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
-  transition: all .15s; border: none;
-}
+.success-actions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+.btn-action { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px; border-radius: 12px; font-family: var(--sans); font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; transition: all .15s; border: none; }
 .btn-action-primary   { background: var(--purple); color: #fff; }
 .btn-action-secondary { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
-@media (hover:hover) {
-  .btn-action-primary:hover   { background: var(--purple-dark); }
-  .btn-action-secondary:hover { border-color: var(--purple); color: var(--purple); }
-}
-.share-box { background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; }
+@media (hover:hover) { .btn-action-primary:hover { background: var(--purple-dark); } .btn-action-secondary:hover { border-color: var(--purple); color: var(--purple); } }
+
+.share-box { background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 18px; }
 .share-box-label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
 .share-text { font-size: 14px; color: var(--text-mid); line-height: 1.65; margin-bottom: 10px; }
 .btn-copy { font-size: 13px; font-weight: 700; color: var(--purple); background: none; border: none; cursor: pointer; padding: 0; }
 .btn-copy.copied { color: var(--teal-dark); }
+
 .referral-box { background: var(--purple-tint); border: 1.5px solid rgba(110,78,214,.15); border-radius: 14px; padding: 18px 20px; display: none; }
 .referral-label { font-size: 11px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
 .referral-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
@@ -296,32 +293,49 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 .referral-code { font-family: monospace; font-size: 18px; font-weight: 800; color: var(--purple); letter-spacing: .1em; flex: 1; }
 .btn-copy-code { padding: 8px 16px; background: var(--purple); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
 
-/* ── REDEEM SCREEN ── */
+/* REDEEM */
 #redeemScreen { display: none; }
-.redeem-header { text-align: center; margin-bottom: 28px; }
+.redeem-header { text-align: center; margin-bottom: 24px; }
 .redeem-icon { font-size: 48px; margin-bottom: 12px; }
 .redeem-title { font-family: var(--serif); font-size: 28px; margin-bottom: 8px; }
 .redeem-sub { font-size: 15px; color: var(--text-mid); line-height: 1.65; }
-.redeem-code-box { background: var(--purple-tint); border: 1.5px solid rgba(110,78,214,.2); border-radius: 12px; padding: 14px 18px; text-align: center; margin-bottom: 20px; }
+.redeem-code-box { background: var(--purple-tint); border: 1.5px solid rgba(110,78,214,.2); border-radius: 12px; padding: 14px 18px; text-align: center; margin-bottom: 16px; }
 .rcb-label { font-size: 11px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
 .rcb-code  { font-family: monospace; font-size: 20px; font-weight: 800; color: var(--purple); letter-spacing: .12em; }
-.notice-yellow { background: #FFFBEB; border: 1.5px solid #F5D97A; border-radius: 12px; padding: 13px 16px; margin-bottom: 14px; }
+.notice-yellow { background: #FFFBEB; border: 1.5px solid #F5D97A; border-radius: 12px; padding: 12px 16px; margin-bottom: 12px; }
 .notice-yellow p { font-size: 13px; color: #7A5A00; margin: 0; line-height: 1.65; }
-.notice-purple { background: var(--purple-tint); border: 1.5px solid rgba(110,78,214,.15); border-radius: 12px; padding: 13px 16px; margin-bottom: 20px; }
+.notice-purple { background: var(--purple-tint); border: 1.5px solid rgba(110,78,214,.15); border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; }
 .notice-purple p { font-size: 13px; color: var(--purple); margin: 0; line-height: 1.6; }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 560px) {
-  .wrap { padding: 32px 16px 60px; }
+/* Auth panel (shown when not signed in on redeem) */
+.redeem-auth-panel { background: var(--surface); border-radius: 20px; border: 1px solid var(--border); padding: 32px 28px; text-align: center; }
+.rap-icon { font-size: 40px; margin-bottom: 14px; }
+.rap-title { font-family: var(--serif); font-size: 22px; margin-bottom: 8px; }
+.rap-sub { font-size: 14px; color: var(--text-mid); line-height: 1.7; max-width: 380px; margin: 0 auto 24px; }
+.btn-rap { display: block; width: 100%; padding: 14px; background: var(--purple); color: #fff; border: none; border-radius: 12px; font-family: var(--sans); font-size: 15px; font-weight: 800; cursor: pointer; text-decoration: none; text-align: center; margin-bottom: 12px; }
+@media (hover:hover) { .btn-rap:hover { background: var(--purple-dark); } }
+.rap-signin { font-size: 13px; color: var(--text-mid); }
+.rap-signin a { color: var(--purple); text-decoration: none; font-weight: 600; }
+
+/* Pre-birth toggle */
+.prebirth-toggle { display: flex; align-items: flex-start; gap: 10px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; cursor: pointer; margin-bottom: 14px; transition: border-color .15s; }
+.prebirth-toggle:has(input:checked) { border-color: var(--purple); background: var(--purple-tint); }
+.prebirth-toggle input { margin-top: 2px; accent-color: var(--purple); width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; }
+.prebirth-toggle-text { font-size: 13px; line-height: 1.55; color: var(--text-mid); }
+.prebirth-toggle-text strong { color: var(--text); }
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .wrap { padding: 28px 16px 60px; }
   .form-row { grid-template-columns: 1fr; }
   .form-card { padding: 20px 16px; }
-  .hero-title { font-size: 26px; }
+  .hero-title { font-size: 24px; }
+  .redeem-auth-panel { padding: 24px 20px; }
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="nav">
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="FamilyForce home">
@@ -333,7 +347,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
       </div>
       <span class="nav-logo-name">FamilyForce</span>
     </a>
-    <a href="/scout-dashboard" class="nav-back">— Scout</a>
+    <a href="/scout-gift.html" class="nav-back">← All gift options</a>
   </div>
 </nav>
 
@@ -349,93 +363,86 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 
     <!-- Tier cards -->
     <div class="tiers" role="radiogroup" aria-label="Choose a gift tier">
-
       <div class="tier-card" id="card-monthly" role="radio" aria-checked="false" tabindex="0"
            onclick="selectPlan('monthly')" onkeydown="if(event.key==='Enter'||event.key===' ')selectPlan('monthly')">
         <div class="tier-swatch tier-swatch-monthly">
-          <svg viewBox="0 0 32 32" fill="none">
-            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
-          </svg>
+          <svg viewBox="0 0 32 32" fill="none"><path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg>
         </div>
         <div class="tier-info">
           <div class="tier-info-top">
             <span class="tier-name">1 Month</span>
             <span class="tier-price tier-price-monthly">$9.99</span>
           </div>
-          <p class="tier-desc">One full month of Scout. Great intro gift — perfect for new parents still finding their feet.</p>
+          <p class="tier-desc">One monthly digest. Great intro — perfect for new parents still finding their feet.</p>
           <span class="tier-badge tb-monthly">Starter</span>
         </div>
-        <div class="tier-check-col">
-          <div class="tier-check">
-            <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
-              <path d="M1 4.5L4 7.5L10 1.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
+        <div class="tier-check-col"><div class="tier-check"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
       </div>
 
       <div class="tier-card" id="card-annual" role="radio" aria-checked="false" tabindex="0"
            onclick="selectPlan('annual')" onkeydown="if(event.key==='Enter'||event.key===' ')selectPlan('annual')">
         <div class="tier-swatch tier-swatch-annual">
-          <svg viewBox="0 0 32 32" fill="none">
-            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
-          </svg>
+          <svg viewBox="0 0 32 32" fill="none"><path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/></svg>
         </div>
         <div class="tier-info">
           <div class="tier-info-top">
             <span class="tier-name">1 Year</span>
             <span class="tier-price tier-price-annual">$49.99</span>
           </div>
-          <p class="tier-desc">A full year — 12 monthly digests from birth through the first year. The most popular baby shower gift.</p>
+          <p class="tier-desc">12 monthly digests from birth through the first year. The most popular baby shower gift.</p>
           <span class="tier-badge tb-annual">Most Popular</span>
         </div>
-        <div class="tier-check-col">
-          <div class="tier-check">
-            <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
-              <path d="M1 4.5L4 7.5L10 1.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-        </div>
+        <div class="tier-check-col"><div class="tier-check"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
       </div>
 
       <div class="tier-card" id="card-triennial" role="radio" aria-checked="false" tabindex="0"
            onclick="selectPlan('triennial')" onkeydown="if(event.key==='Enter'||event.key===' ')selectPlan('triennial')">
         <div class="tier-swatch tier-swatch-triennial">
-          <svg viewBox="0 0 32 32" fill="none">
-            <path d="M10 22 L16 10 L22 22" stroke="#F5E4B0" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12.5 18 L19.5 18" stroke="#F5E4B0" stroke-width="2.8" stroke-linecap="round"/>
-          </svg>
+          <svg viewBox="0 0 32 32" fill="none"><path d="M10 22 L16 10 L22 22" stroke="#F5E4B0" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.5 18 L19.5 18" stroke="#F5E4B0" stroke-width="2.8" stroke-linecap="round"/></svg>
         </div>
         <div class="tier-info">
           <div class="tier-info-top">
             <span class="tier-name">Full Journey — 3 Years</span>
             <span class="tier-price tier-price-triennial">$99.99</span>
           </div>
-          <p class="tier-desc">Birth through age 3. Every milestone window, every month — the complete developmental journey.</p>
+          <p class="tier-desc">Birth through age 3 — 36 monthly digests covering every milestone window.</p>
           <span class="tier-badge tb-triennial">✨ Premium</span>
         </div>
-        <div class="tier-check-col">
-          <div class="tier-check">
-            <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
-              <path d="M1 4.5L4 7.5L10 1.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+        <div class="tier-check-col"><div class="tier-check"><svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+      </div>
+    </div>
+
+    <!-- Live preview -->
+    <div class="preview-wrap">
+      <div class="preview-label">Preview — updates as you type</div>
+      <div class="preview-card preview-annual" id="previewCard">
+        <div class="preview-orb preview-orb-1"></div>
+        <div class="preview-orb preview-orb-2"></div>
+        <div class="preview-pat"></div>
+        <div class="preview-content">
+          <div class="preview-top">
+            <div class="preview-logo">Scout by FamilyForce</div>
+            <div class="preview-badge" id="previewBadge">1 Year · $49.99</div>
           </div>
+          <div class="preview-mid">
+            <div class="preview-for" id="previewForLabel">🎁 A gift for</div>
+            <div class="preview-name preview-placeholder" id="previewName">Recipient name</div>
+            <div class="preview-from preview-placeholder" id="previewFrom">From you</div>
+          </div>
+          <div class="preview-code" id="previewCode">Code will appear here after purchase</div>
         </div>
       </div>
-
-    </div><!-- /tiers -->
+    </div>
 
     <!-- Form -->
     <div class="form-card">
       <div class="form-card-title">Personalise your gift</div>
-      <p class="form-card-sub">Your name and message will appear on the gift card sent to the recipient.</p>
+      <p class="form-card-sub">Your name and message appear on the gift card. Your confirmation goes to your email.</p>
 
       <div class="form-row">
         <div class="form-field">
           <label class="form-label" for="buyerName">Your name</label>
-          <input class="form-input" type="text" id="buyerName" placeholder="Emma" autocomplete="given-name" maxlength="60">
+          <input class="form-input" type="text" id="buyerName" placeholder="Emma" autocomplete="given-name" maxlength="60" oninput="updatePreview()">
         </div>
         <div class="form-field">
           <label class="form-label" for="buyerEmail">Your email</label>
@@ -446,21 +453,60 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
       <div class="form-row">
         <div class="form-field">
           <label class="form-label" for="recipientName">Recipient name(s)</label>
-          <input class="form-input" type="text" id="recipientName" placeholder="Sarah &amp; James" maxlength="80">
+          <input class="form-input" type="text" id="recipientName" placeholder="Sarah &amp; James" maxlength="80" oninput="updatePreview()">
         </div>
         <div class="form-field">
           <label class="form-label" for="recipientEmail">Recipient email</label>
           <input class="form-input" type="email" id="recipientEmail" placeholder="sarah@example.com" autocomplete="off">
-          <p class="form-hint">Gift delivered here.</p>
+          <p class="form-hint">Gift delivered here. <a href="#" onclick="showWrongEmailHelp();return false;" style="color:var(--purple); text-decoration:none; font-weight:600">Typo? See below.</a></p>
         </div>
       </div>
       <div class="form-field">
-        <label class="form-label" for="personalMsg">Personal message <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(optional)</span></label>
-        <textarea class="form-input" id="personalMsg" placeholder="e.g. Thought you'd love having a guide for every step — enjoy it!" maxlength="280"></textarea>
+        <div class="field-header">
+          <label class="form-label" for="personalMsg" style="margin-bottom:0">Personal message <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(optional)</span></label>
+          <span class="char-count" id="msgCount">280</span>
+        </div>
+        <textarea class="form-input" id="personalMsg" placeholder="e.g. Thought you'd love having a guide for every step — enjoy it!" maxlength="280" oninput="updatePreview(); updateCharCount()"></textarea>
+      </div>
+
+      <!-- Wrong email help (hidden by default) -->
+      <div id="wrongEmailHelp" style="display:none; background:#FFF8E6; border:1.5px solid #F5D97A; border-radius:10px; padding:12px 14px; margin-bottom:14px;">
+        <p style="font-size:13px; color:#7A5A00; margin:0; line-height:1.6">📮 <strong>Entered the wrong email?</strong> After purchasing, your confirmation email will include the gift code. Simply forward that email to the right person — they can use the code directly at getfamilyforce.com/gift.</p>
       </div>
 
       <div class="form-divider"></div>
 
+      <!-- Delivery scheduling -->
+      <div class="form-field">
+        <label class="form-label">When to send</label>
+        <div class="delivery-toggle">
+          <button class="dt-btn dt-active" id="dtNow" onclick="setDelivery('now')">Send immediately</button>
+          <button class="dt-btn" id="dtLater" onclick="setDelivery('later')">Schedule for later</button>
+        </div>
+        <div class="schedule-fields" id="scheduleFields">
+          <div class="form-row" style="margin-top:10px">
+            <div class="form-field" style="margin-bottom:0">
+              <label class="form-label" for="deliverDate">Delivery date</label>
+              <input class="form-input" type="date" id="deliverDate">
+            </div>
+            <div class="form-field" style="margin-bottom:0">
+              <label class="form-label" for="deliverTime">Approximate time (UTC)</label>
+              <select class="form-input" id="deliverTime">
+                <option value="08:00">8:00 AM</option>
+                <option value="09:00" selected>9:00 AM</option>
+                <option value="12:00">12:00 PM (noon)</option>
+                <option value="17:00">5:00 PM</option>
+                <option value="19:00">7:00 PM</option>
+              </select>
+            </div>
+          </div>
+          <p class="form-hint" style="margin-top:8px">💡 Set it for the day of the baby shower. Times are UTC. Gift code will be in your confirmation email in case you need to share it early.</p>
+        </div>
+      </div>
+
+      <div class="form-divider"></div>
+
+      <!-- Promo -->
       <div class="form-field">
         <label class="form-label" for="promoCode">Promo code <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(optional)</span></label>
         <div class="promo-row">
@@ -472,9 +518,16 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 
       <div class="form-divider"></div>
 
+      <!-- Stripe -->
       <div class="form-field">
         <label class="form-label">Card details</label>
         <div class="stripe-wrap" id="stripeWrap"><div id="stripeElement"></div></div>
+      </div>
+
+      <!-- Order summary -->
+      <div class="order-summary">
+        <span class="os-label" id="osPlanLabel">1 Year of Scout</span>
+        <span class="os-price" id="osPrice">$49.99</span>
       </div>
 
       <div class="form-err" id="formErr"></div>
@@ -493,39 +546,41 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
       <p class="success-sub" id="successSub">A gift email is on its way.</p>
     </div>
 
-    <div class="gc-render-wrap">
-      <div class="gc-render" id="giftCardRender">
-        <div class="gc-orb gc-orb-1"></div>
-        <div class="gc-orb gc-orb-2"></div>
-        <div class="gc-pat"></div>
-        <div class="gc-div-line"></div>
-        <div class="gc-content">
-          <div class="gc-top">
-            <div class="gc-logo-row">
-              <div class="gc-logo-icon">
-                <svg viewBox="0 0 32 32" fill="none" id="gcLogoSvg">
-                  <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
-                </svg>
-              </div>
-              <div class="gc-logo-name">Scout by FamilyForce</div>
+    <div class="scheduled-banner" id="scheduledBanner">
+      <p>📅 <strong>Delivery scheduled.</strong> Your gift will be sent on <span id="schedDeliveryDate"></span>. Your confirmation email has the gift code in case you want to share it earlier.</p>
+    </div>
+
+    <div class="gc-render" id="giftCardRender">
+      <div class="gc-orb gc-orb-1"></div>
+      <div class="gc-orb gc-orb-2"></div>
+      <div class="gc-pat"></div>
+      <div class="gc-div-line"></div>
+      <div class="gc-content">
+        <div class="gc-top">
+          <div class="gc-logo-row">
+            <div class="gc-logo-icon">
+              <svg viewBox="0 0 32 32" fill="none" id="gcLogoSvg">
+                <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
+              </svg>
             </div>
-            <div class="gc-tier-pill" id="gcTierPill">1 Year · $49.99</div>
+            <div class="gc-logo-name">Scout by FamilyForce</div>
           </div>
-          <div class="gc-mid">
-            <div class="gc-for" id="gcForLabel">🎁 A gift for</div>
-            <div class="gc-headline" id="gcHeadline">Sarah &amp; James</div>
-            <div class="gc-from-text" id="gcFrom">From Emma 💜</div>
+          <div class="gc-tier-pill" id="gcTierPill">1 Year · $49.99</div>
+        </div>
+        <div class="gc-mid">
+          <div class="gc-for" id="gcForLabel">🎁 A gift for</div>
+          <div class="gc-headline" id="gcHeadline">Sarah &amp; James</div>
+          <div class="gc-from-text" id="gcFrom">From Emma 💜</div>
+        </div>
+        <div class="gc-bot">
+          <div>
+            <div class="gc-code-lbl">Redemption code</div>
+            <div class="gc-code-val" id="gcCode">SCOUT-XXXX-XXXX</div>
           </div>
-          <div class="gc-bot">
-            <div>
-              <div class="gc-code-lbl">Redemption code</div>
-              <div class="gc-code-val" id="gcCode">SCOUT-XXXX-XXXX</div>
-            </div>
-            <div class="gc-value-blk">
-              <div class="gc-value-lbl">Gift value</div>
-              <div class="gc-value-amt" id="gcValue"><sup>$</sup>49.99</div>
-            </div>
+          <div class="gc-value-blk">
+            <div class="gc-value-lbl">Gift value</div>
+            <div class="gc-value-amt" id="gcValue"><sup>$</sup>49.99</div>
           </div>
         </div>
       </div>
@@ -534,6 +589,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
     <div class="success-actions">
       <a href="#" class="btn-action btn-action-primary" id="printCardBtn" target="_blank">🖨️ Download printable card</a>
       <button class="btn-action btn-action-secondary" onclick="copyShareMsg()">📋 Copy shareable message</button>
+      <button class="btn-action btn-action-secondary" onclick="giveAnother()">🎁 Give Scout to someone else →</button>
     </div>
 
     <div class="share-box">
@@ -545,7 +601,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
     <div class="referral-box" id="referralBox">
       <div class="referral-label">Your reward</div>
       <div class="referral-title">25% off your next Scout payment</div>
-      <p class="referral-desc">As a thank-you for gifting Scout — share with anyone or use it yourself.</p>
+      <p class="referral-desc">As a thank-you for gifting Scout — share it or use it yourself.</p>
       <div class="referral-code-row">
         <div class="referral-code" id="successReferralCode"></div>
         <button class="btn-copy-code" onclick="copyReferral()">Copy</button>
@@ -559,7 +615,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
     <div class="redeem-header">
       <div class="redeem-icon">🎁</div>
       <h2 class="redeem-title">You received a gift!</h2>
-      <p class="redeem-sub">Enter your baby's details to activate your Scout subscription.</p>
+      <p class="redeem-sub">Activate your Scout subscription in 2 minutes.</p>
     </div>
 
     <div class="redeem-code-box">
@@ -567,58 +623,85 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
       <div class="rcb-code" id="redeemCodeDisplay">—</div>
     </div>
 
-    <div class="notice-yellow">
-      <p>👶 <strong>Baby not here yet?</strong> No rush — come back once they arrive. This code is valid for one year from the date of purchase.</p>
-    </div>
-    <div class="notice-purple">
-      <p>⏰ Gift codes are valid for <strong>one year from the date of purchase</strong>.</p>
+    <!-- AUTH PANEL — shown when not signed in -->
+    <div id="redeemAuthPanel" style="display:none">
+      <div class="redeem-auth-panel">
+        <div class="rap-icon">🔐</div>
+        <h3 class="rap-title">Create your free account first</h3>
+        <p class="rap-sub">You'll need a FamilyForce account to activate your gift. It takes 30 seconds — then we'll bring you straight back here to finish.</p>
+        <a class="btn-rap" id="createAccountBtn" href="#">Create free account →</a>
+        <p class="rap-signin">Already have one? <a id="signInBtn" href="#">Sign in</a></p>
+      </div>
     </div>
 
-    <div class="form-card">
-      <div class="form-row">
-        <div class="form-field">
-          <label class="form-label" for="redeemChildName">Baby's first name</label>
-          <input class="form-input" type="text" id="redeemChildName" placeholder="Oliver" maxlength="50" autocomplete="off">
+    <!-- REDEEM FORM — shown when signed in -->
+    <div id="redeemForm" style="display:none">
+      <div class="notice-yellow">
+        <p>👶 <strong>Baby not here yet?</strong> No rush — come back once they arrive. This code is valid for one year from purchase.</p>
+      </div>
+      <div class="notice-purple">
+        <p>⏰ Gift codes are valid for <strong>one year from the date of purchase</strong>.</p>
+      </div>
+
+      <div class="form-card">
+        <!-- Pre-birth toggle -->
+        <label class="prebirth-toggle" for="isPrebirth">
+          <input type="checkbox" id="isPrebirth" onchange="togglePrebirth()">
+          <div class="prebirth-toggle-text">
+            <strong>My baby hasn't arrived yet</strong> — enter expected due date instead and we'll set up pre-birth mode
+          </div>
+        </label>
+
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label" for="redeemChildName">Baby's first name</label>
+            <input class="form-input" type="text" id="redeemChildName" placeholder="Oliver" maxlength="50" autocomplete="off">
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="redeemChildDob" id="dobLabel">Date of birth</label>
+            <input class="form-input" type="date" id="redeemChildDob">
+            <p class="form-hint" id="dobHint">Baby's actual birthday.</p>
+          </div>
         </div>
         <div class="form-field">
-          <label class="form-label" for="redeemChildDob">Date of birth</label>
-          <input class="form-input" type="date" id="redeemChildDob">
+          <label class="form-label" for="redeemChildGender">Gender <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(optional)</span></label>
+          <select class="form-input" id="redeemChildGender">
+            <option value="">Prefer not to say</option>
+            <option value="boy">Boy</option>
+            <option value="girl">Girl</option>
+          </select>
         </div>
+
+        <div class="form-err" id="redeemErr"></div>
+        <button class="btn-submit" id="redeemBtn" onclick="submitRedeem()">Activate my Scout subscription →</button>
+        <p class="submit-note">Activating will start your Scout subscription using this gift code.</p>
       </div>
-      <div class="form-field">
-        <label class="form-label" for="redeemChildGender">Gender <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(optional)</span></label>
-        <select class="form-input" id="redeemChildGender">
-          <option value="">Prefer not to say</option>
-          <option value="boy">Boy</option>
-          <option value="girl">Girl</option>
-        </select>
-      </div>
-      <p class="form-hint" style="margin-bottom:14px">Baby not born yet? Come back once they arrive — the code is valid for a full year.</p>
-      <div class="form-err" id="redeemErr"></div>
-      <button class="btn-submit" id="redeemBtn" onclick="submitRedeem()">Activate my Scout subscription →</button>
-      <p class="submit-note">You need a FamilyForce account to claim. <a href="/sign-in.html" style="color:var(--purple)">Sign in</a> or create one first.</p>
     </div>
+
   </div><!-- /redeemScreen -->
 
 </div><!-- /wrap -->
 
 <script>
+// ── Constants ──────────────────────────────────────────────────────────────
 var SUPABASE_URL  = 'https://ewjqbafaxeasyvknxmof.supabase.co'
 var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
 var STRIPE_PK     = 'pk_live_51TAQTQIbsOmqAIBV8VA8gQdscdslvnT5xLC7sRvPaoy0W4dMhat9OnPaBJZFKn7iq4MorTbvjcPoTIYoxbn1ACnx00HJEpmwFH'
 
 var PLAN_DATA = {
-  monthly:   { price: '$9.99',  tierPill: '1 Month · $9.99',       emoji: '💚', valueSup: '9.99',  css: 'gc-monthly',   forLabel: '🎁 A gift for' },
-  annual:    { price: '$49.99', tierPill: '1 Year · $49.99',        emoji: '💜', valueSup: '49.99', css: 'gc-annual',    forLabel: '🎁 A gift for' },
-  triennial: { price: '$99.99', tierPill: 'Full Journey · $99.99',  emoji: '✨', valueSup: '99.99', css: 'gc-triennial', forLabel: '🌟 A gift for' },
+  monthly:   { label: '1 Month of Scout',            price: '$9.99',  osLabel: '1 Month of Scout',          tierPill: '1 Month · $9.99',       valueSup: '9.99',  emoji: '💚', css: 'gc-monthly',   previewCss: 'preview-monthly',   badge: '1 Month · $9.99',       forLabel: '🎁 A gift for' },
+  annual:    { label: '1 Year of Scout',             price: '$49.99', osLabel: '1 Year of Scout',           tierPill: '1 Year · $49.99',        valueSup: '49.99', emoji: '💜', css: 'gc-annual',    previewCss: 'preview-annual',    badge: '1 Year · $49.99',       forLabel: '🎁 A gift for' },
+  triennial: { label: 'Full Journey — 3 Years',      price: '$99.99', osLabel: 'Full Journey — 3 Years',    tierPill: 'Full Journey · $99.99',  valueSup: '99.99', emoji: '✨', css: 'gc-triennial', previewCss: 'preview-triennial', badge: 'Full Journey · $99.99', forLabel: '🌟 A gift for' },
 }
 
 window._supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
-var stripe     = null
-var stripeCard = null
+var stripe       = null
+var stripeCard   = null
 var selectedPlan = 'annual'
 var appliedPromo = null
+var deliveryMode = 'now' // 'now' or 'later'
 
+// ── Init ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
   var params = new URLSearchParams(window.location.search)
 
@@ -626,22 +709,20 @@ document.addEventListener('DOMContentLoaded', function () {
     showRedeem(params.get('redeem')); return
   }
 
-  // Pre-select plan from URL param
   var planParam = params.get('plan')
-  if (planParam && PLAN_DATA[planParam]) {
-    selectPlan(planParam)
-  } else {
-    selectPlan('annual')
-  }
+  selectPlan((planParam && PLAN_DATA[planParam]) ? planParam : 'annual')
+
+  // Set min date on schedule picker to tomorrow
+  var tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  var deliverDateEl = document.getElementById('deliverDate')
+  if (deliverDateEl) deliverDateEl.min = tomorrow.toISOString().split('T')[0]
 
   // Init Stripe
   stripe = Stripe(STRIPE_PK)
   var elements = stripe.elements()
   stripeCard = elements.create('card', {
-    style: {
-      base: { fontFamily: "'Outfit', system-ui, sans-serif", fontSize: '14px', color: '#1D1D1F', '::placeholder': { color: '#8A879A' } },
-      invalid: { color: '#C0392B' }
-    }
+    style: { base: { fontFamily: "'Outfit', system-ui, sans-serif", fontSize: '14px', color: '#1D1D1F', '::placeholder': { color: '#8A879A' } }, invalid: { color: '#C0392B' } }
   })
   stripeCard.mount('#stripeElement')
   stripeCard.on('focus',  function () { document.getElementById('stripeWrap').classList.add('focused') })
@@ -651,12 +732,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.error) { err.style.display = 'block'; err.textContent = e.error.message }
     else         { err.style.display = 'none' }
   })
-
-  // Set today as max for redeem DOB
-  var dobEl = document.getElementById('redeemChildDob')
-  if (dobEl) dobEl.max = new Date().toISOString().split('T')[0]
 })
 
+// ── Plan selection ─────────────────────────────────────────────────────────
 function selectPlan(plan) {
   selectedPlan = plan
   ;['monthly','annual','triennial'].forEach(function (t) {
@@ -667,10 +745,86 @@ function selectPlan(plan) {
   })
   var sel = document.getElementById('card-' + plan)
   if (sel) { sel.classList.add('sel-' + plan); sel.setAttribute('aria-checked', 'true') }
+
+  // Update preview card colour
+  var pc = document.getElementById('previewCard')
+  if (pc) pc.className = 'preview-card ' + PLAN_DATA[plan].previewCss
+
+  document.getElementById('previewBadge').textContent  = PLAN_DATA[plan].badge
+  document.getElementById('previewForLabel').textContent = PLAN_DATA[plan].forLabel
+
+  // Update order summary
+  document.getElementById('osPlanLabel').textContent = PLAN_DATA[plan].osLabel
+  document.getElementById('osPrice').textContent      = appliedPromo ? appliedPromo.discountedDisplay : PLAN_DATA[plan].price
+
+  // Update submit button
   var btn = document.getElementById('submitBtn')
   if (btn) btn.textContent = 'Send gift — ' + (appliedPromo ? appliedPromo.discountedDisplay : PLAN_DATA[plan].price) + ' →'
+
+  updatePreview()
 }
 
+// ── Live preview ───────────────────────────────────────────────────────────
+function updatePreview() {
+  var recipName  = document.getElementById('recipientName') ? document.getElementById('recipientName').value.trim() : ''
+  var buyerName  = document.getElementById('buyerName') ? document.getElementById('buyerName').value.trim() : ''
+  var msg        = document.getElementById('personalMsg') ? document.getElementById('personalMsg').value.trim() : ''
+
+  var nameEl  = document.getElementById('previewName')
+  var fromEl  = document.getElementById('previewFrom')
+  if (!nameEl || !fromEl) return
+
+  if (recipName) {
+    nameEl.textContent = recipName
+    nameEl.classList.remove('preview-placeholder')
+  } else {
+    nameEl.textContent = 'Recipient name'
+    nameEl.classList.add('preview-placeholder')
+  }
+
+  if (buyerName) {
+    fromEl.textContent = (msg ? '"' + msg.substring(0, 48) + (msg.length > 48 ? '…' : '') + '" — ' : '') + 'From ' + buyerName + ' ' + PLAN_DATA[selectedPlan].emoji
+    fromEl.classList.remove('preview-placeholder')
+  } else {
+    fromEl.textContent = 'From you'
+    fromEl.classList.add('preview-placeholder')
+  }
+}
+
+// ── Char counter ───────────────────────────────────────────────────────────
+function updateCharCount() {
+  var el    = document.getElementById('personalMsg')
+  var count = document.getElementById('msgCount')
+  if (!el || !count) return
+  var rem = 280 - el.value.length
+  count.textContent = rem
+  count.className = 'char-count' + (rem < 30 ? ' warn' : '')
+}
+
+// ── Delivery scheduling ────────────────────────────────────────────────────
+function setDelivery(mode) {
+  deliveryMode = mode
+  document.getElementById('dtNow').className   = 'dt-btn' + (mode === 'now' ? ' dt-active' : '')
+  document.getElementById('dtLater').className = 'dt-btn' + (mode === 'later' ? ' dt-active' : '')
+  var sf = document.getElementById('scheduleFields')
+  sf.className = 'schedule-fields' + (mode === 'later' ? ' open' : '')
+}
+
+function getDeliverAt() {
+  if (deliveryMode !== 'later') return null
+  var dateVal = document.getElementById('deliverDate').value
+  var timeVal = document.getElementById('deliverTime').value || '09:00'
+  if (!dateVal) return null
+  return new Date(dateVal + 'T' + timeVal + ':00Z').toISOString()
+}
+
+// ── Wrong email help ───────────────────────────────────────────────────────
+function showWrongEmailHelp() {
+  var el = document.getElementById('wrongEmailHelp')
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'
+}
+
+// ── Promo code ─────────────────────────────────────────────────────────────
 function applyPromo() {
   var code   = document.getElementById('promoCode').value.trim().toUpperCase()
   var status = document.getElementById('promoStatus')
@@ -689,16 +843,19 @@ function applyPromo() {
     appliedPromo = d
     status.innerHTML = '<span class="promo-ok">✓ ' + d.label + ' — new price: <strong>' + d.discountedDisplay + '</strong></span>'
     document.getElementById('submitBtn').textContent = 'Send gift — ' + d.discountedDisplay + ' →'
+    document.getElementById('osPrice').textContent   = d.discountedDisplay
   })
   .catch(function () { status.innerHTML = '<span class="promo-err">Could not validate. Try again.</span>' })
 }
 
+// ── Submit gift ────────────────────────────────────────────────────────────
 function submitGift() {
   var buyerName   = document.getElementById('buyerName').value.trim()
   var buyerEmail  = document.getElementById('buyerEmail').value.trim()
   var recipName   = document.getElementById('recipientName').value.trim()
   var recipEmail  = document.getElementById('recipientEmail').value.trim()
   var personalMsg = document.getElementById('personalMsg').value.trim()
+  var deliverAt   = getDeliverAt()
   var errEl       = document.getElementById('formErr')
   var btn         = document.getElementById('submitBtn')
   var resetBtn    = function () {
@@ -712,6 +869,9 @@ function submitGift() {
   }
   if (!buyerEmail.includes('@') || !recipEmail.includes('@')) {
     errEl.style.display = 'block'; errEl.textContent = 'Please enter valid email addresses.'; return
+  }
+  if (deliveryMode === 'later' && !getDeliverAt()) {
+    errEl.style.display = 'block'; errEl.textContent = 'Please select a delivery date.'; return
   }
 
   btn.disabled = true; btn.textContent = 'Preparing payment…'
@@ -750,6 +910,7 @@ function submitGift() {
           action: 'complete-purchase', paymentIntentId: result.paymentIntent.id,
           buyerName, buyerEmail, recipientName: recipName, recipientEmail: recipEmail,
           personalMessage: personalMsg || undefined, plan: selectedPlan,
+          deliverAt: deliverAt || undefined,
         }),
       })
       .then(function (r) { return r.json() })
@@ -759,7 +920,7 @@ function submitGift() {
           errEl.textContent   = data.error || 'Gift could not be completed. Payment was taken — contact support@getfamilyforce.com.'
           resetBtn(); return
         }
-        showSuccess(data, { buyerName, recipName, recipEmail, personalMsg })
+        showSuccess(data, { buyerName, recipName, recipEmail, personalMsg, deliverAt })
       })
       .catch(function () {
         errEl.style.display = 'block'
@@ -774,15 +935,29 @@ function submitGift() {
   })
 }
 
+// ── Show success ───────────────────────────────────────────────────────────
 function showSuccess(data, meta) {
   document.getElementById('purchaseScreen').style.display = 'none'
   document.getElementById('successScreen').style.display  = 'block'
   window.scrollTo(0, 0)
 
   var pd = PLAN_DATA[selectedPlan]
-  document.getElementById('successSub').textContent =
-    'A gift email is on its way to ' + meta.recipName + ' at ' + data.recipientEmail + '.'
 
+  // Success copy — include buyer email confirmation
+  var subText = meta.deliverAt
+    ? 'Your gift is scheduled. ' + meta.recipName + ' will receive it on ' + new Date(meta.deliverAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + '.'
+    : 'A gift email is on its way to ' + meta.recipName + '. Your confirmation was sent to ' + data.buyerEmail + '.'
+  document.getElementById('successSub').textContent = subText
+
+  // Scheduled banner
+  if (meta.deliverAt) {
+    var banner = document.getElementById('scheduledBanner')
+    banner.style.display = 'block'
+    document.getElementById('schedDeliveryDate').textContent =
+      new Date(meta.deliverAt).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+  }
+
+  // Render gift card
   var card = document.getElementById('giftCardRender')
   card.className = 'gc-render ' + pd.css
   document.getElementById('gcTierPill').textContent  = pd.tierPill
@@ -804,7 +979,7 @@ function showSuccess(data, meta) {
   var planDesc = { monthly: 'a month', annual: 'a full year', triennial: '3 full years — birth to age 3' }[selectedPlan]
   var redeemUrl = 'https://getfamilyforce.com/scout-gift-checkout.html?redeem=' + (data.giftCode || '')
   document.getElementById('shareMessage').textContent =
-    'Hey! I just got you ' + planDesc + ' of FamilyForce Scout — a monthly email that tracks what your baby needs at every developmental stage. Set it up here: ' + redeemUrl
+    'Hey! I just got you ' + planDesc + ' of FamilyForce Scout — a monthly email that tracks your baby\'s developmental milestones. Set it up here: ' + redeemUrl
 
   if (data.referralCode) {
     document.getElementById('successReferralCode').textContent = data.referralCode
@@ -812,6 +987,24 @@ function showSuccess(data, meta) {
   }
 }
 
+function giveAnother() {
+  // Reset and show purchase screen
+  document.getElementById('successScreen').style.display  = 'none'
+  document.getElementById('purchaseScreen').style.display = 'block'
+  // Clear form
+  ;['buyerName','buyerEmail','recipientName','recipientEmail','personalMsg','promoCode'].forEach(function (id) {
+    var el = document.getElementById(id); if (el) el.value = ''
+  })
+  appliedPromo = null
+  deliveryMode = 'now'
+  setDelivery('now')
+  selectPlan('annual')
+  if (stripeCard) stripeCard.clear()
+  updatePreview()
+  window.scrollTo(0, 0)
+}
+
+// ── Copy helpers ───────────────────────────────────────────────────────────
 function copyShareMsg() {
   var text = document.getElementById('shareMessage').textContent
   var btn  = document.getElementById('copyBtn')
@@ -824,7 +1017,6 @@ function copyShareMsg() {
     btn.textContent = '✓ Copied!'; setTimeout(function () { btn.textContent = 'Copy message' }, 2000)
   })
 }
-
 function copyReferral() {
   var code = document.getElementById('successReferralCode').textContent
   navigator.clipboard.writeText(code).catch(function () {
@@ -835,51 +1027,101 @@ function copyReferral() {
   setTimeout(function () { btn.textContent = 'Copy' }, 2000)
 }
 
+// ── Redeem ─────────────────────────────────────────────────────────────────
 function showRedeem(code) {
   document.getElementById('purchaseScreen').style.display = 'none'
   document.getElementById('redeemScreen').style.display   = 'block'
   document.getElementById('redeemCodeDisplay').textContent = code.toUpperCase()
-  var dobEl = document.getElementById('redeemChildDob')
-  if (dobEl) dobEl.max = new Date().toISOString().split('T')[0]
+
+  var nextUrl = encodeURIComponent(window.location.href)
+  document.getElementById('createAccountBtn').href = '/sign-up.html?next=' + nextUrl
+  document.getElementById('signInBtn').href        = '/sign-in.html?next=' + nextUrl
+
+  // Set today as default max for DOB
+  var today = new Date().toISOString().split('T')[0]
+  var dobEl  = document.getElementById('redeemChildDob')
+  if (dobEl) dobEl.max = today
+
+  // Check auth state immediately
+  window._supabaseClient.auth.getSession().then(function (res) {
+    var authed = !!(res.data && res.data.session && res.data.session.access_token)
+    document.getElementById('redeemAuthPanel').style.display = authed ? 'none' : 'block'
+    document.getElementById('redeemForm').style.display      = authed ? 'block' : 'none'
+  })
+
+  // Listen for auth state changes (e.g. if user signs in in another tab)
+  window._supabaseClient.auth.onAuthStateChange(function (event, session) {
+    if (session && session.access_token) {
+      document.getElementById('redeemAuthPanel').style.display = 'none'
+      document.getElementById('redeemForm').style.display      = 'block'
+    }
+  })
+}
+
+function togglePrebirth() {
+  var isPrebirth = document.getElementById('isPrebirth').checked
+  var dobLabel   = document.getElementById('dobLabel')
+  var dobHint    = document.getElementById('dobHint')
+  var dobEl      = document.getElementById('redeemChildDob')
+  var btn        = document.getElementById('redeemBtn')
+
+  if (isPrebirth) {
+    dobLabel.textContent = 'Expected due date'
+    dobHint.textContent  = 'Your baby\'s expected arrival date. We\'ll set up pre-birth mode — monthly digests start from birth.'
+    dobEl.removeAttribute('max')
+    dobEl.min = new Date().toISOString().split('T')[0]
+    btn.textContent = 'Activate pre-birth mode →'
+  } else {
+    dobLabel.textContent = 'Date of birth'
+    dobHint.textContent  = 'Baby\'s actual birthday.'
+    dobEl.max = new Date().toISOString().split('T')[0]
+    dobEl.removeAttribute('min')
+    btn.textContent = 'Activate my Scout subscription →'
+  }
+  document.getElementById('redeemChildDob').value = ''
 }
 
 function submitRedeem() {
   var childName   = document.getElementById('redeemChildName').value.trim()
   var childDob    = document.getElementById('redeemChildDob').value
   var childGender = document.getElementById('redeemChildGender').value
+  var isPrebirth  = document.getElementById('isPrebirth').checked
   var errEl       = document.getElementById('redeemErr')
   var btn         = document.getElementById('redeemBtn')
   var params      = new URLSearchParams(window.location.search)
   var code        = params.get('redeem') || ''
 
   errEl.style.display = 'none'
-  if (!childName || !childDob) {
-    errEl.style.display = 'block'; errEl.textContent = "Please enter your baby's name and date of birth."; return
-  }
+  if (!childName) { errEl.style.display = 'block'; errEl.textContent = "Please enter your baby's name."; return }
+  if (!childDob)  { errEl.style.display = 'block'; errEl.textContent = isPrebirth ? "Please enter the expected due date." : "Please enter your baby's date of birth."; return }
 
   btn.disabled = true; btn.textContent = 'Activating…'
 
   window._supabaseClient.auth.getSession().then(function (sessionRes) {
     var token = sessionRes.data && sessionRes.data.session && sessionRes.data.session.access_token
     if (!token) {
-      window.location.href = '/sign-in.html?next=' + encodeURIComponent(window.location.href); return
+      var nextUrl = encodeURIComponent(window.location.href)
+      window.location.href = '/sign-in.html?next=' + nextUrl; return
     }
     fetch(SUPABASE_URL + '/functions/v1/scout-gift-redeem', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ code, childName, childDob, childGender: childGender || undefined }),
+      body: JSON.stringify({
+        code, childName, childDob, childGender: childGender || undefined,
+        isPrebirth: isPrebirth || undefined,
+      }),
     })
     .then(function (r) { return r.json() })
     .then(function (data) {
       if (!data.ok) {
         errEl.style.display = 'block'; errEl.textContent = data.error || 'Could not activate gift. Please try again.'
-        btn.disabled = false; btn.textContent = 'Activate my Scout subscription →'; return
+        btn.disabled = false; btn.textContent = isPrebirth ? 'Activate pre-birth mode →' : 'Activate my Scout subscription →'; return
       }
       window.location.href = '/scout-dashboard?welcome=gift'
     })
     .catch(function () {
       errEl.style.display = 'block'; errEl.textContent = 'Network error. Please try again.'
-      btn.disabled = false; btn.textContent = 'Activate my Scout subscription →'
+      btn.disabled = false; btn.textContent = isPrebirth ? 'Activate pre-birth mode →' : 'Activate my Scout subscription →'
     })
   })
 }

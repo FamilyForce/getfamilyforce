@@ -225,7 +225,8 @@ function buildConfirmEmail(opts: {
   <tr><td style="background:#F0EBFF;border:1.5px solid rgba(110,78,214,.2);border-radius:12px;padding:16px 20px">
     <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#6E4ED6;text-transform:uppercase;letter-spacing:.1em;margin:0 0 6px">Gift code</p>
     <p style="font-family:'Outfit',Arial,sans-serif;font-size:22px;font-weight:800;color:#3B1FA8;letter-spacing:.12em;margin:0 0 8px">${giftCode}</p>
-    <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#5C5960;margin:0">Keep this code. If ${recipientName} doesn't receive the email, they can redeem at <a href="${siteUrl}/scout-gift.html?redeem=${giftCode}" style="color:#6E4ED6;text-decoration:none">getfamilyforce.com/redeem</a></p>
+    <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#5C5960;margin:0 0 6px">Keep this code. If ${recipientName} doesn't receive the email, they can redeem at <a href="${siteUrl}/scout-gift-checkout.html?redeem=${giftCode}" style="color:#6E4ED6;text-decoration:none">getfamilyforce.com/gift</a></p>
+    <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;margin:0">📮 <strong>Wrong email?</strong> Reply to this email with the correct address and we'll resend the gift right away.</p>
   </td></tr></table>
 
   <!-- Expiry notice -->
@@ -414,11 +415,15 @@ Deno.serve(async (req: Request) => {
     // ════════════════════════════════════════════════════════════
     step = 'validate-complete'
     const { paymentIntentId, buyerName, buyerEmail, recipientName,
-            recipientEmail, personalMessage, plan } = body
+            recipientEmail, personalMessage, plan, deliverAt } = body
 
     if (!paymentIntentId) return err(400, 'paymentIntentId is required', step)
     if (!buyerName || !buyerEmail || !recipientName || !recipientEmail || !plan)
       return err(400, 'Missing required fields', step)
+
+    // Parse scheduled delivery (optional ISO timestamp)
+    const deliverAtDate  = deliverAt ? new Date(deliverAt) : null
+    const isDeferred     = !!(deliverAtDate && deliverAtDate > new Date())
 
     // Idempotency: if this PI was already processed, return the existing gift
     step = 'idempotency-check'
@@ -497,6 +502,8 @@ Deno.serve(async (req: Request) => {
       stripe_referral_code:     referralCode,
       stripe_referral_coupon_id: referralStripePromoId || null,
       expires_at:               expiresAt.toISOString(),
+      deliver_at:               isDeferred ? deliverAtDate!.toISOString() : null,
+      gift_email_sent:          !isDeferred, // if deferred, scout-gift-deliver sends it later
     })
 
     // Build print card URL (pre-populated for buyer email)
@@ -508,30 +515,32 @@ Deno.serve(async (req: Request) => {
       `&msg=${encodeURIComponent(personalMessage ?? '')}` +
       `&price=${encodeURIComponent(priceInfo.display)}`
 
-    // Send gift email to recipient
+    // Send gift email to recipient (skip if delivery is scheduled for later)
     step = 'email-recipient'
-    const redeemUrl  = `${siteUrl}/scout-gift.html?redeem=${giftCode}`
+    const redeemUrl  = `${siteUrl}/scout-gift-checkout.html?redeem=${giftCode}`
     const resendKey  = Deno.env.get('RESEND_API_KEY')!
     const fromEmail  = Deno.env.get('RESEND_FROM_EMAIL') ?? 'scout@getfamilyforce.com'
     const fromName   = Deno.env.get('RESEND_FROM_NAME')  ?? 'FamilyForce'
     const bccEmail   = Deno.env.get('RESEND_BCC_EMAIL')  ?? ''
 
-    const giftEmailBody: Record<string, unknown> = {
-      from:    `${fromName} <${fromEmail}>`,
-      to:      [recipientEmail],
-      subject: `${buyerName} gave you a gift — FamilyForce Scout 🎁`,
-      html:    buildGiftEmail({ recipientName, buyerName, plan,
-        personalMessage: personalMessage ?? undefined,
-        redeemUrl, siteUrl, expiresAt }),
-      tags:    [{ name: 'email_type', value: 'gift_recipient' }],
-    }
-    if (bccEmail) giftEmailBody.bcc = [bccEmail]
+    if (!isDeferred) {
+      const giftEmailBody: Record<string, unknown> = {
+        from:    `${fromName} <${fromEmail}>`,
+        to:      [recipientEmail],
+        subject: `${buyerName} gave you a gift — FamilyForce Scout 🎁`,
+        html:    buildGiftEmail({ recipientName, buyerName, plan,
+          personalMessage: personalMessage ?? undefined,
+          redeemUrl, siteUrl, expiresAt }),
+        tags:    [{ name: 'email_type', value: 'gift_recipient' }],
+      }
+      if (bccEmail) giftEmailBody.bcc = [bccEmail]
 
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(giftEmailBody),
-    })
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(giftEmailBody),
+      })
+    }
 
     // Send confirmation email to buyer (includes gift code + print link)
     step = 'email-buyer'
@@ -562,7 +571,8 @@ Deno.serve(async (req: Request) => {
 
     return new Response(JSON.stringify({
       ok: true, giftCode, referralCode,
-      recipientEmail, plan, amount: priceInfo.display,
+      buyerEmail, recipientEmail, plan, amount: priceInfo.display,
+      isDeferred, deliverAt: isDeferred ? deliverAtDate!.toISOString() : null,
     }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
 
   } catch (e) {

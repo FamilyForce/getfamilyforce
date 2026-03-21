@@ -86,6 +86,26 @@ function isValidDob(dob: string): boolean {
   return d <= now && d >= maxAge
 }
 
+function isValidDueDate(dob: string): boolean {
+  if (!dob || !/^\d{4}-\d{2}-\d{2}$/.test(dob)) return false
+  const d = new Date(dob + 'T00:00:00Z')
+  if (isNaN(d.getTime())) return false
+  const now = new Date()
+  // Must be today or in the future, and not more than ~10 months out
+  const maxFuture = new Date(now)
+  maxFuture.setMonth(maxFuture.getMonth() + 10)
+  return d >= now && d <= maxFuture
+}
+
+// Extend a date by N calendar months
+function addMonths(d: Date, months: number): Date {
+  const result = new Date(d)
+  const day = result.getUTCDate()
+  result.setUTCMonth(result.getUTCMonth() + months)
+  if (result.getUTCDate() !== day) result.setUTCDate(0)
+  return result
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
   if (req.method !== 'POST')    return err(405, 'Method not allowed')
@@ -113,11 +133,18 @@ Deno.serve(async (req: Request) => {
     // 2. Parse body
     step = 'parse'
     const body = await req.json()
-    const { code, childName, childDob, childGender } = body
+    const { code, childName, childDob, childGender, isPrebirth } = body
 
-    if (!code)                    return err(400, 'code is required', step)
-    if (!childName?.trim())       return err(400, 'childName is required', step)
-    if (!isValidDob(childDob))    return err(400, 'childDob must be a valid YYYY-MM-DD date', step)
+    if (!code)              return err(400, 'code is required', step)
+    if (!childName?.trim()) return err(400, 'childName is required', step)
+
+    if (isPrebirth) {
+      if (!isValidDueDate(childDob))
+        return err(400, 'Please enter a valid expected due date (today or up to 10 months from now).', step)
+    } else {
+      if (!isValidDob(childDob))
+        return err(400, 'childDob must be a valid YYYY-MM-DD date (baby must be between 0–4 years old).', step)
+    }
 
     // 3. Validate gift code
     step = 'validate-code'
@@ -133,55 +160,79 @@ Deno.serve(async (req: Request) => {
       return err(410, 'This gift code has expired.', step)
     }
 
-    // 4. Check user doesn't already have an active subscription
+    // 4. Check if user already has an active/trialing subscription → extend instead of error
     const { data: existingSub } = await sb
       .from('scout_subscriptions')
-      .select('status')
+      .select('status, trial_end')
       .eq('user_id', userId)
       .maybeSingle()
 
-    if (existingSub?.status === 'active') {
-      return err(409, 'You already have an active Scout subscription.', step)
-    }
+    const hasActiveSub = existingSub && (existingSub.status === 'active' || existingSub.status === 'trialing')
 
     // 5. Insert/update child record
     step = 'insert-child'
     const name   = childName.trim().slice(0, 50)
     const gender = normaliseGender(childGender)
-    const dob    = childDob as string
 
     let childId: string
-    const { data: existingChild } = await sb
-      .from('children')
-      .select('id')
-      .eq('user_id', userId)
-      .eq('dob', dob)
-      .limit(1)
-      .maybeSingle()
 
-    if (existingChild) {
-      childId = existingChild.id
-      await sb.from('children').update({ name, gender }).eq('id', childId)
-    } else {
+    if (isPrebirth) {
+      // Pre-birth: dob is null, store due_date and mark expecting
       const { data: newChild, error: childErr } = await sb
         .from('children')
-        .insert({ user_id: userId, name, dob, gender })
+        .insert({ user_id: userId, name, dob: null, due_date: childDob, is_expecting: true, gender })
         .select('id')
         .single()
-      if (childErr || !newChild) throw new Error(`Failed to create child: ${childErr?.message}`)
+      if (childErr || !newChild) throw new Error(`Failed to create pre-birth child: ${childErr?.message}`)
       childId = newChild.id
+    } else {
+      const dob = childDob as string
+      const { data: existingChild } = await sb
+        .from('children')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('dob', dob)
+        .limit(1)
+        .maybeSingle()
+
+      if (existingChild) {
+        childId = existingChild.id
+        await sb.from('children').update({ name, gender }).eq('id', childId)
+      } else {
+        const { data: newChild, error: childErr } = await sb
+          .from('children')
+          .insert({ user_id: userId, name, dob, gender })
+          .select('id')
+          .single()
+        if (childErr || !newChild) throw new Error(`Failed to create child: ${childErr?.message}`)
+        childId = newChild.id
+      }
     }
 
-    // 6. Calculate trial_end = nextMonthlyBirthday(childDob) + plan_months
-    //    The catch-up window (today → first birthday) is free.
-    //    The subscription clock starts from the first monthly birthday after redemption.
+    // 6. Calculate trial_end
     step = 'calculate-trial-end'
-    const now           = new Date()
-    const firstBirthday = nextMonthlyBirthday(dob, now)
-    const trialEnd      = new Date(firstBirthday)
-    for (let i = 0; i < (gift.plan_months ?? 12); i++) {
-      const next = oneMonthForward(trialEnd)
-      trialEnd.setTime(next.getTime())
+    const now      = new Date()
+    const planMos  = gift.plan_months ?? 12
+    let trialEnd: Date
+
+    if (hasActiveSub && existingSub!.trial_end) {
+      // EXTEND existing subscription: add plan_months to current trial_end
+      const currentEnd = new Date(existingSub!.trial_end)
+      const baseDate   = currentEnd > now ? currentEnd : now
+      trialEnd = addMonths(baseDate, planMos)
+    } else if (isPrebirth) {
+      // Pre-birth: trial_end = due_date + plan_months (subscription starts at birth)
+      const dueDate = new Date(childDob + 'T00:00:00Z')
+      trialEnd = addMonths(dueDate, planMos)
+    } else {
+      // Normal: trial_end = nextMonthlyBirthday + plan_months
+      const dob           = childDob as string
+      const firstBirthday = nextMonthlyBirthday(dob, now)
+      trialEnd = new Date(firstBirthday)
+      for (let i = 0; i < planMos; i++) {
+        const next = oneMonthForward(trialEnd)
+        trialEnd.setTime(next.getTime())
+      }
     }
 
     // 7. Upsert scout_subscriptions
@@ -228,13 +279,10 @@ Deno.serve(async (req: Request) => {
     }).catch(e => console.error('[scout-gift-redeem] Delivery trigger failed:', e.message))
 
     return new Response(JSON.stringify({
-      ok:   true,
-      plan: gift.plan,
-      // When the subscription starts (first monthly birthday after redemption)
-      subscriptionStart: firstBirthday.toLocaleDateString('en-US', {
-        month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
-      }),
-      // When the subscription ends (subscriptionStart + plan_months)
+      ok:        true,
+      plan:      gift.plan,
+      isPrebirth: isPrebirth ?? false,
+      extended:  hasActiveSub ?? false,
       trialEnd:          trialEnd.toISOString(),
       trialEndFormatted: trialEnd.toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
