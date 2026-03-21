@@ -117,7 +117,7 @@ body { min-height: 100vh; padding: 48px 24px 80px; }
 }
 /* Divider */
 .gc-divider {
-  position: absolute; bottom: 68px; left: 28px; right: 28px;
+  position: absolute; bottom: 82px; left: 28px; right: 28px;
   height: 1px; z-index: 3;
 }
 .gc-starter .gc-divider { background: rgba(255,255,255,.15); }
@@ -137,8 +137,9 @@ body { min-height: 100vh; padding: 48px 24px 80px; }
 .gc-logo-mark {
   width: 26px; height: 26px; border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; font-weight: 900; letter-spacing: -.03em;
+  flex-shrink: 0;
 }
+.gc-logo-mark svg { width: 16px; height: 16px; display: block; }
 .gc-starter .gc-logo-mark { background: rgba(255,255,255,.2); color: #fff; }
 .gc-annual  .gc-logo-mark { background: rgba(255,255,255,.2); color: #fff; }
 .gc-premium .gc-logo-mark { background: rgba(201,150,42,.25); color: var(--gold-light); }
@@ -207,10 +208,11 @@ body { min-height: 100vh; padding: 48px 24px 80px; }
 .print-logo-mark {
   width: 26px; height: 26px; border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 900;
-  background: rgba(255,255,255,.2); color: #fff;
+  flex-shrink: 0;
+  background: rgba(255,255,255,.2);
 }
-.ph-premium .print-logo-mark { background: rgba(201,150,42,.3); color: var(--gold-light); }
+.ph-premium .print-logo-mark { background: rgba(201,150,42,.3); }
+.print-logo-mark svg { width: 15px; height: 15px; display: block; }
 .print-logo-name { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.95); }
 .ph-premium .print-logo-name { color: rgba(245,228,176,.9); }
 .print-plan-pill {
@@ -361,7 +363,7 @@ body { min-height: 100vh; padding: 48px 24px 80px; }
           <div class="gc-inner">
             <div class="gc-top">
               <div class="gc-logo">
-                <div class="gc-logo-mark">FF</div>
+                <div class="gc-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round" fill="none"/></svg></div>
                 <div class="gc-logo-text">Scout by FamilyForce</div>
               </div>
               <div class="gc-tier-badge">1 Month · $9.99</div>
@@ -400,7 +402,7 @@ body { min-height: 100vh; padding: 48px 24px 80px; }
           <div class="gc-inner">
             <div class="gc-top">
               <div class="gc-logo">
-                <div class="gc-logo-mark">FF</div>
+                <div class="gc-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round" fill="none"/></svg></div>
                 <div class="gc-logo-text">Scout by FamilyForce</div>
               </div>
               <div class="gc-tier-badge">1 Year · $69.99</div>
@@ -439,7 +441,7 @@ body { min-height: 100vh; padding: 48px 24px 80px; }
           <div class="gc-inner">
             <div class="gc-top">
               <div class="gc-logo">
-                <div class="gc-logo-mark">FF</div>
+                <div class="gc-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10 22 L16 10 L22 22" stroke="#F5E4B0" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12.5 18 L19.5 18" stroke="#F5E4B0" stroke-width="2.8" stroke-linecap="round" fill="none"/></svg></div>
                 <div class="gc-logo-text">Scout by FamilyForce</div>
               </div>
               <div class="gc-tier-badge">Full Journey · 3 Years</div>
@@ -467,7 +469,7 @@ body { min-height: 100vh; padding: 48px 24px 80px; }
   </div>
 
   <div class="mockup-note">
-    📐 <strong>Specs:</strong> 500×290px rendered (2× for retina export). Each tier has a distinct palette — teal for starter, purple for annual, indigo+gold for premium. "FF" logo mark is placeholder — swap for final SVG chevron. Redemption code mono-spaced for easy copy.
+    📐 <strong>Specs:</strong> 500×290px rendered (2× for retina export). Each tier has its own palette — teal for starter, purple for annual, indigo+gold for premium. Logo mark uses the real FamilyForce chevron SVG. Redemption code mono-spaced for easy copy.
   </div>
 </div>
 
@@ -487,7 +489,7 @@ body { min-height: 100vh; padding: 48px 24px 80px; }
       <div class="print-card">
         <div class="print-header ph-starter">
           <div class="print-logo-area">
-            <div class="print-logo-mark">FF</div>
+            <div class="print-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round" fill="none"/></svg></div>
             <div class="print-logo-name">Scout</div>
           </div>
           <div class="print-plan-pill">1 Month Gift</div>
@@ -514,7 +516,7 @@ body { min-height: 100vh; padding: 48px 24px 80px; }
       <div class="print-card">
         <div class="print-header ph-annual">
           <div class="print-logo-area">
-            <div class="print-logo-mark">FF</div>
+            <div class="print-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round" fill="none"/></svg></div>
             <div class="print-logo-name">Scout</div>
           </div>
           <div class="print-plan-pill">1 Year Gift</div>
@@ -541,7 +543,7 @@ body { min-height: 100vh; padding: 48px 24px 80px; }
       <div class="print-card">
         <div class="print-header ph-premium">
           <div class="print-logo-area">
-            <div class="print-logo-mark">FF</div>
+            <div class="print-logo-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10 22 L16 10 L22 22" stroke="#F5E4B0" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12.5 18 L19.5 18" stroke="#F5E4B0" stroke-width="2.8" stroke-linecap="round" fill="none"/></svg></div>
             <div class="print-logo-name">Scout</div>
           </div>
           <div class="print-plan-pill" style="background:rgba(201,150,42,.2);color:var(--gold-light);border-color:rgba(201,150,42,.4);">Full Journey</div>
