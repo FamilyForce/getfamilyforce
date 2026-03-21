@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE SCOUT — Gift Checkout Page
+     URL params: ?plan=monthly|annual|triennial  (pre-selects tier)
+                 ?redeem=CODE  (shows redeem flow instead)
+     3DS-safe two-step Stripe flow
+     Stack: Vanilla HTML/CSS/JS · zero dependencies
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Give the gift of Scout — FamilyForce</title>
+<meta name="description" content="Give a new parent the gift of knowing what their baby needs, every month.">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"></noscript>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://js.stripe.com/v3/"></script>
+
+<style>
+:root {
+  --bg:          #F4F1FB;
+  --surface:     #FFFFFF;
+  --border:      #E5E2EC;
+  --text:        #1D1D1F;
+  --text-mid:    #5C5960;
+  --text-dim:    #8A879A;
+  --purple:      #6E4ED6;
+  --purple-dark: #5B3CC4;
+  --purple-tint: #F0EBFF;
+  --teal:        #0E9E8A;
+  --teal-dark:   #0A7A6A;
+  --teal-tint:   #E6FAF8;
+  --gold:        #C9962A;
+  --gold-light:  #F5E4B0;
+  --indigo-deep: #1A0F3A;
+  --sans:        'Outfit', system-ui, sans-serif;
+  --serif:       'Instrument Serif', Georgia, serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ── NAV ── */
+.nav {
+  background: rgba(255,255,255,.95);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 860px; margin: 0 auto; padding: 0 24px; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.nav-logo-mark {
+  width: 28px; height: 28px; border-radius: 8px; background: var(--purple);
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-logo-mark svg { width: 17px; height: 17px; display: block; }
+.nav-logo-name { font-weight: 700; font-size: 15px; color: var(--text); }
+.nav-back { font-size: 13px; color: var(--text-mid); text-decoration: none; font-weight: 500; }
+@media (hover:hover) { .nav-back:hover { color: var(--purple); } }
+
+/* ── WRAP ── */
+.wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+/* ── PAGE HERO ── */
+.page-hero { text-align: center; margin-bottom: 40px; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--purple); margin-bottom: 16px;
+}
+.hero-title {
+  font-family: var(--serif); font-size: clamp(28px, 5vw, 40px);
+  line-height: 1.15; color: var(--text); margin-bottom: 14px;
+}
+.hero-title em { font-style: italic; color: var(--text); }
+.hero-sub { font-size: 16px; color: var(--text-mid); max-width: 500px; margin: 0 auto; line-height: 1.65; }
+
+/* ── TIER CARDS ── */
+.tiers { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.tier-card {
+  background: var(--surface); border-radius: 16px; cursor: pointer;
+  border: 2px solid var(--border); overflow: hidden;
+  transition: border-color .15s, box-shadow .15s;
+  display: flex; align-items: stretch;
+}
+@media (hover:hover) { .tier-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,.08); } }
+.tier-card:focus-visible { outline: 3px solid var(--purple); outline-offset: 2px; }
+.tier-card.sel-monthly  { border-color: var(--teal-dark); }
+.tier-card.sel-annual   { border-color: var(--purple); }
+.tier-card.sel-triennial { border-color: var(--gold); }
+
+/* Swatch */
+.tier-swatch {
+  width: 72px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.tier-swatch-monthly   { background: linear-gradient(135deg, #12B5A0, #0A7A6A); }
+.tier-swatch-annual    { background: linear-gradient(135deg, #7B5CE5, #3B1FA8); }
+.tier-swatch-triennial { background: linear-gradient(135deg, #1A0F3A, #2D1870); }
+.tier-swatch::before {
+  content: ''; position: absolute; width: 80px; height: 80px; border-radius: 50%;
+  top: -24px; right: -22px; pointer-events: none;
+}
+.tier-swatch-monthly::before  { background: radial-gradient(circle, rgba(255,255,255,.2) 0%, transparent 65%); }
+.tier-swatch-annual::before   { background: radial-gradient(circle, rgba(255,255,255,.18) 0%, transparent 65%); }
+.tier-swatch-triennial::before { background: radial-gradient(circle, rgba(201,150,42,.22) 0%, transparent 65%); }
+.tier-swatch svg { width: 20px; height: 20px; position: relative; z-index: 2; }
+
+/* Info */
+.tier-info { flex: 1; padding: 16px 18px; }
+.tier-info-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.tier-name { font-size: 16px; font-weight: 700; color: var(--text); }
+.tier-price { font-size: 18px; font-weight: 800; }
+.tier-price-monthly  { color: var(--teal-dark); }
+.tier-price-annual   { color: var(--purple); }
+.tier-price-triennial { color: var(--gold); }
+.tier-desc { font-size: 13px; color: var(--text-mid); line-height: 1.5; margin-bottom: 8px; }
+.tier-badge {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 100px;
+}
+.tb-monthly  { background: var(--teal-tint); color: var(--teal-dark); }
+.tb-annual   { background: var(--purple-tint); color: var(--purple); }
+.tb-triennial { background: #1A0F3A; color: var(--gold-light); }
+
+/* Check */
+.tier-check-col {
+  width: 48px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.tier-check {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.tier-check svg { display: none; }
+.tier-card.sel-monthly  .tier-check { background: var(--teal-dark);  border-color: var(--teal-dark); }
+.tier-card.sel-annual   .tier-check { background: var(--purple);      border-color: var(--purple); }
+.tier-card.sel-triennial .tier-check { background: var(--gold);        border-color: var(--gold); }
+.tier-card.sel-monthly  .tier-check svg,
+.tier-card.sel-annual   .tier-check svg,
+.tier-card.sel-triennial .tier-check svg { display: block; }
+
+/* ── FORM SECTION ── */
+.form-card {
+  background: var(--surface); border-radius: 20px;
+  border: 1px solid var(--border); padding: 28px;
+}
+.form-card-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.form-card-sub   { font-size: 13px; color: var(--text-mid); margin-bottom: 24px; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-field { margin-bottom: 14px; }
+.form-label { display: block; font-size: 12px; font-weight: 700; color: var(--text-mid); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+.form-input {
+  width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
+  border-radius: 10px; font-family: var(--sans); font-size: 14px; color: var(--text);
+  background: var(--surface); transition: border-color .15s;
+  -webkit-appearance: none; appearance: none;
+}
+.form-input:focus { outline: none; border-color: var(--purple); }
+textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
+.form-hint { font-size: 12px; color: var(--text-dim); margin-top: 4px; }
+.form-divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* Promo */
+.promo-row { display: flex; gap: 8px; }
+.promo-row .form-input { flex: 1; text-transform: uppercase; letter-spacing: .05em; }
+.btn-promo {
+  padding: 11px 18px; background: var(--purple-tint); color: var(--purple);
+  border: none; border-radius: 10px; font-family: var(--sans);
+  font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+@media (hover:hover) { .btn-promo:hover { background: var(--purple); color: #fff; } }
+.promo-status { font-size: 13px; margin-top: 6px; min-height: 20px; }
+.promo-ok { color: var(--teal-dark); font-weight: 600; }
+.promo-err { color: #C0392B; }
+
+/* Stripe */
+.stripe-wrap { padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; background: var(--surface); transition: border-color .15s; }
+.stripe-wrap.focused { border-color: var(--purple); }
+
+/* Submit */
+.btn-submit {
+  width: 100%; padding: 15px; background: var(--purple); color: #fff;
+  border: none; border-radius: 12px; font-family: var(--sans);
+  font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 4px;
+  transition: background .15s; letter-spacing: -.01em;
+}
+@media (hover:hover) { .btn-submit:hover:not(:disabled) { background: var(--purple-dark); } }
+.btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+.submit-note { font-size: 12px; color: var(--text-dim); text-align: center; margin-top: 10px; line-height: 1.6; }
+.form-err { font-size: 13px; color: #C0392B; display: none; padding: 10px 13px; background: #FDF0EE; border-radius: 8px; margin-bottom: 10px; }
+
+/* ── SUCCESS SCREEN ── */
+#successScreen { display: none; }
+.success-header { text-align: center; margin-bottom: 32px; }
+.success-icon { font-size: 52px; margin-bottom: 12px; }
+.success-title { font-family: var(--serif); font-size: 30px; margin-bottom: 8px; }
+.success-sub { font-size: 15px; color: var(--text-mid); line-height: 1.65; }
+
+/* Gift card render */
+.gc-render-wrap { margin-bottom: 20px; }
+.gc-render {
+  border-radius: 18px; overflow: hidden; position: relative;
+  box-shadow: 0 20px 56px rgba(0,0,0,.22), 0 4px 12px rgba(0,0,0,.1);
+  aspect-ratio: 500/290; width: 100%;
+}
+.gc-monthly   { background: linear-gradient(135deg, #12B5A0 0%, #0A7A6A 55%, #065A50 100%); }
+.gc-annual    { background: linear-gradient(135deg, #7B5CE5 0%, #5B3CC4 55%, #3B1FA8 100%); }
+.gc-triennial { background: linear-gradient(135deg, #1A0F3A 0%, #2D1870 50%, #1A0F3A 100%); }
+.gc-orb { position: absolute; border-radius: 50%; pointer-events: none; }
+.gc-orb-1 { width: 55%; padding-top: 55%; top: -18%; right: -12%; }
+.gc-orb-2 { width: 32%; padding-top: 32%; bottom: -12%; left: -6%; }
+.gc-monthly  .gc-orb-1  { background: radial-gradient(circle, rgba(255,255,255,.18) 0%, transparent 70%); }
+.gc-monthly  .gc-orb-2  { background: radial-gradient(circle, rgba(20,220,190,.25) 0%, transparent 70%); }
+.gc-annual   .gc-orb-1  { background: radial-gradient(circle, rgba(255,255,255,.15) 0%, transparent 70%); }
+.gc-annual   .gc-orb-2  { background: radial-gradient(circle, rgba(167,139,250,.3) 0%, transparent 70%); }
+.gc-triennial .gc-orb-1 { background: radial-gradient(circle, rgba(201,150,42,.18) 0%, transparent 65%); }
+.gc-triennial .gc-orb-2 { background: radial-gradient(circle, rgba(201,150,42,.12) 0%, transparent 70%); }
+.gc-pat { position: absolute; inset: 0; pointer-events: none; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.06) 1px, transparent 0); background-size: 22px 22px; }
+.gc-div-line { position: absolute; bottom: 28%; left: 5.5%; right: 5.5%; height: 1px; }
+.gc-monthly .gc-div-line, .gc-annual .gc-div-line { background: rgba(255,255,255,.15); }
+.gc-triennial .gc-div-line { background: rgba(201,150,42,.22); }
+.gc-content { position: relative; z-index: 2; height: 100%; padding: 6% 7%; display: flex; flex-direction: column; justify-content: space-between; }
+.gc-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.gc-logo-row { display: flex; align-items: center; gap: 4%; }
+.gc-logo-icon { width: 8%; aspect-ratio: 1; border-radius: 22%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.gc-monthly .gc-logo-icon, .gc-annual .gc-logo-icon { background: rgba(255,255,255,.2); }
+.gc-triennial .gc-logo-icon { background: rgba(201,150,42,.25); }
+.gc-logo-icon svg { width: 55%; height: 55%; display: block; }
+.gc-logo-name { font-size: 2.7%; font-weight: 700; }
+.gc-monthly .gc-logo-name, .gc-annual .gc-logo-name { color: rgba(255,255,255,.9); }
+.gc-triennial .gc-logo-name { color: rgba(245,228,176,.9); }
+.gc-tier-pill { font-size: 2%; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 1% 3%; border-radius: 100px; border: 1px solid; }
+.gc-monthly .gc-tier-pill  { border-color: rgba(255,255,255,.3); color: rgba(255,255,255,.85); background: rgba(255,255,255,.1); }
+.gc-annual  .gc-tier-pill  { border-color: rgba(255,255,255,.3); color: rgba(255,255,255,.85); background: rgba(255,255,255,.1); }
+.gc-triennial .gc-tier-pill { border-color: rgba(201,150,42,.55); color: var(--gold-light); background: rgba(201,150,42,.15); }
+.gc-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 3% 0 2%; }
+.gc-for { font-size: 2%; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 1.5%; }
+.gc-monthly .gc-for, .gc-annual .gc-for { color: rgba(255,255,255,.6); }
+.gc-triennial .gc-for { color: rgba(245,228,176,.6); }
+.gc-headline { font-family: var(--serif); font-size: 7.5%; line-height: 1.25; margin-bottom: 1.5%; }
+.gc-monthly .gc-headline, .gc-annual .gc-headline { color: #fff; }
+.gc-triennial .gc-headline { color: var(--gold-light); }
+.gc-from-text { font-size: 2.4%; font-style: italic; }
+.gc-monthly .gc-from-text, .gc-annual .gc-from-text { color: rgba(255,255,255,.65); }
+.gc-triennial .gc-from-text { color: rgba(245,228,176,.7); }
+.gc-bot { display: flex; justify-content: space-between; align-items: flex-end; }
+.gc-code-lbl { font-size: 1.8%; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .5%; }
+.gc-monthly .gc-code-lbl, .gc-annual .gc-code-lbl { color: rgba(255,255,255,.5); }
+.gc-triennial .gc-code-lbl { color: rgba(245,228,176,.45); }
+.gc-code-val { font-size: 5.5%; font-weight: 800; letter-spacing: .16em; }
+.gc-monthly .gc-code-val, .gc-annual .gc-code-val { color: #fff; }
+.gc-triennial .gc-code-val { color: var(--gold-light); }
+.gc-value-blk { text-align: right; }
+.gc-value-lbl { font-size: 1.8%; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; margin-bottom: .5%; }
+.gc-monthly .gc-value-lbl, .gc-annual .gc-value-lbl { color: rgba(255,255,255,.5); }
+.gc-triennial .gc-value-lbl { color: rgba(245,228,176,.45); }
+.gc-value-amt { font-size: 9%; font-weight: 900; letter-spacing: -.02em; }
+.gc-value-amt sup { font-size: 40%; vertical-align: super; font-weight: 700; }
+.gc-monthly .gc-value-amt, .gc-annual .gc-value-amt { color: rgba(255,255,255,.95); }
+.gc-triennial .gc-value-amt { color: var(--gold-light); }
+
+/* Success actions */
+.success-actions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.btn-action {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px; border-radius: 12px; font-family: var(--sans);
+  font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
+  transition: all .15s; border: none;
+}
+.btn-action-primary   { background: var(--purple); color: #fff; }
+.btn-action-secondary { background: var(--surface); color: var(--text); border: 1.5px solid var(--border); }
+@media (hover:hover) {
+  .btn-action-primary:hover   { background: var(--purple-dark); }
+  .btn-action-secondary:hover { border-color: var(--purple); color: var(--purple); }
+}
+.share-box { background: var(--bg); border: 1.5px solid var(--border); border-radius: 12px; padding: 16px 18px; margin-bottom: 20px; }
+.share-box-label { font-size: 11px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.share-text { font-size: 14px; color: var(--text-mid); line-height: 1.65; margin-bottom: 10px; }
+.btn-copy { font-size: 13px; font-weight: 700; color: var(--purple); background: none; border: none; cursor: pointer; padding: 0; }
+.btn-copy.copied { color: var(--teal-dark); }
+.referral-box { background: var(--purple-tint); border: 1.5px solid rgba(110,78,214,.15); border-radius: 14px; padding: 18px 20px; display: none; }
+.referral-label { font-size: 11px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
+.referral-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.referral-desc { font-size: 13px; color: var(--text-mid); margin-bottom: 12px; }
+.referral-code-row { display: flex; align-items: center; gap: 10px; }
+.referral-code { font-family: monospace; font-size: 18px; font-weight: 800; color: var(--purple); letter-spacing: .1em; flex: 1; }
+.btn-copy-code { padding: 8px 16px; background: var(--purple); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; }
+
+/* ── REDEEM SCREEN ── */
+#redeemScreen { display: none; }
+.redeem-header { text-align: center; margin-bottom: 28px; }
+.redeem-icon { font-size: 48px; margin-bottom: 12px; }
+.redeem-title { font-family: var(--serif); font-size: 28px; margin-bottom: 8px; }
+.redeem-sub { font-size: 15px; color: var(--text-mid); line-height: 1.65; }
+.redeem-code-box { background: var(--purple-tint); border: 1.5px solid rgba(110,78,214,.2); border-radius: 12px; padding: 14px 18px; text-align: center; margin-bottom: 20px; }
+.rcb-label { font-size: 11px; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 4px; }
+.rcb-code  { font-family: monospace; font-size: 20px; font-weight: 800; color: var(--purple); letter-spacing: .12em; }
+.notice-yellow { background: #FFFBEB; border: 1.5px solid #F5D97A; border-radius: 12px; padding: 13px 16px; margin-bottom: 14px; }
+.notice-yellow p { font-size: 13px; color: #7A5A00; margin: 0; line-height: 1.65; }
+.notice-purple { background: var(--purple-tint); border: 1.5px solid rgba(110,78,214,.15); border-radius: 12px; padding: 13px 16px; margin-bottom: 20px; }
+.notice-purple p { font-size: 13px; color: var(--purple); margin: 0; line-height: 1.6; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 560px) {
+  .wrap { padding: 32px 16px 60px; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-card { padding: 20px 16px; }
+  .hero-title { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="FamilyForce home">
+      <div class="nav-logo-mark">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="nav-logo-name">FamilyForce</span>
+    </a>
+    <a href="/scout-dashboard" class="nav-back">— Scout</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ══ PURCHASE SCREEN ══ -->
+  <div id="purchaseScreen">
+    <div class="page-hero">
+      <div class="hero-eyebrow">🎁 Gift Scout</div>
+      <h1 class="hero-title">Give the gift of<br><em>never missing a milestone.</em></h1>
+      <p class="hero-sub">Scout delivers a personalised monthly guide — what matters right now, what's coming next, and exactly what to do — on the baby's birthday, every month.</p>
+    </div>
+
+    <!-- Tier cards -->
+    <div class="tiers" role="radiogroup" aria-label="Choose a gift tier">
+
+      <div class="tier-card" id="card-monthly" role="radio" aria-checked="false" tabindex="0"
+           onclick="selectPlan('monthly')" onkeydown="if(event.key==='Enter'||event.key===' ')selectPlan('monthly')">
+        <div class="tier-swatch tier-swatch-monthly">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="tier-info">
+          <div class="tier-info-top">
+            <span class="tier-name">1 Month</span>
+            <span class="tier-price tier-price-monthly">$9.99</span>
+          </div>
+          <p class="tier-desc">One full month of Scout. Great intro gift — perfect for new parents still finding their feet.</p>
+          <span class="tier-badge tb-monthly">Starter</span>
+        </div>
+        <div class="tier-check-col">
+          <div class="tier-check">
+            <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+              <path d="M1 4.5L4 7.5L10 1.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="tier-card" id="card-annual" role="radio" aria-checked="false" tabindex="0"
+           onclick="selectPlan('annual')" onkeydown="if(event.key==='Enter'||event.key===' ')selectPlan('annual')">
+        <div class="tier-swatch tier-swatch-annual">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="tier-info">
+          <div class="tier-info-top">
+            <span class="tier-name">1 Year</span>
+            <span class="tier-price tier-price-annual">$49.99</span>
+          </div>
+          <p class="tier-desc">A full year — 12 monthly digests from birth through the first year. The most popular baby shower gift.</p>
+          <span class="tier-badge tb-annual">Most Popular</span>
+        </div>
+        <div class="tier-check-col">
+          <div class="tier-check">
+            <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+              <path d="M1 4.5L4 7.5L10 1.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="tier-card" id="card-triennial" role="radio" aria-checked="false" tabindex="0"
+           onclick="selectPlan('triennial')" onkeydown="if(event.key==='Enter'||event.key===' ')selectPlan('triennial')">
+        <div class="tier-swatch tier-swatch-triennial">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M10 22 L16 10 L22 22" stroke="#F5E4B0" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12.5 18 L19.5 18" stroke="#F5E4B0" stroke-width="2.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="tier-info">
+          <div class="tier-info-top">
+            <span class="tier-name">Full Journey — 3 Years</span>
+            <span class="tier-price tier-price-triennial">$99.99</span>
+          </div>
+          <p class="tier-desc">Birth through age 3. Every milestone window, every month — the complete developmental journey.</p>
+          <span class="tier-badge tb-triennial">✨ Premium</span>
+        </div>
+        <div class="tier-check-col">
+          <div class="tier-check">
+            <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+              <path d="M1 4.5L4 7.5L10 1.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tiers -->
+
+    <!-- Form -->
+    <div class="form-card">
+      <div class="form-card-title">Personalise your gift</div>
+      <p class="form-card-sub">Your name and message will appear on the gift card sent to the recipient.</p>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label" for="buyerName">Your name</label>
+          <input class="form-input" type="text" id="buyerName" placeholder="Emma" autocomplete="given-name" maxlength="60">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="buyerEmail">Your email</label>
+          <input class="form-input" type="email" id="buyerEmail" placeholder="emma@example.com" autocomplete="email">
+          <p class="form-hint">Your confirmation goes here.</p>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label" for="recipientName">Recipient name(s)</label>
+          <input class="form-input" type="text" id="recipientName" placeholder="Sarah &amp; James" maxlength="80">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="recipientEmail">Recipient email</label>
+          <input class="form-input" type="email" id="recipientEmail" placeholder="sarah@example.com" autocomplete="off">
+          <p class="form-hint">Gift delivered here.</p>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="personalMsg">Personal message <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(optional)</span></label>
+        <textarea class="form-input" id="personalMsg" placeholder="e.g. Thought you'd love having a guide for every step — enjoy it!" maxlength="280"></textarea>
+      </div>
+
+      <div class="form-divider"></div>
+
+      <div class="form-field">
+        <label class="form-label" for="promoCode">Promo code <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(optional)</span></label>
+        <div class="promo-row">
+          <input class="form-input" type="text" id="promoCode" placeholder="ENTER CODE" autocomplete="off" style="text-transform:uppercase">
+          <button class="btn-promo" onclick="applyPromo()">Apply</button>
+        </div>
+        <div class="promo-status" id="promoStatus"></div>
+      </div>
+
+      <div class="form-divider"></div>
+
+      <div class="form-field">
+        <label class="form-label">Card details</label>
+        <div class="stripe-wrap" id="stripeWrap"><div id="stripeElement"></div></div>
+      </div>
+
+      <div class="form-err" id="formErr"></div>
+      <button class="btn-submit" id="submitBtn" onclick="submitGift()">Send gift — $49.99 →</button>
+      <p class="submit-note">🔒 Secured by Stripe · 30-day refund guarantee · No auto-renewal</p>
+    </div>
+
+  </div><!-- /purchaseScreen -->
+
+
+  <!-- ══ SUCCESS SCREEN ══ -->
+  <div id="successScreen">
+    <div class="success-header">
+      <div class="success-icon">🎉</div>
+      <h2 class="success-title">Gift sent!</h2>
+      <p class="success-sub" id="successSub">A gift email is on its way.</p>
+    </div>
+
+    <div class="gc-render-wrap">
+      <div class="gc-render" id="giftCardRender">
+        <div class="gc-orb gc-orb-1"></div>
+        <div class="gc-orb gc-orb-2"></div>
+        <div class="gc-pat"></div>
+        <div class="gc-div-line"></div>
+        <div class="gc-content">
+          <div class="gc-top">
+            <div class="gc-logo-row">
+              <div class="gc-logo-icon">
+                <svg viewBox="0 0 32 32" fill="none" id="gcLogoSvg">
+                  <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="gc-logo-name">Scout by FamilyForce</div>
+            </div>
+            <div class="gc-tier-pill" id="gcTierPill">1 Year · $49.99</div>
+          </div>
+          <div class="gc-mid">
+            <div class="gc-for" id="gcForLabel">🎁 A gift for</div>
+            <div class="gc-headline" id="gcHeadline">Sarah &amp; James</div>
+            <div class="gc-from-text" id="gcFrom">From Emma 💜</div>
+          </div>
+          <div class="gc-bot">
+            <div>
+              <div class="gc-code-lbl">Redemption code</div>
+              <div class="gc-code-val" id="gcCode">SCOUT-XXXX-XXXX</div>
+            </div>
+            <div class="gc-value-blk">
+              <div class="gc-value-lbl">Gift value</div>
+              <div class="gc-value-amt" id="gcValue"><sup>$</sup>49.99</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="success-actions">
+      <a href="#" class="btn-action btn-action-primary" id="printCardBtn" target="_blank">🖨️ Download printable card</a>
+      <button class="btn-action btn-action-secondary" onclick="copyShareMsg()">📋 Copy shareable message</button>
+    </div>
+
+    <div class="share-box">
+      <div class="share-box-label">Shareable message</div>
+      <p class="share-text" id="shareMessage"></p>
+      <button class="btn-copy" id="copyBtn" onclick="copyShareMsg()">Copy message</button>
+    </div>
+
+    <div class="referral-box" id="referralBox">
+      <div class="referral-label">Your reward</div>
+      <div class="referral-title">25% off your next Scout payment</div>
+      <p class="referral-desc">As a thank-you for gifting Scout — share with anyone or use it yourself.</p>
+      <div class="referral-code-row">
+        <div class="referral-code" id="successReferralCode"></div>
+        <button class="btn-copy-code" onclick="copyReferral()">Copy</button>
+      </div>
+    </div>
+  </div><!-- /successScreen -->
+
+
+  <!-- ══ REDEEM SCREEN ══ -->
+  <div id="redeemScreen">
+    <div class="redeem-header">
+      <div class="redeem-icon">🎁</div>
+      <h2 class="redeem-title">You received a gift!</h2>
+      <p class="redeem-sub">Enter your baby's details to activate your Scout subscription.</p>
+    </div>
+
+    <div class="redeem-code-box">
+      <div class="rcb-label">Gift code</div>
+      <div class="rcb-code" id="redeemCodeDisplay">—</div>
+    </div>
+
+    <div class="notice-yellow">
+      <p>👶 <strong>Baby not here yet?</strong> No rush — come back once they arrive. This code is valid for one year from the date of purchase.</p>
+    </div>
+    <div class="notice-purple">
+      <p>⏰ Gift codes are valid for <strong>one year from the date of purchase</strong>.</p>
+    </div>
+
+    <div class="form-card">
+      <div class="form-row">
+        <div class="form-field">
+          <label class="form-label" for="redeemChildName">Baby's first name</label>
+          <input class="form-input" type="text" id="redeemChildName" placeholder="Oliver" maxlength="50" autocomplete="off">
+        </div>
+        <div class="form-field">
+          <label class="form-label" for="redeemChildDob">Date of birth</label>
+          <input class="form-input" type="date" id="redeemChildDob">
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label" for="redeemChildGender">Gender <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(optional)</span></label>
+        <select class="form-input" id="redeemChildGender">
+          <option value="">Prefer not to say</option>
+          <option value="boy">Boy</option>
+          <option value="girl">Girl</option>
+        </select>
+      </div>
+      <p class="form-hint" style="margin-bottom:14px">Baby not born yet? Come back once they arrive — the code is valid for a full year.</p>
+      <div class="form-err" id="redeemErr"></div>
+      <button class="btn-submit" id="redeemBtn" onclick="submitRedeem()">Activate my Scout subscription →</button>
+      <p class="submit-note">You need a FamilyForce account to claim. <a href="/sign-in.html" style="color:var(--purple)">Sign in</a> or create one first.</p>
+    </div>
+  </div><!-- /redeemScreen -->
+
+</div><!-- /wrap -->
+
+<script>
+var SUPABASE_URL  = 'https://ewjqbafaxeasyvknxmof.supabase.co'
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+var STRIPE_PK     = 'pk_live_51TAQTQIbsOmqAIBV8VA8gQdscdslvnT5xLC7sRvPaoy0W4dMhat9OnPaBJZFKn7iq4MorTbvjcPoTIYoxbn1ACnx00HJEpmwFH'
+
+var PLAN_DATA = {
+  monthly:   { price: '$9.99',  tierPill: '1 Month · $9.99',       emoji: '💚', valueSup: '9.99',  css: 'gc-monthly',   forLabel: '🎁 A gift for' },
+  annual:    { price: '$49.99', tierPill: '1 Year · $49.99',        emoji: '💜', valueSup: '49.99', css: 'gc-annual',    forLabel: '🎁 A gift for' },
+  triennial: { price: '$99.99', tierPill: 'Full Journey · $99.99',  emoji: '✨', valueSup: '99.99', css: 'gc-triennial', forLabel: '🌟 A gift for' },
+}
+
+window._supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+var stripe     = null
+var stripeCard = null
+var selectedPlan = 'annual'
+var appliedPromo = null
+
+document.addEventListener('DOMContentLoaded', function () {
+  var params = new URLSearchParams(window.location.search)
+
+  if (params.get('redeem')) {
+    showRedeem(params.get('redeem')); return
+  }
+
+  // Pre-select plan from URL param
+  var planParam = params.get('plan')
+  if (planParam && PLAN_DATA[planParam]) {
+    selectPlan(planParam)
+  } else {
+    selectPlan('annual')
+  }
+
+  // Init Stripe
+  stripe = Stripe(STRIPE_PK)
+  var elements = stripe.elements()
+  stripeCard = elements.create('card', {
+    style: {
+      base: { fontFamily: "'Outfit', system-ui, sans-serif", fontSize: '14px', color: '#1D1D1F', '::placeholder': { color: '#8A879A' } },
+      invalid: { color: '#C0392B' }
+    }
+  })
+  stripeCard.mount('#stripeElement')
+  stripeCard.on('focus',  function () { document.getElementById('stripeWrap').classList.add('focused') })
+  stripeCard.on('blur',   function () { document.getElementById('stripeWrap').classList.remove('focused') })
+  stripeCard.on('change', function (e) {
+    var err = document.getElementById('formErr')
+    if (e.error) { err.style.display = 'block'; err.textContent = e.error.message }
+    else         { err.style.display = 'none' }
+  })
+
+  // Set today as max for redeem DOB
+  var dobEl = document.getElementById('redeemChildDob')
+  if (dobEl) dobEl.max = new Date().toISOString().split('T')[0]
+})
+
+function selectPlan(plan) {
+  selectedPlan = plan
+  ;['monthly','annual','triennial'].forEach(function (t) {
+    var el = document.getElementById('card-' + t)
+    if (!el) return
+    el.className = el.className.replace(/\s*sel-\w+/g, '')
+    el.setAttribute('aria-checked', 'false')
+  })
+  var sel = document.getElementById('card-' + plan)
+  if (sel) { sel.classList.add('sel-' + plan); sel.setAttribute('aria-checked', 'true') }
+  var btn = document.getElementById('submitBtn')
+  if (btn) btn.textContent = 'Send gift — ' + (appliedPromo ? appliedPromo.discountedDisplay : PLAN_DATA[plan].price) + ' →'
+}
+
+function applyPromo() {
+  var code   = document.getElementById('promoCode').value.trim().toUpperCase()
+  var status = document.getElementById('promoStatus')
+  if (!code) { status.innerHTML = '<span class="promo-err">Enter a promo code first.</span>'; return }
+  status.textContent = 'Checking…'
+  fetch(SUPABASE_URL + '/functions/v1/scout-gift-purchase', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'validate-coupon', code, plan: selectedPlan }),
+  })
+  .then(function (r) { return r.json() })
+  .then(function (d) {
+    if (!d.ok) {
+      appliedPromo = null; status.innerHTML = '<span class="promo-err">' + (d.error || 'Invalid code.') + '</span>'
+      selectPlan(selectedPlan); return
+    }
+    appliedPromo = d
+    status.innerHTML = '<span class="promo-ok">✓ ' + d.label + ' — new price: <strong>' + d.discountedDisplay + '</strong></span>'
+    document.getElementById('submitBtn').textContent = 'Send gift — ' + d.discountedDisplay + ' →'
+  })
+  .catch(function () { status.innerHTML = '<span class="promo-err">Could not validate. Try again.</span>' })
+}
+
+function submitGift() {
+  var buyerName   = document.getElementById('buyerName').value.trim()
+  var buyerEmail  = document.getElementById('buyerEmail').value.trim()
+  var recipName   = document.getElementById('recipientName').value.trim()
+  var recipEmail  = document.getElementById('recipientEmail').value.trim()
+  var personalMsg = document.getElementById('personalMsg').value.trim()
+  var errEl       = document.getElementById('formErr')
+  var btn         = document.getElementById('submitBtn')
+  var resetBtn    = function () {
+    btn.disabled    = false
+    btn.textContent = 'Send gift — ' + (appliedPromo ? appliedPromo.discountedDisplay : PLAN_DATA[selectedPlan].price) + ' →'
+  }
+
+  errEl.style.display = 'none'
+  if (!buyerName || !buyerEmail || !recipName || !recipEmail) {
+    errEl.style.display = 'block'; errEl.textContent = 'Please fill in all required fields.'; return
+  }
+  if (!buyerEmail.includes('@') || !recipEmail.includes('@')) {
+    errEl.style.display = 'block'; errEl.textContent = 'Please enter valid email addresses.'; return
+  }
+
+  btn.disabled = true; btn.textContent = 'Preparing payment…'
+
+  fetch(SUPABASE_URL + '/functions/v1/scout-gift-purchase', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: 'create-intent', buyerName, buyerEmail,
+      recipientName: recipName, recipientEmail: recipEmail, plan: selectedPlan,
+      stripeDiscountPromoId: appliedPromo ? appliedPromo.stripePromoId : undefined,
+    }),
+  })
+  .then(function (r) { return r.json() })
+  .then(function (intentData) {
+    if (!intentData.ok) {
+      errEl.style.display = 'block'; errEl.textContent = intentData.error || 'Could not prepare payment. Please try again.'
+      resetBtn(); return
+    }
+    btn.textContent = 'Authorising payment…'
+    stripe.confirmCardPayment(intentData.clientSecret, {
+      payment_method: { card: stripeCard, billing_details: { name: buyerName, email: buyerEmail } },
+    })
+    .then(function (result) {
+      if (result.error) {
+        errEl.style.display = 'block'; errEl.textContent = result.error.message || 'Payment failed.'
+        resetBtn(); return
+      }
+      if (result.paymentIntent.status !== 'succeeded') {
+        errEl.style.display = 'block'; errEl.textContent = 'Payment incomplete. Please try again.'
+        resetBtn(); return
+      }
+      btn.textContent = 'Sending gift…'
+      fetch(SUPABASE_URL + '/functions/v1/scout-gift-purchase', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'complete-purchase', paymentIntentId: result.paymentIntent.id,
+          buyerName, buyerEmail, recipientName: recipName, recipientEmail: recipEmail,
+          personalMessage: personalMsg || undefined, plan: selectedPlan,
+        }),
+      })
+      .then(function (r) { return r.json() })
+      .then(function (data) {
+        if (!data.ok) {
+          errEl.style.display = 'block'
+          errEl.textContent   = data.error || 'Gift could not be completed. Payment was taken — contact support@getfamilyforce.com.'
+          resetBtn(); return
+        }
+        showSuccess(data, { buyerName, recipName, recipEmail, personalMsg })
+      })
+      .catch(function () {
+        errEl.style.display = 'block'
+        errEl.textContent   = 'Payment successful but a network error occurred. Your code will arrive by email. Contact support@getfamilyforce.com if needed.'
+        resetBtn()
+      })
+    })
+  })
+  .catch(function () {
+    errEl.style.display = 'block'; errEl.textContent = 'Network error. Please try again.'
+    resetBtn()
+  })
+}
+
+function showSuccess(data, meta) {
+  document.getElementById('purchaseScreen').style.display = 'none'
+  document.getElementById('successScreen').style.display  = 'block'
+  window.scrollTo(0, 0)
+
+  var pd = PLAN_DATA[selectedPlan]
+  document.getElementById('successSub').textContent =
+    'A gift email is on its way to ' + meta.recipName + ' at ' + data.recipientEmail + '.'
+
+  var card = document.getElementById('giftCardRender')
+  card.className = 'gc-render ' + pd.css
+  document.getElementById('gcTierPill').textContent  = pd.tierPill
+  document.getElementById('gcForLabel').textContent  = pd.forLabel
+  document.getElementById('gcHeadline').textContent  = meta.recipName
+  document.getElementById('gcFrom').textContent      = 'From ' + meta.buyerName + ' ' + pd.emoji
+  document.getElementById('gcCode').textContent      = data.giftCode || 'SCOUT-XXXX-XXXX'
+  document.getElementById('gcValue').innerHTML       = '<sup>$</sup>' + pd.valueSup
+  if (selectedPlan === 'triennial') {
+    document.getElementById('gcLogoSvg').querySelectorAll('path').forEach(function (p) { p.setAttribute('stroke', '#F5E4B0') })
+  }
+
+  var printUrl = '/scout-gift-print.html?code=' + encodeURIComponent(data.giftCode || '') +
+    '&tier=' + selectedPlan + '&recipient=' + encodeURIComponent(meta.recipName) +
+    '&buyer=' + encodeURIComponent(meta.buyerName) + '&msg=' + encodeURIComponent(meta.personalMsg || '') +
+    '&price=' + encodeURIComponent(pd.price)
+  document.getElementById('printCardBtn').href = printUrl
+
+  var planDesc = { monthly: 'a month', annual: 'a full year', triennial: '3 full years — birth to age 3' }[selectedPlan]
+  var redeemUrl = 'https://getfamilyforce.com/scout-gift-checkout.html?redeem=' + (data.giftCode || '')
+  document.getElementById('shareMessage').textContent =
+    'Hey! I just got you ' + planDesc + ' of FamilyForce Scout — a monthly email that tracks what your baby needs at every developmental stage. Set it up here: ' + redeemUrl
+
+  if (data.referralCode) {
+    document.getElementById('successReferralCode').textContent = data.referralCode
+    document.getElementById('referralBox').style.display = 'block'
+  }
+}
+
+function copyShareMsg() {
+  var text = document.getElementById('shareMessage').textContent
+  var btn  = document.getElementById('copyBtn')
+  navigator.clipboard.writeText(text).then(function () {
+    btn.textContent = '✓ Copied!'; btn.classList.add('copied')
+    setTimeout(function () { btn.textContent = 'Copy message'; btn.classList.remove('copied') }, 2000)
+  }).catch(function () {
+    var ta = document.createElement('textarea'); ta.value = text
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta)
+    btn.textContent = '✓ Copied!'; setTimeout(function () { btn.textContent = 'Copy message' }, 2000)
+  })
+}
+
+function copyReferral() {
+  var code = document.getElementById('successReferralCode').textContent
+  navigator.clipboard.writeText(code).catch(function () {
+    var ta = document.createElement('textarea'); ta.value = code
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta)
+  })
+  var btn = document.querySelector('.btn-copy-code'); btn.textContent = '✓ Copied'
+  setTimeout(function () { btn.textContent = 'Copy' }, 2000)
+}
+
+function showRedeem(code) {
+  document.getElementById('purchaseScreen').style.display = 'none'
+  document.getElementById('redeemScreen').style.display   = 'block'
+  document.getElementById('redeemCodeDisplay').textContent = code.toUpperCase()
+  var dobEl = document.getElementById('redeemChildDob')
+  if (dobEl) dobEl.max = new Date().toISOString().split('T')[0]
+}
+
+function submitRedeem() {
+  var childName   = document.getElementById('redeemChildName').value.trim()
+  var childDob    = document.getElementById('redeemChildDob').value
+  var childGender = document.getElementById('redeemChildGender').value
+  var errEl       = document.getElementById('redeemErr')
+  var btn         = document.getElementById('redeemBtn')
+  var params      = new URLSearchParams(window.location.search)
+  var code        = params.get('redeem') || ''
+
+  errEl.style.display = 'none'
+  if (!childName || !childDob) {
+    errEl.style.display = 'block'; errEl.textContent = "Please enter your baby's name and date of birth."; return
+  }
+
+  btn.disabled = true; btn.textContent = 'Activating…'
+
+  window._supabaseClient.auth.getSession().then(function (sessionRes) {
+    var token = sessionRes.data && sessionRes.data.session && sessionRes.data.session.access_token
+    if (!token) {
+      window.location.href = '/sign-in.html?next=' + encodeURIComponent(window.location.href); return
+    }
+    fetch(SUPABASE_URL + '/functions/v1/scout-gift-redeem', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ code, childName, childDob, childGender: childGender || undefined }),
+    })
+    .then(function (r) { return r.json() })
+    .then(function (data) {
+      if (!data.ok) {
+        errEl.style.display = 'block'; errEl.textContent = data.error || 'Could not activate gift. Please try again.'
+        btn.disabled = false; btn.textContent = 'Activate my Scout subscription →'; return
+      }
+      window.location.href = '/scout-dashboard?welcome=gift'
+    })
+    .catch(function () {
+      errEl.style.display = 'block'; errEl.textContent = 'Network error. Please try again.'
+      btn.disabled = false; btn.textContent = 'Activate my Scout subscription →'
+    })
+  })
+}
+</script>
+</body>
+</html>
