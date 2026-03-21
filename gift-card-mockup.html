@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE — Scout Gift Card MOCKUP (Design Review Only)
+     NOT live. For jackhowdy review before implementation.
+     Shows: Standard (Annual) card + Premium (Full Journey) card
+     + printable layout + shareable image crop guide
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>MOCKUP — Scout Gift Card — FamilyForce</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+/* ── Design tokens ── */
+:root {
+  --bg:            #F4F1FB;
+  --surface:       #FFFFFF;
+  --border:        #E5E2EC;
+  --text:          #1D1D1F;
+  --text-mid:      #5C5960;
+  --text-dim:      #8A879A;
+  --purple:        #6E4ED6;
+  --purple-dark:   #5B3CC4;
+  --purple-tint:   #F0EBFF;
+  --purple-deep:   #3B1FA8;
+  --gold:          #C9962A;
+  --gold-light:    #F5E4B0;
+  --green:         #2D9B6F;
+  --sans:          'Outfit', sans-serif;
+  --serif:         'Instrument Serif', serif;
+  --card-w:        520px;
+  --card-h:        300px;
+  --card-radius:   20px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-family: var(--sans); background: var(--bg); color: var(--text); }
+body { min-height: 100vh; padding: 48px 24px 80px; }
+
+/* ── Page layout ── */
+.page-header {
+  text-align: center;
+  margin-bottom: 56px;
+}
+.page-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--purple);
+  background: var(--purple-tint);
+  padding: 5px 14px;
+  border-radius: 100px;
+  margin-bottom: 14px;
+}
+.page-title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 42px);
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.page-sub {
+  font-size: 15px;
+  color: var(--text-mid);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ── Section wrapper ── */
+.section {
+  max-width: 900px;
+  margin: 0 auto 72px;
+}
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.section-desc {
+  font-size: 14px;
+  color: var(--text-mid);
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+/* ── Card stage (centre + shadow) ── */
+.card-stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 24px;
+  background: linear-gradient(135deg, #EDE8FA 0%, #DFD8F5 100%);
+  border-radius: 24px;
+  margin-bottom: 12px;
+}
+.card-stage.dark {
+  background: linear-gradient(135deg, #1A0F3A 0%, #2D1870 100%);
+}
+
+/* ══════════════════════════════════════════
+   STANDARD GIFT CARD — Annual ($69.99)
+   Purple gradient, warm and bright
+══════════════════════════════════════════ */
+.gift-card {
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: var(--card-radius);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(78, 46, 180, 0.35), 0 4px 16px rgba(0,0,0,.12);
+  flex-shrink: 0;
+}
+
+/* Standard card background */
+.gift-card.standard {
+  background: linear-gradient(135deg, #7B5CE5 0%, #5B3CC4 55%, #3B1FA8 100%);
+}
+
+/* Premium card background — deep indigo + gold shimmer */
+.gift-card.premium {
+  background: linear-gradient(135deg, #1A0F3A 0%, #2D1870 50%, #1A0F3A 100%);
+}
+
+/* Decorative blobs / orbs */
+.card-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.standard .card-orb-1 {
+  width: 280px; height: 280px;
+  top: -100px; right: -80px;
+  background: radial-gradient(circle, rgba(255,255,255,.15) 0%, transparent 70%);
+}
+.standard .card-orb-2 {
+  width: 180px; height: 180px;
+  bottom: -60px; left: -40px;
+  background: radial-gradient(circle, rgba(167,139,250,.3) 0%, transparent 70%);
+}
+.premium .card-orb-1 {
+  width: 320px; height: 320px;
+  top: -120px; right: -100px;
+  background: radial-gradient(circle, rgba(201,150,42,.18) 0%, transparent 65%);
+}
+.premium .card-orb-2 {
+  width: 200px; height: 200px;
+  bottom: -80px; left: -50px;
+  background: radial-gradient(circle, rgba(201,150,42,.12) 0%, transparent 70%);
+}
+
+/* Subtle pattern overlay */
+.card-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,.06) 1px, transparent 0);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+/* Card content layout */
+.card-inner {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Top row: logo + tier badge */
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.card-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-logo-mark {
+  width: 28px;
+  height: 28px;
+  background: rgba(255,255,255,.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -.03em;
+}
+.card-logo-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255,255,255,.9);
+  letter-spacing: .02em;
+}
+.card-tier-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,.3);
+  color: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.1);
+  backdrop-filter: blur(4px);
+}
+.premium .card-tier-badge {
+  border-color: rgba(201,150,42,.6);
+  color: var(--gold-light);
+  background: rgba(201,150,42,.15);
+}
+
+/* Middle: main message */
+.card-middle { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 16px 0 8px; }
+.card-gift-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.6);
+  margin-bottom: 8px;
+}
+.card-headline {
+  font-family: var(--serif);
+  font-size: 22px;
+  line-height: 1.25;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.card-headline em { font-style: italic; }
+.card-from {
+  font-size: 13px;
+  color: rgba(255,255,255,.7);
+  font-style: italic;
+}
+.premium .card-from { color: var(--gold-light); opacity: .85; }
+
+/* Bottom row: code + value */
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.card-code-block {}
+.card-code-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+  margin-bottom: 4px;
+}
+.card-code {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  color: #fff;
+  font-family: var(--sans);
+}
+.premium .card-code { color: var(--gold-light); }
+.card-value-block { text-align: right; }
+.card-value-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+  margin-bottom: 2px;
+}
+.card-value {
+  font-size: 28px;
+  font-weight: 900;
+  color: rgba(255,255,255,.95);
+  letter-spacing: -.02em;
+}
+.card-value sup { font-size: 14px; vertical-align: super; font-weight: 700; }
+.premium .card-value { color: var(--gold-light); }
+
+/* Divider line */
+.card-divider {
+  position: absolute;
+  bottom: 72px;
+  left: 32px;
+  right: 32px;
+  height: 1px;
+  background: rgba(255,255,255,.12);
+  z-index: 3;
+}
+.premium .card-divider { background: rgba(201,150,42,.25); }
+
+/* ══════════════════════════════════════════
+   PRINTABLE CARD PREVIEW
+══════════════════════════════════════════ */
+.print-stage {
+  display: flex;
+  justify-content: center;
+  padding: 40px 24px;
+  background: #f0ede8;
+  border-radius: 24px;
+  margin-bottom: 12px;
+}
+.print-card {
+  width: 480px;
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,.12);
+  font-family: var(--sans);
+}
+.print-card-header {
+  background: linear-gradient(135deg, #7B5CE5, #5B3CC4);
+  padding: 28px 32px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.print-card-logo-area { display: flex; align-items: center; gap: 10px; }
+.print-logo-mark {
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,.2);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 900; color: #fff; letter-spacing: -.03em;
+}
+.print-logo-text { font-size: 16px; font-weight: 700; color: rgba(255,255,255,.95); }
+.print-plan-pill {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 5px 12px; border-radius: 100px;
+  background: rgba(255,255,255,.15);
+  color: rgba(255,255,255,.9);
+  border: 1px solid rgba(255,255,255,.25);
+}
+.print-card-body {
+  padding: 28px 32px;
+  border-bottom: 1px solid var(--border);
+}
+.print-to {
+  font-size: 11px; font-weight: 600; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-dim);
+  margin-bottom: 4px;
+}
+.print-recipient {
+  font-family: var(--serif);
+  font-size: 26px;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+.print-message {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.7;
+  font-style: italic;
+  border-left: 3px solid var(--purple-tint);
+  padding-left: 14px;
+  margin-bottom: 20px;
+}
+.print-headline {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+.print-desc {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.6;
+}
+.print-card-footer {
+  padding: 20px 32px;
+  background: var(--purple-tint);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.print-code-area {}
+.print-code-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--purple-dark);
+  margin-bottom: 4px;
+}
+.print-code-value {
+  font-size: 20px; font-weight: 800;
+  letter-spacing: .16em;
+  color: var(--purple-dark);
+}
+.print-redeem-area { text-align: right; }
+.print-redeem-label {
+  font-size: 10px; font-weight: 600;
+  color: var(--text-dim); margin-bottom: 3px;
+}
+.print-redeem-url {
+  font-size: 13px; font-weight: 700;
+  color: var(--purple-dark);
+}
+
+/* ══════════════════════════════════════════
+   SHAREABLE IMAGE PREVIEW (1:1 square)
+══════════════════════════════════════════ */
+.share-stage {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 40px 24px;
+  background: #1A1A2E;
+  border-radius: 24px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.share-image {
+  width: 260px;
+  height: 260px;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 16px 48px rgba(0,0,0,.5);
+  flex-shrink: 0;
+}
+/* Giver variant */
+.share-image.giver {
+  background: linear-gradient(145deg, #7B5CE5 0%, #3B1FA8 100%);
+}
+/* Recipient variant */
+.share-image.recipient {
+  background: linear-gradient(145deg, #2D9B6F 0%, #1A6B4A 100%);
+}
+.share-orb {
+  position: absolute;
+  border-radius: 50%;
+  width: 220px; height: 220px;
+  top: -80px; right: -60px;
+  background: radial-gradient(circle, rgba(255,255,255,.12) 0%, transparent 65%);
+}
+.share-pattern {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.07) 1px, transparent 0);
+  background-size: 20px 20px;
+}
+.share-inner {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.share-top { display: flex; justify-content: space-between; align-items: center; }
+.share-logo-text { font-size: 12px; font-weight: 700; color: rgba(255,255,255,.8); letter-spacing: .04em; }
+.share-icon { font-size: 22px; }
+.share-middle { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.share-eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: rgba(255,255,255,.6);
+  margin-bottom: 8px;
+}
+.share-headline {
+  font-family: var(--serif);
+  font-size: 20px;
+  line-height: 1.25;
+  color: #fff;
+}
+.share-headline em { font-style: italic; }
+.share-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+.share-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,.6);
+  line-height: 1.4;
+  max-width: 140px;
+}
+.share-badge {
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  color: rgba(255,255,255,.9);
+  padding: 5px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.share-label {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 12px;
+  color: rgba(255,255,255,.4);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* ── Notes ── */
+.mockup-note {
+  background: #FFFBEB;
+  border: 1px solid #F5D97A;
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-size: 13px;
+  color: #7A5A00;
+  margin-top: 12px;
+  line-height: 1.6;
+}
+.notes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 12px;
+}
+.note-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+}
+.note-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.note-card ul {
+  list-style: none;
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.7;
+}
+.note-card ul li::before { content: '→ '; color: var(--purple); font-weight: 600; }
+
+/* ── Responsive ── */
+@media (max-width: 580px) {
+  :root { --card-w: 340px; --card-h: 200px; --card-radius: 14px; }
+  .card-inner { padding: 18px 20px; }
+  .card-headline { font-size: 16px; }
+  .card-code { font-size: 14px; letter-spacing: .12em; }
+  .card-value { font-size: 22px; }
+  .print-card { width: 100%; }
+  .notes-grid { grid-template-columns: 1fr; }
+  .share-image { width: 200px; height: 200px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Page Header ── -->
+<div class="page-header">
+  <div class="page-label">⚠️ Design Mockup — Not Live</div>
+  <h1 class="page-title">Scout Gift Card</h1>
+  <p class="page-sub">Three deliverables: digital gift card (2 variants), printable card, and shareable social image. Review designs below.</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     1. STANDARD GIFT CARD — Annual ($69.99)
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">Deliverable 01</div>
+  <div class="section-title">Digital Gift Card — Standard (Annual, $69.99)</div>
+  <div class="section-desc">Delivered to the giver's inbox immediately after purchase. They forward it to the parents, or we send directly to the recipient's email. Shown at actual rendered size.</div>
+
+  <div class="card-stage">
+    <div class="gift-card standard">
+      <div class="card-orb card-orb-1"></div>
+      <div class="card-orb card-orb-2"></div>
+      <div class="card-pattern"></div>
+      <div class="card-divider"></div>
+      <div class="card-inner">
+        <div class="card-top">
+          <div class="card-logo">
+            <div class="card-logo-mark">FF</div>
+            <div class="card-logo-text">Scout by FamilyForce</div>
+          </div>
+          <div class="card-tier-badge">1 Year · $69.99</div>
+        </div>
+        <div class="card-middle">
+          <div class="card-gift-label">🎁 A gift for</div>
+          <div class="card-headline">Sarah &amp; James,<br><em>and little Arty</em></div>
+          <div class="card-from">With love from Emma &amp; Tom 💜</div>
+        </div>
+        <div class="card-bottom">
+          <div class="card-code-block">
+            <div class="card-code-label">Redemption code</div>
+            <div class="card-code">SCOUT-7K4M-R2PX</div>
+          </div>
+          <div class="card-value-block">
+            <div class="card-value-label">Gift value</div>
+            <div class="card-value"><sup>$</sup>69.99</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup-note">
+    📐 <strong>Specs:</strong> 520×300px rendered (2× for retina export). Purple gradient matches brand. Orb pattern is subtle depth layer. Redemption code is mono-spaced for easy copy. "FF" logo mark is a placeholder — swap for final SVG chevron.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     2. PREMIUM GIFT CARD — Full Journey ($99.99)
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">Deliverable 02</div>
+  <div class="section-title">Digital Gift Card — Premium (Full Journey, $99.99)</div>
+  <div class="section-desc">Deep indigo + gold treatment for the top tier. Feels premium and intentional — the "best gift at the shower" deserves a card that looks like it.</div>
+
+  <div class="card-stage dark">
+    <div class="gift-card premium">
+      <div class="card-orb card-orb-1"></div>
+      <div class="card-orb card-orb-2"></div>
+      <div class="card-pattern"></div>
+      <div class="card-divider"></div>
+      <div class="card-inner">
+        <div class="card-top">
+          <div class="card-logo">
+            <div class="card-logo-mark" style="background:rgba(201,150,42,.25); color: #F5E4B0;">FF</div>
+            <div class="card-logo-text" style="color: rgba(245,228,176,.9);">Scout by FamilyForce</div>
+          </div>
+          <div class="card-tier-badge">Full Journey · 3 Years</div>
+        </div>
+        <div class="card-middle">
+          <div class="card-gift-label" style="color:rgba(245,228,176,.6);">🌟 A gift for</div>
+          <div class="card-headline" style="color:#F5E4B0;">Sarah &amp; James,<br><em>and little Arty</em></div>
+          <div class="card-from" style="color:rgba(245,228,176,.7);">With love from Emma &amp; Tom ✨</div>
+        </div>
+        <div class="card-bottom">
+          <div class="card-code-block">
+            <div class="card-code-label" style="color:rgba(245,228,176,.45);">Redemption code</div>
+            <div class="card-code">SCOUT-9J2W-T8NQ</div>
+          </div>
+          <div class="card-value-block">
+            <div class="card-value-label" style="color:rgba(245,228,176,.45);">Gift value</div>
+            <div class="card-value"><sup>$</sup>99.99</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup-note">
+    ✨ <strong>Premium treatment:</strong> Deep indigo base with gold accents. Gold is reserved exclusively for the 3-year tier — creates visual hierarchy that makes the gift feel elevated. On email, this renders beautifully even in dark mode.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     3. PRINTABLE CARD
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">Deliverable 03</div>
+  <div class="section-title">Printable Gift Card</div>
+  <div class="section-desc">PDF delivered post-purchase. Designed to print on standard US letter or A4, cut down and slip inside a physical card or gift bag. Portrait greeting-card format.</div>
+
+  <div class="print-stage">
+    <div class="print-card">
+      <div class="print-card-header">
+        <div class="print-card-logo-area">
+          <div class="print-logo-mark">FF</div>
+          <div class="print-logo-text">Scout by FamilyForce</div>
+        </div>
+        <div class="print-plan-pill">1 Year Gift</div>
+      </div>
+      <div class="print-card-body">
+        <div class="print-to">A gift for</div>
+        <div class="print-recipient">Sarah &amp; James</div>
+        <div class="print-message">"I know how much those first years mean. I wanted you to have something that grows with Arty — every single month."</div>
+        <div class="print-headline">One year of Scout — your baby's monthly development guide.</div>
+        <div class="print-desc">On Arty's monthly birthday, you'll receive a personalised digest: what matters developmentally right now, what's coming next, and exactly what to do. For 12 months.</div>
+      </div>
+      <div class="print-card-footer">
+        <div class="print-code-area">
+          <div class="print-code-label">Your redemption code</div>
+          <div class="print-code-value">SCOUT-7K4M-R2PX</div>
+        </div>
+        <div class="print-redeem-area">
+          <div class="print-redeem-label">Redeem at</div>
+          <div class="print-redeem-url">getfamilyforce.com/redeem</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="mockup-note">
+    🖨️ <strong>Print specs:</strong> Designed at 480px wide (scales to 5×6.5" at 96dpi — fits in a standard envelope). PDF export via Puppeteer or html2canvas. The giver fills in the personal message at purchase; we pre-populate the card. Code + redemption URL always visible at bottom.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     4. SHAREABLE SOCIAL IMAGE (1:1 square)
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">Deliverable 04</div>
+  <div class="section-title">Shareable Image — Two Variants</div>
+  <div class="section-desc">1080×1080px (Instagram/WhatsApp/iMessage). Generated post-purchase for the giver, and post-activation for the recipient. Both auto-generated — no design work needed per user.</div>
+
+  <div class="share-stage">
+    <!-- Giver variant -->
+    <div>
+      <div class="share-image giver">
+        <div class="share-orb"></div>
+        <div class="share-pattern"></div>
+        <div class="share-inner">
+          <div class="share-top">
+            <div class="share-logo-text">Scout · FamilyForce</div>
+            <div class="share-icon">🎁</div>
+          </div>
+          <div class="share-middle">
+            <div class="share-eyebrow">I just gave</div>
+            <div class="share-headline">A year of<br><em>knowing exactly<br>what to do.</em></div>
+          </div>
+          <div class="share-bottom">
+            <div class="share-sub">For Sarah &amp; James and little Arty 💜</div>
+            <div class="share-badge">1 Year of Scout</div>
+          </div>
+        </div>
+      </div>
+      <div class="share-label">Giver variant</div>
+    </div>
+
+    <!-- Recipient variant -->
+    <div>
+      <div class="share-image recipient">
+        <div class="share-orb" style="background: radial-gradient(circle, rgba(255,255,255,.1) 0%, transparent 65%);"></div>
+        <div class="share-pattern"></div>
+        <div class="share-inner">
+          <div class="share-top">
+            <div class="share-logo-text">Scout · FamilyForce</div>
+            <div class="share-icon">🌱</div>
+          </div>
+          <div class="share-middle">
+            <div class="share-eyebrow">We're ready for</div>
+            <div class="share-headline">Every milestone,<br><em>every month,<br>for 3 years.</em></div>
+          </div>
+          <div class="share-bottom">
+            <div class="share-sub">Thanks to Emma &amp; Tom 💚</div>
+            <div class="share-badge">Scout activated</div>
+          </div>
+        </div>
+      </div>
+      <div class="share-label">Recipient variant</div>
+    </div>
+  </div>
+
+  <div class="mockup-note">
+    📸 <strong>Generation:</strong> Both images auto-generated server-side (html2canvas or Satori). Giver variant unlocks post-purchase; recipient variant unlocks post-activation. Names + tier pre-populated from order data. 1080×1080px PNG output.
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     5. BUILD REQUIREMENTS
+══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">What's Needed to Build</div>
+  <div class="section-title">Full Gift Flow — Build Checklist</div>
+  <div class="section-desc">Everything required to ship this from mockup to production.</div>
+
+  <div class="notes-grid">
+    <div class="note-card">
+      <div class="note-card-title">🗄️ Database</div>
+      <ul>
+        <li>scout_gifts table (code, tier, status, giver info, recipient info, redeemed_at)</li>
+        <li>generate_gift_code() function (unique, collision-safe)</li>
+        <li>RLS: giver can see own gifts; recipient can redeem by code</li>
+      </ul>
+    </div>
+    <div class="note-card">
+      <div class="note-card-title">💳 Stripe</div>
+      <ul>
+        <li>3 gift Price IDs: $9.99/mo · $69.99/yr · $99.99/3yr</li>
+        <li>Gift checkout session (no account required)</li>
+        <li>Webhook: payment_intent.succeeded → create gift record + send emails</li>
+      </ul>
+    </div>
+    <div class="note-card">
+      <div class="note-card-title">⚡ Edge Functions</div>
+      <ul>
+        <li>create-gift: Stripe checkout → gift record → send giver email</li>
+        <li>redeem-gift: validate code → create child profile → activate Scout</li>
+        <li>generate-card-image: html2canvas/Satori → PNG → attach to email</li>
+      </ul>
+    </div>
+    <div class="note-card">
+      <div class="note-card-title">📧 Emails (4 total)</div>
+      <ul>
+        <li>Giver confirmation + digital card + printable PDF + shareable image</li>
+        <li>Recipient gift notification (from giver, personalised message)</li>
+        <li>Recipient activation confirmation</li>
+        <li>Giver notification: "They activated your gift!"</li>
+      </ul>
+    </div>
+    <div class="note-card">
+      <div class="note-card-title">📄 Pages</div>
+      <ul>
+        <li>gift-checkout.html — purchase flow (name, message, schedule)</li>
+        <li>gift-confirm.html — post-purchase: download card, share image</li>
+        <li>redeem.html — recipient enters code + sets up child profile</li>
+      </ul>
+    </div>
+    <div class="note-card">
+      <div class="note-card-title">🖨️ PDF Generation</div>
+      <ul>
+        <li>Puppeteer (server-side) or Browserless.io for printable card PDF</li>
+        <li>Triggered on purchase, stored in Supabase Storage</li>
+        <li>Download link in giver confirmation email (expires 30 days)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
