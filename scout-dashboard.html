@@ -282,7 +282,17 @@
   _sb.auth.getSession().then(function(result) {
     if (!result.data || !result.data.session) {
       window.location.replace('/sign-in.html?next=' + encodeURIComponent(window.location.pathname));
+      return;
     }
+    // Validate session server-side — catches deleted users whose JWT hasn't expired yet
+    _sb.auth.getUser().then(function(userResult) {
+      if (userResult.error || !userResult.data || !userResult.data.user) {
+        // JWT exists locally but user doesn't exist on server — sign out and redirect
+        _sb.auth.signOut().then(function() {
+          window.location.replace('/sign-in.html');
+        });
+      }
+    });
   });
 })();
 </script>
