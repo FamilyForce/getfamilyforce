@@ -1789,6 +1789,277 @@ if (hamburger && mobileMenu) {
 }
 </script>
 
+<!-- Supabase SDK: self-hosted for WeChat/China reliability -->
+<script src="/assets/supabase.min.js"></script>
+
+<style>
+/* ── Signup Modal ── */
+.su-overlay {
+  display: none; position: fixed; inset: 0; z-index: 9000;
+  background: rgba(0,0,0,.55); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.su-overlay.open { display: flex; }
+.su-modal {
+  background: #fff; border-radius: 20px; width: 100%; max-width: 420px;
+  padding: 36px 32px 32px; position: relative;
+  box-shadow: 0 24px 64px rgba(0,0,0,.18);
+  animation: su-in .22s cubic-bezier(.16,1,.3,1);
+}
+@keyframes su-in { from { opacity:0; transform: translateY(16px) scale(.97); } }
+.su-close {
+  position: absolute; top: 16px; right: 16px;
+  background: none; border: none; cursor: pointer;
+  font-size: 20px; color: #aaa; line-height: 1; padding: 4px 8px;
+}
+.su-close:hover { color: #555; }
+.su-logo { display: flex; align-items: center; gap: 7px; margin-bottom: 20px; }
+.su-logo-mark {
+  width: 28px; height: 28px; background: var(--terra); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.su-logo-mark svg { width: 16px; height: 16px; display: block; }
+.su-logo-text { font-size: 14px; font-weight: 700; color: var(--text); }
+.su-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 6px; letter-spacing: -.02em; }
+.su-sub { font-size: 14px; color: #7A7787; margin-bottom: 24px; line-height: 1.5; }
+.su-field { margin-bottom: 14px; }
+.su-label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+.su-input {
+  width: 100%; padding: 12px 14px; border: 1.5px solid #E0DCF0;
+  border-radius: 10px; font-size: 15px; font-family: var(--sans);
+  color: var(--text); background: #fff; outline: none;
+  transition: border-color .15s;
+}
+.su-input:focus { border-color: var(--terra); }
+.su-btn {
+  width: 100%; padding: 14px; background: var(--terra); color: #fff;
+  border: none; border-radius: 100px; font-size: 16px; font-weight: 700;
+  font-family: var(--sans); cursor: pointer; margin-top: 8px;
+  transition: background .15s, transform .15s;
+}
+.su-btn:hover { background: var(--terra-dark); transform: translateY(-1px); }
+.su-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.su-error {
+  background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA;
+  border-radius: 8px; padding: 10px 13px; font-size: 13px;
+  margin-bottom: 14px; display: none; line-height: 1.45;
+}
+.su-success {
+  text-align: center; padding: 8px 0 4px;
+}
+.su-success-icon { font-size: 40px; margin-bottom: 12px; }
+.su-success-title { font-size: 19px; font-weight: 800; color: var(--text); margin-bottom: 8px; letter-spacing: -.01em; }
+.su-success-text { font-size: 14px; color: #7A7787; line-height: 1.6; }
+.su-toggle { text-align: center; margin-top: 16px; font-size: 13px; color: #7A7787; }
+.su-toggle a { color: var(--terra); font-weight: 600; text-decoration: none; cursor: pointer; }
+@media (max-width: 480px) {
+  .su-modal { padding: 28px 20px 24px; border-radius: 16px; }
+}
+</style>
+
+<!-- Signup Modal HTML -->
+<div class="su-overlay" id="su-overlay" role="dialog" aria-modal="true" aria-label="Create your free account">
+  <div class="su-modal" id="su-modal">
+    <button class="su-close" id="su-close" aria-label="Close">✕</button>
+    <div class="su-logo">
+      <div class="su-logo-mark">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round" fill="none"/></svg>
+      </div>
+      <span class="su-logo-text">Scout by FamilyForce</span>
+    </div>
+
+    <!-- Form state -->
+    <div id="su-form-wrap">
+      <div class="su-title" id="su-title">Create your free account</div>
+      <div class="su-sub" id="su-sub">Your baby's personalised guide — free to start.</div>
+      <div class="su-error" id="su-err"></div>
+      <div class="su-field">
+        <label class="su-label" for="su-email">Email address</label>
+        <input class="su-input" type="email" id="su-email" placeholder="you@example.com"
+          autocomplete="email" inputmode="email" spellcheck="false" autocapitalize="none">
+      </div>
+      <div class="su-field" id="su-pw-field">
+        <label class="su-label" for="su-pw">Password <span style="font-weight:400;color:#aaa">(8+ characters)</span></label>
+        <input class="su-input" type="password" id="su-pw" placeholder="Choose a password"
+          autocomplete="new-password">
+      </div>
+      <button class="su-btn" id="su-submit">Start for free →</button>
+      <div class="su-toggle" id="su-toggle">
+        Already have an account? <a id="su-switch">Sign in →</a>
+      </div>
+    </div>
+
+    <!-- Success state -->
+    <div id="su-done" style="display:none" class="su-success">
+      <div class="su-success-icon">📬</div>
+      <div class="su-success-title">Check your inbox</div>
+      <div class="su-success-text">
+        We've sent a confirmation link to <strong id="su-done-email"></strong>.<br>
+        Click it to activate your account — then come back here to sign in.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var _sb = null;
+  try {
+    _sb = supabase.createClient(
+      'https://ewjqbafaxeasyvknxmof.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+    );
+  } catch(e) {}
+
+  var ua = navigator.userAgent || '';
+  var isInApp = /MicroMessenger|FBAN|FBAV|Instagram|LinkedInApp|Line\/|Snapchat|Twitter|TikTok/i.test(ua);
+
+  function openModal(mode) {
+    var overlay = document.getElementById('su-overlay');
+    var title   = document.getElementById('su-title');
+    var sub     = document.getElementById('su-sub');
+    var pwField = document.getElementById('su-pw-field');
+    var btn     = document.getElementById('su-submit');
+    var toggle  = document.getElementById('su-toggle');
+    var done    = document.getElementById('su-done');
+    var formWrap= document.getElementById('su-form-wrap');
+
+    // Reset
+    done.style.display = 'none';
+    formWrap.style.display = 'block';
+    document.getElementById('su-err').style.display = 'none';
+    document.getElementById('su-err').textContent = '';
+
+    if (mode === 'signin') {
+      title.textContent = 'Welcome back';
+      sub.textContent   = 'Sign in to your account.';
+      pwField.querySelector('label').innerHTML = 'Password';
+      pwField.querySelector('input').autocomplete = 'current-password';
+      btn.textContent   = 'Sign in →';
+      toggle.innerHTML  = 'New here? <a id="su-switch">Create a free account →</a>';
+      overlay._mode     = 'signin';
+    } else {
+      title.textContent = 'Create your free account';
+      sub.textContent   = 'Your baby\'s personalised guide — free to start.';
+      pwField.querySelector('label').innerHTML = 'Password <span style="font-weight:400;color:#aaa">(8+ characters)</span>';
+      pwField.querySelector('input').autocomplete = 'new-password';
+      btn.textContent   = 'Start for free →';
+      toggle.innerHTML  = 'Already have an account? <a id="su-switch">Sign in →</a>';
+      overlay._mode     = 'signup';
+    }
+
+    // Re-bind toggle
+    var sw = document.getElementById('su-switch');
+    if (sw) sw.onclick = function(e) {
+      e.preventDefault();
+      openModal(overlay._mode === 'signin' ? 'signup' : 'signin');
+    };
+
+    overlay.classList.add('open');
+    setTimeout(function() {
+      var el = document.getElementById('su-email');
+      if (el) el.focus();
+    }, 80);
+  }
+
+  function closeModal() {
+    document.getElementById('su-overlay').classList.remove('open');
+  }
+
+  function showErr(msg) {
+    var el = document.getElementById('su-err');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  // ── In-app browser: intercept all sign-in links → open modal ──
+  if (isInApp) {
+    document.addEventListener('click', function(e) {
+      var a = e.target.closest('a');
+      if (!a) return;
+      var href = a.getAttribute('href') || '';
+      if (href.indexOf('sign-in') > -1) {
+        e.preventDefault();
+        var mode = href.indexOf('mode=signin') > -1 ? 'signin' : 'signup';
+        openModal(mode);
+      }
+    }, true);
+  }
+
+  // ── Modal close ──
+  document.getElementById('su-close').onclick = closeModal;
+  document.getElementById('su-overlay').onclick = function(e) {
+    if (e.target === this) closeModal();
+  };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // ── Form submit ──
+  document.getElementById('su-submit').onclick = async function() {
+    var email  = (document.getElementById('su-email').value || '').trim();
+    var pw     = (document.getElementById('su-pw').value || '');
+    var mode   = document.getElementById('su-overlay')._mode || 'signup';
+    var btn    = document.getElementById('su-submit');
+    var errEl  = document.getElementById('su-err');
+
+    errEl.style.display = 'none';
+    if (!email) { showErr('Please enter your email address.'); return; }
+    if (!pw || pw.length < 8) { showErr('Password must be at least 8 characters.'); return; }
+    if (!_sb) { showErr('Unable to connect. Please try again.'); return; }
+
+    btn.disabled = true;
+    btn.textContent = mode === 'signup' ? 'Creating account…' : 'Signing in…';
+
+    try {
+      if (mode === 'signup') {
+        var res = await _sb.auth.signUp({
+          email: email,
+          password: pw,
+          options: { emailRedirectTo: 'https://getfamilyforce.com/onboarding.html' }
+        });
+        if (res.error) throw res.error;
+        // Show success / check email
+        document.getElementById('su-form-wrap').style.display = 'none';
+        document.getElementById('su-done-email').textContent = email;
+        document.getElementById('su-done').style.display = 'block';
+        if (typeof gtag === 'function') gtag('event', 'signup_modal_success', { method: 'email' });
+      } else {
+        var res = await _sb.auth.signInWithPassword({ email: email, password: pw });
+        if (res.error) throw res.error;
+        window.location.href = '/onboarding.html';
+      }
+    } catch(err) {
+      var msg = (err && err.message) || 'Something went wrong. Please try again.';
+      if (msg.toLowerCase().indexOf('already registered') > -1) {
+        msg = 'An account with this email already exists. <a id="su-try-signin" style="color:var(--terra);font-weight:600;text-decoration:none;cursor:pointer">Sign in instead →</a>';
+        showErr('');
+        var el = document.getElementById('su-err');
+        el.innerHTML = msg;
+        el.style.display = 'block';
+        var link = document.getElementById('su-try-signin');
+        if (link) link.onclick = function(e){ e.preventDefault(); openModal('signin'); };
+      } else {
+        showErr(msg);
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = mode === 'signup' ? 'Start for free →' : 'Sign in →';
+    }
+  };
+
+  // Allow Enter key to submit
+  ['su-email','su-pw'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') document.getElementById('su-submit').click();
+    });
+  });
+
+  // Expose for external use
+  window.openSignupModal = openModal;
+})();
+</script>
 <script src="/assets/inapp-browser.js"></script>
 </body>
 </html>
