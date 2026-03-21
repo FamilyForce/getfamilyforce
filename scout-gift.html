@@ -639,6 +639,17 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
         <div class="rcd-code" id="redeemCodeDisplay">—</div>
       </div>
 
+      <!-- Pre-birth holding message -->
+      <div id="prebirth-notice" style="display:none;background:#FFFBEB;border:1.5px solid #F5D97A;border-radius:14px;padding:16px 20px;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto">
+        <p style="font-size:14px;font-weight:700;color:#7A5A00;margin:0 0 6px">👶 Baby not here yet? That's fine.</p>
+        <p style="font-size:14px;color:#7A5A00;margin:0;line-height:1.65">Hold on to this email and come back once your baby arrives. Your gift code is valid for one year — there's no rush.</p>
+      </div>
+
+      <!-- Expiry notice -->
+      <div style="background:var(--terra-tint);border:1.5px solid rgba(110,78,214,.15);border-radius:14px;padding:14px 18px;margin-bottom:24px;max-width:480px;margin-left:auto;margin-right:auto">
+        <p style="font-size:13px;color:var(--terra);margin:0;line-height:1.6">⏰ This gift code is valid for <strong>one year from the date it was purchased</strong>. Activate any time before it expires.</p>
+      </div>
+
       <div class="form-section" style="max-width:480px;margin:0 auto 16px;">
         <div class="form-row">
           <div class="form-field">
@@ -647,7 +658,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
           </div>
           <div class="form-field">
             <label class="form-label" for="redeemChildDob">Date of birth</label>
-            <input class="form-input" type="date" id="redeemChildDob">
+            <input class="form-input" type="date" id="redeemChildDob" max="">
           </div>
         </div>
         <div class="form-field">
@@ -658,6 +669,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
             <option value="girl">Girl</option>
           </select>
         </div>
+        <p class="form-hint" style="margin-bottom:14px">Baby not born yet? Hold on to this page and come back once they arrive — the code is valid for one year.</p>
         <div class="form-err" id="redeemErr"></div>
         <button class="btn-submit" id="redeemBtn" onclick="submitRedeem()">Activate my Scout subscription →</button>
         <p class="submit-note" style="margin-top:10px">You need a FamilyForce account to claim. <a href="/sign-in.html" style="color:var(--terra)">Sign in</a> or create one first.</p>
@@ -763,70 +775,111 @@ function applyPromo() {
   .catch(function () { status.innerHTML = '<span class="promo-err">Could not validate. Try again.</span>' })
 }
 
-// ── Submit gift ────────────────────────────────────────────────────────────
+// ── Submit gift — 3DS-safe two-step flow ──────────────────────────────────
+// Step 1: create-intent  → get clientSecret from server
+// Step 2: stripe.confirmCardPayment(clientSecret) → handles 3DS natively
+// Step 3: complete-purchase → server creates gift record + sends emails
 function submitGift() {
-  var buyerName    = document.getElementById('buyerName').value.trim()
-  var buyerEmail   = document.getElementById('buyerEmail').value.trim()
-  var recipName    = document.getElementById('recipientName').value.trim()
-  var recipEmail   = document.getElementById('recipientEmail').value.trim()
-  var personalMsg  = document.getElementById('personalMsg').value.trim()
-  var errEl        = document.getElementById('formErr')
-  var btn          = document.getElementById('submitBtn')
+  var buyerName   = document.getElementById('buyerName').value.trim()
+  var buyerEmail  = document.getElementById('buyerEmail').value.trim()
+  var recipName   = document.getElementById('recipientName').value.trim()
+  var recipEmail  = document.getElementById('recipientEmail').value.trim()
+  var personalMsg = document.getElementById('personalMsg').value.trim()
+  var errEl       = document.getElementById('formErr')
+  var btn         = document.getElementById('submitBtn')
+  var resetBtn    = function () {
+    btn.disabled    = false
+    btn.textContent = 'Send gift — ' + (appliedPromo ? appliedPromo.discountedDisplay : PLAN_DATA[selectedPlan].price) + ' →'
+  }
 
   errEl.style.display = 'none'
   if (!buyerName || !buyerEmail || !recipName || !recipEmail) {
-    errEl.style.display = 'block'
-    errEl.textContent   = 'Please fill in all required fields.'
-    return
+    errEl.style.display = 'block'; errEl.textContent = 'Please fill in all required fields.'; return
   }
-  if (!recipEmail.includes('@')) {
-    errEl.style.display = 'block'
-    errEl.textContent   = 'Please enter a valid recipient email.'
-    return
+  if (!buyerEmail.includes('@') || !recipEmail.includes('@')) {
+    errEl.style.display = 'block'; errEl.textContent = 'Please enter valid email addresses.'; return
   }
 
   btn.disabled    = true
-  btn.textContent = 'Processing…'
+  btn.textContent = 'Preparing payment…'
 
-  stripe.createPaymentMethod({ type: 'card', card: stripeCard })
-  .then(function (result) {
-    if (result.error) {
+  // Step 1: create-intent (no card charged yet)
+  fetch(SUPABASE_URL + '/functions/v1/scout-gift-purchase', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action:                'create-intent',
+      buyerName,             buyerEmail,
+      recipientName:         recipName,
+      recipientEmail:        recipEmail,
+      plan:                  selectedPlan,
+      stripeDiscountPromoId: appliedPromo ? appliedPromo.stripePromoId : undefined,
+    }),
+  })
+  .then(function (r) { return r.json() })
+  .then(function (intentData) {
+    if (!intentData.ok) {
       errEl.style.display = 'block'
-      errEl.textContent   = result.error.message
-      btn.disabled        = false
-      btn.textContent     = 'Send gift — ' + (appliedPromo ? appliedPromo.discountedDisplay : PLAN_DATA[selectedPlan].price) + ' →'
-      return
+      errEl.textContent   = intentData.error || 'Could not prepare payment. Please try again.'
+      resetBtn(); return
     }
-    fetch(SUPABASE_URL + '/functions/v1/scout-gift-purchase', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        buyerName, buyerEmail,
-        recipientName:  recipName,
-        recipientEmail: recipEmail,
-        personalMessage: personalMsg || undefined,
-        plan:            selectedPlan,
-        paymentMethodId: result.paymentMethod.id,
-        promoCode:       appliedPromo ? document.getElementById('promoCode').value.trim().toUpperCase() : undefined,
-        stripePromoId:   appliedPromo ? appliedPromo.stripePromoId : undefined,
-      }),
+
+    btn.textContent = 'Authorising payment…'
+
+    // Step 2: confirm card — handles 3DS natively if required
+    stripe.confirmCardPayment(intentData.clientSecret, {
+      payment_method: {
+        card: stripeCard,
+        billing_details: { name: buyerName, email: buyerEmail },
+      },
     })
-    .then(function (r) { return r.json() })
-    .then(function (data) {
-      if (!data.ok) {
+    .then(function (result) {
+      if (result.error) {
         errEl.style.display = 'block'
-        errEl.textContent   = data.error || 'Payment failed. Please try again.'
-        btn.disabled        = false
-        btn.textContent     = 'Send gift — ' + (appliedPromo ? appliedPromo.discountedDisplay : PLAN_DATA[selectedPlan].price) + ' →'
-        return
+        errEl.textContent   = result.error.message || 'Payment failed. Please try again.'
+        resetBtn(); return
       }
-      showSuccess(data, { buyerName, recipName, recipEmail, personalMsg })
+      if (result.paymentIntent.status !== 'succeeded') {
+        errEl.style.display = 'block'
+        errEl.textContent   = 'Payment incomplete. Please try again.'
+        resetBtn(); return
+      }
+
+      btn.textContent = 'Sending gift…'
+
+      // Step 3: complete purchase (idempotent — safe to retry on network error)
+      fetch(SUPABASE_URL + '/functions/v1/scout-gift-purchase', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action:          'complete-purchase',
+          paymentIntentId: result.paymentIntent.id,
+          buyerName,       buyerEmail,
+          recipientName:   recipName,
+          recipientEmail:  recipEmail,
+          personalMessage: personalMsg || undefined,
+          plan:            selectedPlan,
+        }),
+      })
+      .then(function (r) { return r.json() })
+      .then(function (data) {
+        if (!data.ok) {
+          errEl.style.display = 'block'
+          errEl.textContent   = data.error || 'Gift could not be created. Payment was taken — please contact support@getfamilyforce.com.'
+          resetBtn(); return
+        }
+        showSuccess(data, { buyerName, recipName, recipEmail, personalMsg })
+      })
+      .catch(function () {
+        // Payment succeeded but completion call failed — tell user to contact us
+        errEl.style.display = 'block'
+        errEl.textContent   = 'Payment successful but we hit a network error. Your gift code will arrive by email shortly. If not, contact support@getfamilyforce.com with your order.'
+        resetBtn()
+      })
     })
-    .catch(function () {
-      errEl.style.display = 'block'
-      errEl.textContent   = 'Network error. Please try again.'
-      btn.disabled        = false
-      btn.textContent     = 'Send gift — ' + (appliedPromo ? appliedPromo.discountedDisplay : PLAN_DATA[selectedPlan].price) + ' →'
-    })
+  })
+  .catch(function () {
+    errEl.style.display = 'block'
+    errEl.textContent   = 'Network error. Please try again.'
+    resetBtn()
   })
 }
 
@@ -916,6 +969,14 @@ function showRedeem(code) {
   document.getElementById('purchaseScreen').style.display = 'none'
   document.getElementById('redeemScreen').style.display   = 'block'
   document.getElementById('redeemCodeDisplay').textContent = code.toUpperCase()
+
+  // Set max date on DOB picker to today (can't be born in the future)
+  var today = new Date().toISOString().split('T')[0]
+  var dobEl = document.getElementById('redeemChildDob')
+  if (dobEl) dobEl.max = today
+
+  // Show pre-birth notice if ?expecting=1 param or just always show it inline
+  // (it's helpful regardless — baby may just have arrived)
 }
 
 function submitRedeem() {
