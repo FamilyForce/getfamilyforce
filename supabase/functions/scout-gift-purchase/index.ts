@@ -31,8 +31,8 @@ const CORS = {
 }
 
 const PRICES = {
-  annual:     { amount: 7999,  display: '$79.99',  label: '1-year Scout subscription',  months: 12 },
-  triennial: { amount: 19999, display: '$199.99', label: '3-year Scout subscription',  months: 36 },
+  annual:    { amount: 4999,  display: '$49.99',  label: '1-year Scout subscription',  months: 12 },
+  triennial: { amount: 9999,  display: '$99.99',  label: '3-year Scout subscription',  months: 36 },
   monthly:   { amount:  999,  display: '$9.99',   label: '1-month Scout subscription', months: 1  },
 }
 

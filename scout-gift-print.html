@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE SCOUT — Printable Gift Card
+     URL params: code, tier, recipient, buyer, msg, price
+     Print-optimised. No nav, no JS dependencies.
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scout Gift Card — FamilyForce</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --sans:       'Outfit', system-ui, sans-serif;
+  --serif:      'Instrument Serif', Georgia, serif;
+  --teal:       #0E9E8A;
+  --teal-dark:  #0A7A6A;
+  --teal-tint:  #E6FAF8;
+  --purple:     #6E4ED6;
+  --purple-dk:  #5B3CC4;
+  --purple-tint:#F0EBFF;
+  --gold:       #C9962A;
+  --gold-light: #F5E4B0;
+  --indigo:     #1A0F3A;
+  --border:     #E5E2EC;
+  --text:       #1D1D1F;
+  --text-mid:   #5C5960;
+  --text-dim:   #8A879A;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-family: var(--sans); background: #F0EDE8; }
+body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 40px 24px 60px; }
+
+/* ── Screen chrome (hidden at print) ── */
+.screen-header {
+  width: 100%; max-width: 360px; text-align: center; margin-bottom: 24px;
+}
+.screen-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.screen-sub { font-size: 13px; color: var(--text-mid); margin-bottom: 18px; line-height: 1.55; }
+.btn-print {
+  display: inline-block; padding: 12px 28px;
+  background: var(--purple); color: #fff;
+  border: none; border-radius: 100px; font-family: var(--sans);
+  font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
+  margin-bottom: 6px;
+}
+
+/* ── Print card ── */
+.print-card {
+  width: 320px; background: #fff; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.06);
+  font-family: var(--sans);
+}
+
+/* Header band */
+.ph { padding: 20px 22px 18px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; }
+.ph-monthly   { background: linear-gradient(135deg, #12B5A0, #0A7A6A); }
+.ph-annual    { background: linear-gradient(135deg, #7B5CE5, #5B3CC4); }
+.ph-triennial { background: linear-gradient(135deg, #1A0F3A, #2D1870); }
+.ph-orb {
+  position: absolute; width: 120px; height: 120px; border-radius: 50%;
+  top: -40px; right: -30px; pointer-events: none;
+}
+.ph-monthly   .ph-orb { background: radial-gradient(circle, rgba(255,255,255,.18) 0%, transparent 65%); }
+.ph-annual    .ph-orb { background: radial-gradient(circle, rgba(255,255,255,.15) 0%, transparent 65%); }
+.ph-triennial .ph-orb { background: radial-gradient(circle, rgba(201,150,42,.2) 0%, transparent 65%); }
+.ph-logo { display: flex; align-items: center; gap: 7px; position: relative; z-index: 2; }
+.ph-logo-icon {
+  width: 27px; height: 27px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.ph-monthly .ph-logo-icon, .ph-annual .ph-logo-icon { background: rgba(255,255,255,.2); }
+.ph-triennial .ph-logo-icon { background: rgba(201,150,42,.25); }
+.ph-logo-icon svg { width: 16px; height: 16px; display: block; }
+.ph-logo-name { font-size: 13px; font-weight: 700; }
+.ph-monthly .ph-logo-name, .ph-annual .ph-logo-name { color: rgba(255,255,255,.95); }
+.ph-triennial .ph-logo-name { color: rgba(245,228,176,.9); }
+.ph-pill {
+  font-size: 9px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 100px; position: relative; z-index: 2;
+}
+.ph-monthly .ph-pill  { background: rgba(255,255,255,.15); color: rgba(255,255,255,.9); border: 1px solid rgba(255,255,255,.25); }
+.ph-annual  .ph-pill  { background: rgba(255,255,255,.15); color: rgba(255,255,255,.9); border: 1px solid rgba(255,255,255,.25); }
+.ph-triennial .ph-pill { background: rgba(201,150,42,.2); color: var(--gold-light); border: 1px solid rgba(201,150,42,.4); }
+
+/* Body */
+.pb { padding: 20px 22px 16px; border-bottom: 1px solid var(--border); }
+.pb-to { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+.pb-recipient { font-family: var(--serif); font-size: 21px; color: var(--text); margin-bottom: 12px; }
+.pb-msg {
+  font-size: 13px; color: var(--text-mid); line-height: 1.65; font-style: italic;
+  border-left: 3px solid; padding-left: 11px; margin-bottom: 14px;
+}
+.pb-msg-monthly   { border-color: #9FE5DC; }
+.pb-msg-annual    { border-color: #C4B5F5; }
+.pb-msg-triennial { border-color: var(--gold-light); }
+.pb-no-msg { display: none; }
+.pb-desc { font-size: 12px; color: var(--text-mid); line-height: 1.6; }
+
+/* Footer */
+.pf { padding: 14px 22px; display: flex; justify-content: space-between; align-items: center; }
+.pf-monthly   { background: var(--teal-tint); }
+.pf-annual    { background: var(--purple-tint); }
+.pf-triennial { background: var(--indigo); }
+.pf-code-lbl { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 3px; }
+.pf-monthly .pf-code-lbl, .pf-annual .pf-code-lbl { color: var(--text-dim); }
+.pf-triennial .pf-code-lbl { color: rgba(245,228,176,.45); }
+.pf-code-val { font-size: 15px; font-weight: 800; letter-spacing: .14em; }
+.pf-monthly .pf-code-val   { color: var(--teal-dark); }
+.pf-annual  .pf-code-val   { color: var(--purple-dk); }
+.pf-triennial .pf-code-val { color: var(--gold-light); }
+.pf-url-side { text-align: right; }
+.pf-url-lbl { font-size: 9px; font-weight: 600; margin-bottom: 2px; }
+.pf-monthly .pf-url-lbl, .pf-annual .pf-url-lbl { color: var(--text-dim); }
+.pf-triennial .pf-url-lbl { color: rgba(245,228,176,.4); }
+.pf-url-val { font-size: 11px; font-weight: 700; }
+.pf-monthly .pf-url-val   { color: var(--teal-dark); }
+.pf-annual  .pf-url-val   { color: var(--purple-dk); }
+.pf-triennial .pf-url-val { color: var(--gold-light); }
+
+/* ── Print styles ── */
+@media print {
+  html, body { background: #fff; padding: 0; margin: 0; }
+  .screen-header { display: none !important; }
+  .print-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    width: 100%;
+    max-width: 320px;
+    border-radius: 12px;
+    page-break-inside: avoid;
+  }
+  body { display: block; padding: 20mm 20mm; }
+}
+</style>
+</head>
+<body>
+
+<div class="screen-header">
+  <div class="screen-title">Printable Gift Card</div>
+  <p class="screen-sub">Print this card and pop it in an envelope, or save it as a PDF. The recipient uses the code at the bottom to activate their Scout subscription.</p>
+  <button class="btn-print" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<div class="print-card" id="printCard">
+
+  <!-- Header (tier band) -->
+  <div class="ph" id="ph">
+    <div class="ph-orb"></div>
+    <div class="ph-logo">
+      <div class="ph-logo-icon">
+        <svg viewBox="0 0 32 32" fill="none" id="phSvg">
+          <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="ph-logo-name" id="phName">Scout by FamilyForce</div>
+    </div>
+    <div class="ph-pill" id="phPill">1 Year Gift</div>
+  </div>
+
+  <!-- Body -->
+  <div class="pb" id="pb">
+    <div class="pb-to">A gift for</div>
+    <div class="pb-recipient" id="pbRecipient">Sarah &amp; James</div>
+    <div class="pb-msg" id="pbMsg" style="display:none"></div>
+    <div class="pb-desc" id="pbDesc">One year of Scout — personalised monthly digests, 196+ developmental milestone windows, from birth through the first year.</div>
+  </div>
+
+  <!-- Footer (code) -->
+  <div class="pf" id="pf">
+    <div>
+      <div class="pf-code-lbl">Redemption code</div>
+      <div class="pf-code-val" id="pfCode">SCOUT-XXXX-XXXX</div>
+    </div>
+    <div class="pf-url-side">
+      <div class="pf-url-lbl">Redeem at</div>
+      <div class="pf-url-val">getfamilyforce.com/redeem</div>
+    </div>
+  </div>
+
+</div><!-- /print-card -->
+
+<script>
+(function () {
+  var p = new URLSearchParams(window.location.search)
+  var code      = (p.get('code') || 'SCOUT-XXXX-XXXX').toUpperCase()
+  var tier      = p.get('tier') || 'annual'
+  var recipient = p.get('recipient') || 'Your new arrival'
+  var buyer     = p.get('buyer') || ''
+  var msg       = p.get('msg') || ''
+  var price     = p.get('price') || '$49.99'
+
+  var TIERS = {
+    monthly:   { pill: '1 Month Gift', desc: 'One month of Scout — your baby\'s personalised development guide, delivered on their monthly birthday.', pill2: 'Starter · $9.99' },
+    annual:    { pill: '1 Year Gift',  desc: 'One year of Scout — 12 personalised monthly digests, 196+ milestone windows, from birth through the first year.', pill2: '1 Year · $49.99' },
+    triennial: { pill: 'Full Journey', desc: 'Three full years of Scout — birth through age 3. 36 personalised monthly digests covering every developmental milestone.', pill2: 'Full Journey · $99.99' },
+  }
+  var td = TIERS[tier] || TIERS.annual
+
+  // Apply tier classes
+  var ph = document.getElementById('ph')
+  var pb = document.getElementById('pb')
+  var pf = document.getElementById('pf')
+  ph.className = 'ph ph-' + tier
+  pf.className = 'pf pf-' + tier
+
+  // Pill
+  document.getElementById('phPill').textContent = td.pill
+  document.title = 'Scout Gift Card — ' + td.pill + ' — FamilyForce'
+
+  // Triennial logo colour
+  if (tier === 'triennial') {
+    document.getElementById('phSvg').querySelectorAll('path').forEach(function (p) {
+      p.setAttribute('stroke', '#F5E4B0')
+    })
+  }
+
+  // Recipient
+  document.getElementById('pbRecipient').textContent = recipient
+
+  // Message
+  var msgEl = document.getElementById('pbMsg')
+  if (msg) {
+    msgEl.style.display = 'block'
+    msgEl.textContent   = '"' + msg + '"'
+    msgEl.className     = 'pb-msg pb-msg-' + tier
+  } else {
+    // Default message per tier
+    var defaults = {
+      monthly:   'Thought you\'d love having a guide for the first month — enjoy every second of it.',
+      annual:    'I wanted you to have something that grows with your baby — every single month for a year.',
+      triennial: 'I\'ve covered you for the whole journey — birth to age three, every single month.',
+    }
+    msgEl.style.display = 'block'
+    msgEl.textContent   = '"' + (defaults[tier] || defaults.annual) + '"'
+    msgEl.className     = 'pb-msg pb-msg-' + tier
+  }
+
+  // Description
+  document.getElementById('pbDesc').textContent = td.desc
+
+  // Code
+  document.getElementById('pfCode').textContent = code
+})()
+</script>
+</body>
+</html>
