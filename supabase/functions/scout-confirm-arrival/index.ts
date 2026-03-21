@@ -204,6 +204,101 @@ Deno.serve(async (req: Request) => {
       telegramAlert(`Failed to trigger post-birth digest for user ${userId}: ${e.message}`)
     })
 
+    // 10. Gifter notification — if a scout_gift was redeemed for this child, notify the buyer
+    step = 'gifter-notify'
+    try {
+      const { data: gift } = await sb
+        .from('scout_gifts')
+        .select('id, buyer_name, buyer_email, recipient_name, plan')
+        .eq('child_id', childId)
+        .not('buyer_email', 'is', null)
+        .maybeSingle()
+
+      if (gift?.buyer_email) {
+        const resendKey  = Deno.env.get('RESEND_API_KEY')!
+        const fromEmail  = Deno.env.get('RESEND_FROM_EMAIL') ?? 'scout@getfamilyforce.com'
+        const fromName   = Deno.env.get('RESEND_FROM_NAME')  ?? 'FamilyForce'
+        const siteUrl    = Deno.env.get('SITE_URL')           ?? 'https://getfamilyforce.com'
+        const bccEmail   = Deno.env.get('RESEND_BCC_EMAIL')  ?? ''
+        const planLabel  = gift.plan === '3year' ? 'Full Journey (3 Years)' : gift.plan === 'annual' ? '1 Year of Scout' : '1 Month of Scout'
+        const dobFmt     = realDobDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+        const recipName  = gift.recipient_name || 'the family'
+        const buyerGreet = gift.buyer_name ? `Hi ${gift.buyer_name},` : 'Hi there,'
+
+        const giftHtml = `<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${child.name} has arrived — your Scout gift just activated</title>
+<style>body{margin:0;padding:0;background:#F7F5FF;font-family:Arial,sans-serif}</style>
+</head>
+<body style="margin:0;padding:0;background:#F7F5FF">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all">${recipName} confirmed their baby arrived. Your gift is now active.&nbsp;‌&nbsp;‌&nbsp;‌&nbsp;‌</div>
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F7F5FF">
+<tr><td align="center" style="padding:32px 16px">
+<table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;border-radius:20px;overflow:hidden;border:1px solid #E5E2EC">
+<tr><td style="background:#2D9B6F;padding:32px 36px 36px">
+  <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0 0 20px">Scout by FamilyForce</p>
+  <p style="font-family:Georgia,serif;font-size:30px;color:#fff;margin:0 0 10px;line-height:1.2">${child.name} has arrived. 🎉</p>
+  <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.65);margin:0">Your Scout gift just activated.</p>
+</td></tr>
+<tr><td style="background:#FFFFFF;padding:32px 36px">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="padding-bottom:24px">
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:#1D1D1F;margin:0 0 12px;font-weight:600">${buyerGreet}</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:#5C5960;margin:0 0 10px;line-height:1.75">${recipName}'s baby <strong>${child.name}</strong> arrived on <strong>${dobFmt}</strong>. Your gift of <strong>${planLabel}</strong> is now active.</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:#5C5960;margin:0;line-height:1.75">They'll receive their first personalised Scout digest on ${child.name}'s monthly birthday. What a gift.</p>
+</td></tr>
+<tr><td style="padding-bottom:32px">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#E6FAF8;border-radius:14px">
+  <tr><td style="padding:20px 22px">
+    <p style="font-family:Arial,sans-serif;font-size:13px;font-weight:700;color:#2D9B6F;text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px">What happens next</p>
+    <p style="font-family:Arial,sans-serif;font-size:14px;color:#1D1D1F;margin:0;line-height:1.7">Scout will send <strong>${recipName}</strong> a personalised monthly guide on ${child.name}'s birthday each month — what matters developmentally right now, what's coming next, and exactly what to do.</p>
+  </td></tr></table>
+</td></tr>
+<tr><td style="border-top:1px solid #E5E2EC;padding-top:24px">
+  <p style="font-family:Arial,sans-serif;font-size:14px;color:#1D1D1F;margin:0 0 2px;font-weight:600">Jack Hartley</p>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#8A879A;margin:0">Dad of two · Founder, FamilyForce</p>
+</td></tr>
+</table></td></tr>
+<tr><td style="background:#F7F5FF;padding:20px 36px;border-top:1px solid #E5E2EC">
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:#8A879A;margin:0">FamilyForce · ${siteUrl}</p>
+</td></tr>
+</table></td></tr></table>
+</body></html>`
+
+        const notifyBody: Record<string, unknown> = {
+          from:    `${fromName} <${fromEmail}>`,
+          to:      [gift.buyer_email],
+          subject: `${child.name} has arrived — your Scout gift just activated 🎉`,
+          html:    giftHtml,
+          tags: [
+            { name: 'type',     value: 'gifter_notify' },
+            { name: 'gift_id',  value: gift.id },
+            { name: 'child_id', value: childId },
+          ],
+        }
+        if (bccEmail) notifyBody.bcc = [bccEmail]
+
+        const notifyRes = await fetch('https://api.resend.com/emails', {
+          method:  'POST',
+          headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+          body:    JSON.stringify(notifyBody),
+        })
+        if (notifyRes.ok) {
+          const notifyData = await notifyRes.json()
+          await sb.from('prebirth_email_log').insert({
+            user_id: userId, child_id: childId, email_type: 'gifter_notify',
+          }).then(() => {})  // ignore if already exists
+          console.log(`[scout-confirm-arrival] Gifter notification sent to ${gift.buyer_email} (msg ${notifyData.id})`)
+        } else {
+          const notifyErr = await notifyRes.json()
+          console.warn('[scout-confirm-arrival] Gifter notification failed:', JSON.stringify(notifyErr))
+        }
+      }
+    } catch (giftErr) {
+      // Non-critical — don't fail the whole arrival confirmation
+      console.warn('[scout-confirm-arrival] Gifter notify error (non-fatal):', giftErr)
+    }
+
     console.log(`[scout-confirm-arrival] Birth confirmed for user ${userId}, child ${childId} (dob=${realDob}, trialEnd=${trialEnd.toISOString().split('T')[0]})`)
     await telegramAlert(`🍼 Birth confirmed — user ${userId}, ${child.name} born ${realDob} (due ${child.due_date})`)
 

@@ -19,10 +19,11 @@
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
 -- ─── Remove existing Scout jobs (safe to re-run) ─────────────────────────────
-SELECT cron.unschedule('scout-trial-end')   WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-trial-end');
-SELECT cron.unschedule('scout-digest')      WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-digest');
-SELECT cron.unschedule('scout-alert')       WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-alert');
-SELECT cron.unschedule('scout-monitor')     WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-monitor');
+SELECT cron.unschedule('scout-trial-end')       WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-trial-end');
+SELECT cron.unschedule('scout-digest')          WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-digest');
+SELECT cron.unschedule('scout-alert')           WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-alert');
+SELECT cron.unschedule('scout-monitor')         WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-monitor');
+SELECT cron.unschedule('scout-prebirth-nudge')  WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-prebirth-nudge');
 
 -- ─── Job 1: Trial-end emails + re-engagement (daily 08:00 UTC) ───────────────
 -- Sends trial-end email on the day trial_end is reached.
@@ -60,7 +61,28 @@ SELECT cron.schedule(
   $$
 );
 
--- ─── Job 3: 7-day closing window alert ───────────────────────────────────────
+-- ─── Job 3: Pre-birth nudge emails (daily 08:00 UTC) ────────────────────────
+-- Scans all expecting children and sends the right email based on proximity to due date:
+--   T-42 days → prep_6wk reminder (hospital bag, pediatrician, safe sleep)
+--   T=0       → "Is baby here yet?" due date nudge
+--   T+7       → "Still waiting?" follow-up (final automated email)
+-- Deduped via prebirth_email_log unique index — safe to run daily.
+SELECT cron.schedule(
+  'scout-prebirth-nudge',
+  '0 8 * * *',
+  $$
+  SELECT net.http_post(
+    url     := 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-prebirth-nudge',
+    headers := jsonb_build_object(
+      'Content-Type',  'application/json',
+      'Authorization', 'Bearer ' || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzA0NTIwMywiZXhwIjoyMDg4NjIxMjAzfQ.oOJrcEBdhzRjhkhGNOS4nLcPmhj7lWXUpr21K2aGNUw'
+    ),
+    body    := '{}'::jsonb
+  );
+  $$
+);
+
+-- ─── Job 4: 7-day closing window alert ───────────────────────────────────────
 -- DECISION (Mar 16, 2026): NOT scheduled.
 -- Scout sends one email/month on the child's birthday.
 -- 7-day reminder is handled by .ics VALARM in the calendar invite.
@@ -88,7 +110,7 @@ SELECT cron.schedule(
 -- ─── Verify jobs are scheduled ────────────────────────────────────────────────
 SELECT jobname, schedule, active, command
 FROM cron.job
-WHERE jobname IN ('scout-trial-end', 'scout-digest', 'scout-monitor')
+WHERE jobname IN ('scout-trial-end', 'scout-digest', 'scout-monitor', 'scout-prebirth-nudge')
 ORDER BY jobname;
 
 -- ─── Notes ───────────────────────────────────────────────────────────────────
