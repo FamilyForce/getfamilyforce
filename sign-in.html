@@ -836,7 +836,7 @@ button { font: inherit; cursor: pointer; }
   padding: 11px 14px; font-size: 13.5px; font-weight: 500;
   margin-bottom: 16px; line-height: 1.45;
 }
-/* WeChat browser notice */
+/* In-app browser notice */
 .wechat-notice {
   background: #EFF6FF; color: #1D4ED8;
   border: 1px solid #BFDBFE; border-radius: 10px;
@@ -844,8 +844,9 @@ button { font: inherit; cursor: pointer; }
   margin-bottom: 18px; line-height: 1.55; display: none;
 }
 .wechat-notice strong { display: block; margin-bottom: 3px; font-size: 14px; }
-.wechat-notice-steps { margin-top: 6px; padding-left: 18px; font-size: 13px; opacity: .85; }
-.wechat-notice-steps li { margin-bottom: 2px; }
+/* Hide Google button by default — shown only after JS confirms normal browser.
+   Eliminates flash of button before in-app browser detection runs. */
+#signin-google-wrap { display: none; }
 .signin-banner-success {
   background: #F0FFF4; color: #276749;
   border-color: #C6F6D5;
@@ -1157,17 +1158,32 @@ button { font: inherit; cursor: pointer; }
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://js.stripe.com/v3/"></script>
   <script>
-    // ── WeChat browser detection ──────────────────────────────
+    // ── In-app browser detection ──────────────────────────────
+    // Google OAuth silently fails in WeChat, Facebook, Instagram,
+    // LINE, LinkedIn and other sandboxed WebViews.
+    // Strategy: Google button is hidden by default (CSS); we show
+    // it only when we confirm a normal browser. In-app browsers
+    // get a notice + email-only flow instead.
     (function() {
       var ua = navigator.userAgent || '';
-      var isWeChat = /MicroMessenger/i.test(ua);
-      if (isWeChat) {
-        // Show notice banner
+      var isInApp = /MicroMessenger|FBAN|FBAV|Instagram|LinkedInApp|Line\/|Snapchat|Twitter|TikTok/i.test(ua);
+
+      if (isInApp) {
+        // Show open-in-browser notice
         var notice = document.getElementById('wechat-notice');
         if (notice) notice.style.display = 'block';
-        // Hide Google OAuth — it won't work in WeChat
+        // Google button stays hidden (CSS default) — do nothing
+        // Fire GA event so we can track volume
+        if (typeof gtag === 'function') {
+          gtag('event', 'in_app_browser_blocked', {
+            event_category: 'auth',
+            event_label: ua.match(/MicroMessenger|FBAN|FBAV|Instagram|LinkedInApp|Line\/|Snapchat|Twitter|TikTok/i)?.[0] || 'unknown'
+          });
+        }
+      } else {
+        // Normal browser — show Google button
         var googleWrap = document.getElementById('signin-google-wrap');
-        if (googleWrap) googleWrap.style.display = 'none';
+        if (googleWrap) googleWrap.style.display = 'block';
       }
     })();
 
@@ -1284,9 +1300,9 @@ button { font: inherit; cursor: pointer; }
 
       <!-- WeChat browser notice -->
       <div class="wechat-notice" id="wechat-notice">
-        <strong>📱 Open in your browser for best experience</strong>
-        Sign up works best outside of WeChat. Tap the <strong>⋯</strong> menu (top right) and choose <strong>"Open in Browser"</strong> — then come back to this page.
-        <br><br>Or sign up with your email below — that works here too.
+        <strong>📱 For best results, open in your browser</strong>
+        Google sign-in doesn't work inside apps like WeChat, Instagram, or Facebook. Tap the <strong>⋯</strong> or <strong>⋮</strong> menu and choose <strong>"Open in Browser"</strong> — then return to this page.
+        <br><br>Or use your email below — that works right here.
       </div>
 
       <!-- Global error banner -->
@@ -1814,8 +1830,11 @@ button { font: inherit; cursor: pointer; }
       modeToggle.innerHTML   = '<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">← Back to sign in</a>';
     }
     // Google button only makes sense on sign-in and create-account modes
+    // AND only when not in an in-app browser (detection runs at page load)
     var googleWrap = document.getElementById('signin-google-wrap');
-    if (googleWrap) googleWrap.style.display = mode === 'forgot' ? 'none' : 'block';
+    var ua = navigator.userAgent || '';
+    var isInApp = /MicroMessenger|FBAN|FBAV|Instagram|LinkedInApp|Line\/|Snapchat|Twitter|TikTok/i.test(ua);
+    if (googleWrap && !isInApp) googleWrap.style.display = mode === 'forgot' ? 'none' : 'block';
   };
 
   /* ── Google OAuth ── */
