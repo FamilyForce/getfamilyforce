@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FAMILYFORCE — Gift Page MOCKUP (Design Review Only)
+     NOT live. For jackhowdy review before implementation.
+     Strategy: speaks to the gift-GIVER (aunt, friend, colleague)
+     not the parent. Owns the "preparation gift" category.
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>MOCKUP — Gift Page Redesign — FamilyForce</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+/* ── Design tokens (matching production brand) ── */
+:root {
+  --bg:           #FAFAFA;
+  --surface:      #FFFFFF;
+  --border:       #E5E2EC;
+  --text:         #1D1D1F;
+  --text-mid:     #5C5960;
+  --text-dim:     #8A879A;
+  --purple:       #6E4ED6;
+  --purple-dark:  #5B3CC4;
+  --purple-tint:  #F0EBFF;
+  --purple-mid:   #EAE3FF;
+  --green:        #1A7A4A;
+  --green-tint:   #E8F7EF;
+  --sans:         'Outfit', system-ui, sans-serif;
+  --serif:        'Instrument Serif', Georgia, serif;
+  --r-card:       16px;
+  --r-pill:       100px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; }
+
+/* ── MOCKUP BANNER ── */
+.mockup-banner {
+  background: #1D1D1F; color: #FFD60A;
+  text-align: center; padding: 10px 24px;
+  font-size: 13px; font-weight: 600; letter-spacing: .02em;
+  position: sticky; top: 0; z-index: 9999;
+}
+
+/* ── NAV ── */
+.nav {
+  background: rgba(250,250,250,.95);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  padding: 0 24px; height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.logo {
+  font-size: 18px; font-weight: 800; color: var(--text);
+  text-decoration: none; letter-spacing: -.02em;
+}
+.logo span { color: var(--purple); }
+.btn-nav {
+  background: var(--purple); color: #fff;
+  font-family: var(--sans); font-size: 14px; font-weight: 700;
+  padding: 10px 22px; border-radius: var(--r-pill);
+  text-decoration: none; letter-spacing: -.01em;
+  transition: background .2s, transform .15s;
+}
+.btn-nav:hover { background: var(--purple-dark); transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(160deg, #F7F4FF 0%, #FFF8F5 50%, #F0EBFF 100%);
+  padding: 96px 24px 80px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--r-pill); padding: 6px 16px;
+  font-size: 13px; font-weight: 600; color: var(--purple);
+  letter-spacing: .02em; margin-bottom: 28px;
+}
+.hero-eyebrow-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--purple); flex-shrink: 0;
+}
+.hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(34px, 6vw, 58px);
+  font-weight: 400; line-height: 1.12;
+  color: var(--text); letter-spacing: -.02em;
+  max-width: 820px; margin: 0 auto 22px;
+}
+.hero h1 em {
+  font-style: italic; color: var(--purple);
+}
+.hero-sub {
+  font-size: clamp(16px, 2.2vw, 20px); color: var(--text-mid);
+  max-width: 580px; margin: 0 auto 40px;
+  font-weight: 400; line-height: 1.55;
+}
+.hero-ctas {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--purple); color: #fff;
+  font-family: var(--sans); font-size: 17px; font-weight: 800;
+  padding: 18px 40px; border-radius: var(--r-pill);
+  text-decoration: none; letter-spacing: -.01em;
+  transition: background .2s, transform .2s, box-shadow .2s;
+  box-shadow: 0 4px 24px rgba(110,78,214,.28);
+}
+.btn-primary:hover { background: var(--purple-dark); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(110,78,214,.35); }
+.btn-primary-arrow { font-size: 18px; }
+.hero-note { font-size: 13px; color: var(--text-dim); font-weight: 500; }
+
+/* Gift card visual */
+.hero-card {
+  max-width: 420px; margin: 52px auto 0;
+  background: linear-gradient(135deg, #6E4ED6 0%, #9B7AF5 100%);
+  border-radius: 20px; padding: 36px 32px;
+  text-align: left; color: #fff; position: relative; overflow: hidden;
+  box-shadow: 0 20px 60px rgba(110,78,214,.35);
+}
+.hero-card::before {
+  content: '';
+  position: absolute; top: -40px; right: -40px;
+  width: 160px; height: 160px; border-radius: 50%;
+  background: rgba(255,255,255,.08);
+}
+.hero-card::after {
+  content: '';
+  position: absolute; bottom: -60px; left: -20px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: rgba(255,255,255,.05);
+}
+.gift-card-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; opacity: .7; margin-bottom: 16px;
+}
+.gift-card-title {
+  font-family: var(--serif); font-size: 26px;
+  font-weight: 400; line-height: 1.2; margin-bottom: 8px;
+}
+.gift-card-sub { font-size: 14px; opacity: .8; margin-bottom: 28px; line-height: 1.4; }
+.gift-card-from {
+  font-size: 13px; opacity: .7; border-top: 1px solid rgba(255,255,255,.2);
+  padding-top: 16px;
+}
+.gift-card-logo {
+  position: absolute; top: 28px; right: 28px;
+  font-size: 13px; font-weight: 800; opacity: .6; letter-spacing: -.01em;
+}
+.gift-card-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.2); border-radius: var(--r-pill);
+  padding: 5px 12px; font-size: 12px; font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 18px 24px;
+}
+.trust-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center; gap: 40px;
+  flex-wrap: wrap;
+}
+.trust-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 600; color: var(--text-mid);
+}
+.trust-item-icon { font-size: 16px; }
+.trust-item strong { color: var(--text); }
+
+/* ── SECTION WRAPPER ── */
+.section { padding: 80px 24px; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.section-label {
+  font-size: 12px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--purple); margin-bottom: 14px;
+}
+.section-h2 {
+  font-family: var(--serif); font-size: clamp(28px, 4.5vw, 44px);
+  font-weight: 400; line-height: 1.15; letter-spacing: -.02em;
+  color: var(--text); margin-bottom: 16px;
+}
+.section-h2 em { font-style: italic; color: var(--purple); }
+.section-sub {
+  font-size: 18px; color: var(--text-mid); line-height: 1.6;
+  max-width: 580px; margin-bottom: 48px;
+}
+
+/* ── NOT MORE STUFF ── */
+.stuff-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.stuff-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px; background: var(--border);
+  border-radius: var(--r-card); overflow: hidden;
+}
+.stuff-col {
+  background: var(--surface); padding: 36px 28px; text-align: center;
+}
+.stuff-col.stuff-winner { background: var(--purple-tint); }
+.stuff-icon { font-size: 36px; margin-bottom: 16px; }
+.stuff-title {
+  font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text);
+}
+.stuff-col.stuff-loser .stuff-title { color: var(--text-dim); text-decoration: line-through; text-decoration-color: rgba(0,0,0,.2); }
+.stuff-tag {
+  display: inline-block; font-size: 12px; font-weight: 700;
+  padding: 4px 12px; border-radius: var(--r-pill); margin-bottom: 14px;
+}
+.stuff-tag.lost { background: #FFF1F0; color: #C0392B; }
+.stuff-tag.won { background: var(--green-tint); color: var(--green); }
+.stuff-desc { font-size: 14px; color: var(--text-dim); line-height: 1.5; }
+.stuff-col.stuff-winner .stuff-desc { color: var(--text-mid); }
+
+/* ── HOW IT WORKS ── */
+.how-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 2px; background: var(--border);
+  border-radius: var(--r-card); overflow: hidden;
+  margin-top: 48px;
+}
+.how-step {
+  background: var(--surface); padding: 32px 24px;
+}
+.how-num {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--purple); color: #fff;
+  font-size: 15px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.how-step-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.how-step-desc { font-size: 14px; color: var(--text-dim); line-height: 1.5; }
+
+/* ── WHAT THEY RECEIVE ── */
+.digest-preview {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px; margin-top: 48px;
+}
+.digest-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--r-card); overflow: hidden;
+}
+.digest-card-header {
+  background: linear-gradient(135deg, var(--purple) 0%, #9B7AF5 100%);
+  padding: 20px 24px; color: #fff;
+}
+.digest-card-age {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; opacity: .75; margin-bottom: 4px;
+}
+.digest-card-title { font-family: var(--serif); font-size: 20px; font-weight: 400; line-height: 1.2; }
+.digest-card-body { padding: 20px 24px; }
+.digest-window {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.digest-window:last-child { border-bottom: none; }
+.digest-window-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--purple); flex-shrink: 0; margin-top: 5px;
+}
+.digest-window-dot.closing { background: #E55A2B; }
+.digest-window-dot.done { background: var(--green); }
+.digest-window-text { font-size: 13px; color: var(--text-mid); line-height: 1.4; }
+.digest-window-tag {
+  font-size: 11px; font-weight: 700; margin-top: 2px;
+  color: var(--text-dim);
+}
+.digest-window-tag.closing { color: #E55A2B; }
+
+/* ── PRICING ── */
+.pricing-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; max-width: 680px; margin: 48px auto 0;
+}
+.price-card {
+  background: var(--surface); border: 2px solid var(--border);
+  border-radius: 20px; padding: 36px 32px; text-align: center; position: relative;
+  transition: transform .2s, box-shadow .2s;
+}
+.price-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.08); }
+.price-card.featured {
+  border-color: var(--purple);
+  box-shadow: 0 4px 24px rgba(110,78,214,.15);
+}
+.price-badge {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  background: var(--purple); color: #fff;
+  font-size: 12px; font-weight: 700; letter-spacing: .04em;
+  padding: 4px 16px; border-radius: var(--r-pill);
+  white-space: nowrap;
+}
+.price-title { font-size: 14px; font-weight: 700; color: var(--text-dim); margin-bottom: 12px; letter-spacing: .04em; text-transform: uppercase; }
+.price-amount {
+  font-family: var(--sans); font-size: 48px; font-weight: 800;
+  color: var(--text); letter-spacing: -.03em; line-height: 1;
+  margin-bottom: 4px;
+}
+.price-amount sup { font-size: 24px; vertical-align: super; }
+.price-period { font-size: 14px; color: var(--text-dim); margin-bottom: 24px; }
+.price-features { list-style: none; text-align: left; margin-bottom: 28px; }
+.price-features li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14px; color: var(--text-mid); padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.4;
+}
+.price-features li:last-child { border-bottom: none; }
+.price-features li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+.btn-gift {
+  display: block; width: 100%;
+  background: var(--purple); color: #fff;
+  font-family: var(--sans); font-size: 15px; font-weight: 800;
+  padding: 16px; border-radius: var(--r-pill);
+  text-decoration: none; text-align: center; letter-spacing: -.01em;
+  transition: background .2s, transform .15s;
+}
+.btn-gift:hover { background: var(--purple-dark); transform: translateY(-1px); }
+.btn-gift.secondary {
+  background: transparent; color: var(--purple);
+  border: 2px solid var(--purple);
+}
+.btn-gift.secondary:hover { background: var(--purple-tint); transform: translateY(-1px); }
+
+/* ── TESTIMONIALS ── */
+.testimonials-section { background: var(--purple-tint); border-top: 1px solid var(--purple-mid); border-bottom: 1px solid var(--purple-mid); }
+.testimonials-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin-top: 48px;
+}
+.testimonial-card {
+  background: var(--surface); border-radius: var(--r-card);
+  padding: 28px 24px;
+  box-shadow: 0 2px 12px rgba(110,78,214,.07);
+}
+.testimonial-stars { color: #F5A623; font-size: 16px; margin-bottom: 14px; letter-spacing: 2px; }
+.testimonial-quote {
+  font-size: 15px; color: var(--text-mid); line-height: 1.6;
+  margin-bottom: 20px; font-style: italic;
+}
+.testimonial-quote::before { content: '"'; color: var(--purple); font-size: 22px; font-family: var(--serif); }
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.testimonial-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--purple-mid); display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.testimonial-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.testimonial-role { font-size: 13px; color: var(--text-dim); }
+
+/* ── WHAT MAKES IT DIFFERENT ── */
+.diff-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; margin-top: 48px;
+}
+.diff-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--r-card); padding: 28px 28px;
+}
+.diff-icon { font-size: 28px; margin-bottom: 12px; }
+.diff-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.diff-desc { font-size: 14px; color: var(--text-mid); line-height: 1.6; }
+
+/* ── FAQ ── */
+.faq-list { max-width: 720px; margin: 40px auto 0; }
+.faq-item {
+  border-bottom: 1px solid var(--border); padding: 24px 0;
+}
+.faq-q {
+  font-size: 16px; font-weight: 700; color: var(--text);
+  margin-bottom: 10px; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+}
+.faq-arrow { color: var(--purple); font-size: 18px; flex-shrink: 0; }
+.faq-a { font-size: 15px; color: var(--text-mid); line-height: 1.65; }
+
+/* ── FINAL CTA ── */
+.final-section {
+  background: linear-gradient(135deg, var(--purple) 0%, #5B3CC4 100%);
+  padding: 100px 24px; text-align: center; color: #fff;
+}
+.final-h2 {
+  font-family: var(--serif); font-size: clamp(30px, 5vw, 52px);
+  font-weight: 400; line-height: 1.15; letter-spacing: -.02em;
+  margin-bottom: 18px;
+}
+.final-sub { font-size: 18px; opacity: .8; max-width: 500px; margin: 0 auto 40px; line-height: 1.55; }
+.btn-final {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: #fff; color: var(--purple);
+  font-family: var(--sans); font-size: 18px; font-weight: 800;
+  padding: 20px 44px; border-radius: var(--r-pill);
+  text-decoration: none; letter-spacing: -.01em;
+  box-shadow: 0 4px 24px rgba(0,0,0,.2);
+  transition: transform .2s, box-shadow .2s;
+}
+.btn-final:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,0,0,.25); }
+.final-note { margin-top: 20px; font-size: 14px; opacity: .6; }
+
+/* ── FOOTER ── */
+.footer {
+  background: #1D1D1F; color: #8A879A;
+  padding: 32px 24px; text-align: center; font-size: 13px;
+}
+.footer a { color: #8A879A; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .stuff-grid { grid-template-columns: 1fr; gap: 8px; }
+  .how-grid { grid-template-columns: 1fr 1fr; }
+  .digest-preview { grid-template-columns: 1fr; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .diff-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .how-grid { grid-template-columns: 1fr; }
+  .hero { padding: 72px 20px 60px; }
+  .section { padding: 56px 20px; }
+  .hero-card { padding: 28px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── MOCKUP BANNER ── -->
+<div class="mockup-banner">⚠️ DESIGN MOCKUP — For review only. Not live. All copy and layout subject to change.</div>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">Family<span>Force</span></a>
+    <a href="#pricing" class="btn-nav">Give the Gift →</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     HERO
+══════════════════════════════════════════ -->
+<section class="hero" style="margin-top:68px">
+  <div class="hero-eyebrow">
+    <span class="hero-eyebrow-dot"></span>
+    The baby shower gift nobody else is giving
+  </div>
+
+  <h1>The most <em>thoughtful</em> baby shower gift you've never heard of</h1>
+
+  <p class="hero-sub">
+    While everyone buys things, you give them something they'll actually use — every month, for 3 years.
+  </p>
+
+  <div class="hero-ctas">
+    <a href="#pricing" class="btn-primary">
+      Give the gift <span class="btn-primary-arrow">→</span>
+    </a>
+    <p class="hero-note">From $9.99 · Delivered to their inbox · No account needed to buy</p>
+  </div>
+
+  <!-- Gift card visual -->
+  <div class="hero-card">
+    <div class="gift-card-logo">FamilyForce</div>
+    <div class="gift-card-label">🎁 A gift for the parents</div>
+    <div class="gift-card-chip">✦ Scout — 1 Year</div>
+    <div class="gift-card-title">Know what your child needs, every single month.</div>
+    <div class="gift-card-sub">200+ developmental milestones · Personalised to your child's age · Delivered on their birthday each month</div>
+    <div class="gift-card-from">From Sarah, with love 💜</div>
+  </div>
+</section>
+
+<!-- ── TRUST BAR ── -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item">
+      <span class="trust-item-icon">📬</span>
+      <span><strong>Monthly</strong> personalised digest</span>
+    </div>
+    <div class="trust-item">
+      <span class="trust-item-icon">📋</span>
+      <span><strong>200+</strong> milestones tracked</span>
+    </div>
+    <div class="trust-item">
+      <span class="trust-item-icon">📅</span>
+      <span>Works from <strong>birth to age 3</strong></span>
+    </div>
+    <div class="trust-item">
+      <span class="trust-item-icon">🎯</span>
+      <span><strong>Research-backed</strong> content</span>
+    </div>
+    <div class="trust-item">
+      <span class="trust-item-icon">💜</span>
+      <span>The gift <strong>they'll remember</strong></span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 1 — NOT MORE STUFF
+══════════════════════════════════════════ -->
+<section class="section stuff-section">
+  <div class="section-inner">
+    <div style="text-align:center; margin-bottom:48px">
+      <div class="section-label">Why this gift is different</div>
+      <h2 class="section-h2">The nursery is full.<br><em>Give something they actually need.</em></h2>
+      <p class="section-sub" style="margin: 0 auto">They don't need another swaddle. They need to know what to do with their baby — month by month, as the challenges change.</p>
+    </div>
+
+    <div class="stuff-grid">
+      <!-- Loser 1 -->
+      <div class="stuff-col stuff-loser">
+        <div class="stuff-icon">👕</div>
+        <div class="stuff-tag lost">Outgrown in weeks</div>
+        <div class="stuff-title">More baby clothes</div>
+        <div class="stuff-desc">They have 47 onesies. Three still have tags on them. The baby grew out of the newborn size before they even came home from the hospital.</div>
+      </div>
+
+      <!-- Loser 2 -->
+      <div class="stuff-col stuff-loser">
+        <div class="stuff-icon">🧸</div>
+        <div class="stuff-tag lost">Used twice, then forgotten</div>
+        <div class="stuff-title">Baby gear</div>
+        <div class="stuff-desc">The wipe warmer sits unused. The fancy bottle set wasn't compatible. The "must-have" gadget is in a drawer somewhere. Physical gifts are a gamble.</div>
+      </div>
+
+      <!-- Winner -->
+      <div class="stuff-col stuff-winner">
+        <div class="stuff-icon">📬</div>
+        <div class="stuff-tag won">Used every month for 3 years</div>
+        <div class="stuff-title">FamilyForce Scout</div>
+        <div class="stuff-desc">On their baby's monthly birthday, they receive a personalised digest: exactly what matters developmentally right now, what's coming next, and what to do. Every month. For 3 years.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 2 — WHAT THEY RECEIVE
+══════════════════════════════════════════ -->
+<section class="section" style="background: var(--bg)">
+  <div class="section-inner">
+    <div style="text-align:center">
+      <div class="section-label">What the parents receive</div>
+      <h2 class="section-h2">A <em>personalised guide</em> on their baby's birthday, every month</h2>
+      <p class="section-sub" style="margin: 0 auto">Not a generic checklist. Not a one-size-fits-all app. A digest built around their baby's exact age — timed to what matters right now.</p>
+    </div>
+
+    <div class="digest-preview">
+      <!-- Month 1 -->
+      <div class="digest-card">
+        <div class="digest-card-header">
+          <div class="digest-card-age">Month 1 · Newborn</div>
+          <div class="digest-card-title">Arty is here — let's nail month one 🎉</div>
+        </div>
+        <div class="digest-card-body">
+          <div class="digest-window">
+            <div class="digest-window-dot closing"></div>
+            <div>
+              <div class="digest-window-text">Newborn hearing screen</div>
+              <div class="digest-window-tag closing">⏰ Closes in 2 weeks</div>
+            </div>
+          </div>
+          <div class="digest-window">
+            <div class="digest-window-dot closing"></div>
+            <div>
+              <div class="digest-window-text">Blood spot test</div>
+              <div class="digest-window-tag closing">⏰ Closes in 1 week</div>
+            </div>
+          </div>
+          <div class="digest-window">
+            <div class="digest-window-dot"></div>
+            <div>
+              <div class="digest-window-text">Safe sleep setup</div>
+              <div class="digest-window-tag">This month</div>
+            </div>
+          </div>
+          <div class="digest-window">
+            <div class="digest-window-dot"></div>
+            <div>
+              <div class="digest-window-text">Skin-to-skin contact</div>
+              <div class="digest-window-tag">This month</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month 4 -->
+      <div class="digest-card">
+        <div class="digest-card-header">
+          <div class="digest-card-age">Month 4 · 16 weeks old</div>
+          <div class="digest-card-title">Arty at 4 months — big changes this month</div>
+        </div>
+        <div class="digest-card-body">
+          <div class="digest-window">
+            <div class="digest-window-dot done"></div>
+            <div>
+              <div class="digest-window-text">Social smile</div>
+              <div class="digest-window-tag" style="color:var(--green)">✓ Done last month</div>
+            </div>
+          </div>
+          <div class="digest-window">
+            <div class="digest-window-dot closing"></div>
+            <div>
+              <div class="digest-window-text">Tummy time — 20 min/day</div>
+              <div class="digest-window-tag closing">⏰ Window closing soon</div>
+            </div>
+          </div>
+          <div class="digest-window">
+            <div class="digest-window-dot"></div>
+            <div>
+              <div class="digest-window-text">4-month well-child visit</div>
+              <div class="digest-window-tag">This month</div>
+            </div>
+          </div>
+          <div class="digest-window">
+            <div class="digest-window-dot"></div>
+            <div>
+              <div class="digest-window-text">Head control milestone</div>
+              <div class="digest-window-tag">This month</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Month 12 -->
+      <div class="digest-card">
+        <div class="digest-card-header">
+          <div class="digest-card-age">Month 12 · First birthday 🎂</div>
+          <div class="digest-card-title">Arty turns 1 — here's what's next</div>
+        </div>
+        <div class="digest-card-body">
+          <div class="digest-window">
+            <div class="digest-window-dot closing"></div>
+            <div>
+              <div class="digest-window-text">12-month well-child visit</div>
+              <div class="digest-window-tag closing">⏰ Book this month</div>
+            </div>
+          </div>
+          <div class="digest-window">
+            <div class="digest-window-dot"></div>
+            <div>
+              <div class="digest-window-text">First words — say 1–3 words</div>
+              <div class="digest-window-tag">This month</div>
+            </div>
+          </div>
+          <div class="digest-window">
+            <div class="digest-window-dot"></div>
+            <div>
+              <div class="digest-window-text">Walking with support</div>
+              <div class="digest-window-tag">Coming up</div>
+            </div>
+          </div>
+          <div class="digest-window">
+            <div class="digest-window-dot"></div>
+            <div>
+              <div class="digest-window-text">Cow's milk introduction</div>
+              <div class="digest-window-tag">This month</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 3 — WHAT MAKES IT DIFFERENT
+══════════════════════════════════════════ -->
+<section class="section" style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border)">
+  <div class="section-inner">
+    <div style="text-align:center; margin-bottom: 0">
+      <div class="section-label">Why parents love it</div>
+      <h2 class="section-h2">Not an app. Not a tracker.<br><em>A monthly brief, built for them.</em></h2>
+    </div>
+
+    <div class="diff-grid">
+      <div class="diff-card">
+        <div class="diff-icon">📅</div>
+        <div class="diff-title">Timed to their baby's actual age</div>
+        <div class="diff-desc">Most milestone guides say "3–6 months." That's useless. Scout sends on their baby's birthday each month, with guidance for that exact week of development.</div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">⏰</div>
+        <div class="diff-title">Closing window alerts</div>
+        <div class="diff-desc">Some developmental windows close forever. Scout flags when a milestone is closing soon — so parents act in time, not after the fact.</div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">🔬</div>
+        <div class="diff-title">Research-backed, not opinion-based</div>
+        <div class="diff-desc">200+ milestone windows written from peer-reviewed child development research. Not a forum. Not an algorithm. Actual developmental science.</div>
+      </div>
+      <div class="diff-card">
+        <div class="diff-icon">👨‍👩‍👧</div>
+        <div class="diff-title">Works for the whole family</div>
+        <div class="diff-desc">Parents can add grandparents, partners, and other family members to the circle. Everyone on the same page. Everyone gets the same digest.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 4 — HOW GIFTING WORKS
+══════════════════════════════════════════ -->
+<section class="section">
+  <div class="section-inner">
+    <div style="text-align:center">
+      <div class="section-label">Dead simple to give</div>
+      <h2 class="section-h2">Four steps. <em>Two minutes.</em><br>Done.</h2>
+      <p class="section-sub" style="margin: 0 auto">You don't need to know anything about child development. Just choose a plan, write a note, and we handle the rest.</p>
+    </div>
+
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-num">1</div>
+        <div class="how-step-title">Choose a plan</div>
+        <div class="how-step-desc">Pick 1 year or the full 3-year journey. Either way, it's less than the average baby shower gift — and more useful than any of them.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">2</div>
+        <div class="how-step-title">Add a personal message</div>
+        <div class="how-step-desc">Write them a note. We wrap it in a beautiful digital gift card — something worth screenshotting, not just an email receipt.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">3</div>
+        <div class="how-step-title">Choose when to send it</div>
+        <div class="how-step-desc">Send it right now, or schedule it for the day of the shower. We deliver it to their inbox at exactly the right moment.</div>
+      </div>
+      <div class="how-step">
+        <div class="how-num">4</div>
+        <div class="how-step-title">They activate it</div>
+        <div class="how-step-desc">One click, baby's name and birthday, done. Their first monthly digest arrives on their baby's next birthday. No complicated setup. No app to download.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 5 — TESTIMONIALS
+══════════════════════════════════════════ -->
+<section class="section testimonials-section">
+  <div class="section-inner">
+    <div style="text-align:center">
+      <div class="section-label">What parents say</div>
+      <h2 class="section-h2">The gift they <em>actually talked about</em><br>after the shower</h2>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">I had no idea what to expect each month. Now I actually feel prepared. My sister gave me this at my shower and I've told every pregnant friend I know about it.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👩</div>
+          <div>
+            <div class="testimonial-name">Sarah M.</div>
+            <div class="testimonial-role">Mum of 1 · Received as a baby shower gift</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">I was the aunt who had no idea what to buy. I got this instead of more baby stuff and my sister literally cried when she opened it. Best gift decision I've ever made.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👧</div>
+          <div>
+            <div class="testimonial-name">Emma L.</div>
+            <div class="testimonial-role">Proud aunt · Gift-giver</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-quote">The closing window alerts alone are worth it. I didn't know that some developmental opportunities actually close. This changed how we parent, genuinely.</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">👨</div>
+          <div>
+            <div class="testimonial-name">David K.</div>
+            <div class="testimonial-role">Dad of 2 · Active Scout user</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center; margin-top: 24px; font-size:13px; color: var(--text-dim)">
+      ⚠️ <em>Mockup note: these are placeholder testimonials. Replace with real ones before launch.</em>
+    </p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 6 — PRICING
+══════════════════════════════════════════ -->
+<section class="section" id="pricing" style="background: var(--bg)">
+  <div class="section-inner">
+    <div style="text-align:center">
+      <div class="section-label">Choose a gift</div>
+      <h2 class="section-h2">Less than a baby monitor.<br><em>More useful than all of them.</em></h2>
+      <p class="section-sub" style="margin: 0 auto">Every plan includes the full Scout experience — personalised monthly digests, 200+ milestone windows, family circle sharing, and closing window alerts.</p>
+    </div>
+
+    <div class="pricing-grid">
+      <!-- 1 Year -->
+      <div class="price-card featured">
+        <div class="price-badge">MOST GIFTED</div>
+        <div class="price-title">1 Year of Scout</div>
+        <div class="price-amount"><sup>$</sup>79</div>
+        <div class="price-period">one-time gift · covers 12 months</div>
+        <ul class="price-features">
+          <li>12 personalised monthly digests</li>
+          <li>200+ milestone windows tracked</li>
+          <li>Closing window alerts</li>
+          <li>Family circle (share with grandparents)</li>
+          <li>Beautiful digital gift card included</li>
+        </ul>
+        <a href="#" class="btn-gift">Give 1 year →</a>
+      </div>
+
+      <!-- Monthly -->
+      <div class="price-card">
+        <div class="price-title">Monthly Gift</div>
+        <div class="price-amount"><sup>$</sup>9</div>
+        <div class="price-period">per month · cancel anytime</div>
+        <ul class="price-features">
+          <li>Monthly personalised digest</li>
+          <li>200+ milestone windows tracked</li>
+          <li>Closing window alerts</li>
+          <li>Family circle sharing</li>
+          <li>Gift card delivered to inbox</li>
+        </ul>
+        <a href="#" class="btn-gift secondary">Give monthly →</a>
+      </div>
+    </div>
+
+    <p style="text-align:center; margin-top:28px; font-size:14px; color: var(--text-dim)">
+      🔒 Secure checkout · No account needed to buy · Gift is redeemable anytime
+    </p>
+    <p style="text-align:center; margin-top: 10px; font-size:13px; color: var(--text-dim)">
+      ⚠️ <em>Mockup note: prices shown are illustrative. Update to match live Stripe price IDs.</em>
+    </p>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     SECTION 7 — FAQ
+══════════════════════════════════════════ -->
+<section class="section" style="background: var(--surface); border-top: 1px solid var(--border)">
+  <div class="section-inner">
+    <div style="text-align:center">
+      <div class="section-label">Questions</div>
+      <h2 class="section-h2">Everything you need to know<br>before you give it</h2>
+    </div>
+
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Do I need to create an account to buy? <span class="faq-arrow">›</span></div>
+        <div class="faq-a">No. You just need an email address — yours to buy, theirs to receive it. No account, no app, no setup required on your end.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I give this before the baby is born? <span class="faq-arrow">›</span></div>
+        <div class="faq-a">Yes — and it's perfect for expecting parents. Scout has a pre-birth mode that sends relevant content during pregnancy, then automatically transitions to the baby's monthly digests from birth. The gift works from day one.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What if they already have a baby? <span class="faq-arrow">›</span></div>
+        <div class="faq-a">No problem. Scout picks up at the baby's current age — whether they're 2 weeks old or 18 months. The first digest arrives on the baby's next monthly birthday.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is there a physical card I can put in an envelope? <span class="faq-arrow">›</span></div>
+        <div class="faq-a">After purchase, you'll receive a printable gift card you can include in a physical card or gift bag. It looks beautiful printed.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What if they don't like it? <span class="faq-arrow">›</span></div>
+        <div class="faq-a">In 5 years of child development research, we've never met a parent who didn't want to know what their baby needs. But if for any reason they're not happy, contact us and we'll sort it — no questions asked.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Is the content actually researched? <span class="faq-arrow">›</span></div>
+        <div class="faq-a">Every milestone window in Scout is drawn from peer-reviewed child development research. Not parenting forums. Not one person's opinion. Actual science, written to be useful for real parents.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════
+     FINAL CTA
+══════════════════════════════════════════ -->
+<section class="final-section">
+  <h2 class="final-h2">While everyone buys things,<br>you give them the guide.</h2>
+  <p class="final-sub">The one gift at the shower that keeps working — every month, for three years.</p>
+  <a href="#pricing" class="btn-final">Give the gift of knowing what's next →</a>
+  <p class="final-note">From $9.99 · No account needed · Delivered to their inbox</p>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <p>© 2026 FamilyForce · <a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="mailto:hello@getfamilyforce.com">hello@getfamilyforce.com</a></p>
+</footer>
+
+</body>
+</html>
