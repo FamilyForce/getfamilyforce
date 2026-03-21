@@ -30,9 +30,10 @@
 <meta name="theme-color" content="#6E4ED6">
 
 <!-- ─── FONTS ─── -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<!-- Fonts: loaded async so a block doesn't break the page in restricted browsers (WeChat, etc.) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"></noscript>
 
 <style>
 /* ═══════════════════════════════════════════════════════════
@@ -1155,8 +1156,10 @@ button { font: inherit; cursor: pointer; }
     gtag('config', 'G-NWDKH78LWB');
   </script>
   <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://js.stripe.com/v3/"></script>
+  <!-- Supabase: self-hosted to avoid CDN blocks in WeChat / China -->
+  <script src="/assets/supabase.min.js"></script>
+  <!-- Stripe: async so a block doesn't prevent page load -->
+  <script src="https://js.stripe.com/v3/" async></script>
   <script>
     // ── In-app browser detection ──────────────────────────────
     // Google OAuth silently fails in WeChat, Facebook, Instagram,
