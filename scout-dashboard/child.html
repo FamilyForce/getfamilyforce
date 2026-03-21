@@ -448,7 +448,7 @@ function saveChild() {
 
   var sb      = window._supabaseClient
   var payload = _isExpecting
-    ? { name: nameVal, dob: dobVal, due_date: dobVal, is_expecting: true, gender: _selectedGender || 'other' }
+    ? { name: nameVal, dob: null, due_date: dobVal, is_expecting: true, gender: _selectedGender || 'other' }
     : { name: nameVal, dob: dobVal, gender: _selectedGender || 'other' }
 
   if (_editChildId) {
