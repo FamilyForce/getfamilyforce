@@ -317,6 +317,14 @@ Deno.serve(async (req: Request) => {
     },
   })
 
+  // Also log to prebirth_email_log so scout-prebirth-nudge can detect same-day sends
+  // (guards against double-send when user registers on their due date)
+  await sb.from('prebirth_email_log').insert({
+    user_id:    user.id,
+    child_id:   childId,
+    email_type: 'welcome',
+  }).then(() => {})  // non-critical; ignore conflict
+
   console.log(`[scout-prebirth-welcome] Sent welcome for ${child.name} (user ${user.id}, ${daysLeft} days to due)`)
 
   return new Response(JSON.stringify({ ok: true, messageId: resendData.id }), {

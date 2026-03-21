@@ -257,7 +257,8 @@ function buildFollowup7dEmail(opts: {
 <tr><td style="padding-bottom:28px">
   <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.text};margin:0 0 12px;font-weight:600">${greeting}</p>
   <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0 0 12px;line-height:1.75">About 80% of babies arrive between 38 and 42 weeks. If ${childName} is still making their entrance, that's completely normal.</p>
-  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0;line-height:1.75">When they do arrive, tap the button below to confirm their birthday — Scout will start tracking from that day.</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0 0 12px;line-height:1.75">If they've already arrived and you just haven't had a spare moment — no judgment, that's exactly what newborn week looks like. Update whenever you're ready.</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0;line-height:1.75">Either way, tap below to confirm ${childName}'s birthday and start your Scout digests.</p>
 </td></tr>
 
 <!-- CTA -->
@@ -388,8 +389,10 @@ Deno.serve(async (req: Request) => {
     const parentName = child.profiles?.name?.trim() || undefined
     const dueFmt     = due.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
 
-    // ── Email 2: T-42 days (6 weeks out) ──────────────────────────
-    if (diffDays === 42) {
+    // ── Email 2: T-42 days window (6 weeks out) ───────────────────
+    // Window is 35–42 days out so late registrations (e.g. signed up at T-30)
+    // still get the prep email on their first morning after registration.
+    if (diffDays >= 35 && diffDays <= 42) {
       if (await alreadySent(sb, child.id, 'prep_6wk')) { results.skipped++; continue }
       const { subject, html } = buildPrep6wkEmail({
         childName: child.name, parentName, daysLeft: diffDays,
@@ -416,8 +419,26 @@ Deno.serve(async (req: Request) => {
     }
 
     // ── Email 3: Due date (T=0) ────────────────────────────────────
+    // Guard: skip if welcome (Email 1) was sent within the last 24h to avoid
+    // double-sending on the same day a user registers on their due date.
     else if (diffDays === 0) {
       if (await alreadySent(sb, child.id, 'due_date')) { results.skipped++; continue }
+
+      // Check if welcome was sent today (within ~24h)
+      const { data: recentWelcome } = await sb
+        .from('prebirth_email_log')
+        .select('sent_at')
+        .eq('child_id', child.id)
+        .eq('email_type', 'welcome')
+        .maybeSingle()
+      if (recentWelcome?.sent_at) {
+        const welcomeAge = Date.now() - new Date(recentWelcome.sent_at).getTime()
+        if (welcomeAge < 86400000) { // < 24h
+          console.log(`[prebirth-nudge] Skipping due_date email for ${child.id} — welcome sent < 24h ago`)
+          results.skipped++
+          continue
+        }
+      }
       const { subject, html } = buildDueDateEmail({
         childName: child.name, parentName,
         dashboardUrl: dashUrl, siteUrl, userId: child.user_id,
