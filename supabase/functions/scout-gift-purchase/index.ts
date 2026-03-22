@@ -487,7 +487,8 @@ Deno.serve(async (req: Request) => {
         referralStripePromoId = referralPromo.id
       }
     }
-    if (!referralCode) referralCode = generateReferralCode()  // fallback
+    // No fallback — only show a referral code if it was actually created in Stripe.
+    // A random string with no Stripe backing looks real but fails on use.
 
     // Store gift record
     step = 'db-insert'
