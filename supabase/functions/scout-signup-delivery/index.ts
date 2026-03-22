@@ -144,9 +144,9 @@ Deno.serve(async (req: Request) => {
     const child       = children[0]
     // Pre-birth children have dob=null and due_date set instead.
     // new Date(null) = epoch (1970) which produces absurd age values.
-    const childDob    = child.is_expecting || !child.dob
-      ? new Date((child.due_date ?? child.dob) + 'T00:00:00Z')
-      : new Date(child.dob)
+    const dobStr      = child.is_expecting || !child.dob ? child.due_date : child.dob
+    if (!dobStr) throw new Error(`Child ${child.id} has no dob or due_date — cannot compute age`)
+    const childDob    = new Date(dobStr + 'T00:00:00Z')
     const now         = new Date()
     const weeks       = ageInWeeks(childDob, now)
     const months      = ageInMonths(childDob, now)
