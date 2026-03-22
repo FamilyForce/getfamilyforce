@@ -1079,6 +1079,8 @@ a { color: inherit; text-decoration: none; }
 /* ── Fix #5: main CTA button full-width on mobile ── */
 @media (max-width: 640px) {
   .cta-btn-main { display: block; width: 100%; text-align: center; padding: 17px 24px; }
+  /* gift badge: smaller on phones, gap tightens */
+  .hero-gift-badge { width: 90px !important; height: 90px !important; }
 }
 
 /* ── Fix #7: pricing pills full-width when stacked on small phones ── */
@@ -1153,8 +1155,15 @@ a { color: inherit; text-decoration: none; }
       A monthly email&nbsp;+&nbsp;calendar invite, timed to your child's exact developmental windows. From birth to age&nbsp;3.
     </p>
 
-    <div data-reveal data-d="2" style="margin:1.75rem 0 0.5rem;">
+    <div data-reveal data-d="2" style="margin:1.75rem 0 0.5rem;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;">
       <a href="/sign-in.html?intent=trial" class="cta-btn-main">Start for free</a>
+      <!-- Gift badge -->
+      <div class="hero-gift-badge" aria-label="Makes a perfect baby shower gift" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:108px;height:108px;border-radius:50%;background:linear-gradient(135deg,#F59E0B,#FBBF24);transform:rotate(-12deg);box-shadow:0 4px 20px rgba(0,0,0,.3),0 0 0 3px rgba(255,255,255,.2);padding:12px;position:relative;flex-shrink:0;cursor:default;">
+        <div style="position:absolute;inset:4px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.55);pointer-events:none;"></div>
+        <div style="font-size:22px;margin-bottom:2px;line-height:1;">🎁</div>
+        <div style="font-size:9px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#78350F;line-height:1.3;text-align:center;">Perfect</div>
+        <div style="font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#451A03;line-height:1.2;text-align:center;">Baby Shower<br>Gift</div>
+      </div>
     </div>
 
     <!-- THE WIDGET -->
