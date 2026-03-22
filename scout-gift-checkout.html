@@ -695,7 +695,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 
         <div class="form-err" id="redeemErr"></div>
         <button class="btn-submit" id="redeemBtn" onclick="submitRedeem()">Activate my Scout subscription →</button>
-        <p class="submit-note">Activating will start your Scout subscription using this gift code.</p>
+        <p class="submit-note" id="redeemNote">Activating will start your Scout subscription using this gift code.</p>
       </div>
     </div>
 
@@ -1212,12 +1212,14 @@ function togglePrebirth() {
     dobEl.removeAttribute('max')
     dobEl.min = new Date().toISOString().split('T')[0]
     btn.textContent = 'Activate pre-birth mode →'
+    document.getElementById('redeemNote').textContent = 'Your gift code is reserved now. Your Scout subscription starts once your baby arrives and you confirm their birth date.'
   } else {
     dobLabel.textContent = 'Date of birth'
     dobHint.textContent  = 'Baby\'s actual birthday.'
     dobEl.max = new Date().toISOString().split('T')[0]
     dobEl.removeAttribute('min')
     btn.textContent = 'Activate my Scout subscription →'
+    document.getElementById('redeemNote').textContent = 'Activating will start your Scout subscription using this gift code.'
   }
   document.getElementById('redeemChildDob').value = ''
 }
