@@ -1163,9 +1163,8 @@ function showRedeem(code) {
   document.getElementById('redeemCodeDisplay').textContent = code.toUpperCase()
 
   var nextUrl = encodeURIComponent(window.location.href)
-  var signInUrl = '/sign-in.html?next=' + nextUrl
-  document.getElementById('createAccountBtn').href = signInUrl
-  document.getElementById('signInBtn').href        = signInUrl
+  document.getElementById('createAccountBtn').href = '/sign-in.html?mode=create&next=' + nextUrl
+  document.getElementById('signInBtn').href        = '/sign-in.html?next=' + nextUrl
 
   // Also persist the gift code in localStorage so it survives magic link
   // opening in a new tab (sessionStorage is tab-scoped and dies there).
