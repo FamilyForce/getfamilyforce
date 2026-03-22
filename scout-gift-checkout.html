@@ -476,8 +476,10 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
         </div>
         <div class="form-field">
           <label class="form-label" for="recipientEmail">Recipient email</label>
-          <input class="form-input" type="email" id="recipientEmail" placeholder="sarah@example.com" autocomplete="off" inputmode="email">
-          <p class="form-hint">Gift delivered here. <a href="#" onclick="showWrongEmailHelp();return false;" style="color:var(--purple); text-decoration:none; font-weight:600">Typo? See below.</a></p>
+          <input class="form-input" type="email" id="recipientEmail" placeholder="sarah@example.com" autocomplete="off" inputmode="email" oninput="checkEmailMatch()">
+          <input class="form-input" type="email" id="recipientEmailConfirm" placeholder="Confirm email" autocomplete="off" inputmode="email" style="margin-top:6px" oninput="checkEmailMatch()" onpaste="return false">
+          <p class="form-hint" id="emailMatchHint" style="display:none"></p>
+          <p class="form-hint">Gift delivered here. No credit card needed to claim.</p>
         </div>
       </div>
       <div class="form-field">
@@ -920,6 +922,23 @@ function showWrongEmailHelp() {
   if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none'
 }
 
+// ── Recipient email confirmation ───────────────────────────────────────────
+function checkEmailMatch() {
+  var e1    = document.getElementById('recipientEmail').value.trim()
+  var e2    = document.getElementById('recipientEmailConfirm').value.trim()
+  var hint  = document.getElementById('emailMatchHint')
+  if (!e2) { hint.style.display = 'none'; return }
+  if (e1 === e2) {
+    hint.style.display = 'block'
+    hint.style.color   = 'var(--teal-dark)'
+    hint.textContent   = '✓ Emails match'
+  } else {
+    hint.style.display = 'block'
+    hint.style.color   = '#C0392B'
+    hint.textContent   = 'Emails don\'t match'
+  }
+}
+
 // ── Promo code ─────────────────────────────────────────────────────────────
 function applyPromo() {
   var code   = document.getElementById('promoCode').value.trim().toUpperCase()
@@ -937,11 +956,18 @@ function applyPromo() {
       selectPlan(selectedPlan); return
     }
     appliedPromo = d
-    status.innerHTML = '<span class="promo-ok">✓ ' + d.label + ' — new price: <strong>' + d.discountedDisplay + '</strong></span>'
+    status.innerHTML = '<span class="promo-ok">✓ ' + d.label + ' — new price: <strong>' + d.discountedDisplay + '</strong></span> &nbsp;<a href="#" onclick="removePromo();return false;" style="font-size:12px;color:var(--text-dim);text-decoration:none;font-weight:600">Remove</a>'
     document.getElementById('submitBtn').textContent = 'Send gift — ' + d.discountedDisplay + ' →'
     document.getElementById('osPrice').textContent   = d.discountedDisplay
   })
   .catch(function () { status.innerHTML = '<span class="promo-err">Could not validate. Try again.</span>' })
+}
+
+function removePromo() {
+  appliedPromo = null
+  document.getElementById('promoCode').value  = ''
+  document.getElementById('promoStatus').innerHTML = ''
+  selectPlan(selectedPlan) // resets price display and submit button
 }
 
 // ── Submit gift ────────────────────────────────────────────────────────────
@@ -950,6 +976,7 @@ function submitGift() {
   var buyerEmail  = document.getElementById('buyerEmail').value.trim()
   var recipName   = document.getElementById('recipientName').value.trim()
   var recipEmail  = document.getElementById('recipientEmail').value.trim()
+  var recipEmailC = document.getElementById('recipientEmailConfirm').value.trim()
   var personalMsg = document.getElementById('personalMsg').value.trim()
   var deliverAt   = getDeliverAt()
   var errEl       = document.getElementById('formErr')
@@ -960,8 +987,11 @@ function submitGift() {
   }
 
   errEl.style.display = 'none'
-  if (!buyerName || !buyerEmail || !recipName || !recipEmail) {
+  if (!buyerName || !buyerEmail || !recipName || !recipEmail || !recipEmailC) {
     errEl.style.display = 'block'; errEl.textContent = 'Please fill in all required fields.'; return
+  }
+  if (recipEmail !== recipEmailC) {
+    errEl.style.display = 'block'; errEl.textContent = 'Recipient emails don\'t match. Please check and try again.'; return
   }
   if (!buyerEmail.includes('@') || !recipEmail.includes('@')) {
     errEl.style.display = 'block'; errEl.textContent = 'Please enter valid email addresses.'; return
@@ -1089,10 +1119,12 @@ function giveAnother() {
   document.getElementById('successScreen').style.display  = 'none'
   document.getElementById('purchaseScreen').style.display = 'block'
   // Clear form
-  ;['buyerName','buyerEmail','recipientName','recipientEmail','personalMsg','promoCode'].forEach(function (id) {
+  ;['buyerName','buyerEmail','recipientName','recipientEmail','recipientEmailConfirm','personalMsg','promoCode'].forEach(function (id) {
     var el = document.getElementById(id); if (el) el.value = ''
   })
   appliedPromo = null
+  document.getElementById('promoStatus').innerHTML = ''
+  var mh = document.getElementById('emailMatchHint'); if (mh) mh.style.display = 'none'
   deliveryMode = 'now'
   setDelivery('now')
   selectPlan('annual')
