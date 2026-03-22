@@ -49,32 +49,78 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 
 /* ── NAV ── */
 .nav {
-  position: sticky; top: 0; z-index: 200;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
   background: rgba(250,250,250,.95);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(32px) saturate(200%); -webkit-backdrop-filter: blur(32px) saturate(200%);
   border-bottom: 1px solid var(--border);
+  padding-top: env(safe-area-inset-top, 0);
+  transition: box-shadow .2s;
 }
+.nav.scrolled { box-shadow: 0 1px 0 var(--border); }
 .nav-inner {
-  max-width: 1100px; margin: 0 auto;
-  padding: 0 24px; height: 68px;
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 64px); height: 72px;
   display: flex; align-items: center; justify-content: space-between;
 }
-.logo { font-size: 18px; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -.02em; }
-.logo span { color: var(--purple); }
+.logo {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 22px; font-weight: 600; letter-spacing: -.02em;
+  color: var(--text); text-decoration: none;
+}
+.logo-f { color: var(--text); }
+.logo-s { color: var(--purple); }
+.nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+.nav-links a { font-size: 13px; font-weight: 500; color: var(--text-mid); text-decoration: none; padding: 4px 8px; border-radius: 4px; transition: color .2s; }
+@media (hover:hover) { .nav-links a:hover { color: var(--text); } }
 .btn-nav {
   background: var(--purple); color: #fff;
-  font-family: var(--sans); font-size: 14px; font-weight: 700;
-  padding: 10px 22px; border-radius: var(--r-pill);
-  border: none; cursor: pointer;
-  text-decoration: none; letter-spacing: -.01em;
-  transition: background .2s, transform .15s;
+  font-family: var(--sans); font-size: 13px; font-weight: 600;
+  padding: 11px 26px; border-radius: var(--r-pill);
+  border: none; cursor: pointer; text-decoration: none; letter-spacing: -.01em;
+  transition: background .2s, transform .2s;
 }
-@media (hover:hover) { .btn-nav:hover { background: var(--purple-dark); transform: translateY(-1px); } }
+@media (hover:hover) { .btn-nav:hover { background: var(--purple-dark); transform: translateY(-2px); } }
+
+/* Hamburger (mobile only) */
+.hamburger {
+  display: none; flex-direction: column; justify-content: center; align-items: center;
+  gap: 5px; width: 44px; height: 44px; background: none; border: none; cursor: pointer;
+  border-radius: 8px; padding: 0;
+}
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--text); border-radius: 2px; transition: all .2s; }
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+}
+
+/* Mobile menu overlay */
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 1100; background: rgba(0,0,0,.5);
+  display: none; align-items: flex-end;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu-panel {
+  background: var(--surface); width: 100%; border-radius: 24px 24px 0 0;
+  padding: 16px 24px calc(28px + env(safe-area-inset-bottom));
+}
+.mobile-menu-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;
+}
+.mobile-menu-close {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--bg);
+  border: none; cursor: pointer; font-size: 16px; color: var(--text-mid);
+  display: flex; align-items: center; justify-content: center;
+}
+.mobile-menu-links { list-style: none; margin-bottom: 20px; }
+.mobile-menu-links li { border-bottom: 1px solid var(--border); }
+.mobile-menu-links a { display: block; padding: 15px 0; font-size: 16px; font-weight: 600; color: var(--text); text-decoration: none; }
+.mobile-menu-cta .btn-nav { display: block; width: 100%; text-align: center; font-size: 15px; padding: 16px; }
 
 /* ── HERO ── */
 .hero {
   background: linear-gradient(160deg, #F7F4FF 0%, #FFF8F5 50%, #F0EBFF 100%);
-  padding: 96px 24px 80px; text-align: center;
+  /* Fixed nav is 72px — offset hero so content isn't hidden beneath it */
+  padding: calc(96px + 72px) 24px 80px; text-align: center;
   border-bottom: 1px solid var(--border);
 }
 .hero-eyebrow {
@@ -248,8 +294,29 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 .btn-final { display: inline-flex; align-items: center; gap: 10px; background: #fff; color: var(--purple); font-family: var(--sans); font-size: 18px; font-weight: 800; padding: 20px 44px; border-radius: var(--r-pill); border: none; cursor: pointer; text-decoration: none; letter-spacing: -.01em; box-shadow: 0 4px 24px rgba(0,0,0,.2); transition: transform .2s, box-shadow .2s; }
 @media (hover:hover) { .btn-final:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,0,0,.25); } }
 .final-note { margin-top: 20px; font-size: 14px; opacity: .6; }
-.footer { background: #1D1D1F; color: #8A879A; padding: 32px 24px; text-align: center; font-size: 13px; }
-.footer a { color: #8A879A; }
+/* Updated footer — matches production site */
+.site-footer {
+  background: #1A0F3A;
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding: 20px clamp(20px,5vw,64px);
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 0px));
+}
+.site-footer-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-logo {
+  display: inline-flex; align-items: center; gap: 7px; text-decoration: none;
+}
+.footer-logo-name { font-family: var(--sans); font-size: 16px; font-weight: 700; color: rgba(255,255,255,.9); }
+.footer-logo-name span { color: #A78BFF; }
+.footer-nav { display: flex; gap: 24px; flex-wrap: wrap; }
+.footer-nav a {
+  font-size: 13px; color: rgba(255,255,255,.45); text-decoration: none; transition: color .2s;
+}
+@media (hover:hover) { .footer-nav a:hover { color: rgba(255,255,255,.8); } }
+.footer-copy { font-size: 12px; color: rgba(255,255,255,.25); }
 
 /* ══════════════════════════════════════════
    PURCHASE MODAL
@@ -484,7 +551,7 @@ textarea.mf-input { resize: vertical; min-height: 64px; line-height: 1.55; }
 }
 @media (max-width: 600px) {
   .how-grid { grid-template-columns: 1fr; }
-  .hero { padding: 72px 20px 60px; }
+  .hero { padding: calc(72px + 72px) 20px 60px; }
   .section { padding: 56px 20px; }
   .mf-row { grid-template-columns: 1fr; }
   .redeem-form-row { grid-template-columns: 1fr; }
@@ -516,12 +583,46 @@ textarea.mf-input { resize: vertical; min-height: 64px; line-height: 1.55; }
 <div id="mainSite">
 
 <!-- NAV -->
-<nav class="nav">
+<nav class="nav" id="siteNav" aria-label="Main navigation">
   <div class="nav-inner">
-    <a href="/" class="logo">Family<span>Force</span></a>
-    <button class="btn-nav" onclick="window.location.href='/scout-gift-checkout.html?plan=annual'">Give the Gift →</button>
+    <a href="/" class="logo" aria-label="FamilyForce — Home">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-f">Family</span><span class="logo-s">Force</span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="#how-it-works">How it works</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><button class="btn-nav" onclick="window.location.href='/scout-gift-checkout.html?plan=annual'">Give the Gift →</button></li>
+    </ul>
+    <button class="hamburger" aria-label="Open menu" aria-expanded="false" id="hamburgerBtn" onclick="openMobileMenu()">
+      <span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu" onclick="closeMobileMenuOnOverlay(event)">
+  <div class="mobile-menu-panel">
+    <div class="mobile-menu-header">
+      <a href="/" class="logo" aria-label="FamilyForce — Home">
+        <svg width="12" height="14" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+          <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-f" style="font-size:18px">Family</span><span class="logo-s" style="font-size:18px">Force</span>
+      </a>
+      <button class="mobile-menu-close" aria-label="Close menu" onclick="closeMobileMenu()">✕</button>
+    </div>
+    <ul class="mobile-menu-links" role="list">
+      <li><a href="#how-it-works" onclick="closeMobileMenu()">How it works</a></li>
+      <li><a href="#pricing" onclick="closeMobileMenu()">Pricing</a></li>
+    </ul>
+    <div class="mobile-menu-cta">
+      <button class="btn-nav" onclick="closeMobileMenu(); window.location.href='/scout-gift-checkout.html?plan=annual'">Give the Gift →</button>
+    </div>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero" style="margin-top:0">
@@ -696,7 +797,7 @@ textarea.mf-input { resize: vertical; min-height: 64px; line-height: 1.55; }
 </section>
 
 <!-- SECTION 4 — HOW IT WORKS -->
-<section class="section">
+<section class="section" id="how-it-works">
   <div class="section-inner">
     <div style="text-align:center">
       <div class="section-label">Dead simple to give</div>
@@ -867,8 +968,22 @@ textarea.mf-input { resize: vertical; min-height: 64px; line-height: 1.55; }
   <p class="final-note">From $9.99 · No account needed · Delivered to their inbox</p>
 </section>
 
-<footer class="footer">
-  <p>© 2026 FamilyForce · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="mailto:hello@getfamilyforce.com">hello@getfamilyforce.com</a></p>
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <a href="/" class="footer-logo" aria-label="FamilyForce home">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="footer-logo-name">Family<span>Force</span></span>
+    </a>
+    <nav class="footer-nav" aria-label="Footer links">
+      <a href="/about.html">About Us</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
+      <a href="/contact.html">Support</a>
+    </nav>
+    <span class="footer-copy">© 2026 FamilyForce. All rights reserved.</span>
+  </div>
 </footer>
 
 </div><!-- /mainSite -->
@@ -1065,10 +1180,15 @@ textarea.mf-input { resize: vertical; min-height: 64px; line-height: 1.55; }
      REDEEM FULL PAGE
 ══════════════════════════════════════════ -->
 <div id="redeemPage">
-  <nav class="nav">
+  <nav class="nav" aria-label="Main navigation">
     <div class="nav-inner">
-      <a href="/" class="logo">Family<span>Force</span></a>
-      <a href="/scout-gift.html" style="font-size:13px;color:var(--purple);text-decoration:none;font-weight:600">← Gift page</a>
+      <a href="/" class="logo" aria-label="FamilyForce — Home">
+        <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+          <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-f">Family</span><span class="logo-s">Force</span>
+      </a>
+      <a href="/scout-gift.html" style="font-size:13px;color:var(--purple);text-decoration:none;font-weight:600;padding:12px 0;display:inline-block">← Gift page</a>
     </div>
   </nav>
   <div class="redeem-inner" style="padding-top:32px">
@@ -1119,6 +1239,36 @@ textarea.mf-input { resize: vertical; min-height: 64px; line-height: 1.55; }
 
 
 <script>
+// ── Nav: add shadow on scroll ──────────────────────────────────────────────
+window.addEventListener('scroll', function () {
+  var nav = document.getElementById('siteNav')
+  if (nav) nav.classList.toggle('scrolled', window.scrollY > 8)
+}, { passive: true })
+
+// ── Mobile menu ────────────────────────────────────────────────────────────
+function openMobileMenu() {
+  var menu = document.getElementById('mobileMenu')
+  var btn  = document.getElementById('hamburgerBtn')
+  if (!menu) return
+  menu.classList.add('open')
+  document.body.style.overflow = 'hidden'
+  if (btn) btn.setAttribute('aria-expanded', 'true')
+}
+function closeMobileMenu() {
+  var menu = document.getElementById('mobileMenu')
+  var btn  = document.getElementById('hamburgerBtn')
+  if (!menu) return
+  menu.classList.remove('open')
+  document.body.style.overflow = ''
+  if (btn) btn.setAttribute('aria-expanded', 'false')
+}
+function closeMobileMenuOnOverlay(e) {
+  if (e.target === document.getElementById('mobileMenu')) closeMobileMenu()
+}
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') closeMobileMenu()
+})
+
 // ── Constants ──────────────────────────────────────────────────────────────
 var SUPABASE_URL  = 'https://ewjqbafaxeasyvknxmof.supabase.co'
 var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
