@@ -540,11 +540,17 @@ Deno.serve(async (req: Request) => {
       }
       if (bccEmail) giftEmailBody.bcc = [bccEmail]
 
-      await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(giftEmailBody),
-      })
+      try {
+        await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify(giftEmailBody),
+        })
+      } catch (e) {
+        // Gift code is already saved — log and continue so the purchase succeeds
+        console.error('[scout-gift-purchase] Recipient email failed (non-fatal):', e)
+        await telegramAlert(`⚠️ Recipient email failed for ${giftCode} — ${recipientEmail}: ${e}`, testMode)
+      }
     }
 
     // Send confirmation email to buyer (includes gift code + print link)
@@ -561,11 +567,16 @@ Deno.serve(async (req: Request) => {
     }
     if (bccEmail) confirmEmailBody.bcc = [bccEmail]
 
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(confirmEmailBody),
-    })
+    try {
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(confirmEmailBody),
+      })
+    } catch (e) {
+      console.error('[scout-gift-purchase] Buyer email failed (non-fatal):', e)
+      await telegramAlert(`⚠️ Buyer email failed for ${giftCode} — ${buyerEmail}: ${e}`, testMode)
+    }
 
     await telegramAlert(`Gift sold: ${plan} — ${buyerEmail} → ${recipientEmail} — code ${giftCode} — ${priceInfo.display}`, testMode)
 
