@@ -257,7 +257,8 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 
 /* Pricing */
 .pricing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; max-width: 720px; margin: 48px auto 0; }
-.price-card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; padding: 36px 32px; text-align: center; position: relative; transition: transform .2s, box-shadow .2s; }
+.price-card { background: var(--surface); border: 2px solid var(--border); border-radius: 20px; padding: 36px 32px; text-align: center; position: relative; transition: transform .2s, box-shadow .2s; display: flex; flex-direction: column; }
+.price-card .btn-gift { margin-top: auto; }
 @media (hover:hover) { .price-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.08); } }
 .price-card.featured { border-color: var(--purple); box-shadow: 0 4px 24px rgba(110,78,214,.15); }
 .price-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--purple); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .04em; padding: 4px 16px; border-radius: var(--r-pill); white-space: nowrap; }
