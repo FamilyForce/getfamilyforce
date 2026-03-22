@@ -1079,7 +1079,7 @@ function showRedeem(code) {
   document.getElementById('redeemCodeDisplay').textContent = code.toUpperCase()
 
   var nextUrl = encodeURIComponent(window.location.href)
-  document.getElementById('createAccountBtn').href = '/sign-up.html?next=' + nextUrl
+  document.getElementById('createAccountBtn').href = '/sign-in.html?next=' + nextUrl
   document.getElementById('signInBtn').href        = '/sign-in.html?next=' + nextUrl
 
   // Set today as default max for DOB
