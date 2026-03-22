@@ -95,52 +95,67 @@ function buildDescription(
   windows:      IcsWindow[],
   dashboardUrl: string
 ): string {
-  const closing = windows.filter(
-    w => w.close_age_weeks - w.current_age_weeks <= 4
-  )
-  const open = windows.filter(
-    w => w.close_age_weeks - w.current_age_weeks > 4
-  )
-
   const lines: string[] = []
 
-  lines.push(`${childName} is ${ageMonths} months old today.`)
+  // ── Pre-birth: due date event ─────────────────────────────────────────────
+  if (ageMonths === 0) {
+    lines.push(`\uD83C\uDF89 Today is ${childName}'s expected due date!`)
+    lines.push('')
+    lines.push(`Head to Scout to confirm your baby has arrived and unlock your`)
+    lines.push(`personalised milestone plan for the first month.`)
+    lines.push('')
+    if (windows.length > 0) {
+      lines.push(`\uD83D\uDCCB Your first month has ${windows.length} open milestone window${windows.length === 1 ? '' : 's'} \u2014 we'll walk you through every one.`)
+      lines.push('')
+    }
+    lines.push(`Confirm arrival \u2192 ${dashboardUrl}`)
+    lines.push('')
+    lines.push(`\u2014 FamilyForce Scout`)
+    return lines.join('\n')
+  }
+
+  // ── Post-birth: monthly birthday event ───────────────────────────────────
+  // Note: "weeks left" is intentionally omitted — it would be calculated
+  // at ICS-generation time, not at event-fire time, so it would be misleading.
+  const closing = windows.filter(w => w.close_age_weeks - w.current_age_weeks <= 4)
+  const open    = windows.filter(w => w.close_age_weeks - w.current_age_weeks > 4)
+
+  lines.push(`\uD83C\uDF82 ${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'} old today!`)
   lines.push('')
-  lines.push(`Your Scout digest for this month is in your inbox. Here's a quick look at what's open:`)
+  lines.push(`Your Scout digest is in your inbox. Here's what's open this month:`)
   lines.push('')
 
   if (closing.length > 0) {
-    lines.push(`Worth doing this month (window closing soon):`)
+    lines.push(`\u26A1 Closing soon \u2014 worth doing this month:`)
     for (const w of closing) {
-      const weeksLeft = Math.round(w.close_age_weeks - w.current_age_weeks)
-      lines.push(`  \u2022 ${w.title} \u2014 ${weeksLeft}w left`)
+      lines.push(`  \u2022 ${w.title}`)
     }
     lines.push('')
   }
 
   if (open.length > 0) {
-    lines.push(`Also open this month:`)
+    lines.push(`\uD83D\uDCCB Also open this month:`)
     for (const w of open.slice(0, 6)) {
       lines.push(`  \u2022 ${w.title}`)
     }
     if (open.length > 6) {
-      lines.push(`  \u2022 ...and ${open.length - 6} more in your dashboard`)
+      lines.push(`  \u2022 \u2026 and ${open.length - 6} more in your dashboard`)
     }
     lines.push('')
   }
 
   lines.push(`Open Scout \u2192 ${dashboardUrl}`)
   lines.push('')
-  lines.push(`\u2014 FamilyForce`)
+  lines.push(`\u2014 FamilyForce Scout`)
 
   return lines.join('\n')
 }
 
 // ─── Build the SUMMARY (event title) ─────────────────────────────────────────
 function buildSummary(childName: string, ageMonths: number): string {
-  if (ageMonths === 0) return `${childName}'s expected due date \u2014 confirm on Scout to start`
-  if (ageMonths === 1) return `${childName} turns 1 month today \u2014 Scout digest ready`
-  return `${childName} turns ${ageMonths} months today \u2014 Scout digest ready`
+  if (ageMonths === 0) return `\uD83D\uDC76 ${childName}'s due date \u2014 confirm arrival in Scout`
+  if (ageMonths === 1) return `\uD83C\uDF82 ${childName} turns 1 month \u2014 Scout digest ready`
+  return `\uD83C\uDF82 ${childName} turns ${ageMonths} months \u2014 Scout digest ready`
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
