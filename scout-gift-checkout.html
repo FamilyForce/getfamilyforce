@@ -509,7 +509,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
               <input class="form-input" type="date" id="deliverDate">
             </div>
             <div class="form-field" style="margin-bottom:0">
-              <label class="form-label" for="deliverTime">Approximate time (UTC)</label>
+              <label class="form-label" for="deliverTime">Delivery time</label>
               <select class="form-input" id="deliverTime">
                 <option value="08:00">8:00 AM</option>
                 <option value="09:00" selected>9:00 AM</option>
@@ -519,7 +519,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
               </select>
             </div>
           </div>
-          <p class="form-hint" style="margin-top:8px">💡 Set it for the day of the baby shower. Times are UTC. Gift code will be in your confirmation email in case you need to share it early.</p>
+          <p class="form-hint" style="margin-top:8px" id="schedHint">💡 Set it for the day of the baby shower. Your gift code will be in your confirmation email in case you need to share it early.</p>
         </div>
       </div>
 
@@ -764,6 +764,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Init Stripe
   stripe = Stripe(STRIPE_PK)
+  initStripeCard()
+
+  // Init schedule timezone display
+  initScheduleTimezone()
+})
+
+// ── Stripe card element init/reinit ────────────────────────────────────────
+// Called once on load and again after "Give another gift" to get a fresh element.
+// stripe.confirmCardPayment() invalidates the card element after use — .clear()
+// alone is not enough; we must destroy and recreate.
+function initStripeCard() {
+  if (stripeCard) { stripeCard.destroy(); stripeCard = null }
+  document.getElementById('stripeElement').innerHTML = ''
   var elements = stripe.elements()
   stripeCard = elements.create('card', {
     style: { base: { fontFamily: "'Outfit', system-ui, sans-serif", fontSize: '14px', color: '#1D1D1F', '::placeholder': { color: '#8A879A' } }, invalid: { color: '#C0392B' } }
@@ -772,11 +785,11 @@ document.addEventListener('DOMContentLoaded', function () {
   stripeCard.on('focus',  function () { document.getElementById('stripeWrap').classList.add('focused') })
   stripeCard.on('blur',   function () { document.getElementById('stripeWrap').classList.remove('focused') })
   stripeCard.on('change', function (e) {
-    var err = document.getElementById('formErr')
-    if (e.error) { err.style.display = 'block'; err.textContent = e.error.message }
-    else         { err.style.display = 'none' }
+    var errEl = document.getElementById('formErr')
+    if (e.error) { errEl.style.display = 'block'; errEl.textContent = e.error.message }
+    else         { errEl.style.display = 'none' }
   })
-})
+}
 
 // ── Plan selection ─────────────────────────────────────────────────────────
 function selectPlan(plan) {
@@ -846,6 +859,45 @@ function updateCharCount() {
 }
 
 // ── Delivery scheduling ────────────────────────────────────────────────────
+// ── Schedule: localise time options to user's timezone ────────────────────
+function initScheduleTimezone() {
+  // Get short timezone label e.g. "HKT", "EST", "PST"
+  var tzAbbr = 'local time'
+  try {
+    var parts = new Date().toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ')
+    tzAbbr = parts[parts.length - 1] || 'local time'
+  } catch(e) {}
+
+  // Rewrite each option's display text from UTC hour → local time
+  var select = document.getElementById('deliverTime')
+  if (select) {
+    select.querySelectorAll('option').forEach(function(opt) {
+      var utcParts = opt.value.split(':')
+      var d = new Date()
+      d.setUTCHours(parseInt(utcParts[0], 10), parseInt(utcParts[1], 10), 0, 0)
+      opt.textContent = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
+    })
+    // Default selection: pick the option whose local time is closest to 9 AM
+    var nineAm = new Date(); nineAm.setHours(9, 0, 0, 0)
+    var best = null, bestDiff = Infinity
+    select.querySelectorAll('option').forEach(function(opt) {
+      var utcParts = opt.value.split(':')
+      var d = new Date(); d.setUTCHours(parseInt(utcParts[0], 10), parseInt(utcParts[1], 10), 0, 0)
+      var diff = Math.abs(d - nineAm)
+      if (diff < bestDiff) { bestDiff = diff; best = opt }
+    })
+    if (best) best.selected = true
+  }
+
+  // Update label
+  var label = document.querySelector('label[for="deliverTime"]')
+  if (label) label.textContent = 'Delivery time (' + tzAbbr + ')'
+
+  // Update hint (remove UTC mention)
+  var hint = document.getElementById('schedHint')
+  if (hint) hint.innerHTML = '💡 Set it for the day of the baby shower. Your gift code will be in your confirmation email in case you need to share it early.'
+}
+
 function setDelivery(mode) {
   deliveryMode = mode
   document.getElementById('dtNow').className   = 'dt-btn' + (mode === 'now' ? ' dt-active' : '')
@@ -1044,7 +1096,7 @@ function giveAnother() {
   deliveryMode = 'now'
   setDelivery('now')
   selectPlan('annual')
-  if (stripeCard) stripeCard.clear()
+  initStripeCard()  // destroy + recreate — .clear() alone fails after confirmCardPayment
   updatePreview()
   window.scrollTo(0, 0)
 }
