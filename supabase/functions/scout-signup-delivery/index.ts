@@ -133,7 +133,7 @@ Deno.serve(async (req: Request) => {
     step = 'load-child'
     const { data: children, error: childErr } = await sb
       .from('children')
-      .select('id, name, dob, gender')
+      .select('id, name, dob, due_date, is_expecting, gender')
       .eq('user_id', userId)
       .order('created_at', { ascending: true })
       .limit(1)
@@ -142,7 +142,11 @@ Deno.serve(async (req: Request) => {
     if (!children || children.length === 0) throw new Error(`No child found for user ${userId}`)
 
     const child       = children[0]
-    const childDob    = new Date(child.dob)
+    // Pre-birth children have dob=null and due_date set instead.
+    // new Date(null) = epoch (1970) which produces absurd age values.
+    const childDob    = child.is_expecting || !child.dob
+      ? new Date((child.due_date ?? child.dob) + 'T00:00:00Z')
+      : new Date(child.dob)
     const now         = new Date()
     const weeks       = ageInWeeks(childDob, now)
     const months      = ageInMonths(childDob, now)
