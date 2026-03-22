@@ -62,17 +62,12 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
   padding: 0 clamp(20px, 5vw, 64px); height: 72px;
   display: flex; align-items: center; justify-content: space-between;
 }
+/* Logo — matches homepage exactly */
 .logo {
-  display: inline-flex; align-items: center; gap: 8px;
-  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 22px; font-weight: 600; letter-spacing: -.02em;
+  color: var(--text); text-decoration: none;
 }
-.logo-mark {
-  width: 28px; height: 28px; border-radius: 8px;
-  background: var(--purple); display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.logo-mark svg { width: 17px; height: 17px; display: block; }
-.logo-name { font-weight: 700; font-size: 15px; color: var(--text); }
-/* Keep these in case referenced elsewhere */
 .logo-f { color: var(--text); }
 .logo-s { color: var(--purple); }
 .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
@@ -593,13 +588,10 @@ textarea.mf-input { resize: vertical; min-height: 64px; line-height: 1.55; }
 <nav class="nav" id="siteNav" aria-label="Main navigation">
   <div class="nav-inner">
     <a href="/" class="logo" aria-label="FamilyForce — Home">
-      <div class="logo-mark" aria-hidden="true">
-        <svg viewBox="0 0 32 32" fill="none">
-          <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <span class="logo-name">FamilyForce</span>
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="logo-f">Family</span><span class="logo-s">Force</span>
     </a>
     <ul class="nav-links" role="list">
       <li><button class="btn-nav" onclick="window.location.href='/scout-gift-checkout.html?plan=annual'">Give the Gift →</button></li>
@@ -615,13 +607,10 @@ textarea.mf-input { resize: vertical; min-height: 64px; line-height: 1.55; }
   <div class="mobile-menu-panel">
     <div class="mobile-menu-header">
       <a href="/" class="logo" aria-label="FamilyForce — Home">
-        <div class="logo-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none">
-            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <span class="logo-name" style="font-size:17px">FamilyForce</span>
+        <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+          <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-f">Family</span><span class="logo-s">Force</span>
       </a>
       <button class="mobile-menu-close" aria-label="Close menu" onclick="closeMobileMenu()">✕</button>
     </div>
@@ -1195,13 +1184,10 @@ textarea.mf-input { resize: vertical; min-height: 64px; line-height: 1.55; }
   <nav class="nav" aria-label="Main navigation">
     <div class="nav-inner">
       <a href="/" class="logo" aria-label="FamilyForce — Home">
-        <div class="logo-mark" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none">
-            <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <span class="logo-name">FamilyForce</span>
+        <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+          <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="logo-f">Family</span><span class="logo-s">Force</span>
       </a>
       <a href="/scout-gift.html" style="font-size:13px;color:var(--purple);text-decoration:none;font-weight:600;padding:12px 0;display:inline-block">← Gift page</a>
     </div>
