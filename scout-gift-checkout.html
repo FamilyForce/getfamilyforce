@@ -55,10 +55,8 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 /* NAV */
 .nav { background: rgba(255,255,255,.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
 .nav-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; height: 56px; display: flex; align-items: center; justify-content: space-between; }
-.nav-logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
-.nav-logo-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--purple); display: flex; align-items: center; justify-content: center; }
-.nav-logo-mark svg { width: 17px; height: 17px; display: block; }
-.nav-logo-name { font-weight: 700; font-size: 15px; color: var(--text); }
+.nav-logo { display: inline-flex; align-items: center; gap: 8px; font-family: var(--sans); font-size: 17px; font-weight: 700; letter-spacing: -.01em; color: var(--text); text-decoration: none; flex-shrink: 0; }
+.nav-logo-s { color: var(--terra); }
 /* Fix: nav-back touch target — min 44px tap zone */
 .nav-back { font-size: 13px; color: var(--text-mid); text-decoration: none; font-weight: 500; padding: 12px 0; display: inline-block; }
 @media (hover:hover) { .nav-back:hover { color: var(--purple); } }
@@ -359,13 +357,8 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 <nav class="nav">
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="FamilyForce home">
-      <div class="nav-logo-mark">
-        <svg viewBox="0 0 32 32" fill="none">
-          <path d="M10 22 L16 10 L22 22" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M12.5 18 L19.5 18" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <span class="nav-logo-name">FamilyForce</span>
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Family<span class="nav-logo-s">Force</span>
     </a>
     <a href="/scout-gift.html" class="nav-back">← All gift options</a>
   </div>
