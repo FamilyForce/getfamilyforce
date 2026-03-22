@@ -290,14 +290,15 @@ Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
   if (req.method !== 'POST')    return err(405, 'Method not allowed')
 
-  let step = 'init'
+  let step     = 'init'
+  let testMode = false   // hoisted so catch block can reference it safely
 
   try {
     step = 'parse'
     const body   = await req.json()
     const action = body.action ?? 'complete-purchase'
 
-    const testMode  = body?.testMode === true
+    testMode        = body?.testMode === true
     const stripeKey = testMode
       ? Deno.env.get('STRIPE_SECRET_KEY_TEST')!
       : Deno.env.get('STRIPE_SECRET_KEY')!
@@ -582,7 +583,7 @@ Deno.serve(async (req: Request) => {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e)
     console.error(`[scout-gift-purchase] Error at step=${step}:`, msg)
-    await telegramAlert(`Error at step=${step}: ${msg}`, body?.testMode === true)
+    await telegramAlert(`Error at step=${step}: ${msg}`, testMode)
     return err(500, msg, step)
   }
 })
