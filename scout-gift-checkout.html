@@ -1131,8 +1131,18 @@ function showRedeem(code) {
   document.getElementById('redeemCodeDisplay').textContent = code.toUpperCase()
 
   var nextUrl = encodeURIComponent(window.location.href)
-  document.getElementById('createAccountBtn').href = '/sign-in.html?next=' + nextUrl
-  document.getElementById('signInBtn').href        = '/sign-in.html?next=' + nextUrl
+  var signInUrl = '/sign-in.html?next=' + nextUrl
+  document.getElementById('createAccountBtn').href = signInUrl
+  document.getElementById('signInBtn').href        = signInUrl
+
+  // Also persist the gift code in localStorage so it survives magic link
+  // opening in a new tab (sessionStorage is tab-scoped and dies there).
+  // sign-in.html already checks ff_gift_code after auth and redirects back.
+  ;['createAccountBtn', 'signInBtn'].forEach(function(id) {
+    document.getElementById(id).addEventListener('click', function() {
+      try { localStorage.setItem('ff_gift_code', code) } catch(e) {}
+    })
+  })
 
   // Set today as default max for DOB
   var today = new Date().toISOString().split('T')[0]
@@ -1200,6 +1210,7 @@ function submitRedeem() {
   window._supabaseClient.auth.getSession().then(function (sessionRes) {
     var token = sessionRes.data && sessionRes.data.session && sessionRes.data.session.access_token
     if (!token) {
+      try { localStorage.setItem('ff_gift_code', code) } catch(e) {}
       var nextUrl = encodeURIComponent(window.location.href)
       window.location.href = '/sign-in.html?next=' + nextUrl; return
     }

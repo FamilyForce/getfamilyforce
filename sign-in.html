@@ -1958,7 +1958,7 @@ button { font: inherit; cursor: pointer; }
           var _ie = localStorage.getItem('ff_invite_email');
           if (_gc) {
             localStorage.removeItem('ff_gift_code');
-            window.location.href = 'scout-gift.html?redeem=' + encodeURIComponent(_gc);
+            window.location.href = 'scout-gift-checkout.html?redeem=' + encodeURIComponent(_gc);
           } else if (_ic && _ie) {
             localStorage.removeItem('ff_invite_child');
             localStorage.removeItem('ff_invite_email');
@@ -2146,7 +2146,7 @@ button { font: inherit; cursor: pointer; }
               var giftCode = localStorage.getItem('ff_gift_code');
               if (giftCode) {
                 localStorage.removeItem('ff_gift_code');
-                window.location.href = 'scout-gift.html?redeem=' + encodeURIComponent(giftCode);
+                window.location.href = 'scout-gift-checkout.html?redeem=' + encodeURIComponent(giftCode);
                 return;
               }
 
@@ -2204,7 +2204,7 @@ button { font: inherit; cursor: pointer; }
         var giftCode = localStorage.getItem('ff_gift_code');
         if (giftCode) {
           localStorage.removeItem('ff_gift_code');
-          window.location.href = 'scout-gift.html?redeem=' + encodeURIComponent(giftCode);
+          window.location.href = 'scout-gift-checkout.html?redeem=' + encodeURIComponent(giftCode);
           return;
         }
 
