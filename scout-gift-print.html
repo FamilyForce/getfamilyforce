@@ -7,7 +7,7 @@
      Print-optimised. No nav, no JS dependencies.
      ═══════════════════════════════════════════════════════════ -->
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Scout Gift Card — FamilyForce</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
@@ -32,25 +32,27 @@
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-family: var(--sans); background: #F0EDE8; }
-body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 40px 24px 60px; }
+body { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 40px 24px calc(60px + env(safe-area-inset-bottom)); }
 
 /* ── Screen chrome (hidden at print) ── */
 .screen-header {
-  width: 100%; max-width: 360px; text-align: center; margin-bottom: 24px;
+  width: 100%; max-width: min(360px, 100%); text-align: center; margin-bottom: 24px;
 }
 .screen-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
 .screen-sub { font-size: 13px; color: var(--text-mid); margin-bottom: 18px; line-height: 1.55; }
+/* Fix: min 44px touch target */
 .btn-print {
-  display: inline-block; padding: 12px 28px;
+  display: inline-block; padding: 13px 28px;
   background: var(--purple); color: #fff;
   border: none; border-radius: 100px; font-family: var(--sans);
-  font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none;
-  margin-bottom: 6px;
+  font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none;
+  margin-bottom: 6px; min-height: 44px;
 }
 
 /* ── Print card ── */
+/* Fix: use min() so card never overflows on narrow phones (e.g. 320px iPhone SE) */
 .print-card {
-  width: 320px; background: #fff; border-radius: 16px; overflow: hidden;
+  width: min(320px, 100%); background: #fff; border-radius: 16px; overflow: hidden;
   box-shadow: 0 8px 32px rgba(0,0,0,.12), 0 2px 8px rgba(0,0,0,.06);
   font-family: var(--sans);
 }

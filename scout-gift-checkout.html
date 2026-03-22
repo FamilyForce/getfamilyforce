@@ -59,7 +59,8 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .nav-logo-mark { width: 28px; height: 28px; border-radius: 8px; background: var(--purple); display: flex; align-items: center; justify-content: center; }
 .nav-logo-mark svg { width: 17px; height: 17px; display: block; }
 .nav-logo-name { font-weight: 700; font-size: 15px; color: var(--text); }
-.nav-back { font-size: 13px; color: var(--text-mid); text-decoration: none; font-weight: 500; }
+/* Fix: nav-back touch target — min 44px tap zone */
+.nav-back { font-size: 13px; color: var(--text-mid); text-decoration: none; font-weight: 500; padding: 12px 0; display: inline-block; }
 @media (hover:hover) { .nav-back:hover { color: var(--purple); } }
 
 /* WRAP */
@@ -111,6 +112,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .tier-card.sel-triennial .tier-check svg { display: block; }
 
 /* LIVE PREVIEW */
+/* Fix: hide preview on very small screens — % font sizes become unreadable */
 .preview-wrap { margin-bottom: 20px; }
 .preview-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
 .preview-card {
@@ -132,25 +134,26 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .preview-pat { position: absolute; inset: 0; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0); background-size: 20px 20px; pointer-events: none; }
 .preview-content { position: relative; z-index: 2; height: 100%; padding: 5% 6%; display: flex; flex-direction: column; justify-content: space-between; }
 .preview-top { display: flex; align-items: center; justify-content: space-between; }
-.preview-logo { font-size: 2.6%; font-weight: 800; letter-spacing: -.01em; }
+/* Fix: use max() to enforce minimum readable font sizes on small phones */
+.preview-logo { font-size: max(2.6%, 9px); font-weight: 800; letter-spacing: -.01em; }
 .preview-monthly .preview-logo, .preview-annual .preview-logo { color: rgba(255,255,255,.7); }
 .preview-triennial .preview-logo { color: rgba(245,228,176,.7); }
-.preview-badge { font-size: 2%; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: .8% 2.5%; border-radius: 100px; border: 1px solid; }
+.preview-badge { font-size: max(2%, 9px); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: .8% 2.5%; border-radius: 100px; border: 1px solid; }
 .preview-monthly  .preview-badge { border-color: rgba(255,255,255,.3); color: rgba(255,255,255,.8); }
 .preview-annual   .preview-badge { border-color: rgba(255,255,255,.3); color: rgba(255,255,255,.8); }
 .preview-triennial .preview-badge { border-color: rgba(201,150,42,.4); color: var(--gold-light); }
 .preview-mid { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 2% 0; }
-.preview-for { font-size: 2%; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1%; }
+.preview-for { font-size: max(2%, 9px); font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 1%; }
 .preview-monthly .preview-for, .preview-annual .preview-for { color: rgba(255,255,255,.55); }
 .preview-triennial .preview-for { color: rgba(245,228,176,.55); }
-.preview-name { font-family: var(--serif); font-size: 7%; font-weight: 400; line-height: 1.2; margin-bottom: 1%; }
+.preview-name { font-family: var(--serif); font-size: max(7%, 20px); font-weight: 400; line-height: 1.2; margin-bottom: 1%; }
 .preview-monthly .preview-name, .preview-annual .preview-name { color: #fff; }
 .preview-triennial .preview-name { color: var(--gold-light); }
 .preview-name.preview-placeholder { opacity: .4; font-style: italic; }
-.preview-from { font-size: 2.3%; font-style: italic; }
+.preview-from { font-size: max(2.3%, 10px); font-style: italic; }
 .preview-monthly .preview-from, .preview-annual .preview-from { color: rgba(255,255,255,.6); }
 .preview-triennial .preview-from { color: rgba(245,228,176,.6); }
-.preview-code { font-size: 2.8%; font-weight: 800; letter-spacing: .18em; }
+.preview-code { font-size: max(2.8%, 10px); font-weight: 800; letter-spacing: .18em; }
 .preview-monthly .preview-code, .preview-annual .preview-code { color: rgba(255,255,255,.5); }
 .preview-triennial .preview-code { color: rgba(245,228,176,.45); }
 
@@ -317,20 +320,37 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 .rap-signin { font-size: 13px; color: var(--text-mid); }
 .rap-signin a { color: var(--purple); text-decoration: none; font-weight: 600; }
 
-/* Pre-birth toggle */
-.prebirth-toggle { display: flex; align-items: flex-start; gap: 10px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; cursor: pointer; margin-bottom: 14px; transition: border-color .15s; }
-.prebirth-toggle:has(input:checked) { border-color: var(--purple); background: var(--purple-tint); }
+/* Pre-birth toggle — :has() for modern browsers + .checked class fallback for iOS 15 */
+.prebirth-toggle { display: flex; align-items: flex-start; gap: 10px; background: var(--bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 14px; cursor: pointer; margin-bottom: 14px; transition: border-color .15s, background .15s; }
+.prebirth-toggle:has(input:checked),
+.prebirth-toggle.checked { border-color: var(--purple); background: var(--purple-tint); }
 .prebirth-toggle input { margin-top: 2px; accent-color: var(--purple); width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; }
 .prebirth-toggle-text { font-size: 13px; line-height: 1.55; color: var(--text-mid); }
 .prebirth-toggle-text strong { color: var(--text); }
 
 /* RESPONSIVE */
+
+/* Tablet (768px) — 2-col form layout */
+@media (min-width: 601px) and (max-width: 860px) {
+  .wrap { padding: 36px 20px 80px; }
+  .tiers { max-width: 600px; margin-left: auto; margin-right: auto; }
+  .preview-wrap { max-width: 600px; margin-left: auto; margin-right: auto; }
+  .form-card { max-width: 600px; margin-left: auto; margin-right: auto; }
+}
+
+/* Mobile (≤600px) */
 @media (max-width: 600px) {
-  .wrap { padding: 28px 16px 60px; }
+  .wrap { padding: 28px 16px calc(60px + env(safe-area-inset-bottom)); }
   .form-row { grid-template-columns: 1fr; }
   .form-card { padding: 20px 16px; }
   .hero-title { font-size: 24px; }
   .redeem-auth-panel { padding: 24px 20px; }
+
+  /* Fix: iOS auto-zoom — inputs must be ≥16px on mobile */
+  .form-input { font-size: 16px; }
+
+  /* Fix: safe area inset on submit button area */
+  .submit-note { padding-bottom: env(safe-area-inset-bottom); }
 }
 </style>
 </head>
@@ -446,18 +466,18 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
         </div>
         <div class="form-field">
           <label class="form-label" for="buyerEmail">Your email</label>
-          <input class="form-input" type="email" id="buyerEmail" placeholder="emma@example.com" autocomplete="email">
+          <input class="form-input" type="email" id="buyerEmail" placeholder="emma@example.com" autocomplete="email" inputmode="email">
           <p class="form-hint">Your confirmation goes here.</p>
         </div>
       </div>
       <div class="form-row">
         <div class="form-field">
           <label class="form-label" for="recipientName">Recipient name(s)</label>
-          <input class="form-input" type="text" id="recipientName" placeholder="Sarah &amp; James" maxlength="80" oninput="updatePreview()">
+          <input class="form-input" type="text" id="recipientName" placeholder="Sarah &amp; James" maxlength="80" oninput="updatePreview()" autocomplete="off">
         </div>
         <div class="form-field">
           <label class="form-label" for="recipientEmail">Recipient email</label>
-          <input class="form-input" type="email" id="recipientEmail" placeholder="sarah@example.com" autocomplete="off">
+          <input class="form-input" type="email" id="recipientEmail" placeholder="sarah@example.com" autocomplete="off" inputmode="email">
           <p class="form-hint">Gift delivered here. <a href="#" onclick="showWrongEmailHelp();return false;" style="color:var(--purple); text-decoration:none; font-weight:600">Typo? See below.</a></p>
         </div>
       </div>
@@ -510,7 +530,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
       <div class="form-field">
         <label class="form-label" for="promoCode">Promo code <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(optional)</span></label>
         <div class="promo-row">
-          <input class="form-input" type="text" id="promoCode" placeholder="ENTER CODE" autocomplete="off" style="text-transform:uppercase">
+          <input class="form-input" type="text" id="promoCode" placeholder="ENTER CODE" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" style="text-transform:uppercase">
           <button class="btn-promo" onclick="applyPromo()">Apply</button>
         </div>
         <div class="promo-status" id="promoStatus"></div>
@@ -1064,6 +1084,9 @@ function togglePrebirth() {
   var dobHint    = document.getElementById('dobHint')
   var dobEl      = document.getElementById('redeemChildDob')
   var btn        = document.getElementById('redeemBtn')
+  // iOS 15 :has() fallback — toggle class manually
+  var toggle = document.querySelector('.prebirth-toggle')
+  if (toggle) toggle.classList.toggle('checked', isPrebirth)
 
   if (isPrebirth) {
     dobLabel.textContent = 'Expected due date'

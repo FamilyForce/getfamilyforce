@@ -140,7 +140,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); line
 .trust-bar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 18px 24px; }
 .trust-inner {
   max-width: 1100px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: center; gap: 40px; flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: center; gap: 12px 40px; flex-wrap: wrap;
 }
 .trust-item { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--text-mid); }
 .trust-item strong { color: var(--text); }
@@ -488,6 +488,23 @@ textarea.mf-input { resize: vertical; min-height: 64px; line-height: 1.55; }
   .section { padding: 56px 20px; }
   .mf-row { grid-template-columns: 1fr; }
   .redeem-form-row { grid-template-columns: 1fr; }
+
+  /* Fix: trust bar — reduce gap and stack items cleanly */
+  .trust-inner { gap: 12px 20px; }
+
+  /* Fix: final CTA button overflows on small phones — go full width */
+  .btn-final {
+    width: 100%;
+    font-size: 16px;
+    padding: 18px 24px;
+    justify-content: center;
+  }
+
+  /* Fix: iOS auto-zoom on modal form inputs */
+  .mf-input { font-size: 16px; }
+
+  /* Fix: safe area inset on bottom of modal */
+  .modal-panel { padding-bottom: env(safe-area-inset-bottom); }
 }
 </style>
 </head>
