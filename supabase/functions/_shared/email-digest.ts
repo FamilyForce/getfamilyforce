@@ -544,10 +544,10 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
         <!-- ═══ FOOTER ═══ -->
         <tr>
           <td style="background:${C.bg};padding:20px 36px;border-top:1px solid ${C.border}">
-            <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0 0 6px;line-height:1.6">
+            <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0 0 8px;line-height:1.6">
               FamilyForce · <a href="${siteUrl}" style="color:${C.textDim};text-decoration:none">getfamilyforce.com</a>
             </p>
-            <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0;line-height:1.6">
+            <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0 0 8px;line-height:1.6">
               ${opts.recipientType === 'family_member'
                 ? `You're receiving this because you were added to ${childName}'s family circle.`
                 : `You're receiving this because you're a Scout member.`}
@@ -556,6 +556,9 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                 : `&nbsp;<a href="${siteUrl}/scout-dashboard/settings" style="color:${C.terra};text-decoration:none">Manage preferences</a>
                    &nbsp;·&nbsp;
                    <a href="${siteUrl}/unsubscribe?user=${userId}" style="color:${C.terra};text-decoration:none">Unsubscribe</a>`}
+            </p>
+            <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0;line-height:1.6;opacity:0.8">
+              For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.
             </p>
           </td>
         </tr>
