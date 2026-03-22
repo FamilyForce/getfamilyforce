@@ -569,10 +569,12 @@ Deno.serve(async (req: Request) => {
 
     await telegramAlert(`Gift sold: ${plan} — ${buyerEmail} → ${recipientEmail} — code ${giftCode} — ${priceInfo.display}`, testMode)
 
-    await sb.from('scout_events').insert({
-      user_id: null, event_type: 'gift_purchased',
-      properties: { plan, amount: priceInfo.amount, buyer_email: buyerEmail },
-    }).catch(() => {})
+    try {
+      await sb.from('scout_events').insert({
+        user_id: null, event_type: 'gift_purchased',
+        properties: { plan, amount: priceInfo.amount, buyer_email: buyerEmail },
+      })
+    } catch (_) { /* non-critical — don't fail the purchase */ }
 
     return new Response(JSON.stringify({
       ok: true, giftCode, referralCode,
