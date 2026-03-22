@@ -268,13 +268,14 @@ function buildConfirmEmail(opts: {
 }
 
 // ─── Telegram ─────────────────────────────────────────────────────────────────
-async function telegramAlert(msg: string) {
+async function telegramAlert(msg: string, testMode = false) {
   const token = Deno.env.get('TELEGRAM_BOT_TOKEN')
   const chat  = Deno.env.get('TELEGRAM_CHAT_ID')
   if (!token || !chat) return
+  const prefix = testMode ? '🧪 [TEST] scout-gift-purchase' : '🎁 scout-gift-purchase'
   await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chat, text: `🎁 scout-gift-purchase: ${msg}` }),
+    body: JSON.stringify({ chat_id: chat, text: `${prefix}: ${msg}` }),
   }).catch(() => {})
 }
 
@@ -296,7 +297,10 @@ Deno.serve(async (req: Request) => {
     const body   = await req.json()
     const action = body.action ?? 'complete-purchase'
 
-    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')!
+    const testMode  = body?.testMode === true
+    const stripeKey = testMode
+      ? Deno.env.get('STRIPE_SECRET_KEY_TEST')!
+      : Deno.env.get('STRIPE_SECRET_KEY')!
     const siteUrl   = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
     const sb        = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
 
@@ -562,7 +566,7 @@ Deno.serve(async (req: Request) => {
       body: JSON.stringify(confirmEmailBody),
     })
 
-    await telegramAlert(`Gift sold: ${plan} — ${buyerEmail} → ${recipientEmail} — code ${giftCode} — ${priceInfo.display}`)
+    await telegramAlert(`Gift sold: ${plan} — ${buyerEmail} → ${recipientEmail} — code ${giftCode} — ${priceInfo.display}`, testMode)
 
     await sb.from('scout_events').insert({
       user_id: null, event_type: 'gift_purchased',
@@ -578,7 +582,7 @@ Deno.serve(async (req: Request) => {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e)
     console.error(`[scout-gift-purchase] Error at step=${step}:`, msg)
-    await telegramAlert(`Error at step=${step}: ${msg}`)
+    await telegramAlert(`Error at step=${step}: ${msg}`, body?.testMode === true)
     return err(500, msg, step)
   }
 })

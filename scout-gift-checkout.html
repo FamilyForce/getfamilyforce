@@ -364,6 +364,12 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
   </div>
 </nav>
 
+<!-- TEST MODE BANNER (hidden unless ?testmode=1) -->
+<div id="testBanner" style="display:none;position:sticky;top:56px;z-index:900;background:#F59E0B;color:#1D1D1F;font-family:var(--sans);font-size:13px;font-weight:700;padding:10px 20px;text-align:center;border-bottom:2px solid #D97706;letter-spacing:.01em">
+  🧪 TEST MODE — No real charges. Use card <span style="font-family:monospace;background:rgba(0,0,0,.12);padding:2px 8px;border-radius:4px;letter-spacing:.08em">4242 4242 4242 4242</span> · any future date · any CVC &nbsp;
+  <button onclick="document.getElementById('testBanner').style.display='none'" style="background:none;border:none;cursor:pointer;font-size:16px;line-height:1;vertical-align:middle;opacity:.7">✕</button>
+</div>
+
 <div class="wrap">
 
   <!-- ══ PURCHASE SCREEN ══ -->
@@ -699,7 +705,12 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 // ── Constants ──────────────────────────────────────────────────────────────
 var SUPABASE_URL  = 'https://ewjqbafaxeasyvknxmof.supabase.co'
 var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
-var STRIPE_PK     = 'pk_live_51TAQTQIbsOmqAIBV8VA8gQdscdslvnT5xLC7sRvPaoy0W4dMhat9OnPaBJZFKn7iq4MorTbvjcPoTIYoxbn1ACnx00HJEpmwFH'
+var STRIPE_PK      = 'pk_live_51TAQTQIbsOmqAIBV8VA8gQdscdslvnT5xLC7sRvPaoy0W4dMhat9OnPaBJZFKn7iq4MorTbvjcPoTIYoxbn1ACnx00HJEpmwFH'
+var STRIPE_PK_TEST = 'pk_test_REPLACE_WITH_YOUR_TEST_KEY'  // ← paste your Stripe test publishable key here
+
+// ── Test mode (add ?testmode=1 to URL) ────────────────────────────────────
+var TEST_MODE = new URLSearchParams(window.location.search).get('testmode') === '1'
+if (TEST_MODE) STRIPE_PK = STRIPE_PK_TEST
 
 var PLAN_DATA = {
   monthly:   { label: '1 Month of Scout',            price: '$9.99',  osLabel: '1 Month of Scout',          tierPill: '1 Month · $9.99',       valueSup: '9.99',  emoji: '💚', css: 'gc-monthly',   previewCss: 'preview-monthly',   badge: '1 Month · $9.99',       forLabel: '🎁 A gift for' },
@@ -714,6 +725,24 @@ var selectedPlan = 'annual'
 var appliedPromo = null
 var deliveryMode = 'now' // 'now' or 'later'
 
+// ── Test mode auto-fill ────────────────────────────────────────────────────
+function activateTestMode() {
+  var banner = document.getElementById('testBanner')
+  if (banner) banner.style.display = 'block'
+
+  var fill = function (id, val) {
+    var el = document.getElementById(id)
+    if (el && !el.value) el.value = val
+  }
+  fill('buyerName',      'Test Buyer')
+  fill('buyerEmail',     'jackhowdy+buyer@gmail.com')
+  fill('recipientName',  'Test Recipient')
+  fill('recipientEmail', 'jackhowdy+recipient@gmail.com')
+  fill('personalMsg',    'This is a test gift — ignore!')
+
+  console.log('[TEST MODE] Stripe key swapped to test. testMode flag will be sent to edge functions.')
+}
+
 // ── Init ───────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function () {
   var params = new URLSearchParams(window.location.search)
@@ -721,6 +750,8 @@ document.addEventListener('DOMContentLoaded', function () {
   if (params.get('redeem')) {
     showRedeem(params.get('redeem')); return
   }
+
+  if (TEST_MODE) activateTestMode()
 
   var planParam = params.get('plan')
   selectPlan((planParam && PLAN_DATA[planParam]) ? planParam : 'annual')
@@ -845,7 +876,7 @@ function applyPromo() {
   status.textContent = 'Checking…'
   fetch(SUPABASE_URL + '/functions/v1/scout-gift-purchase', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ action: 'validate-coupon', code, plan: selectedPlan }),
+    body: JSON.stringify({ action: 'validate-coupon', code, plan: selectedPlan, testMode: TEST_MODE }),
   })
   .then(function (r) { return r.json() })
   .then(function (d) {
@@ -895,6 +926,7 @@ function submitGift() {
       action: 'create-intent', buyerName, buyerEmail,
       recipientName: recipName, recipientEmail: recipEmail, plan: selectedPlan,
       stripeDiscountPromoId: appliedPromo ? appliedPromo.stripePromoId : undefined,
+      testMode: TEST_MODE,
     }),
   })
   .then(function (r) { return r.json() })
@@ -923,7 +955,7 @@ function submitGift() {
           action: 'complete-purchase', paymentIntentId: result.paymentIntent.id,
           buyerName, buyerEmail, recipientName: recipName, recipientEmail: recipEmail,
           personalMessage: personalMsg || undefined, plan: selectedPlan,
-          deliverAt: deliverAt || undefined,
+          deliverAt: deliverAt || undefined, testMode: TEST_MODE,
         }),
       })
       .then(function (r) { return r.json() })
@@ -1124,7 +1156,7 @@ function submitRedeem() {
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify({
         code, childName, childDob, childGender: childGender || undefined,
-        isPrebirth: isPrebirth || undefined,
+        isPrebirth: isPrebirth || undefined, testMode: TEST_MODE,
       }),
     })
     .then(function (r) { return r.json() })
