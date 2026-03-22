@@ -88,7 +88,7 @@ function formatDateTime(d: Date): string {
   return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
 }
 
-// ─── Build the DESCRIPTION field ─────────────────────────────────────────────
+// ─── Build plain-text DESCRIPTION (Google Calendar fallback) ─────────────────
 function buildDescription(
   childName:    string,
   ageMonths:    number,
@@ -97,65 +97,131 @@ function buildDescription(
 ): string {
   const lines: string[] = []
 
-  // ── Pre-birth: due date event ─────────────────────────────────────────────
   if (ageMonths === 0) {
-    lines.push(`\uD83C\uDF89 Today is ${childName}'s expected due date!`)
+    lines.push(`Today is ${childName}'s expected due date.`)
     lines.push('')
     lines.push(`Head to Scout to confirm your baby has arrived and unlock your`)
     lines.push(`personalised milestone plan for the first month.`)
     lines.push('')
     if (windows.length > 0) {
-      lines.push(`\uD83D\uDCCB Your first month has ${windows.length} open milestone window${windows.length === 1 ? '' : 's'} \u2014 we'll walk you through every one.`)
+      lines.push(`Your first month has ${windows.length} open milestone window${windows.length === 1 ? '' : 's'}.`)
       lines.push('')
     }
-    lines.push(`Confirm arrival \u2192 ${dashboardUrl}`)
+    lines.push(`Confirm arrival: ${dashboardUrl}`)
     lines.push('')
     lines.push(`\u2014 FamilyForce Scout`)
     return lines.join('\n')
   }
 
-  // ── Post-birth: monthly birthday event ───────────────────────────────────
-  // Note: "weeks left" is intentionally omitted — it would be calculated
-  // at ICS-generation time, not at event-fire time, so it would be misleading.
+  // Note: "weeks left" is intentionally omitted from the ICS — it is calculated
+  // at generation time, not at event-fire time, so it would be misleading.
   const closing = windows.filter(w => w.close_age_weeks - w.current_age_weeks <= 4)
   const open    = windows.filter(w => w.close_age_weeks - w.current_age_weeks > 4)
 
-  lines.push(`\uD83C\uDF82 ${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'} old today!`)
+  lines.push(`${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'} old today.`)
   lines.push('')
   lines.push(`Your Scout digest is in your inbox. Here's what's open this month:`)
   lines.push('')
 
   if (closing.length > 0) {
-    lines.push(`\u26A1 Closing soon \u2014 worth doing this month:`)
-    for (const w of closing) {
-      lines.push(`  \u2022 ${w.title}`)
-    }
+    lines.push(`Closing soon \u2014 worth doing this month:`)
+    for (const w of closing) lines.push(`  \u2022 ${w.title}`)
     lines.push('')
   }
 
   if (open.length > 0) {
-    lines.push(`\uD83D\uDCCB Also open this month:`)
-    for (const w of open.slice(0, 6)) {
-      lines.push(`  \u2022 ${w.title}`)
-    }
-    if (open.length > 6) {
-      lines.push(`  \u2022 \u2026 and ${open.length - 6} more in your dashboard`)
-    }
+    lines.push(`Also open this month:`)
+    for (const w of open.slice(0, 6)) lines.push(`  \u2022 ${w.title}`)
+    if (open.length > 6) lines.push(`  \u2022 \u2026 and ${open.length - 6} more`)
     lines.push('')
   }
 
-  lines.push(`Open Scout \u2192 ${dashboardUrl}`)
+  lines.push(`Open Scout: ${dashboardUrl}`)
   lines.push('')
   lines.push(`\u2014 FamilyForce Scout`)
-
   return lines.join('\n')
+}
+
+// ─── Build rich HTML description (Apple Calendar + Outlook via X-ALT-DESC) ───
+function buildHtmlDescription(
+  childName:    string,
+  ageMonths:    number,
+  windows:      IcsWindow[],
+  dashboardUrl: string
+): string {
+  const purple  = '#6E4ED6'
+  const text    = '#1A0F3A'
+  const dimText = '#6B7280'
+  const amber   = '#B45309'
+  const amberBg = '#FFFBEB'
+  const amberBorder = '#FDE68A'
+
+  const closing = windows.filter(w => w.close_age_weeks - w.current_age_weeks <= 4)
+  const open    = windows.filter(w => w.close_age_weeks - w.current_age_weeks > 4)
+
+  const windowRow = (title: string) =>
+    `<tr><td style="padding:4px 0 4px 12px;color:${text};font-size:14px;line-height:1.5">${title}</td></tr>`
+
+  let windowsHtml = ''
+
+  if (ageMonths > 0) {
+    if (closing.length > 0) {
+      windowsHtml += `
+        <tr><td style="padding:16px 0 6px">
+          <div style="background:${amberBg};border:1px solid ${amberBorder};border-radius:8px;padding:10px 14px">
+            <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${amber}">Closing soon</p>
+            <table width="100%" cellpadding="0" cellspacing="0">${closing.map(w => windowRow(w.title)).join('')}</table>
+          </div>
+        </td></tr>`
+    }
+    if (open.length > 0) {
+      const shown = open.slice(0, 6)
+      const more  = open.length - 6
+      windowsHtml += `
+        <tr><td style="padding:12px 0 0">
+          <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${dimText}">Also open this month</p>
+          <table width="100%" cellpadding="0" cellspacing="0">
+            ${shown.map(w => windowRow(w.title)).join('')}
+            ${more > 0 ? `<tr><td style="padding:4px 0 4px 12px;color:${dimText};font-size:13px;font-style:italic">…and ${more} more in your dashboard</td></tr>` : ''}
+          </table>
+        </td></tr>`
+    }
+  }
+
+  const headline = ageMonths === 0
+    ? `Today is ${childName}'s expected due date.`
+    : `${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'} old today.`
+
+  const body = ageMonths === 0
+    ? `<p style="margin:0 0 8px;font-size:15px;color:${text};line-height:1.6">Head to Scout to confirm your baby has arrived and unlock your personalised milestone plan.</p>
+       ${windows.length > 0 ? `<p style="margin:0 0 0;font-size:14px;color:${dimText}">Your first month has <strong>${windows.length} open milestone window${windows.length === 1 ? '' : 's'}</strong> ready and waiting.</p>` : ''}`
+    : `<p style="margin:0;font-size:15px;color:${text};line-height:1.6">Your Scout digest is in your inbox with everything open this month.</p>`
+
+  const ctaLabel = ageMonths === 0 ? 'Confirm arrival in Scout' : 'Open Scout'
+
+  return `<html><body>
+<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:480px;color:${text}">
+  <div style="border-left:3px solid ${purple};padding-left:14px;margin-bottom:20px">
+    <p style="margin:0 0 2px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${purple}">FamilyForce Scout</p>
+    <h2 style="margin:0;font-size:20px;font-weight:700;color:${text};line-height:1.3">${headline}</h2>
+  </div>
+  ${body}
+  <table width="100%" cellpadding="0" cellspacing="0">${windowsHtml}</table>
+  <table cellpadding="0" cellspacing="0" style="margin-top:20px">
+    <tr><td style="background:${purple};border-radius:8px;padding:10px 20px">
+      <a href="${dashboardUrl}" style="color:#fff;font-size:14px;font-weight:600;text-decoration:none">${ctaLabel} &rarr;</a>
+    </td></tr>
+  </table>
+  <p style="margin:20px 0 0;font-size:12px;color:${dimText}">FamilyForce &mdash; getfamilyforce.com</p>
+</div>
+</body></html>`
 }
 
 // ─── Build the SUMMARY (event title) ─────────────────────────────────────────
 function buildSummary(childName: string, ageMonths: number): string {
-  if (ageMonths === 0) return `\uD83D\uDC76 ${childName}'s due date \u2014 confirm arrival in Scout`
-  if (ageMonths === 1) return `\uD83C\uDF82 ${childName} turns 1 month \u2014 Scout digest ready`
-  return `\uD83C\uDF82 ${childName} turns ${ageMonths} months \u2014 Scout digest ready`
+  if (ageMonths === 0) return `${childName}'s due date \u2014 confirm arrival in Scout`
+  if (ageMonths === 1) return `${childName} turns 1 month \u2014 Scout digest ready`
+  return `${childName} turns ${ageMonths} months \u2014 Scout digest ready`
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
@@ -184,9 +250,10 @@ export function generateScoutIcs(options: GenerateIcsOptions): string {
   // UID = stable, reproducible, unique per child per month
   const uid = `scout-${childId}-month${ageMonths}-${dtStart}@getfamilyforce.com`
 
-  // Build the description text
-  const description = buildDescription(childName, ageMonths, windows, dashboardUrl)
-  const summary     = buildSummary(childName, ageMonths)
+  // Build descriptions
+  const description     = buildDescription(childName, ageMonths, windows, dashboardUrl)
+  const htmlDescription = buildHtmlDescription(childName, ageMonths, windows, dashboardUrl)
+  const summary         = buildSummary(childName, ageMonths)
 
   // Assemble the .ics lines
   const rawLines: string[] = [
@@ -202,6 +269,8 @@ export function generateScoutIcs(options: GenerateIcsOptions): string {
     `DTEND;VALUE=DATE:${dtEnd}`,
     `SUMMARY:${escapeText(summary)}`,
     `DESCRIPTION:${escapeText(description)}`,
+    // X-ALT-DESC: rich HTML for Apple Calendar + Outlook (ignored by Google Calendar)
+    `X-ALT-DESC;FMTTYPE=text/html:${escapeText(htmlDescription)}`,
     `URL:${dashboardUrl}`,
     'TRANSP:TRANSPARENT',  // all-day, does not block time
     'STATUS:CONFIRMED',
