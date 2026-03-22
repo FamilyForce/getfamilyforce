@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendar Invite Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #E8E8ED;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  /* Apple Calendar window chrome */
+  .cal-window {
+    width: 680px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.25), 0 2px 8px rgba(0,0,0,.12);
+    overflow: hidden;
+  }
+
+  .cal-titlebar {
+    background: linear-gradient(180deg, #E8E6ED 0%, #D8D5E0 100%);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #C8C5D0;
+  }
+  .cal-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .cal-dot.red { background: #FF5F57; }
+  .cal-dot.yellow { background: #FFBD2E; }
+  .cal-dot.green { background: #28C840; }
+  .cal-titlebar-label {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3C3C43;
+    margin-right: 36px;
+  }
+
+  /* Event header */
+  .cal-event-header {
+    background: #F2F1F6;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid #E0DFE6;
+  }
+  .cal-event-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1C1C1E;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .cal-event-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .cal-event-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #636366;
+  }
+  .cal-event-meta-icon {
+    width: 16px;
+    height: 16px;
+    color: #8E8E93;
+    flex-shrink: 0;
+  }
+  .cal-event-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #6E4ED6;
+    flex-shrink: 0;
+  }
+
+  /* Description area */
+  .cal-description {
+    padding: 20px 24px 24px;
+  }
+
+  /* The actual X-ALT-DESC HTML rendered here */
+  .invite-body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
+    max-width: 100%;
+    color: #1A0F3A;
+  }
+  .invite-header {
+    border-left: 3px solid #6E4ED6;
+    padding-left: 14px;
+    margin-bottom: 18px;
+  }
+  .invite-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #6E4ED6;
+    margin: 0 0 3px;
+  }
+  .invite-headline {
+    font-size: 19px;
+    font-weight: 700;
+    color: #1A0F3A;
+    line-height: 1.3;
+    margin: 0;
+  }
+  .invite-body-text {
+    font-size: 15px;
+    color: #1A0F3A;
+    line-height: 1.6;
+    margin: 0 0 18px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+  }
+  .closing-box {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .closing-box .section-label { color: #B45309; }
+  .window-item {
+    font-size: 14px;
+    color: #1A0F3A;
+    line-height: 1.5;
+    padding: 3px 0 3px 12px;
+    position: relative;
+  }
+  .window-item::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #6B7280;
+  }
+  .open-section { margin-bottom: 20px; }
+  .open-section .section-label { color: #6B7280; }
+  .more-text {
+    font-size: 13px;
+    color: #6B7280;
+    font-style: italic;
+    padding: 3px 0 3px 12px;
+  }
+  .cta-btn {
+    display: inline-block;
+    background: #6E4ED6;
+    border-radius: 8px;
+    padding: 10px 20px;
+    text-decoration: none;
+    margin-bottom: 16px;
+  }
+  .cta-btn span {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .invite-footer {
+    font-size: 12px;
+    color: #6B7280;
+    margin: 4px 0 0;
+  }
+
+  /* Tab bar */
+  .cal-tabs {
+    display: flex;
+    border-top: 1px solid #E0DFE6;
+    background: #F9F8FC;
+  }
+  .cal-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: #6E4ED6;
+    font-weight: 500;
+    border-right: 1px solid #E0DFE6;
+  }
+  .cal-tab:last-child { border-right: none; }
+  .cal-tab.active { background: #fff; font-weight: 700; }
+
+  /* Label */
+  .mockup-label {
+    text-align: center;
+    font-family: -apple-system, sans-serif;
+    font-size: 13px;
+    color: #636366;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div style="width:680px">
+  <p class="mockup-label">Apple Calendar — Event Detail View</p>
+
+  <div class="cal-window">
+    <!-- Titlebar -->
+    <div class="cal-titlebar">
+      <div class="cal-dot red"></div>
+      <div class="cal-dot yellow"></div>
+      <div class="cal-dot green"></div>
+      <div class="cal-titlebar-label">Event Info</div>
+    </div>
+
+    <!-- Event header -->
+    <div class="cal-event-header">
+      <div class="cal-event-title">Jenny James turns 3 months — Scout digest ready</div>
+      <div class="cal-event-meta">
+        <div class="cal-event-meta-row">
+          <svg class="cal-event-meta-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="1" y="2" width="14" height="13" rx="2"/>
+            <path d="M1 6h14M5 1v2M11 1v2"/>
+          </svg>
+          Wednesday, April 16, 2026 · All day
+        </div>
+        <div class="cal-event-meta-row">
+          <div class="cal-event-dot"></div>
+          FamilyForce Scout
+        </div>
+      </div>
+    </div>
+
+    <!-- Description (X-ALT-DESC rendered HTML) -->
+    <div class="cal-description">
+      <div class="invite-body">
+
+        <div class="invite-header">
+          <p class="invite-label">FamilyForce Scout</p>
+          <h2 class="invite-headline">Jenny James turns 3 months old today.</h2>
+        </div>
+
+        <p class="invite-body-text">Your Scout digest is in your inbox with everything open this month.</p>
+
+        <!-- Closing soon -->
+        <div class="closing-box">
+          <p class="section-label">Closing soon</p>
+          <div class="window-item">Choose your pediatrician</div>
+          <div class="window-item">Introduce a bottle (if breastfeeding)</div>
+        </div>
+
+        <!-- Also open -->
+        <div class="open-section">
+          <p class="section-label">Also open this month</p>
+          <div class="window-item">Start tummy time daily</div>
+          <div class="window-item">Safe sleep environment check</div>
+          <div class="window-item">Track feeding patterns</div>
+          <div class="window-item">Schedule 2-month well visit</div>
+          <div class="window-item">Read aloud — start the habit now</div>
+          <div class="window-item">Introduce a pacifier</div>
+          <div class="more-text">…and 4 more in your dashboard</div>
+        </div>
+
+        <a class="cta-btn" href="#"><span>Open Scout →</span></a>
+
+        <p class="invite-footer">FamilyForce — getfamilyforce.com</p>
+
+      </div>
+    </div>
+
+    <!-- Bottom tabs -->
+    <div class="cal-tabs">
+      <div class="cal-tab active">Details</div>
+      <div class="cal-tab">Edit</div>
+      <div class="cal-tab">Invitees</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
