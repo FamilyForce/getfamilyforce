@@ -235,7 +235,7 @@ Deno.serve(async (req: Request) => {
         const fromName   = Deno.env.get('RESEND_FROM_NAME')  ?? 'FamilyForce'
         const siteUrl    = Deno.env.get('SITE_URL')           ?? 'https://getfamilyforce.com'
         const bccEmail   = Deno.env.get('RESEND_BCC_EMAIL')  ?? ''
-        const planLabel  = gift.plan === '3year' ? 'Full Journey (3 Years)' : gift.plan === 'annual' ? '1 Year of Scout' : '1 Month of Scout'
+        const planLabel  = gift.plan === 'triennial' ? 'Full Journey (3 Years)' : gift.plan === 'annual' ? '1 Year of Scout' : '1 Month of Scout'
         const dobFmt     = realDobDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
         const recipName  = gift.recipient_name || 'the family'
         const buyerGreet = gift.buyer_name ? `Hi ${gift.buyer_name},` : 'Hi there,'
