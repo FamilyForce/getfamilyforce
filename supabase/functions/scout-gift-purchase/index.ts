@@ -313,17 +313,26 @@ Deno.serve(async (req: Request) => {
       if (!code || !vPlan) return err(400, 'code and plan required', 'validate-coupon')
       if (!stripeKey) return err(500, 'Stripe not configured', 'validate-coupon')
 
-      // ── Test-mode bypass: FRIEND-* codes always validate at 100% off ──────
+      // ── Test-mode bypass: fixed test codes, no Stripe required ───────────
       // Stripe test + live environments have separate promo code databases.
-      // Rather than requiring test promo codes to be created manually in Stripe,
-      // we short-circuit in test mode so the full checkout flow can be tested.
-      if (testMode && /^FRIEND-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(code)) {
+      // These codes short-circuit in test mode so the full checkout flow can be tested.
+      const TEST_CODES: Record<string, { pct: number; label: string }> = {
+        'FRIEND-TEST-100': { pct: 100, label: '100% off (test)' },
+        'FRIEND-TEST-25':  { pct: 25,  label: '25% off (test)'  },
+      }
+      // Also accept any FRIEND-XXXX-XXXX pattern as 100% off for generated codes
+      const testEntry = TEST_CODES[code.toUpperCase()]
+        ?? (/^FRIEND-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(code) ? { pct: 100, label: '100% off (test)' } : null)
+
+      if (testMode && testEntry) {
         const base = PRICES[vPlan as 'annual' | 'triennial' | 'monthly']
         if (!base) return err(400, 'invalid plan', 'validate-coupon')
+        const discountedAmount = Math.round(base.amount * (1 - testEntry.pct / 100))
         return new Response(JSON.stringify({
-          ok: true, label: '100% off (test)',
-          originalAmount: base.amount, discountedAmount: 0,
-          originalDisplay: base.display, discountedDisplay: '$0.00',
+          ok: true, label: testEntry.label,
+          originalAmount: base.amount, discountedAmount,
+          originalDisplay: base.display,
+          discountedDisplay: '$' + (discountedAmount / 100).toFixed(2),
           stripePromoId: 'test_promo_bypass',
         }), { headers: { 'Content-Type': 'application/json', ...CORS }, status: 200 })
       }
