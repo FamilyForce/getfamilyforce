@@ -466,9 +466,12 @@ Deno.serve(async (req: Request) => {
       })
 
       // INSERT new subscription row for this child
+      // Fetch subscription again — creation response may not have current_period_end populated yet
       step = 'db-insert'
-      const periodEnd = subscription.current_period_end
-        ? new Date(subscription.current_period_end * 1000).toISOString()
+      let freshSub = subscription
+      try { freshSub = await stripeReq(stripeKey, 'GET', `/subscriptions/${subscription.id}`) } catch { /* use creation response */ }
+      const periodEnd = freshSub.current_period_end
+        ? new Date(freshSub.current_period_end * 1000).toISOString()
         : null
 
       await sb.from('scout_subscriptions').insert({
@@ -712,9 +715,12 @@ Deno.serve(async (req: Request) => {
     })
 
     // Update subscription row
+    // Fetch subscription again — creation response may not have current_period_end populated yet
     step = 'db-update'
-    const periodEnd = subscription.current_period_end
-      ? new Date(subscription.current_period_end * 1000).toISOString()
+    let freshSub = subscription
+    try { freshSub = await stripeReq(stripeKey, 'GET', `/subscriptions/${subscription.id}`) } catch { /* use creation response */ }
+    const periodEnd = freshSub.current_period_end
+      ? new Date(freshSub.current_period_end * 1000).toISOString()
       : null
 
     await sb.from('scout_subscriptions').update({
