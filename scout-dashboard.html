@@ -960,8 +960,12 @@ function renderSidebarTrial(sub) {
                   : 'Scout subscriber'
     var endLine = ''
     if (sub.period_end) {
-      var endDate = new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
-      endLine = '<p class="sidebar-trial-text">Access until ' + endDate + '.</p>'
+      var isTri   = sub.plan === 'triennial'
+      var fmtOpts = isTri
+        ? { month: 'long', year: 'numeric', timeZone: 'UTC' }
+        : { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }
+      var endDate = new Date(sub.period_end).toLocaleDateString('en-US', fmtOpts)
+      endLine = '<p class="sidebar-trial-text">Active until ' + endDate + '.</p>'
     }
     wrap.innerHTML =
       '<div class="sidebar-trial">' +
