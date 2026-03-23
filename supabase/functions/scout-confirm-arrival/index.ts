@@ -314,6 +314,93 @@ Deno.serve(async (req: Request) => {
       console.warn('[scout-confirm-arrival] Gifter notify error (non-fatal):', giftErr)
     }
 
+    // 11. Notify active family circle members that baby has arrived
+    step = 'family-notify'
+    try {
+      const { data: familyMembers } = await sb
+        .from('family_members')
+        .select('member_user_id')
+        .eq('owner_user_id', userId)
+        .eq('child_id', childId)
+        .eq('status', 'active')
+
+      if (familyMembers && familyMembers.length > 0) {
+        const resendApiKey = Deno.env.get('RESEND_API_KEY')!
+        const fromName     = Deno.env.get('RESEND_FROM_NAME')  ?? 'FamilyForce Scout'
+        const fromEmail    = Deno.env.get('RESEND_FROM_EMAIL') ?? 'scout@getfamilyforce.com'
+        const siteUrl      = Deno.env.get('SITE_URL')          ?? 'https://getfamilyforce.com'
+        const dashUrl      = `${siteUrl}/scout-dashboard.html`
+        const dobFmt       = new Date(realDob + 'T00:00:00Z').toLocaleDateString('en-US', {
+          month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+        })
+
+        // Fetch account owner's name for the "from" context
+        const { data: ownerProfile } = await sb.from('profiles').select('name').eq('id', userId).maybeSingle()
+        const ownerName = ownerProfile?.name?.trim() || 'Your family'
+
+        for (const member of familyMembers) {
+          try {
+            const memberId = member.member_user_id
+            if (!memberId) continue
+
+            const { data: { user: memberUser } } = await sb.auth.admin.getUserById(memberId)
+            if (!memberUser?.email) continue
+
+            const { data: memberProfile } = await sb.from('profiles').select('name').eq('id', memberId).maybeSingle()
+            const memberName = memberProfile?.name?.trim() || null
+            const memberGreet = memberName ? `Hi ${memberName},` : 'Hi there,'
+
+            const familyHtml = `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{margin:0;padding:0;background:#F7F5FF;font-family:Arial,sans-serif}</style>
+</head><body>
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F7F5FF;padding:32px 16px">
+  <tr><td align="center">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;border-radius:20px;overflow:hidden;border:1px solid #E8E4F5">
+      <tr><td style="background:#2D1B69;padding:32px 36px 28px">
+        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0 0 16px">Scout by FamilyForce</p>
+        <p style="font-family:Georgia,serif;font-size:30px;color:#fff;margin:0 0 8px;line-height:1.2">${child.name} has arrived. 🎉</p>
+        <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.65);margin:0">Born ${dobFmt}</p>
+      </td></tr>
+      <tr><td style="background:#fff;padding:28px 36px 32px">
+        <p style="font-family:Arial,sans-serif;font-size:15px;color:#1D1D1F;margin:0 0 12px;font-weight:600">${memberGreet}</p>
+        <p style="font-family:Arial,sans-serif;font-size:15px;color:#5C5960;margin:0 0 16px;line-height:1.75"><strong>${ownerName}</strong> confirmed that <strong>${child.name}</strong> arrived on <strong>${dobFmt}</strong>. Scout is now tracking ${child.name}'s development.</p>
+        <p style="font-family:Arial,sans-serif;font-size:15px;color:#5C5960;margin:0 0 24px;line-height:1.75">You'll receive monthly Scout digests for ${child.name} starting on ${child.name}'s first monthly birthday.</p>
+        <a href="${dashUrl}" style="display:inline-block;background:#6E4ED6;color:#fff;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:100px;text-decoration:none">View Dashboard →</a>
+      </td></tr>
+      <tr><td style="background:#F7F5FF;padding:20px 36px;text-align:center">
+        <p style="font-family:Arial,sans-serif;font-size:12px;color:#8A879A;margin:0">FamilyForce · ${siteUrl}</p>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body></html>`
+
+            await fetch('https://api.resend.com/emails', {
+              method:  'POST',
+              headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                from:    `${fromName} <${fromEmail}>`,
+                to:      [memberUser.email],
+                subject: `${child.name} has arrived! 🎉`,
+                html:    familyHtml,
+                tags:    [
+                  { name: 'type',     value: 'family_birth_notify' },
+                  { name: 'child_id', value: childId },
+                ],
+              }),
+            })
+            console.log(`[scout-confirm-arrival] Birth notification sent to family member ${memberId}`)
+          } catch (memberErr) {
+            console.warn(`[scout-confirm-arrival] Failed to notify family member ${member.member_user_id}:`, memberErr)
+          }
+        }
+      }
+    } catch (familyErr) {
+      // Non-critical — don't fail the whole arrival confirmation
+      console.warn('[scout-confirm-arrival] Family notify error (non-fatal):', familyErr)
+    }
+
     console.log(`[scout-confirm-arrival] Birth confirmed for user ${userId}, child ${childId} (dob=${realDob}, trialEnd=${finalTrialEnd.toISOString().split('T')[0]})`)
     await telegramAlert(`🍼 Birth confirmed — user ${userId}, ${child.name} born ${realDob} (due ${child.due_date})`)
 
