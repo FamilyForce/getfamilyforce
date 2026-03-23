@@ -461,12 +461,10 @@ Deno.serve(async (req: Request) => {
 
       // INSERT new subscription row for this child
       step = 'db-insert'
-      const rawPeriodEnd = subscription.current_period_end
-        ?? subscription.latest_invoice?.period_end
-        ?? null
-      const periodEnd = rawPeriodEnd
-        ? new Date(rawPeriodEnd * 1000).toISOString()
-        : null
+      const nowA = new Date()
+      const periodEnd = plan === 'monthly'
+        ? new Date(nowA.getFullYear(), nowA.getMonth() + 1, nowA.getDate()).toISOString()
+        : new Date(nowA.getFullYear() + 1, nowA.getMonth(), nowA.getDate()).toISOString()
 
       await sb.from('scout_subscriptions').insert({
         user_id:            user.id,
@@ -695,15 +693,13 @@ Deno.serve(async (req: Request) => {
     })
 
     // Update subscription row
-    // current_period_end can be null for incomplete subscriptions — fall back to invoice.period_end
+    // Calculate period_end based on plan — Stripe's current_period_end may be stale/today on
+    // incomplete subscriptions. The invoice.paid webhook will overwrite with the exact Stripe value.
     step = 'db-update'
-    const rawPeriodEnd = subscription.current_period_end
-      ?? subscription.latest_invoice?.period_end
-      ?? null
-    const periodEnd = rawPeriodEnd
-      ? new Date(rawPeriodEnd * 1000).toISOString()
-      : null
-    console.log('[scout-convert] PATH B periodEnd:', periodEnd, 'status:', subscription.status)
+    const now = new Date()
+    const periodEnd = plan === 'monthly'
+      ? new Date(now.getFullYear(), now.getMonth() + 1, now.getDate()).toISOString()
+      : new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()).toISOString()
 
     await sb.from('scout_subscriptions').update({
       status:             'active',
