@@ -55,21 +55,54 @@ Deno.serve(async (req) => {
     if (!childId) return err(400, 'childId required')
 
     // ── Fetch subscription ──────────────────────────────────────────────────
+    // Try exact child_id match first; fall back to null child_id (legacy trial-converted rows)
     step = 'fetch-sub'
-    const { data: sub, error: subErr } = await sb
+    let sub: Record<string, unknown> | null = null
+    const { data: subExact } = await sb
       .from('scout_subscriptions')
       .select('*')
       .eq('user_id', user.id)
       .eq('child_id', childId)
-      .single()
+      .maybeSingle()
+    if (subExact) {
+      sub = subExact
+    } else {
+      const { data: subFallback } = await sb
+        .from('scout_subscriptions')
+        .select('*')
+        .eq('user_id', user.id)
+        .is('child_id', null)
+        .in('status', ['active', 'cancelling'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
+      sub = subFallback
+    }
 
-    if (subErr || !sub) return err(404, 'No subscription found')
-    if (!sub.stripe_sub_id) return err(400, 'No Stripe subscription ID on record')
+    if (!sub) return err(404, 'No subscription found')
     if (sub.status === 'trialing') return err(400, 'Trial subscriptions cannot be cancelled here — they expire automatically')
     if (sub.status === 'cancelled') return err(400, 'Subscription is already cancelled')
     if (sub.status === 'cancelling') return err(400, 'Subscription is already set to cancel')
 
-    // ── Cancel on Stripe (cancel_at_period_end = true) ──────────────────────
+    // ── Triennial: no Stripe subscription — just update DB ───────────────────
+    if (sub.plan === 'triennial' || !sub.stripe_sub_id) {
+      const accessUntil = sub.period_end as string | null
+      await sb.from('scout_subscriptions').update({
+        status:               'cancelling',
+        cancel_at_period_end: true,
+        updated_at:           new Date().toISOString(),
+      }).eq('id', sub.id)
+      await sb.from('scout_events').insert({
+        user_id: user.id, child_id: childId,
+        event_type: 'subscription_cancelled',
+        properties: { plan: sub.plan, access_until: accessUntil, source: 'in_app' },
+      }).catch(() => {})
+      return new Response(JSON.stringify({
+        ok: true, access_until: accessUntil, plan: sub.plan,
+      }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
+    }
+
+    // ── Annual / Monthly: cancel on Stripe ───────────────────────────────────
     step = 'stripe-cancel'
     const stripeRes = await fetch(
       `https://api.stripe.com/v1/subscriptions/${sub.stripe_sub_id}`,
@@ -91,7 +124,7 @@ Deno.serve(async (req) => {
 
     const accessUntil = stripeSub.current_period_end
       ? new Date(stripeSub.current_period_end * 1000).toISOString()
-      : sub.period_end
+      : sub.period_end as string | null
 
     // ── Update DB ───────────────────────────────────────────────────────────
     step = 'update-db'
