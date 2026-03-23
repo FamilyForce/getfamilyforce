@@ -210,14 +210,29 @@ function renderHistory(months, child) {
     list.innerHTML = '<div class="end-state"><p class="end-state-title">No history yet.</p><p class="end-state-text">Your digest and progress history will appear here after your first monthly update.</p></div>'
     return
   }
+
+  // Merge all pre-birth buckets (ageMonths <= 0) into a single "Pre-birth" group
+  var prebirth  = months.filter(function (m) { return m.ageMonths <= 0 })
+  var postnatal = months.filter(function (m) { return m.ageMonths > 0 })
+  if (prebirth.length > 0) {
+    var mergedWindows = []
+    prebirth.forEach(function (m) { mergedWindows = mergedWindows.concat(m.windows) })
+    postnatal = postnatal.concat([{ label: 'Pre-birth', ageMonths: -1, windows: mergedWindows, isPrebirth: true }])
+  }
+  months = postnatal
+
   var html = ''
   months.forEach(function (m, i) {
     var doneCount = m.windows.length  // already filtered to completed/skipped before renderHistory
+    var headingLabel = m.isPrebirth ? 'Pre-birth' : m.label
+    var subLabel     = m.isPrebirth
+      ? (child.name + ' — before birth')
+      : (child.name + ' at ' + m.ageMonths + ' month' + (m.ageMonths === 1 ? '' : 's'))
     html += '<div class="history-month" id="histMonth-' + i + '">' +
       '<div class="history-month-header" onclick="toggleMonth(' + i + ')">' +
       '<div class="history-month-left">' +
-      '<h3>' + m.label + '</h3>' +
-      '<p>' + (m.ageMonths < 0 ? child.name + ' — before birth' : child.name + ' at ' + m.ageMonths + ' month' + (m.ageMonths === 1 ? '' : 's')) + '</p>' +
+      '<h3>' + headingLabel + '</h3>' +
+      '<p>' + subLabel + '</p>' +
       '</div>' +
       '<div class="history-month-right">' +
       '<span class="history-month-stat">' + doneCount + ' completed</span>' +
