@@ -165,12 +165,11 @@ Deno.serve(async (req) => {
     if (sub.status === 'cancelling') return err(400, 'Subscription is already set to cancel')
 
     // ── Load user email + name for confirmation email ────────────────────────
-    const resendKey   = Deno.env.get('RESEND_API_KEY')
-    const siteUrl     = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
-    const { data: { user: authUser } } = await sb.auth.admin.getUserById(user.id)
-    const userEmail   = authUser?.email ?? user.email
-    const { data: profile } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
-    const userName    = profile?.name ?? userEmail.split('@')[0]
+    const resendKey = Deno.env.get('RESEND_API_KEY')
+    const siteUrl   = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
+    const userEmail = user.email ?? ''
+    const { data: profile } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle().catch(() => ({ data: null }))
+    const userName  = (profile as any)?.name ?? userEmail.split('@')[0]
 
     // ── Triennial: no Stripe subscription — just update DB ───────────────────
     if (sub.plan === 'triennial' || !sub.stripe_sub_id) {
