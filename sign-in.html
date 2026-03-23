@@ -2103,6 +2103,10 @@ button { font: inherit; cursor: pointer; }
 
   /* ── Show a step, hide all others ── */
   window.showStep = function(stepId) {
+    // Always dismiss the verifying overlay when routing to any step
+    var vOverlay = document.getElementById('verifying-overlay');
+    if (vOverlay) vOverlay.style.display = 'none';
+
     // Hide auth card when moving to post-signup steps
     var card = document.querySelector('.signin-card');
     var steps = document.querySelectorAll('.signup-step');
@@ -2177,10 +2181,16 @@ button { font: inherit; cursor: pointer; }
       if (sb) {
         var _verifyHandled = false;
 
+        function _dismissVerifyOverlay() {
+          var o = document.getElementById('verifying-overlay');
+          if (o) o.style.display = 'none';
+        }
+
         function _routeVerifiedSession(session) {
           if (_verifyHandled) return;
           _verifyHandled = true;
           history.replaceState(null, '', window.location.pathname + window.location.search);
+          _dismissVerifyOverlay();
           var user = session.user;
           generateAndSaveReferralCode(user.id, user.email);
 
