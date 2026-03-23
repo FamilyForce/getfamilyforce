@@ -394,10 +394,12 @@ Deno.serve(async (req: Request) => {
           if (!memberUser?.email) continue
 
           // Build per-member HTML with their own unsubscribe URL + family footer
+          const { data: memberProfile } = await sb.from('profiles').select('name').eq('id', memberId).maybeSingle()
+          const memberGreetName = memberProfile?.name?.trim() || undefined
           const unsubUrl   = `${supabaseUrl}/functions/v1/scout-unsubscribe?t=${member.unsubscribe_token}`
           const memberHtml = buildDigestEmail({
             childName:      child.name,
-            parentName,
+            parentName:     memberGreetName,
             childGender:    child.gender,
             ageMonths:      isExpecting ? 0 : months,
             isExpecting,
