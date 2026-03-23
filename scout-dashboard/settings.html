@@ -374,11 +374,15 @@ function renderSubCard(sub, child) {
   } else if (sub.status === 'active') {
     if (sub.plan) html += subRow('Plan', sub.plan === 'annual' ? 'Annual ($49.99/year)' : sub.plan === 'triennial' ? 'Full Journey ($99.99/3 yr)' : 'Monthly ($9.99/month)')
     if (sub.period_end) {
-      html += subRow('Next billing', new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }))
+      var periodLabel = sub.plan === 'triennial' ? 'Access until' : 'Next billing'
+      html += subRow(periodLabel, new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }))
     }
+    var cancelNote = sub.plan === 'triennial'
+      ? 'Your access continues until March 2029. No future charges.'
+      : 'Your access continues until the end of the current billing period.'
     html += '<div class="settings-row" data-owner-only>' +
       '<div><p class="settings-row-label">Cancel subscription</p>' +
-      '<p class="settings-row-sub">Your access continues until the end of the current billing period.</p></div>' +
+      '<p class="settings-row-sub">' + cancelNote + '</p></div>' +
       '<a href="#" class="settings-row-link" style="color:var(--red);white-space:nowrap" onclick="openCancelConfirm(event)">Cancel →</a>' +
       '</div>'
 
@@ -789,8 +793,10 @@ function openCancelConfirm(e) {
   var sub = ScoutDash.getSub()
   if (sub && sub.period_end) {
     var dateStr = new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-    document.getElementById('cancelSubText').textContent =
-      'Your access continues until ' + dateStr + '. Scout will keep sending emails until then. After that, no more charges.'
+    var cancelMsg = sub.plan === 'triennial'
+      ? 'Your access continues until ' + dateStr + '. You\'ve already paid in full — no refund will be issued.'
+      : 'Your access continues until ' + dateStr + '. Scout will keep sending emails until then.'
+    document.getElementById('cancelSubText').textContent = cancelMsg
   }
   var modal = document.getElementById('cancelSubModal')
   modal.style.display = 'flex'
