@@ -10,15 +10,21 @@
 //
 // Auth: Bearer session token
 //
-// Trial conversion flow (child #1):
+// Triennial plan (both paths):
+//   Uses PaymentIntent (one-time charge $99.99) — NOT a Stripe subscription.
+//   No renewal emails, no cancellation emails from Stripe.
+//   DB: status=active, period_end = 3 years from now, plan=triennial.
+//   Stripe: stripe_payment_intent_id stored instead of stripe_sub_id.
+//
+// Trial conversion flow (child #1, annual/monthly):
 //   1. Auth + verify trialing subscription exists
 //   2. Find/create Stripe customer, attach PM
 //   3. Create Stripe subscription (immediate billing)
 //   4. Update scout_subscriptions row: status=active + child_id
-//   5. Fire scout-digest immediately
+//   5. Fire scout-signup-delivery (conversion digest + .ics)
 //   6. Log trial_converted event
 //
-// Additional child flow (child #2+):
+// Additional child flow (child #2+, annual/monthly):
 //   1. Auth + validate childId belongs to user
 //   2. Verify child doesn't already have an active subscription
 //   3. Find existing Stripe customer (reuse from child #1 sub)
@@ -27,12 +33,13 @@
 //      Bonus month: if first birthday ≤7 days away, extend by one more month
 //   6. Create Stripe subscription with trial_end (catch-up period is free)
 //   7. INSERT new scout_subscriptions row (child_id, status=trialing, trial_end)
-//   8. Fire scout-digest for this child
+//   8. Fire scout-signup-delivery for this child
 //   9. Log child_subscription_added event
 //
 // Deploy: supabase functions deploy scout-convert
 // Secrets: STRIPE_SECRET_KEY, STRIPE_SECRET_KEY_TEST, STRIPE_PRICE_ANNUAL, STRIPE_PRICE_MONTHLY,
-//          STRIPE_PRICE_TRIENNIAL, STRIPE_PRICE_ANNUAL_TEST, STRIPE_PRICE_MONTHLY_TEST, STRIPE_PRICE_TRIENNIAL_TEST
+//          STRIPE_PRICE_ANNUAL_TEST, STRIPE_PRICE_MONTHLY_TEST,
+//          STRIPE_TRIENNIAL_AMOUNT_CENTS (default 9999), STRIPE_TRIENNIAL_AMOUNT_CENTS_TEST (default 9999)
 //          SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY,
 //          TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 // ═══════════════════════════════════════════════════════════════
@@ -45,9 +52,9 @@ const CORS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const DEFAULT_PRICE_ANNUAL    = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'
-const DEFAULT_PRICE_MONTHLY   = ''  // set STRIPE_PRICE_MONTHLY in secrets
-const DEFAULT_PRICE_TRIENNIAL = ''  // set STRIPE_PRICE_TRIENNIAL in secrets (one-time annual price, cancel_at = 3yr)
+const DEFAULT_PRICE_ANNUAL        = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'
+const DEFAULT_PRICE_MONTHLY       = ''    // set STRIPE_PRICE_MONTHLY in secrets
+const DEFAULT_TRIENNIAL_CENTS     = 9999  // $99.99 — triennial uses PaymentIntent, not a subscription price
 
 function err(status: number, msg: string, step = '') {
   return new Response(JSON.stringify({ ok: false, error: msg, step }), {
@@ -79,6 +86,30 @@ async function stripeReq(
   const data = await res.json()
   if (!res.ok) throw new Error(data?.error?.message ?? `Stripe ${res.status}: ${JSON.stringify(data)}`)
   return data
+}
+
+// Create + confirm a PaymentIntent for triennial (one-time charge, no subscription)
+async function chargeTriennialPI(
+  stripeKey: string,
+  customerId: string,
+  paymentMethodId: string,
+  amountCents: number,
+  userId: string,
+) {
+  const pi = await stripeReq(stripeKey, 'POST', '/payment_intents', {
+    amount:               amountCents,
+    currency:             'usd',
+    customer:             customerId,
+    payment_method:       paymentMethodId,
+    confirm:              'true',
+    off_session:          'true',
+    'metadata[supabase_user_id]': userId,
+    'metadata[plan]':     'triennial',
+  })
+  if (pi.status !== 'succeeded') {
+    throw new Error(`Payment did not succeed: status=${pi.status}`)
+  }
+  return pi
 }
 
 async function sendEmail(resendKey: string, to: string, subject: string, html: string) {
@@ -238,18 +269,18 @@ Deno.serve(async (req: Request) => {
       : Deno.env.get('STRIPE_SECRET_KEY')
     if (!stripeKey) return err(500, testMode ? 'Test Stripe key not configured' : 'Stripe key not configured', step)
 
-    const priceAnnual    = (testMode ? Deno.env.get('STRIPE_PRICE_ANNUAL_TEST')    : Deno.env.get('STRIPE_PRICE_ANNUAL'))    || DEFAULT_PRICE_ANNUAL
-    const priceMonthly   = (testMode ? Deno.env.get('STRIPE_PRICE_MONTHLY_TEST')   : Deno.env.get('STRIPE_PRICE_MONTHLY'))   || DEFAULT_PRICE_MONTHLY
-    const priceTriennial = (testMode ? Deno.env.get('STRIPE_PRICE_TRIENNIAL_TEST') : Deno.env.get('STRIPE_PRICE_TRIENNIAL')) || DEFAULT_PRICE_TRIENNIAL
-    if (plan === 'monthly'   && !priceMonthly)   return err(500, 'Monthly price ID not configured', step)
-    if (plan === 'triennial' && !priceTriennial) return err(500, 'Triennial price ID not configured', step)
-    const priceId = plan === 'annual' ? priceAnnual : plan === 'triennial' ? priceTriennial : priceMonthly
+    const priceAnnual  = (testMode ? Deno.env.get('STRIPE_PRICE_ANNUAL_TEST')  : Deno.env.get('STRIPE_PRICE_ANNUAL'))  || DEFAULT_PRICE_ANNUAL
+    const priceMonthly = (testMode ? Deno.env.get('STRIPE_PRICE_MONTHLY_TEST') : Deno.env.get('STRIPE_PRICE_MONTHLY')) || DEFAULT_PRICE_MONTHLY
+    if (plan === 'monthly' && !priceMonthly) return err(500, 'Monthly price ID not configured', step)
+    const priceId = plan === 'annual' ? priceAnnual : priceMonthly
 
-    // Triennial: recurring annual price, cancel_at = 1 year (1 charge only), DB period_end = 3 years
-    const now3yr = new Date(Date.now() + 3 * 365.25 * 24 * 60 * 60 * 1000)
-    const now1yr = new Date(Date.now() + 365.25 * 24 * 60 * 60 * 1000)
-    const triennialCancelAt  = plan === 'triennial' ? Math.floor(now1yr.getTime() / 1000) : undefined
-    const triennialPeriodEnd = plan === 'triennial' ? now3yr.toISOString() : undefined
+    // Triennial: one-time PaymentIntent — amount in cents (default $99.99)
+    const triennialCents     = parseInt(
+      (testMode ? Deno.env.get('STRIPE_TRIENNIAL_AMOUNT_CENTS_TEST') : Deno.env.get('STRIPE_TRIENNIAL_AMOUNT_CENTS')) ?? String(DEFAULT_TRIENNIAL_CENTS)
+    )
+    const triennialPeriodEnd = plan === 'triennial'
+      ? new Date(Date.now() + 3 * 365.25 * 24 * 60 * 60 * 1000).toISOString()
+      : undefined
 
     // ── Validate referral code (non-blocking — discount is best-effort) ───────
     step = 'referral-check'
@@ -357,7 +388,61 @@ Deno.serve(async (req: Request) => {
         trialEnd = oneMonthForward(trialEnd)
       }
 
-      // Create Stripe subscription — trial period = catch-up window (no charge until trialEnd)
+      // ── Triennial: PaymentIntent (one-time charge), no Stripe subscription ──
+      if (plan === 'triennial') {
+        step = 'stripe-payment-intent'
+        if (!paymentMethodId) return err(400, 'paymentMethodId required for triennial', step)
+        const pi = await chargeTriennialPI(stripeKey, customerId!, paymentMethodId, triennialCents, user.id)
+
+        step = 'db-insert'
+        await sb.from('scout_subscriptions').insert({
+          user_id:                   user.id,
+          child_id:                  childId,
+          status:                    'active',
+          stripe_customer_id:        customerId,
+          stripe_payment_intent_id:  pi.id,
+          period_end:                triennialPeriodEnd,
+          plan,
+        })
+
+        step = 'log-event'
+        await sb.from('scout_events').insert({
+          user_id: user.id, child_id: childId,
+          event_type: 'child_subscription_added',
+          properties: { plan, stripe_pi_id: pi.id, amount_cents: triennialCents, period_end: triennialPeriodEnd },
+        })
+
+        step = 'trigger-digest'
+        fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/scout-signup-delivery`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}` },
+          body: JSON.stringify({ userId: user.id, childId, is_conversion: true }),
+        }).catch(e => console.error('[scout-convert] digest trigger failed:', e.message))
+
+        await telegramAlert(`🎉 Triennial child subscription: user=${user.email}, child=${child.name}`)
+
+        step = 'email-confirm'
+        const resendKeyT = Deno.env.get('RESEND_API_KEY')
+        const siteUrlT   = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
+        if (resendKeyT) {
+          const { data: profT } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
+          const nameT = profT?.name ?? user.email.split('@')[0]
+          await sendEmail(resendKeyT, user.email, `Your Scout subscription for ${child.name} is confirmed`,
+            buildSubscriptionConfirmEmail({
+              userName: nameT, userEmail: user.email, plan,
+              amountDisplay: `$${(triennialCents / 100).toFixed(2)}`, chargedNow: true,
+              subscriptionId: pi.id, purchasedAt: new Date(), siteUrl: siteUrlT,
+            })
+          ).catch(e => console.error('[scout-convert] Triennial email failed (non-fatal):', e))
+        }
+
+        return new Response(JSON.stringify({
+          ok: true, mode: 'additional_child', plan, childId,
+          periodEnd: triennialPeriodEnd, paymentIntentId: pi.id,
+        }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
+      }
+
+      // ── Annual / Monthly: Stripe subscription with catch-up trial period ──
       step = 'stripe-subscription'
       const trialEndUnix = Math.floor(trialEnd.getTime() / 1000)
       const subscription = await stripeReq(stripeKey, 'POST', '/subscriptions', {
@@ -365,7 +450,6 @@ Deno.serve(async (req: Request) => {
         'items[0][price]':                 priceId,
         trial_end:                         trialEndUnix,
         ...(appliedCoupon ? { coupon: appliedCoupon } : {}),
-        ...(triennialCancelAt ? { cancel_at: triennialCancelAt } : {}),
         'payment_settings[save_default_payment_method]': 'on_subscription',
         'metadata[supabase_user_id]':      user.id,
         'metadata[child_id]':              childId,
@@ -374,9 +458,9 @@ Deno.serve(async (req: Request) => {
 
       // INSERT new subscription row for this child
       step = 'db-insert'
-      const periodEnd = triennialPeriodEnd ?? (subscription.current_period_end
+      const periodEnd = subscription.current_period_end
         ? new Date(subscription.current_period_end * 1000).toISOString()
-        : null)
+        : null
 
       await sb.from('scout_subscriptions').insert({
         user_id:            user.id,
@@ -538,13 +622,70 @@ Deno.serve(async (req: Request) => {
       'invoice_settings[default_payment_method]': paymentMethodId,
     })
 
-    // Create Stripe subscription — no trial, charge immediately
+    // ── Triennial: PaymentIntent (one-time charge), no Stripe subscription ──
+    if (plan === 'triennial') {
+      step = 'stripe-payment-intent'
+      const pi = await chargeTriennialPI(stripeKey, customerId!, paymentMethodId, triennialCents, user.id)
+
+      step = 'db-update'
+      await sb.from('scout_subscriptions').update({
+        status:                    'active',
+        stripe_customer_id:        customerId,
+        stripe_payment_intent_id:  pi.id,
+        period_end:                triennialPeriodEnd,
+        plan,
+      }).eq('id', subToConvert.id)
+
+      // log-event, digest, email — then return early
+      step = 'log-event'
+      let eventChildIdT = subToConvert.child_id as string | null
+      if (!eventChildIdT) {
+        const { data: fc } = await sb.from('children').select('id').eq('user_id', user.id)
+          .order('created_at', { ascending: true }).limit(1).maybeSingle()
+        eventChildIdT = fc?.id ?? null
+      }
+      await sb.from('scout_events').insert({
+        user_id: user.id, child_id: eventChildIdT,
+        event_type: 'trial_converted',
+        properties: { plan, stripe_pi_id: pi.id, amount_cents: triennialCents, period_end: triennialPeriodEnd },
+      })
+
+      step = 'trigger-digest'
+      fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/scout-signup-delivery`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}` },
+        body: JSON.stringify({ userId: user.id, is_conversion: true }),
+      }).catch(e => console.error('[scout-convert] digest trigger failed:', e.message))
+
+      await telegramAlert(`💳 Triennial trial converted! user=${user.email}`)
+
+      step = 'email-confirm'
+      const resendKeyT = Deno.env.get('RESEND_API_KEY')
+      const siteUrlT   = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
+      if (resendKeyT) {
+        const { data: profT } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
+        const nameT = profT?.name ?? user.email.split('@')[0]
+        await sendEmail(resendKeyT, user.email, `Welcome to Scout — you're all set`,
+          buildSubscriptionConfirmEmail({
+            userName: nameT, userEmail: user.email, plan,
+            amountDisplay: `$${(triennialCents / 100).toFixed(2)}`, chargedNow: true,
+            subscriptionId: pi.id, purchasedAt: new Date(), siteUrl: siteUrlT,
+          })
+        ).catch(e => console.error('[scout-convert] Triennial email failed (non-fatal):', e))
+      }
+
+      return new Response(JSON.stringify({
+        ok: true, mode: 'trial_converted', plan,
+        periodEnd: triennialPeriodEnd, paymentIntentId: pi.id,
+      }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
+    }
+
+    // ── Annual / Monthly: Stripe subscription, charge immediately ──
     step = 'stripe-subscription'
     const subscription = await stripeReq(stripeKey, 'POST', '/subscriptions', {
       customer:          customerId!,
       'items[0][price]': priceId,
       ...(appliedCoupon ? { coupon: appliedCoupon } : {}),
-      ...(triennialCancelAt ? { cancel_at: triennialCancelAt } : {}),
       'payment_settings[save_default_payment_method]': 'on_subscription',
       'metadata[supabase_user_id]': user.id,
       'metadata[plan]':             plan,
@@ -552,9 +693,9 @@ Deno.serve(async (req: Request) => {
 
     // Update subscription row
     step = 'db-update'
-    const periodEnd = triennialPeriodEnd ?? (subscription.current_period_end
+    const periodEnd = subscription.current_period_end
       ? new Date(subscription.current_period_end * 1000).toISOString()
-      : null)
+      : null
 
     await sb.from('scout_subscriptions').update({
       status:             'active',
