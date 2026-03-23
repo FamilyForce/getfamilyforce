@@ -768,9 +768,10 @@
 
         var btn = e.target.closest('[data-action]')
         if (!btn) return
+        var card = btn.closest('.window-card')
+        if (!card) return  // ignore modal action buttons — handled by wireModalActions
         var wid    = btn.dataset.wid
         var action = btn.dataset.action
-        var card   = btn.closest('.window-card')
         var win    = windowsRef.find(function (w) { return w.id === wid })
         if (!win) return
 
