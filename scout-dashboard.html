@@ -729,9 +729,15 @@ function renderPreBirthMode(child, sub) {
     return
   }
 
-  // Page header — simplified for pre-birth
+  // Page header — pre-birth: name + progress bar (resets automatically when baby arrives)
   var header = document.getElementById('pageHeader')
-  header.innerHTML = '<h1 class="page-header-child">' + ScoutDash._esc(name) + '</h1>'
+  header.innerHTML =
+    '<h1 class="page-header-child">' + ScoutDash._esc(name) + '</h1>' +
+    '<p class="page-header-age" id="windowCountLine">Preparation checklist</p>' +
+    '<div style="margin-bottom:4px">' +
+    '<div class="progress-seg-track"><div class="progress-seg-green" id="segGreen" style="width:0%"></div><div class="progress-seg-amber" id="segAmber" style="width:0%"></div></div>' +
+    '<div class="progress-legend" id="progressLegend"></div>' +
+    '</div>'
 
   // Baby arrived banner (due date has passed)
   var arrivedHtml = ''
@@ -772,15 +778,15 @@ function renderPreBirthMode(child, sub) {
       sectionsHtml = '<div class="error-state"><p class="error-state-title">Could not load preparation windows.</p>' +
         '<button class="btn btn-secondary" onclick="window.location.reload()" style="margin-top:12px">Retry</button></div>'
     } else {
-      // Split into active (open now) and coming up
+      // Split into active (open now) and coming up; tag for progress bar
       var active  = []
       var coming  = []
       windows.forEach(function (w) {
         if (!w.prenatal) return  // only show pre-birth windows in this mode
         var isOpen = w.open_age_weeks <= ageW && w.close_age_weeks >= ageW
         var isComing = w.open_age_weeks > ageW
-        if (isOpen)   active.push(w)
-        if (isComing) coming.push(w)
+        if (isOpen)   { w._sectionTag = 'month'; active.push(w) }
+        if (isComing) { w._sectionTag = 'coming'; coming.push(w) }
       })
 
       if (active.length === 0 && coming.length === 0) {
@@ -810,6 +816,8 @@ function renderPreBirthMode(child, sub) {
       ScoutDash.wireNotes(child.id)
       ScoutDash.wireModal(windows)
       wireModalActions(windows, child.id)
+      // Populate progress bar with pre-birth windows (resets to 0 when baby arrives)
+      ScoutDash._updateProgressBar(windows.filter(function (w) { return !!w.prenatal }))
     }
 
     document.getElementById('windowSections').innerHTML =
