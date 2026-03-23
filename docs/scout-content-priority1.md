@@ -942,7 +942,7 @@ Water safety supervision is a rule that doesn't close. It remains essential unti
 
 ## `safety-choking-awareness`
 **Title:** Know the choking hazard list
-**Open:** Week 0 | **Peak:** Week 17 | **Close:** Week 208
+**Open:** Week 10 | **Peak:** Week 17 | **Close:** Week 208
 **Type:** reminder
 **Urgency:** advisory | **Priority:** 1
 
