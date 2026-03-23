@@ -1888,7 +1888,10 @@ button { font: inherit; cursor: pointer; }
 
   /* ── Detect returning user mode from ?mode= param ── */
   var modeParam = params.get('mode');
-  if (modeParam === 'create') signinSwitchMode('create');
+  // Invited family members land with ?invite_child= — default to create mode
+  // unless the URL explicitly forces signin (?mode=signin)
+  var hasInvite = params.get('invite_child') && params.get('invite_email');
+  if (modeParam === 'create' || (hasInvite && modeParam !== 'signin')) signinSwitchMode('create');
 
   /* ── Form submission ── */
   form.addEventListener('submit', function (e) {
