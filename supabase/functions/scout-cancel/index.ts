@@ -36,9 +36,6 @@ Deno.serve(async (req) => {
     const sbUrl     = Deno.env.get('SUPABASE_URL')!
     const sbService = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const sbAnon    = Deno.env.get('SUPABASE_ANON_KEY')!
-    const body0      = await req.clone().json().catch(() => ({}))
-    const testMode0  = body0.testMode === true
-    const stripeKey  = (testMode0 ? Deno.env.get('STRIPE_SECRET_KEY_TEST') : Deno.env.get('STRIPE_SECRET_KEY'))!
 
     // Verify user via their JWT
     const sbUser = createClient(sbUrl, sbAnon, {
@@ -50,11 +47,15 @@ Deno.serve(async (req) => {
     // Service client for DB writes
     const sb = createClient(sbUrl, sbService)
 
-    // ── Parse body ──────────────────────────────────────────────────────────
+    // ── Parse body — single read ────────────────────────────────────────────
     step = 'parse'
     const body     = await req.json().catch(() => ({}))
     const childId  = body.childId as string | undefined
+    const testMode = body.testMode === true
     if (!childId) return err(400, 'childId required')
+
+    const stripeKey = (testMode ? Deno.env.get('STRIPE_SECRET_KEY_TEST') : Deno.env.get('STRIPE_SECRET_KEY'))!
+    if (!stripeKey) return err(500, testMode ? 'Test Stripe key not configured' : 'Stripe key not configured', step)
 
     // ── Fetch subscription ──────────────────────────────────────────────────
     // Try exact child_id match first; fall back to null child_id (legacy trial-converted rows)

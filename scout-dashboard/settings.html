@@ -824,8 +824,10 @@ function confirmCancelSub() {
     }).then(function (r) { return r.json() }).then(function (data) {
       if (data.ok) {
         closeCancelConfirm()
-        var dateStr = new Date(data.access_until).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-        ScoutDash.toast('Subscription cancelled. Access until ' + dateStr + '.', 'success')
+        var toastMsg = data.access_until
+          ? 'Subscription cancelled. Access until ' + new Date(data.access_until).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + '.'
+          : 'Subscription cancelled.'
+        ScoutDash.toast(toastMsg, 'success')
         // Refresh sub card
         setTimeout(function () { window.location.reload() }, 1500)
       } else {
