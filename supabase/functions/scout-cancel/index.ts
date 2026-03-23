@@ -195,7 +195,7 @@ Deno.serve(async (req) => {
         user_id: user.id, child_id: childId,
         event_type: 'subscription_cancelled',
         properties: { plan: sub.plan, access_until: accessUntil, source: 'in_app' },
-      }).catch(() => {})
+      })
       if (resendKey) sendCancellationEmail({ resendKey, toEmail: userEmail, userName,
         plan: sub.plan as string, accessUntil, siteUrl }).catch((e) => console.error("[scout-cancel] email send error:", e))
       return new Response(JSON.stringify({
@@ -261,7 +261,7 @@ Deno.serve(async (req) => {
       child_id:   childId,
       event_type: 'subscription_cancelled',
       properties: { plan: sub.plan ?? planFromStripe, access_until: accessUntil },
-    }).catch(() => {})
+    })
 
     // ── Send cancellation confirmation email ─────────────────────────────────
     if (resendKey) sendCancellationEmail({ resendKey, toEmail: userEmail, userName,
