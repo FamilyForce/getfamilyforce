@@ -858,29 +858,21 @@ function initScheduleTimezone() {
     tzAbbr = parts[parts.length - 1] || 'local time'
   } catch(e) {}
 
-  // Build all 24 hourly options in UTC, display in user's local time
+  // Build all 24 hourly options using LOCAL hours so date construction is timezone-safe
   var select = document.getElementById('deliverTime')
   if (select) {
     select.innerHTML = ''
     for (var h = 0; h < 24; h++) {
       var opt = document.createElement('option')
-      var utcHH = (h < 10 ? '0' : '') + h + ':00'
-      opt.value = utcHH
+      var localHH = (h < 10 ? '0' : '') + h + ':00'
+      opt.value = localHH  // local hour — combined with local date in getDeliverAt (no Z)
       var d = new Date()
-      d.setUTCHours(h, 0, 0, 0)
+      d.setHours(h, 0, 0, 0)  // local hour for display
       opt.textContent = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
       select.appendChild(opt)
     }
-    // Default selection: pick the option whose local time is closest to 9 AM
-    var nineAm = new Date(); nineAm.setHours(9, 0, 0, 0)
-    var best = null, bestDiff = Infinity
-    select.querySelectorAll('option').forEach(function(opt) {
-      var utcParts = opt.value.split(':')
-      var d = new Date(); d.setUTCHours(parseInt(utcParts[0], 10), 0, 0, 0)
-      var diff = Math.abs(d - nineAm)
-      if (diff < bestDiff) { bestDiff = diff; best = opt }
-    })
-    if (best) best.selected = true
+    // Default: 9:00 AM local
+    select.value = '09:00'
   }
 
   // Update label
@@ -905,7 +897,7 @@ function getDeliverAt() {
   var dateVal = document.getElementById('deliverDate').value
   var timeVal = document.getElementById('deliverTime').value || '09:00'
   if (!dateVal) return null
-  return new Date(dateVal + 'T' + timeVal + ':00Z').toISOString()
+  return new Date(dateVal + 'T' + timeVal + ':00').toISOString()  // no Z — local time
 }
 
 // ── Wrong email help ───────────────────────────────────────────────────────
@@ -1105,7 +1097,12 @@ function showSuccess(data, meta) {
 
   // Success copy — include buyer email confirmation
   var subText = meta.deliverAt
-    ? 'Your gift is scheduled. ' + meta.recipName + ' will receive it on ' + new Date(meta.deliverAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) + '.'
+    ? (function() {
+        var d = new Date(meta.deliverAt)
+        var datePart = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+        var timePart = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
+        return 'Your gift is scheduled. ' + meta.recipName + ' will receive it on ' + datePart + ' at ' + timePart + '. It may go out within 30 minutes of the targeted time.'
+      })()
     : 'A gift email is on its way to ' + meta.recipName + '. Your confirmation was sent to ' + data.buyerEmail + '.'
   document.getElementById('successSub').textContent = subText
 
@@ -1113,8 +1110,10 @@ function showSuccess(data, meta) {
   if (meta.deliverAt) {
     var banner = document.getElementById('scheduledBanner')
     banner.style.display = 'block'
+    var _d = new Date(meta.deliverAt)
     document.getElementById('schedDeliveryDate').textContent =
-      new Date(meta.deliverAt).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+      _d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) +
+      ' at ' + _d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
   }
 
   // Render gift card
