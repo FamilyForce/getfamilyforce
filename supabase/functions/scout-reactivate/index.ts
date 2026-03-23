@@ -81,13 +81,14 @@ Deno.serve(async (req) => {
 
     // ── Triennial: no Stripe subscription — just flip DB back to active ──────
     if (sub.plan === 'triennial' || !sub.stripe_sub_id) {
-      await sb.from('scout_subscriptions').update({
+      const { error: triennialDbErr } = await sb.from('scout_subscriptions').update({
         status: 'active', cancel_at_period_end: false, updated_at: new Date().toISOString(),
       }).eq('id', sub.id)
+      if (triennialDbErr) throw new Error('DB update failed: ' + triennialDbErr.message)
       await sb.from('scout_events').insert({
         user_id: user.id, child_id: childId, event_type: 'subscription_reactivated',
         properties: { plan: sub.plan, next_billing: sub.period_end },
-      }).catch(() => {})
+      })
       return new Response(JSON.stringify({ ok: true, next_billing: sub.period_end, plan: sub.plan }),
         { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
     }
@@ -106,7 +107,23 @@ Deno.serve(async (req) => {
       }
     )
     const stripeSub = await stripeRes.json()
-    if (!stripeRes.ok) return err(502, stripeSub?.error?.message ?? 'Stripe error', step)
+    if (!stripeRes.ok) {
+      const stripeMsg = stripeSub?.error?.message ?? ''
+      // Subscription no longer exists in Stripe — reactivate in DB only
+      if (stripeMsg.toLowerCase().includes('no such subscription')) {
+        const { error: staleDbErr } = await sb.from('scout_subscriptions').update({
+          status: 'active', cancel_at_period_end: false, updated_at: new Date().toISOString(),
+        }).eq('id', sub.id)
+        if (staleDbErr) throw new Error('DB update failed (stale): ' + staleDbErr.message)
+        await sb.from('scout_events').insert({
+          user_id: user.id, child_id: childId, event_type: 'subscription_reactivated',
+          properties: { plan: sub.plan, next_billing: sub.period_end, note: 'stale_stripe_sub' },
+        })
+        return new Response(JSON.stringify({ ok: true, next_billing: sub.period_end, plan: sub.plan }),
+          { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
+      }
+      return err(502, stripeMsg || 'Stripe error', step)
+    }
 
     const nextBilling = stripeSub.current_period_end
       ? new Date(stripeSub.current_period_end * 1000).toISOString()
@@ -114,12 +131,13 @@ Deno.serve(async (req) => {
 
     // ── Update DB ───────────────────────────────────────────────────────────
     step = 'update-db'
-    await sb.from('scout_subscriptions').update({
+    const { error: dbErr } = await sb.from('scout_subscriptions').update({
       status:               'active',
       cancel_at_period_end: false,
       period_end:           nextBilling,
       updated_at:           new Date().toISOString(),
     }).eq('id', sub.id)
+    if (dbErr) throw new Error('DB update failed: ' + dbErr.message)
 
     // ── Log event ───────────────────────────────────────────────────────────
     await sb.from('scout_events').insert({
@@ -127,7 +145,7 @@ Deno.serve(async (req) => {
       child_id:   childId,
       event_type: 'subscription_reactivated',
       properties: { plan: sub.plan, next_billing: nextBilling },
-    }).catch(() => {})
+    })
 
     return new Response(JSON.stringify({
       ok: true,
