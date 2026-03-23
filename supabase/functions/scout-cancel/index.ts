@@ -118,7 +118,19 @@ Deno.serve(async (req) => {
       }
     )
     const stripeSub = await stripeRes.json()
-    if (!stripeRes.ok) return err(502, stripeSub?.error?.message ?? 'Stripe error', step)
+    if (!stripeRes.ok) {
+      const stripeMsg = stripeSub?.error?.message ?? ''
+      // Subscription doesn't exist in Stripe (deleted/stale) — cancel in DB only
+      if (stripeMsg.toLowerCase().includes('no such subscription')) {
+        const accessUntil = sub.period_end as string | null
+        await sb.from('scout_subscriptions').update({
+          status: 'cancelling', cancel_at_period_end: true, updated_at: new Date().toISOString(),
+        }).eq('id', sub.id)
+        return new Response(JSON.stringify({ ok: true, access_until: accessUntil, plan: sub.plan }),
+          { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
+      }
+      return err(502, stripeMsg || 'Stripe error', step)
+    }
 
     // Derive plan from Stripe price metadata if not in DB
     const planFromStripe = stripeSub.metadata?.plan
