@@ -523,7 +523,7 @@ Deno.serve(async (req: Request) => {
 
     // Send gift email to recipient (skip if delivery is scheduled for later)
     step = 'email-recipient'
-    const redeemUrl  = `${siteUrl}/scout-gift-checkout.html?redeem=${giftCode}`
+    const redeemUrl  = `${siteUrl}/scout-gift-checkout.html?redeem=${giftCode}&re=${encodeURIComponent(recipientEmail)}`
     const resendKey  = Deno.env.get('RESEND_API_KEY')!
     const fromEmail  = Deno.env.get('RESEND_FROM_EMAIL') ?? 'scout@getfamilyforce.com'
     const fromName   = Deno.env.get('RESEND_FROM_NAME')  ?? 'FamilyForce'

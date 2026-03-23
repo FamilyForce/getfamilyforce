@@ -1901,6 +1901,13 @@ button { font: inherit; cursor: pointer; }
     }
   }
 
+  // Pre-fill email from gift redeem link (?prefill_email= or localStorage ff_prefill_email)
+  var giftEmailPrefill = params.get('prefill_email') || localStorage.getItem('ff_prefill_email');
+  if (giftEmailPrefill && emailEl && !emailEl.value) {
+    emailEl.value = giftEmailPrefill;
+    try { localStorage.removeItem('ff_prefill_email'); } catch(e) {}
+  }
+
   /* ── Form submission ── */
   form.addEventListener('submit', function (e) {
     e.preventDefault();

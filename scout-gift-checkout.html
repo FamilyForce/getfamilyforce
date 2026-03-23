@@ -1155,16 +1155,29 @@ function showRedeem(code) {
   document.getElementById('redeemScreen').style.display   = 'block'
   document.getElementById('redeemCodeDisplay').textContent = code.toUpperCase()
 
+  // Read recipient email from ?re= param (embedded in gift email link)
+  var recipientEmailParam = params.get('re') || ''
+
   var nextUrl = encodeURIComponent(window.location.href)
-  document.getElementById('createAccountBtn').href = '/sign-in.html?mode=create&next=' + nextUrl
-  document.getElementById('signInBtn').href        = '/sign-in.html?next=' + nextUrl
+  var signInBase   = '/sign-in.html?next=' + nextUrl
+  var signUpBase   = '/sign-in.html?mode=create&next=' + nextUrl
+  if (recipientEmailParam) {
+    var reParam = '&prefill_email=' + encodeURIComponent(recipientEmailParam)
+    signInBase  += reParam
+    signUpBase  += reParam
+  }
+  document.getElementById('createAccountBtn').href = signUpBase
+  document.getElementById('signInBtn').href        = signInBase
 
   // Also persist the gift code in localStorage so it survives magic link
   // opening in a new tab (sessionStorage is tab-scoped and dies there).
   // sign-in.html already checks ff_gift_code after auth and redirects back.
   ;['createAccountBtn', 'signInBtn'].forEach(function(id) {
     document.getElementById(id).addEventListener('click', function() {
-      try { localStorage.setItem('ff_gift_code', code) } catch(e) {}
+      try {
+        localStorage.setItem('ff_gift_code', code)
+        if (recipientEmailParam) localStorage.setItem('ff_prefill_email', recipientEmailParam)
+      } catch(e) {}
     })
   })
 
