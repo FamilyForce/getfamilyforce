@@ -452,6 +452,7 @@ Deno.serve(async (req: Request) => {
       return err(400, 'Missing required fields', step)
 
     // Parse scheduled delivery (optional ISO timestamp)
+    let verifiedPi: any = null  // set inside paid path; null for free orders
     const deliverAtDate  = deliverAt ? new Date(deliverAt) : null
     const isDeferred     = !!(deliverAtDate && deliverAtDate > new Date())
 
@@ -500,9 +501,9 @@ Deno.serve(async (req: Request) => {
 
       // Verify the PaymentIntent is actually succeeded (trust-but-verify)
       step = 'verify-payment'
-      const pi = await stripeReq(stripeKey, 'GET', `/payment_intents/${paymentIntentId}`)
-      if (pi.status !== 'succeeded') {
-        return err(402, `Payment not confirmed: ${pi.status}. Please complete payment first.`, step)
+      verifiedPi = await stripeReq(stripeKey, 'GET', `/payment_intents/${paymentIntentId}`)
+      if (verifiedPi.status !== 'succeeded') {
+        return err(402, `Payment not confirmed: ${verifiedPi.status}. Please complete payment first.`, step)
       }
     }
 
@@ -555,7 +556,7 @@ Deno.serve(async (req: Request) => {
       recipient_email:          recipientEmail,
       recipient_name:           recipientName,
       personal_message:         personalMessage ?? null,
-      stripe_payment_intent_id: freeOrder ? null : (pi as any).id,
+      stripe_payment_intent_id: freeOrder ? null : verifiedPi?.id ?? null,
       stripe_referral_code:     referralCode,
       stripe_referral_coupon_id: referralStripePromoId || null,
       expires_at:               expiresAt.toISOString(),
