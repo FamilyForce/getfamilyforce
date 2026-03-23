@@ -55,6 +55,13 @@ Deno.serve(async (req) => {
     const stripeKey = (testMode ? Deno.env.get('STRIPE_SECRET_KEY_TEST') : Deno.env.get('STRIPE_SECRET_KEY'))!
     if (!stripeKey) return err(500, testMode ? 'Test Stripe key not configured' : 'Stripe key not configured', step)
 
+    // ── Ownership check — family members cannot reactivate ──────────────────
+    step = 'ownership-check'
+    const { data: child } = await sb.from('children').select('user_id').eq('id', childId).maybeSingle()
+    if (child && child.user_id && child.user_id !== user.id) {
+      return err(403, 'Only the account owner can reactivate a subscription')
+    }
+
     // ── Fetch subscription — exact child_id match, fallback to null child_id ─
     step = 'fetch-sub'
     let sub: Record<string, unknown> | null = null

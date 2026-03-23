@@ -127,6 +127,13 @@ Deno.serve(async (req) => {
     const stripeKey = (testMode ? Deno.env.get('STRIPE_SECRET_KEY_TEST') : Deno.env.get('STRIPE_SECRET_KEY'))!
     if (!stripeKey) return err(500, testMode ? 'Test Stripe key not configured' : 'Stripe key not configured', step)
 
+    // ── Ownership check — family members cannot cancel ───────────────────────
+    step = 'ownership-check'
+    const { data: child } = await sb.from('children').select('user_id').eq('id', childId).maybeSingle()
+    if (child && child.user_id && child.user_id !== user.id) {
+      return err(403, 'Only the account owner can cancel a subscription')
+    }
+
     // ── Fetch subscription ──────────────────────────────────────────────────
     // Try exact child_id match first; fall back to null child_id (legacy trial-converted rows)
     step = 'fetch-sub'
