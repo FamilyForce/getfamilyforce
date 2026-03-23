@@ -1893,6 +1893,14 @@ button { font: inherit; cursor: pointer; }
   var hasInvite = params.get('invite_child') && params.get('invite_email');
   if (modeParam === 'create' || (hasInvite && modeParam !== 'signin')) signinSwitchMode('create');
 
+  // Pre-fill email from invite link
+  if (hasInvite) {
+    var inviteEmailPrefill = params.get('invite_email') || localStorage.getItem('ff_invite_email');
+    if (inviteEmailPrefill && emailEl) {
+      emailEl.value = inviteEmailPrefill;
+    }
+  }
+
   /* ── Form submission ── */
   form.addEventListener('submit', function (e) {
     e.preventDefault();
