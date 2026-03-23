@@ -211,23 +211,44 @@ function renderHistory(months, child) {
     return
   }
 
-  // Merge all pre-birth buckets (ageMonths <= 0) into a single "Pre-birth" group
+  // Merge all pre-birth buckets (ageMonths <= 0) — but split by window definition:
+  //   • window.open_age_weeks < 0  → genuinely pre-birth → "Pre-birth" group
+  //   • window.open_age_weeks >= 0 → post-birth window checked early → "Newborn" group
+  // This handles the case where newborn tasks (e.g. tummy time, bilirubin check) were
+  // marked complete before the birth was confirmed in the app.
   var prebirth  = months.filter(function (m) { return m.ageMonths <= 0 })
   var postnatal = months.filter(function (m) { return m.ageMonths > 0 })
   if (prebirth.length > 0) {
-    var mergedWindows = []
-    prebirth.forEach(function (m) { mergedWindows = mergedWindows.concat(m.windows) })
-    postnatal = postnatal.concat([{ label: 'Pre-birth', ageMonths: -1, windows: mergedWindows, isPrebirth: true }])
+    var mergedPrebirth = []
+    var mergedNewborn  = []
+    prebirth.forEach(function (m) {
+      m.windows.forEach(function (e) {
+        var openWeeks = e.window.open_age_weeks != null ? e.window.open_age_weeks : -1
+        if (openWeeks < 0) {
+          mergedPrebirth.push(e)
+        } else {
+          mergedNewborn.push(e)
+        }
+      })
+    })
+    if (mergedPrebirth.length > 0) {
+      postnatal = postnatal.concat([{ label: 'Pre-birth', ageMonths: -1, windows: mergedPrebirth, isPrebirth: true }])
+    }
+    if (mergedNewborn.length > 0) {
+      postnatal = postnatal.concat([{ label: 'Newborn', ageMonths: 0, windows: mergedNewborn, isNewborn: true }])
+    }
   }
   months = postnatal
 
   var html = ''
   months.forEach(function (m, i) {
     var doneCount = m.windows.length  // already filtered to completed/skipped before renderHistory
-    var headingLabel = m.isPrebirth ? 'Pre-birth' : m.label
+    var headingLabel = m.isPrebirth ? 'Pre-birth' : m.isNewborn ? 'Newborn' : m.label
     var subLabel     = m.isPrebirth
       ? (child.name + ' — before birth')
-      : (child.name + ' at ' + m.ageMonths + ' month' + (m.ageMonths === 1 ? '' : 's'))
+      : m.isNewborn
+        ? (child.name + ' — first month')
+        : (child.name + ' at ' + m.ageMonths + ' month' + (m.ageMonths === 1 ? '' : 's'))
     html += '<div class="history-month" id="histMonth-' + i + '">' +
       '<div class="history-month-header" onclick="toggleMonth(' + i + ')">' +
       '<div class="history-month-left">' +
