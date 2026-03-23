@@ -237,7 +237,7 @@ Deno.serve(async (req: Request) => {
             child_id:   dbSub.child_id,
             event_type: 'subscription_ended',
             properties: { plan: dbSub.plan, source: 'stripe_webhook' },
-          }).catch(() => {})
+          })
           await telegramAlert(`😢 Subscription cancelled · sub=${sub.id} · plan=${dbSub.plan}`)
         }
         break

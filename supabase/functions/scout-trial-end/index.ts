@@ -351,7 +351,7 @@ Deno.serve(async (req: Request) => {
         child_id:   child.id,
         event_type: 'trial_churned',
         properties: { months, days_since_trial_end: 30 },
-      }).catch(() => {})
+      })
 
       results.reengagement.sent++
       console.log(`[scout-trial-end] Re-engagement sent for user ${userId} (${months}mo)`)
