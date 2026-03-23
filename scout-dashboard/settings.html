@@ -388,16 +388,17 @@ function renderSubCard(sub, child) {
 
   } else if (sub.status === 'cancelling') {
     if (sub.plan) html += subRow('Plan', sub.plan === 'annual' ? 'Annual ($49.99/year)' : sub.plan === 'triennial' ? 'Full Journey ($99.99/3 yr)' : 'Monthly ($9.99/month)')
+    html += subRow('Status', '⚠️ Cancelled — access continues until end of period')
     if (sub.period_end) {
       var accessEnd = new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
       html += subRow('Access until', accessEnd)
     }
-    html += '<div class="settings-row" style="background:#FFF7ED;border-radius:10px;padding:14px 16px;flex-direction:column;align-items:flex-start;gap:10px">' +
+    html += '<div class="settings-row" data-owner-only>' +
       '<div>' +
-      '<p class="settings-row-label" style="color:#92400E">Subscription cancelled</p>' +
-      '<p class="settings-row-sub">Scout will keep sending emails until your access ends. Changed your mind?</p>' +
+      '<p class="settings-row-label">Changed your mind?</p>' +
+      '<p class="settings-row-sub">Scout will keep sending emails until your access ends.</p>' +
       '</div>' +
-      '<button class="btn btn-primary" style="background:var(--terra)" onclick="reactivateSub()">Reactivate subscription →</button>' +
+      '<a href="#" class="settings-row-link" style="color:var(--terra);white-space:nowrap" onclick="reactivateSub();return false">Reactivate →</a>' +
       '</div>'
 
   } else if (sub.status === 'cancelled') {
