@@ -765,14 +765,18 @@ Deno.serve(async (req: Request) => {
       try {
         const { data: profileB } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
         const userNameB   = profileB?.name ?? user.email.split('@')[0]
-        let   chargedDisplay = plan === 'annual' ? '$49.99' : '$9.99'  // fallback
-        if (subscription.latest_invoice) {
-          try {
-            const invoice    = await stripeReq(stripeKey, 'GET', `/invoices/${subscription.latest_invoice}`)
-            const amountPaid = invoice?.amount_paid ?? 0
-            chargedDisplay   = `$${(amountPaid / 100).toFixed(2)}`
-          } catch { /* use fallback */ }
-        }
+        let chargedDisplay = plan === 'annual' ? '$49.99' : '$9.99'  // fallback
+        try {
+          // latest_invoice is expanded (object) — read amount_paid directly
+          // If somehow it's still a string ID, fetch it
+          const inv = typeof subscription.latest_invoice === 'object' && subscription.latest_invoice !== null
+            ? subscription.latest_invoice
+            : subscription.latest_invoice
+              ? await stripeReq(stripeKey, 'GET', `/invoices/${subscription.latest_invoice}`)
+              : null
+          const amountPaid = inv?.amount_paid ?? 0
+          if (amountPaid > 0) chargedDisplay = `$${(amountPaid / 100).toFixed(2)}`
+        } catch { /* use fallback */ }
         // Fetch child DOB for next digest date
         let nextDigestB: string | undefined
         if (eventChildId) {
