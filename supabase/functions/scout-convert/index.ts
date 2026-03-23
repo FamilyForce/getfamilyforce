@@ -417,13 +417,6 @@ Deno.serve(async (req: Request) => {
           properties: { plan, stripe_pi_id: pi.id, amount_cents: triennialCents, period_end: triennialPeriodEnd },
         })
 
-        step = 'trigger-digest'
-        fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/scout-signup-delivery`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}` },
-          body: JSON.stringify({ userId: user.id, childId, is_conversion: true }),
-        }).catch(e => console.error('[scout-convert] digest trigger failed:', e.message))
-
         await telegramAlert(`🎉 Triennial child subscription: user=${user.email}, child=${child.name}`)
 
         step = 'email-confirm'
@@ -529,16 +522,6 @@ Deno.serve(async (req: Request) => {
           },
         }).catch(() => { /* non-blocking */ })
       }
-
-      // Fire conversion digest (signup-delivery with is_conversion=true → "thanks for continuing" copy + .ics)
-      step = 'trigger-digest'
-      const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-      const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-      fetch(`${supabaseUrl}/functions/v1/scout-signup-delivery`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${serviceKey}` },
-        body: JSON.stringify({ userId: user.id, childId, is_conversion: true }),
-      }).catch(e => console.error('[scout-convert] digest trigger failed:', e.message))
 
       await telegramAlert(`🎉 Additional child subscription: user=${user.email}, child=${child.name}, plan=${plan}, bonus=${bonusEligible}`)
 
@@ -664,12 +647,7 @@ Deno.serve(async (req: Request) => {
         properties: { plan, stripe_pi_id: pi.id, amount_cents: triennialCents, period_end: triennialPeriodEnd },
       })
 
-      step = 'trigger-digest'
-      fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/scout-signup-delivery`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}` },
-        body: JSON.stringify({ userId: user.id, is_conversion: true }),
-      }).catch(e => console.error('[scout-convert] digest trigger failed:', e.message))
+      // No immediate digest on conversion — next digest fires on normal monthly birthday schedule
 
       await telegramAlert(`💳 Triennial trial converted! user=${user.email}`)
 
@@ -778,16 +756,7 @@ Deno.serve(async (req: Request) => {
       }).catch(() => { /* non-blocking */ })
     }
 
-    // Fire conversion digest (signup-delivery with is_conversion=true → "thanks for continuing" copy + .ics)
-    // Dedup: uses digest_type='conversion' so it never collides with the original trial 'signup' digest
-    step = 'trigger-digest'
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    fetch(`${supabaseUrl}/functions/v1/scout-signup-delivery`, {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${serviceKey}` },
-      body: JSON.stringify({ userId: user.id, is_conversion: true }),
-    }).catch(e => console.error('[scout-convert] digest trigger failed:', e.message))
+    // No immediate digest on conversion — next digest fires on normal monthly birthday schedule
 
     // Notify admin
     await telegramAlert(`💳 Trial converted! user=${user.email}, plan=${plan}`)
