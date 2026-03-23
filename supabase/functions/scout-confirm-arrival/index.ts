@@ -112,11 +112,11 @@ Deno.serve(async (req: Request) => {
     if (!child.due_date)     return err(400, 'Child has no due date on record', step)
 
     // 4. Validate realDob is plausible relative to due date
-    //    Allow up to 10 weeks early (extreme preemie) and up to 4 weeks late
+    //    Allow up to 17 weeks early (matches UI date picker: 120 days) and up to 4 weeks late
     step = 'validate-dob'
     const dueDate         = new Date(child.due_date + 'T00:00:00Z')
-    const earliestAllowed = new Date(dueDate.getTime() - 10 * 7 * 24 * 3600 * 1000)  // 10 weeks before due
-    const latestAllowed   = new Date(dueDate.getTime() +  4 * 7 * 24 * 3600 * 1000)  // 4 weeks after due
+    const earliestAllowed = new Date(dueDate.getTime() - 120 * 24 * 3600 * 1000)     // 120 days before due
+    const latestAllowed   = new Date(dueDate.getTime() +   4 * 7 * 24 * 3600 * 1000) // 4 weeks after due
 
     if (realDobDate < earliestAllowed || realDobDate > latestAllowed) {
       return err(400, `realDob is outside the expected window (10 weeks before to 4 weeks after due date)`, step)
@@ -143,17 +143,32 @@ Deno.serve(async (req: Request) => {
     const daysUntilEnd = Math.floor((nextBday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
     const trialEnd     = nextBday
 
-    // 7. Upsert scout_subscriptions with new trial_end (status stays trialing)
+    // 7. Upsert scout_subscriptions — preserve gift trial_end if it's further in the future
     step = 'upsert-subscription'
+
+    // Load existing subscription to check for active gift
+    const { data: existingSub } = await sb
+      .from('scout_subscriptions')
+      .select('status, trial_end')
+      .eq('user_id', userId)
+      .maybeSingle()
+
+    const existingTrialEnd = existingSub?.trial_end ? new Date(existingSub.trial_end) : null
+    // If the existing trial_end is further out than the recalculated one, it's a gift — keep it
+    const finalTrialEnd = (existingTrialEnd && existingTrialEnd > trialEnd) ? existingTrialEnd : trialEnd
+
     const { error: subErr } = await sb
       .from('scout_subscriptions')
       .upsert({
         user_id:   userId,
         status:    'trialing',
-        trial_end: trialEnd.toISOString(),
+        trial_end: finalTrialEnd.toISOString(),
       }, { onConflict: 'user_id' })
 
     if (subErr) throw new Error(`Failed to update subscription: ${subErr.message}`)
+
+    // Use finalTrialEnd everywhere below so logging/response reflect the preserved gift date
+    const trialEndForLogging = finalTrialEnd
 
     // 8. Log birth_confirmed to scout_events
     step = 'log-event'
@@ -166,7 +181,7 @@ Deno.serve(async (req: Request) => {
           real_dob:                  realDob,
           due_date:                  child.due_date,
           days_from_due:             Math.round((realDobDate.getTime() - dueDate.getTime()) / 86400000),
-          trial_end:                 trialEnd.toISOString(),
+          trial_end:                 finalTrialEnd.toISOString(),
           days_until_first_birthday: daysUntilEnd,
           duration_ms:               Date.now() - jobStart,
         },
@@ -187,7 +202,7 @@ Deno.serve(async (req: Request) => {
       record: {
         user_id:      userId,
         status:       'trialing',
-        trial_end:    trialEnd.toISOString(),
+        trial_end:    finalTrialEnd.toISOString(),
         birth_signup: true,           // tells signup-delivery to use digest_type 'birth_signup'
       },
     }
@@ -299,14 +314,14 @@ Deno.serve(async (req: Request) => {
       console.warn('[scout-confirm-arrival] Gifter notify error (non-fatal):', giftErr)
     }
 
-    console.log(`[scout-confirm-arrival] Birth confirmed for user ${userId}, child ${childId} (dob=${realDob}, trialEnd=${trialEnd.toISOString().split('T')[0]})`)
+    console.log(`[scout-confirm-arrival] Birth confirmed for user ${userId}, child ${childId} (dob=${realDob}, trialEnd=${finalTrialEnd.toISOString().split('T')[0]})`)
     await telegramAlert(`🍼 Birth confirmed — user ${userId}, ${child.name} born ${realDob} (due ${child.due_date})`)
 
     return new Response(JSON.stringify({
       ok:           true,
       childId,
-      trialEnd:     trialEnd.toISOString(),
-      trialEndFormatted: trialEnd.toLocaleDateString('en-US', {
+      trialEnd:     finalTrialEnd.toISOString(),
+      trialEndFormatted: finalTrialEnd.toLocaleDateString('en-US', {
         month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
       }),
     }), {
