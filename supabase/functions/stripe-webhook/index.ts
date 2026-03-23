@@ -75,9 +75,7 @@ function trialEndingSoonEmail(email: string, daysLeft: number): string {
           <td align="center" style="background-color:#6E4ED6;border-radius:16px 16px 0 0;padding:28px 40px">
             <table cellpadding="0" cellspacing="0" border="0"><tr>
               <td style="padding-right:10px;vertical-align:middle">
-                <svg width="28" height="32" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 15L7 1L13 15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <img src="https://www.getfamilyforce.com/assets/ff-logo.png" width="32" height="32" alt="FamilyForce" style="display:block;width:32px;height:32px;border:0;border-radius:6px;">
               </td>
               <td style="vertical-align:middle">
                 <span style="font-size:22px;font-weight:800;color:#ffffff;letter-spacing:-0.02em">Family<span style="color:#D4C4FF">Force</span></span>
