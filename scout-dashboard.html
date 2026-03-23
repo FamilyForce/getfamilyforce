@@ -374,7 +374,7 @@ function renderHome(child, sub) {
     (sub && sub.is_gift && sub.trial_end && new Date(sub.trial_end) >= new Date()
       ? '<p class="page-header-meta" style="margin-top:10px">Next digest: <a href="/scout-dashboard/history.html" id="nextDigestLink"></a></p>'
       : sub && sub.status === 'trialing'
-        ? '<p class="page-header-meta" style="margin-top:10px">Monthly digests unlock when you <a href="/scout-dashboard/settings.html">subscribe</a></p>'
+        ? '<p class="page-header-meta" style="margin-top:10px">Monthly digests unlock when you <a href="' + settingsUrl() + '">subscribe</a></p>'
         : '<p class="page-header-meta" style="margin-top:10px">Next digest: <a href="/scout-dashboard/history.html" id="nextDigestLink"></a></p>')
 
   // Next digest date — paid subscribers and active gift recipients
@@ -989,7 +989,7 @@ function renderSidebarTrial(sub) {
       '<div class="sidebar-trial">' +
       '<p class="sidebar-trial-label">Free trial</p>' +
       '<p class="sidebar-trial-text">Ends in ' + days + ' day' + (days === 1 ? '' : 's') + '.</p>' +
-      '<a class="sidebar-trial-link" href="/scout-dashboard/settings.html">Subscribe →</a>' +
+      '<a class="sidebar-trial-link" href="' + settingsUrl() + '">Subscribe →</a>' +
       '</div>'
   }
 }
@@ -1076,12 +1076,24 @@ function wireModalActions(windows, childId) {
   }
 }
 
-function startCheckout(plan) {
+function settingsUrl(extra) {
   var testmode = new URLSearchParams(window.location.search).get('testmode')
-  var url = '/scout-dashboard/settings.html?checkout=' + plan
-  if (testmode === '1') url += '&testmode=1'
-  window.location.href = url
+  var url = '/scout-dashboard/settings.html' + (extra ? '?' + extra : '')
+  if (testmode === '1') url += (extra ? '&' : '?') + 'testmode=1'
+  return url
 }
+
+function startCheckout(plan) {
+  window.location.href = settingsUrl('checkout=' + plan)
+}
+
+// Patch all static settings.html links to carry ?testmode=1 if present
+;(function () {
+  if (new URLSearchParams(window.location.search).get('testmode') !== '1') return
+  document.querySelectorAll('a[href="/scout-dashboard/settings.html"]').forEach(function (el) {
+    el.href = settingsUrl()
+  })
+})()
 
 function showOnboarding() {
   var DISMISS_KEY = 'scout_onboarding_dismissed'
