@@ -52,20 +52,37 @@ Deno.serve(async (req) => {
     const childId = body.childId as string | undefined
     if (!childId) return err(400, 'childId required')
 
-    // ── Fetch subscription ──────────────────────────────────────────────────
+    // ── Fetch subscription — exact child_id match, fallback to null child_id ─
     step = 'fetch-sub'
-    const { data: sub, error: subErr } = await sb
-      .from('scout_subscriptions')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('child_id', childId)
-      .single()
+    let sub: Record<string, unknown> | null = null
+    const { data: subExact } = await sb.from('scout_subscriptions').select('*')
+      .eq('user_id', user.id).eq('child_id', childId).maybeSingle()
+    if (subExact) {
+      sub = subExact
+    } else {
+      const { data: subFallback } = await sb.from('scout_subscriptions').select('*')
+        .eq('user_id', user.id).is('child_id', null).eq('status', 'cancelling')
+        .order('created_at', { ascending: false }).limit(1).maybeSingle()
+      sub = subFallback
+    }
 
-    if (subErr || !sub) return err(404, 'No subscription found')
-    if (!sub.stripe_sub_id) return err(400, 'No Stripe subscription ID on record')
+    if (!sub) return err(404, 'No subscription found')
     if (sub.status !== 'cancelling') return err(400, 'Subscription is not scheduled to cancel')
 
-    // ── Reactivate on Stripe ────────────────────────────────────────────────
+    // ── Triennial: no Stripe subscription — just flip DB back to active ──────
+    if (sub.plan === 'triennial' || !sub.stripe_sub_id) {
+      await sb.from('scout_subscriptions').update({
+        status: 'active', cancel_at_period_end: false, updated_at: new Date().toISOString(),
+      }).eq('id', sub.id)
+      await sb.from('scout_events').insert({
+        user_id: user.id, child_id: childId, event_type: 'subscription_reactivated',
+        properties: { plan: sub.plan, next_billing: sub.period_end },
+      }).catch(() => {})
+      return new Response(JSON.stringify({ ok: true, next_billing: sub.period_end, plan: sub.plan }),
+        { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
+    }
+
+    // ── Annual / Monthly: reactivate on Stripe ───────────────────────────────
     step = 'stripe-reactivate'
     const stripeRes = await fetch(
       `https://api.stripe.com/v1/subscriptions/${sub.stripe_sub_id}`,
@@ -83,7 +100,7 @@ Deno.serve(async (req) => {
 
     const nextBilling = stripeSub.current_period_end
       ? new Date(stripeSub.current_period_end * 1000).toISOString()
-      : sub.period_end
+      : sub.period_end as string | null
 
     // ── Update DB ───────────────────────────────────────────────────────────
     step = 'update-db'
