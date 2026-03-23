@@ -79,6 +79,91 @@ async function stripeReq(
   return data
 }
 
+async function sendEmail(resendKey: string, to: string, subject: string, html: string) {
+  await fetch('https://api.resend.com/emails', {
+    method:  'POST',
+    headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ from: 'Jack Hartley <jack@getfamilyforce.com>', to: [to], subject, html }),
+  })
+}
+
+function buildSubscriptionConfirmEmail(opts: {
+  userName: string; userEmail: string; plan: 'annual' | 'monthly'
+  amountDisplay: string; chargedNow: boolean
+  subscriptionId: string; billingStartDate?: string
+  purchasedAt: Date; siteUrl: string
+}): string {
+  const { userName, plan, amountDisplay, chargedNow, subscriptionId, billingStartDate, purchasedAt, siteUrl } = opts
+  const planLabel   = plan === 'annual' ? '1-Year Scout Subscription' : 'Monthly Scout Subscription'
+  const billingDesc = plan === 'annual' ? 'billed annually' : 'billed monthly'
+  const purchaseFmt = purchasedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+  const orderRef    = subscriptionId.replace('sub_', 'SUB-')
+
+  return `<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Welcome to Scout</title>
+<style>body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}body{margin:0;padding:0;background:#F5F3FF;font-family:'Outfit',Arial,sans-serif}</style>
+</head>
+<body style="margin:0;padding:0;background:#F5F3FF">
+<div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;overflow:hidden">${chargedNow ? `You're in — your card has been charged ${amountDisplay}.` : `You're in — billing starts ${billingStartDate}.`}&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F3FF">
+<tr><td align="center" style="padding:24px 12px 40px">
+<table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">
+
+<tr><td style="padding:0 0 16px">
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;font-weight:700;color:#6E4ED6;letter-spacing:.12em;text-transform:uppercase;margin:0">FamilyForce Scout</p>
+</td></tr>
+
+<!-- Hero -->
+<tr><td style="background:#FFFFFF;border-radius:16px;padding:28px">
+  <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:400;color:#1D1D1F;margin:0 0 10px;line-height:1.3">You're in, ${userName}. 🎉</h1>
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 20px;line-height:1.6">${chargedNow
+    ? `Your <strong>${planLabel}</strong> is now active. ${amountDisplay} has been charged to your card — keep this email as your receipt.`
+    : `Your <strong>${planLabel}</strong> is set up. Your first payment of <strong>${amountDisplay}</strong> (${billingDesc}) will be charged on <strong>${billingStartDate}</strong>.`
+  }</p>
+
+  <!-- Order summary -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F9F8FF;border:1.5px solid #E5E2EC;border-radius:12px;padding:16px 20px;margin-bottom:20px">
+  <tr><td colspan="2" style="padding:0 0 10px">
+    <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#8A879A;text-transform:uppercase;letter-spacing:.1em;margin:0">Order summary</p>
+  </td></tr>
+  <tr>
+    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0 0 4px">${planLabel}</td>
+    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:700;color:#1D1D1F;padding:0 0 4px">${amountDisplay}</td>
+  </tr>
+  <tr>
+    <td style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;padding:0 0 10px">Order #${orderRef}</td>
+    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;padding:0 0 10px">${purchaseFmt}</td>
+  </tr>
+  <tr><td colspan="2" style="border-top:1px solid #E5E2EC;padding-top:10px">
+    <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#5C5960;margin:0">${chargedNow
+      ? `✅ Thank you for your purchase. Your card has been charged <strong>${amountDisplay}</strong>.`
+      : `📅 No charge today. Billing starts <strong>${billingStartDate}</strong>.`
+    }</p>
+  </td></tr>
+  </table>
+
+  <a href="${siteUrl}/scout-dashboard.html" style="display:inline-block;background:#6E4ED6;color:#fff;font-family:'Outfit',Arial,sans-serif;font-size:14px;font-weight:700;padding:12px 24px;border-radius:100px;text-decoration:none">Open Scout dashboard →</a>
+</td></tr>
+<tr><td style="height:32px"></td></tr>
+
+<!-- Sig -->
+<tr><td>
+  <p style="font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1D1D1F;margin:0 0 2px">Jack Hartley</p>
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0">Dad of two · Founder, FamilyForce</p>
+</td></tr>
+<tr><td style="height:32px"></td></tr>
+
+<!-- Footer -->
+<tr><td style="border-top:1px solid #E5E2EC;padding-top:20px">
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0">FamilyForce Scout · <a href="${siteUrl}" style="color:#8A879A;text-decoration:none">${siteUrl.replace('https://', '')}</a></p>
+</td></tr>
+
+</table></td></tr></table>
+</body></html>`
+}
+
 async function telegramAlert(message: string): Promise<void> {
   const token  = Deno.env.get('TELEGRAM_BOT_TOKEN')
   const chatId = Deno.env.get('TELEGRAM_CHAT_ID')
@@ -347,6 +432,29 @@ Deno.serve(async (req: Request) => {
 
       await telegramAlert(`🎉 Additional child subscription: user=${user.email}, child=${child.name}, plan=${plan}, bonus=${bonusEligible}`)
 
+      // Send confirmation email — no charge today, billing starts at trial_end
+      step = 'email-confirm'
+      const resendKeyA  = Deno.env.get('RESEND_API_KEY')
+      const siteUrlA    = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
+      const { data: profileA } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
+      const userNameA   = profileA?.name ?? user.email.split('@')[0]
+      const billingDate = trialEnd.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+      const planAmtA    = plan === 'annual' ? '$49.99' : '$4.99'
+      if (resendKeyA) {
+        try {
+          await sendEmail(resendKeyA, user.email,
+            `Your Scout subscription for ${child.name} is confirmed`,
+            buildSubscriptionConfirmEmail({
+              userName: userNameA, userEmail: user.email, plan,
+              amountDisplay: planAmtA, chargedNow: false,
+              subscriptionId: subscription.id,
+              billingStartDate: billingDate,
+              purchasedAt: new Date(), siteUrl: siteUrlA,
+            })
+          )
+        } catch (e) { console.error('[scout-convert] Confirm email failed (non-fatal):', e) }
+      }
+
       console.log(`[scout-convert] Added child subscription: user=${user.id}, child=${childId}, plan=${plan}`)
 
       return new Response(JSON.stringify({
@@ -497,6 +605,34 @@ Deno.serve(async (req: Request) => {
 
     // Notify admin
     await telegramAlert(`💳 Trial converted! user=${user.email}, plan=${plan}`)
+
+    // Send confirmation email — charge fired immediately; fetch invoice for exact amount
+    step = 'email-confirm'
+    const resendKeyB = Deno.env.get('RESEND_API_KEY')
+    const siteUrlB   = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
+    if (resendKeyB) {
+      try {
+        const { data: profileB } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
+        const userNameB   = profileB?.name ?? user.email.split('@')[0]
+        let   chargedDisplay = plan === 'annual' ? '$49.99' : '$4.99'  // fallback
+        if (subscription.latest_invoice) {
+          try {
+            const invoice    = await stripeReq(stripeKey, 'GET', `/invoices/${subscription.latest_invoice}`)
+            const amountPaid = invoice?.amount_paid ?? 0
+            chargedDisplay   = `$${(amountPaid / 100).toFixed(2)}`
+          } catch { /* use fallback */ }
+        }
+        await sendEmail(resendKeyB, user.email,
+          `Welcome to Scout — you're all set`,
+          buildSubscriptionConfirmEmail({
+            userName: userNameB, userEmail: user.email, plan,
+            amountDisplay: chargedDisplay, chargedNow: true,
+            subscriptionId: subscription.id,
+            purchasedAt: new Date(), siteUrl: siteUrlB,
+          })
+        )
+      } catch (e) { console.error('[scout-convert] Confirm email failed (non-fatal):', e) }
+    }
 
     console.log(`[scout-convert] Converted user ${user.id} to ${plan} plan`)
 
