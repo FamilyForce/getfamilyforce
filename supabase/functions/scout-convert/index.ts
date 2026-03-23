@@ -283,9 +283,18 @@ Deno.serve(async (req: Request) => {
     let appliedCoupon: string | null = null
     let referrerUserId: string | null = null
     if (referralCode && typeof referralCode === 'string') {
-      const cleanCode = referralCode.trim().toUpperCase()
-      const referralCouponId = Deno.env.get('STRIPE_REFERRAL_COUPON_ID')
-      if (referralCouponId && /^[A-Z]+-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(cleanCode)) {
+      const cleanCode        = referralCode.trim().toUpperCase()
+      const liveCouponId     = Deno.env.get('STRIPE_REFERRAL_COUPON_ID')
+      const testCouponId     = Deno.env.get('STRIPE_REFERRAL_COUPON_ID_TEST')
+      const activeCouponId   = testMode ? testCouponId : liveCouponId
+
+      // Test mode: any FRIEND-* pattern is treated as a valid test referral code
+      const isFriendCode = /^FRIEND-.+/.test(cleanCode)
+      if (testMode && isFriendCode && testCouponId) {
+        appliedCoupon = testCouponId
+        console.log(`[scout-convert] Test referral code ${cleanCode} — applying test coupon ${testCouponId}`)
+      } else if (activeCouponId && /^[A-Z]+-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(cleanCode)) {
+        // Live: look up code in profiles table
         try {
           const { data: refOwner } = await sb
             .from('profiles')
@@ -294,7 +303,7 @@ Deno.serve(async (req: Request) => {
             .neq('id', user.id)   // can't use your own code
             .maybeSingle()
           if (refOwner) {
-            appliedCoupon   = referralCouponId
+            appliedCoupon   = activeCouponId
             referrerUserId  = refOwner.id
             console.log(`[scout-convert] Referral code ${cleanCode} valid — applying coupon ${appliedCoupon}`)
           } else {
