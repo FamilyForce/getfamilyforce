@@ -851,23 +851,23 @@ function updateCharCount() {
 // ── Delivery scheduling ────────────────────────────────────────────────────
 // ── Schedule: localise time options to user's timezone ────────────────────
 function initScheduleTimezone() {
-  // Get short timezone label e.g. "HKT", "EST", "PST"
-  var tzAbbr = 'local time'
-  try {
-    var parts = new Date().toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ')
-    tzAbbr = parts[parts.length - 1] || 'local time'
-  } catch(e) {}
+  // Build GMT offset label e.g. "GMT+8", "GMT-5", "GMT+0"
+  var offsetMins = -new Date().getTimezoneOffset()  // getTimezoneOffset returns negative for east
+  var offsetHrs  = Math.floor(Math.abs(offsetMins) / 60)
+  var offsetRem  = Math.abs(offsetMins) % 60
+  var tzLabel = 'GMT' + (offsetMins >= 0 ? '+' : '-') + offsetHrs
+  if (offsetRem) tzLabel += ':' + (offsetRem < 10 ? '0' : '') + offsetRem
 
-  // Build all 24 hourly options using LOCAL hours so date construction is timezone-safe
+  // Build hourly options using LOCAL hours (1–23 — midnight removed)
   var select = document.getElementById('deliverTime')
   if (select) {
     select.innerHTML = ''
-    for (var h = 0; h < 24; h++) {
+    for (var h = 1; h < 24; h++) {  // start at 1 — no midnight option
       var opt = document.createElement('option')
       var localHH = (h < 10 ? '0' : '') + h + ':00'
       opt.value = localHH  // local hour — combined with local date in getDeliverAt (no Z)
       var d = new Date()
-      d.setHours(h, 0, 0, 0)  // local hour for display
+      d.setHours(h, 0, 0, 0)
       opt.textContent = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
       select.appendChild(opt)
     }
@@ -875,13 +875,13 @@ function initScheduleTimezone() {
     select.value = '09:00'
   }
 
-  // Update label
+  // Update label with GMT offset
   var label = document.querySelector('label[for="deliverTime"]')
-  if (label) label.textContent = 'Delivery time (' + tzAbbr + ')'
+  if (label) label.textContent = 'Delivery time (' + tzLabel + ')'
 
-  // Update hint (remove UTC mention)
+  // Update hint with 30-min disclaimer
   var hint = document.getElementById('schedHint')
-  if (hint) hint.innerHTML = '💡 Set it for the day of the baby shower. Your gift code will be in your confirmation email in case you need to share it early.'
+  if (hint) hint.innerHTML = '💡 Set it for the day of the baby shower. Delivery may go out within 30 minutes of the targeted time. Your gift code will be in your confirmation email in case you need to share it early.'
 }
 
 function setDelivery(mode) {
@@ -1101,7 +1101,11 @@ function showSuccess(data, meta) {
         var d = new Date(meta.deliverAt)
         var datePart = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
         var timePart = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
-        return 'Your gift is scheduled. ' + meta.recipName + ' will receive it on ' + datePart + ' at ' + timePart + '. It may go out within 30 minutes of the targeted time.'
+        var offMins  = -new Date().getTimezoneOffset()
+        var offHrs   = Math.floor(Math.abs(offMins) / 60)
+        var offRem   = Math.abs(offMins) % 60
+        var tz       = 'GMT' + (offMins >= 0 ? '+' : '-') + offHrs + (offRem ? ':' + (offRem < 10 ? '0' : '') + offRem : '')
+        return 'Your gift is scheduled. ' + meta.recipName + ' will receive it on ' + datePart + ' at ' + timePart + ' (' + tz + '). It may go out within 30 minutes of the targeted time.'
       })()
     : 'A gift email is on its way to ' + meta.recipName + '. Your confirmation was sent to ' + data.buyerEmail + '.'
   document.getElementById('successSub').textContent = subText
@@ -1111,9 +1115,13 @@ function showSuccess(data, meta) {
     var banner = document.getElementById('scheduledBanner')
     banner.style.display = 'block'
     var _d = new Date(meta.deliverAt)
+    var _offMins = -new Date().getTimezoneOffset()
+    var _offHrs  = Math.floor(Math.abs(_offMins) / 60)
+    var _offRem  = Math.abs(_offMins) % 60
+    var _tz      = 'GMT' + (_offMins >= 0 ? '+' : '-') + _offHrs + (_offRem ? ':' + (_offRem < 10 ? '0' : '') + _offRem : '')
     document.getElementById('schedDeliveryDate').textContent =
       _d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) +
-      ' at ' + _d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
+      ' at ' + _d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true }) + ' (' + _tz + ')'
   }
 
   // Render gift card
