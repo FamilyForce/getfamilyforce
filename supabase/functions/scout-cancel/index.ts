@@ -174,7 +174,7 @@ Deno.serve(async (req) => {
     // user.email comes from the verified JWT; also try auth.users via service role as fallback
     let userEmail = user.email ?? ''
     if (!userEmail) {
-      const { data: authRow } = await sb.from('auth.users' as any).select('email').eq('id', user.id).maybeSingle().catch(() => ({ data: null }))
+      const { data: authRow } = await sb.from('auth.users' as any).select('email').eq('id', user.id).maybeSingle()
       userEmail = (authRow as any)?.email ?? ''
     }
     const { data: profile } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
