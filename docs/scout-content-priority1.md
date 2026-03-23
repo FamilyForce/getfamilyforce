@@ -4350,7 +4350,7 @@ If your 3 year old has no concept of day/night or today/tomorrow, it is worth no
 
 ## `cognitive-attention-span`
 **Title:** Build attention span through focused play
-**Open:** Week 0 | **Peak:** Week 52 | **Close:** Week 156
+**Open:** Week 16 | **Peak:** Week 52 | **Close:** Week 156
 **Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
