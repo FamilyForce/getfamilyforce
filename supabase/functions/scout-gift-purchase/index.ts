@@ -457,23 +457,44 @@ Deno.serve(async (req: Request) => {
     const isDeferred     = !!(deliverAtDate && deliverAtDate > new Date())
 
     // Free order (100% promo) — skip Stripe card charge entirely
+    const { stripeDiscountPromoId } = body
     if (freeOrder) {
-      // In live mode: verify the promo code is genuinely 100% off against Stripe
-      // so nobody can forge freeOrder=true without a real promo code
+      step = 'verify-free-promo'
+      if (!stripeDiscountPromoId) return err(400, 'Promo code required for free order', step)
+
       if (!testMode) {
-        step = 'verify-free-promo'
-        const { stripeDiscountPromoId } = body
-        if (!stripeDiscountPromoId) return err(400, 'Promo code required for free order', step)
+        // In live mode: re-verify promo is still 100% off and check usage limits
         try {
-          const promoCheck = await stripeReq(stripeKey, 'GET', `/promotion_codes/${stripeDiscountPromoId}`)
-          const pct   = promoCheck?.coupon?.percent_off   ?? 0
-          const fixed = promoCheck?.coupon?.amount_off    ?? 0
-          const base  = PRICES[plan as 'annual' | 'triennial' | 'monthly']
-          const discountedAmount = fixed
+          const promoCheck    = await stripeReq(stripeKey, 'GET', `/promotion_codes/${stripeDiscountPromoId}`)
+          const pct           = promoCheck?.coupon?.percent_off ?? 0
+          const fixed         = promoCheck?.coupon?.amount_off  ?? 0
+          const base          = PRICES[plan as 'annual' | 'triennial' | 'monthly']
+          const discountedAmt = fixed
             ? Math.max(0, base.amount - fixed)
             : Math.round(base.amount * (1 - pct / 100))
-          if (discountedAmount !== 0) {
-            return err(400, 'Promo code does not result in a free order', step)
+          if (discountedAmt !== 0) return err(400, 'Promo code does not result in a free order', step)
+
+          // Check usage limits: compare Stripe max_redemptions vs our DB redemption count
+          const maxRedemptions: number | null = promoCheck?.max_redemptions ?? null
+          if (maxRedemptions !== null) {
+            const { count } = await sb
+              .from('promo_redemptions')
+              .select('*', { count: 'exact', head: true })
+              .eq('promo_stripe_id', stripeDiscountPromoId)
+            if ((count ?? 0) >= maxRedemptions) {
+              return err(400, 'This promo code has reached its usage limit.', step)
+            }
+          }
+
+          // Also check: one redemption per buyer email (prevent single person claiming twice)
+          const { data: existingRedemption } = await sb
+            .from('promo_redemptions')
+            .select('id')
+            .eq('promo_stripe_id', stripeDiscountPromoId)
+            .eq('buyer_email', buyerEmail.toLowerCase())
+            .maybeSingle()
+          if (existingRedemption) {
+            return err(400, 'This promo code has already been used with this email address.', step)
           }
         } catch (_e) {
           return err(400, 'Could not verify promo code', step)
@@ -561,8 +582,20 @@ Deno.serve(async (req: Request) => {
       stripe_referral_coupon_id: referralStripePromoId || null,
       expires_at:               expiresAt.toISOString(),
       deliver_at:               isDeferred ? deliverAtDate!.toISOString() : null,
-      gift_email_sent:          !isDeferred, // if deferred, scout-gift-deliver sends it later
+      gift_email_sent:          !isDeferred,
     })
+
+    // Record promo redemption for free orders — prevents reuse beyond limits
+    if (freeOrder && stripeDiscountPromoId && stripeDiscountPromoId !== 'test_promo_bypass') {
+      await sb.from('promo_redemptions').insert({
+        promo_stripe_id: stripeDiscountPromoId,
+        promo_code:      body.code ?? '',
+        buyer_email:     buyerEmail.toLowerCase(),
+        gift_code:       giftCode,
+      }).then(() => {}).catch((e: Error) => {
+        console.warn('[scout-gift-purchase] Failed to record promo redemption (non-fatal):', e.message)
+      })
+    }
 
     // Build print card URL (pre-populated for buyer email)
     const printCardUrl = `${siteUrl}/scout-gift-print.html` +
