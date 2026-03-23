@@ -950,7 +950,29 @@ document.addEventListener('keydown', function (e) {
 
 function renderSidebarTrial(sub) {
   var wrap = document.getElementById('sidebarTrialWrap')
-  if (!wrap || !sub || sub.status !== 'trialing') return
+  if (!wrap || !sub) return
+
+  // ── Active paid subscriber ────────────────────────────────────
+  if (sub.status === 'active' && !sub.is_gift) {
+    var planLabel = sub.plan === 'triennial' ? 'Full Journey · 3 Years'
+                  : sub.plan === 'annual'    ? 'Annual plan'
+                  : sub.plan === 'monthly'   ? 'Monthly plan'
+                  : 'Scout subscriber'
+    var endLine = ''
+    if (sub.period_end) {
+      var endDate = new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+      endLine = '<p class="sidebar-trial-text">Access until ' + endDate + '.</p>'
+    }
+    wrap.innerHTML =
+      '<div class="sidebar-trial">' +
+      '<p class="sidebar-trial-label">✅ ' + planLabel + '</p>' +
+      endLine +
+      '</div>'
+    return
+  }
+
+  // ── Trialing ──────────────────────────────────────────────────
+  if (sub.status !== 'trialing') return
   var end  = new Date(sub.trial_end)
   var days = Math.ceil((end - new Date()) / 86400000)
   if (days < 0) return
