@@ -455,10 +455,30 @@ Deno.serve(async (req: Request) => {
     const deliverAtDate  = deliverAt ? new Date(deliverAt) : null
     const isDeferred     = !!(deliverAtDate && deliverAtDate > new Date())
 
-    // Free order (100% promo) — skip Stripe verification entirely
+    // Free order (100% promo) — skip Stripe card charge entirely
     if (freeOrder) {
-      if (!testMode) return err(400, 'Free orders only allowed in test mode', step)
-      // Fall through — no idempotency check or PI verification needed
+      // In live mode: verify the promo code is genuinely 100% off against Stripe
+      // so nobody can forge freeOrder=true without a real promo code
+      if (!testMode) {
+        step = 'verify-free-promo'
+        const { stripeDiscountPromoId } = body
+        if (!stripeDiscountPromoId) return err(400, 'Promo code required for free order', step)
+        try {
+          const promoCheck = await stripeReq(stripeKey, 'GET', `/promotion_codes/${stripeDiscountPromoId}`)
+          const pct   = promoCheck?.coupon?.percent_off   ?? 0
+          const fixed = promoCheck?.coupon?.amount_off    ?? 0
+          const base  = PRICES[plan as 'annual' | 'triennial' | 'monthly']
+          const discountedAmount = fixed
+            ? Math.max(0, base.amount - fixed)
+            : Math.round(base.amount * (1 - pct / 100))
+          if (discountedAmount !== 0) {
+            return err(400, 'Promo code does not result in a free order', step)
+          }
+        } catch (_e) {
+          return err(400, 'Could not verify promo code', step)
+        }
+      }
+      // Fall through — no payment intent needed
     } else {
       // Idempotency: if this PI was already processed, return the existing gift
       step = 'idempotency-check'
