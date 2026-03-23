@@ -1055,7 +1055,10 @@ function wireModalActions(windows, childId) {
 }
 
 function startCheckout(plan) {
-  window.location.href = '/scout-dashboard/settings.html?checkout=' + plan
+  var testmode = new URLSearchParams(window.location.search).get('testmode')
+  var url = '/scout-dashboard/settings.html?checkout=' + plan
+  if (testmode === '1') url += '&testmode=1'
+  window.location.href = url
 }
 
 function showOnboarding() {
