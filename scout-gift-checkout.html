@@ -539,8 +539,8 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 
       <div class="form-divider"></div>
 
-      <!-- Stripe -->
-      <div class="form-field">
+      <!-- Stripe — hidden when promo makes total $0 -->
+      <div class="form-field" id="cardFieldWrap">
         <label class="form-label">Card details</label>
         <div class="stripe-wrap" id="stripeWrap"><div id="stripeElement"></div></div>
       </div>
@@ -951,8 +951,11 @@ function applyPromo() {
     }
     appliedPromo = d
     status.innerHTML = '<span class="promo-ok">✓ ' + d.label + ' — new price: <strong>' + d.discountedDisplay + '</strong></span> &nbsp;<a href="#" onclick="removePromo();return false;" style="font-size:12px;color:var(--text-dim);text-decoration:none;font-weight:600">Remove</a>'
-    document.getElementById('submitBtn').textContent = 'Send gift — ' + d.discountedDisplay + ' →'
+    var isFree = d.discountedAmount === 0
+    document.getElementById('submitBtn').textContent = isFree ? 'Send gift — Free →' : 'Send gift — ' + d.discountedDisplay + ' →'
     document.getElementById('osPrice').textContent   = d.discountedDisplay
+    var cardWrap = document.getElementById('cardFieldWrap')
+    if (cardWrap) cardWrap.style.display = isFree ? 'none' : ''
   })
   .catch(function () { status.innerHTML = '<span class="promo-err">Could not validate. Try again.</span>' })
 }
@@ -961,6 +964,8 @@ function removePromo() {
   appliedPromo = null
   document.getElementById('promoCode').value  = ''
   document.getElementById('promoStatus').innerHTML = ''
+  var cardWrap = document.getElementById('cardFieldWrap')
+  if (cardWrap) cardWrap.style.display = ''
   selectPlan(selectedPlan) // resets price display and submit button
 }
 
@@ -994,8 +999,41 @@ function submitGift() {
     errEl.style.display = 'block'; errEl.textContent = 'Please select a delivery date.'; return
   }
 
-  btn.disabled = true; btn.textContent = 'Preparing payment…'
+  btn.disabled = true; btn.textContent = 'Preparing…'
 
+  // ── Zero-amount path: skip Stripe entirely ──────────────────────────────
+  var isFreeOrder = appliedPromo && appliedPromo.discountedAmount === 0
+  if (isFreeOrder) {
+    btn.textContent = 'Sending gift…'
+    fetch(SUPABASE_URL + '/functions/v1/scout-gift-purchase', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'complete-purchase', paymentIntentId: null, freeOrder: true,
+        buyerName, buyerEmail, recipientName: recipName, recipientEmail: recipEmail,
+        personalMessage: personalMsg || undefined, plan: selectedPlan,
+        deliverAt: deliverAt || undefined, testMode: TEST_MODE,
+        stripeDiscountPromoId: appliedPromo.stripePromoId,
+      }),
+    })
+    .then(function (r) { return r.json() })
+    .then(function (data) {
+      if (!data.ok) {
+        errEl.style.display = 'block'
+        errEl.textContent   = data.error || 'Could not complete gift. Please try again.'
+        resetBtn(); return
+      }
+      showSuccess(data, { buyerName, recipName, recipEmail, personalMsg, deliverAt })
+    })
+    .catch(function () {
+      errEl.style.display = 'block'
+      errEl.textContent   = 'Network error. Please try again.'
+      resetBtn()
+    })
+    return
+  }
+
+  // ── Paid path: create Stripe payment intent then confirm ────────────────
+  btn.textContent = 'Preparing payment…'
   fetch(SUPABASE_URL + '/functions/v1/scout-gift-purchase', {
     method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

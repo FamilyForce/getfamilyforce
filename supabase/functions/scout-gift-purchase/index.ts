@@ -435,10 +435,10 @@ Deno.serve(async (req: Request) => {
     // Idempotent: checks for existing gift with same paymentIntentId first.
     // ════════════════════════════════════════════════════════════
     step = 'validate-complete'
-    const { paymentIntentId, buyerName, buyerEmail, recipientName,
+    const { paymentIntentId, freeOrder, buyerName, buyerEmail, recipientName,
             recipientEmail, personalMessage, plan, deliverAt } = body
 
-    if (!paymentIntentId) return err(400, 'paymentIntentId is required', step)
+    if (!freeOrder && !paymentIntentId) return err(400, 'paymentIntentId is required', step)
     if (!buyerName || !buyerEmail || !recipientName || !recipientEmail || !plan)
       return err(400, 'Missing required fields', step)
 
@@ -446,29 +446,35 @@ Deno.serve(async (req: Request) => {
     const deliverAtDate  = deliverAt ? new Date(deliverAt) : null
     const isDeferred     = !!(deliverAtDate && deliverAtDate > new Date())
 
-    // Idempotency: if this PI was already processed, return the existing gift
-    step = 'idempotency-check'
-    const { data: existingGift } = await sb
-      .from('scout_gifts')
-      .select('code, stripe_referral_code')
-      .eq('stripe_payment_intent_id', paymentIntentId)
-      .maybeSingle()
+    // Free order (100% promo) — skip Stripe verification entirely
+    if (freeOrder) {
+      if (!testMode) return err(400, 'Free orders only allowed in test mode', step)
+      // Fall through — no idempotency check or PI verification needed
+    } else {
+      // Idempotency: if this PI was already processed, return the existing gift
+      step = 'idempotency-check'
+      const { data: existingGift } = await sb
+        .from('scout_gifts')
+        .select('code, stripe_referral_code')
+        .eq('stripe_payment_intent_id', paymentIntentId)
+        .maybeSingle()
 
-    if (existingGift) {
-      console.log(`[scout-gift-purchase] Idempotent: PI ${paymentIntentId} already processed`)
-      const priceInfo = PRICES[plan as 'annual' | 'triennial' | 'monthly']
-      return new Response(JSON.stringify({
-        ok: true, giftCode: existingGift.code,
-        referralCode: existingGift.stripe_referral_code ?? '',
-        recipientEmail, plan, amount: priceInfo.display,
-      }), { headers: { 'Content-Type': 'application/json', ...CORS } })
-    }
+      if (existingGift) {
+        console.log(`[scout-gift-purchase] Idempotent: PI ${paymentIntentId} already processed`)
+        const priceInfo = PRICES[plan as 'annual' | 'triennial' | 'monthly']
+        return new Response(JSON.stringify({
+          ok: true, giftCode: existingGift.code,
+          referralCode: existingGift.stripe_referral_code ?? '',
+          recipientEmail, plan, amount: priceInfo.display,
+        }), { headers: { 'Content-Type': 'application/json', ...CORS } })
+      }
 
-    // Verify the PaymentIntent is actually succeeded (trust-but-verify)
-    step = 'verify-payment'
-    const pi = await stripeReq(stripeKey, 'GET', `/payment_intents/${paymentIntentId}`)
-    if (pi.status !== 'succeeded') {
-      return err(402, `Payment not confirmed: ${pi.status}. Please complete payment first.`, step)
+      // Verify the PaymentIntent is actually succeeded (trust-but-verify)
+      step = 'verify-payment'
+      const pi = await stripeReq(stripeKey, 'GET', `/payment_intents/${paymentIntentId}`)
+      if (pi.status !== 'succeeded') {
+        return err(402, `Payment not confirmed: ${pi.status}. Please complete payment first.`, step)
+      }
     }
 
     const priceInfo = PRICES[plan as 'annual' | 'triennial' | 'monthly']
@@ -520,7 +526,7 @@ Deno.serve(async (req: Request) => {
       recipient_email:          recipientEmail,
       recipient_name:           recipientName,
       personal_message:         personalMessage ?? null,
-      stripe_payment_intent_id: pi.id,
+      stripe_payment_intent_id: freeOrder ? null : (pi as any).id,
       stripe_referral_code:     referralCode,
       stripe_referral_coupon_id: referralStripePromoId || null,
       expires_at:               expiresAt.toISOString(),
