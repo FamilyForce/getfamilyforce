@@ -2165,63 +2165,81 @@ button { font: inherit; cursor: pointer; }
     if (hash && hash.indexOf('access_token') !== -1) {
       var sb = window._supabaseClient;
       if (sb) {
-        // Small delay to let Supabase JS process and store the session
+        var _verifyHandled = false;
+
+        function _routeVerifiedSession(session) {
+          if (_verifyHandled) return;
+          _verifyHandled = true;
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+          var user = session.user;
+          generateAndSaveReferralCode(user.id, user.email);
+
+          var giftCode = localStorage.getItem('ff_gift_code');
+          if (giftCode) {
+            localStorage.removeItem('ff_gift_code');
+            window.location.href = 'scout-gift-checkout.html?redeem=' + encodeURIComponent(giftCode);
+            return;
+          }
+
+          var inviteChild = localStorage.getItem('ff_invite_child');
+          var inviteEmail = localStorage.getItem('ff_invite_email');
+          if (inviteChild && inviteEmail) {
+            var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
+            localStorage.removeItem('ff_invite_child');
+            localStorage.removeItem('ff_invite_email');
+            fetch(FUNCTIONS_URL + '/scout-family-accept', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+              body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
+            }).then(function() { window.location.href = 'scout-dashboard.html'; })
+              .catch(function() { window.location.href = 'scout-dashboard.html'; });
+            return;
+          }
+
+          sb.from('children').select('id').eq('user_id', user.id).limit(1)
+            .then(function(childRes) {
+              var hasChildren = childRes.data && childRes.data.length > 0;
+              if (!hasChildren) {
+                routeAfterSignup();
+              } else {
+                window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
+              }
+            });
+        }
+
+        // PRIMARY: event-driven — fires as soon as Supabase processes the hash token
+        sb.auth.onAuthStateChange(function(event, session) {
+          if (event === 'SIGNED_IN' && session) {
+            _routeVerifiedSession(session);
+          }
+        });
+
+        // FALLBACK 1: poll getSession after 800ms in case onAuthStateChange misfires
         setTimeout(function() {
+          if (_verifyHandled) return;
           sb.auth.getSession().then(function(res) {
-            if (res.data && res.data.session) {
-              // Clean the hash from the URL
-              history.replaceState(null, '', window.location.pathname + window.location.search);
-              var user = res.data.session.user;
-              generateAndSaveReferralCode(user.id, user.email);
-              // Use DB state to detect new users — NOT a 30-second timestamp.
-              // A user needs onboarding if they have no children set up yet.
-              // This correctly handles email confirmation (minutes/hours after signup)
-              // and Google OAuth for both new and returning users.
-              // If this is a gift redemption, redirect back to gift page
-              var giftCode = localStorage.getItem('ff_gift_code');
-              if (giftCode) {
-                localStorage.removeItem('ff_gift_code');
-                window.location.href = 'scout-gift-checkout.html?redeem=' + encodeURIComponent(giftCode);
-                return;
-              }
-
-              // If this is an invite acceptance, handle it before routing
-              var inviteChild = localStorage.getItem('ff_invite_child');
-              var inviteEmail = localStorage.getItem('ff_invite_email');
-              if (inviteChild && inviteEmail) {
-                // Call scout-family-accept to link user to the invited child
-                var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
-                localStorage.removeItem('ff_invite_child');
-                localStorage.removeItem('ff_invite_email');
-                fetch(FUNCTIONS_URL + '/scout-family-accept', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + res.data.session.access_token,
-                  },
-                  body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
-                }).then(function() {
-                  window.location.href = 'scout-dashboard.html';
-                }).catch(function() {
-                  window.location.href = 'scout-dashboard.html';
-                });
-                return;
-              }
-
-              sb.from('children').select('id').eq('user_id', user.id).limit(1)
-                .then(function(childRes) {
-                  var hasChildren = childRes.data && childRes.data.length > 0;
-                  if (!hasChildren) {
-                    // New user — show Scout onboarding
-                    routeAfterSignup();
-                  } else {
-                    // Returning user — go straight to dashboard
-                    window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
-                  }
-                });
-            }
+            if (res.data && res.data.session) _routeVerifiedSession(res.data.session);
           });
-        }, 300);
+        }, 800);
+
+        // FALLBACK 2: poll again at 2.5s
+        setTimeout(function() {
+          if (_verifyHandled) return;
+          sb.auth.getSession().then(function(res) {
+            if (res.data && res.data.session) _routeVerifiedSession(res.data.session);
+          });
+        }, 2500);
+
+        // FALLBACK 3: after 6s show escape hatch — "click here to continue"
+        setTimeout(function() {
+          if (_verifyHandled) return;
+          var overlay = document.getElementById('verifying-overlay');
+          if (overlay) {
+            overlay.innerHTML = overlay.innerHTML +
+              '<p style="font-family:Arial,sans-serif;font-size:13px;color:#6B7280;margin:16px 0 0;text-align:center">' +
+              'Taking longer than expected. <a href="scout-dashboard.html" style="color:#6E4ED6;font-weight:600">Click here to continue →</a></p>';
+          }
+        }, 6000);
       }
     }
   })();
