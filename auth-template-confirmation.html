@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Confirm your FamilyForce account</title>
+</head>
+<body style="margin:0;padding:0;background-color:#F0EDFB;font-family:-apple-system,'Helvetica Neue',Helvetica,Arial,sans-serif;">
+
+  <!-- Outer wrapper -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F0EDFB;padding:48px 16px;">
+    <tr>
+      <td align="center">
+
+        <!-- Card -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:480px;background-color:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 24px rgba(110,78,214,0.10);">
+
+          <!-- Purple header -->
+          <tr>
+            <td style="background-color:#6E4ED6;padding:28px 40px 24px;">
+              <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding-right:10px;vertical-align:middle;">
+                    <img src="https://www.getfamilyforce.com/assets/ff-logo.png" width="32" height="32" alt="" style="display:block;border:0;">
+                  </td>
+                  <td style="vertical-align:middle;">
+                    <span style="font-size:18px;font-weight:700;color:#ffffff;letter-spacing:-0.3px;">FamilyForce</span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px 32px;">
+
+              <div style="width:56px;height:56px;background-color:#F0EDFB;border-radius:16px;margin-bottom:20px;display:inline-block;text-align:center;line-height:56px;font-size:26px;">
+                👋
+              </div>
+
+              <p style="margin:0 0 8px;font-size:22px;font-weight:700;color:#0D0820;letter-spacing:-0.4px;line-height:1.3;">
+                Welcome to FamilyForce
+              </p>
+
+              <p style="margin:0 0 8px;font-size:15px;color:#4A4560;line-height:1.7;">
+                You're one step away from accessing Scout reminders, research-backed parenting playbooks, courses, and certificates.
+              </p>
+              <p style="margin:0 0 28px;font-size:15px;color:#4A4560;line-height:1.7;">
+                Click below to confirm your email and activate your account.
+              </p>
+
+              <!-- CTA Button -->
+              <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:28px;">
+                <tr>
+                  <td style="background-color:#6E4ED6;border-radius:100px;">
+                    <a href="{{ .ConfirmationURL }}"
+                       style="display:inline-block;padding:14px 32px;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;letter-spacing:-0.1px;">
+                      Confirm My Account →
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- What's inside -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#F8F7FF;border-radius:12px;padding:20px 20px 4px;margin-bottom:28px;">
+                <tr>
+             <td
+       style="padding-bottom:16px;">
+                    <p style="margin:0 0 12px;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#8B85A8;">What's waiting for you</p>
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                      <tr>
+        <td width="28" style="vertical-align:top;padding-bottom:12px;font-size:14px;line-height:1.5;">🔔</td>
+                        <td style="vertical-align:top;padding-bottom:12px;font-size:14px;color:#4A4560;line-height:1.5;"><strong style="color:#0D0820;">Scout</strong> — reminders and explanations for key developmental windows</td>
+                      </tr>
+                      <tr>
+                        <td width="28" style="vertical-align:top;padding-bottom:12px;font-size:14px;line-height:1.5;">📚</td>
+                        <td style="vertical-align:top;padding-bottom:12px;font-size:14px;color:#4A4560;line-height:1.5;"><strong style="color:#0D0820;">Free playbooks</strong> — potty training, sleep, tantrums, feeding, screen time</td>
+                      </tr>
+                      <tr>
+                        <td width="28" style="vertical-align:top;padding-bottom:12px;font-size:14px;line-height:1.5;">🎓</td>
+                        <td style="vertical-align:top;padding-bottom:12px;font-size:14px;color:#4A4560;line-height:1.5;"><strong style="color:#0D0820;">Interactive courses</strong> — chapter by chapter, earn a certificate</td>
+                      </tr>
+                      <tr>
+                        <td width="28" style="vertical-align:top;padding-bottom:12px;font-size:14px;line-height:1.5;">🏅</td>
+                        <td style="vertical-align:top;padding-bottom:12px;font-size:14px;color:#4A4560;line-height:1.5;"><strong style="color:#0D0820;">Completion badges</strong> — track your progress as you go</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;">
+                <tr>
+                  <td style="border-top:1px solid #EDE9FB;font-size:0;">&nbsp;</td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 12px;font-size:13px;color:#8B85A8;line-height:1.65;">
+                🔒 <strong style="color:#4A4560;">Didn't create an account?</strong> You can safely ignore this email. No account will be activated without clicking the link above.
+              </p>
+
+              <p style="margin:0;font-size:12px;color:#8B85A8;line-height:1.65;">
+                If the button doesn't work, copy and paste this link into your browser:<br>
+                <a href="{{ .ConfirmationURL }}" style="color:#6E4ED6;word-break:break-all;">{{ .ConfirmationURL }}</a>
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#F8F7FF;padding:20px 40px;border-top:1px solid #EDE9FB;">
+              <p style="margin:0;font-size:12px;color:#8B85A8;line-height:1.6;">
+                You're receiving this because an account was created at
+                <a href="https://getfamilyforce.com" style="color:#6E4ED6;text-decoration:none;">getfamilyforce.com</a>.
+                &nbsp;·&nbsp;
+                <a href="https://getfamilyforce.com" style="color:#6E4ED6;text-decoration:none;">Visit site</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+        <p style="margin:20px 0 0;font-size:12px;color:#8B85A8;text-align:center;">
+          © 2026 FamilyForce · Research-backed parenting guides
+        </p>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
+                             
