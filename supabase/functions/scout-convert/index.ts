@@ -31,7 +31,8 @@
 //   9. Log child_subscription_added event
 //
 // Deploy: supabase functions deploy scout-convert
-// Secrets: STRIPE_SECRET_KEY, STRIPE_PRICE_ANNUAL, STRIPE_PRICE_MONTHLY,
+// Secrets: STRIPE_SECRET_KEY, STRIPE_SECRET_KEY_TEST, STRIPE_PRICE_ANNUAL, STRIPE_PRICE_MONTHLY,
+//          STRIPE_PRICE_TRIENNIAL, STRIPE_PRICE_ANNUAL_TEST, STRIPE_PRICE_MONTHLY_TEST, STRIPE_PRICE_TRIENNIAL_TEST
 //          SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY,
 //          TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 // ═══════════════════════════════════════════════════════════════
@@ -224,21 +225,24 @@ Deno.serve(async (req: Request) => {
     // ── Parse body ────────────────────────────────────────────────────────────
     step = 'parse'
     const body = await req.json()
-    const { paymentMethodId, plan, childId, referralCode } = body
+    const { paymentMethodId, plan, childId, referralCode, testMode: bodyTestMode } = body
     if (!['annual', 'monthly', 'triennial'].includes(plan)) return err(400, 'plan must be annual, monthly or triennial', step)
 
     const isAdditionalChild = !!childId
+    const testMode = bodyTestMode === true
 
     // ── Price IDs ─────────────────────────────────────────────────────────────
     step = 'price-select'
-    const stripeKey    = Deno.env.get('STRIPE_SECRET_KEY')
-    if (!stripeKey) return err(500, 'Stripe key not configured', step)
+    const stripeKey = testMode
+      ? Deno.env.get('STRIPE_SECRET_KEY_TEST')
+      : Deno.env.get('STRIPE_SECRET_KEY')
+    if (!stripeKey) return err(500, testMode ? 'Test Stripe key not configured' : 'Stripe key not configured', step)
 
-    const priceAnnual    = Deno.env.get('STRIPE_PRICE_ANNUAL')    || DEFAULT_PRICE_ANNUAL
-    const priceMonthly   = Deno.env.get('STRIPE_PRICE_MONTHLY')   || DEFAULT_PRICE_MONTHLY
-    const priceTriennial = Deno.env.get('STRIPE_PRICE_TRIENNIAL') || DEFAULT_PRICE_TRIENNIAL
-    if (plan === 'monthly'   && !priceMonthly)   return err(500, 'Monthly price ID not configured. Set STRIPE_PRICE_MONTHLY in Supabase secrets.', step)
-    if (plan === 'triennial' && !priceTriennial) return err(500, 'Triennial price ID not configured. Set STRIPE_PRICE_TRIENNIAL in Supabase secrets.', step)
+    const priceAnnual    = (testMode ? Deno.env.get('STRIPE_PRICE_ANNUAL_TEST')    : Deno.env.get('STRIPE_PRICE_ANNUAL'))    || DEFAULT_PRICE_ANNUAL
+    const priceMonthly   = (testMode ? Deno.env.get('STRIPE_PRICE_MONTHLY_TEST')   : Deno.env.get('STRIPE_PRICE_MONTHLY'))   || DEFAULT_PRICE_MONTHLY
+    const priceTriennial = (testMode ? Deno.env.get('STRIPE_PRICE_TRIENNIAL_TEST') : Deno.env.get('STRIPE_PRICE_TRIENNIAL')) || DEFAULT_PRICE_TRIENNIAL
+    if (plan === 'monthly'   && !priceMonthly)   return err(500, 'Monthly price ID not configured', step)
+    if (plan === 'triennial' && !priceTriennial) return err(500, 'Triennial price ID not configured', step)
     const priceId = plan === 'annual' ? priceAnnual : plan === 'triennial' ? priceTriennial : priceMonthly
 
     // Triennial: charge once, subscription auto-cancels in 3 years (no surprise renewal)

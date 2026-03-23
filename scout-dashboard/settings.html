@@ -489,6 +489,7 @@ function submitSubscribe() {
             paymentMethodId: result.paymentMethod.id,
             plan: _checkoutPlan,
             referralCode: localStorage.getItem('scout_referral_code') || undefined,
+            testMode: (localStorage.getItem('scout_test_mode') === 'true') || false,
           }),
         }).then(function (r) { return r.json() }).then(function (data) {
           if (!data.ok) {
