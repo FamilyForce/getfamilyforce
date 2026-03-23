@@ -102,18 +102,37 @@ Deno.serve(async (req: Request) => {
   let   step     = 'init'
 
   try {
-    // 1. Parse the DB webhook payload
+    // 1. Parse payload — two supported shapes:
+    //    a) Supabase DB webhook: { type, table, record: { user_id, status, ... } }
+    //    b) Direct call from scout-convert: { userId, childId?, is_conversion?, birth_signup? }
     step = 'parse'
     const payload = await req.json()
-    // Supabase DB webhook sends: { type: 'INSERT', table: 'scout_subscriptions', record: {...} }
-    const record = payload.record as Record<string, unknown>
-    if (!record) throw new Error('No record in payload')
+
+    let record: Record<string, unknown>
+    let directCall = false
+
+    if (payload.record) {
+      // Shape A — DB webhook
+      record = payload.record as Record<string, unknown>
+    } else if (payload.userId) {
+      // Shape B — direct call from scout-convert / scout-confirm-arrival
+      directCall = true
+      record = {
+        user_id:      payload.userId,
+        child_id:     payload.childId ?? null,
+        is_conversion: payload.is_conversion ?? false,
+        birth_signup:  payload.birth_signup ?? false,
+        status:       'trialing',  // bypass status guard below
+      }
+    } else {
+      throw new Error('No record in payload')
+    }
 
     userId = record.user_id as string
     if (!userId) throw new Error('No user_id in record')
 
-    // Only process trialing subscriptions
-    if (record.status !== 'trialing') {
+    // Only process trialing subscriptions (DB webhook path only — direct calls always proceed)
+    if (!directCall && record.status !== 'trialing') {
       return new Response(JSON.stringify({ ok: true, skipped: 'not trialing' }), {
         status: 200, headers: { ...CORS, 'Content-Type': 'application/json' }
       })
@@ -129,14 +148,19 @@ Deno.serve(async (req: Request) => {
     const { data: { user }, error: userErr } = await sb.auth.admin.getUserById(userId)
     if (userErr || !user?.email) throw new Error(`Could not load user: ${userErr?.message}`)
 
-    // 3. Load child record
+    // 3. Load child record — use child_id from record/direct-call if available
     step = 'load-child'
-    const { data: children, error: childErr } = await sb
+    const targetChildId = (record.child_id ?? null) as string | null
+    let childQuery = sb
       .from('children')
       .select('id, name, dob, due_date, is_expecting, gender')
       .eq('user_id', userId)
-      .order('created_at', { ascending: true })
-      .limit(1)
+    if (targetChildId) {
+      childQuery = childQuery.eq('id', targetChildId).limit(1)
+    } else {
+      childQuery = childQuery.order('created_at', { ascending: true }).limit(1)
+    }
+    const { data: children, error: childErr } = await childQuery
 
     if (childErr) throw new Error(`Could not load child: ${childErr.message}`)
     if (!children || children.length === 0) throw new Error(`No child found for user ${userId}`)
