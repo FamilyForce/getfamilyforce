@@ -175,11 +175,13 @@ Deno.serve(async (req) => {
     // ── Triennial: no Stripe subscription — just update DB ───────────────────
     if (sub.plan === 'triennial' || !sub.stripe_sub_id) {
       const accessUntil = sub.period_end as string | null
-      await sb.from('scout_subscriptions').update({
+      console.log('[scout-cancel] DB-only cancel, sub.id=', sub.id)
+      const { error: triennialDbErr } = await sb.from('scout_subscriptions').update({
         status:               'cancelling',
         cancel_at_period_end: true,
         updated_at:           new Date().toISOString(),
       }).eq('id', sub.id)
+      if (triennialDbErr) throw new Error('DB update failed: ' + triennialDbErr.message)
       await sb.from('scout_events').insert({
         user_id: user.id, child_id: childId,
         event_type: 'subscription_cancelled',
@@ -211,9 +213,11 @@ Deno.serve(async (req) => {
       // Subscription doesn't exist in Stripe (deleted/stale) — cancel in DB only
       if (stripeMsg.toLowerCase().includes('no such subscription')) {
         const accessUntil = sub.period_end as string | null
-        await sb.from('scout_subscriptions').update({
+        console.log('[scout-cancel] stale-sub DB cancel, sub.id=', sub.id)
+        const { error: staleDbErr } = await sb.from('scout_subscriptions').update({
           status: 'cancelling', cancel_at_period_end: true, updated_at: new Date().toISOString(),
         }).eq('id', sub.id)
+        if (staleDbErr) throw new Error('DB update failed (stale): ' + staleDbErr.message)
         if (resendKey) sendCancellationEmail({ resendKey, toEmail: userEmail, userName,
           plan: sub.plan as string, accessUntil, siteUrl }).catch(() => {})
         return new Response(JSON.stringify({ ok: true, access_until: accessUntil, plan: sub.plan }),
@@ -232,13 +236,15 @@ Deno.serve(async (req) => {
 
     // ── Update DB ───────────────────────────────────────────────────────────
     step = 'update-db'
-    await sb.from('scout_subscriptions').update({
+    console.log('[scout-cancel] Stripe cancel OK, updating DB sub.id=', sub.id, 'accessUntil=', accessUntil)
+    const { error: dbErr } = await sb.from('scout_subscriptions').update({
       status:               'cancelling',
       cancel_at_period_end: true,
       plan:                 sub.plan ?? planFromStripe,
       period_end:           accessUntil,
       updated_at:           new Date().toISOString(),
     }).eq('id', sub.id)
+    if (dbErr) throw new Error('DB update failed: ' + dbErr.message)
 
     // ── Log event ───────────────────────────────────────────────────────────
     await sb.from('scout_events').insert({
