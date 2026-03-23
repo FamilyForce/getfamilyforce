@@ -4,8 +4,8 @@
 // OR adds a new paid subscription for an additional child (child #2+).
 //
 // POST body:
-//   { paymentMethodId, plan: 'annual' | 'monthly' }         ← trial conversion (child #1)
-//   { paymentMethodId?, plan, childId }                      ← new child subscription
+//   { paymentMethodId, plan: 'annual' | 'triennial' | 'monthly' }  ← trial conversion (child #1)
+//   { paymentMethodId?, plan, childId }                              ← new child subscription
 //     paymentMethodId is optional for child #2+ if user already has a Stripe customer+PM
 //
 // Auth: Bearer session token
@@ -44,8 +44,9 @@ const CORS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const DEFAULT_PRICE_ANNUAL  = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'
-const DEFAULT_PRICE_MONTHLY = ''  // set STRIPE_PRICE_MONTHLY in secrets
+const DEFAULT_PRICE_ANNUAL    = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'
+const DEFAULT_PRICE_MONTHLY   = ''  // set STRIPE_PRICE_MONTHLY in secrets
+const DEFAULT_PRICE_TRIENNIAL = ''  // set STRIPE_PRICE_TRIENNIAL in secrets (one-time annual price, cancel_at = 3yr)
 
 function err(status: number, msg: string, step = '') {
   return new Response(JSON.stringify({ ok: false, error: msg, step }), {
@@ -88,14 +89,14 @@ async function sendEmail(resendKey: string, to: string, subject: string, html: s
 }
 
 function buildSubscriptionConfirmEmail(opts: {
-  userName: string; userEmail: string; plan: 'annual' | 'monthly'
+  userName: string; userEmail: string; plan: 'annual' | 'triennial' | 'monthly'
   amountDisplay: string; chargedNow: boolean
   subscriptionId: string; billingStartDate?: string
   purchasedAt: Date; siteUrl: string
 }): string {
   const { userName, plan, amountDisplay, chargedNow, subscriptionId, billingStartDate, purchasedAt, siteUrl } = opts
-  const planLabel   = plan === 'annual' ? '1-Year Scout Subscription' : 'Monthly Scout Subscription'
-  const billingDesc = plan === 'annual' ? 'billed annually' : 'billed monthly'
+  const planLabel   = plan === 'annual' ? '1-Year Scout Subscription' : plan === 'triennial' ? '3-Year Scout Subscription (Full Journey)' : 'Monthly Scout Subscription'
+  const billingDesc = plan === 'annual' ? 'billed annually' : plan === 'triennial' ? 'one-time payment for 3 years' : 'billed monthly'
   const purchaseFmt = purchasedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
   const orderRef    = subscriptionId.replace('sub_', 'SUB-')
 
@@ -224,7 +225,7 @@ Deno.serve(async (req: Request) => {
     step = 'parse'
     const body = await req.json()
     const { paymentMethodId, plan, childId, referralCode } = body
-    if (plan !== 'annual' && plan !== 'monthly') return err(400, 'plan must be annual or monthly', step)
+    if (!['annual', 'monthly', 'triennial'].includes(plan)) return err(400, 'plan must be annual, monthly or triennial', step)
 
     const isAdditionalChild = !!childId
 
@@ -233,12 +234,17 @@ Deno.serve(async (req: Request) => {
     const stripeKey    = Deno.env.get('STRIPE_SECRET_KEY')
     if (!stripeKey) return err(500, 'Stripe key not configured', step)
 
-    const priceAnnual  = Deno.env.get('STRIPE_PRICE_ANNUAL')  || DEFAULT_PRICE_ANNUAL
-    const priceMonthly = Deno.env.get('STRIPE_PRICE_MONTHLY') || DEFAULT_PRICE_MONTHLY
-    if (plan === 'monthly' && !priceMonthly) {
-      return err(500, 'Monthly price ID not configured. Set STRIPE_PRICE_MONTHLY in Supabase secrets.', step)
-    }
-    const priceId = plan === 'annual' ? priceAnnual : priceMonthly
+    const priceAnnual    = Deno.env.get('STRIPE_PRICE_ANNUAL')    || DEFAULT_PRICE_ANNUAL
+    const priceMonthly   = Deno.env.get('STRIPE_PRICE_MONTHLY')   || DEFAULT_PRICE_MONTHLY
+    const priceTriennial = Deno.env.get('STRIPE_PRICE_TRIENNIAL') || DEFAULT_PRICE_TRIENNIAL
+    if (plan === 'monthly'   && !priceMonthly)   return err(500, 'Monthly price ID not configured. Set STRIPE_PRICE_MONTHLY in Supabase secrets.', step)
+    if (plan === 'triennial' && !priceTriennial) return err(500, 'Triennial price ID not configured. Set STRIPE_PRICE_TRIENNIAL in Supabase secrets.', step)
+    const priceId = plan === 'annual' ? priceAnnual : plan === 'triennial' ? priceTriennial : priceMonthly
+
+    // Triennial: charge once, subscription auto-cancels in 3 years (no surprise renewal)
+    const triennialCancelAt = plan === 'triennial'
+      ? Math.floor(new Date(Date.now() + 3 * 365.25 * 24 * 60 * 60 * 1000).getTime() / 1000)
+      : undefined
 
     // ── Validate referral code (non-blocking — discount is best-effort) ───────
     step = 'referral-check'
@@ -354,6 +360,7 @@ Deno.serve(async (req: Request) => {
         'items[0][price]':                 priceId,
         trial_end:                         trialEndUnix,
         ...(appliedCoupon ? { coupon: appliedCoupon } : {}),
+        ...(triennialCancelAt ? { cancel_at: triennialCancelAt } : {}),
         'payment_settings[save_default_payment_method]': 'on_subscription',
         'metadata[supabase_user_id]':      user.id,
         'metadata[child_id]':              childId,
@@ -439,7 +446,7 @@ Deno.serve(async (req: Request) => {
       const { data: profileA } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
       const userNameA   = profileA?.name ?? user.email.split('@')[0]
       const billingDate = trialEnd.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
-      const planAmtA    = plan === 'annual' ? '$49.99' : '$9.99'
+      const planAmtA    = plan === 'annual' ? '$49.99' : plan === 'triennial' ? '$99.99' : '$9.99'
       if (resendKeyA) {
         try {
           await sendEmail(resendKeyA, user.email,
@@ -531,6 +538,7 @@ Deno.serve(async (req: Request) => {
       customer:          customerId!,
       'items[0][price]': priceId,
       ...(appliedCoupon ? { coupon: appliedCoupon } : {}),
+      ...(triennialCancelAt ? { cancel_at: triennialCancelAt } : {}),
       'payment_settings[save_default_payment_method]': 'on_subscription',
       'metadata[supabase_user_id]': user.id,
       'metadata[plan]':             plan,
@@ -614,7 +622,7 @@ Deno.serve(async (req: Request) => {
       try {
         const { data: profileB } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
         const userNameB   = profileB?.name ?? user.email.split('@')[0]
-        let   chargedDisplay = plan === 'annual' ? '$49.99' : '$9.99'  // fallback
+        let   chargedDisplay = plan === 'annual' ? '$49.99' : plan === 'triennial' ? '$99.99' : '$9.99'  // fallback
         if (subscription.latest_invoice) {
           try {
             const invoice    = await stripeReq(stripeKey, 'GET', `/invoices/${subscription.latest_invoice}`)
