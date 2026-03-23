@@ -719,6 +719,7 @@ var stripeCard   = null
 var selectedPlan = 'annual'
 var appliedPromo = null
 var deliveryMode = 'now' // 'now' or 'later'
+var params       = new URLSearchParams(window.location.search)  // global — needed by showRedeem()
 
 // ── Test mode auto-fill ────────────────────────────────────────────────────
 function activateTestMode() {
