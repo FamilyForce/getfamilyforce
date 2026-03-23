@@ -577,13 +577,28 @@
       var noteHtml = ''
       if (!isPreview && !isHistory) {
         var hasNote = w._note && w._note.trim()
-        var noteDot = hasNote ? '<span class="note-dot"></span>' : ''
-        noteHtml = '<button class="note-btn" data-note-toggle="' + w.id + '">📝 ' + (hasNote ? 'Note ' : 'Add note') + noteDot + '</button>' +
-          '<div class="note-editor" id="noteEditor-' + w.id + '">' +
-          '<textarea class="note-textarea" data-wid="' + w.id + '" maxlength="500" placeholder="e.g. Tried peanuts today — no reaction. Will repeat next week.">' +
-          ScoutDash._esc(w._note || '') + '</textarea>' +
-          '<div class="note-meta"><span class="note-char-count" id="noteCount-' + w.id + '">' + (w._note || '').length + ' / 500</span><span class="note-status" id="noteStatus-' + w.id + '"></span></div>' +
-          '</div>'
+        if (hasNote) {
+          // Show note text inline (2-line clamp) with an Edit button to open editor
+          noteHtml =
+            '<div class="note-inline" data-note-toggle="' + w.id + '">' +
+            '<span class="note-inline-icon">📝</span>' +
+            '<span class="note-inline-text">' + ScoutDash._esc(w._note) + '</span>' +
+            '<button class="note-inline-edit" data-note-toggle="' + w.id + '" aria-label="Edit note">Edit</button>' +
+            '</div>' +
+            '<div class="note-editor" id="noteEditor-' + w.id + '">' +
+            '<textarea class="note-textarea" data-wid="' + w.id + '" maxlength="500" placeholder="e.g. Tried peanuts today — no reaction. Will repeat next week.">' +
+            ScoutDash._esc(w._note) + '</textarea>' +
+            '<div class="note-meta"><span class="note-char-count" id="noteCount-' + w.id + '">' + w._note.length + ' / 500</span><span class="note-status" id="noteStatus-' + w.id + '"></span></div>' +
+            '</div>'
+        } else {
+          // No note yet — show a subtle "Add note" button
+          noteHtml =
+            '<button class="note-btn" data-note-toggle="' + w.id + '">📝 Add note</button>' +
+            '<div class="note-editor" id="noteEditor-' + w.id + '">' +
+            '<textarea class="note-textarea" data-wid="' + w.id + '" maxlength="500" placeholder="e.g. Tried peanuts today — no reaction. Will repeat next week."></textarea>' +
+            '<div class="note-meta"><span class="note-char-count" id="noteCount-' + w.id + '">0 / 500</span><span class="note-status" id="noteStatus-' + w.id + '"></span></div>' +
+            '</div>'
+        }
       }
 
       var prepHtml = ''
@@ -697,6 +712,9 @@
         var ed  = document.getElementById('noteEditor-' + wid)
         if (ed) {
           ed.classList.toggle('open')
+          // Hide the inline preview while editor is open; restore on close
+          var preview = btn.closest('.note-inline') || document.querySelector('.note-inline[data-note-toggle="' + wid + '"]')
+          if (preview) preview.style.display = ed.classList.contains('open') ? 'none' : 'flex'
           if (ed.classList.contains('open')) ed.querySelector('textarea').focus()
         }
       })
@@ -731,6 +749,12 @@
           // Update lastSaved so closeModal flush knows this is already persisted
           var modalTA = document.getElementById('modalNoteTA')
           if (modalTA && modalTA.dataset.wid === wid) modalTA.dataset.lastSaved = text
+          // Refresh inline note preview text on the card
+          var preview = document.querySelector('.note-inline[data-note-toggle="' + wid + '"]')
+          if (preview) {
+            var previewText = preview.querySelector('.note-inline-text')
+            if (previewText) previewText.textContent = text
+          }
         })
       }, true)
     },
