@@ -2180,6 +2180,7 @@ button { font: inherit; cursor: pointer; }
       var sb = window._supabaseClient;
       if (sb) {
         var _verifyHandled = false;
+        var _authListener  = null;  // keep ref for cleanup
 
         function _dismissVerifyOverlay() {
           var o = document.getElementById('verifying-overlay');
@@ -2189,14 +2190,22 @@ button { font: inherit; cursor: pointer; }
         function _routeVerifiedSession(session) {
           if (_verifyHandled) return;
           _verifyHandled = true;
+
+          // Unsubscribe auth listener — prevents re-triggering on future SIGNED_IN events
+          if (_authListener && _authListener.data && _authListener.data.subscription) {
+            _authListener.data.subscription.unsubscribe();
+          }
+
           history.replaceState(null, '', window.location.pathname + window.location.search);
-          _dismissVerifyOverlay();
+          // NOTE: overlay stays visible until the children check resolves —
+          // avoids a blank-page flash during the async DB call.
           var user = session.user;
           generateAndSaveReferralCode(user.id, user.email);
 
           var giftCode = localStorage.getItem('ff_gift_code');
           if (giftCode) {
             localStorage.removeItem('ff_gift_code');
+            _dismissVerifyOverlay();
             window.location.href = 'scout-gift-checkout.html?redeem=' + encodeURIComponent(giftCode);
             return;
           }
@@ -2211,24 +2220,31 @@ button { font: inherit; cursor: pointer; }
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
               body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
-            }).then(function() { window.location.href = 'scout-dashboard.html'; })
-              .catch(function() { window.location.href = 'scout-dashboard.html'; });
+            }).then(function() { _dismissVerifyOverlay(); window.location.href = 'scout-dashboard.html'; })
+              .catch(function() { _dismissVerifyOverlay(); window.location.href = 'scout-dashboard.html'; });
             return;
           }
 
+          // Keep overlay up during async children check — dismiss only when routing is decided
           sb.from('children').select('id').eq('user_id', user.id).limit(1)
             .then(function(childRes) {
+              _dismissVerifyOverlay();
               var hasChildren = childRes.data && childRes.data.length > 0;
               if (!hasChildren) {
                 routeAfterSignup();
               } else {
                 window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
               }
+            })
+            .catch(function() {
+              // DB error — dismiss and send to dashboard anyway
+              _dismissVerifyOverlay();
+              window.location.href = 'scout-dashboard.html';
             });
         }
 
         // PRIMARY: event-driven — fires as soon as Supabase processes the hash token
-        sb.auth.onAuthStateChange(function(event, session) {
+        _authListener = sb.auth.onAuthStateChange(function(event, session) {
           if (event === 'SIGNED_IN' && session) {
             _routeVerifiedSession(session);
           }
@@ -2250,15 +2266,16 @@ button { font: inherit; cursor: pointer; }
           });
         }, 2500);
 
-        // FALLBACK 3: after 6s show escape hatch — "click here to continue"
+        // FALLBACK 3: after 6s auth has genuinely failed — dismiss overlay, show sign-in
+        // with a banner so the user can try again (not a link to dashboard — they may not be authed)
         setTimeout(function() {
           if (_verifyHandled) return;
-          var overlay = document.getElementById('verifying-overlay');
-          if (overlay) {
-            overlay.innerHTML = overlay.innerHTML +
-              '<p style="font-family:Arial,sans-serif;font-size:13px;color:#6B7280;margin:16px 0 0;text-align:center">' +
-              'Taking longer than expected. <a href="scout-dashboard.html" style="color:#6E4ED6;font-weight:600">Click here to continue →</a></p>';
+          _verifyHandled = true;  // stop future fallbacks from firing
+          if (_authListener && _authListener.data && _authListener.data.subscription) {
+            _authListener.data.subscription.unsubscribe();
           }
+          _dismissVerifyOverlay();
+          showBanner('Verification is taking too long. Please try signing in or request a new link.');
         }, 6000);
       }
     }
