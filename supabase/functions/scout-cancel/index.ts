@@ -86,11 +86,15 @@ async function sendCancellationEmail(opts: {
 </table></td></tr></table>
 </body></html>`
 
-  await fetch('https://api.resend.com/emails', {
+  const emailRes = await fetch('https://api.resend.com/emails', {
     method:  'POST',
     headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
     body:    JSON.stringify({ from: 'FamilyForce <scout@getfamilyforce.com>', to: [toEmail], subject: 'Your Scout subscription has been cancelled', html }),
   })
+  if (!emailRes.ok) {
+    const errBody = await emailRes.text().catch(() => '')
+    console.error('[scout-cancel] Resend error:', emailRes.status, errBody)
+  }
 }
 
 Deno.serve(async (req) => {
@@ -167,9 +171,15 @@ Deno.serve(async (req) => {
     // ── Load user email + name for confirmation email ────────────────────────
     const resendKey = Deno.env.get('RESEND_API_KEY')
     const siteUrl   = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
-    const userEmail = user.email ?? ''
+    // user.email comes from the verified JWT; also try auth.users via service role as fallback
+    let userEmail = user.email ?? ''
+    if (!userEmail) {
+      const { data: authRow } = await sb.from('auth.users' as any).select('email').eq('id', user.id).maybeSingle().catch(() => ({ data: null }))
+      userEmail = (authRow as any)?.email ?? ''
+    }
     const { data: profile } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle().catch(() => ({ data: null }))
     const userName  = (profile as any)?.name ?? userEmail.split('@')[0]
+    console.log('[scout-cancel] userEmail=', userEmail, 'resendKey present=', !!resendKey)
 
     // ── Triennial: no Stripe subscription — just update DB ───────────────────
     if (sub.plan === 'triennial' || !sub.stripe_sub_id) {
@@ -187,7 +197,7 @@ Deno.serve(async (req) => {
         properties: { plan: sub.plan, access_until: accessUntil, source: 'in_app' },
       }).catch(() => {})
       if (resendKey) sendCancellationEmail({ resendKey, toEmail: userEmail, userName,
-        plan: sub.plan as string, accessUntil, siteUrl }).catch(() => {})
+        plan: sub.plan as string, accessUntil, siteUrl }).catch((e) => console.error("[scout-cancel] email send error:", e))
       return new Response(JSON.stringify({
         ok: true, access_until: accessUntil, plan: sub.plan,
       }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
@@ -218,7 +228,7 @@ Deno.serve(async (req) => {
         }).eq('id', sub.id)
         if (staleDbErr) throw new Error('DB update failed (stale): ' + staleDbErr.message)
         if (resendKey) sendCancellationEmail({ resendKey, toEmail: userEmail, userName,
-          plan: sub.plan as string, accessUntil, siteUrl }).catch(() => {})
+          plan: sub.plan as string, accessUntil, siteUrl }).catch((e) => console.error("[scout-cancel] email send error:", e))
         return new Response(JSON.stringify({ ok: true, access_until: accessUntil, plan: sub.plan }),
           { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
       }
@@ -255,7 +265,7 @@ Deno.serve(async (req) => {
 
     // ── Send cancellation confirmation email ─────────────────────────────────
     if (resendKey) sendCancellationEmail({ resendKey, toEmail: userEmail, userName,
-      plan: (sub.plan ?? planFromStripe) as string, accessUntil, siteUrl }).catch(() => {})
+      plan: (sub.plan ?? planFromStripe) as string, accessUntil, siteUrl }).catch((e) => console.error("[scout-cancel] email send error:", e))
 
     return new Response(JSON.stringify({
       ok: true,
