@@ -245,10 +245,11 @@ Deno.serve(async (req: Request) => {
     if (plan === 'triennial' && !priceTriennial) return err(500, 'Triennial price ID not configured', step)
     const priceId = plan === 'annual' ? priceAnnual : plan === 'triennial' ? priceTriennial : priceMonthly
 
-    // Triennial: charge once, subscription auto-cancels in 3 years (no surprise renewal)
-    const triennialCancelAt = plan === 'triennial'
-      ? Math.floor(new Date(Date.now() + 3 * 365.25 * 24 * 60 * 60 * 1000).getTime() / 1000)
-      : undefined
+    // Triennial: recurring annual price, cancel_at = 1 year (1 charge only), DB period_end = 3 years
+    const now3yr = new Date(Date.now() + 3 * 365.25 * 24 * 60 * 60 * 1000)
+    const now1yr = new Date(Date.now() + 365.25 * 24 * 60 * 60 * 1000)
+    const triennialCancelAt  = plan === 'triennial' ? Math.floor(now1yr.getTime() / 1000) : undefined
+    const triennialPeriodEnd = plan === 'triennial' ? now3yr.toISOString() : undefined
 
     // ── Validate referral code (non-blocking — discount is best-effort) ───────
     step = 'referral-check'
@@ -373,9 +374,9 @@ Deno.serve(async (req: Request) => {
 
       // INSERT new subscription row for this child
       step = 'db-insert'
-      const periodEnd = subscription.current_period_end
+      const periodEnd = triennialPeriodEnd ?? (subscription.current_period_end
         ? new Date(subscription.current_period_end * 1000).toISOString()
-        : null
+        : null)
 
       await sb.from('scout_subscriptions').insert({
         user_id:            user.id,
@@ -385,6 +386,7 @@ Deno.serve(async (req: Request) => {
         stripe_sub_id:      subscription.id,
         trial_end:          trialEnd.toISOString(),
         period_end:         periodEnd,
+        plan,
       })
 
       // Log event
@@ -550,15 +552,16 @@ Deno.serve(async (req: Request) => {
 
     // Update subscription row
     step = 'db-update'
-    const periodEnd = subscription.current_period_end
+    const periodEnd = triennialPeriodEnd ?? (subscription.current_period_end
       ? new Date(subscription.current_period_end * 1000).toISOString()
-      : null
+      : null)
 
     await sb.from('scout_subscriptions').update({
       status:             'active',
       stripe_customer_id: customerId,
       stripe_sub_id:      subscription.id,
       period_end:         periodEnd,
+      plan,
     }).eq('id', subToConvert.id)
 
     // Determine child_id for event logging
