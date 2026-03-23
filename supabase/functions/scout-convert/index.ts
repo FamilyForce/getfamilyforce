@@ -116,7 +116,7 @@ async function sendEmail(resendKey: string, to: string, subject: string, html: s
   await fetch('https://api.resend.com/emails', {
     method:  'POST',
     headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-    body:    JSON.stringify({ from: 'Jack Hartley <jack@getfamilyforce.com>', to: [to], subject, html }),
+    body:    JSON.stringify({ from: 'FamilyForce <scout@getfamilyforce.com>', to: [to], subject, html }),
   })
 }
 
@@ -124,9 +124,10 @@ function buildSubscriptionConfirmEmail(opts: {
   userName: string; userEmail: string; plan: 'annual' | 'triennial' | 'monthly'
   amountDisplay: string; chargedNow: boolean
   subscriptionId: string; billingStartDate?: string
+  nextDigestDate?: string
   purchasedAt: Date; siteUrl: string
 }): string {
-  const { userName, plan, amountDisplay, chargedNow, subscriptionId, billingStartDate, purchasedAt, siteUrl } = opts
+  const { userName, plan, amountDisplay, chargedNow, subscriptionId, billingStartDate, nextDigestDate, purchasedAt, siteUrl } = opts
   const planLabel   = plan === 'annual' ? '1-Year Scout Subscription' : plan === 'triennial' ? '3-Year Scout Subscription (Full Journey)' : 'Monthly Scout Subscription'
   const billingDesc = plan === 'annual' ? 'billed annually' : plan === 'triennial' ? 'one-time payment for 3 years' : 'billed monthly'
   const purchaseFmt = purchasedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
@@ -178,14 +179,9 @@ function buildSubscriptionConfirmEmail(opts: {
   </table>
 
   <a href="${siteUrl}/scout-dashboard.html" style="display:inline-block;background:#6E4ED6;color:#fff;font-family:'Outfit',Arial,sans-serif;font-size:14px;font-weight:700;padding:12px 24px;border-radius:100px;text-decoration:none">Open Scout dashboard →</a>
+  ${nextDigestDate ? `<p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:16px 0 0">📬 Your next digest arrives <strong style="color:#5C5960">${nextDigestDate}</strong>.</p>` : ''}
 </td></tr>
 <tr><td style="height:32px"></td></tr>
-
-<!-- Sig -->
-<tr><td>
-  <p style="font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1D1D1F;margin:0 0 2px">Jack Hartley</p>
-  <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0">Dad of two · Founder, FamilyForce</p>
-</td></tr>
 <tr><td style="height:32px"></td></tr>
 
 <!-- Footer -->
@@ -426,12 +422,16 @@ Deno.serve(async (req: Request) => {
         const siteUrlT   = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
         if (resendKeyT) {
           const { data: profT } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
-          const nameT = profT?.name ?? user.email.split('@')[0]
+          const nameT       = profT?.name ?? user.email.split('@')[0]
+          const dobT        = new Date(child.dob + 'T00:00:00Z')
+          const nextDigestT = nextMonthlyBirthday(dobT, new Date())
+            .toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
           await sendEmail(resendKeyT, user.email, `Your Scout subscription for ${child.name} is confirmed`,
             buildSubscriptionConfirmEmail({
               userName: nameT, userEmail: user.email, plan,
               amountDisplay: `$${(triennialCents / 100).toFixed(2)}`, chargedNow: true,
-              subscriptionId: pi.id, purchasedAt: new Date(), siteUrl: siteUrlT,
+              subscriptionId: pi.id, nextDigestDate: nextDigestT,
+              purchasedAt: new Date(), siteUrl: siteUrlT,
             })
           ).catch(e => console.error('[scout-convert] Triennial email failed (non-fatal):', e))
         }
@@ -535,8 +535,9 @@ Deno.serve(async (req: Request) => {
       const siteUrlA    = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
       const { data: profileA } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
       const userNameA   = profileA?.name ?? user.email.split('@')[0]
-      const billingDate = trialEnd.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
-      const planAmtA    = plan === 'annual' ? '$49.99' : plan === 'triennial' ? '$99.99' : '$9.99'
+      const billingDate  = trialEnd.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+      const nextDigestA  = billingDate  // for additional child, first real digest fires at billing date
+      const planAmtA     = plan === 'annual' ? '$49.99' : '$9.99'
       if (resendKeyA) {
         try {
           await sendEmail(resendKeyA, user.email,
@@ -545,7 +546,7 @@ Deno.serve(async (req: Request) => {
               userName: userNameA, userEmail: user.email, plan,
               amountDisplay: planAmtA, chargedNow: false,
               subscriptionId: subscription.id,
-              billingStartDate: billingDate,
+              billingStartDate: billingDate, nextDigestDate: nextDigestA,
               purchasedAt: new Date(), siteUrl: siteUrlA,
             })
           )
@@ -665,11 +666,21 @@ Deno.serve(async (req: Request) => {
       if (resendKeyT) {
         const { data: profT } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
         const nameT = profT?.name ?? user.email.split('@')[0]
+        // Fetch child DOB for next digest date
+        let nextDigestT: string | undefined
+        if (eventChildIdT) {
+          const { data: childT } = await sb.from('children').select('dob').eq('id', eventChildIdT).maybeSingle()
+          if (childT?.dob) {
+            nextDigestT = nextMonthlyBirthday(new Date(childT.dob + 'T00:00:00Z'), new Date())
+              .toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+          }
+        }
         await sendEmail(resendKeyT, user.email, `Welcome to Scout — you're all set`,
           buildSubscriptionConfirmEmail({
             userName: nameT, userEmail: user.email, plan,
             amountDisplay: `$${(triennialCents / 100).toFixed(2)}`, chargedNow: true,
-            subscriptionId: pi.id, purchasedAt: new Date(), siteUrl: siteUrlT,
+            subscriptionId: pi.id, nextDigestDate: nextDigestT,
+            purchasedAt: new Date(), siteUrl: siteUrlT,
           })
         ).catch(e => console.error('[scout-convert] Triennial email failed (non-fatal):', e))
       }
@@ -770,7 +781,7 @@ Deno.serve(async (req: Request) => {
       try {
         const { data: profileB } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
         const userNameB   = profileB?.name ?? user.email.split('@')[0]
-        let   chargedDisplay = plan === 'annual' ? '$49.99' : plan === 'triennial' ? '$99.99' : '$9.99'  // fallback
+        let   chargedDisplay = plan === 'annual' ? '$49.99' : '$9.99'  // fallback
         if (subscription.latest_invoice) {
           try {
             const invoice    = await stripeReq(stripeKey, 'GET', `/invoices/${subscription.latest_invoice}`)
@@ -778,12 +789,21 @@ Deno.serve(async (req: Request) => {
             chargedDisplay   = `$${(amountPaid / 100).toFixed(2)}`
           } catch { /* use fallback */ }
         }
+        // Fetch child DOB for next digest date
+        let nextDigestB: string | undefined
+        if (eventChildId) {
+          const { data: childB } = await sb.from('children').select('dob').eq('id', eventChildId).maybeSingle()
+          if (childB?.dob) {
+            nextDigestB = nextMonthlyBirthday(new Date(childB.dob + 'T00:00:00Z'), new Date())
+              .toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+          }
+        }
         await sendEmail(resendKeyB, user.email,
           `Welcome to Scout — you're all set`,
           buildSubscriptionConfirmEmail({
             userName: userNameB, userEmail: user.email, plan,
             amountDisplay: chargedDisplay, chargedNow: true,
-            subscriptionId: subscription.id,
+            subscriptionId: subscription.id, nextDigestDate: nextDigestB,
             purchasedAt: new Date(), siteUrl: siteUrlB,
           })
         )
