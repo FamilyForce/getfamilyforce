@@ -104,7 +104,9 @@ function buildDescription(
     lines.push(`personalised milestone plan for the first month.`)
     lines.push('')
     if (windows.length > 0) {
-      lines.push(`Your first month has ${windows.length} open milestone window${windows.length === 1 ? '' : 's'}.`)
+      lines.push(`Your first month has ${windows.length} open milestone window${windows.length === 1 ? '' : 's'}:`)
+      lines.push('')
+      for (const w of windows) lines.push(`  \u2022 ${w.title}`)
       lines.push('')
     }
     lines.push(`Confirm arrival: ${dashboardUrl}`)
@@ -192,9 +194,15 @@ function buildHtmlDescription(
     ? `Today is ${childName}'s expected due date.`
     : `${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'} old today.`
 
+  const prebithWindowsHtml = windows.length > 0
+    ? `<div style="margin-top:14px">
+        <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${dimText}">Ready when baby arrives</p>
+        <table width="100%" cellpadding="0" cellspacing="0">${windows.map(w => windowRow(w.title)).join('')}</table>
+       </div>`
+    : ''
+
   const body = ageMonths === 0
-    ? `<p style="margin:0 0 8px;font-size:15px;color:${text};line-height:1.6">Head to Scout to confirm your baby has arrived and unlock your personalised milestone plan.</p>
-       ${windows.length > 0 ? `<p style="margin:0 0 0;font-size:14px;color:${dimText}">Your first month has <strong>${windows.length} open milestone window${windows.length === 1 ? '' : 's'}</strong> ready and waiting.</p>` : ''}`
+    ? `<p style="margin:0 0 4px;font-size:15px;color:${text};line-height:1.6">Head to Scout to confirm your baby has arrived and unlock your personalised milestone plan.</p>${prebithWindowsHtml}`
     : `<p style="margin:0;font-size:15px;color:${text};line-height:1.6">Your Scout digest is in your inbox with everything open this month.</p>`
 
   const ctaLabel = ageMonths === 0 ? 'Confirm arrival in Scout' : 'Open Scout'
