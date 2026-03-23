@@ -276,9 +276,11 @@
 
     /* ── Subscription ────────────────────────────────────────── */
     _loadSubscription: function (cb) {
-      // Fetch all subscription rows for this user, then pick the one matching
-      // the active child (child_id match), falling back to legacy rows (child_id null)
-      sb.from('scout_subscriptions').select('*').eq('user_id', _user.id).then(function (res) {
+      // Fetch all subscription rows for the subscription owner.
+      // For family members, the subscription belongs to the child's owner (child.user_id),
+      // not the logged-in user. Fall back to _user.id if child owner is unavailable.
+      var subOwnerId = (_child && _child.user_id) ? _child.user_id : _user.id
+      sb.from('scout_subscriptions').select('*').eq('user_id', subOwnerId).then(function (res) {
         var rows = res.data || []
         // Prefer exact child_id match; fall back to null child_id (legacy/first-child rows)
         // Guard: _child may be null on library/settings pages with no child set up
