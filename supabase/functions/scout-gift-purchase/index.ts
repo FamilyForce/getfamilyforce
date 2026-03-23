@@ -194,12 +194,14 @@ function buildConfirmEmail(opts: {
   plan: 'annual' | 'triennial' | 'monthly'
   referralCode: string; giftCode: string
   printCardUrl: string; siteUrl: string; expiresAt: Date
-  amountDisplay: string; isFree: boolean
+  amountDisplay: string; isFree: boolean; isDeferred: boolean
+  purchasedAt: Date
 }): string {
-  const { buyerName, recipientName, recipientEmail, plan, referralCode, giftCode, printCardUrl, siteUrl, expiresAt, amountDisplay, isFree } = opts
+  const { buyerName, recipientName, recipientEmail, plan, referralCode, giftCode, printCardUrl, siteUrl, expiresAt, amountDisplay, isFree, isDeferred, purchasedAt } = opts
   const planLabel = plan === 'annual' ? '1-year' : plan === 'triennial' ? '3-year (Full Journey)' : '1-month'
   const planFull  = plan === 'annual' ? '1 Year of Scout' : plan === 'triennial' ? '3 Years of Scout (Full Journey)' : '1 Month of Scout'
   const expiryFmt = expiresAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+  const purchaseFmt = purchasedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
 
   return `<!DOCTYPE html>
 <html lang="en"><head>
@@ -208,7 +210,7 @@ function buildConfirmEmail(opts: {
 <style>body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}body{margin:0;padding:0;background:#F5F3FF;font-family:'Outfit',Arial,sans-serif}</style>
 </head>
 <body style="margin:0;padding:0;background:#F5F3FF">
-<div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;overflow:hidden">Your Scout gift for ${recipientName} is confirmed. Gift code inside.&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;</div>
+<div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;overflow:hidden">${isDeferred ? `Your Scout gift for ${recipientName} is scheduled. Gift code inside.` : `Your Scout gift for ${recipientName} is confirmed. Gift code inside.`}&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;</div>
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F3FF">
 <tr><td align="center" style="padding:24px 12px 40px">
 <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">
@@ -219,8 +221,8 @@ function buildConfirmEmail(opts: {
 
 <!-- Confirmation -->
 <tr><td style="background:#FFFFFF;border-radius:16px;padding:28px">
-  <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:400;color:#1D1D1F;margin:0 0 10px;line-height:1.3">Your gift is on its way, ${buyerName}.</h1>
-  <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 20px;line-height:1.6">A ${planLabel} Scout subscription has been sent to <strong>${recipientName}</strong> at ${recipientEmail}.</p>
+  <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:400;color:#1D1D1F;margin:0 0 10px;line-height:1.3">${isDeferred ? `Your gift is scheduled, ${buyerName}.` : `Your gift is on its way, ${buyerName}.`}</h1>
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 20px;line-height:1.6">${isDeferred ? `A ${planLabel} Scout subscription is scheduled for <strong>${recipientName}</strong> at ${recipientEmail}. They'll receive it on your chosen delivery date.` : `A ${planLabel} Scout subscription has been sent to <strong>${recipientName}</strong> at ${recipientEmail}.`}</p>
 
   <!-- Gift code box -->
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px">
@@ -243,6 +245,10 @@ ${!isFree ? `<tr><td style="background:#F9F8FF;border:1.5px solid #E5E2EC;border
     <tr>
       <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0 0 6px">${planFull}</td>
       <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;font-weight:700;padding:0 0 6px">${amountDisplay}</td>
+    </tr>
+    <tr>
+      <td style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;padding:2px 0">Order #${giftCode}</td>
+      <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;padding:2px 0">${purchaseFmt}</td>
     </tr>
     <tr>
       <td colspan="2" style="border-top:1px solid #E5E2EC;padding-top:10px">
@@ -665,15 +671,22 @@ Deno.serve(async (req: Request) => {
 
     // Send confirmation email to buyer (includes gift code + print link)
     step = 'email-buyer'
+    // Compute the actual amount charged: use PI amount for paid orders, 0 for free
+    const chargedCents   = freeOrder ? 0 : (verifiedPi?.amount ?? priceInfo.amount)
+    const chargedDisplay = freeOrder ? '$0.00' : `$${(chargedCents / 100).toFixed(2)}`
     const confirmEmailBody: Record<string, unknown> = {
       from:    `${fromName} <${fromEmail}>`,
       to:      [buyerEmail],
-      subject: `Your Scout gift for ${recipientName} is on its way`,
+      subject: isDeferred
+        ? `Your Scout gift for ${recipientName} is scheduled`
+        : `Your Scout gift for ${recipientName} is on its way`,
       html:    buildConfirmEmail({
         buyerName, recipientName, recipientEmail, plan,
         referralCode, giftCode, printCardUrl, siteUrl, expiresAt,
-        amountDisplay: priceInfo.display,
+        amountDisplay: chargedDisplay,
         isFree:        freeOrder === true,
+        isDeferred,
+        purchasedAt:   new Date(),
       }),
       tags:    [{ name: 'email_type', value: 'gift_buyer_confirm' }],
     }
