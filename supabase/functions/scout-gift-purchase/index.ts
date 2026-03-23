@@ -312,6 +312,22 @@ Deno.serve(async (req: Request) => {
       const { code, plan: vPlan } = body
       if (!code || !vPlan) return err(400, 'code and plan required', 'validate-coupon')
       if (!stripeKey) return err(500, 'Stripe not configured', 'validate-coupon')
+
+      // ── Test-mode bypass: FRIEND-* codes always validate at 100% off ──────
+      // Stripe test + live environments have separate promo code databases.
+      // Rather than requiring test promo codes to be created manually in Stripe,
+      // we short-circuit in test mode so the full checkout flow can be tested.
+      if (testMode && /^FRIEND-[A-Z0-9]{4}-[A-Z0-9]{4}$/i.test(code)) {
+        const base = PRICES[vPlan as 'annual' | 'triennial' | 'monthly']
+        if (!base) return err(400, 'invalid plan', 'validate-coupon')
+        return new Response(JSON.stringify({
+          ok: true, label: '100% off (test)',
+          originalAmount: base.amount, discountedAmount: 0,
+          originalDisplay: base.display, discountedDisplay: '$0.00',
+          stripePromoId: 'test_promo_bypass',
+        }), { headers: { 'Content-Type': 'application/json', ...CORS }, status: 200 })
+      }
+
       try {
         const params = new URLSearchParams({ code, active: 'true' })
         const res    = await stripeReq(stripeKey, 'GET', `/promotion_codes?${params}`)
