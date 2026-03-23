@@ -183,7 +183,7 @@ Deno.serve(async (req: Request) => {
 
       // 8. Build and send email
       const windowWord = windows.length === 1 ? 'window' : 'windows'
-      const subject = `${child.name} turns ${monthsAtBirthday} months in 7 days — ${windows.length} ${windowWord} worth doing this week`
+      const subject = `${child.name} turns ${monthsAtBirthday} month${monthsAtBirthday === 1 ? '' : 's'} in 7 days — ${windows.length} ${windowWord} worth doing this week`
       const html    = buildAlertEmail({
         childName:      child.name,
         parentName,

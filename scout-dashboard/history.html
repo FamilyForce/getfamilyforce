@@ -223,7 +223,7 @@ function renderHistory(months, child) {
     var mergedNewborn  = []
     prebirth.forEach(function (m) {
       m.windows.forEach(function (e) {
-        var openWeeks = e.window.open_age_weeks != null ? e.window.open_age_weeks : -1
+        var openWeeks = e.window.open_age_weeks != null ? e.window.open_age_weeks : 0
         if (openWeeks < 0) {
           mergedPrebirth.push(e)
         } else {

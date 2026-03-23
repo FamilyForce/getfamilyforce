@@ -45,7 +45,7 @@ export function buildAlertEmail(opts: {
   const windowCount = closingWindows.length
   const subCount  = `${windowCount} window${windowCount === 1 ? '' : 's'} closing`
 
-  const preheader = `${childName} turns ${ageMonths} months in 7 days. ${windowCount} window${windowCount === 1 ? '' : 's'} ${windowCount === 1 ? 'is' : 'are'} worth doing this week.`
+  const preheader = `${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'} in 7 days. ${windowCount} window${windowCount === 1 ? '' : 's'} ${windowCount === 1 ? 'is' : 'are'} worth doing this week.`
 
   const windowCards = closingWindows.map(w => {
     const weeksLeft   = w.close_age_weeks - w.current_age_weeks
@@ -53,7 +53,7 @@ export function buildAlertEmail(opts: {
     const borderColor = w.urgency === 'clinical' ? C.amberBorder : C.border
     const bodyText    = w.why_it_matters
       ? w.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim()
-      : `This window closes when ${childName} turns ${ageMonths} months.`
+      : `This window closes when ${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'}.`
     const move = w.what_to_do
       ? w.what_to_do.split('\n')[0].replace(/^[-•·]\s*/, '').trim()
       : `Check this window in your Scout dashboard before ${childName}'s birthday next week.`
@@ -97,7 +97,7 @@ export function buildAlertEmail(opts: {
   <meta name="color-scheme" content="light only">
   <meta name="x-apple-disable-message-reformatting">
   <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
-  <title>${childName} turns ${ageMonths} months in 7 days</title>
+  <title>${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'} in 7 days</title>
   <style>
     body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
     table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}
@@ -118,7 +118,7 @@ export function buildAlertEmail(opts: {
 <!-- HEADER -->
 <tr><td class="hero-pad" style="background:${C.indigoDeep};padding:32px 36px 36px">
   <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 24px">Scout by FamilyForce</p>
-  <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${childName} turns ${ageMonths} months in 7 days.</p>
+  <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'} in 7 days.</p>
   <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0">${subCount} &nbsp;&middot;&nbsp; digest arrives next week</p>
 </td></tr>
 
@@ -138,7 +138,7 @@ export function buildAlertEmail(opts: {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.amberBg};border:1px solid ${C.amberBorder};border-radius:10px">
     <tr><td style="padding:12px 16px">
       <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.amber};margin:0;line-height:1.6">
-        <strong>Heads up:</strong> ${windowCount === 1 ? 'This window closes' : 'These windows close'} when ${childName} turns ${ageMonths} months. Worth a head start before the digest lands.
+        <strong>Heads up:</strong> ${windowCount === 1 ? 'This window closes' : 'These windows close'} when ${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'}. Worth a head start before the digest lands.
       </p>
     </td></tr>
   </table>

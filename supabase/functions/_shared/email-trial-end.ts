@@ -92,7 +92,7 @@ export function buildTrialEndEmail(opts: {
 
   const preheader = isFirstBirthday
     ? `${childName} turns 1 today. Your trial ends today. Here's what's open right now.`
-    : `${childName} turns ${ageMonths} months today. Your trial ends today. Here's what's open right now.`
+    : `${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'} today. Your trial ends today. Here's what's open right now.`
 
   const windowCards = topWindows.map(w => {
     const bodyText = w.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim()
@@ -128,7 +128,7 @@ export function buildTrialEndEmail(opts: {
   <meta name="color-scheme" content="light only">
   <meta name="x-apple-disable-message-reformatting">
   <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
-  <title>${childName} turns ${ageMonths} months — Scout trial ends today</title>
+  <title>${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'} — Scout trial ends today</title>
   <style>
     body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
     table,td{mso-table-lspace:0pt;mso-table-rspace:0pt}

@@ -514,7 +514,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                   </table>
                   ` : `
                   <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textDim};margin:0;line-height:1.65">
-                    Next digest arrives on <strong style="color:${C.textMid}">${nextMonthName}</strong> — when ${childName} turns ${ageMonths + 1} months.
+                    Next digest arrives on <strong style="color:${C.textMid}">${nextMonthName}</strong> — when ${childName} turns ${ageMonths + 1} month${ageMonths + 1 === 1 ? '' : 's'}.
                   </p>
                   `}
                 </td>

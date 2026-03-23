@@ -198,7 +198,7 @@
           <p class="settings-row-label">Sign out</p>
           <button class="settings-row-link" style="background:none;border:none;cursor:pointer;font-size:14px;font-weight:500;color:var(--terra)" onclick="signOut()">Sign out →</button>
         </div>
-        <div class="settings-row">
+        <div class="settings-row" id="deleteAccountRow">
           <div>
             <p class="settings-row-label settings-row-danger">Delete account</p>
             <p class="settings-row-sub">Cancels subscription and permanently removes your data.</p>
@@ -301,6 +301,16 @@ function renderSettings(user, child, sub) {
 
   // Subscription card
   renderSubCard(sub, child)
+
+  // Hide owner-only destructive actions for family members
+  // A family member is anyone whose user.id doesn't match the child's owner user_id
+  var isFamilyMember = child && child.user_id && user.id !== child.user_id
+  if (isFamilyMember) {
+    var deleteRow = document.getElementById('deleteAccountRow')
+    if (deleteRow) deleteRow.style.display = 'none'
+    // Also hide cancel subscription button (rendered dynamically in renderSubCard)
+    // — handled via data-owner-only attribute set in renderSubCard below
+  }
 }
 
 function ordinal(n) {
@@ -341,7 +351,12 @@ function renderSubCard(sub, child) {
       }, 0)
     }
 
-    html = subRow('Plan', isGift ? '🎁 Gift subscription' : 'Free trial') +
+    var giftPlanLabel = '🎁 Gift subscription'
+    if (isGift && sub.plan_months) {
+      var pm = sub.plan_months
+      giftPlanLabel = '🎁 Gift — ' + (pm >= 36 ? '3 years' : pm >= 12 ? pm / 12 + ' year' + (pm / 12 === 1 ? '' : 's') : pm + ' month' + (pm === 1 ? '' : 's'))
+    }
+    html = subRow('Plan', isGift ? giftPlanLabel : 'Free trial') +
       subRow('Status', statusLabel, 'status') +
       subRow(isGift ? 'Gift ends' : 'Trial ends', endFmt + (days > 0 ? ' (' + days + ' day' + (days === 1 ? '' : 's') + ')' : ' — today'), 'ends') +
       '<div class="settings-row" data-gift-hide>' +
@@ -357,7 +372,7 @@ function renderSubCard(sub, child) {
     if (sub.period_end) {
       html += subRow('Next billing', new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }))
     }
-    html += '<div class="settings-row">' +
+    html += '<div class="settings-row" data-owner-only>' +
       '<div><p class="settings-row-label">Cancel subscription</p>' +
       '<p class="settings-row-sub">Your access continues until the end of the current billing period.</p></div>' +
       '<a href="#" class="settings-row-link" style="color:var(--red);white-space:nowrap" onclick="openCancelConfirm(event)">Cancel →</a>' +
@@ -385,6 +400,13 @@ function renderSubCard(sub, child) {
   }
 
   card.innerHTML = html
+
+  // Hide owner-only actions (cancel sub) for family members
+  var _cu = ScoutDash.getUser()
+  var _cc = ScoutDash.getChild()
+  if (_cu && _cc && _cc.user_id && _cu.id !== _cc.user_id) {
+    card.querySelectorAll('[data-owner-only]').forEach(function (el) { el.style.display = 'none' })
+  }
 }
 
 function subRow(label, value, dataRow) {

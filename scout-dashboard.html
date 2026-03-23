@@ -919,7 +919,12 @@ function saveArrival() {
     var data = res.data
     var err  = res.error
     if (err || !data || !data.ok) {
-      errEl.textContent = (data && data.error) || 'Could not confirm arrival. Please try again.'
+      var errMsg = (data && data.error) || ''
+      if (errMsg.indexOf('already confirmed') !== -1 || errMsg.indexOf('not in expecting mode') !== -1) {
+        errEl.textContent = 'Baby\'s arrival has already been confirmed. Try refreshing the page.'
+      } else {
+        errEl.textContent = errMsg || 'Could not confirm arrival. Please try again.'
+      }
       errEl.style.display = 'block'
       btn.disabled    = false
       btn.textContent = 'Confirm arrival →'

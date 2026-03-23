@@ -188,15 +188,17 @@ Deno.serve(async (req: Request) => {
     const existingTrialEnd = existingSub?.trial_end ? new Date(existingSub.trial_end) : null
     // If the existing trial_end is further out than the recalculated one, it's a gift — keep it
     const finalTrialEnd = (existingTrialEnd && existingTrialEnd > trialEnd) ? existingTrialEnd : trialEnd
-    const isGift        = existingSub?.is_gift ?? false
+    const isGift        = existingSub?.is_gift      ?? false
+    const planMonths    = existingSub?.plan_months  ?? null
 
     const { error: subErr } = await sb
       .from('scout_subscriptions')
       .upsert({
-        user_id:   ownerUserId,
-        status:    'trialing',
-        trial_end: finalTrialEnd.toISOString(),
-        is_gift:   isGift,
+        user_id:     ownerUserId,
+        status:      'trialing',
+        trial_end:   finalTrialEnd.toISOString(),
+        is_gift:     isGift,
+        plan_months: planMonths,
       }, { onConflict: 'user_id' })
 
     if (subErr) throw new Error(`Failed to update subscription: ${subErr.message}`)

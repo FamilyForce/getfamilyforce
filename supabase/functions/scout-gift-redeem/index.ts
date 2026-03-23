@@ -238,10 +238,11 @@ Deno.serve(async (req: Request) => {
     // 7. Upsert scout_subscriptions
     step = 'upsert-subscription'
     await sb.from('scout_subscriptions').upsert({
-      user_id:   userId,
-      status:    'trialing',
-      trial_end: trialEnd.toISOString(),
-      is_gift:   true,
+      user_id:    userId,
+      status:     'trialing',
+      trial_end:  trialEnd.toISOString(),
+      is_gift:    true,
+      plan_months: planMos,
     }, { onConflict: 'user_id' })
 
     // 8. Mark gift as redeemed

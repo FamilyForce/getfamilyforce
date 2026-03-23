@@ -180,7 +180,7 @@ Deno.serve(async (req: Request) => {
 
       const subject = months === 12
         ? `${child.name} turns 1 today -- your Scout trial ends today`
-        : `${child.name} turns ${months} months today -- your Scout trial ends today`
+        : `${child.name} turns ${months} month${months === 1 ? '' : 's'} today -- your Scout trial ends today`
       const html     = buildTrialEndEmail({
         childName:      child.name,
         parentName,
