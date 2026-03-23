@@ -23,6 +23,76 @@ function err(status: number, msg: string, step = '') {
     { status, headers: { ...CORS, 'Content-Type': 'application/json' } })
 }
 
+async function sendCancellationEmail(opts: {
+  resendKey: string; toEmail: string; userName: string
+  plan: string; accessUntil: string | null; siteUrl: string
+}) {
+  const { resendKey, toEmail, userName, plan, accessUntil, siteUrl } = opts
+  const planLabel = plan === 'annual' ? 'Annual ($49.99/year)'
+    : plan === 'triennial' ? 'Full Journey — 3 Years ($99.99)'
+    : plan === 'monthly'   ? 'Monthly ($9.99/month)'
+    : plan
+  const accessLine = accessUntil
+    ? `Your access continues until <strong>${new Date(accessUntil).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</strong>. Scout will keep sending your monthly digest emails until then.`
+    : `Your Scout access has ended.`
+
+  const html = `<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Subscription cancelled</title>
+<style>body{margin:0;padding:0;background:#F5F3FF;font-family:'Outfit',Arial,sans-serif}</style>
+</head>
+<body style="margin:0;padding:0;background:#F5F3FF">
+<div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;overflow:hidden">Your Scout subscription has been cancelled. ${accessUntil ? 'Your access continues until the end of your billing period.' : ''}&nbsp;&#8204;</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F3FF">
+<tr><td align="center" style="padding:24px 12px 40px">
+<table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">
+
+<tr><td style="padding:0 0 16px">
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;font-weight:700;color:#6E4ED6;letter-spacing:.12em;text-transform:uppercase;margin:0">FamilyForce Scout</p>
+</td></tr>
+
+<tr><td style="background:#FFFFFF;border-radius:16px;padding:28px">
+  <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:400;color:#1D1D1F;margin:0 0 10px;line-height:1.3">Subscription cancelled, ${userName}.</h1>
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 20px;line-height:1.6">${accessLine}</p>
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F9F8FF;border:1.5px solid #E5E2EC;border-radius:12px;padding:16px 20px;margin-bottom:20px">
+  <tr><td colspan="2" style="padding:0 0 10px">
+    <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#8A879A;text-transform:uppercase;letter-spacing:.1em;margin:0">Subscription details</p>
+  </td></tr>
+  <tr>
+    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;padding:0 0 6px">Plan</td>
+    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0 0 6px">${planLabel}</td>
+  </tr>
+  <tr>
+    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;padding:0 0 6px">Status</td>
+    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0 0 6px">Cancelled</td>
+  </tr>
+  ${accessUntil ? `<tr>
+    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;padding:0">Access until</td>
+    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:700;color:#1D1D1F;padding:0">${new Date(accessUntil).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}</td>
+  </tr>` : ''}
+  </table>
+
+  ${accessUntil ? `<p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0 0 20px;line-height:1.6">Changed your mind? You can reactivate anytime before your access ends.</p>` : ''}
+  <a href="${siteUrl}/scout-dashboard/settings.html" style="display:inline-block;background:#6E4ED6;color:#fff;font-family:'Outfit',Arial,sans-serif;font-size:14px;font-weight:700;padding:12px 24px;border-radius:100px;text-decoration:none">${accessUntil ? 'Reactivate subscription →' : 'Go to dashboard →'}</a>
+</td></tr>
+<tr><td style="height:32px"></td></tr>
+
+<tr><td style="border-top:1px solid #E5E2EC;padding-top:20px">
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0">FamilyForce Scout · <a href="${siteUrl}" style="color:#8A879A;text-decoration:none">${siteUrl.replace('https://', '')}</a></p>
+</td></tr>
+
+</table></td></tr></table>
+</body></html>`
+
+  await fetch('https://api.resend.com/emails', {
+    method:  'POST',
+    headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ from: 'FamilyForce <scout@getfamilyforce.com>', to: [toEmail], subject: 'Your Scout subscription has been cancelled', html }),
+  })
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
 
@@ -87,6 +157,14 @@ Deno.serve(async (req) => {
     if (sub.status === 'cancelled') return err(400, 'Subscription is already cancelled')
     if (sub.status === 'cancelling') return err(400, 'Subscription is already set to cancel')
 
+    // ── Load user email + name for confirmation email ────────────────────────
+    const resendKey   = Deno.env.get('RESEND_API_KEY')
+    const siteUrl     = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
+    const { data: { user: authUser } } = await sb.auth.admin.getUserById(user.id)
+    const userEmail   = authUser?.email ?? user.email
+    const { data: profile } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
+    const userName    = profile?.name ?? userEmail.split('@')[0]
+
     // ── Triennial: no Stripe subscription — just update DB ───────────────────
     if (sub.plan === 'triennial' || !sub.stripe_sub_id) {
       const accessUntil = sub.period_end as string | null
@@ -100,6 +178,8 @@ Deno.serve(async (req) => {
         event_type: 'subscription_cancelled',
         properties: { plan: sub.plan, access_until: accessUntil, source: 'in_app' },
       }).catch(() => {})
+      if (resendKey) sendCancellationEmail({ resendKey, toEmail: userEmail, userName,
+        plan: sub.plan as string, accessUntil, siteUrl }).catch(() => {})
       return new Response(JSON.stringify({
         ok: true, access_until: accessUntil, plan: sub.plan,
       }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
@@ -127,6 +207,8 @@ Deno.serve(async (req) => {
         await sb.from('scout_subscriptions').update({
           status: 'cancelling', cancel_at_period_end: true, updated_at: new Date().toISOString(),
         }).eq('id', sub.id)
+        if (resendKey) sendCancellationEmail({ resendKey, toEmail: userEmail, userName,
+          plan: sub.plan as string, accessUntil, siteUrl }).catch(() => {})
         return new Response(JSON.stringify({ ok: true, access_until: accessUntil, plan: sub.plan }),
           { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
       }
@@ -158,6 +240,10 @@ Deno.serve(async (req) => {
       event_type: 'subscription_cancelled',
       properties: { plan: sub.plan ?? planFromStripe, access_until: accessUntil },
     }).catch(() => {})
+
+    // ── Send cancellation confirmation email ─────────────────────────────────
+    if (resendKey) sendCancellationEmail({ resendKey, toEmail: userEmail, userName,
+      plan: (sub.plan ?? planFromStripe) as string, accessUntil, siteUrl }).catch(() => {})
 
     return new Response(JSON.stringify({
       ok: true,
