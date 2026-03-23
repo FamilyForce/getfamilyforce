@@ -316,35 +316,20 @@
       var dismissed  = localStorage.getItem(dismissKey)
       if (dismissed && (Date.now() - parseInt(dismissed)) < 86400000) return
 
-      // Check if this is a gift subscription — changes text + hides Subscribe link
-      if (sb && _user) {
-        sb.from('scout_gifts').select('id').eq('redeemed_by', _user.id).maybeSingle()
-          .then(function (res) {
-            var isGift   = !!(res.data && res.data.id)
-            var textEl   = banner.querySelector('.trial-banner-text')
-            var subLink  = banner.querySelector('.trial-banner-link')
-            if (textEl) textEl.textContent = isGift
-              ? 'Gift subscription ends ' + dateStr + ' (' + daysStr + ')'
-              : 'Free trial ends ' + dateStr + ' (' + daysStr + ')'
-            if (subLink) subLink.style.display = isGift ? 'none' : ''
-            banner.style.display = 'flex'
-            var closeBtn = banner.querySelector('.trial-banner-close')
-            if (closeBtn) closeBtn.addEventListener('click', function () {
-              banner.style.display = 'none'
-              localStorage.setItem(dismissKey, Date.now().toString())
-            })
-          })
-          .catch(function () {
-            // Fallback — show generic trial text
-            var textEl = banner.querySelector('.trial-banner-text')
-            if (textEl) textEl.textContent = 'Free trial ends ' + dateStr + ' (' + daysStr + ')'
-            banner.style.display = 'flex'
-          })
-      } else {
-        var textEl = banner.querySelector('.trial-banner-text')
-        if (textEl) textEl.textContent = 'Free trial ends ' + dateStr + ' (' + daysStr + ')'
-        banner.style.display = 'flex'
-      }
+      // Use is_gift flag — no DB query needed
+      var isGift  = !!(_sub && _sub.is_gift)
+      var textEl  = banner.querySelector('.trial-banner-text')
+      var subLink = banner.querySelector('.trial-banner-link')
+      if (textEl) textEl.textContent = isGift
+        ? 'Gift ends ' + dateStr + ' (' + daysStr + ')'
+        : 'Free trial ends ' + dateStr + ' (' + daysStr + ')'
+      if (subLink) subLink.style.display = isGift ? 'none' : ''
+      banner.style.display = 'flex'
+      var closeBtn = banner.querySelector('.trial-banner-close')
+      if (closeBtn) closeBtn.addEventListener('click', function () {
+        banner.style.display = 'none'
+        localStorage.setItem(dismissKey, Date.now().toString())
+      })
     },
 
     /* ── Age helpers ─────────────────────────────────────────── */
