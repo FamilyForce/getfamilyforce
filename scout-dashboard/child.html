@@ -172,8 +172,13 @@
         <div class="plan-toggle">
           <div class="plan-option selected" id="planAnnual" onclick="selectPlan('annual')">
             <div class="plan-option-label">Annual <span class="plan-option-badge">Best value</span></div>
-            <div class="plan-option-price">$79.99</div>
-            <div class="plan-option-per">per year · $6.67/month</div>
+            <div class="plan-option-price">$49.99</div>
+            <div class="plan-option-per">per year · $4.17/month</div>
+          </div>
+          <div class="plan-option" id="planTriennial" onclick="selectPlan('triennial')">
+            <div class="plan-option-label">Full Journey (3 yr)</div>
+            <div class="plan-option-price">$99.99</div>
+            <div class="plan-option-per">3 years · $2.78/month</div>
           </div>
           <div class="plan-option" id="planMonthly" onclick="selectPlan('monthly')">
             <div class="plan-option-label">Monthly</div>
@@ -599,8 +604,9 @@ function startTrialForChild() {
 
 function selectPlan(plan) {
   _selectedPlan = plan
-  document.getElementById('planAnnual').classList.toggle('selected',  plan === 'annual')
-  document.getElementById('planMonthly').classList.toggle('selected', plan === 'monthly')
+  document.getElementById('planAnnual').classList.toggle('selected',     plan === 'annual')
+  document.getElementById('planTriennial').classList.toggle('selected',  plan === 'triennial')
+  document.getElementById('planMonthly').classList.toggle('selected',    plan === 'monthly')
 }
 
 function nextMonthlyBirthday(dob, fromDate) {

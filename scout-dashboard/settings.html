@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Check if arriving from paywall (?checkout=annual or ?checkout=monthly)
     var params = new URLSearchParams(window.location.search)
     var plan   = params.get('checkout')
-    if (plan === 'annual' || plan === 'monthly') openStripeForm(plan)
+    if (plan === 'annual' || plan === 'monthly' || plan === 'triennial') openStripeForm(plan)
   })
 })
 
@@ -363,12 +363,13 @@ function renderSubCard(sub, child) {
       '<div><p class="settings-row-label">Subscribe now</p><p class="settings-row-sub">Keep Scout going after your trial ends.</p></div>' +
       '</div>' +
       '<div class="settings-row" style="flex-direction:column;gap:10px;align-items:stretch" data-gift-hide>' +
-      '<button class="btn btn-primary" onclick="openStripeForm(\'annual\')">Annual — $79.99 <span style="font-size:11px;opacity:.8;margin-left:4px">Recommended</span></button>' +
+      '<button class="btn btn-primary" onclick="openStripeForm(\'annual\')">Annual — $49.99 <span style="font-size:11px;opacity:.8;margin-left:4px">Recommended</span></button>' +
+      '<button class="btn btn-secondary" onclick="openStripeForm(\'triennial\')">Full Journey (3 yr) — $99.99</button>' +
       '<button class="btn btn-secondary" onclick="openStripeForm(\'monthly\')">Monthly — $9.99</button>' +
       '</div>'
 
   } else if (sub.status === 'active') {
-    if (sub.plan) html += subRow('Plan', sub.plan === 'annual' ? 'Annual ($79.99/year)' : 'Monthly ($9.99/month)')
+    if (sub.plan) html += subRow('Plan', sub.plan === 'annual' ? 'Annual ($49.99/year)' : sub.plan === 'triennial' ? 'Full Journey ($99.99/3 yr)' : 'Monthly ($9.99/month)')
     if (sub.period_end) {
       html += subRow('Next billing', new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }))
     }
@@ -379,7 +380,7 @@ function renderSubCard(sub, child) {
       '</div>'
 
   } else if (sub.status === 'cancelling') {
-    if (sub.plan) html += subRow('Plan', sub.plan === 'annual' ? 'Annual ($79.99/year)' : 'Monthly ($9.99/month)')
+    if (sub.plan) html += subRow('Plan', sub.plan === 'annual' ? 'Annual ($49.99/year)' : sub.plan === 'triennial' ? 'Full Journey ($99.99/3 yr)' : 'Monthly ($9.99/month)')
     if (sub.period_end) {
       var accessEnd = new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
       html += subRow('Access until', accessEnd)
@@ -423,7 +424,7 @@ function openStripeForm(plan) {
   var titleEl   = document.getElementById('stripeFormTitle')
   var refCode   = localStorage.getItem('scout_referral_code')
   var hasRef    = refCode && /^FRIEND-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(refCode.trim().toUpperCase())
-  var origAnnual   = 79.99, discAnnual   = (origAnnual   * 0.75).toFixed(2)
+  var origAnnual   = 49.99, discAnnual   = (origAnnual   * 0.75).toFixed(2)
   var origMonthly  = 9.99,  discMonthly  = (origMonthly  * 0.75).toFixed(2)
 
   if (hasRef) {
@@ -432,7 +433,9 @@ function openStripeForm(plan) {
       : 'Subscribe monthly — <span style="text-decoration:line-through;opacity:.45;font-weight:400">$' + origMonthly.toFixed(2) + '</span> <span style="color:#16A34A;font-weight:700">$' + discMonthly + '</span>/month'
   } else {
     titleEl.textContent = plan === 'annual'
-      ? 'Subscribe annually — $79.99/year'
+      ? 'Subscribe annually — $49.99/year'
+      : plan === 'triennial'
+      ? 'Full Journey (3 yr) — $99.99'
       : 'Subscribe monthly — $9.99/month'
   }
 
@@ -576,7 +579,7 @@ function removeReferralCode() {
   var titleEl = document.getElementById('stripeFormTitle')
   if (titleEl && _checkoutPlan) {
     titleEl.textContent = _checkoutPlan === 'annual'
-      ? 'Subscribe annually — $79.99/year'
+      ? 'Subscribe annually — $49.99/year'
       : 'Subscribe monthly — $9.99/month'
   }
 }
