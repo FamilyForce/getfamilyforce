@@ -820,7 +820,7 @@ function confirmCancelSub() {
     fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-cancel', {
       method:  'POST',
       headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ childId: child.id }),
+      body:    JSON.stringify({ childId: child.id, testMode: _testMode }),
     }).then(function (r) { return r.json() }).then(function (data) {
       if (data.ok) {
         closeCancelConfirm()
@@ -848,7 +848,7 @@ function reactivateSub() {
     fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-reactivate', {
       method:  'POST',
       headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ childId: child.id }),
+      body:    JSON.stringify({ childId: child.id, testMode: _testMode }),
     }).then(function (r) { return r.json() }).then(function (data) {
       if (data.ok) {
         ScoutDash.toast('Subscription reactivated! 🎉', 'success')

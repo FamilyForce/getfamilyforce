@@ -36,7 +36,9 @@ Deno.serve(async (req) => {
     const sbUrl     = Deno.env.get('SUPABASE_URL')!
     const sbService = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const sbAnon    = Deno.env.get('SUPABASE_ANON_KEY')!
-    const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')!
+    const body0      = await req.clone().json().catch(() => ({}))
+    const testMode0  = body0.testMode === true
+    const stripeKey  = (testMode0 ? Deno.env.get('STRIPE_SECRET_KEY_TEST') : Deno.env.get('STRIPE_SECRET_KEY'))!
 
     const sbUser = createClient(sbUrl, sbAnon, {
       global: { headers: { Authorization: authHeader } },
