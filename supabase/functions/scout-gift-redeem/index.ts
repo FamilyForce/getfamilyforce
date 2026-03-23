@@ -241,6 +241,7 @@ Deno.serve(async (req: Request) => {
       user_id:   userId,
       status:    'trialing',
       trial_end: trialEnd.toISOString(),
+      is_gift:   true,
     }, { onConflict: 'user_id' })
 
     // 8. Mark gift as redeemed

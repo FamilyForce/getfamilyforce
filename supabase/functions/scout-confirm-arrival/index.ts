@@ -98,18 +98,50 @@ Deno.serve(async (req: Request) => {
     const now = new Date()
     if (realDobDate > now) return err(400, 'realDob must be in the past — baby must already be born', step)
 
-    // 3. Load child — verify ownership and expecting status
+    // 3. Load child — verify ownership (or family member access) and expecting status
     step = 'load-child'
-    const { data: child, error: childErr } = await sb
+    let child: { id: string; name: string; dob: string | null; due_date: string | null; is_expecting: boolean; gender: string | null; user_id: string } | null = null
+
+    // 3a. Try direct ownership first
+    const { data: ownedChild, error: ownedErr } = await sb
       .from('children')
       .select('id, name, dob, due_date, is_expecting, gender, user_id')
       .eq('id', childId)
       .eq('user_id', userId)
       .single()
 
-    if (childErr || !child) return err(404, 'Child not found', step)
+    if (!ownedErr && ownedChild) {
+      child = ownedChild
+    } else {
+      // 3b. Check if caller is an active family member with access to this child
+      step = 'load-child-family'
+      const { data: familyRow } = await sb
+        .from('family_members')
+        .select('owner_user_id')
+        .eq('member_user_id', userId)
+        .eq('status', 'active')
+        .limit(20)
+
+      if (familyRow && familyRow.length > 0) {
+        const ownerIds = familyRow.map((r: { owner_user_id: string }) => r.owner_user_id)
+
+        const { data: sharedChild } = await sb
+          .from('children')
+          .select('id, name, dob, due_date, is_expecting, gender, user_id')
+          .eq('id', childId)
+          .in('user_id', ownerIds)
+          .single()
+
+        if (sharedChild) child = sharedChild
+      }
+    }
+
+    if (!child) return err(404, 'Child not found', step)
     if (!child.is_expecting) return err(400, 'Child is not in expecting mode — arrival already confirmed', step)
     if (!child.due_date)     return err(400, 'Child has no due date on record', step)
+
+    // All DB writes use the child's owner user_id, not the caller's (matters for family members)
+    const ownerUserId = child.user_id
 
     // 4. Validate realDob is plausible relative to due date
     //    Allow up to 17 weeks early (matches UI date picker: 120 days) and up to 4 weeks late
@@ -133,7 +165,7 @@ Deno.serve(async (req: Request) => {
         updated_at:   now.toISOString(),
       })
       .eq('id', childId)
-      .eq('user_id', userId)
+      .eq('user_id', ownerUserId)
 
     if (updateErr) throw new Error(`Failed to update child: ${updateErr.message}`)
 
@@ -149,20 +181,22 @@ Deno.serve(async (req: Request) => {
     // Load existing subscription to check for active gift
     const { data: existingSub } = await sb
       .from('scout_subscriptions')
-      .select('status, trial_end')
-      .eq('user_id', userId)
+      .select('status, trial_end, is_gift')
+      .eq('user_id', ownerUserId)
       .maybeSingle()
 
     const existingTrialEnd = existingSub?.trial_end ? new Date(existingSub.trial_end) : null
     // If the existing trial_end is further out than the recalculated one, it's a gift — keep it
     const finalTrialEnd = (existingTrialEnd && existingTrialEnd > trialEnd) ? existingTrialEnd : trialEnd
+    const isGift        = existingSub?.is_gift ?? false
 
     const { error: subErr } = await sb
       .from('scout_subscriptions')
       .upsert({
-        user_id:   userId,
+        user_id:   ownerUserId,
         status:    'trialing',
         trial_end: finalTrialEnd.toISOString(),
+        is_gift:   isGift,
       }, { onConflict: 'user_id' })
 
     if (subErr) throw new Error(`Failed to update subscription: ${subErr.message}`)
@@ -174,7 +208,7 @@ Deno.serve(async (req: Request) => {
     step = 'log-event'
     try {
       await sb.from('scout_events').insert({
-        user_id:    userId,
+        user_id:    ownerUserId,
         child_id:   childId,
         event_type: 'birth_confirmed',
         properties: {
@@ -184,6 +218,7 @@ Deno.serve(async (req: Request) => {
           trial_end:                 finalTrialEnd.toISOString(),
           days_until_first_birthday: daysUntilEnd,
           duration_ms:               Date.now() - jobStart,
+          ...(userId !== ownerUserId ? { confirmed_by_family_member: userId } : {}),
         },
       })
     } catch (logErr) {
@@ -200,7 +235,7 @@ Deno.serve(async (req: Request) => {
       type:   'INSERT',
       table:  'scout_subscriptions',
       record: {
-        user_id:      userId,
+        user_id:      ownerUserId,
         status:       'trialing',
         trial_end:    finalTrialEnd.toISOString(),
         birth_signup: true,           // tells signup-delivery to use digest_type 'birth_signup'
@@ -216,7 +251,7 @@ Deno.serve(async (req: Request) => {
       body: JSON.stringify(deliveryPayload),
     }).catch(e => {
       console.error('[scout-confirm-arrival] Failed to trigger signup delivery:', e.message)
-      telegramAlert(`Failed to trigger post-birth digest for user ${userId}: ${e.message}`)
+      telegramAlert(`Failed to trigger post-birth digest for user ${ownerUserId}: ${e.message}`)
     })
 
     // 10. Gifter notification — if a scout_gift was redeemed for this child, notify the buyer
@@ -301,7 +336,7 @@ Deno.serve(async (req: Request) => {
         if (notifyRes.ok) {
           const notifyData = await notifyRes.json()
           await sb.from('prebirth_email_log').insert({
-            user_id: userId, child_id: childId, email_type: 'gifter_notify',
+            user_id: ownerUserId, child_id: childId, email_type: 'gifter_notify',
           }).then(() => {})  // ignore if already exists
           console.log(`[scout-confirm-arrival] Gifter notification sent to ${gift.buyer_email} (msg ${notifyData.id})`)
         } else {
@@ -320,7 +355,7 @@ Deno.serve(async (req: Request) => {
       const { data: familyMembers } = await sb
         .from('family_members')
         .select('member_user_id')
-        .eq('owner_user_id', userId)
+        .eq('owner_user_id', ownerUserId)
         .eq('child_id', childId)
         .eq('status', 'active')
 
@@ -334,14 +369,16 @@ Deno.serve(async (req: Request) => {
           month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
         })
 
-        // Fetch account owner's name for the "from" context
-        const { data: ownerProfile } = await sb.from('profiles').select('name').eq('id', userId).maybeSingle()
-        const ownerName = ownerProfile?.name?.trim() || 'Your family'
+        // Use the confirmer's name (family member who triggered confirmation, or the owner if self-confirmed)
+        const confirmerProfileId = userId !== ownerUserId ? userId : ownerUserId
+        const { data: confirmerProfile } = await sb.from('profiles').select('name').eq('id', confirmerProfileId).maybeSingle()
+        const ownerName = confirmerProfile?.name?.trim() || 'Your family'
 
         for (const member of familyMembers) {
           try {
             const memberId = member.member_user_id
             if (!memberId) continue
+            if (memberId === userId) continue  // skip whoever confirmed — they already know
 
             const { data: { user: memberUser } } = await sb.auth.admin.getUserById(memberId)
             if (!memberUser?.email) continue
@@ -401,8 +438,77 @@ Deno.serve(async (req: Request) => {
       console.warn('[scout-confirm-arrival] Family notify error (non-fatal):', familyErr)
     }
 
-    console.log(`[scout-confirm-arrival] Birth confirmed for user ${userId}, child ${childId} (dob=${realDob}, trialEnd=${finalTrialEnd.toISOString().split('T')[0]})`)
-    await telegramAlert(`🍼 Birth confirmed — user ${userId}, ${child.name} born ${realDob} (due ${child.due_date})`)
+    // 12. Notify the account owner when a family member confirmed (owner wasn't in the loop above)
+    if (userId !== ownerUserId) {
+      step = 'owner-notify'
+      try {
+        const { data: { user: ownerUser } } = await sb.auth.admin.getUserById(ownerUserId)
+        if (ownerUser?.email) {
+          const resendApiKey = Deno.env.get('RESEND_API_KEY')!
+          const fromName     = Deno.env.get('RESEND_FROM_NAME')  ?? 'FamilyForce Scout'
+          const fromEmail    = Deno.env.get('RESEND_FROM_EMAIL') ?? 'scout@getfamilyforce.com'
+          const siteUrl      = Deno.env.get('SITE_URL')          ?? 'https://getfamilyforce.com'
+          const dashUrl      = `${siteUrl}/scout-dashboard.html`
+          const dobFmt       = new Date(realDob + 'T00:00:00Z').toLocaleDateString('en-US', {
+            month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+          })
+
+          const { data: ownerProfile }     = await sb.from('profiles').select('name').eq('id', ownerUserId).maybeSingle()
+          const { data: confirmerProfile } = await sb.from('profiles').select('name').eq('id', userId).maybeSingle()
+          const ownerGreet     = ownerProfile?.name?.trim() ? `Hi ${ownerProfile.name.trim()},` : 'Hi there,'
+          const confirmerLabel = confirmerProfile?.name?.trim() || 'A family member'
+
+          const ownerHtml = `<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>body{margin:0;padding:0;background:#F7F5FF;font-family:Arial,sans-serif}</style>
+</head><body>
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#F7F5FF;padding:32px 16px">
+  <tr><td align="center">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;border-radius:20px;overflow:hidden;border:1px solid #E8E4F5">
+      <tr><td style="background:#2D1B69;padding:32px 36px 28px">
+        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.5);margin:0 0 16px">Scout by FamilyForce</p>
+        <p style="font-family:Georgia,serif;font-size:30px;color:#fff;margin:0 0 8px;line-height:1.2">${child.name} has arrived. 🎉</p>
+        <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.65);margin:0">Born ${dobFmt}</p>
+      </td></tr>
+      <tr><td style="background:#fff;padding:28px 36px 32px">
+        <p style="font-family:Arial,sans-serif;font-size:15px;color:#1D1D1F;margin:0 0 12px;font-weight:600">${ownerGreet}</p>
+        <p style="font-family:Arial,sans-serif;font-size:15px;color:#5C5960;margin:0 0 16px;line-height:1.75"><strong>${confirmerLabel}</strong> confirmed that <strong>${child.name}</strong> arrived on <strong>${dobFmt}</strong>. Scout is now tracking ${child.name}'s development.</p>
+        <p style="font-family:Arial,sans-serif;font-size:15px;color:#5C5960;margin:0 0 24px;line-height:1.75">You'll receive your first monthly Scout digest on ${child.name}'s first monthly birthday.</p>
+        <a href="${dashUrl}" style="display:inline-block;background:#6E4ED6;color:#fff;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:14px 28px;border-radius:100px;text-decoration:none">View Dashboard →</a>
+      </td></tr>
+      <tr><td style="background:#F7F5FF;padding:20px 36px;text-align:center">
+        <p style="font-family:Arial,sans-serif;font-size:12px;color:#8A879A;margin:0">FamilyForce · ${siteUrl}</p>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>
+</body></html>`
+
+          await fetch('https://api.resend.com/emails', {
+            method:  'POST',
+            headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              from:    `${fromName} <${fromEmail}>`,
+              to:      [ownerUser.email],
+              subject: `${child.name} has arrived! 🎉`,
+              html:    ownerHtml,
+              tags:    [
+                { name: 'type',     value: 'owner_birth_notify' },
+                { name: 'child_id', value: childId },
+              ],
+            }),
+          })
+          console.log(`[scout-confirm-arrival] Owner notified at ${ownerUser.email} — confirmed by family member ${userId}`)
+        }
+      } catch (ownerNotifyErr) {
+        // Non-critical
+        console.warn('[scout-confirm-arrival] Owner notify error (non-fatal):', ownerNotifyErr)
+      }
+    }
+
+    const confirmedByNote = userId !== ownerUserId ? ` (confirmed by family member ${userId})` : ''
+    console.log(`[scout-confirm-arrival] Birth confirmed for user ${ownerUserId}, child ${childId} (dob=${realDob}, trialEnd=${finalTrialEnd.toISOString().split('T')[0]})${confirmedByNote}`)
+    await telegramAlert(`🍼 Birth confirmed — user ${ownerUserId}, ${child.name} born ${realDob} (due ${child.due_date})${confirmedByNote}`)
 
     return new Response(JSON.stringify({
       ok:           true,
