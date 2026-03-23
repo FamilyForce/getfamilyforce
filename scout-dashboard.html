@@ -477,7 +477,7 @@ function renderHome(child, sub) {
           '<p class="welcome-card-title">' + (ageM === 0 ? name + ' was just born! 🎉 Here\'s where to start.' : name + ' is ' + ageM + ' month' + (ageM === 1 ? '' : 's') + ' old. Here\'s where to start.') + '</p>' +
           '<p class="welcome-card-text">' + (function() {
             var _cl = sections.closing.filter(function(w){return w._sectionTag !== 'overdue'}).length
-            return _cl > 0 ? '<strong>' + _cl + ' window' + (_cl === 1 ? '' : 's') + ' are closing this month</strong> \u2014 start there. ' : ''
+            return _cl > 0 ? '<strong>' + _cl + ' window' + (_cl === 1 ? '' : 's') + ' ' + (_cl === 1 ? 'is' : 'are') + ' closing this month</strong> \u2014 start there. ' : ''
           })() + 'Tap any window to see what to do and mark your progress.</p>' +
           '</div>'
         var progressWrap = document.querySelector('.progress-bar-wrap')
