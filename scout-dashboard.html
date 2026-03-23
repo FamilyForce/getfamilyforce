@@ -848,9 +848,9 @@ function openArrivalModal() {
   title.textContent = '🎉 ' + name + ' is here!'
   sub.textContent   = 'Enter the actual date of birth to start tracking ' + name + '\'s development.'
 
-  // Pre-fill with due date, allow ± a few weeks around it
+  // Pre-fill with due date; allow up to 4 months before due date (covers premature births)
   if (dueDate) input.value = dueDate
-  var minD = new Date(dueDate + 'T00:00:00Z'); minD.setDate(minD.getDate() - 28)
+  var minD = new Date(dueDate + 'T00:00:00Z'); minD.setDate(minD.getDate() - 120)
   var maxD = new Date()
   input.setAttribute('min', minD.toISOString().split('T')[0])
   input.setAttribute('max', maxD.toISOString().split('T')[0])
