@@ -152,8 +152,11 @@ Deno.serve(async (req: Request) => {
     const months      = ageInMonths(childDob, now)
     // birth_signup = true when called from scout-confirm-arrival (post-birth first digest).
     // Uses digest_type 'birth_signup' so it never collides with the pre-birth 'signup' log entry.
+    // conversion = true when called from scout-convert after trial-to-paid upgrade.
+    // Uses digest_type 'conversion' so it doesn't collide with the trial 'signup' log entry.
     const birthSignup  = record.birth_signup  === true
-    const digestType   = birthSignup ? 'birth_signup' : 'signup'
+    const isConversion = record.is_conversion === true
+    const digestType   = birthSignup ? 'birth_signup' : isConversion ? 'conversion' : 'signup'
 
     // 4. Check deduplication — per user+child+type+month
     step = 'dedup-check'

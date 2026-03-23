@@ -427,14 +427,14 @@ Deno.serve(async (req: Request) => {
         }).catch(() => { /* non-blocking */ })
       }
 
-      // Fire digest for this child
+      // Fire conversion digest (signup-delivery with is_conversion=true → "thanks for continuing" copy + .ics)
       step = 'trigger-digest'
       const supabaseUrl = Deno.env.get('SUPABASE_URL')!
       const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-      fetch(`${supabaseUrl}/functions/v1/scout-digest`, {
+      fetch(`${supabaseUrl}/functions/v1/scout-signup-delivery`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${serviceKey}` },
-        body: JSON.stringify({ userId: user.id, childId }),
+        body: JSON.stringify({ userId: user.id, childId, is_conversion: true }),
       }).catch(e => console.error('[scout-convert] digest trigger failed:', e.message))
 
       await telegramAlert(`🎉 Additional child subscription: user=${user.email}, child=${child.name}, plan=${plan}, bonus=${bonusEligible}`)
@@ -600,15 +600,15 @@ Deno.serve(async (req: Request) => {
       }).catch(() => { /* non-blocking */ })
     }
 
-    // Fire digest immediately (scout-digest has monthly dedup so double-fire from
-    // invoice.paid webhook is safe — second call will be a no-op)
+    // Fire conversion digest (signup-delivery with is_conversion=true → "thanks for continuing" copy + .ics)
+    // Dedup: uses digest_type='conversion' so it never collides with the original trial 'signup' digest
     step = 'trigger-digest'
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
     const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-    fetch(`${supabaseUrl}/functions/v1/scout-digest`, {
+    fetch(`${supabaseUrl}/functions/v1/scout-signup-delivery`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${serviceKey}` },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ userId: user.id, is_conversion: true }),
     }).catch(e => console.error('[scout-convert] digest trigger failed:', e.message))
 
     // Notify admin

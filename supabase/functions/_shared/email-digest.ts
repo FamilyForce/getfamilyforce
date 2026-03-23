@@ -41,7 +41,7 @@ export interface DigestEmailOptions {
   dashboardUrl:    string
   siteUrl:         string
   userId:              string
-  digestType:          'signup' | 'monthly' | 'birth_signup'
+  digestType:          'signup' | 'monthly' | 'birth_signup' | 'conversion'
   isExpecting?:        boolean   // true = expecting parent, pre-birth digest
   postBirthWindowCount?: number  // total post-birth windows — shown in pre-birth tease copy
   unsubscribeUrl?:     string    // family member one-click unsubscribe URL (omit for account owner)
@@ -205,8 +205,10 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `Scout is designed for when your baby is born — covering every developmental milestone through the first three years. The ${postBirthWindowCount} windows we track all start at birth. But we wanted to be helpful before ${childName} arrives too, so below are a few things worth sorting now. It's not an exhaustive list — just the things that are genuinely easier to do before a newborn is in the room.`
     : digestType === 'birth_signup'
     ? `${childName} is here. And there are ${allWindowCount} developmental windows open in the first month. That can feel like a lot — and honestly, it is. But that's exactly why Scout exists. We'll make sure you don't miss any of them. Let's nail the first month together.`
-    : digestType === 'signup'
+    : digestType === 'conversion'
     ? `Thanks for continuing. This is ${childName}'s Scout digest for month ${ageMonths} — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now. I wish I'd had this with my first son.`
+    : digestType === 'signup'
+    ? `This is ${childName}'s first Scout digest. It's the beginning of something that I wish I'd had with my first son — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now.`
     : `${childName} is ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'} old. This is ${his} Scout digest for the month — a quick look at what's worth your attention right now, written to take about 5 minutes to read.`
 
   // Milestone context line (warm, not alarming)
@@ -578,7 +580,7 @@ export function buildDigestSubject(
   ageMonths:  number,
   aboveFold:  DigestWindow[],
   ageWeeks:   number,
-  digestType: 'signup' | 'birth_signup' | 'monthly' = 'monthly'
+  digestType: 'signup' | 'birth_signup' | 'monthly' | 'conversion' = 'monthly'
 ): string {
   const closing = aboveFold.filter(w => w.close_age_weeks - ageWeeks <= 4)
 
@@ -586,8 +588,12 @@ export function buildDigestSubject(
     return `${childName} is here — and so is your first Scout digest 🎉`
   }
 
-  if (digestType === 'signup') {
+  if (digestType === 'conversion') {
     return `You're subscribed — ${childName}'s full digest is here 🎉`
+  }
+
+  if (digestType === 'signup') {
+    return `${childName}'s first Scout digest is here 🎉`
   }
 
   if (closing.length > 0) {
