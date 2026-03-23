@@ -512,13 +512,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
             </div>
             <div class="form-field" style="margin-bottom:0">
               <label class="form-label" for="deliverTime">Delivery time</label>
-              <select class="form-input" id="deliverTime">
-                <option value="08:00">8:00 AM</option>
-                <option value="09:00" selected>9:00 AM</option>
-                <option value="12:00">12:00 PM (noon)</option>
-                <option value="17:00">5:00 PM</option>
-                <option value="19:00">7:00 PM</option>
-              </select>
+              <select class="form-input" id="deliverTime"></select>
             </div>
           </div>
           <p class="form-hint" style="margin-top:8px" id="schedHint">💡 Set it for the day of the baby shower. Your gift code will be in your confirmation email in case you need to share it early.</p>
@@ -864,21 +858,25 @@ function initScheduleTimezone() {
     tzAbbr = parts[parts.length - 1] || 'local time'
   } catch(e) {}
 
-  // Rewrite each option's display text from UTC hour → local time
+  // Build all 24 hourly options in UTC, display in user's local time
   var select = document.getElementById('deliverTime')
   if (select) {
-    select.querySelectorAll('option').forEach(function(opt) {
-      var utcParts = opt.value.split(':')
+    select.innerHTML = ''
+    for (var h = 0; h < 24; h++) {
+      var opt = document.createElement('option')
+      var utcHH = (h < 10 ? '0' : '') + h + ':00'
+      opt.value = utcHH
       var d = new Date()
-      d.setUTCHours(parseInt(utcParts[0], 10), parseInt(utcParts[1], 10), 0, 0)
+      d.setUTCHours(h, 0, 0, 0)
       opt.textContent = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', hour12: true })
-    })
+      select.appendChild(opt)
+    }
     // Default selection: pick the option whose local time is closest to 9 AM
     var nineAm = new Date(); nineAm.setHours(9, 0, 0, 0)
     var best = null, bestDiff = Infinity
     select.querySelectorAll('option').forEach(function(opt) {
       var utcParts = opt.value.split(':')
-      var d = new Date(); d.setUTCHours(parseInt(utcParts[0], 10), parseInt(utcParts[1], 10), 0, 0)
+      var d = new Date(); d.setUTCHours(parseInt(utcParts[0], 10), 0, 0, 0)
       var diff = Math.abs(d - nineAm)
       if (diff < bestDiff) { bestDiff = diff; best = opt }
     })
