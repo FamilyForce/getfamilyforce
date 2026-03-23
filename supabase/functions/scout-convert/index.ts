@@ -458,7 +458,7 @@ Deno.serve(async (req: Request) => {
         customer:                          customerId!,
         'items[0][price]':                 priceId,
         trial_end:                         trialEndUnix,
-        ...(appliedCoupon ? { coupon: appliedCoupon } : {}),
+        ...(appliedCoupon ? { 'discounts[0][coupon]': appliedCoupon } : {}),
         'payment_settings[save_default_payment_method]': 'on_subscription',
         'metadata[supabase_user_id]':      user.id,
         'metadata[child_id]':              childId,
@@ -705,7 +705,7 @@ Deno.serve(async (req: Request) => {
     const subscription = await stripeReq(stripeKey, 'POST', '/subscriptions', {
       customer:          customerId!,
       'items[0][price]': priceId,
-      ...(appliedCoupon ? { coupon: appliedCoupon } : {}),
+      ...(appliedCoupon ? { 'discounts[0][coupon]': appliedCoupon } : {}),
       'payment_settings[save_default_payment_method]': 'on_subscription',
       'metadata[supabase_user_id]': user.id,
       'metadata[plan]':             plan,
