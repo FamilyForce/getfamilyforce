@@ -3756,7 +3756,7 @@ If your 2 year old has no interest in utensils at all, it is worth noting at the
 
 ## `nutrition-juice-limit`
 **Title:** Limit juice, none under 12 months, max 4 oz after
-**Open:** Week 0 | **Peak:** Week 52 | **Close:** Week 104
+**Open:** Week 52 | **Peak:** Week 60 | **Close:** Week 104
 **Type:** reminder
 **Urgency:** advisory | **Priority:** 3
 
