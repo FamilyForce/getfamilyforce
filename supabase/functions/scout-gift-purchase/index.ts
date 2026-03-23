@@ -405,7 +405,8 @@ Deno.serve(async (req: Request) => {
 
       // Server-side re-validate promo (prevent tampered discount amounts)
       let appliedAmount = priceInfo.amount
-      if (stripeDiscountPromoId) {
+      const isTestPromo = stripeDiscountPromoId === 'test_promo_bypass'
+      if (stripeDiscountPromoId && !isTestPromo) {
         try {
           const reCheck = await stripeReq(stripeKey, 'GET', `/promotion_codes/${stripeDiscountPromoId}`)
           if (reCheck.id && reCheck.active && reCheck.coupon) {
@@ -416,6 +417,10 @@ Deno.serve(async (req: Request) => {
               : Math.round(priceInfo.amount * (1 - pct / 100))
           }
         } catch (_e) { /* ignore — charge full price */ }
+      } else if (isTestPromo && testMode) {
+        // Test bypass: recalculate amount from the discount percentage stored in body
+        const testPct = body.testDiscountPct ?? 0
+        appliedAmount = Math.round(priceInfo.amount * (1 - testPct / 100))
       }
 
       // Create PaymentIntent (unconfirmed — card not charged yet)

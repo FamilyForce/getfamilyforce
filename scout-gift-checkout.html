@@ -1040,6 +1040,9 @@ function submitGift() {
       action: 'create-intent', buyerName, buyerEmail,
       recipientName: recipName, recipientEmail: recipEmail, plan: selectedPlan,
       stripeDiscountPromoId: appliedPromo ? appliedPromo.stripePromoId : undefined,
+      testDiscountPct: (appliedPromo && appliedPromo.stripePromoId === 'test_promo_bypass')
+        ? Math.round((1 - appliedPromo.discountedAmount / appliedPromo.originalAmount) * 100)
+        : undefined,
       testMode: TEST_MODE,
     }),
   })
