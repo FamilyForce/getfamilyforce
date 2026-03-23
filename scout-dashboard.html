@@ -471,7 +471,7 @@ function renderHome(child, sub) {
       if (!hasActions) {
         var welcomeHtml =
           '<div class="welcome-card">' +
-          '<p class="welcome-card-title">' + name + ' is ' + ageM + ' month' + (ageM === 1 ? '' : 's') + ' old. Here\'s where to start.</p>' +
+          '<p class="welcome-card-title">' + (ageM === 0 ? name + ' was just born! 🎉 Here\'s where to start.' : name + ' is ' + ageM + ' month' + (ageM === 1 ? '' : 's') + ' old. Here\'s where to start.') + '</p>' +
           '<p class="welcome-card-text">' + (function() {
             var _cl = sections.closing.filter(function(w){return w._sectionTag !== 'overdue'}).length
             return _cl > 0 ? '<strong>' + _cl + ' window' + (_cl === 1 ? '' : 's') + ' are closing this month</strong> \u2014 start there. ' : ''
@@ -549,7 +549,7 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
   if (countLine) {
     countLine.textContent = totalOpen > 5
       ? 'Scout highlighted ' + pickedCount + ' in this month\'s digest · ' + totalOpen + ' total open'
-      : totalOpen + ' window' + (totalOpen === 1 ? '' : 's') + ' open this month · ' + ageM + ' month' + (ageM === 1 ? '' : 's') + ' old'
+      : totalOpen + ' window' + (totalOpen === 1 ? '' : 's') + ' open this month · ' + (ageM === 0 ? 'just born 🎉' : ageM + ' month' + (ageM === 1 ? '' : 's') + ' old')
   }
 
   var html = ''
