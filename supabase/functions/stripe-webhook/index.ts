@@ -88,7 +88,7 @@ function trialEndingSoonEmail(email: string, daysLeft: number): string {
             <p style="font-size:36px;margin:0 0 16px">🌱</p>
             <h1 style="font-size:24px;font-weight:800;color:#1A1523;margin:0 0 12px;letter-spacing:-0.02em">Your free year ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'}</h1>
             <p style="font-size:15px;color:#4A4560;line-height:1.6;margin:0 0 24px">You've been using Scout to track every developmental window for your child. We hope it's made the year a little clearer.</p>
-            <p style="font-size:15px;color:#4A4560;line-height:1.6;margin:0 0 32px">To keep going, add a payment method before your free year ends. Scout renews at <strong>$79.99/year</strong> — less than $7/month.</p>
+            <p style="font-size:15px;color:#4A4560;line-height:1.6;margin:0 0 32px">To keep going, add a payment method before your free year ends. Scout renews at <strong>$49.99/year</strong> — less than $5/month.</p>
             <table cellpadding="0" cellspacing="0" border="0" style="margin-bottom:32px">
               <tr>
                 <td align="center" style="background-color:#6E4ED6;border-radius:100px;padding:14px 32px">

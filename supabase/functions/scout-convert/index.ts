@@ -439,7 +439,7 @@ Deno.serve(async (req: Request) => {
       const { data: profileA } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
       const userNameA   = profileA?.name ?? user.email.split('@')[0]
       const billingDate = trialEnd.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
-      const planAmtA    = plan === 'annual' ? '$49.99' : '$4.99'
+      const planAmtA    = plan === 'annual' ? '$49.99' : '$9.99'
       if (resendKeyA) {
         try {
           await sendEmail(resendKeyA, user.email,
@@ -614,7 +614,7 @@ Deno.serve(async (req: Request) => {
       try {
         const { data: profileB } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
         const userNameB   = profileB?.name ?? user.email.split('@')[0]
-        let   chargedDisplay = plan === 'annual' ? '$49.99' : '$4.99'  // fallback
+        let   chargedDisplay = plan === 'annual' ? '$49.99' : '$9.99'  // fallback
         if (subscription.latest_invoice) {
           try {
             const invoice    = await stripeReq(stripeKey, 'GET', `/invoices/${subscription.latest_invoice}`)

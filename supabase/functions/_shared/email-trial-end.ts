@@ -18,9 +18,11 @@
 export type TrialEndWindow = { title: string; why_it_matters: string; urgency: string }
 export type ReengagementWindow = { title: string; why_it_matters: string; what_to_do: string }
 
-const PRICE_ANNUAL_DISPLAY  = '$79.99/year'
-const PRICE_ANNUAL_MONTHLY  = '$6.67/month'
-const PRICE_MONTHLY_DISPLAY = '$9.99/month'
+const PRICE_ANNUAL_DISPLAY    = '$49.99/year'
+const PRICE_ANNUAL_MONTHLY    = '$4.17/month'
+const PRICE_TRIENNIAL_DISPLAY = '$99.99 for 3 years'
+const PRICE_TRIENNIAL_MONTHLY = '$2.78/month'
+const PRICE_MONTHLY_DISPLAY   = '$9.99/month'
 
 // ─── Pronoun helper ───────────────────────────────────────────────────────────
 function pronoun(gender: string | null, form: 'subject' | 'object' | 'possess'): string {
@@ -70,12 +72,13 @@ export function buildTrialEndEmail(opts: {
   allWindowCount:  number
   topWindows:      Array<{ title: string; why_it_matters: string; what_to_do?: string; urgency: string }>
   annualCta:       string
+  triennialCta:    string
   monthlyCta:      string
   siteUrl:         string
   userId:          string
 }): string {
   const { childName, parentName, ageMonths, weeksSinceJoin,
-          allWindowCount, topWindows, annualCta, monthlyCta, siteUrl, userId } = opts
+          allWindowCount, topWindows, annualCta, triennialCta, monthlyCta, siteUrl, userId } = opts
 
   const greeting = parentName ? `Hi ${parentName},` : 'Hi there,'
   const isFirstBirthday = ageMonths === 12
@@ -190,11 +193,25 @@ ${windowCards}
   <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terra};border-radius:16px">
     <tr><td style="padding:24px">
       <span style="display:inline-block;background:rgba(255,255,255,.2);color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase">Best value</span>
-      <p style="font-family:Arial,sans-serif;font-size:20px;font-weight:700;color:#fff;margin:12px 0 4px">Annual -- ${PRICE_ANNUAL_DISPLAY}</p>
-      <p style="font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.8);margin:0 0 20px">That's ${PRICE_ANNUAL_MONTHLY}. Covers ${childName} from today through the next 12 months. One payment.</p>
+      <p style="font-family:Arial,sans-serif;font-size:20px;font-weight:700;color:#fff;margin:12px 0 4px">Annual — ${PRICE_ANNUAL_DISPLAY}</p>
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.8);margin:0 0 20px">That's ${PRICE_ANNUAL_MONTHLY}. Covers ${childName} for the next 12 months. One payment.</p>
       <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${annualCta}" style="height:44px;v-text-anchor:middle;width:260px;" arcsize="50%" stroke="f" fillcolor="#FFFFFF"><w:anchorlock/><center style="color:#5B3CC4;font-family:Arial,sans-serif;font-size:15px;font-weight:700;">Continue with Annual &rarr;</center></v:roundrect><![endif]-->
       <!--[if !mso]><!-->
       <a href="${annualCta}" style="display:block;text-align:center;background:#fff;color:#5B3CC4;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:14px;border-radius:100px;text-decoration:none;mso-hide:all">Continue with Annual &rarr;</a>
+      <!--<![endif]-->
+    </td></tr>
+  </table>
+</td></tr>
+
+<!-- 3-Year (Full Journey) -->
+<tr><td style="padding-bottom:10px">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1.5px solid ${C.border};border-radius:14px">
+    <tr><td style="padding:20px">
+      <p style="font-family:Arial,sans-serif;font-size:18px;font-weight:700;color:${C.text};margin:0 0 2px">3 Years (Full Journey) — ${PRICE_TRIENNIAL_DISPLAY}</p>
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textDim};margin:0 0 16px">That's ${PRICE_TRIENNIAL_MONTHLY}. Covers ${childName} from birth through age 3. One payment, nothing to manage.</p>
+      <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${triennialCta}" style="height:40px;v-text-anchor:middle;width:220px;" arcsize="50%" stroke="t" strokecolor="#C4B5FD" fillcolor="#F0EBFF"><w:anchorlock/><center style="color:#5B3CC4;font-family:Arial,sans-serif;font-size:14px;font-weight:600;">Full Journey &rarr;</center></v:roundrect><![endif]-->
+      <!--[if !mso]><!-->
+      <a href="${triennialCta}" style="display:block;text-align:center;background:${C.terraTint};color:#5B3CC4;font-family:Arial,sans-serif;font-size:14px;font-weight:600;padding:12px;border-radius:100px;text-decoration:none;mso-hide:all">Full Journey →</a>
       <!--<![endif]-->
     </td></tr>
   </table>
@@ -204,11 +221,11 @@ ${windowCards}
 <tr><td style="padding-bottom:32px">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1.5px solid ${C.border};border-radius:14px">
     <tr><td style="padding:20px">
-      <p style="font-family:Arial,sans-serif;font-size:18px;font-weight:700;color:${C.text};margin:0 0 4px">Monthly -- ${PRICE_MONTHLY_DISPLAY}</p>
+      <p style="font-family:Arial,sans-serif;font-size:18px;font-weight:700;color:${C.text};margin:0 0 4px">Monthly — ${PRICE_MONTHLY_DISPLAY}</p>
       <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textDim};margin:0 0 16px">Cancel any time.</p>
       <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${monthlyCta}" style="height:40px;v-text-anchor:middle;width:220px;" arcsize="50%" stroke="t" strokecolor="#C4B5FD" fillcolor="#F0EBFF"><w:anchorlock/><center style="color:#5B3CC4;font-family:Arial,sans-serif;font-size:14px;font-weight:600;">Monthly instead &rarr;</center></v:roundrect><![endif]-->
       <!--[if !mso]><!-->
-      <a href="${monthlyCta}" style="display:block;text-align:center;background:${C.terraTint};color:#5B3CC4;font-family:Arial,sans-serif;font-size:14px;font-weight:600;padding:12px;border-radius:100px;text-decoration:none;mso-hide:all">Monthly instead &rarr;</a>
+      <a href="${monthlyCta}" style="display:block;text-align:center;background:${C.terraTint};color:#5B3CC4;font-family:Arial,sans-serif;font-size:14px;font-weight:600;padding:12px;border-radius:100px;text-decoration:none;mso-hide:all">Monthly instead →</a>
       <!--<![endif]-->
     </td></tr>
   </table>
@@ -346,7 +363,7 @@ ${windowCard}
 <!-- CTA -->
 <tr><td style="padding-bottom:32px;text-align:center">
   <a href="${subscribeCta}" style="display:inline-block;background:${C_RE.terra};color:#fff;font-family:Arial,sans-serif;font-size:14px;font-weight:700;padding:13px 30px;border-radius:100px;text-decoration:none">See ${childName}'s ${nextMonth}-month windows &rarr;</a>
-  <p style="font-family:Arial,sans-serif;font-size:12px;color:${C_RE.textDim};margin:10px 0 0">$9.99/month or $79.99/year. Annual saves 33%.</p>
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:${C_RE.textDim};margin:10px 0 0">$9.99/month · $49.99/year · $99.99 for 3 years (Full Journey).</p>
 </td></tr>
 
 <!-- Sign-off -->

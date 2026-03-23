@@ -171,8 +171,9 @@ Deno.serve(async (req: Request) => {
       const wks        = weeksSince(signupDate, now)
 
       // 8. Build CTA URLs — go to sign-in.html with plan pre-selected
-      const annualCta  = `${siteUrl}/sign-in.html?intent=subscribe&plan=annual`
-      const monthlyCta = `${siteUrl}/sign-in.html?intent=subscribe&plan=monthly`
+      const annualCta    = `${siteUrl}/sign-in.html?intent=subscribe&plan=annual`
+      const triennialCta = `${siteUrl}/sign-in.html?intent=subscribe&plan=triennial`
+      const monthlyCta   = `${siteUrl}/sign-in.html?intent=subscribe&plan=monthly`
 
       // 9. Build email
       const { data: teProfileData } = await sb.from('profiles').select('name').eq('id', userId).maybeSingle()
@@ -190,6 +191,7 @@ Deno.serve(async (req: Request) => {
         allWindowCount,
         topWindows,
         annualCta,
+        triennialCta,
         monthlyCta,
         siteUrl,
         userId,
