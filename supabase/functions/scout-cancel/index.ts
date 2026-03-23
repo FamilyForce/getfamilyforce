@@ -177,7 +177,7 @@ Deno.serve(async (req) => {
       const { data: authRow } = await sb.from('auth.users' as any).select('email').eq('id', user.id).maybeSingle().catch(() => ({ data: null }))
       userEmail = (authRow as any)?.email ?? ''
     }
-    const { data: profile } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle().catch(() => ({ data: null }))
+    const { data: profile } = await sb.from('profiles').select('name').eq('id', user.id).maybeSingle()
     const userName  = (profile as any)?.name ?? userEmail.split('@')[0]
     console.log('[scout-cancel] userEmail=', userEmail, 'resendKey present=', !!resendKey)
 
