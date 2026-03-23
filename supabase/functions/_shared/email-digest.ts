@@ -578,12 +578,12 @@ export function buildDigestSubject(
   ageMonths:  number,
   aboveFold:  DigestWindow[],
   ageWeeks:   number,
-  digestType: 'signup' | 'monthly' = 'monthly'
+  digestType: 'signup' | 'birth_signup' | 'monthly' = 'monthly'
 ): string {
   const closing = aboveFold.filter(w => w.close_age_weeks - ageWeeks <= 4)
 
   if (digestType === 'birth_signup') {
-    return `${childName} is here — let's nail month one 🎉`
+    return `${childName} is here — and so is your first Scout digest 🎉`
   }
 
   if (digestType === 'signup') {

@@ -231,7 +231,7 @@ Deno.serve(async (req: Request) => {
     // For expecting parents (negative months), use a pre-birth subject line
     const subjectLine = isExpecting
       ? `${child.name}'s arrival is coming — here's how to prepare`
-      : buildDigestSubject(child.name, months, aboveFold, weeks)
+      : buildDigestSubject(child.name, months, aboveFold, weeks, digestType)
     const closingCount = aboveFold.filter(w => w.close_age_weeks - weeks <= 4).length
 
     // 6b. Determine the next birthday for the ICS + email footer.
