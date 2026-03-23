@@ -198,6 +198,7 @@
           var item = document.createElement('div')
           item.className = 'child-dropdown-item' + (c.id === _child.id ? ' active' : '')
           item.textContent = c.name
+          item.addEventListener('touchstart', function (e) { e.stopPropagation() }, { passive: true })
           item.addEventListener('click', function () {
             _child = c
             localStorage.setItem('scout_active_child_id', c.id)
@@ -208,6 +209,7 @@
         var addItem = document.createElement('div')
         addItem.className = 'child-dropdown-item add'
         addItem.textContent = '+ Add a child'
+        addItem.addEventListener('touchstart', function (e) { e.stopPropagation() }, { passive: true })
         addItem.addEventListener('click', function () {
           window.location.href = '/scout-dashboard/child.html'
         })
@@ -245,6 +247,7 @@
           var item = document.createElement('div')
           item.className = 'child-dropdown-item' + (c.id === _child.id ? ' active' : '')
           item.textContent = c.name
+          item.addEventListener('touchstart', function (e) { e.stopPropagation() }, { passive: true })
           item.addEventListener('click', function () {
             _child = c
             localStorage.setItem('scout_active_child_id', c.id)
@@ -255,6 +258,7 @@
         var addMobileItem = document.createElement('div')
         addMobileItem.className = 'child-dropdown-item add'
         addMobileItem.textContent = '+ Add a child'
+        addMobileItem.addEventListener('touchstart', function (e) { e.stopPropagation() }, { passive: true })
         addMobileItem.addEventListener('click', function () {
           window.location.href = '/scout-dashboard/child.html'
         })
