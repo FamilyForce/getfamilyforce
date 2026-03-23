@@ -194,9 +194,11 @@ function buildConfirmEmail(opts: {
   plan: 'annual' | 'triennial' | 'monthly'
   referralCode: string; giftCode: string
   printCardUrl: string; siteUrl: string; expiresAt: Date
+  amountDisplay: string; isFree: boolean
 }): string {
-  const { buyerName, recipientName, recipientEmail, plan, referralCode, giftCode, printCardUrl, siteUrl, expiresAt } = opts
+  const { buyerName, recipientName, recipientEmail, plan, referralCode, giftCode, printCardUrl, siteUrl, expiresAt, amountDisplay, isFree } = opts
   const planLabel = plan === 'annual' ? '1-year' : plan === 'triennial' ? '3-year (Full Journey)' : '1-month'
+  const planFull  = plan === 'annual' ? '1 Year of Scout' : plan === 'triennial' ? '3 Years of Scout (Full Journey)' : '1 Month of Scout'
   const expiryFmt = expiresAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
 
   return `<!DOCTYPE html>
@@ -233,6 +235,23 @@ function buildConfirmEmail(opts: {
   <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;margin:0;line-height:1.6">⏰ Code expires <strong style="color:#1D1D1F">${expiryFmt}</strong>. If ${recipientName} is expecting, they can activate once the baby arrives.</p>
 </td></tr>
 <tr><td style="height:12px"></td></tr>
+
+<!-- Order summary (paid only) -->
+${!isFree ? `<tr><td style="background:#F9F8FF;border:1.5px solid #E5E2EC;border-radius:16px;padding:20px 24px">
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#8A879A;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">Order summary</p>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0 0 6px">${planFull}</td>
+      <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;font-weight:700;padding:0 0 6px">${amountDisplay}</td>
+    </tr>
+    <tr>
+      <td colspan="2" style="border-top:1px solid #E5E2EC;padding-top:10px">
+        <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#5C5960;margin:0">✅ Thank you for your purchase. Your card has been charged <strong>${amountDisplay}</strong>. Keep this email as your receipt.</p>
+      </td>
+    </tr>
+  </table>
+</td></tr>
+<tr><td style="height:12px"></td></tr>` : ''}
 
 <!-- Printable card -->
 <tr><td style="background:#FFFFFF;border-radius:16px;padding:22px 28px">
@@ -653,6 +672,8 @@ Deno.serve(async (req: Request) => {
       html:    buildConfirmEmail({
         buyerName, recipientName, recipientEmail, plan,
         referralCode, giftCode, printCardUrl, siteUrl, expiresAt,
+        amountDisplay: priceInfo.display,
+        isFree:        freeOrder === true,
       }),
       tags:    [{ name: 'email_type', value: 'gift_buyer_confirm' }],
     }
