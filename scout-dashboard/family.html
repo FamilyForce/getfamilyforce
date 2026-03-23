@@ -173,9 +173,12 @@ function renderMembers(members, user, child, primaryName) {
     var profileMap = {}
     ;(profileRes.data || []).forEach(function (p) { profileMap[p.id] = p.name })
 
-    // Primary account holder — show their actual display name
+    // Primary account holder — always label as "Primary account", name in parentheses if available
+    var primaryLabel = 'Primary account'
+    var hasPrimaryName = primaryName && primaryName !== 'Primary account'
     var html = renderMemberRow({
-      name:      primaryName || 'Primary account',
+      name:      hasPrimaryName ? 'Primary account' : 'Primary account',
+      nameNote:  hasPrimaryName ? primaryName : '',
       email:     '',
       isPrimary: true,
       isYou:     child.user_id === user.id,
@@ -238,7 +241,9 @@ function renderMemberRow(m) {
   return '<div class="family-member-row">' +
     '<div class="family-avatar">' + initials + '</div>' +
     '<div class="family-member-info">' +
-    '<p class="family-member-name">' + ScoutDash._esc(m.name) + youBadge + '</p>' +
+    '<p class="family-member-name">' + ScoutDash._esc(m.name) +
+      (m.nameNote ? ' <span style="font-size:12px;color:var(--text-dim);font-weight:400">(' + ScoutDash._esc(m.nameNote) + ')</span>' : '') +
+      youBadge + '</p>' +
     (m.email ? '<p class="family-member-role">' + ScoutDash._esc(m.email) + '</p>' : '') +
     statusEl +
     '</div>' +
