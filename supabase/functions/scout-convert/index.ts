@@ -463,15 +463,16 @@ Deno.serve(async (req: Request) => {
         'metadata[supabase_user_id]':      user.id,
         'metadata[child_id]':              childId,
         'metadata[plan]':                  plan,
+        'expand[]':                        'latest_invoice',
       })
 
       // INSERT new subscription row for this child
-      // Fetch subscription again — creation response may not have current_period_end populated yet
       step = 'db-insert'
-      let freshSub = subscription
-      try { freshSub = await stripeReq(stripeKey, 'GET', `/subscriptions/${subscription.id}`) } catch { /* use creation response */ }
-      const periodEnd = freshSub.current_period_end
-        ? new Date(freshSub.current_period_end * 1000).toISOString()
+      const rawPeriodEnd = subscription.current_period_end
+        ?? subscription.latest_invoice?.period_end
+        ?? null
+      const periodEnd = rawPeriodEnd
+        ? new Date(rawPeriodEnd * 1000).toISOString()
         : null
 
       await sb.from('scout_subscriptions').insert({
@@ -712,16 +713,19 @@ Deno.serve(async (req: Request) => {
       'payment_settings[save_default_payment_method]': 'on_subscription',
       'metadata[supabase_user_id]': user.id,
       'metadata[plan]':             plan,
+      'expand[]':                   'latest_invoice',
     })
 
     // Update subscription row
-    // Fetch subscription again — creation response may not have current_period_end populated yet
+    // current_period_end can be null for incomplete subscriptions — fall back to invoice.period_end
     step = 'db-update'
-    let freshSub = subscription
-    try { freshSub = await stripeReq(stripeKey, 'GET', `/subscriptions/${subscription.id}`) } catch { /* use creation response */ }
-    const periodEnd = freshSub.current_period_end
-      ? new Date(freshSub.current_period_end * 1000).toISOString()
+    const rawPeriodEnd = subscription.current_period_end
+      ?? subscription.latest_invoice?.period_end
+      ?? null
+    const periodEnd = rawPeriodEnd
+      ? new Date(rawPeriodEnd * 1000).toISOString()
       : null
+    console.log('[scout-convert] PATH B periodEnd:', periodEnd, 'status:', subscription.status)
 
     await sb.from('scout_subscriptions').update({
       status:             'active',
