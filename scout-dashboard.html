@@ -963,13 +963,22 @@ function wireModalActions(windows, childId) {
       if (newStatus === 'completed')   btn.classList.add('active-done')
       if (newStatus === 'in_progress') btn.classList.add('active-progress')
       if (newStatus === 'skipped')     btn.classList.add('active-skip')
-      // Sync card in background
+      // Sync card state — button highlights, state class, and Done section move
       var card = document.querySelector('[data-window-id="' + wid + '"]')
       if (card) {
+        // Button highlights
         var cardBtns = card.querySelectorAll('[data-action]')
         cardBtns.forEach(function (b) { b.classList.remove('active-done', 'active-progress', 'active-skip') })
         var matchBtn = card.querySelector('[data-action="' + newStatus + '"]')
         if (matchBtn) matchBtn.classList.add('active-' + (newStatus === 'completed' ? 'done' : newStatus === 'in_progress' ? 'progress' : 'skip'))
+        // Card state class
+        card.classList.remove('state-in-progress', 'state-done', 'state-skipped')
+        if (newStatus === 'in_progress') card.classList.add('state-in-progress')
+        if (newStatus === 'completed' || newStatus === 'skipped') card.classList.add('state-done')
+        // Animate card into Done section (same timing as card-level handler)
+        if (newStatus === 'completed' || newStatus === 'skipped') {
+          setTimeout(function () { ScoutDash._moveToDone(card, wid) }, 800)
+        }
       }
       ScoutDash.saveProgress(wid, newStatus, childId, function (err) {
         if (err) ScoutDash.toast('Could not save. Please try again.', 'error')
