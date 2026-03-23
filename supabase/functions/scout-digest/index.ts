@@ -457,11 +457,15 @@ Deno.serve(async (req: Request) => {
             const { data: { user: memberUser } } = await sb.auth.admin.getUserById(memberId)
             if (!memberUser?.email) continue
 
+            // Greet the family member by their own name, not the account owner's
+            const { data: memberProfile } = await sb.from('profiles').select('name').eq('id', memberId).maybeSingle()
+            const memberGreetName = memberProfile?.name?.trim() || undefined
+
             // Build per-member HTML with their own unsubscribe URL + family footer
             const unsubUrl     = `${supabaseUrl}/functions/v1/scout-unsubscribe?t=${member.unsubscribe_token}`
             const memberHtml   = buildDigestEmail({
               childName:       child.name,
-              parentName:      parentName || undefined,
+              parentName:      memberGreetName,
               childGender:     child.gender,
               ageMonths:       months,
               aboveFold:       aboveFold as DigestWindow[],
