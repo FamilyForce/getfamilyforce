@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scout Admin — FamilyForce</title>
+<style>
+:root {
+  --purple: #6E4ED6; --purple-dark: #5B3CC4; --purple-light: #F5F3FF;
+  --green: #16A34A; --green-bg: #DCFCE7;
+  --blue: #2563EB; --blue-bg: #DBEAFE;
+  --amber: #D97706; --amber-bg: #FEF3C7;
+  --red: #DC2626; --red-bg: #FEE2E2;
+  --gray: #6B7280; --gray-bg: #F3F4F6;
+  --border: #E5E7EB; --surface: #FFFFFF;
+  --text: #111827; --text-mid: #4B5563; --text-light: #9CA3AF;
+  --font: 'Outfit', system-ui, sans-serif;
+  --radius: 12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: #F9FAFB; color: var(--text); font-size: 14px; }
+
+/* ── Login ── */
+#loginScreen { position: fixed; inset: 0; background: var(--purple-light); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+.login-card { background: #fff; border-radius: 20px; padding: 40px; width: 360px; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,.1); }
+.login-logo { font-size: 28px; margin-bottom: 8px; }
+.login-card h1 { font-size: 22px; font-weight: 700; color: var(--purple); margin-bottom: 4px; }
+.login-card p { font-size: 13px; color: var(--text-mid); margin-bottom: 24px; }
+.login-card input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; font-family: var(--font); outline: none; margin-bottom: 12px; }
+.login-card input:focus { border-color: var(--purple); }
+.login-card button { width: 100%; padding: 13px; background: var(--purple); color: #fff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; font-family: var(--font); cursor: pointer; }
+.login-card button:hover { background: var(--purple-dark); }
+#loginError { font-size: 13px; color: var(--red); margin-top: 10px; min-height: 18px; }
+
+/* ── Top bar ── */
+#topBar { background: #1C1333; padding: 0 24px; height: 56px; display: flex; align-items: center; gap: 24px; position: sticky; top: 0; z-index: 100; }
+.top-logo { color: #fff; font-weight: 800; font-size: 16px; letter-spacing: -.3px; white-space: nowrap; }
+.top-logo span { color: #A78BFA; }
+.pulse-bar { display: flex; gap: 0; flex: 1; overflow-x: auto; scrollbar-width: none; }
+.pulse-bar::-webkit-scrollbar { display: none; }
+.pulse-item { display: flex; flex-direction: column; padding: 0 20px; border-right: 1px solid rgba(255,255,255,.1); cursor: default; }
+.pulse-item:first-child { padding-left: 0; }
+.pulse-val { font-size: 18px; font-weight: 800; color: #fff; line-height: 1.1; }
+.pulse-val.green { color: #4ADE80; }
+.pulse-val.amber { color: #FCD34D; }
+.pulse-val.red   { color: #F87171; }
+.pulse-lbl { font-size: 10px; font-weight: 600; color: rgba(255,255,255,.4); letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+.top-actions { display: flex; gap: 8px; margin-left: auto; white-space: nowrap; }
+.top-btn { background: rgba(255,255,255,.1); color: rgba(255,255,255,.8); border: none; padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 600; font-family: var(--font); cursor: pointer; transition: background .15s; }
+.top-btn:hover { background: rgba(255,255,255,.2); }
+#lastRefresh { font-size: 11px; color: rgba(255,255,255,.35); }
+
+/* ── Tabs ── */
+#tabNav { background: #fff; border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; gap: 0; }
+.tab-btn { padding: 14px 18px; font-size: 13px; font-weight: 600; font-family: var(--font); background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-mid); cursor: pointer; transition: all .15s; margin-bottom: -1px; }
+.tab-btn:hover { color: var(--purple); }
+.tab-btn.active { color: var(--purple); border-bottom-color: var(--purple); }
+.tab-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--amber); color: #fff; border-radius: 100px; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; padding: 0 5px; margin-left: 6px; }
+
+/* ── Main content ── */
+#tabContent { padding: 24px; max-width: 1400px; margin: 0 auto; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ── Section cards ── */
+.section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 20px; overflow: hidden; }
+.section-hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.section-title { font-size: 14px; font-weight: 700; }
+.section-sub { font-size: 12px; color: var(--text-mid); margin-left: 8px; }
+
+/* ── Metric cards ── */
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+.metric-val { font-size: 28px; font-weight: 900; letter-spacing: -.02em; color: var(--text); }
+.metric-lbl { font-size: 12px; font-weight: 600; color: var(--text-light); letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; }
+.metric-sub { font-size: 12px; color: var(--text-mid); margin-top: 4px; }
+.metric-card.highlight { background: var(--purple); border-color: var(--purple); }
+.metric-card.highlight .metric-val, .metric-card.highlight .metric-lbl { color: #fff; }
+.metric-card.highlight .metric-sub { color: rgba(255,255,255,.7); }
+.metric-card.warn { background: var(--amber-bg); border-color: #FCD34D; }
+.metric-card.warn .metric-val { color: var(--amber); }
+
+/* ── Tables ── */
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text-light); background: #F9FAFB; border-bottom: 1px solid var(--border); white-space: nowrap; }
+td { padding: 11px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #FAFBFF; }
+.td-name { font-weight: 600; }
+.td-email { color: var(--text-mid); font-size: 12px; }
+.td-mono { font-family: monospace; font-size: 12px; letter-spacing: .03em; }
+.td-action { white-space: nowrap; }
+.link-btn { background: none; border: none; color: var(--purple); font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font); padding: 0; }
+.link-btn:hover { text-decoration: underline; }
+
+/* ── Status badges ── */
+.badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: .04em; white-space: nowrap; }
+.badge-active   { background: var(--green-bg);  color: var(--green); }
+.badge-trialing { background: var(--blue-bg);   color: var(--blue); }
+.badge-expiring { background: var(--amber-bg);  color: var(--amber); }
+.badge-cancelled, .badge-expired { background: var(--gray-bg); color: var(--gray); }
+.badge-cancelling { background: var(--red-bg);  color: var(--red); }
+.badge-gift     { background: var(--purple-light); color: var(--purple); }
+.badge-none     { background: var(--gray-bg);   color: var(--text-light); }
+.badge-redeemed { background: var(--green-bg);  color: var(--green); }
+.badge-pending  { background: var(--amber-bg);  color: var(--amber); }
+.badge-scheduled { background: var(--blue-bg);  color: var(--blue); }
+.badge-delivered { background: var(--purple-light); color: var(--purple); }
+
+/* ── Search / filter bar ── */
+.toolbar { display: flex; gap: 10px; padding: 14px 20px; border-bottom: 1px solid var(--border); align-items: center; flex-wrap: wrap; }
+.search-input { flex: 1; min-width: 200px; padding: 8px 14px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: var(--font); outline: none; }
+.search-input:focus { border-color: var(--purple); }
+select.filter-sel { padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 13px; font-family: var(--font); outline: none; background: #fff; cursor: pointer; }
+select.filter-sel:focus { border-color: var(--purple); }
+.tbl-count { font-size: 12px; color: var(--text-mid); margin-left: auto; }
+
+/* ── Lookup ── */
+.lookup-wrap { padding: 20px; }
+.lookup-search { display: flex; gap: 10px; margin-bottom: 20px; }
+.lookup-search input { flex: 1; padding: 11px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-family: var(--font); outline: none; }
+.lookup-search input:focus { border-color: var(--purple); }
+.lookup-search button { padding: 11px 22px; background: var(--purple); color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; font-family: var(--font); cursor: pointer; }
+.lookup-search button:hover { background: var(--purple-dark); }
+#lookupResult { }
+.user-profile-card { background: var(--purple-light); border: 1px solid #DDD6FE; border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+.user-profile-card h2 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+.user-profile-card .email { font-size: 14px; color: var(--purple); margin-bottom: 12px; }
+.profile-meta { display: flex; gap: 20px; flex-wrap: wrap; }
+.profile-meta-item { font-size: 12px; }
+.profile-meta-item .lbl { color: var(--text-mid); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; font-size: 10px; }
+.profile-meta-item .val { font-weight: 700; font-size: 14px; margin-top: 2px; }
+.timeline { }
+.timeline-section { margin-bottom: 20px; }
+.timeline-section h3 { font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.timeline-item { display: flex; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.timeline-item:last-child { border-bottom: none; }
+.tl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--purple-light); border: 2px solid var(--purple); margin-top: 3px; flex-shrink: 0; }
+.tl-date { color: var(--text-mid); font-size: 12px; min-width: 90px; flex-shrink: 0; }
+.tl-label { flex: 1; }
+.tl-meta { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+.tl-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: var(--purple-light); color: var(--purple); margin-left: 6px; }
+
+/* ── Empty / loading ── */
+.empty-row td { text-align: center; padding: 32px; color: var(--text-light); font-size: 13px; }
+.loading-row td { text-align: center; padding: 24px; color: var(--text-light); }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--purple); border-radius: 50%; animation: spin .7s linear infinite; vertical-align: middle; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Upcoming items ── */
+.upcoming-item { display: flex; gap: 16px; align-items: flex-start; padding: 12px 20px; border-bottom: 1px solid var(--border); }
+.upcoming-item:last-child { border-bottom: none; }
+.upcoming-when { min-width: 70px; text-align: center; background: var(--purple-light); border-radius: 8px; padding: 6px 8px; }
+.upcoming-when .day { font-size: 20px; font-weight: 800; color: var(--purple); line-height: 1; }
+.upcoming-when .unit { font-size: 10px; font-weight: 600; color: var(--purple); letter-spacing: .04em; text-transform: uppercase; }
+.upcoming-when.urgent { background: var(--amber-bg); }
+.upcoming-when.urgent .day, .upcoming-when.urgent .unit { color: var(--amber); }
+.upcoming-desc { flex: 1; font-size: 13px; padding-top: 4px; }
+.upcoming-desc .type { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-light); margin-bottom: 2px; }
+
+/* ── Overview grid ── */
+.overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 900px) { .overview-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">🛡️</div>
+    <h1>Scout Admin</h1>
+    <p>FamilyForce internal dashboard</p>
+    <input type="password" id="adminPw" placeholder="Admin password" onkeydown="if(event.key==='Enter')login()">
+    <button onclick="login()">Access dashboard →</button>
+    <p id="loginError"></p>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="dashboard" style="display:none">
+
+  <!-- Top bar -->
+  <header id="topBar">
+    <div class="top-logo">Scout <span>Admin</span></div>
+    <div class="pulse-bar" id="pulseBar">
+      <div class="pulse-item"><div class="pulse-val" id="pMRR">—</div><div class="pulse-lbl">MRR</div></div>
+      <div class="pulse-item"><div class="pulse-val" id="pARR">—</div><div class="pulse-lbl">ARR</div></div>
+      <div class="pulse-item"><div class="pulse-val" id="pPaid">—</div><div class="pulse-lbl">Paid</div></div>
+      <div class="pulse-item"><div class="pulse-val" id="pTrials">—</div><div class="pulse-lbl">Trials</div></div>
+      <div class="pulse-item"><div class="pulse-val amber" id="pExpiring">—</div><div class="pulse-lbl">Expiring 7d</div></div>
+      <div class="pulse-item"><div class="pulse-val" id="pUsers">—</div><div class="pulse-lbl">Total users</div></div>
+      <div class="pulse-item"><div class="pulse-val green" id="pNew7">—</div><div class="pulse-lbl">New 7d</div></div>
+      <div class="pulse-item"><div class="pulse-val" id="pGifts">—</div><div class="pulse-lbl">Gifts sold</div></div>
+    </div>
+    <div class="top-actions">
+      <span id="lastRefresh"></span>
+      <button class="top-btn" onclick="refreshAll()">↻ Refresh</button>
+      <button class="top-btn" onclick="logout()">Sign out</button>
+    </div>
+  </header>
+
+  <!-- Tab nav -->
+  <nav id="tabNav">
+    <button class="tab-btn active" onclick="showTab('overview')">Overview</button>
+    <button class="tab-btn" onclick="showTab('users')">Users</button>
+    <button class="tab-btn" onclick="showTab('gifts')">Gifts</button>
+    <button class="tab-btn" onclick="showTab('comms')">Communications</button>
+    <button class="tab-btn" onclick="showTab('lookup')">🔍 Lookup</button>
+  </nav>
+
+  <main id="tabContent">
+
+    <!-- ── OVERVIEW ── -->
+    <div id="tab-overview" class="tab-pane active">
+      <div class="metrics-grid" id="overviewMetrics">
+        <!-- filled by JS -->
+      </div>
+      <div class="overview-grid">
+        <!-- Trials expiring -->
+        <div class="section">
+          <div class="section-hdr">
+            <div><span class="section-title">⚠️ Trials Expiring Soon</span><span class="section-sub">Next 7 days — take action</span></div>
+          </div>
+          <div class="tbl-wrap">
+            <table id="expiringTable">
+              <thead><tr><th>User</th><th>Child</th><th>Expires</th><th>Days</th><th></th></tr></thead>
+              <tbody><tr class="loading-row"><td colspan="5"><span class="spinner"></span>Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Upcoming -->
+        <div class="section">
+          <div class="section-hdr">
+            <div><span class="section-title">📅 Upcoming Actions</span><span class="section-sub">Next 14 days</span></div>
+          </div>
+          <div id="upcomingList"><div style="padding:24px;text-align:center;color:var(--text-light)"><span class="spinner"></span>Loading…</div></div>
+        </div>
+      </div>
+      <!-- Recent signups -->
+      <div class="section">
+        <div class="section-hdr"><span class="section-title">🆕 Recent Signups</span><span class="section-sub">Last 10</span></div>
+        <div class="tbl-wrap">
+          <table id="recentSignupsTable">
+            <thead><tr><th>Name</th><th>Email</th><th>Signed up</th><th>Child</th><th>Status</th><th></th></tr></thead>
+            <tbody><tr class="loading-row"><td colspan="6"><span class="spinner"></span>Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── USERS ── -->
+    <div id="tab-users" class="tab-pane">
+      <div class="section">
+        <div class="toolbar">
+          <input class="search-input" id="userSearch" type="text" placeholder="Search name, email, or child…" oninput="filterUsers()">
+          <select class="filter-sel" id="userStatusFilter" onchange="filterUsers()">
+            <option value="all">All statuses</option>
+            <option value="trialing">Trialing</option>
+            <option value="active">Active (paid)</option>
+            <option value="cancelling">Cancelling</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="none">No subscription</option>
+          </select>
+          <span class="tbl-count" id="userCount"></span>
+        </div>
+        <div class="tbl-wrap">
+          <table id="usersTable">
+            <thead><tr><th>Name / Email</th><th>Signed up</th><th>Child</th><th>Status</th><th>Plan</th><th>Trial / Billing end</th><th>Last digest</th><th>Family</th><th></th></tr></thead>
+            <tbody><tr class="loading-row"><td colspan="9"><span class="spinner"></span>Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── GIFTS ── -->
+    <div id="tab-gifts" class="tab-pane">
+      <div class="metrics-grid" id="giftMetrics"></div>
+      <div class="section">
+        <div class="section-hdr">
+          <div><span class="section-title">📦 Pending Delivery</span><span class="section-sub">Scheduled, not yet sent</span></div>
+        </div>
+        <div class="tbl-wrap">
+          <table id="giftsPendingTable">
+            <thead><tr><th>Code</th><th>Buyer</th><th>Recipient</th><th>Plan</th><th>Delivers</th><th>Status</th></tr></thead>
+            <tbody><tr class="loading-row"><td colspan="6"><span class="spinner"></span>Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="section">
+        <div class="section-hdr">
+          <div><span class="section-title">🎁 All Gift Cards</span></div>
+          <input class="search-input" id="giftSearch" type="text" placeholder="Search buyer, recipient, code…" oninput="filterGifts()" style="width:240px">
+        </div>
+        <div class="tbl-wrap">
+          <table id="giftsAllTable">
+            <thead><tr><th>Code</th><th>Buyer</th><th>Recipient</th><th>Plan</th><th>Purchased</th><th>Delivery</th><th>Redeemed</th><th>State</th></tr></thead>
+            <tbody><tr class="loading-row"><td colspan="8"><span class="spinner"></span>Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── COMMS ── -->
+    <div id="tab-comms" class="tab-pane">
+      <div class="section">
+        <div class="section-hdr"><span class="section-title">📬 Email Activity</span><span class="section-sub">Last 30 days — digests + key events</span></div>
+        <div class="tbl-wrap">
+          <table id="commsTable">
+            <thead><tr><th>Date</th><th>Type</th><th>Description</th><th>User</th></tr></thead>
+            <tbody><tr class="loading-row"><td colspan="4"><span class="spinner"></span>Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LOOKUP ── -->
+    <div id="tab-lookup" class="tab-pane">
+      <div class="lookup-wrap">
+        <div class="lookup-search">
+          <input type="email" id="lookupEmail" placeholder="Enter user email address…" onkeydown="if(event.key==='Enter')lookupUser()">
+          <button onclick="lookupUser()">Look up →</button>
+        </div>
+        <div id="lookupResult"></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────────
+var ADMIN_FN  = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-admin'
+var ANON_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
+var _token = ''
+var _usersData = []
+var _giftsData = []
+var _tabsLoaded = {}
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+async function login() {
+  var pw = document.getElementById('adminPw').value.trim()
+  if (!pw) return
+  document.getElementById('loginError').textContent = ''
+  try {
+    var res = await api('stats', { token: pw })
+    if (res.error === 'Unauthorized') { document.getElementById('loginError').textContent = 'Incorrect password.'; return }
+    _token = pw
+    sessionStorage.setItem('scout_admin_token', pw)
+    document.getElementById('loginScreen').style.display = 'none'
+    document.getElementById('dashboard').style.display = 'block'
+    renderStats(res)
+    loadOverview()
+  } catch(e) {
+    document.getElementById('loginError').textContent = 'Connection error. Try again.'
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('scout_admin_token')
+  location.reload()
+}
+
+// Auto-restore session
+window.addEventListener('DOMContentLoaded', function() {
+  var saved = sessionStorage.getItem('scout_admin_token')
+  if (saved) {
+    _token = saved
+    api('stats').then(function(res) {
+      if (res.error) { sessionStorage.removeItem('scout_admin_token'); return }
+      document.getElementById('loginScreen').style.display = 'none'
+      document.getElementById('dashboard').style.display = 'block'
+      renderStats(res)
+      loadOverview()
+    })
+  }
+})
+
+// ── API ───────────────────────────────────────────────────────────────────────
+async function api(action, extra) {
+  var body = Object.assign({ action: action, token: _token }, extra || {})
+  var res = await fetch(ADMIN_FN, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + ANON_KEY }, body: JSON.stringify(body) })
+  return res.json()
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(function(el) { el.classList.remove('active') })
+  document.querySelectorAll('.tab-btn').forEach(function(el) { el.classList.remove('active') })
+  document.getElementById('tab-' + name).classList.add('active')
+  var btns = document.querySelectorAll('.tab-btn')
+  var names = ['overview','users','gifts','comms','lookup']
+  btns[names.indexOf(name)].classList.add('active')
+  if (!_tabsLoaded[name]) {
+    _tabsLoaded[name] = true
+    if (name === 'users')  loadUsers()
+    if (name === 'gifts')  loadGifts()
+    if (name === 'comms')  loadComms()
+  }
+}
+
+function refreshAll() {
+  _tabsLoaded = { overview: true }
+  loadOverview()
+  api('stats').then(renderStats)
+  var active = document.querySelector('.tab-pane.active')
+  if (active) {
+    var id = active.id.replace('tab-', '')
+    if (id === 'users')  loadUsers()
+    if (id === 'gifts')  loadGifts()
+    if (id === 'comms')  loadComms()
+  }
+  document.getElementById('lastRefresh').textContent = 'Updated ' + new Date().toLocaleTimeString()
+}
+
+// ── Stats / pulse bar ─────────────────────────────────────────────────────────
+function renderStats(s) {
+  var subs  = s.subs || {}
+  var users = s.users || {}
+  var gifts = s.gifts || {}
+  setText('pMRR',     '$' + (subs.mrr || 0).toFixed(0))
+  setText('pARR',     '$' + (subs.arr || 0).toFixed(0))
+  setText('pPaid',    subs.active_paid || 0)
+  setText('pTrials',  subs.trialing || 0)
+  setText('pExpiring',subs.expiring_7d || 0)
+  setText('pUsers',   users.total || 0)
+  setText('pNew7',    '+' + (users.new_7d || 0))
+  setText('pGifts',   gifts.total_sold || 0)
+
+  // Overview metrics cards
+  var mc = document.getElementById('overviewMetrics')
+  mc.innerHTML = metricCard('$' + (subs.mrr||0).toFixed(2), 'MRR', '$' + (subs.arr||0).toFixed(0) + ' ARR', 'highlight') +
+    metricCard(subs.active_paid||0, 'Paid subscribers', (subs.monthly_count||0)+'mo · '+(subs.annual_count||0)+'yr · '+(subs.triennial_count||0)+'×3yr') +
+    metricCard(subs.trialing||0, 'Active trials', (users.new_7d||0)+' new users this week') +
+    metricCard(subs.expiring_7d||0, 'Expiring in 7d', 'Convert or lose them', (subs.expiring_7d||0) > 0 ? 'warn' : '') +
+    metricCard(gifts.total_sold||0, 'Gifts sold', gifts.total_redeemed+' redeemed · '+gifts.pending_delivery+' pending') +
+    metricCard(s.emails.digests_total||0, 'Total digests sent', (s.emails.digests_7d||0)+' in last 7 days')
+}
+
+function metricCard(val, lbl, sub, cls) {
+  return '<div class="metric-card'+(cls?' '+cls:'')+'"><div class="metric-val">'+val+'</div><div class="metric-lbl">'+lbl+'</div>'+(sub?'<div class="metric-sub">'+sub+'</div>':'')+'</div>'
+}
+
+// ── Overview ──────────────────────────────────────────────────────────────────
+function loadOverview() {
+  Promise.all([api('users'), api('upcoming')]).then(function(results) {
+    var usersData = results[0].users || []
+    var upcoming  = results[1].items || []
+    renderExpiringTable(usersData)
+    renderRecentSignups(usersData)
+    renderUpcoming(upcoming)
+  })
+}
+
+function renderExpiringTable(users) {
+  var now = new Date()
+  var in7 = new Date(now.getTime() + 7 * 86400000)
+  var expiring = users.filter(function(u) {
+    return u.sub_status === 'trialing' && u.trial_end && new Date(u.trial_end) <= in7 && new Date(u.trial_end) > now
+  }).sort(function(a,b) { return new Date(a.trial_end) - new Date(b.trial_end) })
+
+  var tb = document.querySelector('#expiringTable tbody')
+  if (!expiring.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="5">No trials expiring in next 7 days 🎉</td></tr>'; return }
+  tb.innerHTML = expiring.map(function(u) {
+    var days = Math.ceil((new Date(u.trial_end) - now) / 86400000)
+    return '<tr>' +
+      '<td><div class="td-name">'+esc(u.name||'—')+'</div><div class="td-email">'+esc(u.email)+'</div></td>' +
+      '<td>'+(u.primary_child ? esc(u.primary_child.name)+' · '+esc(u.primary_child.age) : '—')+'</td>' +
+      '<td>'+fmtDate(u.trial_end)+'</td>' +
+      '<td><span class="badge badge-expiring">'+days+'d</span></td>' +
+      '<td class="td-action"><button class="link-btn" onclick="lookupAndSwitch(\''+esc(u.email)+'\')">View →</button></td>' +
+      '</tr>'
+  }).join('')
+
+  // Update tab badge
+  var badge = document.querySelector('#tabNav .tab-btn:nth-child(1) .tab-badge')
+  if (!badge && expiring.length > 0) {
+    var btn = document.querySelector('#tabNav .tab-btn:nth-child(1)')
+    btn.innerHTML += '<span class="tab-badge">'+expiring.length+'</span>'
+  }
+}
+
+function renderRecentSignups(users) {
+  var recent = users.slice(0, 10)
+  var tb = document.querySelector('#recentSignupsTable tbody')
+  if (!recent.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="6">No users yet</td></tr>'; return }
+  tb.innerHTML = recent.map(function(u) {
+    return '<tr>' +
+      '<td><div class="td-name">'+esc(u.name||'—')+'</div></td>' +
+      '<td class="td-email">'+esc(u.email)+'</td>' +
+      '<td>'+fmtDate(u.created_at)+'</td>' +
+      '<td>'+(u.primary_child ? esc(u.primary_child.name)+' · '+esc(u.primary_child.age) : '—')+'</td>' +
+      '<td>'+statusBadge(u)+'</td>' +
+      '<td class="td-action"><button class="link-btn" onclick="lookupAndSwitch(\''+esc(u.email)+'\')">View →</button></td>' +
+      '</tr>'
+  }).join('')
+}
+
+function renderUpcoming(items) {
+  var el = document.getElementById('upcomingList')
+  if (!items.length) { el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-light)">Nothing scheduled in the next 14 days</div>'; return }
+  el.innerHTML = items.map(function(item) {
+    var days = item.days_until !== null ? item.days_until : '?'
+    var urgent = days !== null && days <= 2
+    return '<div class="upcoming-item">' +
+      '<div class="upcoming-when'+(urgent?' urgent':'')+'"><div class="day">'+days+'</div><div class="unit">days</div></div>' +
+      '<div class="upcoming-desc"><div class="type">'+(item.type === 'gift-delivery' ? '🎁 Gift delivery' : '⏳ Trial expiry')+'</div>' +
+      esc(item.description) + (item.when_fmt ? '<br><span style="font-size:11px;color:var(--text-light)">'+item.when_fmt+'</span>' : '') +
+      '</div>' +
+      '</div>'
+  }).join('')
+}
+
+// ── Users ─────────────────────────────────────────────────────────────────────
+function loadUsers() {
+  api('users').then(function(res) {
+    _usersData = res.users || []
+    filterUsers()
+  })
+}
+
+function filterUsers() {
+  var search = (document.getElementById('userSearch').value || '').toLowerCase()
+  var status = document.getElementById('userStatusFilter').value
+  var filtered = _usersData.filter(function(u) {
+    var matchSearch = !search || u.email.toLowerCase().includes(search) || (u.name||'').toLowerCase().includes(search) || ((u.primary_child||{}).name||'').toLowerCase().includes(search)
+    var matchStatus = status === 'all' || u.sub_status === status || (status === 'none' && u.sub_status === 'none')
+    return matchSearch && matchStatus
+  })
+  renderUsersTable(filtered)
+  document.getElementById('userCount').textContent = filtered.length + ' of ' + _usersData.length + ' users'
+}
+
+function renderUsersTable(users) {
+  var tb = document.querySelector('#usersTable tbody')
+  if (!users.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="9">No users match this filter</td></tr>'; return }
+  tb.innerHTML = users.map(function(u) {
+    var endDate = u.sub_status === 'trialing' ? u.trial_end : u.period_end
+    return '<tr>' +
+      '<td><div class="td-name">'+esc(u.name||'—')+'</div><div class="td-email">'+esc(u.email)+'</div></td>' +
+      '<td style="white-space:nowrap">'+fmtDate(u.created_at)+'</td>' +
+      '<td>'+(u.primary_child ? esc(u.primary_child.name)+'<br><span style="font-size:11px;color:var(--text-mid)">'+esc(u.primary_child.age)+'</span>' : '—')+'</td>' +
+      '<td>'+statusBadge(u)+'</td>' +
+      '<td>'+(u.sub_plan ? planLabel(u.sub_plan) : '—')+'</td>' +
+      '<td style="white-space:nowrap">'+fmtDate(endDate)+'</td>' +
+      '<td style="white-space:nowrap">'+(u.last_digest ? fmtDate(u.last_digest.sent_at) : '—')+'</td>' +
+      '<td>'+(u.family_count > 0 ? u.family_count : '—')+'</td>' +
+      '<td class="td-action"><button class="link-btn" onclick="lookupAndSwitch(\''+esc(u.email)+'\')">View →</button></td>' +
+      '</tr>'
+  }).join('')
+}
+
+// ── Gifts ─────────────────────────────────────────────────────────────────────
+function loadGifts() {
+  api('gifts').then(function(gifts) {
+    _giftsData = gifts || []
+    // Metric cards
+    var total     = gifts.length
+    var redeemed  = gifts.filter(function(g) { return g.state === 'redeemed' }).length
+    var scheduled = gifts.filter(function(g) { return g.state === 'scheduled' }).length
+    var delivered = gifts.filter(function(g) { return g.state === 'delivered' }).length
+    var expired   = gifts.filter(function(g) { return g.state === 'expired' }).length
+    document.getElementById('giftMetrics').innerHTML =
+      metricCard(total, 'Gifts sold', '') +
+      metricCard(redeemed, 'Redeemed', Math.round(total ? redeemed/total*100 : 0) + '% redemption rate') +
+      metricCard(scheduled, 'Scheduled', 'Pending delivery', scheduled > 0 ? 'warn' : '') +
+      metricCard(delivered, 'Delivered, unclaimed', '') +
+      metricCard(expired, 'Expired unclaimed', '', expired > 0 ? 'warn' : '')
+
+    // Pending table
+    var pending = gifts.filter(function(g) { return g.state === 'scheduled' })
+    var ptb = document.querySelector('#giftsPendingTable tbody')
+    if (!pending.length) { ptb.innerHTML = '<tr class="empty-row"><td colspan="6">No pending deliveries</td></tr>' }
+    else ptb.innerHTML = pending.map(function(g) {
+      return '<tr>' +
+        '<td class="td-mono">'+esc(g.code)+'</td>' +
+        '<td><div>'+esc(g.buyer_name)+'</div><div class="td-email">'+esc(g.buyer_email)+'</div></td>' +
+        '<td><div>'+esc(g.recipient_name)+'</div><div class="td-email">'+esc(g.recipient_email)+'</div></td>' +
+        '<td>'+planLabel(g.plan)+'</td>' +
+        '<td style="white-space:nowrap">'+esc(g.deliver_at_fmt)+'</td>' +
+        '<td><span class="badge badge-scheduled">Scheduled</span></td>' +
+        '</tr>'
+    }).join('')
+
+    filterGifts()
+  })
+}
+
+function filterGifts() {
+  var search = (document.getElementById('giftSearch').value || '').toLowerCase()
+  var filtered = _giftsData.filter(function(g) {
+    return !search || g.code.toLowerCase().includes(search) || g.buyer_email.toLowerCase().includes(search) || (g.buyer_name||'').toLowerCase().includes(search) || (g.recipient_email||'').toLowerCase().includes(search) || (g.recipient_name||'').toLowerCase().includes(search)
+  })
+  var tb = document.querySelector('#giftsAllTable tbody')
+  if (!filtered.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="8">No gifts found</td></tr>'; return }
+  tb.innerHTML = filtered.map(function(g) {
+    var stateBadge = '<span class="badge badge-'+g.state+'">'+g.state+'</span>'
+    return '<tr>' +
+      '<td class="td-mono">'+esc(g.code)+'</td>' +
+      '<td><div>'+esc(g.buyer_name)+'</div><div class="td-email">'+esc(g.buyer_email)+'</div></td>' +
+      '<td><div>'+esc(g.recipient_name||'')+'</div><div class="td-email">'+esc(g.recipient_email)+'</div></td>' +
+      '<td>'+planLabel(g.plan)+'</td>' +
+      '<td>'+esc(g.created_at_fmt)+'</td>' +
+      '<td>'+esc(g.deliver_at_fmt)+'</td>' +
+      '<td>'+esc(g.redeemed_at_fmt)+'</td>' +
+      '<td>'+stateBadge+'</td>' +
+      '</tr>'
+  }).join('')
+}
+
+// ── Communications ────────────────────────────────────────────────────────────
+function loadComms() {
+  api('emails').then(function(res) {
+    var rows = res.rows || []
+    var tb = document.querySelector('#commsTable tbody')
+    if (!rows.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="4">No email activity found</td></tr>'; return }
+    var typeIcons = { digest: '📧', trial_start: '🚀', trial_converted: '💳', gift_purchased: '🎁', gift_redeemed: '✅', subscription_cancelled: '❌', subscription_reactivated: '♻️' }
+    tb.innerHTML = rows.map(function(r) {
+      var icon = typeIcons[r.subtype] || '📩'
+      return '<tr>' +
+        '<td style="white-space:nowrap;color:var(--text-mid)">'+fmtDateTime(r.ts)+'</td>' +
+        '<td><span style="font-size:12px">'+icon+'</span> '+esc(r.subtype.replace(/_/g,' '))+'</td>' +
+        '<td>'+esc(r.label)+'</td>' +
+        '<td>'+(r.name ? '<div class="td-name">'+esc(r.name)+'</div>' : '')+(r.user_id && r.user_id !== '—' ? '<button class="link-btn" onclick="lookupAndSwitch(\'\')" style="font-size:11px">view</button>' : '')+'</td>' +
+        '</tr>'
+    }).join('')
+  })
+}
+
+// ── Lookup ────────────────────────────────────────────────────────────────────
+function lookupUser() {
+  var email = document.getElementById('lookupEmail').value.trim()
+  if (!email) return
+  document.getElementById('lookupResult').innerHTML = '<div style="padding:20px;color:var(--text-mid)"><span class="spinner"></span>Looking up '+esc(email)+'…</div>'
+  api('user-detail', { email: email }).then(function(res) {
+    if (!res.found) { document.getElementById('lookupResult').innerHTML = '<div style="padding:20px;color:var(--red)">No user found for '+esc(email)+'</div>'; return }
+    renderUserDetail(res)
+  })
+}
+
+function lookupAndSwitch(email) {
+  showTab('lookup')
+  document.getElementById('lookupEmail').value = email
+  lookupUser()
+}
+
+function renderUserDetail(d) {
+  var auth = d.auth || {}
+  var profile = d.profile || {}
+  var primarySub = (d.subscriptions||[]).find(function(s) { return s.status === 'active' }) || (d.subscriptions||[])[0] || null
+
+  var html = '<div class="user-profile-card">' +
+    '<h2>'+(profile.name || auth.email || '—')+'</h2>' +
+    '<div class="email">'+esc(auth.email||'')+'</div>' +
+    '<div class="profile-meta">' +
+    '<div class="profile-meta-item"><div class="lbl">Signed up</div><div class="val">'+fmtDate(auth.created_at)+'</div></div>' +
+    '<div class="profile-meta-item"><div class="lbl">Last sign-in</div><div class="val">'+fmtDate(auth.last_sign_in)+'</div></div>' +
+    '<div class="profile-meta-item"><div class="lbl">Email verified</div><div class="val">'+(auth.email_confirmed ? '✅ Yes' : '❌ No')+'</div></div>' +
+    '<div class="profile-meta-item"><div class="lbl">Subscription</div><div class="val">'+(primarySub ? primarySub.status+' · '+(primarySub.plan||'—') : 'None')+'</div></div>' +
+    '<div class="profile-meta-item"><div class="lbl">Children</div><div class="val">'+(d.children||[]).length+'</div></div>' +
+    '<div class="profile-meta-item"><div class="lbl">Digests received</div><div class="val">'+(d.digests||[]).length+'</div></div>' +
+    (profile.referral_code ? '<div class="profile-meta-item"><div class="lbl">Referral code</div><div class="val td-mono">'+esc(profile.referral_code)+'</div></div>' : '') +
+    '</div></div>'
+
+  // Children
+  if ((d.children||[]).length) {
+    html += '<div class="timeline-section"><h3>Children</h3>' +
+      (d.children||[]).map(function(c) {
+        return '<div class="timeline-item"><div class="tl-dot"></div><div class="tl-date">'+fmtDate(c.dob)+'</div><div class="tl-label"><strong>'+esc(c.name)+'</strong> · '+esc(ageStr(c.dob))+'</div></div>'
+      }).join('') + '</div>'
+  }
+
+  // Subscriptions
+  if ((d.subscriptions||[]).length) {
+    html += '<div class="timeline-section"><h3>Subscriptions</h3>' +
+      (d.subscriptions||[]).map(function(s) {
+        var end = s.status === 'trialing' ? s.trial_end : s.period_end
+        return '<div class="timeline-item"><div class="tl-dot"></div><div class="tl-date">'+fmtDate(s.created_at)+'</div>' +
+          '<div class="tl-label"><strong>'+esc(s.status)+'</strong> · '+(s.plan||'—')+(s.is_gift?' 🎁':'')+
+          '<div class="tl-meta">'+( end ? 'Until ' + fmtDate(end) : '' )+(s.stripe_sub_id?'<span class="tl-badge">Stripe</span>':s.stripe_payment_intent_id?'<span class="tl-badge">One-time PI</span>':'')+'</div></div></div>'
+      }).join('') + '</div>'
+  }
+
+  // Digests
+  if ((d.digests||[]).length) {
+    html += '<div class="timeline-section"><h3>Digests Sent ('+d.digests.length+')</h3>' +
+      (d.digests||[]).slice(0, 20).map(function(dg) {
+        return '<div class="timeline-item"><div class="tl-dot"></div><div class="tl-date">'+fmtDate(dg.sent_at)+'</div>' +
+          '<div class="tl-label">'+esc(dg.email_subject||dg.digest_type)+'<span class="tl-badge">'+esc(dg.digest_type)+'</span>' +
+          '<div class="tl-meta">Month '+dg.child_age_months+'</div></div></div>'
+      }).join('') +
+      (d.digests.length > 20 ? '<div style="padding:8px 0;color:var(--text-light);font-size:12px;text-align:center">… and '+(d.digests.length-20)+' more</div>' : '') +
+      '</div>'
+  }
+
+  // Events
+  if ((d.events||[]).length) {
+    html += '<div class="timeline-section"><h3>Event Log</h3>' +
+      (d.events||[]).slice(0, 30).map(function(ev) {
+        return '<div class="timeline-item"><div class="tl-dot"></div><div class="tl-date">'+fmtDate(ev.occurred_at)+'</div>' +
+          '<div class="tl-label">'+esc(ev.event_type.replace(/_/g,' '))+'<div class="tl-meta">'+JSON.stringify(ev.properties||{}).substring(0,120)+'</div></div></div>'
+      }).join('') + '</div>'
+  }
+
+  // Gifts
+  if ((d.gifts_sent||[]).length || (d.gifts_received||[]).length) {
+    html += '<div class="timeline-section"><h3>Gift Cards</h3>'
+    if ((d.gifts_sent||[]).length) {
+      html += '<div style="font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:6px">PURCHASED</div>' +
+        d.gifts_sent.map(function(g) {
+          return '<div class="timeline-item"><div class="tl-dot"></div><div class="tl-date">'+fmtDate(g.created_at)+'</div>' +
+            '<div class="tl-label"><span class="td-mono">'+esc(g.code)+'</span> · '+planLabel(g.plan)+' → '+esc(g.recipient_name||g.recipient_email)+
+            (g.redeemed_at ? '<span class="tl-badge">Redeemed '+fmtDate(g.redeemed_at)+'</span>' : '') + '</div></div>'
+        }).join('')
+    }
+    if ((d.gifts_received||[]).length) {
+      html += '<div style="font-size:12px;font-weight:700;color:var(--text-mid);margin:10px 0 6px">RECEIVED</div>' +
+        d.gifts_received.map(function(g) {
+          return '<div class="timeline-item"><div class="tl-dot"></div><div class="tl-date">'+fmtDate(g.created_at)+'</div>' +
+            '<div class="tl-label"><span class="td-mono">'+esc(g.code)+'</span> · '+planLabel(g.plan)+' from '+esc(g.buyer_name||g.buyer_email)+
+            (g.redeemed_at ? '<span class="tl-badge">Redeemed '+fmtDate(g.redeemed_at)+'</span>' : '') + '</div></div>'
+        }).join('')
+    }
+    html += '</div>'
+  }
+
+  // Family members
+  if ((d.family_members||[]).length) {
+    html += '<div class="timeline-section"><h3>Family Circle ('+d.family_members.length+')</h3>' +
+      d.family_members.map(function(fm) {
+        var role = fm.owner_user_id === d.auth.id ? 'Member: ' + esc(fm.invited_email||'') : 'Access to child'
+        return '<div class="timeline-item"><div class="tl-dot"></div><div class="tl-date">'+fmtDate(fm.invited_at)+'</div>' +
+          '<div class="tl-label">'+role+'<span class="tl-badge">'+esc(fm.status)+'</span></div></div>'
+      }).join('') + '</div>'
+  }
+
+  document.getElementById('lookupResult').innerHTML = html
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val }
+
+function esc(s) {
+  if (s == null) return ''
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+
+function fmtDate(d) {
+  if (!d) return '—'
+  return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+}
+
+function fmtDateTime(d) {
+  if (!d) return '—'
+  var dt = new Date(d)
+  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' +
+    dt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+}
+
+function planLabel(plan) {
+  if (!plan) return '—'
+  if (plan === 'monthly')   return 'Monthly'
+  if (plan === 'annual')    return 'Annual'
+  if (plan === 'triennial') return '3-Year'
+  return plan
+}
+
+function ageStr(dob) {
+  if (!dob) return '—'
+  var d = new Date(dob)
+  var now = new Date()
+  var months = (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth())
+  if (months < 0) { var days = Math.ceil((d - now) / 86400000); return 'Due in ' + days + 'd' }
+  if (months === 0) return 'Newborn'
+  if (months < 24) return months + 'mo'
+  var yrs = Math.floor(months / 12); var rem = months % 12
+  return rem > 0 ? yrs + 'y ' + rem + 'mo' : yrs + 'y'
+}
+
+function statusBadge(u) {
+  var s = u.sub_status
+  var days = s === 'trialing' && u.trial_end ? Math.ceil((new Date(u.trial_end) - new Date()) / 86400000) : null
+  if (s === 'trialing' && days !== null && days <= 7) return '<span class="badge badge-expiring">Expiring ' + days + 'd</span>'
+  var labels = { active: '✅ Active', trialing: '⏳ Trial', cancelling: '↩ Cancelling', cancelled: '✗ Cancelled', 'gift-trial': '🎁 Gift', none: 'No sub' }
+  var cls = { active: 'active', trialing: 'trialing', cancelling: 'cancelling', cancelled: 'cancelled', 'gift-trial': 'gift', none: 'none' }
+  return '<span class="badge badge-'+(cls[s]||'none')+'">'+(labels[s]||s)+'</span>'
+}
+</script>
+</body>
+</html>
