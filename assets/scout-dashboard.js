@@ -284,10 +284,12 @@
         var rows = res.data || []
         // Prefer exact child_id match; fall back to null child_id (legacy/first-child rows)
         // Guard: _child may be null on library/settings pages with no child set up
-        var match = (_child ? rows.find(function (r) { return r.child_id === _child.id }) : null)
-                 || rows.find(function (r) { return !r.child_id })
-                 || rows[0]
-                 || null
+        // Prefer exact child_id match first.
+        // Null child_id fallback is only used for trialing rows (pre-birth / first child before
+        // child_id tracking). Active/paid subscriptions are always scoped to a specific child_id.
+        var exactMatch = _child ? rows.find(function (r) { return r.child_id === _child.id }) : null
+        var nullTrialingMatch = rows.find(function (r) { return !r.child_id && r.status === 'trialing' })
+        var match = exactMatch || nullTrialingMatch || null
         _sub = match
         if (typeof cb === 'function') cb()
       }, function (err) {

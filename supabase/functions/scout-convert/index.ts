@@ -641,22 +641,24 @@ Deno.serve(async (req: Request) => {
       const pi = await chargeTriennialPI(stripeKey, customerId!, paymentMethodId, finalTriennialCents, user.id)
 
       step = 'db-update'
-      await sb.from('scout_subscriptions').update({
-        status:                    'active',
-        stripe_customer_id:        customerId,
-        stripe_payment_intent_id:  pi.id,
-        period_end:                triennialPeriodEnd,
-        plan,
-      }).eq('id', subToConvert.id)
-
-      // log-event, digest, email — then return early
-      step = 'log-event'
+      // Resolve child_id — use subToConvert.child_id if set, else find oldest child
       let eventChildIdT = subToConvert.child_id as string | null
       if (!eventChildIdT) {
         const { data: fc } = await sb.from('children').select('id').eq('user_id', user.id)
           .order('created_at', { ascending: true }).limit(1).maybeSingle()
         eventChildIdT = fc?.id ?? null
       }
+      await sb.from('scout_subscriptions').update({
+        status:                    'active',
+        stripe_customer_id:        customerId,
+        stripe_payment_intent_id:  pi.id,
+        period_end:                triennialPeriodEnd,
+        plan,
+        ...(eventChildIdT ? { child_id: eventChildIdT } : {}),
+      }).eq('id', subToConvert.id)
+
+      // log-event, digest, email — then return early
+      step = 'log-event'
       await sb.from('scout_events').insert({
         user_id: user.id, child_id: eventChildIdT,
         event_type: 'trial_converted',
@@ -719,16 +721,7 @@ Deno.serve(async (req: Request) => {
       ? new Date(now.getFullYear(), now.getMonth() + 1, now.getDate()).toISOString()
       : new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()).toISOString()
 
-    await sb.from('scout_subscriptions').update({
-      status:             'active',
-      stripe_customer_id: customerId,
-      stripe_sub_id:      subscription.id,
-      period_end:         periodEnd,
-      plan,
-    }).eq('id', subToConvert.id)
-
-    // Determine child_id for event logging
-    step = 'log-event'
+    // Determine child_id before update — use subToConvert.child_id or find oldest child
     let eventChildId = subToConvert.child_id as string | null
     if (!eventChildId) {
       const { data: firstChild } = await sb
@@ -741,6 +734,17 @@ Deno.serve(async (req: Request) => {
       eventChildId = firstChild?.id ?? null
     }
 
+    // Update DB — always write child_id so the sub is correctly scoped to one child
+    await sb.from('scout_subscriptions').update({
+      status:             'active',
+      stripe_customer_id: customerId,
+      stripe_sub_id:      subscription.id,
+      period_end:         periodEnd,
+      plan,
+      ...(eventChildId ? { child_id: eventChildId } : {}),
+    }).eq('id', subToConvert.id)
+
+    step = 'log-event'
     await sb.from('scout_events').insert({
       user_id:    user.id,
       child_id:   eventChildId,
