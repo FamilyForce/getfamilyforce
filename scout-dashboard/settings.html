@@ -325,9 +325,11 @@ function ordinal(n) {
 function renderSubCard(sub, child) {
   var card = document.getElementById('subCard')
   if (!card) return
+  var isFamilyMember = child && child.user_id && ScoutDash.getUser() && ScoutDash.getUser().id !== child.user_id
+  var ownerOnlyNote = '<div class="settings-row"><p class="settings-row-sub" style="color:#8A879A">Only the account owner can manage the subscription.</p></div>'
   if (!sub) {
     card.innerHTML = subRow('Plan', '—') + subRow('Status', 'No subscription') +
-      '<div class="settings-row"><button class="btn btn-primary" onclick="openStripeForm(\'annual\')" style="width:100%">Subscribe to Scout →</button></div>'
+      (isFamilyMember ? ownerOnlyNote : '<div class="settings-row"><button class="btn btn-primary" onclick="openStripeForm(\'annual\')" style="width:100%">Subscribe to Scout →</button></div>')
     return
   }
 
@@ -362,14 +364,16 @@ function renderSubCard(sub, child) {
     html = subRow('Plan', isGift ? giftPlanLabel : 'Free trial') +
       subRow('Status', statusLabel, 'status') +
       subRow(isGift ? 'Gift ends' : 'Trial ends', endFmt + (days > 0 ? ' (' + days + ' day' + (days === 1 ? '' : 's') + ')' : ' — today'), 'ends') +
-      '<div class="settings-row" data-gift-hide>' +
-      '<div><p class="settings-row-label">Subscribe now</p><p class="settings-row-sub">Keep Scout going after your trial ends.</p></div>' +
-      '</div>' +
-      '<div class="settings-row" style="flex-direction:column;gap:10px;align-items:stretch" data-gift-hide>' +
-      '<button class="btn btn-primary" onclick="openStripeForm(\'annual\')">Annual — $49.99 <span style="font-size:11px;opacity:.8;margin-left:4px">Recommended</span></button>' +
-      '<button class="btn btn-secondary" onclick="openStripeForm(\'triennial\')">Full Journey (3 yr) — $99.99</button>' +
-      '<button class="btn btn-secondary" onclick="openStripeForm(\'monthly\')">Monthly — $9.99</button>' +
-      '</div>'
+      (isFamilyMember ? ownerOnlyNote :
+        '<div class="settings-row" data-gift-hide>' +
+        '<div><p class="settings-row-label">Subscribe now</p><p class="settings-row-sub">Keep Scout going after your trial ends.</p></div>' +
+        '</div>' +
+        '<div class="settings-row" style="flex-direction:column;gap:10px;align-items:stretch" data-gift-hide>' +
+        '<button class="btn btn-primary" onclick="openStripeForm(\'annual\')">Annual — $49.99 <span style="font-size:11px;opacity:.8;margin-left:4px">Recommended</span></button>' +
+        '<button class="btn btn-secondary" onclick="openStripeForm(\'triennial\')">Full Journey (3 yr) — $99.99</button>' +
+        '<button class="btn btn-secondary" onclick="openStripeForm(\'monthly\')">Monthly — $9.99</button>' +
+        '</div>'
+      )
 
   } else if (sub.status === 'active') {
     html += subRow('Status', statusLabel)
@@ -416,7 +420,7 @@ function renderSubCard(sub, child) {
   } else if (sub.status === 'cancelled') {
     html += '<div class="settings-row" style="flex-direction:column;gap:10px;align-items:stretch">' +
       '<p class="settings-row-sub">Your subscription has ended. Subscribe again to resume Scout emails.</p>' +
-      '<button class="btn btn-primary" onclick="openStripeForm(\'annual\')">Subscribe again →</button>' +
+      (isFamilyMember ? '<p class="settings-row-sub" style="color:#8A879A">Only the account owner can manage the subscription.</p>' : '<button class="btn btn-primary" onclick="openStripeForm(\'annual\')">Subscribe again →</button>') +
       '</div>'
   }
 
@@ -460,6 +464,9 @@ function updateFormTitle() {
 
 // ── Stripe subscribe ──────────────────────────────────────────────────────────
 function openStripeForm(plan) {
+  var child = ScoutDash.getChild()
+  var user  = ScoutDash.getUser()
+  if (child && child.user_id && user && user.id !== child.user_id) return // family member guard
   _checkoutPlan = plan
   document.getElementById('stripeFormWrap').style.display = 'block'
   updateFormTitle()
