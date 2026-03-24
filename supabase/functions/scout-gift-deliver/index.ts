@@ -114,7 +114,7 @@ Deno.serve(async (req: Request) => {
     try {
       const redeemUrl = `${SITE_URL}/scout-gift-checkout.html?redeem=${gift.code}`
 
-      await fetch('https://api.resend.com/emails', {
+      const resendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -133,6 +133,13 @@ Deno.serve(async (req: Request) => {
           tags: [{ name: 'email_type', value: 'gift_recipient_scheduled' }],
         }),
       })
+
+      if (!resendRes.ok) {
+        const errBody = await resendRes.text()
+        console.error(`[scout-gift-deliver] Resend error for gift ${gift.id}: ${resendRes.status} ${errBody}`)
+        failed++
+        continue
+      }
 
       await sb.from('scout_gifts').update({ gift_email_sent: true }).eq('id', gift.id)
       sent++
