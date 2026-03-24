@@ -344,6 +344,7 @@ Deno.serve(async (req: Request) => {
     }
 
     if (bccEmail) resendBody.bcc = [bccEmail]
+      resendBody.reply_to = ['support@getfamilyforce.com']
 
     const resendRes = await fetch('https://api.resend.com/emails', {
       method:  'POST',

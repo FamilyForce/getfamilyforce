@@ -94,11 +94,12 @@ Deno.serve(async (req: Request) => {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        from:    `${fromName} <${fromEmail}>`,
-        to:      [email],
-        subject: `${name} invited you to ${childName}'s Family Circle on Scout`,
-        html:    emailHtml,
-        tags:    [{ name: 'email_type', value: 'family_invite' }],
+        from:     `${fromName} <${fromEmail}>`,
+        to:       [email],
+        reply_to: ['support@getfamilyforce.com'],
+        subject:  `${name} invited you to ${childName}'s Family Circle on Scout`,
+        html:     emailHtml,
+        tags:     [{ name: 'email_type', value: 'family_invite' }],
       }),
     })
 

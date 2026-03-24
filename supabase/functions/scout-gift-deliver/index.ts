@@ -118,9 +118,10 @@ Deno.serve(async (req: Request) => {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from:    `${FROM_NAME} <${FROM_EMAIL}>`,
-          to:      [gift.recipient_email],
-          subject: `${gift.buyer_name} gave you a gift — FamilyForce Scout 🎁`,
+          from:     `${FROM_NAME} <${FROM_EMAIL}>`,
+          to:       [gift.recipient_email],
+          reply_to: ['support@getfamilyforce.com'],
+          subject:  `${gift.buyer_name} gave you a gift — FamilyForce Scout 🎁`,
           html:    buildGiftEmail({
             recipientName: gift.recipient_name,
             buyerName:     gift.buyer_name,

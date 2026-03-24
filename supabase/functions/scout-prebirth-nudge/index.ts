@@ -296,6 +296,7 @@ async function sendEmail(opts: {
     from: opts.from, to: [opts.to], subject: opts.subject, html: opts.html,
   }
   if (opts.bcc)  body.bcc  = [opts.bcc]
+  body.reply_to = ['support@getfamilyforce.com']
   if (opts.tags) body.tags = opts.tags
 
   const res  = await fetch('https://api.resend.com/emails', {

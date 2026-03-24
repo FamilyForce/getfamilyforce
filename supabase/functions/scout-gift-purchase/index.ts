@@ -660,6 +660,7 @@ Deno.serve(async (req: Request) => {
           redeemUrl, siteUrl, expiresAt }),
         tags:    [{ name: 'email_type', value: 'gift_recipient' }],
       }
+      giftEmailBody.reply_to = ['support@getfamilyforce.com']
       if (bccEmail) giftEmailBody.bcc = [bccEmail]
 
       try {
@@ -696,6 +697,7 @@ Deno.serve(async (req: Request) => {
       }),
       tags:    [{ name: 'email_type', value: 'gift_buyer_confirm' }],
     }
+    confirmEmailBody.reply_to = ['support@getfamilyforce.com']
     if (bccEmail) confirmEmailBody.bcc = [bccEmail]
 
     try {

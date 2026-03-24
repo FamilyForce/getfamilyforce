@@ -89,7 +89,7 @@ async function sendCancellationEmail(opts: {
   const emailRes = await fetch('https://api.resend.com/emails', {
     method:  'POST',
     headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-    body:    JSON.stringify({ from: 'FamilyForce <scout@getfamilyforce.com>', to: [toEmail], subject: 'Your Scout subscription has been cancelled', html }),
+    body:    JSON.stringify({ from: 'FamilyForce <scout@getfamilyforce.com>', to: [toEmail], reply_to: ['support@getfamilyforce.com'], subject: 'Your Scout subscription has been cancelled', html }),
   })
   if (!emailRes.ok) {
     const errBody = await emailRes.text().catch(() => '')

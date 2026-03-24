@@ -201,6 +201,7 @@ Deno.serve(async (req: Request) => {
           from:    `${fromName} <${fromEmail}>`,
           to:      [user.email],
           ...(bccEmail ? { bcc: [bccEmail] } : {}),
+          reply_to: ['support@getfamilyforce.com'],
           subject,
           html,
           tags:    [

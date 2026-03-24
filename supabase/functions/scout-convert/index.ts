@@ -116,7 +116,7 @@ async function sendEmail(resendKey: string, to: string, subject: string, html: s
   await fetch('https://api.resend.com/emails', {
     method:  'POST',
     headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-    body:    JSON.stringify({ from: 'FamilyForce <scout@getfamilyforce.com>', to: [to], subject, html }),
+    body:    JSON.stringify({ from: 'FamilyForce <scout@getfamilyforce.com>', to: [to], reply_to: ['support@getfamilyforce.com'], subject, html }),
   })
 }
 

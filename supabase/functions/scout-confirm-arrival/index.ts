@@ -329,6 +329,7 @@ Deno.serve(async (req: Request) => {
           ],
         }
         if (bccEmail) notifyBody.bcc = [bccEmail]
+        notifyBody.reply_to = ['support@getfamilyforce.com']
 
         const notifyRes = await fetch('https://api.resend.com/emails', {
           method:  'POST',
@@ -421,6 +422,7 @@ Deno.serve(async (req: Request) => {
               body: JSON.stringify({
                 from:    `${fromName} <${fromEmail}>`,
                 to:      [memberUser.email],
+                reply_to: ['support@getfamilyforce.com'],
                 subject: `${child.name} has arrived! 🎉`,
                 html:    familyHtml,
                 tags:    [
@@ -492,6 +494,7 @@ Deno.serve(async (req: Request) => {
             body: JSON.stringify({
               from:    `${fromName} <${fromEmail}>`,
               to:      [ownerUser.email],
+              reply_to: ['support@getfamilyforce.com'],
               subject: `${child.name} has arrived! 🎉`,
               html:    ownerHtml,
               tags:    [
