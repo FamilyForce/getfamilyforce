@@ -111,19 +111,25 @@ function buildGiftEmail(opts: {
 </td></tr>
 
 <!-- Hero card -->
-<tr><td style="background:#6E4ED6;border-radius:20px;padding:32px;text-align:center">
-  <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.1em;text-transform:uppercase;margin:0 0 10px">A gift for you 🎁</p>
-  <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:400;color:#FFFFFF;margin:0 0 10px;line-height:1.3">Never miss a milestone.</h1>
-  <p style="font-family:'Outfit',Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.85);margin:0 0 24px;line-height:1.6">${buyerName} gave you ${planLabel} of Scout — research-backed developmental milestone tracking delivered to your inbox every month.</p>
-  ${personalMessage ? `
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px">
-    <tr><td style="background:rgba(255,255,255,.15);border-radius:12px;padding:16px">
-      <p style="font-family:Georgia,'Times New Roman',serif;font-size:15px;color:#FFFFFF;margin:0;line-height:1.7;font-style:italic">"${personalMessage}"</p>
-      <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.7);margin:8px 0 0">— ${buyerName}</p>
+<tr><td style="background:#FFFFFF;border-radius:20px;overflow:hidden;border:1px solid #E5E2EC">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td style="background:#6E4ED6;padding:14px 32px;text-align:center">
+      <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;font-weight:700;color:rgba(255,255,255,.85);letter-spacing:.1em;text-transform:uppercase;margin:0">A gift for you 🎁</p>
     </td></tr>
-  </table>` : ''}
-  <a href="${redeemUrl}" style="display:inline-block;background:#FFFFFF;color:#5B3CC4;font-family:'Outfit',Arial,sans-serif;font-size:16px;font-weight:700;padding:15px 32px;border-radius:100px;text-decoration:none">Claim your gift →</a>
-  <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,.6);margin:16px 0 0">No credit card needed to claim.</p>
+    <tr><td style="padding:28px 32px 32px;text-align:center">
+      <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:400;color:#1A1033;margin:0 0 12px;line-height:1.3">Never miss a milestone.</h1>
+      <p style="font-family:'Outfit',Arial,sans-serif;font-size:15px;color:#4A4458;margin:0 0 24px;line-height:1.6">${buyerName} gave you ${planLabel} of Scout — research-backed developmental milestone tracking delivered to your inbox every month.</p>
+      ${personalMessage ? `
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px">
+        <tr><td style="background:#F5F3FF;border-radius:12px;padding:16px;border-left:3px solid #6E4ED6">
+          <p style="font-family:Georgia,'Times New Roman',serif;font-size:15px;color:#2D1F5E;margin:0;line-height:1.7;font-style:italic">"${personalMessage}"</p>
+          <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#6E4ED6;margin:8px 0 0">— ${buyerName}</p>
+        </td></tr>
+      </table>` : ''}
+      <a href="${redeemUrl}" style="display:inline-block;background:#6E4ED6;color:#FFFFFF;font-family:'Outfit',Arial,sans-serif;font-size:16px;font-weight:700;padding:15px 32px;border-radius:100px;text-decoration:none">Claim your gift →</a>
+      <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;color:#8A879A;margin:14px 0 0">No credit card needed to claim.</p>
+    </td></tr>
+  </table>
 </td></tr>
 <tr><td style="height:16px"></td></tr>
 
