@@ -4,7 +4,7 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const H = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type', 'Content-Type': 'application/json' }
+const H = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'content-type, authorization', 'Content-Type': 'application/json' }
 
 const ok  = (d: unknown)          => new Response(JSON.stringify(d), { headers: H })
 const err = (s: number, m: string) => new Response(JSON.stringify({ error: m }), { status: s, headers: H })
