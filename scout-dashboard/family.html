@@ -135,9 +135,9 @@ function loadFamilyCircle(user, child) {
   var sb = ScoutDash.getSb()
 
   // Check if user is primary (owns the subscription/child) or partner
-  // family_members uses owner_user_id (the child owner) — no child_id column
+  // Filter by owner_user_id AND child_id — each invite is scoped to one child
   Promise.all([
-    sb.from('family_members').select('*').eq('owner_user_id', child.user_id),
+    sb.from('family_members').select('*').eq('owner_user_id', child.user_id).eq('child_id', child.id),
     sb.from('profiles').select('name').eq('id', child.user_id).maybeSingle(),
   ]).then(function (results) {
     var members     = results[0].data || []
