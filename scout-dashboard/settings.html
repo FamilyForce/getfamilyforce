@@ -332,7 +332,7 @@ function renderSubCard(sub, child) {
   }
 
   var statusLabel = { trialing: 'Free trial', active: 'Active', cancelling: 'Active (cancels soon)', cancelled: 'Cancelled' }[sub.status] || sub.status
-  var html = subRow('Status', statusLabel)  // overwritten below once gift check resolves
+  var html = ''
 
   if (sub.status === 'trialing') {
     var end  = new Date(sub.trial_end)
@@ -372,34 +372,46 @@ function renderSubCard(sub, child) {
       '</div>'
 
   } else if (sub.status === 'active') {
+    html += subRow('Status', statusLabel)
     if (sub.plan) html += subRow('Plan', sub.plan === 'annual' ? 'Annual ($49.99/year)' : sub.plan === 'triennial' ? 'Full Journey ($99.99/3 yr)' : 'Monthly ($9.99/month)')
     if (sub.period_end) {
       var periodLabel = sub.plan === 'triennial' ? 'Access until' : 'Next billing'
       html += subRow(periodLabel, new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }))
     }
-    var cancelNote = sub.plan === 'triennial'
-      ? 'Your access continues until March 2029. No future charges.'
-      : 'Your access continues until the end of the current billing period.'
-    html += '<div class="settings-row" data-owner-only>' +
-      '<div><p class="settings-row-label">Cancel subscription</p>' +
-      '<p class="settings-row-sub">' + cancelNote + '</p></div>' +
-      '<a href="#" class="settings-row-link" style="color:var(--red);white-space:nowrap" onclick="openCancelConfirm(event)">Cancel →</a>' +
-      '</div>'
+    if (sub.plan === 'triennial') {
+      // One-time payment — no cancel button, no auto-renewal
+      html += '<div class="settings-row">' +
+        '<p class="settings-row-label" style="color:#5C5960">One-time payment</p>' +
+        '<span class="settings-row-value" style="color:#5C5960">No auto-renewal</span>' +
+        '</div>'
+    } else {
+      html += '<div class="settings-row" data-owner-only>' +
+        '<div><p class="settings-row-label">Cancel subscription</p>' +
+        '<p class="settings-row-sub">Your access continues until the end of the current billing period.</p></div>' +
+        '<a href="#" class="settings-row-link" style="color:var(--red);white-space:nowrap" onclick="openCancelConfirm(event)">Cancel →</a>' +
+        '</div>'
+    }
 
   } else if (sub.status === 'cancelling') {
     if (sub.plan) html += subRow('Plan', sub.plan === 'annual' ? 'Annual ($49.99/year)' : sub.plan === 'triennial' ? 'Full Journey ($99.99/3 yr)' : 'Monthly ($9.99/month)')
-    html += subRow('Status', '⚠️ Cancelled — access continues until end of period')
-    if (sub.period_end) {
-      var accessEnd = new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-      html += subRow('Access until', accessEnd)
+    if (sub.plan === 'triennial') {
+      // Triennial is a one-time payment — "cancelling" state is informational only
+      html += subRow('Status', '✅ One-time payment — no future charges')
+      if (sub.period_end) html += subRow('Access until', new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }))
+    } else {
+      html += subRow('Status', '⚠️ Cancelled — access continues until end of period')
+      if (sub.period_end) {
+        var accessEnd = new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+        html += subRow('Access until', accessEnd)
+      }
+      html += '<div class="settings-row" data-owner-only>' +
+        '<div>' +
+        '<p class="settings-row-label">Changed your mind?</p>' +
+        '<p class="settings-row-sub">Scout will keep sending emails until your access ends.</p>' +
+        '</div>' +
+        '<a href="#" class="settings-row-link" style="color:var(--terra);white-space:nowrap" onclick="reactivateSub();return false">Reactivate →</a>' +
+        '</div>'
     }
-    html += '<div class="settings-row" data-owner-only>' +
-      '<div>' +
-      '<p class="settings-row-label">Changed your mind?</p>' +
-      '<p class="settings-row-sub">Scout will keep sending emails until your access ends.</p>' +
-      '</div>' +
-      '<a href="#" class="settings-row-link" style="color:var(--terra);white-space:nowrap" onclick="reactivateSub();return false">Reactivate →</a>' +
-      '</div>'
 
   } else if (sub.status === 'cancelled') {
     html += '<div class="settings-row" style="flex-direction:column;gap:10px;align-items:stretch">' +
