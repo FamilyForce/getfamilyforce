@@ -29,7 +29,15 @@ const CORS = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-// Pricing — set via Supabase secrets; these are fallback defaults
+// ─── Age helpers (used below for window queries) ─────────────────────────────
+function ageInWeeks(dob: Date, asOf: Date): number {
+  return Math.floor((asOf.getTime() - dob.getTime()) / (7 * 24 * 3600 * 1000))
+}
+function ageInMonths(dob: Date, asOf: Date): number {
+  const m = (asOf.getFullYear() - dob.getFullYear()) * 12 + (asOf.getMonth() - dob.getMonth())
+  return asOf.getDate() >= dob.getDate() ? m : m - 1
+}
+
 // ─── Telegram alert ───────────────────────────────────────────────────────────
 async function telegramAlert(message: string): Promise<void> {
   const token  = Deno.env.get('TELEGRAM_BOT_TOKEN')
