@@ -315,6 +315,24 @@ Deno.serve(async (req: Request) => {
       }
     }
 
+    // ── Apply referral discount to triennial amount ───────────────────────────
+    // Annual/monthly discounts are handled by Stripe coupon on subscription creation.
+    // Triennial uses a PaymentIntent (no subscription), so we reduce the amount directly.
+    let finalTriennialCents = triennialCents
+    if (appliedCoupon && plan === 'triennial') {
+      try {
+        const coupon = await stripeReq(stripeKey, 'GET', `/coupons/${appliedCoupon}`)
+        if (coupon.percent_off) {
+          finalTriennialCents = Math.round(triennialCents * (1 - coupon.percent_off / 100))
+        } else if (coupon.amount_off) {
+          finalTriennialCents = Math.max(0, triennialCents - coupon.amount_off)
+        }
+        console.log(`[scout-convert] Triennial discount applied: ${triennialCents} → ${finalTriennialCents} cents`)
+      } catch (e) {
+        console.error('[scout-convert] Coupon fetch failed — charging full triennial price:', e)
+      }
+    }
+
     // ══════════════════════════════════════════════════════════════════════════
     // PATH A — Additional child subscription (child #2+)
     // ══════════════════════════════════════════════════════════════════════════
@@ -397,7 +415,7 @@ Deno.serve(async (req: Request) => {
       if (plan === 'triennial') {
         step = 'stripe-payment-intent'
         if (!paymentMethodId) return err(400, 'paymentMethodId required for triennial', step)
-        const pi = await chargeTriennialPI(stripeKey, customerId!, paymentMethodId, triennialCents, user.id)
+        const pi = await chargeTriennialPI(stripeKey, customerId!, paymentMethodId, finalTriennialCents, user.id)
 
         step = 'db-insert'
         await sb.from('scout_subscriptions').insert({
@@ -414,7 +432,7 @@ Deno.serve(async (req: Request) => {
         await sb.from('scout_events').insert({
           user_id: user.id, child_id: childId,
           event_type: 'child_subscription_added',
-          properties: { plan, stripe_pi_id: pi.id, amount_cents: triennialCents, period_end: triennialPeriodEnd },
+          properties: { plan, stripe_pi_id: pi.id, amount_cents: finalTriennialCents, period_end: triennialPeriodEnd },
         })
 
         await telegramAlert(`🎉 Triennial child subscription: user=${user.email}, child=${child.name}`)
@@ -431,7 +449,7 @@ Deno.serve(async (req: Request) => {
           await sendEmail(resendKeyT, user.email, `Your Scout subscription for ${child.name} is confirmed`,
             buildSubscriptionConfirmEmail({
               userName: nameT, userEmail: user.email, plan,
-              amountDisplay: `$${(triennialCents / 100).toFixed(2)}`, chargedNow: true,
+              amountDisplay: `$${(finalTriennialCents / 100).toFixed(2)}`, chargedNow: true,
               subscriptionId: pi.id, nextDigestDate: nextDigestT,
               purchasedAt: new Date(), siteUrl: siteUrlT,
             })
@@ -620,7 +638,7 @@ Deno.serve(async (req: Request) => {
     // ── Triennial: PaymentIntent (one-time charge), no Stripe subscription ──
     if (plan === 'triennial') {
       step = 'stripe-payment-intent'
-      const pi = await chargeTriennialPI(stripeKey, customerId!, paymentMethodId, triennialCents, user.id)
+      const pi = await chargeTriennialPI(stripeKey, customerId!, paymentMethodId, finalTriennialCents, user.id)
 
       step = 'db-update'
       await sb.from('scout_subscriptions').update({
@@ -642,7 +660,7 @@ Deno.serve(async (req: Request) => {
       await sb.from('scout_events').insert({
         user_id: user.id, child_id: eventChildIdT,
         event_type: 'trial_converted',
-        properties: { plan, stripe_pi_id: pi.id, amount_cents: triennialCents, period_end: triennialPeriodEnd },
+        properties: { plan, stripe_pi_id: pi.id, amount_cents: finalTriennialCents, period_end: triennialPeriodEnd },
       })
 
       // No immediate digest on conversion — next digest fires on normal monthly birthday schedule
@@ -667,7 +685,7 @@ Deno.serve(async (req: Request) => {
         await sendEmail(resendKeyT, user.email, `Welcome to Scout — you're all set`,
           buildSubscriptionConfirmEmail({
             userName: nameT, userEmail: user.email, plan,
-            amountDisplay: `$${(triennialCents / 100).toFixed(2)}`, chargedNow: true,
+            amountDisplay: `$${(finalTriennialCents / 100).toFixed(2)}`, chargedNow: true,
             subscriptionId: pi.id, nextDigestDate: nextDigestT,
             purchasedAt: new Date(), siteUrl: siteUrlT,
           })
