@@ -401,6 +401,133 @@ async function getUserDetail(sb: ReturnType<typeof createClient>, email: string)
   }
 }
 
+// ── analytics ─────────────────────────────────────────────────────────────────
+
+async function getAnalytics(sb: ReturnType<typeof createClient>) {
+  const now              = new Date()
+  const startOfMonth     = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+  const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString()
+  const ago7             = new Date(now.getTime() - 7  * 86400000).toISOString()
+  const ago14            = new Date(now.getTime() - 14 * 86400000).toISOString()
+
+  const [
+    { data: trialEvents },
+    { data: convEvents },
+    { data: referralEvents },
+    { data: profiles },
+    { data: expiredTrials },
+    { count: users7d },
+    { count: usersPrev },
+    { data: authResult },
+  ] = await Promise.all([
+    sb.from('scout_events').select('user_id, occurred_at').eq('event_type', 'trial_start'),
+    sb.from('scout_events').select('user_id, occurred_at, properties').eq('event_type', 'trial_converted'),
+    sb.from('scout_events').select('user_id, occurred_at, properties').eq('event_type', 'referral_attributed').order('occurred_at', { ascending: false }),
+    sb.from('profiles').select('id, name, referral_code, created_at'),
+    sb.from('scout_subscriptions').select('user_id, child_id, trial_end, plan, created_at').eq('status', 'trialing').lt('trial_end', now.toISOString()),
+    sb.from('profiles').select('id', { count: 'exact', head: true }).gte('created_at', ago7),
+    sb.from('profiles').select('id', { count: 'exact', head: true }).gte('created_at', ago14).lt('created_at', ago7),
+    sb.auth.admin.listUsers({ page: 1, perPage: 1000 }),
+  ])
+
+  const trials   = trialEvents  ?? []
+  const convs    = convEvents   ?? []
+  const referrals = referralEvents ?? []
+
+  // Funnel counts
+  const trialsAll    = trials.length
+  const trialsMonth  = trials.filter(e => e.occurred_at >= startOfMonth).length
+  const trialsLast   = trials.filter(e => e.occurred_at >= startOfLastMonth && e.occurred_at < startOfMonth).length
+  const convsAll     = convs.length
+  const convsMonth   = convs.filter(e => e.occurred_at >= startOfMonth).length
+  const convsLast    = convs.filter(e => e.occurred_at >= startOfLastMonth && e.occurred_at < startOfMonth).length
+  const convRate     = trialsAll > 0 ? Math.round(convsAll / trialsAll * 100) : 0
+  const convRateMonth = trialsMonth > 0 ? Math.round(convsMonth / trialsMonth * 100) : 0
+
+  // Avg days to convert
+  const convertedUserIds = new Set(convs.map(e => e.user_id))
+  const daysList = convs.map(c => {
+    const s = trials.find(t => t.user_id === c.user_id)
+    if (!s) return null
+    const diff = (new Date(c.occurred_at).getTime() - new Date(s.occurred_at).getTime()) / 86400000
+    return diff >= 0 && diff <= 60 ? diff : null
+  }).filter((d): d is number => d !== null)
+  const avgDays = daysList.length ? Math.round(daysList.reduce((a, b) => a + b, 0) / daysList.length * 10) / 10 : null
+
+  // WoW trends
+  const trials7d   = trials.filter(e => e.occurred_at >= ago7).length
+  const trialsPrev = trials.filter(e => e.occurred_at >= ago14 && e.occurred_at < ago7).length
+  const convs7d    = convs.filter(e => e.occurred_at >= ago7).length
+  const convsPrev  = convs.filter(e => e.occurred_at >= ago14 && e.occurred_at < ago7).length
+
+  // Lost trials — never converted
+  const lostTrials = (expiredTrials ?? []).filter(t => !convertedUserIds.has(t.user_id))
+
+  // Enrich lost trials with email/name from auth
+  const authUsers  = authResult?.users ?? []
+  const emailMap   = Object.fromEntries(authUsers.map(u => [u.id, u.email ?? '']))
+  const profileMap = Object.fromEntries((profiles ?? []).map(p => [p.id, p]))
+
+  const lostEnriched = lostTrials.map(t => ({
+    user_id:    t.user_id,
+    email:      emailMap[t.user_id] ?? '—',
+    name:       (profileMap[t.user_id] as Record<string, string>)?.name ?? '',
+    trial_end:  t.trial_end,
+    plan:       t.plan,
+    created_at: t.created_at,
+  })).sort((a, b) => new Date(b.trial_end).getTime() - new Date(a.trial_end).getTime())
+
+  // Referral leaderboard
+  const referrerMap: Record<string, { name: string; code: string; count: number; revenue: number }> = {}
+  for (const r of referrals) {
+    const rid = (r.properties as Record<string, string>)?.referrer_user_id
+    if (!rid) continue
+    if (!referrerMap[rid]) {
+      const p = profileMap[rid] as Record<string, string> | undefined
+      referrerMap[rid] = { name: p?.name ?? '—', code: p?.referral_code ?? '—', count: 0, revenue: 0 }
+    }
+    referrerMap[rid].count++
+    const plan = (r.properties as Record<string, string>)?.plan ?? 'annual'
+    referrerMap[rid].revenue += plan === 'triennial' ? 74.99 : plan === 'monthly' ? 9.99 : 37.49
+  }
+  const referrers = Object.entries(referrerMap)
+    .map(([id, s]) => ({ id, ...s }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 20)
+
+  return {
+    funnel: {
+      trials_all: trialsAll, trials_month: trialsMonth, trials_last_month: trialsLast,
+      conversions_all: convsAll, conversions_month: convsMonth, conversions_last_month: convsLast,
+      conversion_rate: convRate, conversion_rate_month: convRateMonth,
+      avg_days_to_convert: avgDays,
+      lost_trials_count: lostTrials.length,
+    },
+    trends: {
+      users_7d: users7d ?? 0, users_prev_7d: usersPrev ?? 0,
+      trials_7d: trials7d, trials_prev_7d: trialsPrev,
+      conversions_7d: convs7d, conversions_prev_7d: convsPrev,
+    },
+    lost_trials: lostEnriched,
+    referrers,
+    referral_total: referrals.length,
+  }
+}
+
+async function getCronHealth(sb: ReturnType<typeof createClient>) {
+  const { data, error } = await sb.rpc('admin_cron_health')
+  if (error) return { error: error.message, jobs: [] }
+  const now = new Date()
+  return {
+    jobs: (data ?? []).map((j: Record<string, unknown>) => {
+      const lastRun  = j.last_run ? new Date(j.last_run as string) : null
+      const hoursAgo = lastRun ? Math.round((now.getTime() - lastRun.getTime()) / 3600000 * 10) / 10 : null
+      const isStale  = hoursAgo !== null && hoursAgo > 26 // should run daily; >26h is overdue
+      return { ...j, hours_ago: hoursAgo, is_stale: isStale }
+    })
+  }
+}
+
 // ── main ──────────────────────────────────────────────────────────────────────
 
 Deno.serve(async (req) => {
@@ -427,8 +554,10 @@ Deno.serve(async (req) => {
       case 'gifts':       return ok(await getGifts(sb))
       case 'emails':      return ok(await getEmails(sb))
       case 'upcoming':    return ok(await getUpcoming(sb))
-      case 'user-detail': return ok(await getUserDetail(sb, body.email as string))
-      default:            return err(400, `Unknown action: ${action}`)
+      case 'user-detail':  return ok(await getUserDetail(sb, body.email as string))
+      case 'analytics':    return ok(await getAnalytics(sb))
+      case 'cron-health':  return ok(await getCronHealth(sb))
+      default:             return err(400, `Unknown action: ${action}`)
     }
   } catch (e) {
     console.error('[scout-admin] error in action', action, ':', e)
