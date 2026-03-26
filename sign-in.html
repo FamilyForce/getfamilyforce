@@ -1585,7 +1585,7 @@ button { font: inherit; cursor: pointer; }
           </div>
           <div class="payment-summary-row">
             <span>Billed</span>
-            <strong id="payment-price">$79.99 / year</strong>
+            <strong id="payment-price">$49.99 / year</strong>
           </div>
           <div class="payment-summary-row" id="payment-discount-row" style="display:none">
             <span id="payment-discount-label">Promo code</span>
@@ -1627,7 +1627,7 @@ button { font: inherit; cursor: pointer; }
         <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">Still not sure? <a href="dashboard.html" style="color:var(--terra)">Check out the free library first →</a></p>
         <p class="payment-terms">
           By continuing, you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.
-          You'll be charged $79.99 after your 7-day free trial. Not satisfied within 30 days of billing? <a href="contact.html">Full refund, no questions.</a>
+          You'll be charged $49.99 after your 7-day free trial. Not satisfied within 30 days of billing? <a href="contact.html">Full refund, no questions.</a>
         </p>
       </div>
     </div>
@@ -2073,7 +2073,7 @@ button { font: inherit; cursor: pointer; }
               var paySub     = document.getElementById('payment-sub');
               if (payHeading) payHeading.textContent = 'Continue your Scout subscription';
               if (paySub) paySub.textContent = planIntent === 'annual'
-                ? 'Annual plan — $79.99/year. That\'s $6.67/month. One payment, no monthly reminders.'
+                ? 'Annual plan — $49.99/year. That\'s $4.17/month. One payment, no monthly reminders.'
                 : 'Monthly plan — $9.99/month. Cancel any time.';
               showStep('payment');
             } else {
@@ -2756,7 +2756,7 @@ button { font: inherit; cursor: pointer; }
       var discRow   = document.getElementById('payment-discount-row');
       var discLabel = document.getElementById('payment-discount-label');
       var discVal   = document.getElementById('payment-discount-value');
-      if (priceEl)   priceEl.innerHTML = '<span style="text-decoration:line-through;opacity:.45;font-weight:400">$79.99</span> <span style="color:#16A34A;font-weight:800">FREE</span>';
+      if (priceEl)   priceEl.innerHTML = '<span style="text-decoration:line-through;opacity:.45;font-weight:400">$49.99</span> <span style="color:#16A34A;font-weight:800">FREE</span>';
       if (discRow)   discRow.style.display = '';
       if (discLabel) discLabel.textContent = 'Baby shower gift';
       if (discVal)   discVal.textContent   = '100% off ✓';
@@ -2777,7 +2777,7 @@ button { font: inherit; cursor: pointer; }
     // ── Standard referral / promo codes: 25% off ────────────────
     var isValid   = code.indexOf('FRIEND') !== -1 || code.match(/^[A-Z]{2,8}-[A-Z0-9]{4}$/);
     var discount  = 0.25;
-    var origPrice = 79.99;
+    var origPrice = 49.99;
     var newPrice  = +(origPrice * (1 - discount)).toFixed(2);
     var saving    = +(origPrice - newPrice).toFixed(2);
 
@@ -2790,7 +2790,7 @@ button { font: inherit; cursor: pointer; }
       var discRow   = document.getElementById('payment-discount-row');
       var discLabel = document.getElementById('payment-discount-label');
       var discVal   = document.getElementById('payment-discount-value');
-      if (priceEl)   priceEl.innerHTML = '<span style="text-decoration:line-through;opacity:.45;font-weight:400">$79.99</span> <span style="color:#16A34A">$' + newPrice.toFixed(2) + ' / year</span>';
+      if (priceEl)   priceEl.innerHTML = '<span style="text-decoration:line-through;opacity:.45;font-weight:400">$49.99</span> <span style="color:#16A34A">$' + newPrice.toFixed(2) + ' / year</span>';
       if (discRow)   discRow.style.display = '';
       if (discLabel) discLabel.textContent = 'Code ' + code;
       if (discVal)   discVal.textContent   = '25% off ✓';
@@ -3069,7 +3069,7 @@ button { font: inherit; cursor: pointer; }
           var paySub     = document.getElementById('payment-sub');
           if (payHeading) payHeading.textContent = 'Continue your Scout subscription';
           if (paySub) paySub.textContent = plan === 'annual'
-            ? 'Annual plan — $79.99/year. That\'s $6.67/month. One payment, no monthly reminders.'
+            ? 'Annual plan — $49.99/year. That\'s $4.17/month. One payment, no monthly reminders.'
             : 'Monthly plan — $9.99/month. Cancel any time.';
 
           showStep('payment');

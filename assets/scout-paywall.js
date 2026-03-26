@@ -217,7 +217,7 @@ window.ScoutPaywall = (function () {
       <!-- Plan buttons — annual shown first, card input hidden until clicked -->
       <div id="paywall-plan-select">
         <button class="scout-paywall-btn-annual" onclick="ScoutPaywall.selectPlan('annual')">
-          Continue with Annual — $79.99/year
+          Continue with Annual — $49.99/year
         </button>
         <button class="scout-paywall-btn-monthly" onclick="ScoutPaywall.selectPlan('monthly')">
           Monthly instead — $9.99/month
@@ -334,7 +334,7 @@ window.ScoutPaywall = (function () {
       if (planSelect) planSelect.style.display = 'none'
       if (payForm)    payForm.style.display    = 'block'
       if (submitBtn)  submitBtn.textContent    = plan === 'annual'
-        ? 'Subscribe — $79.99/year →'
+        ? 'Subscribe — $49.99/year →'
         : 'Subscribe — $9.99/month →'
       mountStripeCard()
     },
