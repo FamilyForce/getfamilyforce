@@ -2771,35 +2771,6 @@ button { font: inherit; cursor: pointer; }
       return;
     }
 
-    // ── BABYSHOWER100: 100% off, no card needed ─────────────────
-    if (code === 'BABYSHOWER100') {
-      appliedPromo = { code: code, discount: 1.0, newPrice: 0, freeYear: true };
-      input.style.borderColor = '#16A34A';
-      feedback.style.color    = '#166534';
-      feedback.innerHTML      = '🎉 Gift code applied — your first year is completely free. No card needed.';
-      // Update summary
-      var priceEl   = document.getElementById('payment-price');
-      var discRow   = document.getElementById('payment-discount-row');
-      var discLabel = document.getElementById('payment-discount-label');
-      var discVal   = document.getElementById('payment-discount-value');
-      if (priceEl)   priceEl.innerHTML = '<span style="text-decoration:line-through;opacity:.45;font-weight:400">$49.99</span> <span style="color:#16A34A;font-weight:800">FREE</span>';
-      if (discRow)   discRow.style.display = '';
-      if (discLabel) discLabel.textContent = 'Baby shower gift';
-      if (discVal)   discVal.textContent   = '100% off ✓';
-      // Hide card form — no card needed
-      var cardWrap = document.getElementById('stripe-card-wrap');
-      var nameWrap = document.getElementById('pay-name-wrap');
-      if (cardWrap) cardWrap.style.display = 'none';
-      if (nameWrap) nameWrap.style.display = 'none';
-      // Update button
-      var submitBtn = document.getElementById('pay-submit-btn');
-      if (submitBtn) submitBtn.textContent = 'Redeem Free Year →';
-      input.disabled = true;
-      document.getElementById('promo-apply-btn').disabled = true;
-      document.getElementById('promo-apply-btn').textContent = '✓';
-      return;
-    }
-
     // ── Standard referral / promo codes: 25% off ────────────────
     var isValid   = code.indexOf('FRIEND') !== -1 || code.match(/^[A-Z]{2,8}-[A-Z0-9]{4}$/);
     var discount  = 0.25;
@@ -2931,7 +2902,7 @@ button { font: inherit; cursor: pointer; }
     function showErr(msg) {
       if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
       btn.disabled    = false;
-      btn.textContent = appliedPromo && appliedPromo.freeTriennial ? 'Activate 3-Year Access — Free →' : appliedPromo && appliedPromo.freeYear ? 'Redeem Free Year →' : 'Start free trial →';
+      btn.textContent = appliedPromo && appliedPromo.freeTriennial ? 'Activate 3-Year Access — Free →' : 'Start free trial →';
     }
 
     function callEdgeFunction(session, paymentMethodId) {
@@ -2939,7 +2910,7 @@ button { font: inherit; cursor: pointer; }
       var planIntent    = sessionStorage.getItem('ff_plan_intent') || 'monthly';
       var promoCodeVal  = null;
       var referralCodeVal = null;
-      if (appliedPromo && appliedPromo.code && !appliedPromo.freeTriennial && !appliedPromo.freeYear) {
+      if (appliedPromo && appliedPromo.code && !appliedPromo.freeTriennial) {
         // FRIEND-XXXX-XXXX → referral code; anything else → promo code
         if (/^[A-Z]+-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(appliedPromo.code)) {
           referralCodeVal = appliedPromo.code;
@@ -2973,20 +2944,6 @@ button { font: inherit; cursor: pointer; }
       .catch(function(e) {
         showErr('Network error: ' + (e && e.message ? e.message : String(e)));
       });
-    }
-
-    // ── Free year path: skip card entirely ───────────────────────
-    if (appliedPromo && appliedPromo.freeYear) {
-      btn.textContent = 'Activating...';
-      var sb = window._supabaseClient;
-      sb.auth.getSession().then(function(res) {
-        var session = res.data && res.data.session;
-        if (!session) { showErr('Session expired — please sign in again.'); return; }
-        callEdgeFunction(session, null);
-      }).catch(function(e) {
-        showErr('Auth error: ' + (e && e.message ? e.message : String(e)));
-      });
-      return;
     }
 
     // ── Standard path: card required ─────────────────────────────
