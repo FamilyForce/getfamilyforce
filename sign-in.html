@@ -2931,12 +2931,23 @@ button { font: inherit; cursor: pointer; }
     function showErr(msg) {
       if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
       btn.disabled    = false;
-      btn.textContent = appliedPromo && appliedPromo.freeYear ? 'Redeem Free Year →' : 'Start free trial →';
+      btn.textContent = appliedPromo && appliedPromo.freeTriennial ? 'Activate 3-Year Access — Free →' : appliedPromo && appliedPromo.freeYear ? 'Redeem Free Year →' : 'Start free trial →';
     }
 
     function callEdgeFunction(session, paymentMethodId) {
       btn.textContent = 'Processing...';
-      fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-subscribe', {
+      var planIntent    = sessionStorage.getItem('ff_plan_intent') || 'monthly';
+      var promoCodeVal  = null;
+      var referralCodeVal = null;
+      if (appliedPromo && appliedPromo.code && !appliedPromo.freeTriennial && !appliedPromo.freeYear) {
+        // FRIEND-XXXX-XXXX → referral code; anything else → promo code
+        if (/^[A-Z]+-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(appliedPromo.code)) {
+          referralCodeVal = appliedPromo.code;
+        } else {
+          promoCodeVal = appliedPromo.code;
+        }
+      }
+      fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-convert', {
         method:  'POST',
         headers: {
           'Content-Type':  'application/json',
@@ -2944,7 +2955,9 @@ button { font: inherit; cursor: pointer; }
         },
         body: JSON.stringify({
           paymentMethodId: paymentMethodId || null,
-          promoCode:       appliedPromo ? appliedPromo.code : null,
+          plan:            planIntent,
+          referralCode:    referralCodeVal,
+          promoCode:       promoCodeVal,
           childId:         sessionStorage.getItem('ff_child_id') || null,
         }),
       })
