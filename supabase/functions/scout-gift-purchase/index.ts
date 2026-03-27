@@ -373,7 +373,7 @@ Deno.serve(async (req: Request) => {
         const params = new URLSearchParams({ code })
         const res    = await stripeReq(stripeKey, 'GET', `/promotion_codes?${params}`)
         const promos = res.data ?? []
-        if (!promos.length || !promos[0].coupon) {
+        if (!promos.length) {
           return new Response(JSON.stringify({ ok: false, error: 'Invalid or expired promo code.' }), {
             headers: { 'Content-Type': 'application/json', ...CORS }, status: 200
           })
@@ -383,7 +383,16 @@ Deno.serve(async (req: Request) => {
             headers: { 'Content-Type': 'application/json', ...CORS }, status: 200
           })
         }
-        const coupon  = promos[0].coupon
+        // Stripe newer API: coupon is in promotion.coupon (string ID); older API: coupon is top-level object
+        const couponRef = promos[0].coupon ?? promos[0].promotion?.coupon
+        if (!couponRef) {
+          return new Response(JSON.stringify({ ok: false, error: 'Invalid or expired promo code.' }), {
+            headers: { 'Content-Type': 'application/json', ...CORS }, status: 200
+          })
+        }
+        const coupon = typeof couponRef === 'string'
+          ? await stripeReq(stripeKey, 'GET', `/coupons/${couponRef}`)
+          : couponRef
         const pct     = coupon.percent_off ?? 0
         const fixed   = coupon.amount_off  ?? 0
         const base    = PRICES[vPlan as 'annual' | 'triennial' | 'monthly']
