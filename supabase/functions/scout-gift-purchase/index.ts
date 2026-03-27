@@ -370,11 +370,16 @@ Deno.serve(async (req: Request) => {
       }
 
       try {
-        const params = new URLSearchParams({ code, active: 'true' })
+        const params = new URLSearchParams({ code })
         const res    = await stripeReq(stripeKey, 'GET', `/promotion_codes?${params}`)
         const promos = res.data ?? []
         if (!promos.length || !promos[0].coupon) {
           return new Response(JSON.stringify({ ok: false, error: 'Invalid or expired promo code.' }), {
+            headers: { 'Content-Type': 'application/json', ...CORS }, status: 200
+          })
+        }
+        if (!promos[0].active) {
+          return new Response(JSON.stringify({ ok: false, error: 'This promo code has expired or been deactivated.' }), {
             headers: { 'Content-Type': 'application/json', ...CORS }, status: 200
           })
         }
