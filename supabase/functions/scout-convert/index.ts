@@ -252,7 +252,7 @@ Deno.serve(async (req: Request) => {
     // ── Parse body ────────────────────────────────────────────────────────────
     step = 'parse'
     const body = await req.json()
-    const { paymentMethodId, plan, childId, referralCode, testMode: bodyTestMode } = body
+    const { paymentMethodId, plan, childId, referralCode, testMode: bodyTestMode, promoCode } = body
     if (!['annual', 'monthly', 'triennial'].includes(plan)) return err(400, 'plan must be annual, monthly or triennial', step)
 
     const isAdditionalChild = !!childId
@@ -315,11 +315,43 @@ Deno.serve(async (req: Request) => {
       }
     }
 
-    // ── Apply referral discount to triennial amount ───────────────────────────
+    // ── Validate promo code (takes priority over referral — triennial only) ──
+    step = 'promo-check'
+    let appliedPromoCode: string | null = null
+    let promoTriennialCents: number | null = null
+    if (promoCode && typeof promoCode === 'string') {
+      if (plan !== 'triennial') {
+        return err(400, 'Promo codes are only valid for the 3-year plan', step)
+      }
+      const cleanPromo = promoCode.trim().toUpperCase()
+      try {
+        const promoResult = await stripeReq(stripeKey, 'GET',
+          `/promotion_codes?code=${encodeURIComponent(cleanPromo)}&active=true&limit=1`)
+        const promoObj = promoResult.data?.[0]
+        if (!promoObj) return err(400, 'Invalid or expired promo code', step)
+        const coupon = promoObj.coupon
+        let discounted = triennialCents
+        if (coupon.percent_off)    discounted = Math.round(triennialCents * (1 - coupon.percent_off / 100))
+        else if (coupon.amount_off) discounted = Math.max(0, triennialCents - coupon.amount_off)
+        appliedPromoCode    = cleanPromo
+        promoTriennialCents = discounted
+        appliedCoupon       = null  // promo takes priority over referral
+        referrerUserId      = null
+        console.log(`[scout-convert] Promo ${cleanPromo} valid — ${triennialCents} → ${discounted} cents`)
+      } catch (e) {
+        console.error('[scout-convert] Promo code lookup failed:', e)
+        return err(400, 'Could not validate promo code', step)
+      }
+    }
+
+    // ── Apply discount to triennial amount ────────────────────────────────────
     // Annual/monthly discounts are handled by Stripe coupon on subscription creation.
     // Triennial uses a PaymentIntent (no subscription), so we reduce the amount directly.
     let finalTriennialCents = triennialCents
-    if (appliedCoupon && plan === 'triennial') {
+    if (promoTriennialCents !== null) {
+      // Promo code discount (already computed above)
+      finalTriennialCents = promoTriennialCents
+    } else if (appliedCoupon && plan === 'triennial') {
       try {
         const coupon = await stripeReq(stripeKey, 'GET', `/coupons/${appliedCoupon}`)
         if (coupon.percent_off) {
@@ -327,11 +359,12 @@ Deno.serve(async (req: Request) => {
         } else if (coupon.amount_off) {
           finalTriennialCents = Math.max(0, triennialCents - coupon.amount_off)
         }
-        console.log(`[scout-convert] Triennial discount applied: ${triennialCents} → ${finalTriennialCents} cents`)
+        console.log(`[scout-convert] Referral triennial discount: ${triennialCents} → ${finalTriennialCents} cents`)
       } catch (e) {
         console.error('[scout-convert] Coupon fetch failed — charging full triennial price:', e)
       }
     }
+    const isFreeTriennial = plan === 'triennial' && finalTriennialCents === 0
 
     // ══════════════════════════════════════════════════════════════════════════
     // PATH A — Additional child subscription (child #2+)
@@ -414,8 +447,10 @@ Deno.serve(async (req: Request) => {
       // ── Triennial: PaymentIntent (one-time charge), no Stripe subscription ──
       if (plan === 'triennial') {
         step = 'stripe-payment-intent'
-        if (!paymentMethodId) return err(400, 'paymentMethodId required for triennial', step)
-        const pi = await chargeTriennialPI(stripeKey, customerId!, paymentMethodId, finalTriennialCents, user.id)
+        if (!isFreeTriennial && !paymentMethodId) return err(400, 'paymentMethodId required for triennial', step)
+        const piId = isFreeTriennial
+          ? null
+          : (await chargeTriennialPI(stripeKey, customerId!, paymentMethodId, finalTriennialCents, user.id)).id
 
         step = 'db-insert'
         await sb.from('scout_subscriptions').insert({
@@ -423,7 +458,7 @@ Deno.serve(async (req: Request) => {
           child_id:                  childId,
           status:                    'active',
           stripe_customer_id:        customerId,
-          stripe_payment_intent_id:  pi.id,
+          stripe_payment_intent_id:  piId,
           period_end:                triennialPeriodEnd,
           plan,
         })
@@ -432,10 +467,10 @@ Deno.serve(async (req: Request) => {
         await sb.from('scout_events').insert({
           user_id: user.id, child_id: childId,
           event_type: 'child_subscription_added',
-          properties: { plan, stripe_pi_id: pi.id, amount_cents: finalTriennialCents, period_end: triennialPeriodEnd },
+          properties: { plan, stripe_pi_id: piId, amount_cents: finalTriennialCents, period_end: triennialPeriodEnd, promo_code: appliedPromoCode },
         })
 
-        await telegramAlert(`🎉 Triennial child subscription: user=${user.email}, child=${child.name}`)
+        await telegramAlert(`🎉 Triennial child subscription: user=${user.email}, child=${child.name}${isFreeTriennial ? ' (FREE via promo)' : ''}`)
 
         step = 'email-confirm'
         const resendKeyT = Deno.env.get('RESEND_API_KEY')
@@ -449,8 +484,8 @@ Deno.serve(async (req: Request) => {
           await sendEmail(resendKeyT, user.email, `Your Scout subscription for ${child.name} is confirmed`,
             buildSubscriptionConfirmEmail({
               userName: nameT, userEmail: user.email, plan,
-              amountDisplay: `$${(finalTriennialCents / 100).toFixed(2)}`, chargedNow: true,
-              subscriptionId: pi.id, nextDigestDate: nextDigestT,
+              amountDisplay: isFreeTriennial ? 'Free (promo applied)' : `$${(finalTriennialCents / 100).toFixed(2)}`, chargedNow: !isFreeTriennial,
+              subscriptionId: piId ?? 'promo-free', nextDigestDate: nextDigestT,
               purchasedAt: new Date(), siteUrl: siteUrlT,
             })
           ).catch(e => console.error('[scout-convert] Triennial email failed (non-fatal):', e))
@@ -458,7 +493,7 @@ Deno.serve(async (req: Request) => {
 
         return new Response(JSON.stringify({
           ok: true, mode: 'additional_child', plan, childId,
-          periodEnd: triennialPeriodEnd, paymentIntentId: pi.id,
+          periodEnd: triennialPeriodEnd, ...(piId ? { paymentIntentId: piId } : { free: true }),
         }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
       }
 
@@ -626,19 +661,24 @@ Deno.serve(async (req: Request) => {
     }
 
     // Attach PM
-    step = 'pm-attach'
-    await stripeReq(stripeKey, 'POST', `/payment_methods/${paymentMethodId}/attach`, {
-      customer: customerId,
-    })
-    step = 'pm-set-default'
-    await stripeReq(stripeKey, 'POST', `/customers/${customerId!}`, {
-      'invoice_settings[default_payment_method]': paymentMethodId,
-    })
+    if (!isFreeTriennial) {
+      step = 'pm-attach'
+      await stripeReq(stripeKey, 'POST', `/payment_methods/${paymentMethodId}/attach`, {
+        customer: customerId,
+      })
+      step = 'pm-set-default'
+      await stripeReq(stripeKey, 'POST', `/customers/${customerId!}`, {
+        'invoice_settings[default_payment_method]': paymentMethodId,
+      })
+    }
 
     // ── Triennial: PaymentIntent (one-time charge), no Stripe subscription ──
     if (plan === 'triennial') {
       step = 'stripe-payment-intent'
-      const pi = await chargeTriennialPI(stripeKey, customerId!, paymentMethodId, finalTriennialCents, user.id)
+      if (!isFreeTriennial && !paymentMethodId) return err(400, 'paymentMethodId required for triennial', step)
+      const piId = isFreeTriennial
+        ? null
+        : (await chargeTriennialPI(stripeKey, customerId!, paymentMethodId, finalTriennialCents, user.id)).id
 
       step = 'db-update'
       // Resolve child_id — use subToConvert.child_id if set, else find oldest child
@@ -651,7 +691,7 @@ Deno.serve(async (req: Request) => {
       await sb.from('scout_subscriptions').update({
         status:                    'active',
         stripe_customer_id:        customerId,
-        stripe_payment_intent_id:  pi.id,
+        stripe_payment_intent_id:  piId,
         period_end:                triennialPeriodEnd,
         plan,
         ...(eventChildIdT ? { child_id: eventChildIdT } : {}),
@@ -662,12 +702,12 @@ Deno.serve(async (req: Request) => {
       await sb.from('scout_events').insert({
         user_id: user.id, child_id: eventChildIdT,
         event_type: 'trial_converted',
-        properties: { plan, stripe_pi_id: pi.id, amount_cents: finalTriennialCents, period_end: triennialPeriodEnd },
+        properties: { plan, stripe_pi_id: piId, amount_cents: finalTriennialCents, period_end: triennialPeriodEnd, promo_code: appliedPromoCode },
       })
 
       // No immediate digest on conversion — next digest fires on normal monthly birthday schedule
 
-      await telegramAlert(`💳 Triennial trial converted! user=${user.email}`)
+      await telegramAlert(`💳 Triennial trial converted! user=${user.email}${isFreeTriennial ? ' (FREE via promo)' : ''}`)
 
       step = 'email-confirm'
       const resendKeyT = Deno.env.get('RESEND_API_KEY')
@@ -687,8 +727,8 @@ Deno.serve(async (req: Request) => {
         await sendEmail(resendKeyT, user.email, `Welcome to Scout — you're all set`,
           buildSubscriptionConfirmEmail({
             userName: nameT, userEmail: user.email, plan,
-            amountDisplay: `$${(finalTriennialCents / 100).toFixed(2)}`, chargedNow: true,
-            subscriptionId: pi.id, nextDigestDate: nextDigestT,
+            amountDisplay: isFreeTriennial ? 'Free (promo applied)' : `$${(finalTriennialCents / 100).toFixed(2)}`, chargedNow: !isFreeTriennial,
+            subscriptionId: piId ?? 'promo-free', nextDigestDate: nextDigestT,
             purchasedAt: new Date(), siteUrl: siteUrlT,
           })
         ).catch(e => console.error('[scout-convert] Triennial email failed (non-fatal):', e))
@@ -696,7 +736,7 @@ Deno.serve(async (req: Request) => {
 
       return new Response(JSON.stringify({
         ok: true, mode: 'trial_converted', plan,
-        periodEnd: triennialPeriodEnd, paymentIntentId: pi.id,
+        periodEnd: triennialPeriodEnd, ...(piId ? { paymentIntentId: piId } : { free: true }),
       }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
     }
 

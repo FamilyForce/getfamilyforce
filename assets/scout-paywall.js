@@ -222,6 +222,27 @@ window.ScoutPaywall = (function () {
         <button class="scout-paywall-btn-monthly" onclick="ScoutPaywall.selectPlan('monthly')">
           Monthly instead — $9.99/month
         </button>
+        <div id="paywall-promo-wrap" style="margin-top:8px">
+          <button type="button" id="paywall-promo-toggle"
+            onclick="ScoutPaywall.togglePromoInput()"
+            style="background:none;border:none;font-family:var(--sans,'Outfit',sans-serif);font-size:12px;color:#8A879A;cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:2px">
+            Have a promo code?
+          </button>
+          <div id="paywall-promo-field" style="display:none;margin-top:8px;display:none">
+            <div style="display:flex;gap:8px;align-items:center">
+              <input id="paywall-promo-input" type="text" placeholder="Enter code"
+                autocomplete="off" autocapitalize="characters"
+                oninput="this.value=this.value.toUpperCase()"
+                style="flex:1;border:1.5px solid #E5E2EC;border-radius:10px;padding:10px 14px;font-family:var(--sans,'Outfit',sans-serif);font-size:14px;color:#1D1D1F;background:#FAFAFA;outline:none;box-sizing:border-box">
+              <button type="button" id="paywall-promo-apply-btn"
+                onclick="ScoutPaywall.applyPromoCode()"
+                style="padding:10px 16px;background:var(--elevated,#F5F3FF);border:1.5px solid #C4B5FD;border-radius:10px;font-family:var(--sans,'Outfit',sans-serif);font-size:13px;font-weight:700;color:#6E4ED6;cursor:pointer;white-space:nowrap;flex-shrink:0">
+                Apply
+              </button>
+            </div>
+            <p id="paywall-promo-feedback" style="font-size:11px;margin-top:6px;display:none"></p>
+          </div>
+        </div>
       </div>
 
       <!-- Card input (shown after plan selected) -->
@@ -229,18 +250,20 @@ window.ScoutPaywall = (function () {
         <p style="font-size:13px;color:#5C5960;margin:0 0 12px">
           <button onclick="ScoutPaywall.backToPlanSelect()" style="background:none;border:none;color:#6E4ED6;font-size:13px;cursor:pointer;padding:0">← Change plan</button>
         </p>
-        <div id="paywall-name-wrap" style="margin-bottom:12px">
-          <label style="font-size:12px;font-weight:600;color:#5C5960;display:block;margin-bottom:6px">Name on card</label>
-          <input id="paywall-card-name" type="text" placeholder="Full name" autocomplete="cc-name"
-            style="width:100%;box-sizing:border-box;border:1.5px solid #E5E2EC;border-radius:10px;padding:11px 14px;font-family:var(--sans,'Outfit',sans-serif);font-size:14px;color:#1D1D1F;background:#FAFAFA;outline:none">
+        <div id="paywall-card-section">
+          <div id="paywall-name-wrap" style="margin-bottom:12px">
+            <label style="font-size:12px;font-weight:600;color:#5C5960;display:block;margin-bottom:6px">Name on card</label>
+            <input id="paywall-card-name" type="text" placeholder="Full name" autocomplete="cc-name"
+              style="width:100%;box-sizing:border-box;border:1.5px solid #E5E2EC;border-radius:10px;padding:11px 14px;font-family:var(--sans,'Outfit',sans-serif);font-size:14px;color:#1D1D1F;background:#FAFAFA;outline:none">
+          </div>
+          <label style="font-size:12px;font-weight:600;color:#5C5960;display:block;margin-bottom:6px">Card details</label>
+          <div id="paywall-stripe-element" class="scout-paywall-card-input"></div>
+          <div id="paywall-card-error" class="scout-paywall-card-error"></div>
         </div>
-        <label style="font-size:12px;font-weight:600;color:#5C5960;display:block;margin-bottom:6px">Card details</label>
-        <div id="paywall-stripe-element" class="scout-paywall-card-input"></div>
-        <div id="paywall-card-error" class="scout-paywall-card-error"></div>
         <button class="scout-paywall-btn-annual" id="paywall-submit-btn" onclick="ScoutPaywall.submitPayment()">
           Subscribe now →
         </button>
-        <p class="scout-paywall-terms">
+        <p class="scout-paywall-terms" id="paywall-terms-text">
           🔒 Secured by Stripe. Cancel any time. 30-day refund guarantee.<br>
           By continuing you agree to our <a href="/terms.html" style="color:#6E4ED6">Terms</a>.
         </p>
@@ -288,8 +311,9 @@ window.ScoutPaywall = (function () {
   }
 
   // ─── Public API ─────────────────────────────────────────────────────────────
-  var _selectedPlan = 'annual'
-  var _childName    = 'your child'
+  var _selectedPlan  = 'annual'
+  var _childName     = 'your child'
+  var _appliedPromo  = null  // { code, free } — set when a valid promo code is applied
 
   return {
 
@@ -326,14 +350,70 @@ window.ScoutPaywall = (function () {
       if (card) setTimeout(function () { card.scrollIntoView({ behavior: 'smooth', block: 'center' }) }, 100)
     },
 
+    togglePromoInput: function () {
+      var field = document.getElementById('paywall-promo-field')
+      if (!field) return
+      var isHidden = field.style.display === 'none' || field.style.display === ''
+      field.style.display = isHidden ? 'block' : 'none'
+      if (isHidden) {
+        var input = document.getElementById('paywall-promo-input')
+        if (input) input.focus()
+      }
+    },
+
+    applyPromoCode: function () {
+      var input    = document.getElementById('paywall-promo-input')
+      var feedback = document.getElementById('paywall-promo-feedback')
+      var code     = (input ? input.value : '').trim().toUpperCase()
+      if (!code) return
+
+      if (code === 'SCOUT3FREE') {
+        _appliedPromo = { code: code, free: true }
+        _selectedPlan = 'triennial'
+
+        // Update promo UI
+        if (input) { input.disabled = true; input.style.borderColor = '#16A34A' }
+        var applyBtn = document.getElementById('paywall-promo-apply-btn')
+        if (applyBtn) { applyBtn.disabled = true; applyBtn.textContent = '✓' }
+        if (feedback) {
+          feedback.style.display = 'block'
+          feedback.style.color   = '#166534'
+          feedback.textContent   = '🎉 SCOUT3FREE applied — 3 years completely free!'
+        }
+
+        // Switch to the payment form, hide card (no charge needed)
+        var planSelect  = document.getElementById('paywall-plan-select')
+        var payForm     = document.getElementById('paywall-payment-form')
+        var cardSection = document.getElementById('paywall-card-section')
+        var submitBtn   = document.getElementById('paywall-submit-btn')
+        var termsText   = document.getElementById('paywall-terms-text')
+        if (planSelect)  planSelect.style.display  = 'none'
+        if (payForm)     payForm.style.display     = 'block'
+        if (cardSection) cardSection.style.display = 'none'
+        if (submitBtn)   submitBtn.textContent     = 'Activate 3-Year Access — Free →'
+        if (termsText)   termsText.textContent     = 'No card required. 3 years of Scout, on us.'
+      } else {
+        _appliedPromo = null
+        if (input) input.style.borderColor = '#EF4444'
+        if (feedback) {
+          feedback.style.display = 'block'
+          feedback.style.color   = '#DC2626'
+          feedback.textContent   = 'That code isn\'t valid. Check for typos and try again.'
+        }
+      }
+    },
+
     selectPlan: function (plan) {
       _selectedPlan = plan
+      _appliedPromo = null  // clear any promo if user manually picks a plan
       var planSelect = document.getElementById('paywall-plan-select')
       var payForm    = document.getElementById('paywall-payment-form')
       var submitBtn  = document.getElementById('paywall-submit-btn')
-      if (planSelect) planSelect.style.display = 'none'
-      if (payForm)    payForm.style.display    = 'block'
-      if (submitBtn)  submitBtn.textContent    = plan === 'annual'
+      var cardSection = document.getElementById('paywall-card-section')
+      if (planSelect)  planSelect.style.display  = 'none'
+      if (payForm)     payForm.style.display     = 'block'
+      if (cardSection) cardSection.style.display = 'block'
+      if (submitBtn)   submitBtn.textContent     = plan === 'annual'
         ? 'Subscribe — $49.99/year →'
         : 'Subscribe — $9.99/month →'
       mountStripeCard()
@@ -350,18 +430,61 @@ window.ScoutPaywall = (function () {
       var btn    = document.getElementById('paywall-submit-btn')
       var errEl  = document.getElementById('paywall-card-error')
       var nameEl = document.getElementById('paywall-card-name')
-      if (!stripeInstance || !stripeCard) return
+      var isFree = _appliedPromo && _appliedPromo.free
 
       if (btn) { btn.disabled = true; btn.textContent = 'Processing…' }
       if (errEl) errEl.style.display = 'none'
 
       var sb = window._supabaseClient
-      if (!sb) { if (btn) { btn.disabled = false; btn.textContent = 'Subscribe now →' } return }
+      if (!sb) { if (btn) { btn.disabled = false; btn.textContent = isFree ? 'Activate 3-Year Access — Free →' : 'Subscribe now →' } return }
 
       sb.auth.getSession().then(function (res) {
         var session = res.data && res.data.session
-        if (!session) { if (btn) { btn.disabled = false; btn.textContent = 'Subscribe now →' } return }
+        if (!session) { if (btn) { btn.disabled = false; btn.textContent = isFree ? 'Activate 3-Year Access — Free →' : 'Subscribe now →' } return }
 
+        function callConvert(paymentMethodId) {
+          fetch(CONVERT_URL, {
+            method:  'POST',
+            headers: {
+              'Content-Type':  'application/json',
+              'Authorization': 'Bearer ' + session.access_token,
+            },
+            body: JSON.stringify({
+              paymentMethodId: paymentMethodId || null,
+              plan:            _selectedPlan,
+              promoCode:       _appliedPromo ? _appliedPromo.code : null,
+            }),
+          })
+          .then(function (r) { return r.json() })
+          .then(function (data) {
+            if (!data.ok) {
+              if (errEl) { errEl.style.display = 'block'; errEl.textContent = data.error || 'Something went wrong. Please try again.' }
+              if (btn)   { btn.disabled = false; btn.textContent = isFree ? 'Activate 3-Year Access — Free →' : 'Subscribe now →' }
+              return
+            }
+            var paywallCard = document.getElementById('scout-paywall-card')
+            var banner      = document.getElementById('scout-trial-banner')
+            if (paywallCard) paywallCard.remove()
+            if (banner)      banner.remove()
+
+            showToast(isFree ? '🎉 3 years of Scout activated. Welcome aboard!' : '🎉 You\'re subscribed. Your next digest is on its way.')
+            setTimeout(function () { window.location.reload() }, 3000)
+          })
+          .catch(function (e) {
+            if (errEl) { errEl.style.display = 'block'; errEl.textContent = 'Network error. Please try again.' }
+            if (btn)   { btn.disabled = false; btn.textContent = isFree ? 'Activate 3-Year Access — Free →' : 'Subscribe now →' }
+            console.error('[ScoutPaywall] Network error:', e)
+          })
+        }
+
+        // ── Free promo path: skip card entirely ─────────────────────────────
+        if (isFree) {
+          callConvert(null)
+          return
+        }
+
+        // ── Paid path: collect card first ───────────────────────────────────
+        if (!stripeInstance || !stripeCard) return
         stripeInstance.createPaymentMethod({
           type: 'card',
           card: stripeCard,
@@ -372,41 +495,7 @@ window.ScoutPaywall = (function () {
             if (btn)   { btn.disabled = false; btn.textContent = 'Subscribe now →' }
             return
           }
-
-          fetch(CONVERT_URL, {
-            method:  'POST',
-            headers: {
-              'Content-Type':  'application/json',
-              'Authorization': 'Bearer ' + session.access_token,
-            },
-            body: JSON.stringify({
-              paymentMethodId: result.paymentMethod.id,
-              plan:            _selectedPlan,
-            }),
-          })
-          .then(function (r) { return r.json() })
-          .then(function (data) {
-            if (!data.ok) {
-              if (errEl) { errEl.style.display = 'block'; errEl.textContent = data.error || 'Payment failed. Please try again.' }
-              if (btn)   { btn.disabled = false; btn.textContent = 'Subscribe now →' }
-              return
-            }
-            // Success — remove paywall, show toast, reload to refresh content
-            var paywallCard = document.getElementById('scout-paywall-card')
-            var banner      = document.getElementById('scout-trial-banner')
-            if (paywallCard) paywallCard.remove()
-            if (banner)      banner.remove()
-
-            showToast('🎉 You\'re subscribed. Your next digest is on its way.')
-
-            // Reload after 3s to refresh the dashboard with paid content
-            setTimeout(function () { window.location.reload() }, 3000)
-          })
-          .catch(function (e) {
-            if (errEl) { errEl.style.display = 'block'; errEl.textContent = 'Network error. Please try again.' }
-            if (btn)   { btn.disabled = false; btn.textContent = 'Subscribe now →' }
-            console.error('[ScoutPaywall] Network error:', e)
-          })
+          callConvert(result.paymentMethod.id)
         })
       })
     },
