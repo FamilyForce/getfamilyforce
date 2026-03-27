@@ -14,7 +14,7 @@
 
 window.ScoutPaywall = (function () {
 
-  var STRIPE_PK   = 'pk_test_51TAQTZRF5ve13fCKDmbO62d5eyQD1P5elKFxqb10rtEr7kMJ3myKneIpZs26oxTYafC2s1Q796gUnHxa0LuuDkX600u23YbO8I'
+  var STRIPE_PK   = 'pk_live_51TAQTQIbsOmqAIBV8VA8gQdscdslvnT5xLC7sRvPaoy0W4dMhat9OnPaBJZFKn7iq4MorTbvjcPoTIYoxbn1ACnx00HJEpmwFH'
   var CONVERT_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-convert'
 
   var stripeInstance = null
