@@ -271,7 +271,7 @@ ${!isFree ? `<tr><td style="background:#F9F8FF;border:1.5px solid #E5E2EC;border
   <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#5C5960;margin:0 0 14px;line-height:1.6">Download a printable gift card — print it, pop it in an envelope, and hand it over.</p>
   <a href="${printCardUrl}" style="display:inline-block;background:#6E4ED6;color:#fff;font-family:'Outfit',Arial,sans-serif;font-size:14px;font-weight:700;padding:12px 24px;border-radius:100px;text-decoration:none">Download printable card →</a>
 </td></tr>
-<tr><td style="height:12px"></td></tr>
+${referralCode ? `<tr><td style="height:12px"></td></tr>
 
 <!-- Referral -->
 <tr><td style="background:#6E4ED6;border-radius:16px;padding:24px">
@@ -280,7 +280,7 @@ ${!isFree ? `<tr><td style="background:#F9F8FF;border:1.5px solid #E5E2EC;border
   <p style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.8);margin:0 0 16px;line-height:1.6">Share with anyone — they get <strong style="color:#fff">25% off</strong> their first Scout payment. Works for yourself too.</p>
   <a href="${siteUrl}/sign-in.html?promo=${referralCode}" style="display:inline-block;background:#FFFFFF;color:#5B3CC4;font-family:'Outfit',Arial,sans-serif;font-size:14px;font-weight:700;padding:12px 24px;border-radius:100px;text-decoration:none">Use your code →</a>
 </td></tr>
-<tr><td style="height:32px"></td></tr>
+<tr><td style="height:32px"></td></tr>` : ''}
 
 <!-- Sig -->
 <tr><td>
@@ -350,6 +350,7 @@ Deno.serve(async (req: Request) => {
       const TEST_CODES: Record<string, { pct: number; label: string }> = {
         'FRIEND-TEST-100': { pct: 100, label: '100% off (test)' },
         'FRIEND-TEST-25':  { pct: 25,  label: '25% off (test)'  },
+        'SCOUT3FREE':      { pct: 100, label: '100% off (SCOUT3FREE)' },
       }
       // Also accept any FRIEND-XXXX-XXXX pattern as 100% off for generated codes
       const testEntry = TEST_CODES[code.toUpperCase()]
