@@ -420,10 +420,22 @@ window.ScoutPaywall = (function () {
     },
 
     backToPlanSelect: function () {
-      var planSelect = document.getElementById('paywall-plan-select')
-      var payForm    = document.getElementById('paywall-payment-form')
-      if (planSelect) planSelect.style.display = 'block'
-      if (payForm)    payForm.style.display    = 'none'
+      _appliedPromo = null
+      var planSelect  = document.getElementById('paywall-plan-select')
+      var payForm     = document.getElementById('paywall-payment-form')
+      var cardSection = document.getElementById('paywall-card-section')
+      if (planSelect)  planSelect.style.display  = 'block'
+      if (payForm)     payForm.style.display     = 'none'
+      if (cardSection) cardSection.style.display = 'block'
+      // Reset promo input UI
+      var promoInput    = document.getElementById('paywall-promo-input')
+      var promoApplyBtn = document.getElementById('paywall-promo-apply-btn')
+      var promoFeedback = document.getElementById('paywall-promo-feedback')
+      var promoField    = document.getElementById('paywall-promo-field')
+      if (promoInput)    { promoInput.disabled = false; promoInput.value = ''; promoInput.style.borderColor = '' }
+      if (promoApplyBtn) { promoApplyBtn.disabled = false; promoApplyBtn.textContent = 'Apply' }
+      if (promoFeedback) { promoFeedback.style.display = 'none'; promoFeedback.textContent = '' }
+      if (promoField)    promoField.style.display = 'none'
     },
 
     submitPayment: function () {

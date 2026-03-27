@@ -318,6 +318,7 @@ Deno.serve(async (req: Request) => {
     // ── Validate promo code (takes priority over referral — triennial only) ──
     step = 'promo-check'
     let appliedPromoCode: string | null = null
+    let promoObjId: string | null = null
     let promoTriennialCents: number | null = null
     if (promoCode && typeof promoCode === 'string') {
       if (plan !== 'triennial') {
@@ -334,10 +335,11 @@ Deno.serve(async (req: Request) => {
         if (coupon.percent_off)    discounted = Math.round(triennialCents * (1 - coupon.percent_off / 100))
         else if (coupon.amount_off) discounted = Math.max(0, triennialCents - coupon.amount_off)
         appliedPromoCode    = cleanPromo
+        promoObjId          = promoObj.id   // e.g. promo_1TFLyJIbsOmqAIBV
         promoTriennialCents = discounted
         appliedCoupon       = null  // promo takes priority over referral
         referrerUserId      = null
-        console.log(`[scout-convert] Promo ${cleanPromo} valid — ${triennialCents} → ${discounted} cents`)
+        console.log(`[scout-convert] Promo ${cleanPromo} (${promoObjId}) valid — ${triennialCents} → ${discounted} cents`)
       } catch (e) {
         console.error('[scout-convert] Promo code lookup failed:', e)
         return err(400, 'Could not validate promo code', step)
@@ -471,6 +473,25 @@ Deno.serve(async (req: Request) => {
         })
 
         await telegramAlert(`🎉 Triennial child subscription: user=${user.email}, child=${child.name}${isFreeTriennial ? ' (FREE via promo)' : ''}`)
+
+        // ── Track promo redemption in Stripe via $0 invoice (non-blocking) ──
+        if (isFreeTriennial && promoObjId && customerId) {
+          ;(async () => {
+            try {
+              await stripeReq(stripeKey, 'POST', '/invoiceitems', {
+                customer:    customerId!, currency: 'usd',
+                unit_amount: triennialCents, description: '3-Year Scout Subscription (promo)',
+              })
+              const inv = await stripeReq(stripeKey, 'POST', '/invoices', {
+                customer:                    customerId!,
+                'discounts[0][promotion_code]': promoObjId,
+                auto_advance:                'true',
+              })
+              await stripeReq(stripeKey, 'POST', `/invoices/${inv.id}/finalize`, {})
+              console.log(`[scout-convert] Promo redemption tracked — invoice ${inv.id}`)
+            } catch (e) { console.error('[scout-convert] Promo invoice tracking failed (non-fatal):', e) }
+          })()
+        }
 
         step = 'email-confirm'
         const resendKeyT = Deno.env.get('RESEND_API_KEY')
@@ -708,6 +729,25 @@ Deno.serve(async (req: Request) => {
       // No immediate digest on conversion — next digest fires on normal monthly birthday schedule
 
       await telegramAlert(`💳 Triennial trial converted! user=${user.email}${isFreeTriennial ? ' (FREE via promo)' : ''}`)
+
+      // ── Track promo redemption in Stripe via $0 invoice (non-blocking) ──
+      if (isFreeTriennial && promoObjId && customerId) {
+        ;(async () => {
+          try {
+            await stripeReq(stripeKey, 'POST', '/invoiceitems', {
+              customer:    customerId!, currency: 'usd',
+              unit_amount: triennialCents, description: '3-Year Scout Subscription (promo)',
+            })
+            const inv = await stripeReq(stripeKey, 'POST', '/invoices', {
+              customer:                    customerId!,
+              'discounts[0][promotion_code]': promoObjId,
+              auto_advance:                'true',
+            })
+            await stripeReq(stripeKey, 'POST', `/invoices/${inv.id}/finalize`, {})
+            console.log(`[scout-convert] Promo redemption tracked — invoice ${inv.id}`)
+          } catch (e) { console.error('[scout-convert] Promo invoice tracking failed (non-fatal):', e) }
+        })()
+      }
 
       step = 'email-confirm'
       const resendKeyT = Deno.env.get('RESEND_API_KEY')
