@@ -330,7 +330,12 @@ Deno.serve(async (req: Request) => {
           `/promotion_codes?code=${encodeURIComponent(cleanPromo)}&active=true&limit=1`)
         const promoObj = promoResult.data?.[0]
         if (!promoObj) return err(400, 'Invalid or expired promo code', step)
-        const coupon = promoObj.coupon
+        // Stripe newer API: coupon is in promotion.coupon (string ID); older: top-level coupon object
+        const couponRef = promoObj.coupon ?? promoObj.promotion?.coupon
+        if (!couponRef) return err(400, 'Invalid or expired promo code', step)
+        const coupon = typeof couponRef === 'string'
+          ? await stripeReq(stripeKey, 'GET', `/coupons/${couponRef}`)
+          : couponRef
         let discounted = triennialCents
         if (coupon.percent_off)    discounted = Math.round(triennialCents * (1 - coupon.percent_off / 100))
         else if (coupon.amount_off) discounted = Math.max(0, triennialCents - coupon.amount_off)
