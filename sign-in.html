@@ -2750,7 +2750,7 @@ button { font: inherit; cursor: pointer; }
       appliedPromo = { code: code, discount: 1.0, newPrice: 0, freeTriennial: true };
       input.style.borderColor = '#16A34A';
       feedback.style.color    = '#166534';
-      feedback.innerHTML      = '🎉 SCOUT3FREE applied — 3 years completely free! No card needed.';
+      feedback.innerHTML      = '🎉 SCOUT3FREE applied — 3 years completely free! No card needed. <a href="#" onclick="event.preventDefault();resetPromoCode()" style="color:#166534;text-decoration:underline">Change</a>';
       var priceEl   = document.getElementById('payment-price');
       var discRow   = document.getElementById('payment-discount-row');
       var discLabel = document.getElementById('payment-discount-label');
@@ -2782,7 +2782,7 @@ button { font: inherit; cursor: pointer; }
       appliedPromo = { code: code, discount: discount, newPrice: newPrice };
       input.style.borderColor = '#16A34A';
       feedback.style.color    = '#166534';
-      feedback.textContent    = '✓ Code applied — you save $' + saving.toFixed(2);
+      feedback.innerHTML      = '✓ Code applied — you save $' + saving.toFixed(2) + ' <a href="#" onclick="event.preventDefault();resetPromoCode()" style="color:#166534;text-decoration:underline">Change</a>';
       var priceEl   = document.getElementById('payment-price');
       var discRow   = document.getElementById('payment-discount-row');
       var discLabel = document.getElementById('payment-discount-label');
@@ -2800,6 +2800,27 @@ button { font: inherit; cursor: pointer; }
       feedback.style.color    = '#DC2626';
       feedback.textContent    = 'That code isn\'t valid. Check for typos and try again.';
     }
+  };
+
+  /* ── Reset promo / referral code (allows user to switch codes) ── */
+  window.resetPromoCode = function() {
+    appliedPromo = null;
+    var input     = document.getElementById('promo-code');
+    var feedback  = document.getElementById('promo-feedback');
+    var applyBtn  = document.getElementById('promo-apply-btn');
+    var priceEl   = document.getElementById('payment-price');
+    var discRow   = document.getElementById('payment-discount-row');
+    var cardWrap  = document.getElementById('stripe-card-wrap');
+    var nameWrap  = document.getElementById('pay-name-wrap');
+    var submitBtn = document.getElementById('pay-submit-btn');
+    if (input)    { input.disabled = false; input.value = ''; input.style.borderColor = ''; input.focus(); }
+    if (feedback) { feedback.style.display = 'none'; feedback.textContent = ''; }
+    if (applyBtn) { applyBtn.disabled = false; applyBtn.textContent = 'Apply'; }
+    if (priceEl)  priceEl.innerHTML = '$49.99 / year';
+    if (discRow)  discRow.style.display = 'none';
+    if (cardWrap) cardWrap.style.display = '';
+    if (nameWrap) nameWrap.style.display = '';
+    if (submitBtn) submitBtn.textContent = 'Start free trial →';
   };
 
   /* ── Mount Stripe Card Element ── */
