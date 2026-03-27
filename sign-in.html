@@ -2745,6 +2745,32 @@ button { font: inherit; cursor: pointer; }
 
     feedback.style.display = 'block';
 
+    // ── SCOUT3FREE: 100% off triennial, no card needed ──────────
+    if (code === 'SCOUT3FREE') {
+      appliedPromo = { code: code, discount: 1.0, newPrice: 0, freeTriennial: true };
+      input.style.borderColor = '#16A34A';
+      feedback.style.color    = '#166534';
+      feedback.innerHTML      = '🎉 SCOUT3FREE applied — 3 years completely free! No card needed.';
+      var priceEl   = document.getElementById('payment-price');
+      var discRow   = document.getElementById('payment-discount-row');
+      var discLabel = document.getElementById('payment-discount-label');
+      var discVal   = document.getElementById('payment-discount-value');
+      if (priceEl)   priceEl.innerHTML = '<span style="text-decoration:line-through;opacity:.45;font-weight:400">$99.99</span> <span style="color:#16A34A;font-weight:800">FREE</span>';
+      if (discRow)   discRow.style.display = '';
+      if (discLabel) discLabel.textContent = 'Promo code SCOUT3FREE';
+      if (discVal)   discVal.textContent   = '100% off ✓';
+      var cardWrap = document.getElementById('stripe-card-wrap');
+      var nameWrap = document.getElementById('pay-name-wrap');
+      if (cardWrap) cardWrap.style.display = 'none';
+      if (nameWrap) nameWrap.style.display = 'none';
+      var submitBtn = document.getElementById('pay-submit-btn');
+      if (submitBtn) submitBtn.textContent = 'Activate 3-Year Access — Free →';
+      input.disabled = true;
+      document.getElementById('promo-apply-btn').disabled = true;
+      document.getElementById('promo-apply-btn').textContent = '✓';
+      return;
+    }
+
     // ── BABYSHOWER100: 100% off, no card needed ─────────────────
     if (code === 'BABYSHOWER100') {
       appliedPromo = { code: code, discount: 1.0, newPrice: 0, freeYear: true };
@@ -2851,7 +2877,47 @@ button { font: inherit; cursor: pointer; }
 
   /* ── Submit payment via Stripe + Edge Function ── */
   window.submitPayment = function() {
-    var btn = document.getElementById('payment-submit-btn');
+    var btn = document.getElementById('pay-submit-btn');
+
+    // ── SCOUT3FREE free triennial path: skip card entirely ───────
+    if (appliedPromo && appliedPromo.freeTriennial) {
+      if (btn) { btn.disabled = true; btn.textContent = 'Activating...'; }
+      var sb = window._supabaseClient;
+      sb.auth.getSession().then(function(res) {
+        var session = res.data && res.data.session;
+        if (!session) {
+          if (btn) { btn.disabled = false; btn.textContent = 'Activate 3-Year Access — Free →'; }
+          return;
+        }
+        fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-convert', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+          body: JSON.stringify({
+            paymentMethodId: null,
+            plan:            'triennial',
+            promoCode:       'SCOUT3FREE',
+            childId:         sessionStorage.getItem('ff_child_id') || null,
+          }),
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (!data.ok) {
+            var errEl = document.getElementById('stripe-card-errors');
+            if (errEl) { errEl.textContent = data.error || 'Something went wrong. Please try again.'; errEl.style.display = 'block'; }
+            if (btn) { btn.disabled = false; btn.textContent = 'Activate 3-Year Access — Free →'; }
+            return;
+          }
+          onPaymentSuccess();
+        })
+        .catch(function(e) {
+          var errEl = document.getElementById('stripe-card-errors');
+          if (errEl) { errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block'; }
+          if (btn) { btn.disabled = false; btn.textContent = 'Activate 3-Year Access — Free →'; }
+        });
+      });
+      return;
+    }
+
     if (!stripeInstance || !stripeCard) {
       alert('Payment form not ready. Please refresh and try again.');
       return;
