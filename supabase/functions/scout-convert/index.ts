@@ -617,7 +617,7 @@ Deno.serve(async (req: Request) => {
     // PATH B — Trial conversion (child #1)
     // ══════════════════════════════════════════════════════════════════════════
 
-    if (!paymentMethodId) return err(400, 'paymentMethodId is required', 'parse')
+    if (!isFreeTriennial && !paymentMethodId) return err(400, 'paymentMethodId is required', 'parse')
 
     // Verify user has a trialing subscription
     step = 'verify-trial'
