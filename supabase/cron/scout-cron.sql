@@ -21,7 +21,6 @@ CREATE EXTENSION IF NOT EXISTS pg_cron;
 -- ─── Remove existing Scout jobs (safe to re-run) ─────────────────────────────
 SELECT cron.unschedule('scout-trial-end')       WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-trial-end');
 SELECT cron.unschedule('scout-digest')          WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-digest');
-SELECT cron.unschedule('scout-alert')           WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-alert');
 SELECT cron.unschedule('scout-monitor')         WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-monitor');
 SELECT cron.unschedule('scout-prebirth-nudge')  WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-prebirth-nudge');
 
@@ -82,12 +81,6 @@ SELECT cron.schedule(
   $$
 );
 
--- ─── Job 4: 7-day closing window alert ───────────────────────────────────────
--- DECISION (Mar 16, 2026): NOT scheduled.
--- Scout sends one email/month on the child's birthday.
--- 7-day reminder is handled by .ics VALARM in the calendar invite.
--- Assumes user accepted the calendar event. scout-alert function stays deployed but dormant.
-
 -- ─── Job 4: Daily monitoring + sanity check (daily 09:00 UTC) ────────────────
 -- Runs 1 hour after the main jobs (08:00 UTC) to verify they all fired.
 -- Sends a daily Telegram report: subscriber counts, digests sent, bounce rate.
@@ -108,6 +101,10 @@ SELECT cron.schedule(
 );
 
 -- ─── Verify jobs are scheduled ────────────────────────────────────────────────
+-- REMOVED (Mar 29, 2026): scout-alert (7-day pre-digest warning email)
+-- Reason: redundant — the ICS calendar invite already sends a 7-day VALARM.
+-- Function deleted. email-closing-alert.ts template deleted.
+
 SELECT jobname, schedule, active, command
 FROM cron.job
 WHERE jobname IN ('scout-trial-end', 'scout-digest', 'scout-monitor', 'scout-prebirth-nudge')

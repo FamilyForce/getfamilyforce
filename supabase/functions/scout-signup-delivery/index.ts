@@ -240,6 +240,21 @@ Deno.serve(async (req: Request) => {
     const allWindows   = (windows ?? []) as MilestoneWindow[]
     const aboveFold    = selectAboveFold(allWindows, weeks)
 
+    // Count missed clinical windows (closed but urgency=clinical, not completed) — matches dashboard sectionWindows logic
+    let missedClinicalCount = 0
+    if (!isExpecting && weeks > 0) {
+      const { count: mc } = await sb
+        .from('milestone_windows')
+        .select('id', { count: 'exact', head: true })
+        .eq('active', true)
+        .eq('window_type', 'milestone')
+        .eq('prenatal', false)
+        .eq('urgency', 'clinical')
+        .lt('close_age_weeks', weeks)
+        .lte('open_age_weeks', weeks)
+      missedClinicalCount = mc ?? 0
+    }
+
     // For expecting parents: fetch total post-birth window count for the tease card
     let postBirthWindowCount = 192  // default (matches current DB count)
     if (isExpecting) {
@@ -282,7 +297,7 @@ Deno.serve(async (req: Request) => {
       postBirthWindowCount,
       aboveFold:      aboveFold as DigestWindow[],
       getReadyWindows: getReadyWindows as DigestWindow[],
-      allWindowCount: allWindows.length,
+      allWindowCount: allWindows.length + missedClinicalCount,
       closingCount,
       nextEventDate:  nextBirthday,
       dashboardUrl:   dashUrl,
@@ -434,7 +449,7 @@ Deno.serve(async (req: Request) => {
             postBirthWindowCount,
             aboveFold:      aboveFold as DigestWindow[],
             getReadyWindows: getReadyWindows as DigestWindow[],
-            allWindowCount: allWindows.length,
+            allWindowCount: allWindows.length + missedClinicalCount,
             closingCount,
             nextEventDate:  nextBirthday,
             dashboardUrl:   dashUrl,

@@ -105,6 +105,12 @@ Deno.serve(async (req: Request) => {
 
   const results = { trialEnd: { sent: 0, skipped: 0, errors: 0 }, reengagement: { sent: 0, skipped: 0, errors: 0 } }
 
+  // Shared cutoff — used by both Job A (upper bound) and Job B (lower bound)
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()
+
+  // currentMonth — computed once, used throughout Job A
+  const currentMonth = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`
+
   // ═══════════════════════════════════════════════════════════════
   // JOB A — Trial-end emails
   // ═══════════════════════════════════════════════════════════════
@@ -115,6 +121,7 @@ Deno.serve(async (req: Request) => {
     .select('user_id, trial_end, created_at')
     .eq('status', 'trialing')
     .lte('trial_end', now.toISOString())
+    .gte('trial_end', thirtyDaysAgo)  // exclude users already in Job B range
 
   if (subErr) {
     await telegramAlert(`Job A failed — could not query subscriptions: ${subErr.message}`)
@@ -128,7 +135,6 @@ Deno.serve(async (req: Request) => {
       const userId = sub.user_id
 
       // 1. Dedup check — never send trial-end email twice
-      const currentMonth = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`
       const { data: existing } = await sb
         .from('scout_digest_log')
         .select('id')
@@ -166,7 +172,7 @@ Deno.serve(async (req: Request) => {
       // 4. Query all open windows for this age (for count + top 3)
       const { data: windows } = await sb
         .from('milestone_windows')
-        .select('title, why_it_matters, urgency')
+        .select('title, why_it_matters, what_to_do, urgency')
         .eq('active', true)
         .lte('open_age_weeks', weeks)
         .gte('close_age_weeks', weeks)
@@ -177,7 +183,7 @@ Deno.serve(async (req: Request) => {
 
       // 7. Weeks since signup
       const signupDate = new Date(sub.created_at)
-      const wks        = weeksSince(signupDate, now)
+      const wks        = ageInWeeks(signupDate, now)
 
       // 8. Build CTA URLs — go to sign-in.html with plan pre-selected
       const annualCta    = `${siteUrl}/sign-in.html?intent=subscribe&plan=annual`
@@ -189,8 +195,8 @@ Deno.serve(async (req: Request) => {
       const parentName = teProfileData?.name?.trim() || undefined
 
       const subject = months === 12
-        ? `${child.name} turns 1 today -- your Scout trial ends today`
-        : `${child.name} turns ${months} month${months === 1 ? '' : 's'} today -- your Scout trial ends today`
+        ? `${child.name} turns 1 today — your Scout trial ends today`
+        : `${child.name} turns ${months} month${months === 1 ? '' : 's'} today — your Scout trial ends today`
       const html     = buildTrialEndEmail({
         childName:      child.name,
         parentName,
@@ -209,7 +215,7 @@ Deno.serve(async (req: Request) => {
       // 10. Send
       const messageId = await sendEmail({
         to:        user.email,
-        subject:   `${subject} — ${preview}`,
+        subject,
         html,
         tags:      [
           { name: 'user_id',     value: userId },
@@ -240,7 +246,7 @@ Deno.serve(async (req: Request) => {
         user_id:    userId,
         child_id:   child.id,
         event_type: 'trial_end_email_sent',
-        properties: { months, weeks, messageId, digest_count: digestCount, calendar_count: calendarCount },
+        properties: { months, weeks, messageId, open_window_count: allWindowCount },
       })
 
       results.trialEnd.sent++
@@ -258,8 +264,6 @@ Deno.serve(async (req: Request) => {
   // JOB B — Re-engagement emails (30 days past trial_end, non-converters)
   // ═══════════════════════════════════════════════════════════════
   console.log(`[scout-trial-end] Job B starting — re-engagement`)
-
-  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
   const { data: lapsedSubs } = await sb
     .from('scout_subscriptions')
@@ -328,7 +332,7 @@ Deno.serve(async (req: Request) => {
         userId,
       })
 
-      const subject = `${child.name} is ${months} months -- one window before you go`
+      const subject = `${child.name} is ${months} months — one window before you go`
 
       const messageId = await sendEmail({
         to:      user.email,
@@ -368,6 +372,7 @@ Deno.serve(async (req: Request) => {
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e)
       console.error(`[scout-trial-end] Re-engagement error for ${sub.user_id}:`, msg)
+      await telegramAlert(`Re-engagement email failed for user ${sub.user_id}: ${msg}`)
       results.reengagement.errors++
     }
   }

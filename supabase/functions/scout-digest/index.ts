@@ -272,6 +272,22 @@ Deno.serve(async (req: Request) => {
       // No fallback — if everything is done, aboveFold is empty and email shows "all caught up"
       const aboveFold   = selectAboveFold(openWindows, weeks)
 
+      // Count missed clinical windows (closed, urgency=clinical, not completed) — matches dashboard count
+      let missedClinicalCount = 0
+      if (weeks > 0) {
+        const { data: missedRows } = await sb
+          .from('milestone_windows')
+          .select('id')
+          .eq('active', true)
+          .eq('window_type', 'milestone')
+          .eq('prenatal', false)
+          .eq('urgency', 'clinical')
+          .lt('close_age_weeks', weeks)
+          .lte('open_age_weeks', weeks)
+        const missedIds = (missedRows ?? []).map((r: { id: string }) => r.id)
+        missedClinicalCount = missedIds.filter(id => !completedWindowIds.has(id)).length
+      }
+
       if (allWindows.length === 0) {
         console.log(`[scout-digest] No windows for child ${child.id} at ${weeks}w — skipping`)
         results.skipped++
@@ -333,7 +349,7 @@ Deno.serve(async (req: Request) => {
         aboveFold:       aboveFold as DigestWindow[],
         getReadyWindows: getReadyWindows as DigestWindow[],
         completedWindows,
-        allWindowCount:  allWindows.length,
+        allWindowCount:  allWindows.length + missedClinicalCount,
         closingCount,
         overdueWindows,
         nextEventDate:   nextBirthday,
@@ -472,7 +488,7 @@ Deno.serve(async (req: Request) => {
               aboveFold:       aboveFold as DigestWindow[],
               getReadyWindows: getReadyWindows as DigestWindow[],
               completedWindows,
-              allWindowCount:  allWindows.length,
+              allWindowCount:  allWindows.length + missedClinicalCount,
               closingCount,
               overdueWindows,
               nextEventDate:   nextBirthday,

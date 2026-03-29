@@ -101,7 +101,7 @@ export function buildTrialEndEmail(opts: {
     const bodyText = w.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim()
     const move     = w.what_to_do
       ? w.what_to_do.split('\n')[0].replace(/^[-•·]\s*/, '').trim()
-      : `Open Scout to mark this window for ${childName}.`
+      : ''
     return `
     <tr><td style="padding-bottom:16px">
       <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1px solid ${C.border};border-radius:14px">
@@ -109,14 +109,14 @@ export function buildTrialEndEmail(opts: {
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr><td style="padding-bottom:8px"><p style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:${C.text};margin:0;line-height:1.3">${w.title}</p></td></tr>
             <tr><td style="padding-bottom:14px"><p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${bodyText}</p></td></tr>
-            <tr><td>
+            ${move ? `<tr><td>
               <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:10px">
                 <tr><td style="padding:12px 16px">
                   <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p>
                   <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.6">${move}</p>
                 </td></tr>
               </table>
-            </td></tr>
+            </td></tr>` : ''}
           </table>
         </td></tr>
       </table>
