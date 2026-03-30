@@ -2,6 +2,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
+    { "source": "/scout",          "destination": "/",                     "permanent": false },
     { "source": "/course",         "destination": "/sign-in",              "permanent": false },
     { "source": "/dashboard",      "destination": "/scout-dashboard",      "permanent": true  },
     { "source": "/dashboard.html", "destination": "/scout-dashboard",      "permanent": true  },
