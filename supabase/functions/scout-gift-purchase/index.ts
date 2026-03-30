@@ -517,8 +517,13 @@ Deno.serve(async (req: Request) => {
         // In live mode: re-verify promo is still 100% off and check usage limits
         try {
           const promoCheck    = await stripeReq(stripeKey, 'GET', `/promotion_codes/${stripeDiscountPromoId}`)
-          const pct           = promoCheck?.coupon?.percent_off ?? 0
-          const fixed         = promoCheck?.coupon?.amount_off  ?? 0
+          // Stripe newer API returns coupon as a string ID; resolve to object if needed
+          const couponRef     = promoCheck?.coupon
+          const couponObj     = typeof couponRef === 'string'
+            ? await stripeReq(stripeKey, 'GET', `/coupons/${couponRef}`)
+            : couponRef
+          const pct           = couponObj?.percent_off ?? 0
+          const fixed         = couponObj?.amount_off  ?? 0
           const base          = PRICES[plan as 'annual' | 'triennial' | 'monthly']
           const discountedAmt = fixed
             ? Math.max(0, base.amount - fixed)
