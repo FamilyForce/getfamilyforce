@@ -158,7 +158,7 @@ Name files descriptively: `pin-gift-registry-reality-v1.png`, `pin-milestone-4mo
 
 ### Existing assets (do not regenerate — use these)
 ```
-workspace/pinterest-scout-gift-v5.png     → gift pillar hero pin (READY TO POST)
+workspace/pinterest-scout-gift-v5.png     → gift pillar hero pin (✅ ALREADY POSTED LIVE — do not repost)
 workspace/carousel-01.png through 06.png  → "Registry vs. Reality" carousel (READY TO POST)
 workspace/photo-slide2.jpg                → tired parent, 3am phone glow
 workspace/photo-slide3.jpg                → parent staring at baby monitor
@@ -939,7 +939,7 @@ Do these in order before posting anything:
 - [ ] GA4 UTM tracking confirmed (verify a test click reaches GA with correct params)
 - [ ] First 30 pins created (10 gift, 12 milestone, 5 humor, 3 explainer)
 - [ ] First 7 days scheduled in Postiz (5 fresh + 5 repins/day)
-- [ ] `pinterest-scout-gift-v5.png` scheduled as Day 1 pin (gift pillar, board: Baby Shower Gift Ideas 2026)
+- [x] `pinterest-scout-gift-v5.png` — ✅ ALREADY POSTED LIVE (Mar 2026). Do not repost. Use as style reference only.
 - [ ] "Registry vs. Reality" carousel (`carousel-01` through `06`) scheduled for Day 3
 - [ ] Daily review cadence established (20 min every morning, reviewing 3-days-ago pins)
 
@@ -958,7 +958,7 @@ Do these in order before posting anything:
 |------|---------|
 | `p1-slide-01.png` through `p1-slide-05.png` | Approved Pillar 1 carousel — "Registry vs. Reality" |
 | `p2-milestone-12mo.png` | Approved Pillar 2 pin — 12 Month Milestones |
-| `pinterest-scout-gift-v5.png` | Approved Pillar 3 pin — "Nobody put this on the registry" |
+| `pinterest-scout-gift-v5.png` | Approved Pillar 3 pin — "Nobody put this on the registry" — ✅ ALREADY POSTED LIVE (Mar 2026). Do not repost. |
 | `p4-explainer.png` | Approved Pillar 4 pin — "How Scout Works" |
 
 ### Build scripts (copy and adapt for new pins)
