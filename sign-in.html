@@ -1212,7 +1212,27 @@ button { font: inherit; cursor: pointer; }
     var _justSignedOut = new URLSearchParams(window.location.search).get('signedout') === '1';
     if (!_justSignedOut && window.location.hash.indexOf('access_token') === -1) {
       window._supabaseClient.auth.getSession().then(({ data }) => {
-        if (data.session) window.location.replace('scout-dashboard.html');
+        if (!data.session) return;
+        // If there are pending invite params, handle acceptance before redirecting
+        var _pic = localStorage.getItem('ff_invite_child');
+        var _pie = localStorage.getItem('ff_invite_email');
+        if (_pic && _pie) {
+          localStorage.removeItem('ff_invite_child');
+          localStorage.removeItem('ff_invite_email');
+          var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
+          fetch(FUNCTIONS_URL + '/scout-family-accept', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + data.session.access_token },
+            body: JSON.stringify({ childId: _pic, inviteEmail: _pie }),
+          }).then(function() {
+            localStorage.setItem('scout_active_child_id', _pic);
+            window.location.replace('scout-dashboard.html');
+          }).catch(function() {
+            window.location.replace('scout-dashboard.html');
+          });
+        } else {
+          window.location.replace('scout-dashboard.html');
+        }
       });
     }
 
