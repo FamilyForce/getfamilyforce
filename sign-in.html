@@ -2007,12 +2007,14 @@ button { font: inherit; cursor: pointer; }
           } else if (_ic && _ie) {
             localStorage.removeItem('ff_invite_child');
             localStorage.removeItem('ff_invite_email');
-            localStorage.setItem('scout_active_child_id', _ic);
             fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
               body: JSON.stringify({ childId: _ic, inviteEmail: _ie }),
-            }).finally(function() { window.location.href = 'scout-dashboard.html'; });
+            }).then(function() {
+              localStorage.setItem('scout_active_child_id', _ic);
+              window.location.href = 'scout-dashboard.html';
+            }).catch(function() { window.location.href = 'scout-dashboard.html'; });
           } else if (typeof routeAfterSignup === 'function') {
             routeAfterSignup();
           } else {
@@ -2055,12 +2057,14 @@ button { font: inherit; cursor: pointer; }
           if (_sic && _sie) {
             localStorage.removeItem('ff_invite_child');
             localStorage.removeItem('ff_invite_email');
-            localStorage.setItem('scout_active_child_id', _sic);
             fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
               body: JSON.stringify({ childId: _sic, inviteEmail: _sie }),
-            }).finally(function() { window.location.href = 'scout-dashboard.html'; });
+            }).then(function() {
+              localStorage.setItem('scout_active_child_id', _sic);
+              window.location.href = 'scout-dashboard.html';
+            }).catch(function() { window.location.href = 'scout-dashboard.html'; });
           } else if (!hasChildren) {
             // No child setup yet (new user or abandoned onboarding) → route to setup
             routeAfterSignup();
@@ -2218,13 +2222,14 @@ button { font: inherit; cursor: pointer; }
             var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
             localStorage.removeItem('ff_invite_child');
             localStorage.removeItem('ff_invite_email');
-            localStorage.setItem('scout_active_child_id', inviteChild);
             fetch(FUNCTIONS_URL + '/scout-family-accept', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
               body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
-            }).then(function() { _dismissVerifyOverlay(); window.location.href = 'scout-dashboard.html'; })
-              .catch(function() { _dismissVerifyOverlay(); window.location.href = 'scout-dashboard.html'; });
+            }).then(function() {
+              localStorage.setItem('scout_active_child_id', inviteChild);
+              _dismissVerifyOverlay(); window.location.href = 'scout-dashboard.html';
+            }).catch(function() { _dismissVerifyOverlay(); window.location.href = 'scout-dashboard.html'; });
             return;
           }
 
@@ -2334,7 +2339,6 @@ button { font: inherit; cursor: pointer; }
           var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
           localStorage.removeItem('ff_invite_child');
           localStorage.removeItem('ff_invite_email');
-          localStorage.setItem('scout_active_child_id', inviteChild);
           fetch(FUNCTIONS_URL + '/scout-family-accept', {
             method: 'POST',
             headers: {
@@ -2343,6 +2347,7 @@ button { font: inherit; cursor: pointer; }
             },
             body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
           }).then(function() {
+            localStorage.setItem('scout_active_child_id', inviteChild);
             window.location.href = 'scout-dashboard.html';
           }).catch(function() {
             window.location.href = 'scout-dashboard.html';

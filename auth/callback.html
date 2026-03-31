@@ -122,7 +122,7 @@
             // Link this user to the invited child via the edge function
             try {
               const FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
-              await fetch(FUNCTIONS_URL + '/scout-family-accept', {
+              const acceptRes = await fetch(FUNCTIONS_URL + '/scout-family-accept', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',
@@ -130,9 +130,9 @@
                 },
                 body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
               });
+              // Only set active child if accept succeeded
+              if (acceptRes.ok) localStorage.setItem('scout_active_child_id', inviteChild);
             } catch (e) { console.warn('[invite] accept failed:', e); }
-            // Switch active child to the newly accepted invite child
-            localStorage.setItem('scout_active_child_id', inviteChild);
             // Skip child setup — go straight to dashboard
             window.location.href = '../scout-dashboard.html';
             return;
