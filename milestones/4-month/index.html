@@ -103,6 +103,13 @@ a:hover { text-decoration: underline; }
 .article-nav-title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; }
 
 /* FOOTER */
+.from-blog{max-width:780px;margin:0 auto;padding:0 clamp(20px,5vw,40px) 48px;}
+.from-blog h2{font-size:18px;font-weight:700;color:var(--text);margin-bottom:14px;}
+.blog-link-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+.blog-link-card{display:block;background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;text-decoration:none;transition:border-color .15s;}
+.blog-link-card:hover{border-color:rgba(110,78,214,.4);text-decoration:none;}
+.blc-cat{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--terra-dark);margin-bottom:6px;}
+.blc-title{display:block;font-size:14px;font-weight:600;color:var(--text);line-height:1.4;}
 footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,.08); padding: 20px var(--rx); padding-bottom: max(20px, env(safe-area-inset-bottom,0px)); }
 .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px 24px; }
 .footer-links { display: flex; gap: 24px; }
@@ -218,6 +225,7 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
       </svg>
       <span>Family<span class="logo-accent">Force</span></span>
     </a>
+    <div class="nav-mid"><a href="/milestones">Milestones</a><a href="/blog">Blog</a></div>
     <a href="/sign-in?intent=trial" class="nav-cta">Try Scout Free</a>
   </div>
 </nav>
@@ -395,6 +403,15 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
 
 </article>
 
+
+<!-- FROM THE BLOG -->
+<section class="from-blog" aria-label="From the blog">
+  <h2>From the blog</h2>
+  <div class="blog-link-cards">
+    <a href="/blog/4-month-sleep-regression" class="blog-link-card"><span class="blc-cat">Sleep</span><span class="blc-title">4-Month Sleep Regression — What It Is and How to Get Through It</span></a>
+    <a href="/blog/when-do-babies-roll-over" class="blog-link-card"><span class="blc-cat">Motor Development</span><span class="blc-title">When Do Babies Roll Over? Tummy-to-Back, Back-to-Tummy, and the Safety Rule</span></a>
+  </div>
+</section>
 <!-- PREV / NEXT NAV -->
 <nav class="article-nav" aria-label="Article navigation">
   <a href="/milestones/3-month">

@@ -18,6 +18,10 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 var(--rx);height:64px;display:flex;align-items:center;justify-content:space-between;}
 .logo{display:inline-flex;align-items:center;gap:8px;font-size:17px;font-weight:700;color:var(--text);}
 .logo-accent{color:var(--terra);}
+.nav-mid{display:flex;align-items:center;gap:20px;margin-left:auto;margin-right:16px;}
+.nav-mid a{font-size:14px;font-weight:500;color:var(--text-mid);text-decoration:none;}
+@media(hover:hover){.nav-mid a:hover{color:var(--terra);}}
+@media(max-width:680px){.nav-mid{display:none;}}
 .nav-cta{background:var(--terra);color:#fff;font-weight:600;font-size:14px;padding:9px 20px;border-radius:100px;transition:background .15s;}
 .nav-cta:hover{background:var(--terra-dark);text-decoration:none;}
 .breadcrumb{max-width:var(--max);margin:0 auto;padding:100px var(--rx) 0;font-size:13px;color:var(--text-dim);display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
