@@ -227,10 +227,10 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
 .gc-triennial .gc-orb-1 { background: radial-gradient(circle, rgba(201,150,42,.18) 0%, transparent 65%); }
 .gc-triennial .gc-orb-2 { background: radial-gradient(circle, rgba(201,150,42,.12) 0%, transparent 70%); }
 .gc-pat { position: absolute; inset: 0; background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,.06) 1px, transparent 0); background-size: 22px 22px; pointer-events: none; }
-.gc-div-line { position: absolute; bottom: 28%; left: 5.5%; right: 5.5%; height: 1px; }
+.gc-div-line { height: 1px; margin: auto 0 5% 0; flex-shrink: 0; }
 .gc-monthly .gc-div-line, .gc-annual .gc-div-line { background: rgba(255,255,255,.15); }
 .gc-triennial .gc-div-line { background: rgba(201,150,42,.22); }
-.gc-content { position: relative; z-index: 2; height: 100%; padding: 6% 7%; display: flex; flex-direction: column; justify-content: space-between; }
+.gc-content { position: relative; z-index: 2; height: 100%; padding: 6% 7%; display: flex; flex-direction: column; justify-content: flex-start; }
 .gc-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .gc-logo-row { display: flex; align-items: center; gap: 4%; }
 .gc-logo-icon { width: 8%; aspect-ratio: 1; border-radius: 22%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -569,7 +569,6 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
       <div class="gc-orb gc-orb-1"></div>
       <div class="gc-orb gc-orb-2"></div>
       <div class="gc-pat"></div>
-      <div class="gc-div-line"></div>
       <div class="gc-content">
         <div class="gc-top">
           <div class="gc-logo-row">
@@ -588,6 +587,7 @@ textarea.form-input { resize: vertical; min-height: 72px; line-height: 1.55; }
           <div class="gc-headline" id="gcHeadline">Sarah &amp; James</div>
           <div class="gc-from-text" id="gcFrom">From Emma 💜</div>
         </div>
+        <div class="gc-div-line"></div>
         <div class="gc-bot">
           <div>
             <div class="gc-code-lbl">Redemption code</div>
