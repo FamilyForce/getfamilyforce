@@ -57,6 +57,18 @@
 
   <!-- Milestone pages -->
   <url>
+    <loc>https://www.getfamilyforce.com/milestones/2-month</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.getfamilyforce.com/milestones/3-month</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://www.getfamilyforce.com/milestones/4-month</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>monthly</changefreq>
@@ -64,6 +76,12 @@
   </url>
   <url>
     <loc>https://www.getfamilyforce.com/milestones/6-month</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.getfamilyforce.com/milestones/7-month</loc>
     <lastmod>2026-03-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
