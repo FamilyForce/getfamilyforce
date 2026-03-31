@@ -131,6 +131,8 @@
                 body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
               });
             } catch (e) { console.warn('[invite] accept failed:', e); }
+            // Switch active child to the newly accepted invite child
+            localStorage.setItem('scout_active_child_id', inviteChild);
             // Skip child setup — go straight to dashboard
             window.location.href = '../scout-dashboard.html';
             return;
