@@ -70,7 +70,7 @@ Deno.serve(async (req: Request) => {
     .eq('user_id', user.id)
     .single()
 
-  if (childErr || !child) return res({ ok: false, error: 'Child not found', code: 'NOT_FOUND' }, 404)
+  if (childErr || !child) return res({ ok: false, error: 'Only the account owner can edit child details. Please sign in to the owner account to make changes.', code: 'NOT_FOUND' }, 404)
 
   const originalDob = child.dob
   const dobChanging = newDob && newDob !== originalDob
