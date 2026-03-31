@@ -2007,6 +2007,7 @@ button { font: inherit; cursor: pointer; }
           } else if (_ic && _ie) {
             localStorage.removeItem('ff_invite_child');
             localStorage.removeItem('ff_invite_email');
+            localStorage.setItem('scout_active_child_id', _ic);
             fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
@@ -2054,6 +2055,7 @@ button { font: inherit; cursor: pointer; }
           if (_sic && _sie) {
             localStorage.removeItem('ff_invite_child');
             localStorage.removeItem('ff_invite_email');
+            localStorage.setItem('scout_active_child_id', _sic);
             fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
@@ -2216,6 +2218,7 @@ button { font: inherit; cursor: pointer; }
             var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
             localStorage.removeItem('ff_invite_child');
             localStorage.removeItem('ff_invite_email');
+            localStorage.setItem('scout_active_child_id', inviteChild);
             fetch(FUNCTIONS_URL + '/scout-family-accept', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
@@ -2331,6 +2334,7 @@ button { font: inherit; cursor: pointer; }
           var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
           localStorage.removeItem('ff_invite_child');
           localStorage.removeItem('ff_invite_email');
+          localStorage.setItem('scout_active_child_id', inviteChild);
           fetch(FUNCTIONS_URL + '/scout-family-accept', {
             method: 'POST',
             headers: {
