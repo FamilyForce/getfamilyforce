@@ -237,6 +237,7 @@
 <script src="/assets/scout-dashboard.js?v=20260319b"></script>
 <script>
 var _editChildId     = null
+var _backUrl         = '/scout-dashboard'
 var _selectedGender  = null
 var _newChildId      = null    // set after insert, used by subscribe step
 var _newChildDob     = null
@@ -280,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var session = res.data && res.data.session
     if (!session) { window.location.href = '/sign-in.html'; return }
 
-    var _backUrl = new URLSearchParams(window.location.search).get('back') || '/scout-dashboard'
+    _backUrl = new URLSearchParams(window.location.search).get('back') || '/scout-dashboard'
     if (_editChildId) {
       // Pre-fill form for editing
       document.getElementById('pageTitle').textContent = 'Edit child'
