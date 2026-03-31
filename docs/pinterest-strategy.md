@@ -3,7 +3,7 @@
 **Product:** Scout by FamilyForce — monthly milestone emails + calendar invites, birth to age 3
 **Site:** getfamilyforce.com
 **Pinterest account:** to be confirmed after account creation
-**Last updated:** 2026-03-25
+**Last updated:** 2026-03-30
 **Maintained by:** Austin → handed to Gemini for ongoing execution
 
 ---
@@ -214,14 +214,21 @@ Stars:               Outfit 400, 28–38px, #FFD700
 Social proof:        Outfit 600, 17–20px, rgba(255,255,255,0.76–0.80)
 ```
 
-### Standard brand footer (bottom of every pin, inside safe zone)
+### Brand footer rules — per pillar (updated Mar 30)
+
+**Pillar 1 (Gift):** Full footer — stars + social proof + Scout + "by FamilyForce · From $9.99" + URL. Commercial intent matches commercial branding.
 ```
 ★★★★★
 The gift new parents actually open
 Scout  ·  by FamilyForce  ·  From $9.99
 getfamilyforce.com
 ```
-Adjust opacity and size based on available space. Always include at minimum "Scout by FamilyForce" and the URL.
+
+**Pillar 2 (Milestone):** No footer. Remove brand section entirely. The pin is educational content — a footer makes it read as an ad and kills save rates. Brand lives in the description and destination URL only. Exception: a tiny "Scout by FamilyForce" watermark (opacity 0.25, 14px) in the bottom-right corner is acceptable if desired.
+
+**Pillar 3 (Humor):** Minimal strip only — "Scout · by FamilyForce" with no price and no URL on the graphic. Keep the purple strip (7% or 15% depending on format) but strip out price and URL. People save humor, not ads.
+
+**Pillar 4 (Explainer):** Full footer — this is a product pin by definition. Include Scout + "by FamilyForce · From $9.99" + URL + soft CTA ("Try Scout Free").
 
 ### Dividers
 ```js
@@ -568,7 +575,9 @@ Target search keywords (examples):
 
 7. **No photos needed.** Pillar 2 is text-only. Purple background with depth gradient only.
 
-8. **Content source:** Always pull real data from `projects/familyforce/docs/scout-content-priority1.md`. Use `why_it_matters` for the card body. Rewrite in human voice — never copy raw text directly.
+8. **No brand footer on Pillar 2 pins.** Remove the stars, social proof, Scout brand, price, and URL from the graphic entirely. The pin is educational content — branding kills save rates. Brand lives in the description and link only.
+
+9. **Content source:** Always pull real data from `projects/familyforce/docs/scout-content-priority1.md`. Use `why_it_matters` for the card body. Rewrite in human voice — never copy raw text directly.
 
 **Pinterest copy:**
 
@@ -990,3 +999,51 @@ Do these in order before posting anything:
 
 *Update this document after every monthly review or when strategy changes. It is the single source of truth for the FamilyForce Pinterest operation.*
 *Last updated: 2026-03-26*
+
+---
+
+## ✅ APPROVED EXAMPLE — Pillar 3 Photo Pin: "Every parent meets this moment."
+
+**File:** `p3-humor-ready.png`
+**Build script:** `build-ready-photo.js`
+**Format:** Single static pin, 1000×1500px, photo + text overlay
+
+**Photo:** `photo-gen-d.png` (AI-generated via Gemini Imagen 4 — two exhausted parents on nursery floor, backs against crib, newborn between them, star nightlight)
+
+**⚠️ MANDATORY DESIGN RULES for Pillar 3 photo pins (learned from review):**
+
+1. **Photo = 85% of graphic.** `PHOTO_H = Math.round(H * 0.85)` = 1275px. (Updated from 75% — jackhowdy approved 85% as standard for Pillar 3 photo pins.)
+
+2. **Gradient starts at 82% of PHOTO_H.** `fadeStart = Math.round(PHOTO_H * 0.82)` = ~1046px.
+
+3. **Hook at top, punchline at bottom of photo.** Hook ("Every parent meets this moment.") sits in top darkening zone (~y=140–228). Punchline ("The good ones are ready.") sits low in the purple fade zone (~y=1140–1228).
+
+4. **No divider between hook lines.** Remove the center divider — it breaks the flow.
+
+5. **Brand section is minimal — no stars, no social proof.** Just: divider → Scout (88px) → "by FamilyForce · From $9.99" → URL. Fits in the 225px below the photo.
+
+6. **Never reuse photos across pins.** Always check which photos have been used before generating or sourcing new ones. Generate fresh photos via Gemini Imagen 4 when needed.
+
+7. **Pillar 3 brand strip: no price, no URL on the graphic.** Keep the purple strip with "Scout · by FamilyForce" only. Drop "From $9.99" and "getfamilyforce.com" from the image — humor pins get saved as content, not as ads. Price and URL live in the description only.
+
+8. **Show raw photos to jackhowdy before compositing.** If using new AI-generated photos, send the raw photo first for approval before building the full pin.
+
+---
+
+## ✅ APPROVED FORMAT — Pillar 3 Minimal Strip: "It's not a phase. It's a Tuesday."
+
+**File:** `p3-humor-tuesday.png`
+**Build script:** `build-tuesday-pin.js`
+**Photo:** `photo-tuesday-b.png` (AI-generated — dad on couch, toddler chaos, toys everywhere)
+
+**⚠️ NEW APPROVED FORMAT — 93/7 split (jackhowdy approved Mar 30):**
+
+1. **Photo = 93% of graphic.** `PHOTO_H = Math.round(H * 0.93)` = 1395px.
+2. **Purple strip = 7% only (~105px).** Just enough for Scout brand. No stars, no social proof.
+3. **Fade is very short** — starts at 94% of PHOTO_H, transitions hard into purple.
+4. **Hook at top (1 line).** "It's not a phase." at y≈160.
+5. **Punchline low on photo** at y≈1290, just above the purple strip. Heavy text shadow for readability on the photo.
+6. **Brand strip:** Scout (58px) → by FamilyForce · From $9.99 (20px) → getfamilyforce.com (16px). Keep all text within canvas bounds — URL at B+86 max.
+
+**Use this format for:** single punchy tagline pins where the photo tells the story on its own.
+**Use 85% format for:** pins where punchline needs the purple gradient behind it for readability.

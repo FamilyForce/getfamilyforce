@@ -516,19 +516,24 @@ Deno.serve(async (req: Request) => {
       if (!testMode) {
         // In live mode: re-verify promo is still 100% off and check usage limits
         try {
+          // Re-verify by ID, then resolve coupon (handles both object and string-ID formats)
           const promoCheck    = await stripeReq(stripeKey, 'GET', `/promotion_codes/${stripeDiscountPromoId}`)
-          // Stripe newer API returns coupon as a string ID; resolve to object if needed
-          const couponRef     = promoCheck?.coupon
+          console.log('[free-verify] promoCheck id:', promoCheck?.id, 'active:', promoCheck?.active, 'coupon type:', typeof promoCheck?.coupon)
+          if (!promoCheck?.active) return err(400, 'Promo code is no longer active', step)
+          // Resolve coupon — Stripe may return coupon as an object or as a string ID
+          const couponRef     = promoCheck?.coupon ?? promoCheck?.promotion?.coupon
           const couponObj     = typeof couponRef === 'string'
             ? await stripeReq(stripeKey, 'GET', `/coupons/${couponRef}`)
             : couponRef
+          console.log('[free-verify] couponObj pct:', couponObj?.percent_off, 'fixed:', couponObj?.amount_off)
           const pct           = couponObj?.percent_off ?? 0
           const fixed         = couponObj?.amount_off  ?? 0
           const base          = PRICES[plan as 'annual' | 'triennial' | 'monthly']
           const discountedAmt = fixed
             ? Math.max(0, base.amount - fixed)
             : Math.round(base.amount * (1 - pct / 100))
-          if (discountedAmt !== 0) return err(400, 'Promo code does not result in a free order', step)
+          console.log('[free-verify] base:', base?.amount, 'discountedAmt:', discountedAmt)
+          if (discountedAmt !== 0) return err(400, `Promo code does not result in a free order (pct:${pct} fixed:${fixed} base:${base?.amount} result:${discountedAmt})`, step)
 
           // Check usage limits: compare Stripe max_redemptions vs our DB redemption count
           const maxRedemptions: number | null = promoCheck?.max_redemptions ?? null

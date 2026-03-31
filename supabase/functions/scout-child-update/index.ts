@@ -43,6 +43,7 @@ const MAX_DOB_CHANGES  = 1   // after trial starts, only 1 change allowed
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
   if (req.method !== 'POST')    return res({ ok: false, error: 'Method not allowed', code: 'INVALID' }, 405)
+  try {
 
   const sb = createClient(
     Deno.env.get('SUPABASE_URL')!,
@@ -189,4 +190,9 @@ Deno.serve(async (req: Request) => {
 
   const newCount = dobChanging ? ((child as any).dob_changed_count ?? 0) + 1 : ((child as any).dob_changed_count ?? 0)
   return res({ ok: true, dobLocked, dobChangedCount: newCount })
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : String(e)
+    console.error('[scout-child-update] Unhandled error:', msg)
+    return res({ ok: false, error: 'Server error: ' + msg, code: 'SERVER_ERROR' }, 500)
+  }
 })

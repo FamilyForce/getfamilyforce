@@ -496,7 +496,7 @@ function saveChild() {
         }
         window.location.href = _backUrl
       })
-      .catch(function () { showSaveErr('Network error. Please try again.', btn) })
+      .catch(function (e) { showSaveErr((e && e.message) ? 'Error: ' + e.message : 'Network error. Please try again.', btn) })
     })
     return
   }
