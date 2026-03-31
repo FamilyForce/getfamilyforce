@@ -7,6 +7,7 @@
     { "source": "/dashboard",      "destination": "/scout-dashboard",      "permanent": true  },
     { "source": "/dashboard.html", "destination": "/scout-dashboard",      "permanent": true  },
     { "source": "/profile",        "destination": "/scout-dashboard/settings", "permanent": true  },
-    { "source": "/profile.html",   "destination": "/scout-dashboard/settings", "permanent": true  }
+    { "source": "/profile.html",   "destination": "/scout-dashboard/settings", "permanent": true  },
+    { "source": "/blog",           "destination": "/milestones",           "permanent": false  }
   ]
 }

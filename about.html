@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>About Jack — FamilyForce</title>
-<meta name="description" content="Jack Hartley got it wrong with his first son. He did the reading, built Scout, and got it right with his second. Here's the story behind FamilyForce.">
+<title>About Jack Hartley — Founder of FamilyForce & Creator of Scout</title>
+<meta name="description" content="Jack Hartley got it wrong with his first son. He read the research, built Scout, and got it right with his second. The story behind FamilyForce's baby milestone tracker.">
+<link rel="canonical" href="https://www.getfamilyforce.com/about">
 <meta property="og:type"        content="website">
 <meta property="og:title"       content="About Jack — FamilyForce">
 <meta property="og:description" content="Jack Hartley got it wrong with his first son. He did the reading, built Scout, and got it right with his second.">
@@ -1241,6 +1242,35 @@ a { color: inherit; text-decoration: none; }
   }
   .hiw-f-input.active { border-color: var(--terra); box-shadow: 0 0 0 3px rgba(110,78,214,.1); }
 </style>
+<!-- Structured Data — Person + About page E-E-A-T -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://www.getfamilyforce.com/about#jack-hartley",
+      "name": "Jack Hartley",
+      "url": "https://www.getfamilyforce.com/about",
+      "jobTitle": "Founder",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "FamilyForce",
+        "url": "https://www.getfamilyforce.com"
+      },
+      "description": "Jack Hartley is the founder of FamilyForce and creator of Scout — a research-backed monthly baby milestone email system. He learned from his first son's early years and built Scout so other parents wouldn't have to learn the hard way."
+    },
+    {
+      "@type": "AboutPage",
+      "@id": "https://www.getfamilyforce.com/about#page",
+      "url": "https://www.getfamilyforce.com/about",
+      "name": "About Jack Hartley — Founder of FamilyForce",
+      "description": "Jack Hartley got it wrong with his first son. He read the research, built Scout, and got it right with his second.",
+      "author": { "@id": "https://www.getfamilyforce.com/about#jack-hartley" }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 

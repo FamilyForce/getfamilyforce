@@ -2,44 +2,25 @@
 
 **Product:** Scout by FamilyForce — monthly milestone emails + calendar invites, birth to age 3
 **Site:** getfamilyforce.com
-**Pinterest account:** to be confirmed after account creation
-**Last updated:** 2026-03-30
+**Pinterest account:** https://www.pinterest.com/GetFamilyForce/ ✅ LIVE
+**Last updated:** 2026-03-31
 **Maintained by:** Austin → handed to Gemini for ongoing execution
 
 ---
 
-## 🚀 Day 1: How to Get Started
+## 🚀 Getting Started
 
-Read this first. Before touching any pin.
+> **⚡ Account is LIVE. Queue is running. Skip setup — jump straight to "📊 Current Status" to see what's scheduled and what needs to be built next.**
 
-### Step 1 — Understand the product
-Read these two files before creating anything:
+If starting fresh in a new session, read in this order:
+1. **"📊 Current Status"** — what's live, what's queued, what's empty
+2. **"What You Are Doing"** — your ongoing role
+3. **The pillar sections** — for design rules when building new pins
+
+### Understand the product first
+Before creating any new pins, read:
 - `projects/familyforce/docs/scout-product-spec.md` — what Scout is and how it works
-- `projects/familyforce/docs/scout-content-priority1.md` — 217 milestone windows (your content engine)
-
-### Step 2 — Check account status
-Pinterest Business account and Postiz may or may not be set up yet. Ask jackhowdy:
-> "Is the Pinterest Business account created? Is Postiz connected? What's the account URL?"
-
-If not set up: proceed to Step 3 while jackhowdy sets up accounts. Do not wait idle.
-
-### Step 3 — Start building pins immediately
-While accounts are being set up, build the first batch of pins locally. You have everything you need:
-- All fonts, node-canvas, brand constants are ready (see Environment Setup)
-- Approved examples for all 4 pillars are in this document
-- Use `pillar2-milestone.js` and `pillar4-explainer.js` as starting templates for new pins
-
-Build 10 pins minimum before accounts are ready:
-- 3 Pillar 1 (gift) pins
-- 4 Pillar 2 (milestone) pins — one for each of 3mo, 6mo, 9mo, 12mo
-- 2 Pillar 3 (humor) pins — use tagline bank below
-- 1 Pillar 4 (explainer) pin
-
-### Step 4 — Send drafts to jackhowdy for review
-Use the messaging instructions below. Don't batch everything — send 2–3 at a time with a brief summary.
-
-### Step 5 — Once accounts are live
-Follow the Launch Sequence checklist at the bottom of this document.
+- `projects/familyforce/docs/scout-content-priority1.md` — 217 milestone windows (your content engine for all Pillar 2 pins)
 
 ---
 
@@ -159,13 +140,24 @@ Name files descriptively: `pin-gift-registry-reality-v1.png`, `pin-milestone-4mo
 ### Existing assets (do not regenerate — use these)
 ```
 workspace/pinterest-scout-gift-v5.png     → gift pillar hero pin (✅ ALREADY POSTED LIVE — do not repost)
-workspace/carousel-01.png through 06.png  → "Registry vs. Reality" carousel (READY TO POST)
-workspace/photo-slide2.jpg                → tired parent, 3am phone glow
-workspace/photo-slide3.jpg                → parent staring at baby monitor
-workspace/photo-slide4.jpg                → parent struggling to swaddle
-workspace/photo-slide5.jpg                → unused diaper bag on hook
+workspace/p1-slide-01.png through p1-slide-05.png → "Registry vs. Reality" carousel (✅ SCHEDULED Apr 4 4am HKT — do not repost)
+workspace/photo-slide2.jpg                → tired parent, 3am phone glow (used in carousel)
+workspace/photo-slide3-v6.jpg             → parent staring at baby monitor, side profile (used in carousel)
+workspace/photo-slide4.jpg                → parent struggling to swaddle (used in carousel)
+workspace/photo-cover-b4.jpg             → exhausted parent, 3am, newborn on chest (used in carousel cover)
+workspace/photo-gen-a.png                → AI-generated parenting photo — UNUSED, available
+workspace/photo-gen-b.png                → AI-generated parenting photo — UNUSED, available
+workspace/photo-gen-c.png                → AI-generated parenting photo — UNUSED, available
+workspace/photo-amazon-b.png             → parent + Amazon boxes scene — UNUSED, available
 workspace/carousel-build.js               → carousel build script (reference for new scripts)
+workspace/pillar2-milestone.js            → template for all Pillar 2 milestone pins
+workspace/pillar4-explainer.js            → template for Pillar 4 explainer pins
+workspace/pinterest-pillar1.js            → template for Pillar 1 photo/carousel pins
 ```
+
+### URL format — canonical
+Use `https://getfamilyforce.com/?utm_source=pinterest&utm_medium=pin&utm_campaign=[pillar]&utm_content=[slug]` for all new pins.
+Note: `/scout?utm_...` also works (Vercel redirect is live) — but `/?utm_...` is canonical and preferred.
 
 ---
 
@@ -647,20 +639,20 @@ URL: https://getfamilyforce.com/scout?utm_source=pinterest&utm_medium=pin&utm_ca
 Use these as the primary text/hook for future Pillar 3 pins. Pick one per pin.
 
 **Punchy / Funny**
-1. "Nobody put this on the registry." ✅ *(used in v5)*
-2. "The onesie was a gift. The meltdown was not."
-3. "Congrats on the baby shower. This is also coming."
-4. "47 gifts. None of them were for this."
+1. "Nobody put this on the registry." ✅ *(used — pinterest-scout-gift-v5)*
+2. "The onesie was a gift. The meltdown was not." ✅ *(used — p3-humor-onesie)*
+3. "Congrats on the baby shower. This is also coming." ← available
+4. "47 gifts. None of them were for this." ← available
 
 **Honest / Knowing**
-5. "Every parent meets this moment. The good ones are ready."
-6. "The cute photos are real. So is this."
-7. "This moment doesn't care about your sleep schedule."
+5. "Every parent meets this moment. The good ones are ready." ✅ *(used — p3-humor-ready)*
+6. "The cute photos are real. So is this." ← available
+7. "This moment doesn't care about your sleep schedule." ← available
 
 **Wry / Dry**
-8. "He had big feelings. She had a flight to catch."
-9. "It's not a phase. It's a Tuesday."
-10. "You can't Amazon Prime your way out of this one."
+8. "He had big feelings. She had a flight to catch." ← available
+9. "It's not a phase. It's a Tuesday." ✅ *(used — p3-humor-tuesday)*
+10. "You can't Amazon Prime your way out of this one." ✅ *(used — p3-humor-amazon)*
 
 **How to use this bank:**
 - Pick a tagline → generate a matching AI photo (real, raw parenting moment)
@@ -940,17 +932,108 @@ Always end descriptions with 3–5 hashtags. Mix high-volume (`#babyshower`, `#n
 
 Do these in order before posting anything:
 
-- [ ] Pinterest Business account created
-- [ ] Profile: purple chevron FamilyForce logo, keyword bio, getfamilyforce.com verified
-- [ ] All 10 boards created with keyword-rich names + descriptions
-- [ ] Postiz connected to Pinterest account
-- [ ] UTM template configured in Postiz
+- [x] Pinterest Business account created ✅
+- [x] Profile: purple chevron FamilyForce logo, keyword bio, getfamilyforce.com verified ✅
+- [x] All 10 boards created with keyword-rich names + descriptions ✅ (Mar 30)
+- [x] Postiz connected to Pinterest account ✅ (Pinterest app approved + reconnected Mar 30)
+- [ ] UTM template configured in Postiz UI (pins use correct UTMs via CLI — Postiz UI template not set)
 - [ ] GA4 UTM tracking confirmed (verify a test click reaches GA with correct params)
-- [ ] First 30 pins created (10 gift, 12 milestone, 5 humor, 3 explainer)
-- [ ] First 7 days scheduled in Postiz (5 fresh + 5 repins/day)
+- [x] First pins created and approved ✅ (see pin inventory below)
+- [x] Queue scheduled in Postiz ✅ (Mar 31–Apr 4 fully queued)
 - [x] `pinterest-scout-gift-v5.png` — ✅ ALREADY POSTED LIVE (Mar 2026). Do not repost. Use as style reference only.
-- [ ] "Registry vs. Reality" carousel (`carousel-01` through `06`) scheduled for Day 3
+- [x] "Registry vs. Reality" carousel scheduled Apr 4 4am HKT ✅
 - [ ] Daily review cadence established (20 min every morning, reviewing 3-days-ago pins)
+
+---
+
+## 📊 Current Status (Updated Mar 31, 2026)
+
+### Account
+- Pinterest Business: **LIVE** — https://www.pinterest.com/GetFamilyForce/
+- Postiz connected ✅ | Integration ID: `cmncq1kdj02qfvv0y3nb0pei2`
+- API Key: `8c475f4674c44241e67b001730866c596b38eb6c35ff04a0dea4f810138cdaaf`
+
+### Posting Cadence (locked)
+- **4am / 10am / 4pm / 10pm HKT** daily
+- HKT = UTC+8. Convert: 4am HKT = 20:00 UTC (previous calendar day)
+
+### Scheduling Method
+Use Postiz CLI — do not manually enter pins in the UI:
+```bash
+export POSTIZ_API_KEY="8c475f4674c44241e67b001730866c596b38eb6c35ff04a0dea4f810138cdaaf"
+
+# Upload image
+URL=$(npx postiz@latest upload mypin.png | grep '"path"' | sed 's/.*"path": "\(.*\)".*/\1/')
+
+# Schedule post
+npx postiz@latest posts:create \
+  -c "Description text + #hashtags" \
+  -m "$URL" \
+  -i "cmncq1kdj02qfvv0y3nb0pei2" \
+  -s "2026-04-05T20:00:00Z" \
+  --settings '{"board":"BOARD_ID","title":"Pin Title","link":"https://getfamilyforce.com/?utm_source=pinterest&utm_medium=pin&utm_campaign=PILLAR&utm_content=SLUG"}'
+```
+Carousel: comma-separate multiple media URLs in a single `-m` flag.
+
+### Board IDs (confirmed)
+| Board | ID |
+|---|---|
+| baby-shower-gift-ideas | `1132092493771327552` |
+| baby-milestones-month-by-month | `1132092493771327553` |
+| new-mom-tips | `1132092493771327554` |
+| baby-development-activities | `1132092493771327555` |
+| scout-by-familyforce | `1132092493771327556` |
+| baby-sleep-tips | `1132092493771327557` |
+| baby-feeding-and-starting-solids | `1132092493771327558` |
+| toddler-development | `1132092493771327559` |
+| parenting-humor | `1132092493771327560` |
+| best-gifts-for-new-parents | `1132092493771327561` |
+| real-parenting-moments | `1132092493771316214` |
+
+### Pillar → Board mapping
+| Pillar | Board |
+|---|---|
+| Gift (P1) | baby-shower-gift-ideas `1132092493771327552` |
+| Milestone (P2) | baby-milestones-month-by-month `1132092493771327553` |
+| Humor (P3) | parenting-humor `1132092493771327560` |
+| Explainer (P4) | new-mom-tips `1132092493771327554` |
+
+### Pin Inventory
+
+**Published (live on Pinterest):**
+| File | Date | Notes |
+|---|---|---|
+| pinterest-scout-gift-v5.png | Pre-Mar 30 | Original pin — do not repost |
+| p1-gift-digital-photo.png | Mar 30 | |
+| p2-milestone-3mo.png | Mar 30 | |
+| p2-milestone-6mo.png | Mar 30 | |
+| p3-humor-onesie.png | Mar 31 01:00 UTC | Fired before queue deletion |
+
+**Scheduled queue (Mar 31 – Apr 4):**
+| HKT | UTC | File | Pillar |
+|---|---|---|---|
+| Mar 31 2pm | 06:00 | p1-gift-actuallyneed | Gift |
+| Mar 31 6pm | 10:00 | p2-milestone-1mo | Milestone |
+| Mar 31 11pm | 15:00 | p3-humor-amazon | Humor |
+| Apr 1 4am | Mar 31 20:00 | p2-milestone-9mo | Milestone |
+| Apr 1 10am | 02:00 | p3-humor-tuesday | Humor |
+| Apr 1 4pm | 08:00 | p1-gift-works3years | Gift |
+| Apr 1 10pm | 14:00 | p2-milestone-2mo | Milestone |
+| Apr 2 4am | Apr 1 20:00 | p2-milestone-4mo | Milestone |
+| Apr 2 10am | 02:00 | p1-gift-digital | Gift |
+| Apr 2 4pm | 08:00 | p2-milestone-5mo | Milestone |
+| Apr 2 10pm | 14:00 | p3-humor-ready | Humor |
+| Apr 3 4am | Apr 2 20:00 | p2-milestone-7mo | Milestone |
+| Apr 3 10am | 02:00 | p1-gift-under50 | Gift |
+| Apr 3 4pm | 08:00 | p2-milestone-12mo | Milestone |
+| Apr 3 10pm | 14:00 | p4-explainer | Explainer |
+| Apr 4 4am | Apr 3 20:00 | p1-slides-01-05 (carousel) | Gift |
+
+**⚠️ Queue empty after Apr 4 4am HKT.**
+Next batch needed (build before Apr 3):
+- p2-milestone-8mo, p2-milestone-10mo, p2-milestone-11mo
+- 2 new Pillar 3 humor pins (unused taglines: "Congrats on the baby shower. This is also coming." / "He had big feelings.")
+- 1 new Pillar 1 gift angle (last-minute, 2026 roundup, or baby shower on a budget)
 
 ---
 
@@ -998,7 +1081,7 @@ Do these in order before posting anything:
 ---
 
 *Update this document after every monthly review or when strategy changes. It is the single source of truth for the FamilyForce Pinterest operation.*
-*Last updated: 2026-03-26*
+*Last updated: 2026-03-31*
 
 ---
 

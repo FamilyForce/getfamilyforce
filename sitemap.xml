@@ -1,83 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Homepage -->
+  <!-- Core pages -->
   <url>
-    <loc>https://getfamilyforce.com/</loc>
+    <loc>https://www.getfamilyforce.com/</loc>
+    <lastmod>2026-03-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-
-  <!-- About -->
   <url>
-    <loc>https://getfamilyforce.com/about.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Contact -->
-  <url>
-    <loc>https://getfamilyforce.com/contact.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
-  <!-- Scout Gift -->
-  <url>
-    <loc>https://getfamilyforce.com/scout-gift.html</loc>
+    <loc>https://www.getfamilyforce.com/about</loc>
+    <lastmod>2026-03-31</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
-  <!-- Scout Gift Checkout -->
   <url>
-    <loc>https://getfamilyforce.com/scout-gift-checkout.html</loc>
+    <loc>https://www.getfamilyforce.com/scout-gift</loc>
+    <lastmod>2026-03-31</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.8</priority>
   </url>
-
-  <!-- Free Playbooks -->
   <url>
-    <loc>https://getfamilyforce.com/playbook-potty-training.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://www.getfamilyforce.com/contact</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
   </url>
-
   <url>
-    <loc>https://getfamilyforce.com/playbook-sleep.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
+    <loc>https://www.getfamilyforce.com/privacy</loc>
+    <lastmod>2026-03-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
-
   <url>
-    <loc>https://getfamilyforce.com/playbook-feeding.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://getfamilyforce.com/playbook-tantrum.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <url>
-    <loc>https://getfamilyforce.com/playbook-free-screentime.html</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.9</priority>
-  </url>
-
-  <!-- Legal -->
-  <url>
-    <loc>https://getfamilyforce.com/privacy.html</loc>
+    <loc>https://www.getfamilyforce.com/terms</loc>
+    <lastmod>2026-03-22</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
+  <!-- Milestone hub -->
   <url>
-    <loc>https://getfamilyforce.com/terms.html</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
+    <loc>https://www.getfamilyforce.com/milestones</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
+
+  <!-- Baby shower gift hub -->
+  <url>
+    <loc>https://www.getfamilyforce.com/baby-shower-gifts</loc>
+    <lastmod>2026-03-31</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Milestone pages — add each as published -->
+  <!-- Template:
+  <url>
+    <loc>https://www.getfamilyforce.com/milestones/4-month</loc>
+    <lastmod>YYYY-MM-DD</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  -->
 
 </urlset>

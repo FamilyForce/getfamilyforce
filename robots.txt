@@ -1,0 +1,47 @@
+User-agent: *
+Allow: /
+
+# Block app/auth pages from indexing
+Disallow: /sign-in
+Disallow: /sign-in.html
+Disallow: /sign-in-sent
+Disallow: /sign-in-sent.html
+Disallow: /scout-dashboard
+Disallow: /scout-dashboard.html
+Disallow: /scout-admin
+Disallow: /scout-admin.html
+Disallow: /onboarding
+Disallow: /onboarding.html
+Disallow: /dashboard
+Disallow: /profile
+Disallow: /checkout-guest
+Disallow: /checkout-signedin
+Disallow: /confirmation
+Disallow: /auth
+
+# Block mockups and dev files
+Disallow: /mockup-preview
+Disallow: /dash-mockup-v2
+Disallow: /adaptive-course-poc
+Disallow: /gift-badge-mockup
+Disallow: /gift-card-mockup
+Disallow: /gift-page-mockup
+Disallow: /calendar-mockup
+Disallow: /og-image-source
+Disallow: /share-card-preview
+Disallow: /signup-flow-storyboard
+Disallow: /referral-wireframe
+Disallow: /scout-widget-demo
+Disallow: /mock-scout-intent-card
+Disallow: /preview-closing-alert
+Disallow: /preview-digest-signup
+Disallow: /preview-reengagement
+Disallow: /preview-trial-end
+Disallow: /month11-email-preview
+Disallow: /prebirth-email-preview
+Disallow: /scout-digest-preview
+Disallow: /index-v1
+Disallow: /index-v2
+Disallow: /FamilyForce_Production
+
+Sitemap: https://www.getfamilyforce.com/sitemap.xml
