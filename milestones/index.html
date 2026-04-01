@@ -90,6 +90,16 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
 .footer-links a:hover { color: rgba(255,255,255,.8); }
 .footer-copy { font-size: 12px; color: rgba(255,255,255,.25); }
 .footer-disclaimer { padding: 8px 20px; text-align: center; font-size: 11px; color: rgba(255,255,255,.3); line-height: 1.6; }
+.nav-center-links{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:28px;}
+@media(max-width:768px){.nav-center-links{display:none;}}
+@media(max-width:600px){
+  .scout-callout{padding:20px 18px;}
+  .month-grid{grid-template-columns:1fr;padding:0 16px;}
+  .month-card{padding:18px;}
+  .hero{padding:100px 20px 48px;}
+  .hero h1{font-size:28px;}
+  .hero-sub{font-size:16px;}
+}
 </style>
 
 <!-- Structured Data — CollectionPage + FAQPage -->
@@ -176,7 +186,7 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
       </svg>
       <span>Family<span class="logo-accent">Force</span></span>
     </a>
-    <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:28px;"><a href="/milestones" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Milestones</a><a href="/blog" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Blog</a><a href="/baby-shower-gifts" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Gift Ideas</a><a href="/scout-gift" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Give as a gift 🎁</a></div>
+    <div class="nav-center-links"><a href="/milestones" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Milestones</a><a href="/blog" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Blog</a><a href="/baby-shower-gifts" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Gift Ideas</a><a href="/scout-gift" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Give as a gift 🎁</a></div>
     <a href="/sign-in?intent=trial" class="nav-cta">Try Scout Free</a>
   </div>
 </nav>
