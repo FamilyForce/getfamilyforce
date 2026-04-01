@@ -23,7 +23,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:
 a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 :focus-visible{outline:3px solid var(--terra);outline-offset:3px;border-radius:4px;}
 .nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(250,250,250,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);}
-.nav-inner{max-width:1200px;margin:0 auto;padding:0 var(--rx);height:64px;display:flex;align-items:center;justify-content:space-between;}
+.nav-inner{max-width:1200px;margin:0 auto;padding:0 var(--rx);height:64px;display:flex;align-items:center;justify-content:space-between;position:relative;}
 .logo{display:inline-flex;align-items:center;gap:8px;font-size:17px;font-weight:700;color:var(--text);}
 .logo-accent{color:var(--terra);}
 .nav-cta{background:var(--terra);color:#fff;font-weight:600;font-size:14px;padding:9px 20px;border-radius:100px;transition:background .15s;}
@@ -89,7 +89,7 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
       <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span>Family<span class="logo-accent">Force</span></span>
     </a>
-    <div style="display:flex;align-items:center;gap:28px;margin-left:auto;margin-right:16px;"><a href="/milestones" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Milestones</a><a href="/blog" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Blog</a><a href="/baby-shower-gifts" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Gift Ideas</a><a href="/scout-gift" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Give as a gift 🎁</a></div>
+    <div style="position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:28px;"><a href="/milestones" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Milestones</a><a href="/blog" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Blog</a><a href="/baby-shower-gifts" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Gift Ideas</a><a href="/scout-gift" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Give as a gift 🎁</a></div>
     <a href="/sign-in?intent=trial" class="nav-cta">Try Scout Free</a>
   </div>
 </nav>
