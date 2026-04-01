@@ -40,6 +40,10 @@ After 24 months, tantrums typically begin reducing in frequency — not because 
 
 This doesn't mean tantrums are over. It means the trajectory should be toward improvement. If tantrums are still intensifying after 24 months or involving self-harm, mention it at this visit.
 
+## Switch to 2% Milk at 2 Years
+
+If your toddler has been on whole milk since 12 months, this is when you switch. At 24 months, the AAP recommends transitioning from whole cow's milk to reduced-fat (2%) milk. The reason: whole milk's fat content is critical for brain development in the first two years, but after age 2, most children no longer need that fat density and it can contribute to excess calories. Switch at the two-year birthday unless your pediatrician specifically advises otherwise based on weight or nutrition concerns.
+
 ## What's Coming — The Third Year
 
 After 24 months, the focus shifts to three-word sentences (expected by 30 months), cooperative play, emotional regulation, and the 30-month well-child visit.

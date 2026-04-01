@@ -27,6 +27,8 @@ The AAP recommendation is 20 minutes of tummy time per day by 4 months — not a
 
 Without adequate tummy time, motor development slows. It also allows positional flat head (plagiocephaly) to develop — which is almost entirely preventable in the first few months and significantly harder to address after 6 months.
 
+With First Son, I started tummy time late because he hated it and I caved. He developed mild flat head that took months to correct. With Second Son I started at day three and was consistent from the beginning. The difference was significant.
+
 Babies hate tummy time. This is normal. Discomfort does not mean harm. Start with short bursts, lie face-to-face on the floor with them, use a rolled blanket under the chest. The goal is tolerance, not enjoyment.
 
 ### Head Control
@@ -73,6 +75,7 @@ Iron deficiency in the first year affects brain development, cognitive function,
 - Head control (your pediatrician will assess directly)
 - Iron supplementation if breastfeeding
 - Whether babbling has started
+- **Peanut introduction timing** — the LEAP study window opens at 4 months. Ask your pediatrician about the right timing to introduce peanuts given your baby's eczema history and allergy risk. The window peaks at 5 months and closes at 11 months.
 - Any loss of previously acquired skills — always flag this immediately
 
 ## What to Do Right Now

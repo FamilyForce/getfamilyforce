@@ -62,6 +62,12 @@ Not consistently responding to their name by 7 months is a red flag for both hea
 
 Babbling should be well established — varied consonant-vowel combinations with clear communicative intent. At 7 months, the babble should also include imitation: your baby will try to mimic sounds you make. If your baby is not imitating any sounds or expressions by 7 months, mention it at the next visit.
 
+### Pointing and Joint Attention — Beginning to Emerge
+
+Around 7 months, the earliest signs of joint attention begin to appear — following your finger when you point, looking where you look, beginning to share interest in objects and events. This window opens now and peaks around 8 months. Pointing to share interest (declarative pointing) — pointing at something and then looking back at you to see your reaction — is one of the most important milestones of the first year.
+
+Babies who develop joint attention earlier have larger vocabularies at 18 months. Absent pointing by 12 months is the single strongest early behavioral predictor of autism spectrum disorder. Start building this skill now: point at things constantly, name them, and look at your baby to see if they follow. When they look where you're pointing, respond with interest. You're building the foundation of shared attention that all language learning is built on.
+
 ### Stranger Awareness
 
 Around 6–9 months, many babies develop stranger awareness — showing wariness or distress around unfamiliar people. This is a healthy sign of normal social development and deepening attachment to primary caregivers. It often surprises grandparents who haven't seen the baby in a few weeks.

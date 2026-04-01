@@ -39,6 +39,12 @@ The neurological reason doesn't make them easier to manage, but it helps to know
 
 When a tantrum happens: stay calm, stay present, say little, reconnect after. The storm passes faster when you don't amplify it.
 
+## Crib-to-Bed Transition — Think Ahead
+
+Most children stay in their crib until 2–3 years, and there's no developmental reason to rush this. But 18 months is when the transition starts becoming relevant: some toddlers begin climbing out of the crib around 18–24 months, which creates a safety hazard. If your toddler is showing signs of crib-climbing — pulling a leg over the rail, rocking the crib toward a wall — it's time to lower the mattress to the floor setting or start thinking about the transition to a toddler bed.
+
+Don't transition early just because someone suggests it. The crib is one of the best sleep tools you have. Toddlers in beds have more freedom to get out, and that freedom almost always comes with sleep disruption. Move when you have to, not before.
+
 ## Off the Bottle — Final Deadline
 
 If any bottle use remains at 18 months, stop now. Replace all bottles with straw or open cups this week. The AAP deadline was 15 months. Every month of continued bottle use increases dental risk and deepens the emotional attachment that makes weaning harder.

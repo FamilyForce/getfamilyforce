@@ -35,6 +35,12 @@ Your baby is now actively searching for hidden objects — dropping a toy and lo
 
 This is also why separation anxiety is intensifying: your baby now knows you exist when you're not in the room and protests your absence. The 9-month article covers this in full, but the first wave of it arrives here.
 
+### Pointing and Joint Attention — Peaks Now
+
+The joint attention window peaks at 8 months. This is when you should see your baby beginning to point — or at minimum, reliably following your point when you direct their attention to something. Declarative pointing, where your baby points at something to share interest and then looks back at you to check your reaction, is one of the most important milestones of the first year. It's the foundation of language, social learning, and shared understanding.
+
+Point at things constantly. Name them. Watch your baby's eyes. When they follow your point and look at what you're indicating, respond with enthusiasm — name it, engage, share the moment. Babies who develop joint attention earlier have larger vocabularies at 18 months. Absent pointing by 12 months is the single strongest early behavioral predictor of autism spectrum disorder. The behavior you're building right now is the same behavior that will be screened at the 18-month M-CHAT visit.
+
 ### Imitation — More Deliberate
 
 Imitation of sounds, expressions, and simple actions is becoming more deliberate. Wave hello — they may wave back. Clap — they may try to clap. These are the early foundations of social learning and language.
