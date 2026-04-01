@@ -108,6 +108,18 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
 }
 .nav-center-links{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:28px;}
 @media(max-width:768px){.nav-center-links{display:none;}}
+.nav-hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;align-items:center;justify-content:center;}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .2s;}
+.nav-mobile{display:none;position:absolute;top:64px;left:0;right:0;background:rgba(250,250,250,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);padding:12px 20px;flex-direction:column;gap:0;z-index:999;}
+.nav-mobile.open{display:flex;}
+.nav-mobile a{font-size:15px;font-weight:500;color:var(--text-mid);padding:12px 0;border-bottom:1px solid var(--border-light);text-decoration:none;}
+.nav-mobile a:last-child{border-bottom:none;color:var(--terra);font-weight:700;}
+@media(max-width:768px){.nav-hamburger{display:flex;}}
+
+@media(max-width:600px){
+  .footer-links{flex-wrap:wrap;gap:12px 16px;}
+  .footer-copy{width:100%;text-align:center;}
+}
 </style>
 
 <!-- Structured Data -->
@@ -178,15 +190,25 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
       </svg>
       <span>Family<span class="logo-accent">Force</span></span>
     </a>
+    <button class="nav-hamburger" aria-label="Open navigation menu" onclick="this.closest('nav').querySelector('.nav-mobile').classList.toggle('open')">
+  <span></span><span></span><span></span>
+</button>
     <div class="nav-center-links"><a href="/milestones" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Milestones</a><a href="/blog" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Blog</a><a href="/baby-shower-gifts" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Gift Ideas</a><a href="/scout-gift" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Give as a gift 🎁</a></div>
     <a href="/sign-in?intent=trial" class="nav-cta">Try Scout Free</a>
   </div>
+<div class="nav-mobile">
+  <a href="/milestones">Milestones</a>
+  <a href="/blog">Blog</a>
+  <a href="/baby-shower-gifts">Gift Ideas</a>
+  <a href="/scout-gift">Give as a gift 🎁</a>
+  <a href="/sign-in?intent=trial">Try Scout Free →</a>
+</div>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
   <p class="hero-eyebrow">Baby Shower Gift Guide 2026</p>
-  <h1>The Best Baby Shower Gifts<br>New Parents Will Actually Use</h1>
+  <h1>The Best Baby Shower Gifts New Parents Will Actually Use</h1>
   <p class="hero-lede">Every baby shower ends with the same haul: white noise machines, swaddle blankets, and a pile of tiny onesies nobody asked for. The gear gets used for a few months. Nobody talks about what helps after that.</p>
 </div>
 

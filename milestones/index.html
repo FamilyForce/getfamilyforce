@@ -58,7 +58,7 @@ a { color: inherit; text-decoration: none; }
 /* MONTH GRID */
 .section-title { font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 24px; text-align: center; }
 .month-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; max-width: 1100px; margin: 0 auto 80px; padding: 0 var(--rx); }
-.month-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: box-shadow .15s, border-color .15s; display: flex; flex-direction: column; gap: 8px; }
+.month-card { text-decoration:none; color:inherit; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: box-shadow .15s, border-color .15s; display: flex; flex-direction: column; gap: 8px; }
 .month-card:hover { box-shadow: 0 4px 20px rgba(110,78,214,.1); border-color: rgba(110,78,214,.3); }
 .month-card a { display: block; }
 .month-badge { display: inline-block; background: var(--terra-tint); color: var(--terra-dark); font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; margin-bottom: 4px; }
@@ -99,7 +99,18 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
   .hero{padding:100px 20px 48px;}
   .hero h1{font-size:28px;}
   .hero-sub{font-size:16px;}
+  .scout-callout a.btn{display:block;text-align:center;width:100%;}
+  .footer-links{flex-wrap:wrap;gap:12px 16px;}
+  .footer-copy{width:100%;text-align:center;}
 }
+.nav-hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;align-items:center;justify-content:center;}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .2s;}
+.nav-mobile{display:none;position:absolute;top:64px;left:0;right:0;background:rgba(250,250,250,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);padding:12px 20px;flex-direction:column;gap:0;z-index:999;}
+.nav-mobile.open{display:flex;}
+.nav-mobile a{font-size:15px;font-weight:500;color:var(--text-mid);padding:12px 0;border-bottom:1px solid var(--border-light);text-decoration:none;}
+.nav-mobile a:last-child{border-bottom:none;color:var(--terra);font-weight:700;}
+@media(max-width:768px){.nav-hamburger{display:flex;}}
+.read-link{min-height:44px;display:inline-flex;align-items:center;}
 </style>
 
 <!-- Structured Data — CollectionPage + FAQPage -->
@@ -186,9 +197,19 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
       </svg>
       <span>Family<span class="logo-accent">Force</span></span>
     </a>
+    <button class="nav-hamburger" aria-label="Open navigation menu" onclick="this.closest('nav').querySelector('.nav-mobile').classList.toggle('open')">
+  <span></span><span></span><span></span>
+</button>
     <div class="nav-center-links"><a href="/milestones" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Milestones</a><a href="/blog" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Blog</a><a href="/baby-shower-gifts" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Gift Ideas</a><a href="/scout-gift" style="font-size:14px;font-weight:500;color:#8A879A;text-decoration:none;">Give as a gift 🎁</a></div>
     <a href="/sign-in?intent=trial" class="nav-cta">Try Scout Free</a>
   </div>
+<div class="nav-mobile">
+  <a href="/milestones">Milestones</a>
+  <a href="/blog">Blog</a>
+  <a href="/baby-shower-gifts">Gift Ideas</a>
+  <a href="/scout-gift">Give as a gift 🎁</a>
+  <a href="/sign-in?intent=trial">Try Scout Free →</a>
+</div>
 </nav>
 
 <!-- HERO -->
@@ -217,292 +238,292 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
 <div class="month-grid">
 
   <!-- MONTH 1 -->
-  <div class="month-card">
+  <a href="/milestones/1-month" class="month-card">
     <span class="month-badge">1 Month</span>
-    <h3><a href="/milestones/1-month">1 Month Baby Milestones — Your Newborn's First Four Weeks</a></h3>
+    <h3>1 Month Baby Milestones — Your Newborn's First Four Weeks</h3>
     <p>Head lifting, recognizing your face, and the first hints of a smile. What's happening in your newborn's brain right now.</p>
-    <a href="/milestones/1-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 2 -->
-  <div class="month-card">
+  <a href="/milestones/2-month" class="month-card">
     <span class="month-badge">2 Months</span>
-    <h3><a href="/milestones/2-month">2 Month Baby Milestones — The Social Smile Arrives</a></h3>
+    <h3>2 Month Baby Milestones — The Social Smile Arrives</h3>
     <p>The first real smile meant just for you. At 2 months, your baby is also tracking objects and starting to coo.</p>
-    <a href="/milestones/2-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 3 -->
-  <div class="month-card">
+  <a href="/milestones/3-month" class="month-card">
     <span class="month-badge">3 Months</span>
-    <h3><a href="/milestones/3-month">3 Month Baby Milestones — Tummy Time Gets Serious</a></h3>
+    <h3>3 Month Baby Milestones — Tummy Time Gets Serious</h3>
     <p>Rolling is on the horizon. Three months is when tummy time becomes non-negotiable and swaddling starts to phase out.</p>
-    <a href="/milestones/3-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 4 -->
-  <div class="month-card">
+  <a href="/milestones/4-month" class="month-card">
     <span class="month-badge">4 Months</span>
-    <h3><a href="/milestones/4-month">4 Month Baby Milestones — The Sleep Regression Nobody Warned You About</a></h3>
+    <h3>4 Month Baby Milestones — The Sleep Regression Nobody Warned You About</h3>
     <p>The 4-month sleep regression is real, and most parents aren't ready for it. Here's what's happening and what actually helps.</p>
-    <a href="/milestones/4-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 5 -->
-  <div class="month-card">
+  <a href="/milestones/5-month" class="month-card">
     <span class="month-badge">5 Months</span>
-    <h3><a href="/milestones/5-month">5 Month Baby Milestones — Solids Are Coming. Here's What to Know First.</a></h3>
+    <h3>5 Month Baby Milestones — Solids Are Coming. Here's What to Know First.</h3>
     <p>Signs of solid food readiness start appearing now. Most pediatricians say wait until 6 months — but the prep starts at 5.</p>
-    <a href="/milestones/5-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 6 -->
-  <div class="month-card">
+  <a href="/milestones/6-month" class="month-card">
     <span class="month-badge">6 Months</span>
-    <h3><a href="/milestones/6-month">6 Month Baby Milestones — Starting Solids and Sitting Up</a></h3>
+    <h3>6 Month Baby Milestones — Starting Solids and Sitting Up</h3>
     <p>The biggest nutritional shift of the first year. At 6 months, your baby is ready for solid food, and sitting with support.</p>
-    <a href="/milestones/6-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 7 -->
-  <div class="month-card">
+  <a href="/milestones/7-month" class="month-card">
     <span class="month-badge">7 Months</span>
-    <h3><a href="/milestones/7-month">7 Month Baby Milestones — Crawling Is Coming. Your House Isn't Ready.</a></h3>
+    <h3>7 Month Baby Milestones — Crawling Is Coming. Your House Isn't Ready.</h3>
     <p>Mobility prep goes into overdrive. Rocking on all fours, grabbing everything, and a new awareness of when you've left the room.</p>
-    <a href="/milestones/7-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 8 -->
-  <div class="month-card">
+  <a href="/milestones/8-month" class="month-card">
     <span class="month-badge">8 Months</span>
-    <h3><a href="/milestones/8-month">8 Month Baby Milestones — Crawling, Stranger Anxiety, and the Texture Window Closing</a></h3>
+    <h3>8 Month Baby Milestones — Crawling, Stranger Anxiety, and the Texture Window Closing</h3>
     <p>Most babies crawl by 8–10 months and the texture window closes at 9. Here's what to act on before it's too late.</p>
-    <a href="/milestones/8-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 9 -->
-  <div class="month-card">
+  <a href="/milestones/9-month" class="month-card">
     <span class="month-badge">9 Months</span>
-    <h3><a href="/milestones/9-month">9 Month Baby Milestones — When Separation Anxiety Starts</a></h3>
+    <h3>9 Month Baby Milestones — When Separation Anxiety Starts</h3>
     <p>Separation anxiety officially arrives at 9 months. Here's why it happens, what it means, and what actually helps.</p>
-    <a href="/milestones/9-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 10 -->
-  <div class="month-card">
+  <a href="/milestones/10-month" class="month-card">
     <span class="month-badge">10 Months</span>
-    <h3><a href="/milestones/10-month">10 Month Baby Milestones — Cruising, Cup Introduction, and First Words Approaching</a></h3>
+    <h3>10 Month Baby Milestones — Cruising, Cup Introduction, and First Words Approaching</h3>
     <p>Cruising the furniture, a cup deadline before 12 months, and first words just weeks away.</p>
-    <a href="/milestones/10-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 11 -->
-  <div class="month-card">
+  <a href="/milestones/11-month" class="month-card">
     <span class="month-badge">11 Months</span>
-    <h3><a href="/milestones/11-month">11 Month Baby Milestones — First Words Are Arriving and the Peanut Window Is Closing</a></h3>
+    <h3>11 Month Baby Milestones — First Words Are Arriving and the Peanut Window Is Closing</h3>
     <p>First words are forming and the peanut allergy prevention window closes this month. Here's what needs your attention.</p>
-    <a href="/milestones/11-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 12 -->
-  <div class="month-card">
+  <a href="/milestones/12-month" class="month-card">
     <span class="month-badge">12 Months</span>
-    <h3><a href="/milestones/12-month">12 Month Baby Milestones — What to Expect When Your Baby Turns 1</a></h3>
+    <h3>12 Month Baby Milestones — What to Expect When Your Baby Turns 1</h3>
     <p>First steps, first words, and the developmental checklist every parent should know before the one-year visit.</p>
-    <a href="/milestones/12-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 13 -->
-  <div class="month-card">
+  <a href="/milestones/13-month" class="month-card">
     <span class="month-badge">13 Months</span>
-    <h3><a href="/milestones/13-month">13 Month Milestones — Walking, Whole Milk, and Ditching the Formula</a></h3>
+    <h3>13 Month Milestones — Walking, Whole Milk, and Ditching the Formula</h3>
     <p>Month 13 is the transition month. Formula is over, whole milk starts, and walking is consolidating.</p>
-    <a href="/milestones/13-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 14 -->
-  <div class="month-card">
+  <a href="/milestones/14-month" class="month-card">
     <span class="month-badge">14 Months</span>
-    <h3><a href="/milestones/14-month">14 Month Milestones — Walking Everywhere and Early Pretend Play</a></h3>
+    <h3>14 Month Milestones — Walking Everywhere and Early Pretend Play</h3>
     <p>Walking is fully established and the first signs of pretend play are starting — which matters more than you'd expect.</p>
-    <a href="/milestones/14-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 15 -->
-  <div class="month-card">
+  <a href="/milestones/15-month" class="month-card">
     <span class="month-badge">15 Months</span>
-    <h3><a href="/milestones/15-month">15 Month Milestones — The Well-Child Visit Every Parent Needs to Prepare For</a></h3>
+    <h3>15 Month Milestones — The Well-Child Visit Every Parent Needs to Prepare For</h3>
     <p>Walking assessed, 10-word language count, pointing, and the bottle deadline. Here's what to say and what to bring.</p>
-    <a href="/milestones/15-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 16 -->
-  <div class="month-card">
+  <a href="/milestones/16-month" class="month-card">
     <span class="month-badge">16 Months</span>
-    <h3><a href="/milestones/16-month">16 Month Milestones — Tantrums Are Starting and That's Normal</a></h3>
+    <h3>16 Month Milestones — Tantrums Are Starting and That's Normal</h3>
     <p>The first real tantrums arrive around 15–18 months. They're neurological, not behavioral — here's what actually helps.</p>
-    <a href="/milestones/16-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 17 -->
-  <div class="month-card">
+  <a href="/milestones/17-month" class="month-card">
     <span class="month-badge">17 Months</span>
-    <h3><a href="/milestones/17-month">17 Month Milestones — Pretend Play Is One of the Most Important Windows Right Now</a></h3>
+    <h3>17 Month Milestones — Pretend Play Is One of the Most Important Windows Right Now</h3>
     <p>Pretend play peaks around 17 months and predicts language, creativity, and emotional regulation at school age.</p>
-    <a href="/milestones/17-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 18 -->
-  <div class="month-card">
+  <a href="/milestones/18-month" class="month-card">
     <span class="month-badge">18 Months</span>
-    <h3><a href="/milestones/18-month">18 Month Milestones — The M-CHAT Autism Screening and the Language Explosion</a></h3>
+    <h3>18 Month Milestones — The M-CHAT Autism Screening and the Language Explosion</h3>
     <p>The first formal autism screening happens at 18 months. Here's what the M-CHAT tests and how to prepare.</p>
-    <a href="/milestones/18-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 19 -->
-  <div class="month-card">
+  <a href="/milestones/19-month" class="month-card">
     <span class="month-badge">19 Months</span>
-    <h3><a href="/milestones/19-month">19 Month Milestones — Two-Word Combinations Are Starting</a></h3>
+    <h3>19 Month Milestones — Two-Word Combinations Are Starting</h3>
     <p>Two-word phrases mark a qualitative leap in language — not just more words, but the beginning of constructed meaning.</p>
-    <a href="/milestones/19-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 20 -->
-  <div class="month-card">
+  <a href="/milestones/20-month" class="month-card">
     <span class="month-badge">20 Months</span>
-    <h3><a href="/milestones/20-month">20 Month Milestones — Vocabulary Is Accelerating and Independence Is Growing</a></h3>
+    <h3>20 Month Milestones — Vocabulary Is Accelerating and Independence Is Growing</h3>
     <p>30–50+ words and a fierce independence drive. Here's what's behind the "I do it" phase and what to do about it.</p>
-    <a href="/milestones/20-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 21 -->
-  <div class="month-card">
+  <a href="/milestones/21-month" class="month-card">
     <span class="month-badge">21 Months</span>
-    <h3><a href="/milestones/21-month">21 Month Milestones — Pronouns Are Starting and Sentences Are Coming</a></h3>
+    <h3>21 Month Milestones — Pronouns Are Starting and Sentences Are Coming</h3>
     <p>Pronoun use begins around 21–27 months and is a bigger cognitive leap than it looks.</p>
-    <a href="/milestones/21-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 22 -->
-  <div class="month-card">
+  <a href="/milestones/22-month" class="month-card">
     <span class="month-badge">22 Months</span>
-    <h3><a href="/milestones/22-month">22 Month Milestones — Building Toward 50 Words and the Two-Year Visit</a></h3>
+    <h3>22 Month Milestones — Building Toward 50 Words and the Two-Year Visit</h3>
     <p>The two-year visit is two months out. Here's the checklist, the language count, and what to prepare.</p>
-    <a href="/milestones/22-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 23 -->
-  <div class="month-card">
+  <a href="/milestones/23-month" class="month-card">
     <span class="month-badge">23 Months</span>
-    <h3><a href="/milestones/23-month">23 Month Milestones — One Month From the Two-Year Checkup</a></h3>
+    <h3>23 Month Milestones — One Month From the Two-Year Checkup</h3>
     <p>The 24-month visit is one month away. Here's the complete checklist and what to bring.</p>
-    <a href="/milestones/23-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 24 -->
-  <div class="month-card">
+  <a href="/milestones/24-month" class="month-card">
     <span class="month-badge">24 Months</span>
-    <h3><a href="/milestones/24-month">24 Month Milestones — The Two-Year Checkup and What It All Adds Up To</a></h3>
+    <h3>24 Month Milestones — The Two-Year Checkup and What It All Adds Up To</h3>
     <p>50 words, two-word combinations, second M-CHAT, and the most comprehensive developmental assessment since birth.</p>
-    <a href="/milestones/24-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 25 -->
-  <div class="month-card">
+  <a href="/milestones/25-month" class="month-card">
     <span class="month-badge">25 Months</span>
-    <h3><a href="/milestones/25-month">25 Month Milestones — Three-Word Sentences Are Starting</a></h3>
+    <h3>25 Month Milestones — Three-Word Sentences Are Starting</h3>
     <p>Three-word sentences mark real grammar, not just more vocabulary. Here's what's happening and the potty training readiness window.</p>
-    <a href="/milestones/25-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 26 -->
-  <div class="month-card">
+  <a href="/milestones/26-month" class="month-card">
     <span class="month-badge">26 Months</span>
-    <h3><a href="/milestones/26-month">26 Month Milestones — Cooperative Play Is Beginning</a></h3>
+    <h3>26 Month Milestones — Cooperative Play Is Beginning</h3>
     <p>Real playing together — shared rules, turn-taking, common goals — starts emerging around 24–27 months.</p>
-    <a href="/milestones/26-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 27 -->
-  <div class="month-card">
+  <a href="/milestones/27-month" class="month-card">
     <span class="month-badge">27 Months</span>
-    <h3><a href="/milestones/27-month">27 Month Milestones — Pronouns Are Solidifying and Imagination Is Growing</a></h3>
+    <h3>27 Month Milestones — Pronouns Are Solidifying and Imagination Is Growing</h3>
     <p>Pronouns should be consistent by now and imaginative play is becoming rich and multi-step.</p>
-    <a href="/milestones/27-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 28 -->
-  <div class="month-card">
+  <a href="/milestones/28-month" class="month-card">
     <span class="month-badge">28 Months</span>
-    <h3><a href="/milestones/28-month">28 Month Milestones — Potty Training Progress and Fine Motor Precision</a></h3>
+    <h3>28 Month Milestones — Potty Training Progress and Fine Motor Precision</h3>
     <p>Potty training is hitting its stride — or its wall. Fine motor is becoming more precise. Here's what's developing.</p>
-    <a href="/milestones/28-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 29 -->
-  <div class="month-card">
+  <a href="/milestones/29-month" class="month-card">
     <span class="month-badge">29 Months</span>
-    <h3><a href="/milestones/29-month">29 Month Milestones — One Month From the 30-Month Checkup</a></h3>
+    <h3>29 Month Milestones — One Month From the 30-Month Checkup</h3>
     <p>The 30-month visit was specifically added to the AAP schedule to catch language delays. Here's the full prep checklist.</p>
-    <a href="/milestones/29-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 30 -->
-  <div class="month-card">
+  <a href="/milestones/30-month" class="month-card">
     <span class="month-badge">30 Months</span>
-    <h3><a href="/milestones/30-month">30 Month Milestones — The AAP Visit Added Just for Language</a></h3>
+    <h3>30 Month Milestones — The AAP Visit Added Just for Language</h3>
     <p>The 30-month well-child visit is the one the AAP added specifically to catch language delays between ages 2 and 3.</p>
-    <a href="/milestones/30-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 31 -->
-  <div class="month-card">
+  <a href="/milestones/31-month" class="month-card">
     <span class="month-badge">31 Months</span>
-    <h3><a href="/milestones/31-month">31 Month Milestones — Daytime Dryness and the Final Stretch of Potty Training</a></h3>
+    <h3>31 Month Milestones — Daytime Dryness and the Final Stretch of Potty Training</h3>
     <p>Consistent daytime dryness is achieved between 24–33 months. Here's where 31 months fits and what to do if training is stalling.</p>
-    <a href="/milestones/31-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 32 -->
-  <div class="month-card">
+  <a href="/milestones/32-month" class="month-card">
     <span class="month-badge">32 Months</span>
-    <h3><a href="/milestones/32-month">32 Month Milestones — Four-Word Sentences and the Road to Full Fluency</a></h3>
+    <h3>32 Month Milestones — Four-Word Sentences and the Road to Full Fluency</h3>
     <p>Four-word sentences are standard, strangers can understand most of what your child says, and narrative — recounting events — is starting.</p>
-    <a href="/milestones/32-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 33 -->
-  <div class="month-card">
+  <a href="/milestones/33-month" class="month-card">
     <span class="month-badge">33 Months</span>
-    <h3><a href="/milestones/33-month">33 Month Milestones — Three Months From the Three-Year Checkup</a></h3>
+    <h3>33 Month Milestones — Three Months From the Three-Year Checkup</h3>
     <p>The 36-month visit is the most comprehensive since infancy. Here's the full checklist of what will be assessed.</p>
-    <a href="/milestones/33-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 34 -->
-  <div class="month-card">
+  <a href="/milestones/34-month" class="month-card">
     <span class="month-badge">34 Months</span>
-    <h3><a href="/milestones/34-month">34 Month Milestones — Language Is Fluent, Play Is Sophisticated</a></h3>
+    <h3>34 Month Milestones — Language Is Fluent, Play Is Sophisticated</h3>
     <p>Language is approaching full fluency, real friendships are forming, and play has genuine complexity.</p>
-    <a href="/milestones/34-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 35 -->
-  <div class="month-card">
+  <a href="/milestones/35-month" class="month-card">
     <span class="month-badge">35 Months</span>
-    <h3><a href="/milestones/35-month">35 Month Milestones — One Month From the Three-Year Checkup</a></h3>
+    <h3>35 Month Milestones — One Month From the Three-Year Checkup</h3>
     <p>The 36-month visit is one month away — the final intensive developmental checkpoint. Here's the complete prep checklist.</p>
-    <a href="/milestones/35-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
   <!-- MONTH 36 -->
-  <div class="month-card">
+  <a href="/milestones/36-month" class="month-card">
     <span class="month-badge">36 Months</span>
-    <h3><a href="/milestones/36-month">36 Month Milestones — The Three-Year Checkup and What Three Years Adds Up To</a></h3>
+    <h3>36 Month Milestones — The Three-Year Checkup and What Three Years Adds Up To</h3>
     <p>The finish line of the most intensively monitored developmental period in human life. Here's the full assessment guide.</p>
-    <a href="/milestones/36-month" class="read-link">Read guide →</a>
-  </div>
+    <span class="read-link">Read guide →</span>
+  </a>
 
 </div>
 
