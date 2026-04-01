@@ -30,7 +30,7 @@ This is infrastructure month. The milestones are modest. That's appropriate.
 
 The AAP recommends 20 minutes of tummy time per day by 4 months, spread across the day. At 3 months, you should be working toward this number.
 
-With First Son, I was inconsistent. Some days I did it, some days I didn't. He seemed to hate it, I caved, and I let it slide. I didn't understand what I was delaying: the neck, shoulder, and back muscle development that feeds into every physical milestone that follows. Rolling. Sitting. Crawling. Standing. It all starts here.
+With First Son, I was inconsistent. Some days I did it, some days I didn't. He seemed to hate it, I caved, and I let it slide. He developed mild flat head that took months to correct. I didn't understand what I was delaying: the neck, shoulder, and back muscle development that feeds into every physical milestone that follows — and a shape issue that's almost entirely preventable in the first months and significantly harder to fix after 6.
 
 With Second Son, I was consistent from day three. He hated it too. I did it anyway. Discomfort is not harm. You're building muscle, not causing distress.
 
@@ -48,9 +48,15 @@ Your baby is now producing longer strings of vowel sounds and varying pitch and 
 
 Respond to everything. The quantity of words your baby hears in the first year directly predicts vocabulary size at age 3. The research on this is consistent.
 
-### Recognizing Familiar Faces and Voices
+### Laughing Out Loud
+
+Laughing — not just smiling — typically emerges around 3 months. It requires the coordination of breath, voice, and social responsiveness all at once. It's a sign the brain is making deeper connections and that your baby is finding the world genuinely interesting. No laughter by 4 months is worth noting at the next visit.
+
+### Visual Tracking and Recognizing Familiar Faces
 
 Your baby now clearly prefers familiar faces and voices. They'll turn toward the sound of your voice across the room. This is the beginning of attachment and the groundwork for all social learning.
+
+Visual tracking should also be smooth by now — they should be able to follow a slowly moving object with their eyes without losing it. If your baby cannot track a slowly moving object smoothly by 3 months, raise it at the 2- or 4-month visit.
 
 ## The 4-Month Sleep Regression — It's Coming
 
