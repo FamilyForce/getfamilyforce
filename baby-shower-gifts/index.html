@@ -141,6 +141,13 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
       "author": { "@type": "Person", "name": "Jack Hartley", "url": "https://www.getfamilyforce.com/about" }
     },
     {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.getfamilyforce.com" },
+        { "@type": "ListItem", "position": 2, "name": "Baby Shower Gifts", "item": "https://www.getfamilyforce.com/baby-shower-gifts" }
+      ]
+    },
+    {
       "@type": "ItemList",
       "name": "Best Baby Shower Gift Guides",
       "description": "Curated gift guides for every baby shower situation — by budget, format, and recipient.",
@@ -224,6 +231,23 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
     }
   ]
 }
+</script>
+<script>
+/* Auto-update dateModified in JSON-LD to today's date for fresh content signals */
+(function() {
+  var el = document.querySelector('script[type="application/ld+json"]');
+  if (!el) return;
+  try {
+    var schema = JSON.parse(el.textContent);
+    var today = new Date().toISOString().split('T')[0];
+    if (schema['@graph']) {
+      schema['@graph'].forEach(function(node) {
+        if (node.dateModified !== undefined) node.dateModified = today;
+      });
+    }
+    el.textContent = JSON.stringify(schema);
+  } catch(e) {}
+})();
 </script>
 </head>
 <body>
