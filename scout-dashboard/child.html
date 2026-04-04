@@ -542,13 +542,17 @@ function saveChild() {
                   body:    JSON.stringify({ childId: newId }),
                 })
                 .then(function (r) { return r.json() })
-                .then(function () {
+                .then(function (data) {
+                  if (!data.ok) {
+                    // Trial start failed — show error, leave user on page so they can retry
+                    showSaveErr(data.error || 'Could not start your trial. Please try again or contact support@getfamilyforce.com.', btn)
+                    return
+                  }
                   // signup-delivery is now fired inside scout-child-trial-start
                   window.location.href = '/scout-dashboard.html'
                 })
                 .catch(function () {
-                  // Non-critical — proceed to dashboard even if trial start fails
-                  window.location.href = '/scout-dashboard.html'
+                  showSaveErr('Network error starting your trial. Please check your connection and try again.', btn)
                 })
               })
             }

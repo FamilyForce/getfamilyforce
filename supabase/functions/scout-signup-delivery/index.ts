@@ -104,7 +104,7 @@ Deno.serve(async (req: Request) => {
   try {
     // 1. Parse payload — two supported shapes:
     //    a) Supabase DB webhook: { type, table, record: { user_id, status, ... } }
-    //    b) Direct call from scout-convert: { userId, childId?, is_conversion?, birth_signup? }
+    //    b) Direct call from scout-convert: { userId, childId?, is_conversion?, birth_signup?, additional_child? }
     step = 'parse'
     const payload = await req.json()
 
@@ -115,14 +115,15 @@ Deno.serve(async (req: Request) => {
       // Shape A — DB webhook
       record = payload.record as Record<string, unknown>
     } else if (payload.userId) {
-      // Shape B — direct call from scout-convert / scout-confirm-arrival
+      // Shape B — direct call from scout-convert / scout-confirm-arrival / scout-child-trial-start
       directCall = true
       record = {
-        user_id:      payload.userId,
-        child_id:     payload.childId ?? null,
-        is_conversion: payload.is_conversion ?? false,
-        birth_signup:  payload.birth_signup ?? false,
-        status:       'trialing',  // bypass status guard below
+        user_id:          payload.userId,
+        child_id:         payload.childId ?? null,
+        is_conversion:    payload.is_conversion    ?? false,
+        birth_signup:     payload.birth_signup     ?? false,
+        additional_child: payload.additional_child ?? false,
+        status:           'trialing',  // bypass status guard below
       }
     } else {
       throw new Error('No record in payload')
@@ -178,9 +179,15 @@ Deno.serve(async (req: Request) => {
     // Uses digest_type 'birth_signup' so it never collides with the pre-birth 'signup' log entry.
     // conversion = true when called from scout-convert after trial-to-paid upgrade.
     // Uses digest_type 'conversion' so it doesn't collide with the trial 'signup' log entry.
-    const birthSignup  = record.birth_signup  === true
-    const isConversion = record.is_conversion === true
-    const digestType   = birthSignup ? 'birth_signup' : isConversion ? 'conversion' : 'signup'
+    // additional_child = true when called from scout-child-trial-start (2nd+ child added to account).
+    // Uses digest_type 'additional_child' so it doesn't collide with the first child's 'signup' log entry.
+    const birthSignup       = record.birth_signup       === true
+    const isConversion      = record.is_conversion      === true
+    const isAdditionalChild = record.additional_child   === true
+    const digestType        = birthSignup       ? 'birth_signup'
+                            : isConversion      ? 'conversion'
+                            : isAdditionalChild ? 'additional_child'
+                            : 'signup'
 
     // 4. Check deduplication — per user+child+type+month
     step = 'dedup-check'

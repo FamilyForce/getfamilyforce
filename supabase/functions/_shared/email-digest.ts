@@ -41,7 +41,7 @@ export interface DigestEmailOptions {
   dashboardUrl:    string
   siteUrl:         string
   userId:              string
-  digestType:          'signup' | 'monthly' | 'birth_signup' | 'conversion'
+  digestType:          'signup' | 'monthly' | 'birth_signup' | 'conversion' | 'additional_child'
   isExpecting?:        boolean   // true = expecting parent, pre-birth digest
   postBirthWindowCount?: number  // total post-birth windows — shown in pre-birth tease copy
   unsubscribeUrl?:     string    // family member one-click unsubscribe URL (omit for account owner)
@@ -207,6 +207,8 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `${childName} is here. And there are ${allWindowCount} developmental windows open in the first month. That can feel like a lot — and honestly, it is. But that's exactly why Scout exists. We'll make sure you don't miss any of them. Let's nail the first month together.`
     : digestType === 'conversion'
     ? `Thanks for continuing. This is ${childName}'s Scout digest for month ${ageMonths} — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now. I wish I'd had this with my first son.`
+    : digestType === 'additional_child'
+    ? `You already know how Scout works. This is ${childName}'s first digest — the same system, tuned to exactly where ${his} is right now. Every child has their own set of windows. Here's ${childName}'s.`
     : digestType === 'signup'
     ? `This is ${childName}'s first Scout digest. It's the beginning of something that I wish I'd had with my first son — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now.`
     : `${childName} is ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'} old. This is ${his} Scout digest for the month — a quick look at what's worth your attention right now, written to take about 5 minutes to read.`
@@ -216,6 +218,8 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `The preparation windows below close at birth. Most of them are quick — and much easier to do now than with a newborn in the room.`
     : digestType === 'birth_signup'
     ? `The first few months are a blur. You're doing better than you think — and now you've got a system.`
+    : digestType === 'additional_child'
+    ? `${childName}'s windows are live. Here's what's worth your attention this month.`
     : allCaughtUp
     ? `You've marked everything done this month. That's genuinely rare — and it shows. Here's a look back at what you covered, and a heads-up on what's coming next.`
     : ageMonths <= 2
@@ -580,7 +584,7 @@ export function buildDigestSubject(
   ageMonths:  number,
   aboveFold:  DigestWindow[],
   ageWeeks:   number,
-  digestType: 'signup' | 'birth_signup' | 'monthly' | 'conversion' = 'monthly'
+  digestType: 'signup' | 'birth_signup' | 'monthly' | 'conversion' | 'additional_child' = 'monthly'
 ): string {
   const closing = aboveFold.filter(w => w.close_age_weeks - ageWeeks <= 4)
 
@@ -590,6 +594,10 @@ export function buildDigestSubject(
 
   if (digestType === 'conversion') {
     return `You're subscribed — ${childName}'s full digest is here 🎉`
+  }
+
+  if (digestType === 'additional_child') {
+    return `${childName}'s Scout tracking has started 🎉`
   }
 
   if (digestType === 'signup') {

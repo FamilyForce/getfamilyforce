@@ -131,7 +131,7 @@ Deno.serve(async (req: Request) => {
       return err(400, 'Either childId or childName+childDob is required', step)
     }
 
-    // 3. Check no existing subscription for this child
+    // 3. Check no existing subscription for this child + count existing subs to detect additional child
     step = 'check-existing'
     const { data: existing } = await sb
       .from('scout_subscriptions')
@@ -143,6 +143,14 @@ Deno.serve(async (req: Request) => {
     if (existing && (existing.status === 'active' || existing.status === 'trialing')) {
       return err(409, 'This child already has an active subscription', step)
     }
+
+    // Count other subscriptions this user already has (to determine email variant)
+    const { count: existingSubCount } = await sb
+      .from('scout_subscriptions')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .neq('child_id', childId)
+    const isAdditionalChild = (existingSubCount ?? 0) > 0
 
     // 4. Calculate trial_end
     step = 'trial-end'
@@ -210,8 +218,9 @@ Deno.serve(async (req: Request) => {
         'Authorization': `Bearer ${serviceKey}`,
       },
       body: JSON.stringify({
-        userId:  user.id,
-        childId: childId,
+        userId:           user.id,
+        childId:          childId,
+        additional_child: isAdditionalChild,
       }),
     }).catch((e: Error) => {
       console.error('[scout-child-trial-start] Failed to trigger delivery:', e.message)
