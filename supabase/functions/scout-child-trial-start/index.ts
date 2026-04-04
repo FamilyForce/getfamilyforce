@@ -198,6 +198,25 @@ Deno.serve(async (req: Request) => {
 
     console.log(`[scout-child-trial-start] Trial started: user=${user.id}, child=${childId}, trialEnd=${trialEnd.toISOString()}, bonus=${bonusEligible}`)
 
+    // 7. Fire scout-signup-delivery (async — do not await)
+    // Sends the first digest email + .ics calendar invite to the parent.
+    step = 'trigger-delivery'
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
+    const serviceKey  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    fetch(`${supabaseUrl}/functions/v1/scout-signup-delivery`, {
+      method:  'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${serviceKey}`,
+      },
+      body: JSON.stringify({
+        userId:  user.id,
+        childId: childId,
+      }),
+    }).catch((e: Error) => {
+      console.error('[scout-child-trial-start] Failed to trigger delivery:', e.message)
+    })
+
     return new Response(JSON.stringify({
       ok:             true,
       trialEnd:       trialEnd.toISOString(),

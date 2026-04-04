@@ -532,7 +532,25 @@ function saveChild() {
                 window.location.href = '/scout-dashboard.html'
               })
             } else {
-              window.location.href = '/scout-dashboard.html'
+              // Non-expecting first child — start trial + send signup delivery, then go to dashboard
+              sb.auth.getSession().then(function (sr) {
+                var tok = sr.data && sr.data.session && sr.data.session.access_token
+                if (!tok) { window.location.href = '/scout-dashboard.html'; return }
+                fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-child-trial-start', {
+                  method:  'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok },
+                  body:    JSON.stringify({ childId: newId }),
+                })
+                .then(function (r) { return r.json() })
+                .then(function () {
+                  // signup-delivery is now fired inside scout-child-trial-start
+                  window.location.href = '/scout-dashboard.html'
+                })
+                .catch(function () {
+                  // Non-critical — proceed to dashboard even if trial start fails
+                  window.location.href = '/scout-dashboard.html'
+                })
+              })
             }
           } else {
             // Child #2+ — show subscribe gate
