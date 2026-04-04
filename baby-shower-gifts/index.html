@@ -81,6 +81,40 @@ a { color: inherit; text-decoration: none; }
 .about-section li { font-size: 16px; color: var(--text-mid); line-height: 1.8; margin-bottom: 6px; }
 .about-section strong { color: var(--text); }
 
+/* GUIDE BODY */
+.guide-body { max-width: var(--max); margin: 0 auto; padding: 0 var(--rx) 60px; }
+.guide-body h2 { font-size: 26px; font-weight: 800; margin: 56px 0 16px; padding-top: 12px; border-top: 2px solid var(--border); }
+.guide-body h2:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+.guide-body p { font-size: 16px; color: var(--text-mid); line-height: 1.85; margin-bottom: 16px; }
+.guide-body strong { color: var(--text); }
+.guide-body ul, .guide-body ol { padding-left: 24px; margin-bottom: 20px; }
+.guide-body li { font-size: 16px; color: var(--text-mid); line-height: 1.8; margin-bottom: 8px; }
+
+/* RANKED GIFT ITEMS */
+.gift-item { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: start; }
+.gift-item:hover { border-color: rgba(110,78,214,.3); }
+.gift-rank { width: 48px; height: 48px; border-radius: 12px; background: var(--terra-tint); color: var(--terra-dark); font-size: 20px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.gift-rank.top { background: var(--terra); color: #fff; }
+.gift-item-body h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+.gift-item-meta { font-size: 13px; color: var(--text-dim); margin-bottom: 10px; display: flex; gap: 16px; flex-wrap: wrap; }
+.gift-item-meta span { display: inline-flex; align-items: center; gap: 4px; }
+.gift-item-body p { font-size: 15px; color: var(--text-mid); line-height: 1.75; margin: 0; }
+.gift-best-for { display: inline-block; background: var(--terra-tint); color: var(--terra-dark); font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 3px 9px; border-radius: 100px; margin-bottom: 8px; }
+
+/* BUDGET TABLE */
+.budget-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 32px; }
+.budget-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+.budget-card-price { font-size: 20px; font-weight: 800; color: var(--terra); margin-bottom: 8px; }
+.budget-card ul { padding-left: 18px; margin: 0; }
+.budget-card li { font-size: 14px; color: var(--text-mid); line-height: 1.7; margin-bottom: 4px; }
+
+/* AVOID SECTION */
+.avoid-item { display: flex; gap: 14px; align-items: start; padding: 16px 0; border-bottom: 1px solid var(--border-light); }
+.avoid-item:last-child { border-bottom: none; }
+.avoid-x { font-size: 20px; line-height: 1; color: #EF4444; flex-shrink: 0; margin-top: 2px; }
+.avoid-item-body strong { font-size: 16px; font-weight: 700; color: var(--text); display: block; margin-bottom: 4px; }
+.avoid-item-body p { font-size: 14px; color: var(--text-mid); line-height: 1.7; margin: 0; }
+
 /* FAQ */
 .faq-section { max-width: var(--max); margin: 0 auto; padding: 0 var(--rx) 60px; }
 .faq-section h2 { font-size: 26px; font-weight: 700; margin-bottom: 28px; }
@@ -226,6 +260,30 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
             "@type": "Answer",
             "text": "Scout by FamilyForce is a digital baby shower gift that arrives instantly — no shipping, no wrapping, no risk of arriving after the baby. It's delivered as a gift code that the new parent redeems at signup. From that point, they receive a monthly email + calendar invite timed to their baby's exact developmental stage, from birth to age 3. It's the rare digital gift that actually gets used every month for years."
           }
+        },
+        {
+          "@type": "Question",
+          "name": "How much should I spend on a baby shower gift?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The general range is $25–$75 for a colleague or acquaintance, $50–$150 for a close friend, and $100+ for family. Group gifts are always appropriate for larger items. The amount matters less than the usefulness — a $30 Scout subscription used every month for a year is more valuable than a $90 item that ends up in a closet."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What baby shower gifts should I avoid?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Avoid newborn-size clothing (outgrown in 2–3 weeks), wipe warmers (used briefly, then forgotten), decorative nursery items, and toys for ages 6+ months given at a newborn shower. Also avoid duplicating registry items without checking — coordinate with other guests or give something off-registry entirely."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What baby shower gifts do new parents actually want?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "New parents consistently say they most needed diapers in larger sizes (not newborn), food delivery credits, postpartum support for the mom, and knowledge about what to expect month by month. The registry covers gear. What doesn't get covered is support and guidance for the weeks and months after the baby arrives — which is exactly what Scout addresses."
+          }
         }
       ]
     }
@@ -300,6 +358,235 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
       <span class="hero-gift-badge-sub">1 month · instant delivery</span>
     </div>
   </div>
+</div>
+
+<!-- GUIDE BODY -->
+<div class="guide-body">
+
+  <h2>The 10 Best Baby Shower Gifts for 2026</h2>
+  <p>I've been a parent twice. I've been to more baby showers than I can count. I've given the wrong gifts and received the wrong gifts. What follows isn't a sponsored list — it's what I'd actually tell a friend who asked me what to give.</p>
+  <p>The rule I use: <strong>will this still be useful at 12 months?</strong> Most baby shower gifts fail that test. The ones below don't.</p>
+
+  <!-- #1 Scout -->
+  <div class="gift-item">
+    <div class="gift-rank top">1</div>
+    <div class="gift-item-body">
+      <span class="gift-best-for">Best overall · lasts 3 years</span>
+      <h3>Scout by FamilyForce — Monthly Developmental Milestone Subscription</h3>
+      <div class="gift-item-meta">
+        <span>💰 From $9.99</span><span>📦 Instant delivery</span><span>⏱ Works birth to age 3</span>
+      </div>
+      <p>Scout is a monthly email + calendar invite sent on the baby's birthday, covering exactly what's developing that month — motor, language, cognitive, social. The 4-month sleep regression. When to introduce solids. The 18-month autism screen. Potty training readiness. Every window, timed to their exact age, before it arrives. Most gifts are useful for weeks. Scout is useful every single month for three years. Nothing else on this list comes close to that ratio. <strong>From $9.99 for one month, $69.99 for a full year, $99.99 for three years.</strong> Delivered instantly as a gift code. <a href="/scout-gift" style="color:var(--terra);font-weight:600;">Give Scout →</a></p>
+    </div>
+  </div>
+
+  <!-- #2 White Noise Machine -->
+  <div class="gift-item">
+    <div class="gift-rank">2</div>
+    <div class="gift-item-body">
+      <span class="gift-best-for">Best for sleep · used nightly for years</span>
+      <h3>Hatch Rest+ (or Marpac Dohm) — White Noise Machine</h3>
+      <div class="gift-item-meta">
+        <span>💰 $70–$170</span><span>📦 Ships</span><span>⏱ Used from night 1</span>
+      </div>
+      <p>A quality white noise machine is one of the few pieces of baby gear that earns its place every single night. Continuous, consistent sound masks household noise during light-sleep-phase wakings — which become frequent after the 4-month sleep architecture shift. The Hatch Rest+ is the premium pick (adds night light + app control). The Marpac Dohm is the simple, mechanical version that parents have used for decades. Either is significantly more useful than another swaddle blanket. Buy one size up from newborn in diapers while you're at it — add that to the gift.</p>
+    </div>
+  </div>
+
+  <!-- #3 Muslin Swaddle Set -->
+  <div class="gift-item">
+    <div class="gift-rank">3</div>
+    <div class="gift-item-body">
+      <span class="gift-best-for">Best consumable · goes through 4 per day</span>
+      <h3>Aden + Anais Muslin Swaddle Blankets (4-pack)</h3>
+      <div class="gift-item-meta">
+        <span>💰 ~$40</span><span>📦 Ships</span><span>⏱ Birth to 4 months</span>
+      </div>
+      <p>New parents go through swaddle blankets constantly — spit-up, blowouts, impromptu changing pads, nursing covers. The Aden + Anais muslin set is the one that actually holds up. The fabric is breathable enough for warmer months, large enough for real swaddling, and gets softer with every wash. The main mistake people make is buying a 2-pack. Buy 4. You want more than you think you'll need. Important note: stop swaddling the moment the baby shows rolling signs, usually around 3–4 months. This is a safety rule, not a style preference.</p>
+    </div>
+  </div>
+
+  <!-- #4 Baby Carrier -->
+  <div class="gift-item">
+    <div class="gift-rank">4</div>
+    <div class="gift-item-body">
+      <span class="gift-best-for">Best for fussy periods · hands-free parenting</span>
+      <h3>Solly Baby Wrap or Ergobaby Omni 360 — Baby Carrier</h3>
+      <div class="gift-item-meta">
+        <span>💰 $60–$200</span><span>📦 Ships</span><span>⏱ Birth to 18+ months</span>
+      </div>
+      <p>Babywearing is one of the highest-leverage tools in the first six months. A baby in a carrier gets the physical contact that regulates their nervous system — fewer fussy periods, easier transitions, better sleep. The Solly wrap is the budget pick for newborns (stretchy fabric, very gentle learning curve). The Ergobaby Omni 360 is the structural carrier that works from newborn through toddler without an insert swap. If the parents haven't bought one yet, this is a gift that will genuinely be used every day for months.</p>
+    </div>
+  </div>
+
+  <!-- #5 Diaper Subscription -->
+  <div class="gift-item">
+    <div class="gift-rank">5</div>
+    <div class="gift-item-body">
+      <span class="gift-best-for">Best practical gift · used every single day</span>
+      <h3>Diapers + Wipes Bundle (Size 1 and Size 2, not Newborn)</h3>
+      <div class="gift-item-meta">
+        <span>💰 $50–$100</span><span>📦 Ships or deliver in person</span><span>⏱ First 6 months</span>
+      </div>
+      <p>Every parent needs diapers. What every parent doesn't need is 200 newborn-size diapers — because most babies outgrow them in 2–3 weeks. Buy Size 1 and Size 2. Huggies Little Snugglers and Pampers Swaddlers are the clinical favorites for sensitivity. Add WaterWipes or Huggies Natural Care wipes. This isn't the most romantic gift, but it's the one that gets used at 3am when nobody has slept and the last thing anyone wants to do is run to the store. That's the gift. Practicality delivered before it's needed.</p>
+    </div>
+  </div>
+
+  <!-- #6 Meal Delivery Credit -->
+  <div class="gift-item">
+    <div class="gift-rank">6</div>
+    <div class="gift-item-body">
+      <span class="gift-best-for">Best for parents · first weeks home</span>
+      <h3>Meal Delivery Credit — DoorDash, Uber Eats, or Grocery Delivery</h3>
+      <div class="gift-item-meta">
+        <span>💰 $50–$150</span><span>📦 Digital · instant delivery</span><span>⏱ First 4–8 weeks</span>
+      </div>
+      <p>The postpartum period is not the time to cook. New parents are running on no sleep, managing an around-the-clock feeding schedule, and often recovering from labor. A substantial meal delivery credit — not $20, but $75 or $100 — removes one real problem from a period that has too many. Give it with a note that says what it's for. A $50 DoorDash gift card paired with a smaller physical gift is more useful than a $75 item that collects dust. Of all the non-Scout gifts on this list, this one gets the most mentions when you ask parents what they actually needed.</p>
+    </div>
+  </div>
+
+  <!-- #7 Postpartum Recovery Kit -->
+  <div class="gift-item">
+    <div class="gift-rank">7</div>
+    <div class="gift-item-body">
+      <span class="gift-best-for">Best for new moms · often overlooked</span>
+      <h3>Frida Mom Postpartum Recovery Kit</h3>
+      <div class="gift-item-meta">
+        <span>💰 ~$40</span><span>📦 Ships</span><span>⏱ First 2 weeks postpartum</span>
+      </div>
+      <p>Every shower is stocked with things for the baby. Almost nothing is given for the person who just gave birth. The Frida Mom kit covers the practical postpartum recovery basics — peri bottle, cooling pads, perineal foam — that hospitals hand out once and expect you to figure out the rest. It's not glamorous. Neither is postpartum recovery. Giving this gift signals that you thought about the mom, not just the baby. Pair it with a heartfelt card and the meal delivery credit above and you've given something that nobody else at that shower gave.</p>
+    </div>
+  </div>
+
+  <!-- #8 Newborn Photography -->
+  <div class="gift-item">
+    <div class="gift-rank">8</div>
+    <div class="gift-item-body">
+      <span class="gift-best-for">Best experience gift · lasts a lifetime</span>
+      <h3>Newborn Photography Session Gift Card</h3>
+      <div class="gift-item-meta">
+        <span>💰 $150–$400</span><span>📦 Digital or printed gift card</span><span>⏱ First 2 weeks of life</span>
+      </div>
+      <p>Newborn photography needs to happen in the first 5–14 days of life, when babies still fold into those curled poses and sleep deeply through a session. Most parents intend to book it and run out of time. A gift certificate from a local newborn photographer removes the decision and the cost. The photos from those 14 days don't exist again. Look up a local photographer who specializes in newborns (not all photographers do — the posing and safety skills are specialized), buy a session or a credit, and give it with a note reminding them to book it before the baby arrives. This is a gift people keep for their entire lives.</p>
+    </div>
+  </div>
+
+  <!-- #9 Burp Cloths -->
+  <div class="gift-item">
+    <div class="gift-rank">9</div>
+    <div class="gift-item-body">
+      <span class="gift-best-for">Best under $30 · you can't have enough</span>
+      <h3>Burp Cloths — 10-Pack (Muslin or Terry Cloth)</h3>
+      <div class="gift-item-meta">
+        <span>💰 $20–$35</span><span>📦 Ships</span><span>⏱ First 6 months</span>
+      </div>
+      <p>New parents underestimate how many burp cloths they need by at least 50%. You want them on every surface, in every bag, in the car. The thin decorative ones don't absorb well — look for thick muslin or terry cloth. Burt's Bees Baby and Aden + Anais both make sets that hold up. This is a small, practical gift that rounds out a basket or pairs with something else. If you're going to a group shower and want to add something modest, this is it. Buy 10, not 4.</p>
+    </div>
+  </div>
+
+  <!-- #10 Museum Membership -->
+  <div class="gift-item">
+    <div class="gift-rank">10</div>
+    <div class="gift-item-body">
+      <span class="gift-best-for">Best long-horizon gift · 1–3 years</span>
+      <h3>Children's Museum or Zoo Membership</h3>
+      <div class="gift-item-meta">
+        <span>💰 $75–$150</span><span>📦 Online or in person</span><span>⏱ Ages 1–4</span>
+      </div>
+      <p>This one doesn't kick in on day one — most babies aren't developmentally ready for a children's museum until around 9–12 months. But a one-year membership starts when they're ready and runs long enough to get real use. Many children's museum memberships are reciprocal with other museums in the network, which makes them even better value. This is the rare physical gift that doesn't get outgrown in weeks — it gets more useful as the child grows. Give it knowing they'll use it for years, and mention that in your card.</p>
+    </div>
+  </div>
+
+  <h2>Baby Shower Gifts by Budget</h2>
+  <p>Choosing a gift by budget is smart. Here's exactly what to buy at each tier:</p>
+
+  <div class="budget-grid">
+    <div class="budget-card">
+      <div class="budget-card-price">Under $30</div>
+      <ul>
+        <li>Scout (1 month) — $9.99</li>
+        <li>Burp cloth 10-pack — $25</li>
+        <li>Muslin swaddle 2-pack — $20</li>
+        <li>WaterWipes bulk — $25</li>
+        <li>Parenting book — $18</li>
+      </ul>
+    </div>
+    <div class="budget-card">
+      <div class="budget-card-price">$30–$75</div>
+      <ul>
+        <li>Meal delivery credit — $50</li>
+        <li>Scout (annual) — $69.99</li>
+        <li>Muslin swaddle 4-pack — $40</li>
+        <li>Frida Mom kit — $40</li>
+        <li>Marpac Dohm — $50</li>
+      </ul>
+    </div>
+    <div class="budget-card">
+      <div class="budget-card-price">$75–$150</div>
+      <ul>
+        <li>Hatch Rest+ — $100</li>
+        <li>Solly Baby wrap — $75</li>
+        <li>Museum membership — $100</li>
+        <li>Scout (3 years) — $99.99</li>
+        <li>Meal delivery credit — $100</li>
+      </ul>
+    </div>
+    <div class="budget-card">
+      <div class="budget-card-price">$150+</div>
+      <ul>
+        <li>Newborn photography session</li>
+        <li>Ergobaby Omni carrier — $200</li>
+        <li>Meal delivery (large credit)</li>
+        <li>Grocery delivery subscription</li>
+        <li>Group gift toward big registry item</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Gifts to Avoid</h2>
+  <p>This section saves you from buying something that looked good online and will never leave the closet.</p>
+
+  <div class="avoid-item">
+    <span class="avoid-x">✕</span>
+    <div class="avoid-item-body">
+      <strong>Newborn-size clothes</strong>
+      <p>Most babies outgrow newborn sizing in 2–3 weeks. Some skip it entirely. Buy 3–6 month size if you want to give clothes — the parents will actually get to use them. Better still, buy 9-month size and tell them it's for when the weather changes.</p>
+    </div>
+  </div>
+  <div class="avoid-item">
+    <span class="avoid-x">✕</span>
+    <div class="avoid-item-body">
+      <strong>Wipe warmers</strong>
+      <p>A popular registry item that gets used for two weeks and forgotten. The warm wipe is appreciated for a diaper change. The three minutes it takes to locate, plug in, and maintain the device is not. Skip it.</p>
+    </div>
+  </div>
+  <div class="avoid-item">
+    <span class="avoid-x">✕</span>
+    <div class="avoid-item-body">
+      <strong>Decorative nursery items</strong>
+      <p>Wall decals, decorative pillows, personalized wooden name signs — these are gifts for the giver, not the recipient. New parents are sleep-deprived and don't need something that requires assembly. The nursery is already designed. Give something useful instead.</p>
+    </div>
+  </div>
+  <div class="avoid-item">
+    <span class="avoid-x">✕</span>
+    <div class="avoid-item-body">
+      <strong>Toys for ages 6 months+ at a newborn shower</strong>
+      <p>Soft stacking rings and wooden blocks look great but a newborn can't do anything with them. Newborns need faces, voices, and contact — not toys. If you want to give a toy, give it at the 6-month birthday, not at the shower. It'll be more appreciated and age-appropriate.</p>
+    </div>
+  </div>
+  <div class="avoid-item">
+    <span class="avoid-x">✕</span>
+    <div class="avoid-item-body">
+      <strong>Duplicate registry items without checking</strong>
+      <p>If you buy off-registry without checking what others are giving, you risk landing the third white noise machine or the second baby monitor. Either check the registry, coordinate with another guest, or give something entirely off-registry that nobody else thought of. Scout fits that category perfectly.</p>
+    </div>
+  </div>
+
+  <h2>How Much to Spend on a Baby Shower Gift</h2>
+  <p>The standard range is $25–$75 for a colleague or acquaintance, $50–$150 for a close friend, and $100+ for family. Group gifting is always appropriate for larger items.</p>
+  <p>But the amount matters less than the thoughtfulness. A $30 Scout subscription that gets used every month for a year is a better gift than a $90 item that sits in a box. The question isn't how much you spent — it's whether the parents will still think about it in six months.</p>
+  <p>If you're attending as part of a group, coordinate. Pool $150–$200 and get the Ergobaby carrier, or a substantial meal delivery credit. Larger practical gifts are far more appreciated as group gifts than as a collection of small items nobody asked for.</p>
+
 </div>
 
 <!-- GIFT CATEGORIES -->
@@ -402,6 +689,31 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
   <div class="faq-item">
     <p class="faq-q">When should I give a baby shower gift?</p>
     <p class="faq-a">Baby shower gifts are typically given at the shower itself, which is usually held 4–6 weeks before the due date. For digital gifts like Scout, you can give them any time — before or after the shower, before or after the birth. Many parents choose to give Scout as a post-birth gift once they know the actual birthday, so the first monthly email arrives timed to the exact age.</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="faq-q">How much should I spend on a baby shower gift?</p>
+    <p class="faq-a">The general range is $25–$75 for a colleague or acquaintance, $50–$150 for a close friend, and $100+ for immediate family. Group gifts are always appropriate for higher price points. That said, amount matters less than usefulness — a $30 gift that gets used every month for a year is a better gift than a $90 item that ends up in a closet.</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="faq-q">What baby shower gifts do new parents actually want?</p>
+    <p class="faq-a">New parents consistently say they most needed: diapers in larger sizes (not newborn), practical postpartum support for the mom, food delivery credits, and knowledge — knowing what to expect and when. The registry covers the gear. What doesn't get covered is the support and guidance for the weeks and months after the baby arrives. Scout is designed specifically for that gap.</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="faq-q">Is it okay to give an off-registry baby shower gift?</p>
+    <p class="faq-a">Yes — with one rule: make sure it doesn't duplicate something already on the registry. Gifts like Scout, meal delivery credits, newborn photography sessions, and museum memberships don't appear on most registries, which makes them genuinely surprising and welcome. If you go off-registry with physical gear, verify it's not already listed to avoid doubling up.</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="faq-q">What is a good baby shower gift for a second baby?</p>
+    <p class="faq-a">For a second baby, the parents already have the gear. What they don't have is time. Meal delivery credits, house cleaning services, and childcare support (an offer to take the older sibling for a day) are the most appreciated gifts for second-baby showers. Scout is also a great pick for second babies — the developmental windows are different for each child, and the monthly emails are timed to that child's specific birthday, not generic templates.</p>
+  </div>
+
+  <div class="faq-item">
+    <p class="faq-q">What baby shower gifts should I avoid?</p>
+    <p class="faq-a">Avoid newborn-size clothing (outgrown in 2–3 weeks), wipe warmers (used briefly, then forgotten), decorative nursery items (useful to the giver, not the recipient), and toys for ages 6+ months at a newborn shower. Also avoid duplicating registry items without checking — coordinate with another guest or give something off-registry entirely.</p>
   </div>
 </section>
 
