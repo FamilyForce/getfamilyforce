@@ -22,7 +22,7 @@ html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 :focus-visible{outline:3px solid var(--terra);outline-offset:3px;border-radius:4px;}
-.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(250,250,250,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(250,250,250.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 var(--rx);height:64px;display:flex;align-items:center;justify-content:space-between;position:relative;}
 .logo{display:inline-flex;align-items:center;gap:8px;font-size:17px;font-weight:700;color:var(--text);}
 .logo-accent{color:var(--terra);}
@@ -39,15 +39,15 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .article-body h2{font-size:24px;font-weight:700;margin:48px 0 16px;padding-top:8px;border-top:1px solid var(--border);}
 .article-body h3{font-size:18px;font-weight:700;margin:28px 0 10px;}
 .article-body p{font-size:16px;color:var(--text-mid);line-height:1.85;margin-bottom:16px;}
-.article-body ul,.article-body ol{margin:0 0 16px;padding-left:24px;}
+.article-body ul.article-body ol{margin:0 0 16px;padding-left:24px;}
 .article-body li{font-size:16px;color:var(--text-mid);line-height:1.8;margin-bottom:6px;}
 .article-body strong{color:var(--text);font-weight:600;}
 .callout{border-radius:12px;padding:20px 24px;margin:28px 0;}
-.callout-warning{background:#FFF8E6;border:1px solid rgba(245,158,11,.3);}
+.callout-warning{background:#FFF8E6;border:1px solid rgba(245,158,11.3);}
 .callout-warning .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#B45309;margin-bottom:8px;}
-.callout-info{background:var(--terra-tint);border:1px solid rgba(110,78,214,.2);}
+.callout-info{background:var(--terra-tint);border:1px solid rgba(110,78,214.2);}
 .callout-info .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--terra-dark);margin-bottom:8px;}
-.callout-green{background:#F0FDF4;border:1px solid rgba(34,197,94,.25);}
+.callout-green{background:#F0FDF4;border:1px solid rgba(34,197,94.25);}
 .callout-green .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#166534;margin-bottom:8px;}
 .callout p{font-size:15px;line-height:1.75;color:var(--text-mid);margin:0;}
 .callout p+p{margin-top:10px;}
@@ -56,14 +56,14 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .stage-block h3{margin:0 0 10px;}
 .inline-cta{background:var(--indigo-deep);border-radius:16px;padding:30px;margin:40px 0;text-align:center;color:#fff;}
 .inline-cta h3{font-size:20px;font-weight:700;margin-bottom:10px;color:#fff;}
-.inline-cta p{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:18px;line-height:1.65;}
+.inline-cta p{font-size:15px;color:rgba(255,255,255.7);margin-bottom:18px;line-height:1.65;}
 .btn-primary{display:inline-block;background:var(--terra);color:#fff !important;font-weight:700;font-size:15px;padding:12px 28px;border-radius:100px;text-decoration:none;}
 .btn-primary:hover{background:#8b6ef0;text-decoration:none;}
 .related{max-width:var(--max);margin:0 auto;padding:0 var(--rx) 60px;}
 .related h2{font-size:20px;font-weight:700;margin-bottom:20px;}
 .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
 .related-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-decoration:none;display:block;}
-.related-card:hover{border-color:rgba(110,78,214,.4);text-decoration:none;}
+.related-card:hover{border-color:rgba(110,78,214.4);text-decoration:none;}
 .rc-age{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--terra-dark);margin-bottom:6px;}
 .rc-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;}
 .faq-section{max-width:var(--max);margin:0 auto;padding:0 var(--rx) 60px;}
@@ -71,13 +71,13 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .faq-item{border-bottom:1px solid var(--border);padding:18px 0;}
 .faq-q{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;}
 .faq-a{font-size:15px;color:var(--text-mid);line-height:1.8;}
-footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px));}
+footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px));}
 .footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 24px;}
 .footer-links{display:flex;gap:24px;}
-.footer-links a{font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;}
-.footer-links a:hover{color:rgba(255,255,255,.8);}
-.footer-copy{font-size:12px;color:rgba(255,255,255,.25);}
-.footer-disclaimer{padding:8px 20px;text-align:center;font-size:11px;color:rgba(255,255,255,.3);line-height:1.6;}
+.footer-links a{font-size:13px;color:rgba(255,255,255.45);text-decoration:none;}
+.footer-links a:hover{color:rgba(255,255,255.8);}
+.footer-copy{font-size:12px;color:rgba(255,255,255.25);}
+.footer-disclaimer{padding:8px 20px;text-align:center;font-size:11px;color:rgba(255,255,255.3);line-height:1.6;}
 @media(max-width:768px){.nav-center{display:none!important;}.related-grid{grid-template-columns:1fr 1fr;}}
 @media(max-width:480px){.related-grid{grid-template-columns:1fr;}}
 </style>
@@ -85,10 +85,10 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
 {"@context":"https://schema.org","@graph":[
   {"@type":"Article","headline":"2-Year Sleep Regression: What's Driving It and How Long It Lasts","description":"The 2-year sleep regression hits when language is exploding, autonomy is peaking, and nap transitions are underway. Here's what's driving it and what actually works.","url":"https://www.getfamilyforce.com/blog/2-year-sleep-regression","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Person","name":"Jack Hartley","url":"https://www.getfamilyforce.com/about"},"publisher":{"@type":"Organization","name":"FamilyForce","url":"https://www.getfamilyforce.com"},"mainEntityOfPage":"https://www.getfamilyforce.com/blog/2-year-sleep-regression","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.getfamilyforce.com"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.getfamilyforce.com/blog"},{"@type":"ListItem","position":3,"name":"2-Year Sleep Regression","item":"https://www.getfamilyforce.com/blog/2-year-sleep-regression"}]}},
   {"@type":"FAQPage","mainEntity":[
-    {"@type":"Question","name":"How long does the 2-year sleep regression last?","acceptedAnswer":{"@type":"Answer","text":"The 2-year sleep regression typically lasts 2–6 weeks. Unlike the 4-month regression, which permanently changes sleep architecture, the 2-year regression is behavioral — driven by language explosion, toddler autonomy, and nap transitions. Once the developmental leaps consolidate and routines restabilize, most toddlers return to their previous sleep baseline."}},
-    {"@type":"Question","name":"What causes the 2-year sleep regression?","acceptedAnswer":{"@type":"Answer","text":"Several developmental forces converge around 2 years: (1) Language explosion — vocabulary is growing rapidly and the brain is processing enormous amounts of new linguistic information. (2) Toddler autonomy — a developmental push for independence that creates bedtime resistance and testing of limits. (3) Nap transition — many 2-year-olds are dropping or resisting the afternoon nap, creating an overtired-but-wired dynamic at bedtime. (4) 2-year molars — arriving between 20 and 30 months, these cause real discomfort that disrupts sleep."}},
-    {"@type":"Question","name":"Is the 2-year regression different from the 18-month regression?","acceptedAnswer":{"@type":"Answer","text":"Yes. The 18-month regression is driven by peak separation anxiety, a language leap, and physical growth. The 2-year regression has less separation anxiety but more deliberate autonomy-testing — the toddler now has enough language and cognitive development to actively negotiate, delay, and resist bedtime. The 2-year regression is often more behaviorally complex than the 18-month one."}},
-    {"@type":"Question","name":"Should my 2-year-old still be napping?","acceptedAnswer":{"@type":"Answer","text":"Most 2-year-olds still need a nap. The average age of nap drop is 3–4 years, though the range is wide. If a 2-year-old is refusing the nap, the answer is usually quiet time in the crib or room rather than dropping the nap entirely. Many nap refusals at 2 years are temporary — part of the regression — and the nap returns once the developmental disruption passes."}}
+    {"@type":"Question","name":"How long does the 2-year sleep regression last?","acceptedAnswer":{"@type":"Answer","text":"The 2-year sleep regression typically lasts 2 to 6 weeks. Unlike the 4-month regression, which permanently changes sleep architecture, the 2-year regression is behavioral, driven by language explosion, toddler autonomy, and nap transitions. Once the developmental leaps consolidate and routines restabilize, most toddlers return to their previous sleep baseline."}},
+    {"@type":"Question","name":"What causes the 2-year sleep regression?","acceptedAnswer":{"@type":"Answer","text":"Several developmental forces converge around 2 years: (1) Language explosion, vocabulary is growing rapidly and the brain is processing enormous amounts of new linguistic information. (2) Toddler autonomy, a developmental push for independence that creates bedtime resistance and testing of limits. (3) Nap transition, many 2-year-olds are dropping or resisting the afternoon nap, creating an overtired-but-wired dynamic at bedtime. (4) 2-year molars, arriving between 20 and 30 months, these cause real discomfort that disrupts sleep."}},
+    {"@type":"Question","name":"Is the 2-year regression different from the 18-month regression?","acceptedAnswer":{"@type":"Answer","text":"Yes. The 18-month regression is driven by peak separation anxiety, a language leap, and physical growth. The 2-year regression has less separation anxiety but more deliberate autonomy-testing, the toddler now has enough language and cognitive development to actively negotiate, delay, and resist bedtime. The 2-year regression is often more behaviorally complex than the 18-month one."}},
+    {"@type":"Question","name":"Should my 2-year-old still be napping?","acceptedAnswer":{"@type":"Answer","text":"Most 2-year-olds still need a nap. The average age of nap drop is 3 to 4 years, though the range is wide. If a 2-year-old is refusing the nap, the answer is usually quiet time in the crib or room rather than dropping the nap entirely. Many nap refusals at 2 years are temporary, part of the regression, and the nap returns once the developmental disruption passes."}}
   ]}
 ]}
 </script>
@@ -132,60 +132,60 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
 <main class="article-body" id="main-content">
 
   <h2>Why 2 Years Is Different</h2>
-  <p>The earlier sleep regressions — 4 months, 8–9 months, 18 months — are driven primarily by involuntary biological changes. Sleep architecture shifts. Separation anxiety peaks. Motor leaps disrupt the nervous system at night. The child isn't choosing to wake up; development is doing it to them.</p>
-  <p>The 2-year regression introduces a new element: deliberate resistance. Your toddler now has enough language to say "no," enough cognitive development to run delay tactics, and enough autonomy drive to make bedtime a contest of wills. They're still not fully in control of any of this — executive function is years from maturity — but the behavioral complexity is new.</p>
+  <p>The earlier sleep regressions (4 months, 8 to 9 months, 18 months) are driven primarily by involuntary biological changes. Sleep architecture shifts. Separation anxiety peaks. Motor leaps disrupt the nervous system at night. The child isn't choosing to wake up; development is doing it to them.</p>
+  <p>The 2-year regression introduces a new element: deliberate resistance. Your toddler now has enough language to say "no," enough cognitive development to run delay tactics, and enough autonomy drive to make bedtime a contest of wills. They're still not fully in control of any of this, executive function is years from maturity, but the behavioral complexity is new.</p>
 
   <h2>The Four Drivers</h2>
 
   <h3>1. Language Explosion</h3>
   <p>Around 24 months, vocabulary is growing rapidly. Most children are approaching 200 words and beginning to combine them into two- and three-word phrases. The brain is processing an enormous amount of new linguistic information, and that processing doesn't stop at bedtime. Active language acquisition is cognitively stimulating in a way that fights against sleep.</p>
-  <p>This is also the stage when new fears begin — fear of the dark, fear of monsters, fear of sounds the child can now name. Language gives fears a label, which can make them feel more real, not less.</p>
+  <p>This is also the stage when new fears begin, fear of the dark, fear of monsters, fear of sounds the child can now name. Language gives fears a label, which can make them feel more real, not less.</p>
 
   <h3>2. Toddler Autonomy</h3>
-  <p>The developmental push for independence peaks between 18 months and 3 years. At 2, toddlers are in the middle of it. Bedtime resistance isn't defiance for its own sake — it's a developmental stage in which the child is learning that they have a separate will from their parents, and testing where the limits are.</p>
+  <p>The developmental push for independence peaks between 18 months and 3 years. At 2, toddlers are in the middle of it. Bedtime resistance isn't defiance for its own sake, it's a developmental stage in which the child is learning that they have a separate will from their parents, and testing where the limits are.</p>
   <p>The more inconsistently the limits are enforced, the more testing occurs. This is not a parenting failure. It is developmental behavior, and it responds to consistency.</p>
 
   <h3>3. Nap Resistance</h3>
-  <p>Many 2-year-olds begin resisting the afternoon nap. The average age of full nap drop is 3–4 years, but the resistance often starts at 2. What happens when the nap shortens or disappears: the child arrives at bedtime overtired and overstimulated simultaneously — a state that, paradoxically, makes settling harder, not easier.</p>
+  <p>Many 2-year-olds begin resisting the afternoon nap. The average age of full nap drop is 3 to 4 years, but the resistance often starts at 2. What happens when the nap shortens or disappears: the child arrives at bedtime overtired and overstimulated simultaneously, a state that, paradoxically, makes settling harder, not easier.</p>
   <p>A toddler who has not napped is not calm and ready for bed. They're running on cortisol, and cortisol fights sleep.</p>
 
   <h3>4. 2-Year Molars</h3>
-  <p>The second molars arrive between 20 and 30 months. They are the largest teeth and cause significant discomfort. Unlike the first teeth, which arrive before the child has language to express pain, the 2-year-old can communicate that something hurts — but the disruption to sleep is just as real. Teething pain tends to intensify at night when there are no distractions.</p>
+  <p>The second molars arrive between 20 and 30 months. They are the largest teeth and cause significant discomfort. Unlike the first teeth, which arrive before the child has language to express pain, the 2-year-old can communicate that something hurts, but the disruption to sleep is just as real. Teething pain tends to intensify at night when there are no distractions.</p>
 
   <div class="callout callout-info">
     <div class="callout-label">Scout Tracks This Window</div>
-    <p>The language explosion around 24 months — 50-word gate, two-word combinations, rapid vocabulary growth — is tracked by Scout's monthly digest. Parents who use Scout receive an email explaining what's developing cognitively at this age and why sleep disruption is common. <a href="/sign-in?intent=trial">Try Scout free →</a></p>
+    <p>The language explosion around 24 months, 50-word gate, two-word combinations, rapid vocabulary growth, is tracked by Scout's monthly digest. Parents who use Scout receive an email explaining what's developing cognitively at this age and why sleep disruption is common. <a href="/sign-in?intent=trial">Try Scout free →</a></p>
   </div>
 
   <h2>How Long Does It Last?</h2>
-  <p>Two to six weeks is typical. The regression fades as the developmental drivers settle — language processing becomes less acute, the autonomy push finds its limits, the molars break through. Cases that run longer usually involve an unresolved nap transition or a new sleep association introduced during the regression.</p>
+  <p>Two to six weeks is typical. The regression fades as the developmental drivers settle, language processing becomes less acute, the autonomy push finds its limits, the molars break through. Cases that run longer usually involve an unresolved nap transition or a new sleep association introduced during the regression.</p>
 
   <h2>What Actually Helps</h2>
 
   <h3>Hold the Routine Tightly</h3>
-  <p>A consistent, predictable bedtime routine is the single highest-impact tool at this age. Not because it eliminates resistance — it won't — but because it removes ambiguity. The toddler knows exactly what comes next, and predictability reduces the surface area for negotiation. Bath, brush, book, lights out. Same order, same cues, every night. No improvisation.</p>
+  <p>A consistent, predictable bedtime routine is the single highest-impact tool at this age. Not because it eliminates resistance, it won't, but because it removes ambiguity. The toddler knows exactly what comes next, and predictability reduces the surface area for negotiation. Bath, brush, book, lights out. Same order, same cues, every night. No improvisation.</p>
 
   <h3>Firm on the Boundary, Warm in the Delivery</h3>
-  <p>The testing behavior at this age responds to consistency, not to reasoning. You can acknowledge the feeling — "I know you want to stay up, that's hard" — while holding the limit — "It's bedtime now." The warmth and the firmness are not in conflict. One validates the emotion; the other maintains the structure the child needs.</p>
+  <p>The testing behavior at this age responds to consistency, not to reasoning. You can acknowledge the feeling, "I know you want to stay up, that's hard", while holding the limit, "It's bedtime now." The warmth and the firmness are not in conflict. One validates the emotion; the other maintains the structure the child needs.</p>
   <p>The mistake is negotiating. Once a child learns that "I need water" at 8pm produces a parent returning to the room, water requests become a nightly feature. The boundary is: after lights out, parents don't return for non-urgent requests.</p>
 
   <h3>Don't Drop the Nap Too Early</h3>
-  <p>If your 2-year-old is refusing the nap, replace it with mandatory quiet time in their room — same time, same duration. Many nap refusals at 2 are temporary; the regression passes and the nap returns. Dropping the nap entirely at 2 years usually creates an overtired child who is harder to get to sleep at night, not easier.</p>
+  <p>If your 2-year-old is refusing the nap, replace it with mandatory quiet time in their room, same time, same duration. Many nap refusals at 2 are temporary; the regression passes and the nap returns. Dropping the nap entirely at 2 years usually creates an overtired child who is harder to get to sleep at night, not easier.</p>
 
   <h3>Check for Molars</h3>
-  <p>If the regression has a sudden, acute onset — previously good sleeper suddenly waking in clear distress — check the gums. The second molars break through in stages and each stage can cause a few days of significant discomfort. Appropriate pain relief (age-appropriate ibuprofen or acetaminophen, per your pediatrician's guidance) given before bed can make a meaningful difference.</p>
+  <p>If the regression has a sudden, acute onset, previously good sleeper suddenly waking in clear distress, check the gums. The second molars break through in stages and each stage can cause a few days of significant discomfort. Appropriate pain relief (age-appropriate ibuprofen or acetaminophen, per your pediatrician's guidance) given before bed can make a meaningful difference.</p>
 
   <div class="callout callout-warning">
     <div class="callout-label">The Curtain Call Problem</div>
-    <p>The classic 2-year sleep regression behavior is the curtain call — repeated requests after lights out. Water, another hug, one more book, the light is too bright, a noise outside. Each request gets met; each resolution produces another request. The solution is not to ignore the child; it's to preemptively handle all reasonable requests as part of the routine before lights go out, so there's nothing left to ask for.</p>
+    <p>The classic 2-year sleep regression behavior is the curtain call, repeated requests after lights out. Water, another hug, one more book, the light is too bright, a noise outside. Each request gets met; each resolution produces another request. The solution is not to ignore the child; it's to preemptively handle all reasonable requests as part of the routine before lights go out, so there's nothing left to ask for.</p>
   </div>
 
   <h2>What's Different From the 18-Month Regression</h2>
-  <p>The 18-month regression is driven primarily by peak separation anxiety. The child is afraid when you leave. The 2-year regression has less separation anxiety and more deliberate boundary-testing. The child isn't afraid — they're asserting. The parental response needs to shift accordingly: less reassurance, more consistent structure.</p>
+  <p>The 18-month regression is driven primarily by peak separation anxiety. The child is afraid when you leave. The 2-year regression has less separation anxiety and more deliberate boundary-testing. The child isn't afraid, they're asserting. The parental response needs to shift accordingly: less reassurance, more consistent structure.</p>
 
   <div class="inline-cta">
     <h3>Know What's Developmentally Normal Before It Disrupts Sleep</h3>
-    <p>Scout's monthly digest emails explain each developmental leap — language explosion, autonomy push, cognitive leaps — before they hit. Parents who use Scout understand why sleep breaks down and how long it typically lasts. Try Scout free.</p>
+    <p>Scout's monthly digest emails explain each developmental leap, language explosion, autonomy push, cognitive leaps, before they hit. Parents who use Scout understand why sleep breaks down and how long it typically lasts. Try Scout free.</p>
     <a href="/sign-in?intent=trial" class="btn-primary">Try Scout Free</a>
   </div>
 
@@ -195,19 +195,19 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
   <h2 id="faq-heading">Frequently Asked Questions</h2>
   <div class="faq-item">
     <div class="faq-q">How long does the 2-year sleep regression last?</div>
-    <div class="faq-a">Typically 2–6 weeks. It fades as the language explosion settles, the autonomy push finds consistent limits, and the 2-year molars break through. Cases that run longer usually involve an unresolved nap issue or a new sleep association introduced during the regression.</div>
+    <div class="faq-a">Typically 2 to 6 weeks. It fades as the language explosion settles, the autonomy push finds consistent limits, and the 2-year molars break through. Cases that run longer usually involve an unresolved nap issue or a new sleep association introduced during the regression.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">Should my 2-year-old still be napping?</div>
-    <div class="faq-a">Yes, in most cases. The average age of nap drop is 3–4 years. Nap refusal at 2 is often temporary — part of the regression — and the nap returns once the developmental disruption passes. Replace nap time with mandatory quiet time rather than dropping it entirely.</div>
+    <div class="faq-a">Yes, in most cases. The average age of nap drop is 3 to 4 years. Nap refusal at 2 is often temporary, part of the regression, and the nap returns once the developmental disruption passes. Replace nap time with mandatory quiet time rather than dropping it entirely.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">Is this regression just the terrible twos?</div>
-    <div class="faq-a">Related, but distinct. The "terrible twos" describes a broad period of toddler autonomy and boundary-testing. The sleep regression is specifically the sleep disruption that accompanies this developmental phase. They overlap — the autonomy push drives both daytime behavior and nighttime resistance — but the sleep regression has specific causes (nap transition, language explosion, molars) that go beyond general toddler behavior.</div>
+    <div class="faq-a">Related, but distinct. The "terrible twos" describes a broad period of toddler autonomy and boundary-testing. The sleep regression is specifically the sleep disruption that accompanies this developmental phase. They overlap, the autonomy push drives both daytime behavior and nighttime resistance, but the sleep regression has specific causes (nap transition, language explosion, molars) that go beyond general toddler behavior.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">What if my 2-year-old is waking multiple times per night?</div>
-    <div class="faq-a">Multiple night wakings at 2 are often a sleep association issue: the child can't resettle between sleep cycles without the conditions they fell asleep with. If they're falling asleep with a parent present or with a feed, they need those conditions at every wake. The fix is ensuring they fall asleep independently at the start of the night — without parental presence or feeding — so they can replicate that at 2am.</div>
+    <div class="faq-a">Multiple night wakings at 2 are often a sleep association issue: the child can't resettle between sleep cycles without the conditions they fell asleep with. If they're falling asleep with a parent present or with a feed, they need those conditions at every wake. The fix is ensuring they fall asleep independently at the start of the night, without parental presence or feeding, so they can replicate that at 2am.</div>
   </div>
 </section>
 

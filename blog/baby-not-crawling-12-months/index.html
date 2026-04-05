@@ -22,7 +22,7 @@ html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 :focus-visible{outline:3px solid var(--terra);outline-offset:3px;border-radius:4px;}
-.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(250,250,250,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(250,250,250.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 var(--rx);height:64px;display:flex;align-items:center;justify-content:space-between;position:relative;}
 .logo{display:inline-flex;align-items:center;gap:8px;font-size:17px;font-weight:700;color:var(--text);}
 .logo-accent{color:var(--terra);}
@@ -39,15 +39,15 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .article-body h2{font-size:24px;font-weight:700;margin:48px 0 16px;padding-top:8px;border-top:1px solid var(--border);}
 .article-body h3{font-size:18px;font-weight:700;margin:28px 0 10px;}
 .article-body p{font-size:16px;color:var(--text-mid);line-height:1.85;margin-bottom:16px;}
-.article-body ul,.article-body ol{margin:0 0 16px;padding-left:24px;}
+.article-body ul.article-body ol{margin:0 0 16px;padding-left:24px;}
 .article-body li{font-size:16px;color:var(--text-mid);line-height:1.8;margin-bottom:6px;}
 .article-body strong{color:var(--text);font-weight:600;}
 .callout{border-radius:12px;padding:20px 24px;margin:28px 0;}
-.callout-warning{background:#FFF8E6;border:1px solid rgba(245,158,11,.3);}
+.callout-warning{background:#FFF8E6;border:1px solid rgba(245,158,11.3);}
 .callout-warning .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#B45309;margin-bottom:8px;}
-.callout-info{background:var(--terra-tint);border:1px solid rgba(110,78,214,.2);}
+.callout-info{background:var(--terra-tint);border:1px solid rgba(110,78,214.2);}
 .callout-info .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--terra-dark);margin-bottom:8px;}
-.callout-green{background:#F0FDF4;border:1px solid rgba(34,197,94,.25);}
+.callout-green{background:#F0FDF4;border:1px solid rgba(34,197,94.25);}
 .callout-green .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#166534;margin-bottom:8px;}
 .callout p{font-size:15px;line-height:1.75;color:var(--text-mid);margin:0;}
 .callout p+p{margin-top:10px;}
@@ -56,14 +56,14 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .stage-block h3{margin:0 0 10px;}
 .inline-cta{background:var(--indigo-deep);border-radius:16px;padding:30px;margin:40px 0;text-align:center;color:#fff;}
 .inline-cta h3{font-size:20px;font-weight:700;margin-bottom:10px;color:#fff;}
-.inline-cta p{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:18px;line-height:1.65;}
+.inline-cta p{font-size:15px;color:rgba(255,255,255.7);margin-bottom:18px;line-height:1.65;}
 .btn-primary{display:inline-block;background:var(--terra);color:#fff !important;font-weight:700;font-size:15px;padding:12px 28px;border-radius:100px;text-decoration:none;}
 .btn-primary:hover{background:#8b6ef0;text-decoration:none;}
 .related{max-width:var(--max);margin:0 auto;padding:0 var(--rx) 60px;}
 .related h2{font-size:20px;font-weight:700;margin-bottom:20px;}
 .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
 .related-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-decoration:none;display:block;}
-.related-card:hover{border-color:rgba(110,78,214,.4);text-decoration:none;}
+.related-card:hover{border-color:rgba(110,78,214.4);text-decoration:none;}
 .rc-age{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--terra-dark);margin-bottom:6px;}
 .rc-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;}
 .faq-section{max-width:var(--max);margin:0 auto;padding:0 var(--rx) 60px;}
@@ -71,13 +71,13 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .faq-item{border-bottom:1px solid var(--border);padding:18px 0;}
 .faq-q{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;}
 .faq-a{font-size:15px;color:var(--text-mid);line-height:1.8;}
-footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px));}
+footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px));}
 .footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 24px;}
 .footer-links{display:flex;gap:24px;}
-.footer-links a{font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;}
-.footer-links a:hover{color:rgba(255,255,255,.8);}
-.footer-copy{font-size:12px;color:rgba(255,255,255,.25);}
-.footer-disclaimer{padding:8px 20px;text-align:center;font-size:11px;color:rgba(255,255,255,.3);line-height:1.6;}
+.footer-links a{font-size:13px;color:rgba(255,255,255.45);text-decoration:none;}
+.footer-links a:hover{color:rgba(255,255,255.8);}
+.footer-copy{font-size:12px;color:rgba(255,255,255.25);}
+.footer-disclaimer{padding:8px 20px;text-align:center;font-size:11px;color:rgba(255,255,255.3);line-height:1.6;}
 @media(max-width:768px){.nav-center{display:none!important;}.related-grid{grid-template-columns:1fr 1fr;}}
 @media(max-width:480px){.related-grid{grid-template-columns:1fr;}}
 </style>
@@ -85,10 +85,10 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
 {"@context":"https://schema.org","@graph":[
   {"@type":"Article","headline":"Baby Not Crawling at 12 Months? You're Already 2 Months Past the Flag","description":"The crawling flag is 10 months, not 12. At 12 months without crawling, the real question is: are they pulling to stand? Here's what matters now and when to act.","url":"https://www.getfamilyforce.com/blog/baby-not-crawling-12-months","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Person","name":"Jack Hartley","url":"https://www.getfamilyforce.com/about"},"publisher":{"@type":"Organization","name":"FamilyForce","url":"https://www.getfamilyforce.com"},"mainEntityOfPage":"https://www.getfamilyforce.com/blog/baby-not-crawling-12-months","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.getfamilyforce.com"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.getfamilyforce.com/blog"},{"@type":"ListItem","position":3,"name":"Baby Not Crawling at 12 Months","item":"https://www.getfamilyforce.com/blog/baby-not-crawling-12-months"}]}},
   {"@type":"FAQPage","mainEntity":[
-    {"@type":"Question","name":"Is it normal for a baby not to crawl at 12 months?","acceptedAnswer":{"@type":"Answer","text":"The crawling window closes at 10 months — that's when the clinical flag applies. At 12 months, not crawling is already 2 months past the flag. However, 10–15% of babies skip crawling entirely and go directly to walking. The key question at 12 months is not whether they crawl, but whether they're pulling to stand, cruising, or showing other locomotor development. A 12-month-old who isn't crawling but is pulling to stand is on a different path than one with no movement development at all."}},
-    {"@type":"Question","name":"What is a skip crawler?","acceptedAnswer":{"@type":"Answer","text":"A skip crawler is a baby who bypasses the crawling stage and moves directly toward standing and walking. Research estimates 10–15% of typically developing babies skip crawling. Skip crawlers typically show other locomotor development on schedule: rolling, scooting, pulling to stand, cruising along furniture, and walking. The absence of crawling alone — when all other milestones are progressing normally — is generally not a clinical concern. The concern arises when there is no locomotor development of any kind."}},
-    {"@type":"Question","name":"When should I be worried about a baby not crawling?","acceptedAnswer":{"@type":"Answer","text":"Raise it at the 12-month well-child visit if your baby is not crawling at 12 months and also not pulling to stand, cruising, or showing other locomotor progress. A baby with no crawling AND no pulling to stand at 12 months warrants evaluation — this combination suggests delayed gross motor development rather than the skip-crawler pattern. If your baby isn't crawling but is pulling to stand and cruising, mention it but the picture is less urgent."}},
-    {"@type":"Question","name":"What's the walking flag if my baby skips crawling?","acceptedAnswer":{"@type":"Answer","text":"The independent walking flag is 15 months — that applies whether the baby crawled or not. Skip crawlers typically walk within the normal window (9–15 months). If a skip crawler is not walking by 15 months, that warrants immediate pediatric evaluation regardless of whether they ever crawled."}}
+    {"@type":"Question","name":"Is it normal for a baby not to crawl at 12 months?","acceptedAnswer":{"@type":"Answer","text":"The crawling window closes at 10 months, that's when the clinical flag applies. At 12 months, not crawling is already 2 months past the flag. However, 10 to 15% of babies skip crawling entirely and go directly to walking. The key question at 12 months is not whether they crawl, but whether they're pulling to stand, cruising, or showing other locomotor development. A 12-month-old who isn't crawling but is pulling to stand is on a different path than one with no movement development at all."}},
+    {"@type":"Question","name":"What is a skip crawler?","acceptedAnswer":{"@type":"Answer","text":"A skip crawler is a baby who bypasses the crawling stage and moves directly toward standing and walking. Research estimates 10 to 15% of typically developing babies skip crawling. Skip crawlers typically show other locomotor development on schedule: rolling, scooting, pulling to stand, cruising along furniture, and walking. The absence of crawling alone, when all other milestones are progressing normally, is generally not a clinical concern. The concern arises when there is no locomotor development of any kind."}},
+    {"@type":"Question","name":"When should I be worried about a baby not crawling?","acceptedAnswer":{"@type":"Answer","text":"Raise it at the 12-month well-child visit if your baby is not crawling at 12 months and also not pulling to stand, cruising, or showing other locomotor progress. A baby with no crawling AND no pulling to stand at 12 months warrants evaluation, this combination suggests delayed gross motor development rather than the skip-crawler pattern. If your baby isn't crawling but is pulling to stand and cruising, mention it but the picture is less urgent."}},
+    {"@type":"Question","name":"What's the walking flag if my baby skips crawling?","acceptedAnswer":{"@type":"Answer","text":"The independent walking flag is 15 months, that applies whether the baby crawled or not. Skip crawlers typically walk within the normal window (9 to 15 months). If a skip crawler is not walking by 15 months, that warrants immediate pediatric evaluation regardless of whether they ever crawled."}}
   ]}
 ]}
 </script>
@@ -125,7 +125,7 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
     <span>6 min read</span>
   </div>
   <div class="article-lede">
-    The crawling clinical flag is 10 months — not 12. If your baby isn't crawling at 12 months, you're already 2 months past when the window closed. But there's a critical distinction that changes everything: some babies skip crawling entirely. The question at 12 months isn't whether they crawl — it's whether they're pulling to stand.
+    The crawling clinical flag is 10 months, not 12. If your baby isn't crawling at 12 months, you're already 2 months past when the window closed. But there's a critical distinction that changes everything: some babies skip crawling entirely. The question at 12 months isn't whether they crawl, it's whether they're pulling to stand.
   </div>
 </header>
 
@@ -134,25 +134,25 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
   <h2>The Window Parents Don't Know About</h2>
   <p>Most parents assume "not crawling by 12 months" is the flag they're looking for. The actual clinical threshold is earlier: <strong>making no effort to move by 10 months</strong> is when the crawling window closes. At 12 months, you're two months past that point.</p>
 
-  <p>The crawling developmental window opens around 6 months, peaks around 8 months, and closes around 10 months. "Closes" means that by 10 months, a baby who is not making any locomotor effort — not crawling, not scooting, not army crawling — warrants a mention at the pediatrician. Waiting until 12 months to raise it adds two months of delay to an already-flagged situation.</p>
+  <p>The crawling developmental window opens around 6 months, peaks around 8 months, and closes around 10 months. "Closes" means that by 10 months, a baby who is not making any locomotor effort, not crawling, not scooting, not army crawling, warrants a mention at the pediatrician. Waiting until 12 months to raise it adds two months of delay to an already-flagged situation.</p>
 
-  <h2>The Skip-Crawler Exception — and What It Means</h2>
-  <p>Here's where the picture gets more nuanced: research estimates that 10–15% of typically developing babies skip crawling entirely. They go from sitting to pulling to stand to walking without ever getting on hands and knees in a traditional crawl. These are called skip crawlers, and they are developmentally normal.</p>
+  <h2>The Skip-Crawler Exception</h2>
+  <p>Here's where the picture gets more nuanced: research estimates that 10 to 15% of typically developing babies skip crawling entirely. They go from sitting to pulling to stand to walking without ever getting on hands and knees in a traditional crawl. These are called skip crawlers, and they are developmentally normal.</p>
 
   <p>The skip-crawler pattern looks like this:</p>
   <ul>
     <li>Rolling and sitting on schedule ✓</li>
-    <li>Pulling to stand around 7–10 months ✓</li>
+    <li>Pulling to stand around 7 to 10 months ✓</li>
     <li>Cruising along furniture ✓</li>
-    <li>Walking — often earlier than average, sometimes around 10–12 months ✓</li>
-    <li>Crawling — never</li>
+    <li>Walking, often earlier than average, sometimes around 10 to 12 months ✓</li>
+    <li>Crawling, never</li>
   </ul>
 
-  <p>A 12-month-old who has never crawled but is pulling to stand, cruising furniture, and possibly already walking is a skip crawler. Their locomotor development is not delayed — it just followed a different path. Mention it to your pediatrician, but the concern level is low.</p>
+  <p>A 12-month-old who has never crawled but is pulling to stand, cruising furniture, and possibly already walking is a skip crawler. Their locomotor development is not delayed. It just followed a different path. Mention it to your pediatrician, but the concern level is low.</p>
 
   <div class="callout callout-warning">
     <div class="callout-label">The Scenario That Warrants Immediate Action</div>
-    <p>A 12-month-old who is not crawling <strong>and</strong> not pulling to stand, not cruising, and not showing any interest in locomotion has a different picture entirely. This is not a skip-crawler pattern — this is absent gross motor development across the board. This warrants evaluation now, not at the next scheduled visit.</p>
+    <p>A 12-month-old who is not crawling <strong>and</strong> not pulling to stand, not cruising, and not showing any interest in locomotion has a different picture entirely. This is not a skip-crawler pattern, this is absent gross motor development across the board. This warrants evaluation now, not at the next scheduled visit.</p>
   </div>
 
   <h2>The Better Question at 12 Months</h2>
@@ -164,16 +164,16 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
     <h3>Motor Development: What to Look For at 12 Months</h3>
     <p style="color:var(--text-mid);font-size:15px;margin-bottom:12px;">At 12 months, the relevant locomotor picture:</p>
     <ul style="color:var(--text-mid);font-size:15px;">
-      <li><strong>Pulling to stand</strong> — should be established (window closes ~12 months)</li>
-      <li><strong>Cruising along furniture</strong> — expected by 10–12 months</li>
-      <li><strong>Standing briefly without support</strong> — typically emerging 10–12 months</li>
-      <li><strong>Walking</strong> — window opens ~11 months; flag is 15 months</li>
-      <li><strong>Crawling</strong> — present in ~85–90% of babies; absent in skip crawlers (10–15%)</li>
+      <li><strong>Pulling to stand</strong>, should be established (window closes ~12 months)</li>
+      <li><strong>Cruising along furniture</strong>, expected by 10 to 12 months</li>
+      <li><strong>Standing briefly without support</strong>, typically emerging 10 to 12 months</li>
+      <li><strong>Walking</strong>, window opens ~11 months; flag is 15 months</li>
+      <li><strong>Crawling</strong>, present in ~85 to 90% of babies; absent in skip crawlers (10 to 15%)</li>
     </ul>
   </div>
 
   <h2>What to Tell the Pediatrician</h2>
-  <p>At the 12-month well-child visit, describe the full locomotor picture. Don't just say "she's not crawling" — give the context:</p>
+  <p>At the 12-month well-child visit, describe the full locomotor picture. Don't just say "she's not crawling", give the context:</p>
   <ul>
     <li>Is she pulling to stand? When did that start?</li>
     <li>Is she cruising along furniture?</li>
@@ -183,19 +183,19 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
   <p>The pediatrician is building the same picture you are. The more context you provide, the more useful the assessment.</p>
 
   <h2>Tummy Time and Crawling</h2>
-  <p>Babies who had limited tummy time in the first year are more likely to be late crawlers or skip crawlers — not because tummy time causes crawling, but because tummy time builds the upper body and core strength that makes crawling possible. The back-to-sleep recommendation (critical for SIDS prevention) means most babies spend very little time prone, and supervised tummy time while awake is the countermeasure.</p>
+  <p>Babies who had limited tummy time in the first year are more likely to be late crawlers or skip crawlers, not because tummy time causes crawling, but because tummy time builds the upper body and core strength that makes crawling possible. The back-to-sleep recommendation (critical for SIDS prevention) means most babies spend very little time prone, and supervised tummy time while awake is the countermeasure.</p>
   <p>If your 12-month-old hasn't crawled and also had very little tummy time, that history is worth sharing with the pediatrician. It doesn't change the clinical picture, but it provides useful context for understanding why locomotor development took a particular path.</p>
 
   <div class="callout callout-info">
     <div class="callout-label">Scout Tracks This Window</div>
-    <p>The crawling window — open, peak, and close — is tracked by Scout. Parents who use Scout receive an email when the window opens at 6 months, explaining what normal crawling development looks like and when to flag concern. The 10-month threshold is in every digest, not buried in a search. <a href="/sign-in?intent=trial">Try Scout free →</a></p>
+    <p>The crawling window, open, peak, and close, is tracked by Scout. Parents who use Scout receive an email when the window opens at 6 months, explaining what normal crawling development looks like and when to flag concern. The 10-month threshold is in every digest, not buried in a search. <a href="/sign-in?intent=trial">Try Scout free →</a></p>
   </div>
 
   <h2>Walking: The Next Flag After Crawling</h2>
   <p>Whether your baby crawls or not, the walking flag is the same: <strong>not walking independently by 15 months</strong> warrants immediate evaluation. That's true for crawlers and skip crawlers alike. At 12 months, you have 3 months of window remaining for walking. If your baby is not showing any locomotor progress of any kind at 12 months, that 3-month runway disappears quickly.</p>
 
   <div class="inline-cta">
-    <h3>Know Every Motor Window — Before It Closes</h3>
+    <h3>Know Every Motor Window Before It Closes</h3>
     <p>Scout's monthly digest emails track the full motor development picture: rolling, sitting, crawling, pulling to stand, cruising, and walking. Every window, with its open and close date, explained in plain language before it matters. Try Scout free.</p>
     <a href="/sign-in?intent=trial" class="btn-primary">Try Scout Free</a>
   </div>
@@ -206,19 +206,19 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
   <h2 id="faq-heading">Frequently Asked Questions</h2>
   <div class="faq-item">
     <div class="faq-q">Is it normal for a baby not to crawl at 12 months?</div>
-    <div class="faq-a">The crawling clinical flag is 10 months, so at 12 months you're already 2 months past the threshold. However, 10–15% of babies skip crawling entirely. The key question at 12 months is whether they're pulling to stand and cruising — not whether they crawl. A skip crawler who is pulling to stand has a normal motor profile. A baby with no locomotor development at all at 12 months needs evaluation now.</div>
+    <div class="faq-a">The crawling clinical flag is 10 months, so at 12 months you're already 2 months past the threshold. However, 10 to 15% of babies skip crawling entirely. The key question at 12 months is whether they're pulling to stand and cruising, not whether they crawl. A skip crawler who is pulling to stand has a normal motor profile. A baby with no locomotor development at all at 12 months needs evaluation now.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">When does the crawling window close?</div>
-    <div class="faq-a">The crawling developmental window closes at approximately 10 months. By then, a baby who is making no effort to move — not crawling, scooting, army crawling, or otherwise locomoting — warrants a mention at the pediatrician. At 12 months, that flag is already 2 months old.</div>
+    <div class="faq-a">The crawling developmental window closes at approximately 10 months. By then, a baby who is making no effort to move, not crawling, scooting, army crawling, or otherwise locomoting, warrants a mention at the pediatrician. At 12 months, that flag is already 2 months old.</div>
   </div>
   <div class="faq-item">
     <div class="faq-q">Does skipping crawling cause problems later?</div>
-    <div class="faq-a">The research on skip crawlers is largely reassuring. Most skip crawlers develop normally across all domains. Some older studies suggested links between skipped crawling and learning difficulties, but those findings have not held up in more rigorous research. The current clinical consensus is that skip crawling alone — in an otherwise normally developing child — is not a cause for concern.</div>
+    <div class="faq-a">The research on skip crawlers is largely reassuring. Most skip crawlers develop normally across all domains. Some older studies suggested links between skipped crawling and learning difficulties, but those findings have not held up in more rigorous research. The current clinical consensus is that skip crawling alone, in an otherwise normally developing child, is not a cause for concern.</div>
   </div>
   <div class="faq-item">
-    <div class="faq-q">My baby is 12 months and only scooting on their bottom — is that okay?</div>
-    <div class="faq-a">Bottom scooting is a valid locomotion strategy and counts as locomotor development. A baby who is bottom-scooting at 12 months is moving, exploring their environment, and building motor skills. It is not traditional crawling, but it is not a skip-crawler situation either. Mention it to your pediatrician and also note whether they're pulling to stand — the walking timeline still applies regardless of how they get around now.</div>
+    <div class="faq-q">My baby is 12 months and only scooting on their bottom, is that okay?</div>
+    <div class="faq-a">Bottom scooting is a valid locomotion strategy and counts as locomotor development. A baby who is bottom-scooting at 12 months is moving, exploring their environment, and building motor skills. It is not traditional crawling, but it is not a skip-crawler situation either. Mention it to your pediatrician and also note whether they're pulling to stand, the walking timeline still applies regardless of how they get around now.</div>
   </div>
 </section>
 
