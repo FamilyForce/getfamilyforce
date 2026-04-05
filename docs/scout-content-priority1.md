@@ -26,11 +26,11 @@ Three windows appear in two categories and share the same content:
 **Urgency:** advisory | **Priority:** 1
 
 **Why it matters:**
-The window for introducing a bottle to a breastfed baby without a fight is roughly weeks 3 to 16. Before 3 weeks, it can interfere with establishing breastfeeding. After 16 weeks, many babies simply refuse, they've developed a strong preference and lack the flexibility to switch. Miss this window and you've potentially lost all flexibility: every feed, every night, for as long as you breastfeed. The AAP recommends starting the introduction around 3 to 4 weeks — early enough in the window to give you the best chance.
+The window for introducing a bottle to a breastfed baby without a fight is roughly weeks 3 to 16. Before 3 weeks, it can interfere with establishing breastfeeding. After 16 weeks, many babies simply refuse, they've developed a strong preference and lack the flexibility to switch. Miss this window and you've potentially lost all flexibility: every feed, every night, for as long as you breastfeed. The AAP recommends starting the introduction around 3 to 4 weeks, early enough in the window to give you the best chance.
 
 **What to do:**
-* Introduce one bottle of expressed breast milk per day, starting around week 3 to 6
-* Always use a slow flow (Level 1) nipple regardless of the baby's age — faster flow causes flow preference and can lead to breast refusal
+* Introduce one bottle of expressed breast milk per day, starting around week 4 to 6
+* Always use a slow flow (Level 1) nipple regardless of the baby's age. Faster flow causes flow preference and can lead to breast refusal
 * Use paced bottle feeding: hold the bottle horizontally, let the baby control the flow, and take breaks every few sucks. This mimics the breast's rhythm and prevents the baby from developing a preference for the faster, easier bottle flow
 * Have someone other than the breastfeeding parent offer it, baby associates the smell of the nursing parent with the breast
 * Don't panic if the first attempt fails; try again the next day
@@ -51,15 +51,15 @@ The window has likely closed, but it's not impossible. Try a slow flow (Level 1)
 **Urgency:** advisory | **Priority:** 1
 
 **Why it matters:**
-This window applies to exclusively or predominantly breastfed babies only (where breast milk makes up more than half of daily feeds). Breast milk is nearly perfect nutrition, but it's low in iron. Babies are born with iron stores that last about 4 to 6 months. After that, those stores run out, and breast milk doesn't replenish them fast enough. Iron deficiency in the first year affects brain development, cognitive function, and behavior, and it's one of the most preventable nutritional problems in infancy.
+If you're breastfeeding, this applies to you. Breast milk is nearly perfect nutrition, but it's low in iron. Babies are born with iron stores that last about 4 to 6 months. After that, those stores run out, and breast milk doesn't replenish them fast enough. Iron deficiency in the first year affects brain development, cognitive function, and behavior, and it's one of the most preventable nutritional problems in infancy. If your baby is on formula, you're covered: standard iron-fortified formula already meets iron needs for the first 12 months.
 
 **What to do:**
 * At the 4 month well child visit, ask your pediatrician about starting liquid iron drops (1 mg/kg/day is the AAP recommendation for exclusively or predominantly breastfed infants)
-* Continue until your baby is regularly eating iron-rich foods — iron-fortified cereals, pureed meats, tofu, or beans. For most babies this aligns with 6 to 7 months, but the transition should be based on actual intake, not age alone
-* Formula fed babies don't need this: standard iron-fortified formula already meets iron needs for the first 12 months. Routine supplementation in formula-fed babies is not recommended
+* Continue until your baby is regularly eating iron-rich foods: iron-fortified cereals, pureed meats, tofu, or beans. For most babies this aligns with 6 to 7 months, but the transition should be based on actual intake, not age alone
+* If your baby was born prematurely or with a low birth weight, their iron protocol is different. Your pediatrician likely started supplementation earlier at a higher dose (2 to 4 mg/kg/day from 1 month). Follow their specific schedule; the guidance above does not apply to you
 
 **What not to worry about:**
-Liquid iron drops stain, but they're not harmful. The dark stools you may see are normal and not a sign of a problem. If your baby was born prematurely or with a low birth weight, their iron needs are different — your pediatrician likely started a supplement earlier at a higher dose (2 to 4 mg/kg/day starting at 1 month). Follow their specific dosing schedule rather than the standard guidance here.
+Liquid iron drops stain, but they're not harmful. The dark stools you may see are normal and not a sign of a problem.
 
 **Missed window guidance:**
 If this window passed without action, bring it up at the next pediatrician visit. A simple blood test can check iron levels. If iron is low, supplementation and dietary intervention can correct it, the earlier the better.
