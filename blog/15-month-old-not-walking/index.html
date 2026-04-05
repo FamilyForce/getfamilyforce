@@ -22,7 +22,7 @@ html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 :focus-visible{outline:3px solid var(--terra);outline-offset:3px;border-radius:4px;}
-.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(250,250,250,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(250,250,250.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 var(--rx);height:64px;display:flex;align-items:center;justify-content:space-between;position:relative;}
 .logo{display:inline-flex;align-items:center;gap:8px;font-size:17px;font-weight:700;color:var(--text);}
 .logo-accent{color:var(--terra);}
@@ -39,15 +39,15 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .article-body h2{font-size:24px;font-weight:700;margin:48px 0 16px;padding-top:8px;border-top:1px solid var(--border);}
 .article-body h3{font-size:18px;font-weight:700;margin:28px 0 10px;}
 .article-body p{font-size:16px;color:var(--text-mid);line-height:1.85;margin-bottom:16px;}
-.article-body ul,.article-body ol{margin:0 0 16px;padding-left:24px;}
+.article-body ul.article-body ol{margin:0 0 16px;padding-left:24px;}
 .article-body li{font-size:16px;color:var(--text-mid);line-height:1.8;margin-bottom:6px;}
 .article-body strong{color:var(--text);font-weight:600;}
 .callout{border-radius:12px;padding:20px 24px;margin:28px 0;}
-.callout-warning{background:#FFF8E6;border:1px solid rgba(245,158,11,.3);}
+.callout-warning{background:#FFF8E6;border:1px solid rgba(245,158,11.3);}
 .callout-warning .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#B45309;margin-bottom:8px;}
-.callout-info{background:var(--terra-tint);border:1px solid rgba(110,78,214,.2);}
+.callout-info{background:var(--terra-tint);border:1px solid rgba(110,78,214.2);}
 .callout-info .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--terra-dark);margin-bottom:8px;}
-.callout-green{background:#F0FDF4;border:1px solid rgba(34,197,94,.25);}
+.callout-green{background:#F0FDF4;border:1px solid rgba(34,197,94.25);}
 .callout-green .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#166534;margin-bottom:8px;}
 .callout p{font-size:15px;line-height:1.75;color:var(--text-mid);margin:0;}
 .callout p+p{margin-top:10px;}
@@ -56,14 +56,14 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .stage-block h3{margin:0 0 10px;}
 .inline-cta{background:var(--indigo-deep);border-radius:16px;padding:30px;margin:40px 0;text-align:center;color:#fff;}
 .inline-cta h3{font-size:20px;font-weight:700;margin-bottom:10px;color:#fff;}
-.inline-cta p{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:18px;line-height:1.65;}
+.inline-cta p{font-size:15px;color:rgba(255,255,255.7);margin-bottom:18px;line-height:1.65;}
 .btn-primary{display:inline-block;background:var(--terra);color:#fff !important;font-weight:700;font-size:15px;padding:12px 28px;border-radius:100px;text-decoration:none;}
 .btn-primary:hover{background:#8b6ef0;text-decoration:none;}
 .related{max-width:var(--max);margin:0 auto;padding:0 var(--rx) 60px;}
 .related h2{font-size:20px;font-weight:700;margin-bottom:20px;}
 .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
 .related-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-decoration:none;display:block;}
-.related-card:hover{border-color:rgba(110,78,214,.4);text-decoration:none;}
+.related-card:hover{border-color:rgba(110,78,214.4);text-decoration:none;}
 .rc-age{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--terra-dark);margin-bottom:6px;}
 .rc-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;}
 .faq-section{max-width:var(--max);margin:0 auto;padding:0 var(--rx) 60px;}
@@ -71,13 +71,13 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .faq-item{border-bottom:1px solid var(--border);padding:18px 0;}
 .faq-q{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;}
 .faq-a{font-size:15px;color:var(--text-mid);line-height:1.8;}
-footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px));}
+footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px));}
 .footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 24px;}
 .footer-links{display:flex;gap:24px;}
-.footer-links a{font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;}
-.footer-links a:hover{color:rgba(255,255,255,.8);}
-.footer-copy{font-size:12px;color:rgba(255,255,255,.25);}
-.footer-disclaimer{padding:8px 20px;text-align:center;font-size:11px;color:rgba(255,255,255,.3);line-height:1.6;}
+.footer-links a{font-size:13px;color:rgba(255,255,255.45);text-decoration:none;}
+.footer-links a:hover{color:rgba(255,255,255.8);}
+.footer-copy{font-size:12px;color:rgba(255,255,255.25);}
+.footer-disclaimer{padding:8px 20px;text-align:center;font-size:11px;color:rgba(255,255,255.3);line-height:1.6;}
 @media(max-width:768px){.nav-center{display:none!important;}.related-grid{grid-template-columns:1fr 1fr;}}
 @media(max-width:480px){.related-grid{grid-template-columns:1fr;}}
 </style>
@@ -85,10 +85,10 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
 {"@context":"https://schema.org","@graph":[
   {"@type":"Article","headline":"15-Month-Old Not Walking? Here's What the Research Says","description":"Most babies walk between 11 and 15 months. The AAP flags absence of independent walking at the 15-month well-child visit. Here's the timeline, what warrants action, and what comes next.","url":"https://www.getfamilyforce.com/blog/15-month-old-not-walking","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Person","name":"Jack Hartley","url":"https://www.getfamilyforce.com/about"},"publisher":{"@type":"Organization","name":"FamilyForce","url":"https://www.getfamilyforce.com"},"mainEntityOfPage":"https://www.getfamilyforce.com/blog/15-month-old-not-walking","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.getfamilyforce.com"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.getfamilyforce.com/blog"},{"@type":"ListItem","position":3,"name":"15-Month-Old Not Walking","item":"https://www.getfamilyforce.com/blog/15-month-old-not-walking"}]}},
   {"@type":"FAQPage","mainEntity":[
-    {"@type":"Question","name":"When should a baby walk independently?","acceptedAnswer":{"@type":"Answer","text":"The walking window opens around 11 months, peaks at 12–13 months, and closes at 15 months. Most babies take their first independent steps between 11 and 13 months. The AAP's 15-month well-child visit specifically assesses independent walking — absence at 15 months is the clinical flag for evaluation or physical therapy referral."}},
-    {"@type":"Question","name":"Is it normal for a 15-month-old not to walk?","acceptedAnswer":{"@type":"Answer","text":"The walking window closes at 15 months. A 15-month-old who is not yet walking independently is at the outer edge of the window — the AAP specifically flags this at the 15-month well-child visit. Not walking at 15 months doesn't mean something is definitively wrong, but it warrants discussion with the pediatrician, who may recommend observation, physical therapy referral, or further evaluation depending on the full developmental picture."}},
-    {"@type":"Question","name":"What's the difference between cruising and walking?","acceptedAnswer":{"@type":"Answer","text":"Cruising is walking while holding onto furniture for support — it's an important precursor milestone but it is NOT independent walking. Independent walking means taking 3 or more steps in sequence without holding onto anything. A 15-month-old who is cruising confidently but hasn't yet taken independent steps is showing the right progression but hasn't crossed the milestone yet."}},
-    {"@type":"Question","name":"Could not walking at 15 months mean something serious?","acceptedAnswer":{"@type":"Answer","text":"It warrants evaluation, not alarm. Many babies walk at 13–14 months and some walk at 15 or 16 months without any underlying issue. The specific signals that suggest something more significant are: not pulling to stand at all by 12 months, asymmetric movement (favoring one side), noticeably low or high muscle tone, or motor delay alongside other developmental concerns. A physical therapy evaluation is quick, productive, and often reassuring — it's the appropriate response at 15 months, not a dramatic step."}}
+    {"@type":"Question","name":"When should a baby walk independently?","acceptedAnswer":{"@type":"Answer","text":"The walking window opens around 11 months, peaks at 12 to 13 months, and closes at 15 months. Most babies take their first independent steps between 11 and 13 months. The AAP's 15-month well-child visit specifically assesses independent walking. Absence at 15 months is the clinical flag for evaluation or physical therapy referral."}},
+    {"@type":"Question","name":"Is it normal for a 15-month-old not to walk?","acceptedAnswer":{"@type":"Answer","text":"The walking window closes at 15 months. A 15-month-old who is not yet walking independently is at the outer edge of the window, the AAP specifically flags this at the 15-month well-child visit. Not walking at 15 months doesn't mean something is definitively wrong, but it warrants discussion with the pediatrician, who may recommend observation, physical therapy referral, or further evaluation depending on the full developmental picture."}},
+    {"@type":"Question","name":"What's the difference between cruising and walking?","acceptedAnswer":{"@type":"Answer","text":"Cruising is walking while holding onto furniture for support, it's an important precursor milestone but it is NOT independent walking. Independent walking means taking 3 or more steps in sequence without holding onto anything. A 15-month-old who is cruising confidently but hasn't yet taken independent steps is showing the right progression but hasn't crossed the milestone yet."}},
+    {"@type":"Question","name":"Could not walking at 15 months mean something serious?","acceptedAnswer":{"@type":"Answer","text":"It warrants evaluation, not alarm. Many babies walk at 13 to 14 months and some walk at 15 or 16 months without any underlying issue. The specific signals that suggest something more significant are: not pulling to stand at all by 12 months, asymmetric movement (favoring one side), noticeably low or high muscle tone, or motor delay alongside other developmental concerns. A physical therapy evaluation is quick, productive, and often reassuring, it's the appropriate response at 15 months, not a dramatic step."}}
   ]}
 ]}
 </script>
@@ -113,14 +113,14 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
   <a href="/">Home</a><span style="color:var(--border)">›</span><a href="/blog">Blog</a><span style="color:var(--border)">›</span><span>15-Month-Old Not Walking</span>
 </nav>
 <header class="article-header">
-  <span class="article-eyebrow">Motor Development · 10–15 Months</span>
+  <span class="article-eyebrow">Motor Development · 10 to 15 Months</span>
   <h1>15-Month-Old Not Walking? Here's What the Research Says</h1>
   <div class="article-meta"><span>By Jack Hartley</span><span>·</span><span>April 4, 2026</span><span>·</span><span>7 min read</span></div>
-  <p class="article-lede">The walking window opens at 11 months and closes at 15 months. If your child is 15 months and not yet walking, you're at the outer edge — the AAP specifically flags this at the 15-month well-child visit. Here's what the window looks like, what counts as walking, and what the next step is.</p>
+  <p class="article-lede">The walking window opens at 11 months and closes at 15 months. If your child is 15 months and not yet walking, you're at the outer edge, the AAP specifically flags this at the 15-month well-child visit. Here's what the window looks like, what counts as walking, and what the next step is.</p>
 </header>
 <div class="article-body">
 
-  <p>The first time a baby walks, every parent in the room cheers. The second time, everyone pulls out a phone. By the third, someone's already texted a grandparent. It's one of those milestones that feels enormous — partly because it is, and partly because most of us track it by watching other kids and trying not to compare.</p>
+  <p>The first time a baby walks, every parent in the room cheers. The second time, everyone pulls out a phone. By the third, someone's already texted a grandparent. It's one of those milestones that feels enormous, partly because it is, and partly because most of us track it by watching other kids and trying not to compare.</p>
 
   <p>I watched First Son's class at playgroup. Some of those kids were walking at 10 months. Some weren't walking at 15. I had no idea whether the difference meant anything or whether I was watching perfectly normal variation in a perfectly normal range. I needed the window. Here it is.</p>
 
@@ -129,77 +129,77 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
   <p>The WHO Motor Development Study and AAP developmental guidelines both put independent walking in a window from <strong>11 to 15 months</strong>:</p>
   <ul>
     <li><strong>Window opens:</strong> ~11 months</li>
-    <li><strong>Peak (median):</strong> 12–13 months</li>
+    <li><strong>Peak (median):</strong> 12 to 13 months</li>
     <li><strong>Window closes:</strong> 15 months</li>
-    <li><strong>Clinical flag:</strong> Not walking independently by 15 months — AAP specifically assesses this at the 15-month well-child visit</li>
+    <li><strong>Clinical flag:</strong> Not walking independently by 15 months, AAP specifically assesses this at the 15-month well-child visit</li>
   </ul>
 
-  <p>What "walking" means here: <strong>3 or more independent steps in sequence, without holding onto anything.</strong> A child who takes one step and grabs the couch hasn't yet crossed the milestone. A child who takes 5 wobbly steps across the room, falls, gets up, and does it again — that's walking.</p>
+  <p>What "walking" means here: <strong>3 or more independent steps in sequence, without holding onto anything.</strong> A child who takes one step and grabs the couch hasn't yet crossed the milestone. A child who takes 5 wobbly steps across the room, falls, gets up, and does it again, that's walking.</p>
 
   <div class="callout callout-green">
     <p class="callout-label">Cruising ≠ walking</p>
-    <p>Cruising — walking while holding onto furniture, moving hand-over-hand along a couch or coffee table — is an important precursor to walking and a positive sign. But it is not the milestone. Many parents confuse confident cruising with walking. They are different things. Cruising typically develops 1–3 months before independent steps.</p>
+    <p>Cruising, walking while holding onto furniture, moving hand-over-hand along a couch or coffee table, is an important precursor to walking and a positive sign. But it is not the milestone. Many parents confuse confident cruising with walking. They are different things. Cruising typically develops 1 to 3 months before independent steps.</p>
   </div>
 
   <h2>The Sequence That Leads to Walking</h2>
 
-  <p>Walking doesn't happen in isolation — it's the culmination of a motor sequence. If your 15-month-old isn't walking yet, where they are in this sequence tells you a lot:</p>
+  <p>Walking doesn't happen in isolation, it's the culmination of a motor sequence. If your 15-month-old isn't walking yet, where they are in this sequence tells you a lot:</p>
 
   <div class="stage-block">
-    <h3>Pulling to stand (~9–10 months)</h3>
-    <p>Using furniture to haul up to a standing position. This is the strength foundation. A baby who hasn't pulled to stand by 12 months is showing a motor delay that warrants its own conversation with the pediatrician — separate from the walking question.</p>
+    <h3>Pulling to stand (~9 to 10 months)</h3>
+    <p>Using furniture to haul up to a standing position. This is the strength foundation. A baby who hasn't pulled to stand by 12 months is showing a motor delay that warrants its own conversation with the pediatrician, separate from the walking question.</p>
   </div>
   <div class="stage-block">
-    <h3>Cruising (~9–12 months)</h3>
-    <p>Walking while holding furniture. Builds the balance and leg strength that walking requires. A baby who is cruising confidently is on track — steps will likely follow.</p>
+    <h3>Cruising (~9 to 12 months)</h3>
+    <p>Walking while holding furniture. Builds the balance and leg strength that walking requires. A baby who is cruising confidently is on track, steps will likely follow.</p>
   </div>
   <div class="stage-block">
-    <h3>Standing briefly without support (~11–13 months)</h3>
+    <h3>Standing briefly without support (~11 to 13 months)</h3>
     <p>The 3-second free stand. This is the last precursor before first steps. A baby who can stand without holding on, even for a moment, is usually within days or weeks of walking.</p>
   </div>
   <div class="stage-block">
-    <h3>First independent steps (~11–14 months)</h3>
-    <p>Typically 2–5 steps, then fall. Progress from here is usually fast — most babies go from first steps to confident walking within 2–6 weeks.</p>
+    <h3>First independent steps (~11 to 14 months)</h3>
+    <p>Typically 2 to 5 steps, then fall. Progress from here is usually fast, most babies go from first steps to confident walking within 2 to 6 weeks.</p>
   </div>
 
   <h2>The 15-Month Checkpoint</h2>
 
-  <p>The AAP's 15-month well-child visit was specifically designed to catch motor delays. Independent walking is one of the primary assessments. If your child isn't walking at this visit, you're not going to be told to keep waiting — you're going to be directed toward evaluation or physical therapy referral.</p>
+  <p>The AAP's 15-month well-child visit was specifically designed to catch motor delays. Independent walking is one of the primary assessments. If your child isn't walking at this visit, you're not going to be told to keep waiting, you're going to be directed toward evaluation or physical therapy referral.</p>
 
-  <p>That's not alarming. It's the system working as designed. Physical therapy at 15 months is a brief course of targeted work, typically 4–8 weeks, that produces good outcomes. It's not a diagnosis. It's not a label. It's intervention at exactly the right time.</p>
+  <p>That's not alarming. It's the system working as designed. Physical therapy at 15 months is a brief course of targeted work, typically 4 to 8 weeks, that produces good outcomes. It's not a diagnosis. It's not a label. It's intervention at exactly the right time.</p>
 
   <div class="callout callout-warning">
     <p class="callout-label">Bring this to the pediatrician regardless of scheduled visits</p>
-    <p><strong>Not pulling to stand by 12 months.</strong> This is a precursor-sequence concern, not just a walking concern. Raise it before the 15-month visit — at the 12-month well-child check if not yet present.</p>
+    <p><strong>Not pulling to stand by 12 months.</strong> This is a precursor-sequence concern, not just a walking concern. Raise it before the 15-month visit, at the 12-month well-child check if not yet present.</p>
     <p style="margin-top:10px;"><strong>Asymmetric movement.</strong> Consistently favoring one leg when pulling up, cruising, or walking. Always falling to one side. This is more specific than simple delay and changes the evaluation picture.</p>
     <p style="margin-top:10px;"><strong>Not walking by 15 months AND other motor delays.</strong> If your child isn't walking AND isn't showing fine motor skills developing alongside (reaching, grabbing, stacking), the picture is different from delayed walking in an otherwise developing child.</p>
   </div>
 
   <h2>The Bottom Shuffler Exception</h2>
 
-  <p>Children who were bottom shufflers — scooting on their bottoms instead of crawling — tend to walk 1–3 months later than traditional crawlers. This is well-documented and not itself a concern. A bottom shuffler who isn't walking at 15–16 months is at the outer edge of an already-adjusted normal range.</p>
+  <p>Children who were bottom shufflers, scooting on their bottoms instead of crawling, tend to walk 1 to 3 months later than traditional crawlers. This is well-documented and not itself a concern. A bottom shuffler who isn't walking at 15 to 16 months is at the outer edge of an already-adjusted normal range.</p>
 
   <p>That said: even bottom shufflers warrant the same conversation at the 15-month well-child visit. The threshold is the same. The likely outcome (observation, possible PT) may vary based on the full picture.</p>
 
   <div class="callout callout-info">
     <p class="callout-label">Scout tracks the walking window</p>
-    <p>Parents who use Scout receive an email the month the walking window opens — covering what independent walking looks like, the cruising-to-walking sequence, what to encourage at home, and the 15-month clinical flag. The 15-month well-child check doesn't catch you off guard. <a href="/sign-in?intent=trial">Try Scout free →</a></p>
+    <p>Parents who use Scout receive an email the month the walking window opens, covering what independent walking looks like, the cruising-to-walking sequence, what to encourage at home, and the 15-month clinical flag. The 15-month well-child check doesn't catch you off guard. <a href="/sign-in?intent=trial">Try Scout free →</a></p>
   </div>
 
   <h2>What to Try at Home Before the 15-Month Visit</h2>
 
   <h3>Barefoot on hard floors</h3>
-  <p>Babies learn to balance and walk more effectively barefoot or in soft-sole shoes on hard surfaces than in stiff shoes on carpet. The tactile feedback from the floor helps with balance development. Limit time in walkers and jumpers — they bypass the muscle groups needed for independent walking.</p>
+  <p>Babies learn to balance and walk more effectively barefoot or in soft-sole shoes on hard surfaces than in stiff shoes on carpet. The tactile feedback from the floor helps with balance development. Limit time in walkers and jumpers, they bypass the muscle groups needed for independent walking.</p>
 
   <h3>Motivation: place interesting things just out of reach</h3>
-  <p>Put a favorite toy on a low table a few steps away. Encourage the child to walk to it. Brief, motivated practice is more effective than extended floor sessions. Keep it positive — frustration slows progress.</p>
+  <p>Put a favorite toy on a low table a few steps away. Encourage the child to walk to it. Brief, motivated practice is more effective than extended floor sessions. Keep it positive, frustration slows progress.</p>
 
   <h3>Let them walk without help</h3>
-  <p>Holding a child's hands while they walk feels supportive but doesn't build independent balance. Let them pull up and cruise on their own. Offer a push toy or a low ride-on toy they can hold and walk behind — these are better walking trainers than parental hand-holding.</p>
+  <p>Holding a child's hands while they walk feels supportive but doesn't build independent balance. Let them pull up and cruise on their own. Offer a push toy or a low ride-on toy they can hold and walk behind, these are better walking trainers than parental hand-holding.</p>
 
   <div class="inline-cta">
     <h3>Know the motor milestones before they arrive</h3>
-    <p>Scout tracks pulling to stand, cruising, and walking — all timed to your baby's exact birthday. When the 15-month checkup arrives, you walk in with context, not questions.</p>
+    <p>Scout tracks pulling to stand, cruising, and walking, all timed to your baby's exact birthday. When the 15-month checkup arrives, you walk in with context, not questions.</p>
     <a href="/sign-in?intent=trial" class="btn-primary">Try Scout Free →</a>
   </div>
 
@@ -208,11 +208,11 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
   <h2>Frequently Asked Questions</h2>
   <div class="faq-item">
     <p class="faq-q">When should a baby walk independently?</p>
-    <p class="faq-a">The walking window opens at 11 months, peaks at 12–13 months, and closes at 15 months. The AAP's 15-month well-child visit specifically assesses independent walking — absence at 15 months is the clinical flag for evaluation or physical therapy referral.</p>
+    <p class="faq-a">The walking window opens at 11 months, peaks at 12 to 13 months, and closes at 15 months. The AAP's 15-month well-child visit specifically assesses independent walking. Absence at 15 months is the clinical flag for evaluation or physical therapy referral.</p>
   </div>
   <div class="faq-item">
     <p class="faq-q">Is it normal for a 15-month-old not to walk?</p>
-    <p class="faq-a">At 15 months, absence of independent walking is at the outer edge of the window and is the AAP's clinical flag. It doesn't mean something is definitively wrong, but it warrants discussion at the 15-month well-child visit. Physical therapy evaluation is a common and appropriate next step — it's brief, targeted, and produces good outcomes at this age.</p>
+    <p class="faq-a">At 15 months, absence of independent walking is at the outer edge of the window and is the AAP's clinical flag. It doesn't mean something is definitively wrong, but it warrants discussion at the 15-month well-child visit. Physical therapy evaluation is a common and appropriate next step. It is brief, targeted, and produces good outcomes at this age.</p>
   </div>
   <div class="faq-item">
     <p class="faq-q">What's the difference between cruising and walking?</p>
@@ -220,7 +220,7 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
   </div>
   <div class="faq-item">
     <p class="faq-q">Could not walking at 15 months mean something serious?</p>
-    <p class="faq-a">It warrants evaluation, not panic. The specific signals that raise more concern are: not pulling to stand by 12 months, asymmetric movement, noticeably low or high muscle tone, or motor delay alongside other developmental concerns. Physical therapy at 15 months is a brief and effective intervention — it's the appropriate response, not a dramatic step.</p>
+    <p class="faq-a">It warrants evaluation, not panic. The specific signals that raise more concern are: not pulling to stand by 12 months, asymmetric movement, noticeably low or high muscle tone, or motor delay alongside other developmental concerns. Physical therapy at 15 months is a brief and effective intervention, it's the appropriate response, not a dramatic step.</p>
   </div>
 </section>
 <div class="related">
@@ -234,7 +234,7 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
 </div>
 <footer>
   <div class="footer-inner">
-    <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none"><svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:16px;font-weight:700;color:rgba(255,255,255,.9)">Family<span style="color:#A78BFF">Force</span></span></a>
+    <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none"><svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:16px;font-weight:700;color:rgba(255,255,255.9)">Family<span style="color:#A78BFF">Force</span></span></a>
     <nav class="footer-links"><a href="/milestones">Milestones</a><a href="/blog">Blog</a><a href="/baby-shower-gifts">Gift Ideas</a><a href="/about">About</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>
     <span class="footer-copy">© 2026 FamilyForce. All rights reserved.</span>
   </div>

@@ -22,7 +22,7 @@ html{font-size:16px;scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
 body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
 a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 :focus-visible{outline:3px solid var(--terra);outline-offset:3px;border-radius:4px;}
-.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(250,250,250,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);}
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(250,250,250.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);}
 .nav-inner{max-width:1200px;margin:0 auto;padding:0 var(--rx);height:64px;display:flex;align-items:center;justify-content:space-between;position:relative;}
 .logo{display:inline-flex;align-items:center;gap:8px;font-size:17px;font-weight:700;color:var(--text);}
 .logo-accent{color:var(--terra);}
@@ -39,15 +39,15 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .article-body h2{font-size:24px;font-weight:700;margin:48px 0 16px;padding-top:8px;border-top:1px solid var(--border);}
 .article-body h3{font-size:18px;font-weight:700;margin:28px 0 10px;}
 .article-body p{font-size:16px;color:var(--text-mid);line-height:1.85;margin-bottom:16px;}
-.article-body ul,.article-body ol{margin:0 0 16px;padding-left:24px;}
+.article-body ul.article-body ol{margin:0 0 16px;padding-left:24px;}
 .article-body li{font-size:16px;color:var(--text-mid);line-height:1.8;margin-bottom:6px;}
 .article-body strong{color:var(--text);font-weight:600;}
 .callout{border-radius:12px;padding:20px 24px;margin:28px 0;}
-.callout-warning{background:#FFF8E6;border:1px solid rgba(245,158,11,.3);}
+.callout-warning{background:#FFF8E6;border:1px solid rgba(245,158,11.3);}
 .callout-warning .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#B45309;margin-bottom:8px;}
-.callout-info{background:var(--terra-tint);border:1px solid rgba(110,78,214,.2);}
+.callout-info{background:var(--terra-tint);border:1px solid rgba(110,78,214.2);}
 .callout-info .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--terra-dark);margin-bottom:8px;}
-.callout-green{background:#F0FDF4;border:1px solid rgba(34,197,94,.25);}
+.callout-green{background:#F0FDF4;border:1px solid rgba(34,197,94.25);}
 .callout-green .callout-label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#166534;margin-bottom:8px;}
 .callout p{font-size:15px;line-height:1.75;color:var(--text-mid);margin:0;}
 .callout p+p{margin-top:10px;}
@@ -56,14 +56,14 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .stage-block h3{margin:0 0 10px;}
 .inline-cta{background:var(--indigo-deep);border-radius:16px;padding:30px;margin:40px 0;text-align:center;color:#fff;}
 .inline-cta h3{font-size:20px;font-weight:700;margin-bottom:10px;color:#fff;}
-.inline-cta p{font-size:15px;color:rgba(255,255,255,.7);margin-bottom:18px;line-height:1.65;}
+.inline-cta p{font-size:15px;color:rgba(255,255,255.7);margin-bottom:18px;line-height:1.65;}
 .btn-primary{display:inline-block;background:var(--terra);color:#fff !important;font-weight:700;font-size:15px;padding:12px 28px;border-radius:100px;text-decoration:none;}
 .btn-primary:hover{background:#8b6ef0;text-decoration:none;}
 .related{max-width:var(--max);margin:0 auto;padding:0 var(--rx) 60px;}
 .related h2{font-size:20px;font-weight:700;margin-bottom:20px;}
 .related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
 .related-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-decoration:none;display:block;}
-.related-card:hover{border-color:rgba(110,78,214,.4);text-decoration:none;}
+.related-card:hover{border-color:rgba(110,78,214.4);text-decoration:none;}
 .rc-age{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--terra-dark);margin-bottom:6px;}
 .rc-title{font-size:14px;font-weight:600;color:var(--text);line-height:1.4;}
 .faq-section{max-width:var(--max);margin:0 auto;padding:0 var(--rx) 60px;}
@@ -71,13 +71,13 @@ a{color:var(--terra);text-decoration:none;}a:hover{text-decoration:underline;}
 .faq-item{border-bottom:1px solid var(--border);padding:18px 0;}
 .faq-q{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;}
 .faq-a{font-size:15px;color:var(--text-mid);line-height:1.8;}
-footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px));}
+footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px));}
 .footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 24px;}
 .footer-links{display:flex;gap:24px;}
-.footer-links a{font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;}
-.footer-links a:hover{color:rgba(255,255,255,.8);}
-.footer-copy{font-size:12px;color:rgba(255,255,255,.25);}
-.footer-disclaimer{padding:8px 20px;text-align:center;font-size:11px;color:rgba(255,255,255,.3);line-height:1.6;}
+.footer-links a{font-size:13px;color:rgba(255,255,255.45);text-decoration:none;}
+.footer-links a:hover{color:rgba(255,255,255.8);}
+.footer-copy{font-size:12px;color:rgba(255,255,255.25);}
+.footer-disclaimer{padding:8px 20px;text-align:center;font-size:11px;color:rgba(255,255,255.3);line-height:1.6;}
 @media(max-width:768px){.nav-center{display:none!important;}.related-grid{grid-template-columns:1fr 1fr;}}
 @media(max-width:480px){.related-grid{grid-template-columns:1fr;}}
 </style>
@@ -85,10 +85,10 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
 {"@context":"https://schema.org","@graph":[
   {"@type":"Article","headline":"Baby Not Rolling Over at 4 Months? Here's the Actual Window","description":"The tummy-to-back rolling window closes at 5 months. At 4 months, you're still inside it. Here's the two rolling milestones, what tummy time has to do with it, and what to watch for.","url":"https://www.getfamilyforce.com/blog/baby-not-rolling-4-months","datePublished":"2026-04-04","dateModified":"2026-04-04","author":{"@type":"Person","name":"Jack Hartley","url":"https://www.getfamilyforce.com/about"},"publisher":{"@type":"Organization","name":"FamilyForce","url":"https://www.getfamilyforce.com"},"mainEntityOfPage":"https://www.getfamilyforce.com/blog/baby-not-rolling-4-months","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.getfamilyforce.com"},{"@type":"ListItem","position":2,"name":"Blog","item":"https://www.getfamilyforce.com/blog"},{"@type":"ListItem","position":3,"name":"Baby Not Rolling Over at 4 Months","item":"https://www.getfamilyforce.com/blog/baby-not-rolling-4-months"}]}},
   {"@type":"FAQPage","mainEntity":[
-    {"@type":"Question","name":"When should babies roll over?","acceptedAnswer":{"@type":"Answer","text":"There are two rolling milestones. Tummy-to-back rolling: opens at 2 months, peaks around 3–3.5 months, closes at 5 months; CDC flag is not rolling tummy-to-back by 5 months. Back-to-tummy rolling: opens at 3 months, peaks at 4 months, closes at 6 months; CDC flag is not rolling in either direction by 6 months. At 4 months, both windows are open — you're not outside the normal range yet."}},
-    {"@type":"Question","name":"Is it normal for a 4-month-old not to roll over?","acceptedAnswer":{"@type":"Answer","text":"Yes — 4 months is inside the normal range for both rolling milestones. The tummy-to-back window closes at 5 months and the back-to-tummy window closes at 6 months. A 4-month-old who hasn't yet rolled is within the normal window. The specific flags are: not rolling tummy-to-back by 5 months, not rolling in either direction by 6 months, or not pushing up on arms during tummy time by 4–5 months."}},
-    {"@type":"Question","name":"How can I help my baby learn to roll over?","acceptedAnswer":{"@type":"Answer","text":"More tummy time is the primary intervention. Babies who get regular supervised tummy time develop the neck, shoulder, and core strength that rolling requires. Place a rolled towel under the baby's chest during tummy time to make it easier. Place interesting toys just off to the side to encourage reaching and rotation. Gently practice assisted rolling — roll the baby partway toward their side, let them feel the position, and let them try to complete the roll."}},
-    {"@type":"Question","name":"My baby rolled once and then stopped — is that normal?","acceptedAnswer":{"@type":"Answer","text":"Very common. Some babies roll once, apparently accidentally, and then don't do it again for two to three weeks. Development is not linear. The CDC milestone language acknowledges this — rolling happening once and then stopping is normal. If rolling appeared and then was never repeated past 6 months, that's different — but a one-off roll followed by a pause is expected."}}
+    {"@type":"Question","name":"When should babies roll over?","acceptedAnswer":{"@type":"Answer","text":"There are two rolling milestones. Tummy-to-back rolling: opens at 2 months, peaks around 3 to 3.5 months, closes at 5 months; CDC flag is not rolling tummy-to-back by 5 months. Back-to-tummy rolling: opens at 3 months, peaks at 4 months, closes at 6 months; CDC flag is not rolling in either direction by 6 months. At 4 months, both windows are open, you're not outside the normal range yet."}},
+    {"@type":"Question","name":"Is it normal for a 4-month-old not to roll over?","acceptedAnswer":{"@type":"Answer","text":"Yes, 4 months is inside the normal range for both rolling milestones. The tummy-to-back window closes at 5 months and the back-to-tummy window closes at 6 months. A 4-month-old who hasn't yet rolled is within the normal window. The specific flags are: not rolling tummy-to-back by 5 months, not rolling in either direction by 6 months, or not pushing up on arms during tummy time by 4 to 5 months."}},
+    {"@type":"Question","name":"How can I help my baby learn to roll over?","acceptedAnswer":{"@type":"Answer","text":"More tummy time is the primary intervention. Babies who get regular supervised tummy time develop the neck, shoulder, and core strength that rolling requires. Place a rolled towel under the baby's chest during tummy time to make it easier. Place interesting toys just off to the side to encourage reaching and rotation. Gently practice assisted rolling, roll the baby partway toward their side, let them feel the position, and let them try to complete the roll."}},
+    {"@type":"Question","name":"My baby rolled once and then stopped, is that normal?","acceptedAnswer":{"@type":"Answer","text":"Very common. Some babies roll once, apparently accidentally, and then don't do it again for two to three weeks. Development is not linear. The CDC milestone language acknowledges this, rolling happening once and then stopping is normal. If rolling appeared and then was never repeated past 6 months, that's different, but a one-off roll followed by a pause is expected."}}
   ]}
 ]}
 </script>
@@ -113,21 +113,21 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
   <a href="/">Home</a><span style="color:var(--border)">›</span><a href="/blog">Blog</a><span style="color:var(--border)">›</span><span>Baby Not Rolling Over at 4 Months</span>
 </nav>
 <header class="article-header">
-  <span class="article-eyebrow">Motor Development · 2–6 Months</span>
+  <span class="article-eyebrow">Motor Development · 2 to 6 Months</span>
   <h1>Baby Not Rolling Over at 4 Months? Here's the Actual Window</h1>
   <div class="article-meta"><span>By Jack Hartley</span><span>·</span><span>April 4, 2026</span><span>·</span><span>6 min read</span></div>
   <p class="article-lede">There are actually two rolling milestones, and they close at different times. At 4 months, you're still inside both windows. Here's where the flag dates actually sit, what tummy time has to do with it, and the one variation that's normal but confusing.</p>
 </header>
 <div class="article-body">
 
-  <p>Rolling is one of those milestones where parents hear wildly different numbers. "Babies roll at 2 months." "My kid didn't roll until 6." "My pediatrician said 4 months." None of them are wrong — they're just describing different parts of a two-milestone sequence with a wider range than most people realize.</p>
+  <p>Rolling is one of those milestones where parents hear wildly different numbers. "Babies roll at 2 months." "My kid didn't roll until 6." "My pediatrician said 4 months." None of them are wrong, they're just describing different parts of a two-milestone sequence with a wider range than most people realize.</p>
 
   <h2>The Two Rolling Milestones</h2>
 
   <div class="stage-block">
     <h3>Milestone 1: Tummy to back</h3>
-    <p><strong>Window opens: ~2 months. Peak: ~3–3.5 months. Window closes: ~5 months.</strong></p>
-    <p style="margin-top:8px;">Rolling from the stomach to the back usually happens first — often accidentally during tummy time, when the baby pushes up and the momentum carries them over. This is a sign of developing core and neck strength. <strong>CDC flag: not rolling tummy-to-back by 5 months.</strong></p>
+    <p><strong>Window opens: ~2 months. Peak: ~3 to 3.5 months. Window closes: ~5 months.</strong></p>
+    <p style="margin-top:8px;">Rolling from the stomach to the back usually happens first, often accidentally during tummy time, when the baby pushes up and the momentum carries them over. This is a sign of developing core and neck strength. <strong>CDC flag: not rolling tummy-to-back by 5 months.</strong></p>
   </div>
   <div class="stage-block">
     <h3>Milestone 2: Back to tummy</h3>
@@ -139,39 +139,39 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
 
   <div class="callout callout-green">
     <p class="callout-label">The "rolled once and forgot" phenomenon</p>
-    <p>Some babies roll once — apparently by accident — and then don't do it again for two or three weeks. This is completely normal. Development is not linear. The CDC milestone language acknowledges this explicitly. If a roll happened once and then paused, that's not a setback — it's a preview. The window is still open.</p>
+    <p>Some babies roll once, apparently by accident, and then don't do it again for two or three weeks. This is completely normal. Development is not linear. The CDC milestone language acknowledges this explicitly. If a roll happened once and then paused, that's not a setback, it's a preview. The window is still open.</p>
   </div>
 
   <h2>Tummy Time Is the Practice Context</h2>
 
-  <p>Babies who received limited tummy time in the first months tend to roll later. This isn't because anything is wrong — it's because tummy time is where the muscle development happens. Rolling emerges from the same neck, shoulder, and core strength that tummy time builds.</p>
+  <p>Babies who received limited tummy time in the first months tend to roll later. This isn't because anything is wrong, it's because tummy time is where the muscle development happens. Rolling emerges from the same neck, shoulder, and core strength that tummy time builds.</p>
 
-  <p>If your baby has had limited tummy time and isn't rolling at 4 months, the intervention is more tummy time, not more worry. Increase to at least 20–30 minutes of supervised tummy time daily, spread across multiple sessions throughout the day.</p>
+  <p>If your baby has had limited tummy time and isn't rolling at 4 months, the intervention is more tummy time, not more worry. Increase to at least 20 to 30 minutes of supervised tummy time daily, spread across multiple sessions throughout the day.</p>
 
   <h3>Tummy time techniques that help rolling specifically</h3>
   <ul>
     <li><strong>Rolled towel under the chest.</strong> Place a small rolled towel or folded blanket under the baby's chest to give a slight lift. This makes it easier to push up and creates a rocking position that leads to rolling.</li>
-    <li><strong>Side-lying play.</strong> Place the baby on their side, propped gently with a rolled blanket. This is the halfway position — it lets them practice the rotation that rolling requires without the full challenge.</li>
-    <li><strong>Toy just off to the side.</strong> Place an interesting toy slightly behind the baby's shoulder line during tummy time. The baby will reach and rotate toward it — the beginning of the rolling motion.</li>
+    <li><strong>Side-lying play.</strong> Place the baby on their side, propped gently with a rolled blanket. This is the halfway position, it lets them practice the rotation that rolling requires without the full challenge.</li>
+    <li><strong>Toy just off to the side.</strong> Place an interesting toy slightly behind the baby's shoulder line during tummy time. The baby will reach and rotate toward it, the beginning of the rolling motion.</li>
   </ul>
 
   <div class="callout callout-warning">
     <p class="callout-label">When to bring it up</p>
-    <p><strong>Not pushing up on arms during tummy time at 4–5 months.</strong> By 4 months, most babies should be able to push up on their forearms during tummy time, lifting the head and chest. If your baby consistently collapses immediately on tummy time without any arm support, mention it at the 4-month well-child visit.</p>
+    <p><strong>Not pushing up on arms during tummy time at 4 to 5 months.</strong> By 4 months, most babies should be able to push up on their forearms during tummy time, lifting the head and chest. If your baby consistently collapses immediately on tummy time without any arm support, mention it at the 4-month well-child visit.</p>
     <p style="margin-top:10px;"><strong>Not rolling tummy-to-back by 5 months.</strong> This is the CDC's specific flag. Raise it at the 4-month well-child check if the visit comes before then, or at the 6-month check if rolling still hasn't appeared.</p>
     <p style="margin-top:10px;"><strong>Not rolling in either direction by 6 months.</strong> Both milestones should be present by 6 months. Absence of any rolling at 6 months warrants a conversation and possibly a physical therapy evaluation.</p>
-    <p style="margin-top:10px;"><strong>Rolling only in one direction.</strong> Consistently rolling only to the right or only to the left — never the other way — can indicate asymmetric muscle development. Mention it at the next well-child visit.</p>
+    <p style="margin-top:10px;"><strong>Rolling only in one direction.</strong> Consistently rolling only to the right or only to the left, never the other way, can indicate asymmetric muscle development. Mention it at the next well-child visit.</p>
   </div>
 
   <div class="callout callout-info">
     <p class="callout-label">Scout tracks the rolling windows</p>
-    <p>Parents who use Scout receive an email the month the rolling window opens — explaining both milestones, what to look for during tummy time, and the flag dates. You know what to watch for before you need to search for it. <a href="/sign-in?intent=trial">Try Scout free →</a></p>
+    <p>Parents who use Scout receive an email the month the rolling window opens, explaining both milestones, what to look for during tummy time, and the flag dates. You know what to watch for before you need to search for it. <a href="/sign-in?intent=trial">Try Scout free →</a></p>
   </div>
 
   <h2>What to Do This Week</h2>
 
   <h3>Count your tummy time minutes</h3>
-  <p>Be honest about how much supervised floor time your baby is getting. Many parents estimate high. If it's under 10–15 minutes per day, increasing it is the most effective thing you can do right now.</p>
+  <p>Be honest about how much supervised floor time your baby is getting. Many parents estimate high. If it's under 10 to 15 minutes per day, increasing it is the most effective thing you can do right now.</p>
 
   <h3>Try the side-lying position</h3>
   <p>If your baby resists tummy time, side-lying is a useful alternative. It builds the same rotation muscles without the full challenge. 5 minutes of side-lying play per day adds up quickly.</p>
@@ -181,7 +181,7 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
 
   <div class="inline-cta">
     <h3>Know the rolling windows before they open</h3>
-    <p>Scout covers the tummy-to-back and back-to-tummy milestones, the tummy time connection, and the flag dates — delivered to your inbox the month each window opens. No more late-night searches at 11pm.</p>
+    <p>Scout covers the tummy-to-back and back-to-tummy milestones, the tummy time connection, and the flag dates, delivered to your inbox the month each window opens. No more late-night searches at 11pm.</p>
     <a href="/sign-in?intent=trial" class="btn-primary">Try Scout Free →</a>
   </div>
 
@@ -190,18 +190,18 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
   <h2>Frequently Asked Questions</h2>
   <div class="faq-item">
     <p class="faq-q">When should babies roll over?</p>
-    <p class="faq-a">Two milestones: tummy-to-back (window 2–5 months; flag at 5 months) and back-to-tummy (window 3–6 months; flag at 6 months). At 4 months, both windows are open. The CDC flag dates are 5 months for tummy-to-back and 6 months for rolling in either direction.</p>
+    <p class="faq-a">Two milestones: tummy-to-back (window 2 to 5 months; flag at 5 months) and back-to-tummy (window 3 to 6 months; flag at 6 months). At 4 months, both windows are open. The CDC flag dates are 5 months for tummy-to-back and 6 months for rolling in either direction.</p>
   </div>
   <div class="faq-item">
     <p class="faq-q">Is it normal for a 4-month-old not to roll over?</p>
-    <p class="faq-a">Yes — 4 months is inside the normal window. The tummy-to-back flag is 5 months; back-to-tummy is 6 months. A 4-month-old who is getting regular tummy time, pushing up on their forearms, and showing some side-to-side movement is tracking well.</p>
+    <p class="faq-a">Yes, 4 months is inside the normal window. The tummy-to-back flag is 5 months; back-to-tummy is 6 months. A 4-month-old who is getting regular tummy time, pushing up on their forearms, and showing some side-to-side movement is tracking well.</p>
   </div>
   <div class="faq-item">
     <p class="faq-q">How can I help my baby learn to roll over?</p>
-    <p class="faq-a">More supervised tummy time is the primary intervention. Try: rolled towel under the chest for a slight lift, side-lying play as an easier alternative, and placing interesting toys just off to the baby's side to encourage reaching and rotation. Avoid extended time in bouncers and swings — floor time builds the muscles that rolling requires.</p>
+    <p class="faq-a">More supervised tummy time is the primary intervention. Try: rolled towel under the chest for a slight lift, side-lying play as an easier alternative, and placing interesting toys just off to the baby's side to encourage reaching and rotation. Avoid extended time in bouncers and swings, floor time builds the muscles that rolling requires.</p>
   </div>
   <div class="faq-item">
-    <p class="faq-q">My baby rolled once and then stopped — is that normal?</p>
+    <p class="faq-q">My baby rolled once and then stopped, is that normal?</p>
     <p class="faq-a">Very common and completely normal. Some babies roll once, then don't repeat it for two to three weeks. Development isn't linear. If rolling appeared once before the window close dates and then paused, that's expected behavior, not a regression.</p>
   </div>
 </section>
@@ -216,7 +216,7 @@ footer{background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);
 </div>
 <footer>
   <div class="footer-inner">
-    <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none"><svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:16px;font-weight:700;color:rgba(255,255,255,.9)">Family<span style="color:#A78BFF">Force</span></span></a>
+    <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none"><svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span style="font-size:16px;font-weight:700;color:rgba(255,255,255.9)">Family<span style="color:#A78BFF">Force</span></span></a>
     <nav class="footer-links"><a href="/milestones">Milestones</a><a href="/blog">Blog</a><a href="/baby-shower-gifts">Gift Ideas</a><a href="/about">About</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a></nav>
     <span class="footer-copy">© 2026 FamilyForce. All rights reserved.</span>
   </div>
