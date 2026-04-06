@@ -91,7 +91,7 @@ Deno.serve(async (req: Request) => {
     .from('scout_digest_log')
     .select('id', { count: 'exact', head: true })
     .eq('digest_type', 'monthly')
-    .gte('created_at', todayStart)
+    .gte('sent_at', todayStart)
 
   // Only alert if we have active subscribers but sent zero digests
   // This is a real problem only on days when at least one birthday should fire.
@@ -129,7 +129,7 @@ Deno.serve(async (req: Request) => {
     .from('scout_digest_log')
     .select('id', { count: 'exact', head: true })
     .eq('digest_type', 'trial_end')
-    .gte('created_at', todayStart)
+    .gte('sent_at', todayStart)
 
   // ─── Check 5: Reengagement emails sent (all time) ─────────────────────────
   const { count: reengagementTotal } = await sb
