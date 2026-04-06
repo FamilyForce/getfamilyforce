@@ -675,6 +675,20 @@ Deno.serve(async (req: Request) => {
   const duration = Date.now() - jobStart
   console.log(`[scout-digest] Done in ${duration}ms`, results)
 
+  // Log cron completion so scout-monitor can verify the job ran
+  await sb.from('scout_events').insert({
+    user_id:    null,
+    child_id:   null,
+    event_type: 'digest_cron_completed',
+    properties: {
+      sent:        results.sent,
+      skipped:     results.skipped,
+      not_birthday: results.not_birthday,
+      errors:      results.errors,
+      duration_ms: duration,
+    },
+  })
+
   // Only alert if there were actual errors (not_birthday skips are normal)
   if (results.errors > 0) {
     await telegramAlert(`Done with ${results.errors} error(s). Sent: ${results.sent}, skipped: ${results.skipped}, non-birthday: ${results.not_birthday}`)
