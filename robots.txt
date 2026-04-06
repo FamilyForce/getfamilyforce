@@ -43,5 +43,17 @@ Disallow: /scout-digest-preview
 Disallow: /index-v1
 Disallow: /index-v2
 Disallow: /FamilyForce_Production
+Disallow: /playbook-feeding-v1
+Disallow: /playbook-feeding-v2
+Disallow: /playbook-potty-training-v1
+Disallow: /playbook-potty-training-v2
+Disallow: /playbook-sleep-v1
+Disallow: /playbook-sleep-v2
+Disallow: /playbook-tantrum-v1
+Disallow: /playbook-tantrums-v2
+Disallow: /playbook-screentime-v2
+Disallow: /playbook-free-screentime-v1
+Disallow: /playbook-paid
+Disallow: /dashboard
 
 Sitemap: https://www.getfamilyforce.com/sitemap.xml
