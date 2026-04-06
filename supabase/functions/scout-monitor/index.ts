@@ -81,24 +81,41 @@ Deno.serve(async (req: Request) => {
     alerts.push(`${failures.length} job failure(s) in last 2 hours:\n${summary}`)
   }
 
-  // ─── Check 2: Digest sanity — active subscribers with zero digests today ───
+  // ─── Check 2: Digest sanity — active/trialing subscribers with zero digests today ───
   const { count: activeCount } = await sb
     .from('scout_subscriptions')
     .select('user_id', { count: 'exact', head: true })
     .eq('status', 'active')
 
+  const { count: trialingCount } = await sb
+    .from('scout_subscriptions')
+    .select('user_id', { count: 'exact', head: true })
+    .eq('status', 'trialing')
+
+  const totalSubscribers = (activeCount ?? 0) + (trialingCount ?? 0)
+
+  // Count all digest types sent today (monthly + signup + birth_signup)
   const { count: digestsToday } = await sb
+    .from('scout_digest_log')
+    .select('id', { count: 'exact', head: true })
+    .in('digest_type', ['monthly', 'signup', 'birth_signup'])
+    .gte('sent_at', todayStart)
+
+  const { count: monthlyDigestsToday } = await sb
     .from('scout_digest_log')
     .select('id', { count: 'exact', head: true })
     .eq('digest_type', 'monthly')
     .gte('sent_at', todayStart)
 
-  // Only alert if we have active subscribers but sent zero digests
-  // This is a real problem only on days when at least one birthday should fire.
-  // We can't know exactly who has a birthday today without checking, so:
-  // Alert only if active >= 5 and digests_today = 0 (statistical threshold).
-  if ((activeCount ?? 0) >= 5 && (digestsToday ?? 0) === 0) {
-    alerts.push(`Digest sanity: ${activeCount} active subscribers but 0 monthly digests sent today. Check if scout-digest cron fired.`)
+  const { count: signupDigestsToday } = await sb
+    .from('scout_digest_log')
+    .select('id', { count: 'exact', head: true })
+    .in('digest_type', ['signup', 'birth_signup'])
+    .gte('sent_at', todayStart)
+
+  // Alert if any subscribers exist but zero digests of any kind sent today
+  if (totalSubscribers >= 1 && (digestsToday ?? 0) === 0) {
+    alerts.push(`Digest sanity: ${totalSubscribers} subscribers (${activeCount ?? 0} active, ${trialingCount ?? 0} trialing) but 0 digests sent today. Check if scout-digest cron fired.`)
     hasUrgent = true
   }
 
@@ -162,12 +179,14 @@ Deno.serve(async (req: Request) => {
   report.push(`<b>Scout Daily Report — ${todayStr}</b>`)
   report.push('')
   report.push(`Subscribers`)
-  report.push(`  Active: ${activeCount ?? 0}`)
+  report.push(`  Active (paid): ${activeCount ?? 0}`)
+  report.push(`  Trialing: ${trialingCount ?? 0}`)
   report.push(`  New trials today: ${newTrialsToday ?? 0}`)
   report.push(`  Conversions today: ${conversionsToday ?? 0}`)
   report.push('')
   report.push(`Emails today`)
-  report.push(`  Monthly digests: ${digestsToday ?? 0}`)
+  report.push(`  Monthly digests: ${monthlyDigestsToday ?? 0}`)
+  report.push(`  Signup digests: ${signupDigestsToday ?? 0}`)
   report.push(`  Trial-end emails: ${trialEndToday ?? 0}`)
   report.push(`  Re-engagement (all time): ${reengagementTotal ?? 0}`)
   report.push('')
@@ -191,7 +210,7 @@ Deno.serve(async (req: Request) => {
     ok:      true,
     alerts:  alerts.length,
     urgent:  hasUrgent,
-    report:  { activeCount, digestsToday, trialEndToday, newTrialsToday, conversionsToday, bounceRate, failures: failures?.length ?? 0 },
+    report:  { activeCount, trialingCount, totalSubscribers, monthlyDigestsToday, signupDigestsToday, trialEndToday, newTrialsToday, conversionsToday, bounceRate, failures: failures?.length ?? 0 },
   }), {
     status:  200,
     headers: { ...CORS, 'Content-Type': 'application/json' },
