@@ -1265,7 +1265,7 @@ button { font: inherit; cursor: pointer; }
   <p style="font-family:Arial,sans-serif;font-size:14px;color:#6B7280;margin:0;max-width:320px;line-height:1.6">Verification links expire after 24 hours. Request a new one and you'll be all set.</p>
   <button onclick="resendFromExpired()" id="expired-resend-btn" style="margin-top:8px;background:#6E4ED6;color:#fff;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:13px 28px;border:none;border-radius:100px;cursor:pointer">Send a new link →</button>
   <p id="expired-resend-status" style="font-family:Arial,sans-serif;font-size:13px;color:#6B7280;margin:0;min-height:20px"></p>
-  <p style="font-family:Arial,sans-serif;font-size:13px;color:#6B7280;margin:4px 0 0">Already confirmed? <a href="scout-dashboard.html" style="color:#6E4ED6;font-weight:600">Go to dashboard →</a></p>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:#6B7280;margin:4px 0 0">Already confirmed? <a href="/scout-dashboard" style="color:#6E4ED6;font-weight:600">Go to dashboard →</a></p>
 </div>
 
 <div id="verifying-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#F7F5FF;flex-direction:column;align-items:center;justify-content:center;gap:16px">
@@ -1291,7 +1291,7 @@ button { font: inherit; cursor: pointer; }
      ═══════════════════════════════════════════════════════════ -->
 <nav class="nav" id="nav" aria-label="Main navigation">
   <div class="nav-inner">
-    <a href="index.html" class="logo" aria-label="FamilyForce — Home">
+    <a href="/" class="logo" aria-label="FamilyForce — Home">
       <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
         <path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -1307,7 +1307,7 @@ button { font: inherit; cursor: pointer; }
 <!-- Mobile menu -->
 <div class="mobile-menu" id="mobile-menu" role="dialog" aria-label="Navigation menu" aria-modal="true">
   <div class="mobile-menu-header">
-    <a href="index.html" class="logo" style="font-size:18px" aria-label="FamilyForce — Home">
+    <a href="/" class="logo" style="font-size:18px" aria-label="FamilyForce — Home">
       <svg width="12" height="14" viewBox="0 0 14 16" fill="none" aria-hidden="true">
         <path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
@@ -1645,10 +1645,10 @@ button { font: inherit; cursor: pointer; }
         <button class="step-btn-primary" id="pay-submit-btn" onclick="submitPayment()">
           Start free trial →
         </button>
-        <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">Still not sure? <a href="dashboard.html" style="color:var(--terra)">Check out the free library first →</a></p>
+        <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">Still not sure? <a href="/scout-dashboard" style="color:var(--terra)">Check out the free library first →</a></p>
         <p class="payment-terms">
-          By continuing, you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>.
-          You'll be charged $49.99 after your 7-day free trial. Not satisfied within 30 days of billing? <a href="contact.html">Full refund, no questions.</a>
+          By continuing, you agree to our <a href="/terms">Terms</a> and <a href="/privacy">Privacy Policy</a>.
+          You'll be charged $49.99 after your 7-day free trial. Not satisfied within 30 days of billing? <a href="/contact">Full refund, no questions.</a>
         </p>
       </div>
     </div>
@@ -1685,7 +1685,7 @@ button { font: inherit; cursor: pointer; }
       <span style="font-family:var(--sans);font-size:16px;font-weight:700;color:rgba(255,255,255,.9)">Family<span style="color:#A78BFF">Force</span></span>
     </a>
     <nav style="display:flex;gap:24px" aria-label="Footer links">
-      <a href="/about.html" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">About Us</a>
+      <a href="/about" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">About Us</a>
       <a href="https://www.getfamilyforce.com/privacy" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Privacy</a>
       <a href="https://www.getfamilyforce.com/terms"   style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Terms</a>
       <a href="https://www.getfamilyforce.com/contact" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Support</a>
