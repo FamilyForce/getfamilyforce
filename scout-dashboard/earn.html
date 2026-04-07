@@ -1020,7 +1020,7 @@ function copyGraphic(filename, cardId) {
 
   var code    = localStorage.getItem('ff_referral_code') || '';
   var refText = code ? 'getfamilyforce.com?ref=' + code : 'getfamilyforce.com';
-  var imgUrl  = '/images/' + filename;
+  var imgUrl  = '/images/' + filename + '?v=2'; // cache-bust: forces re-fetch past stale browser cache
 
   var img = new Image();
   img.onload = function() {
@@ -1138,7 +1138,7 @@ function saveGraphic(filename, cardId) {
     ctx.fillText(refText, padX, canvas.height - barH / 2);
     canvas.toBlob(function(blob) { _fallbackSave(blob, filename, cta, origText); }, 'image/png');
   };
-  img.src = '/images/' + filename;
+  img.src = '/images/' + filename + '?v=2'; // cache-bust
 }
 
 // ── Activity tables (Rewardful placeholder) ──────────────────
