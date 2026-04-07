@@ -2134,5 +2134,20 @@ if (hamburger && mobileMenu) {
 })();
 </script>
 <script src="/assets/inapp-browser.js"></script>
+<script>
+/* ── Inbound referral capture ────────────────────────────────────────────────
+   Stores ?ref=CODE from affiliate links so the code persists through to
+   sign-in.html even when the visitor lands on the homepage first.
+   sign-in.html reads scout_referral_code from localStorage for attribution.
+   ───────────────────────────────────────────────────────────────────────── */
+(function() {
+  try {
+    var ref = new URLSearchParams(window.location.search).get('ref');
+    if (ref && /^[A-Z0-9]{2,10}-[A-Z0-9]{3,6}$/i.test(ref)) {
+      localStorage.setItem('scout_referral_code', ref.toUpperCase());
+    }
+  } catch(e) {}
+})();
+</script>
 </body>
 </html>
