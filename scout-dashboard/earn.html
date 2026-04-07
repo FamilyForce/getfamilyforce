@@ -701,15 +701,11 @@ There's a free trial if you want to try it: [YOUR LINK]
             </div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
-            <a href="/images/familyforce-logo-purple.svg" download="familyforce-logo-light.svg" class="earn-btn earn-btn-ghost" style="font-size:12px;padding:8px 14px">
-              ↓ Logo SVG (light)
-            </a>
-            <a href="/images/familyforce-logo-white.svg" download="familyforce-logo-dark.svg" class="earn-btn earn-btn-ghost" style="font-size:12px;padding:8px 14px">
-              ↓ Logo SVG (dark)
-            </a>
-            <a href="/images/familyforce-logo-purple.png" download="familyforce-logo.png" class="earn-btn earn-btn-ghost" style="font-size:12px;padding:8px 14px">
-              ↓ Logo PNG
-            </a>
+            <button onclick="copyLogo('familyforce-logo-purple.png','logo-light')" id="gc-logo-light" class="earn-btn earn-btn-ghost" style="font-size:12px;padding:8px 14px">📋 Copy logo (light)</button>
+            <button onclick="copyLogo('familyforce-logo-white.png','logo-dark')"   id="gc-logo-dark"  class="earn-btn earn-btn-ghost" style="font-size:12px;padding:8px 14px">📋 Copy logo (dark)</button>
+            <a href="/images/familyforce-logo-purple.svg" download="familyforce-logo-light.svg" class="earn-btn earn-btn-ghost" style="font-size:12px;padding:8px 14px">↓ SVG (light)</a>
+            <a href="/images/familyforce-logo-white.svg"  download="familyforce-logo-dark.svg"  class="earn-btn earn-btn-ghost" style="font-size:12px;padding:8px 14px">↓ SVG (dark)</a>
+            <a href="/images/familyforce-logo-purple.png" download="familyforce-logo.png"        class="earn-btn earn-btn-ghost" style="font-size:12px;padding:8px 14px">↓ PNG</a>
           </div>
 
           <div class="copy-card-label">Shareable graphics</div>
@@ -1139,6 +1135,44 @@ function saveGraphic(filename, cardId) {
     canvas.toBlob(function(blob) { _fallbackSave(blob, filename, cta, origText); }, 'image/png');
   };
   img.src = '/images/' + filename + '?v=2'; // cache-bust
+}
+
+// ── Logo copy-to-clipboard ───────────────────────────────────
+function copyLogo(filename, cardId) {
+  var btn      = document.getElementById('gc-' + cardId);
+  var origText = btn ? btn.textContent.trim() : '';
+  if (btn) btn.textContent = '⏳ Loading…';
+
+  var img = new Image();
+  img.onload = function() {
+    var canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    canvas.toBlob(function(blob) {
+      if (btn) btn.textContent = origText;
+      if (_isIOS) {
+        _showIOSModal(blob, filename, btn, origText);
+        return;
+      }
+      if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+        navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+          .then(function() {
+            if (btn) btn.textContent = '✓ Copied!';
+            showToast('Logo copied to clipboard!');
+            setTimeout(function() { if (btn) btn.textContent = origText; }, 2500);
+          })
+          .catch(function() { _fallbackSave(blob, filename, btn, origText); });
+      } else {
+        _fallbackSave(blob, filename, btn, origText);
+      }
+    }, 'image/png');
+  };
+  img.onerror = function() {
+    if (btn) btn.textContent = origText;
+    showToast('Could not load logo — try again');
+  };
+  img.src = '/images/' + filename + '?v=2';
 }
 
 // ── Activity tables (Rewardful placeholder) ──────────────────
