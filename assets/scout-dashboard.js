@@ -312,7 +312,8 @@
       var days    = Math.ceil((end - now) / 86400000)
 
       // Trial already ended — hide the banner. The paywall handles the expired-trial state.
-      if (days < 0) { banner.style.display = 'none'; return }
+      // Also catches "ended earlier today": days===0 but end < now (Math.ceil rounds same-day expiry to 0).
+      if (days < 0 || (days === 0 && end < now)) { banner.style.display = 'none'; return }
 
       var dateStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
       var daysStr = days === 0 ? 'today' : days + ' day' + (days === 1 ? '' : 's')
