@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1200px; height: 628px; overflow: hidden; }
+body {
+  background: #1E1248;
+  font-family: 'Outfit', sans-serif;
+  position: relative;
+}
+.bg-chevron {
+  position: absolute;
+  right: -40px; top: -60px;
+  width: 520px; height: 748px;
+  opacity: .1;
+}
+.content {
+  position: relative;
+  z-index: 2;
+  padding: 64px 72px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-width: 760px;
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-text { font-size: 26px; font-weight: 700; color: #fff; letter-spacing: -.3px; }
+.logo-text span { color: #A78BFF; }
+.headline {
+  font-family: 'Instrument Serif', serif;
+  font-size: 86px;
+  color: #fff;
+  line-height: 1.0;
+  letter-spacing: -2px;
+}
+.headline em { font-style: italic; color: #A78BFF; }
+.sub {
+  font-size: 30px;
+  color: rgba(255,255,255,.55);
+  line-height: 1.5;
+  font-weight: 400;
+}
+.footer { display: flex; align-items: center; gap: 32px; }
+.url { font-size: 26px; font-weight: 700; color: #6E4ED6; }
+.badge {
+  background: rgba(110,78,214,.2);
+  border: 1.5px solid rgba(110,78,214,.4);
+  border-radius: 100px;
+  padding: 8px 22px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #A78BFF;
+}
+</style>
+</head>
+<body>
+<svg class="bg-chevron" viewBox="0 0 520 748" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M50 720 L260 28 L470 720" stroke="#6E4ED6" stroke-width="100" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<div class="content">
+  <div class="logo">
+    <svg width="26" height="30" viewBox="0 0 26 30" fill="none"><path d="M2 28 L13 2 L24 28" stroke="#A78BFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="logo-text">Family<span>Force</span></div>
+  </div>
+  <div>
+    <div class="headline">One email.<br><em>One month.</em></div>
+  </div>
+  <div>
+    <p class="sub">Everything your baby needs to develop right now — delivered to your inbox.</p>
+  </div>
+  <div class="footer">
+    <div class="url">getfamilyforce.com</div>
+    <div class="badge">Scout by FamilyForce</div>
+  </div>
+</div>
+</body>
+</html>
