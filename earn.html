@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Share Scout & Earn | FamilyForce Affiliate Program</title>
+<meta name="description" content="Share Scout with other parents and earn 25% of every subscription — for life. No application. Every Scout subscriber gets a link.">
+<link rel="canonical" href="https://www.getfamilyforce.com/earn">
+<meta property="og:type"        content="website">
+<meta property="og:title"       content="Share Scout & Earn | FamilyForce">
+<meta property="og:description" content="Share Scout with other parents and earn 25% of every subscription — for life. No application needed.">
+<meta property="og:url"         content="https://www.getfamilyforce.com/earn">
+<meta property="og:image"       content="https://www.getfamilyforce.com/images/og-scout.png">
+<meta name="twitter:card"       content="summary_large_image">
+<meta name="twitter:image"      content="https://www.getfamilyforce.com/images/og-scout.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"></noscript>
+
+<style>
+/* ─── TOKENS ─── */
+:root {
+  --bg:           #FAFAFA;
+  --surface:      #FFFFFF;
+  --border:       #E5E2EC;
+  --border-light: #EDEBF2;
+  --text:         #1D1D1F;
+  --text-mid:     #5C5960;
+  --text-dim:     #8A879A;
+  --terra:        #6E4ED6;
+  --terra-dark:   #5B3CC4;
+  --terra-tint:   #F0EBFF;
+  --indigo-deep:  #1E1248;
+  --sans:         'Outfit', system-ui, sans-serif;
+  --serif:        'Instrument Serif', Georgia, serif;
+  --rx:           clamp(20px, 5vw, 64px);
+  --max:          1100px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+::selection { background: rgba(110,78,214,.15); }
+:focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; border-radius: 4px; }
+
+/* ─── NAV ─── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  background: rgba(250,250,250,.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-light);
+}
+.nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--rx);
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--text);
+  letter-spacing: -.01em;
+  flex-shrink: 0;
+}
+.logo-s { color: var(--terra); }
+.nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+.nav-links a { font-size: 14px; font-weight: 500; color: var(--text-dim); text-decoration: none; transition: color .2s; }
+.nav-links a.active { color: var(--terra); font-weight: 700; }
+@media (hover:hover) { .nav-links a:hover { color: var(--terra); } }
+.btn-nav {
+  background: var(--terra);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 100px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: background .2s, transform .2s;
+  letter-spacing: .01em;
+  white-space: nowrap;
+}
+@media (hover:hover) { .btn-nav:hover { background: var(--terra-dark); transform: translateY(-1px); } }
+@media (max-width: 900px) { .nav-links { display: none; } .btn-nav { display: none; } }
+
+/* ─── HAMBURGER ─── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform .25s, opacity .25s;
+}
+.hamburger.open span:first-child { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:last-child  { transform: translateY(-7px) rotate(-45deg); }
+@media (max-width: 900px) { .hamburger { display: flex; } }
+
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: #fff;
+  transform: translateX(100%);
+  transition: transform .3s cubic-bezier(.4,0,.2,1);
+  padding: 88px var(--rx) 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mobile-menu.open { transform: translateX(0); }
+.mobile-menu a {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-light);
+  display: block;
+}
+.mobile-menu a.active { color: var(--terra); }
+.mobile-menu .btn-mobile {
+  margin-top: 16px;
+  background: var(--terra);
+  color: #fff;
+  border-radius: 100px;
+  padding: 16px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  display: block;
+  border: none;
+}
+
+/* ─── HERO ─── */
+.hero {
+  background: var(--indigo-deep);
+  padding: calc(72px + clamp(64px, 10vw, 120px)) var(--rx) clamp(64px, 10vw, 100px);
+  text-align: center;
+}
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.4);
+  margin-bottom: 24px;
+}
+.hero-h1 {
+  font-family: var(--serif);
+  font-size: clamp(38px, 6vw, 68px);
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  margin-bottom: 20px;
+}
+.hero-h1 em { font-style: italic; color: #A78BFF; }
+.hero-sub {
+  font-size: clamp(16px, 2vw, 19px);
+  color: rgba(255,255,255,.6);
+  max-width: 600px;
+  margin: 0 auto 36px;
+  line-height: 1.7;
+}
+.hero-cta {
+  display: inline-block;
+  background: var(--terra);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 700;
+  padding: 16px 36px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background .2s, transform .2s;
+  letter-spacing: .01em;
+}
+@media (hover:hover) { .hero-cta:hover { background: var(--terra-dark); transform: translateY(-2px); } }
+.hero-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.hero-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(255,255,255,.45);
+}
+.hero-trust-dot { width: 3px; height: 3px; background: rgba(255,255,255,.2); border-radius: 50%; }
+
+/* ─── SECTION WRAPPERS ─── */
+.section {
+  padding: clamp(64px, 8vw, 100px) var(--rx);
+}
+.section-alt { background: var(--bg); }
+.section-white { background: var(--surface); }
+.section-tint { background: var(--terra-tint); }
+.inner { max-width: var(--max); margin: 0 auto; }
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 12px;
+}
+.section-h2 {
+  font-family: var(--serif);
+  font-size: clamp(28px, 4vw, 44px);
+  color: var(--text);
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  margin-bottom: 16px;
+}
+.section-h2 em { font-style: italic; color: var(--terra); }
+.section-sub {
+  font-size: 17px;
+  color: var(--text-mid);
+  max-width: 560px;
+  line-height: 1.75;
+  margin-bottom: 48px;
+}
+
+/* ─── COMMISSION TABLES ─── */
+.commission-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 48px;
+}
+@media (max-width: 700px) { .commission-grid { grid-template-columns: 1fr; } }
+.commission-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+}
+.commission-card.featured {
+  background: var(--terra);
+  border-color: var(--terra);
+}
+.commission-card-plan {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.commission-card.featured .commission-card-plan { color: rgba(255,255,255,.7); }
+.commission-card-price {
+  font-family: var(--serif);
+  font-size: 32px;
+  color: var(--text);
+  letter-spacing: -.02em;
+  margin-bottom: 4px;
+  line-height: 1.1;
+}
+.commission-card.featured .commission-card-price { color: #fff; }
+.commission-card-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.commission-card.featured .commission-card-desc { color: rgba(255,255,255,.75); }
+
+.earn-table-wrap {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.earn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+.earn-table thead th {
+  padding: 14px 20px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: var(--bg);
+  border-bottom: 1.5px solid var(--border);
+}
+.earn-table tbody td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-mid);
+}
+.earn-table tbody tr:last-child td { border-bottom: none; }
+.earn-table .earn-label { font-weight: 600; color: var(--text); }
+.earn-table .earn-amount { font-weight: 700; color: var(--terra); font-family: var(--serif); font-size: 17px; }
+.earn-table-note {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 14px;
+  line-height: 1.6;
+}
+
+/* ─── HOW IT WORKS ─── */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  counter-reset: steps;
+}
+@media (max-width: 700px) { .steps { grid-template-columns: 1fr; gap: 24px; } }
+.step {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  counter-increment: steps;
+  position: relative;
+}
+.step::before {
+  content: counter(steps, decimal-leading-zero);
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--terra);
+  margin-bottom: 14px;
+}
+.step-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+.step-desc {
+  font-size: 14px;
+  color: var(--text-mid);
+  line-height: 1.7;
+}
+
+/* ─── WHO IT'S FOR ─── */
+.avatars {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (max-width: 700px) { .avatars { grid-template-columns: 1fr; } }
+.avatar-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 20px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.avatar-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+  line-height: 1;
+  margin-top: 2px;
+}
+.avatar-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.avatar-desc {
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.65;
+}
+
+/* ─── KIT ─── */
+.kit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 36px;
+}
+@media (max-width: 700px) { .kit-grid { grid-template-columns: 1fr; } }
+.kit-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 20px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+}
+.kit-check {
+  width: 22px;
+  height: 22px;
+  background: var(--terra);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.kit-check svg { display: block; }
+.kit-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.kit-desc  { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+.kit-cta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  background: var(--terra);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background .2s, transform .2s;
+}
+@media (hover:hover) { .btn-primary:hover { background: var(--terra-dark); transform: translateY(-1px); } }
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  background: transparent;
+  color: var(--terra);
+  border: 1.5px solid var(--terra);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 13px 28px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background .2s, color .2s, transform .2s;
+}
+@media (hover:hover) { .btn-ghost:hover { background: var(--terra-tint); transform: translateY(-1px); } }
+
+/* ─── LIFETIME CALLOUT ─── */
+.lifetime-callout {
+  background: var(--indigo-deep);
+  border-radius: 24px;
+  padding: clamp(32px, 5vw, 56px);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 32px;
+  align-items: center;
+  margin-top: 48px;
+}
+@media (max-width: 700px) { .lifetime-callout { grid-template-columns: 1fr; } }
+.lifetime-callout-h {
+  font-family: var(--serif);
+  font-size: clamp(22px, 3vw, 32px);
+  color: #fff;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+.lifetime-callout-h em { color: #A78BFF; font-style: italic; }
+.lifetime-callout-p { font-size: 15px; color: rgba(255,255,255,.6); line-height: 1.7; max-width: 500px; }
+.lifetime-callout-cta {
+  display: inline-flex;
+  white-space: nowrap;
+  background: #fff;
+  color: var(--terra-dark);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background .2s, transform .2s;
+  flex-shrink: 0;
+}
+@media (hover:hover) { .lifetime-callout-cta:hover { background: var(--terra-tint); transform: translateY(-1px); } }
+
+/* ─── FAQ ─── */
+.faq-list { list-style: none; }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+.faq-item:first-child { border-top: 1px solid var(--border); }
+.faq-btn {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 20px 0;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.faq-arrow {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .25s, background .2s;
+}
+.faq-item.open .faq-arrow { transform: rotate(180deg); background: var(--terra-tint); border-color: var(--terra); }
+.faq-body {
+  display: none;
+  padding: 0 0 20px;
+  font-size: 15px;
+  color: var(--text-mid);
+  line-height: 1.75;
+  max-width: 680px;
+}
+.faq-item.open .faq-body { display: block; }
+
+/* ─── FINAL CTA ─── */
+.final {
+  background: var(--indigo-deep);
+  padding: clamp(64px, 8vw, 100px) var(--rx);
+  text-align: center;
+}
+.final-h2 {
+  font-family: var(--serif);
+  font-size: clamp(32px, 5vw, 52px);
+  color: #fff;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+  margin-bottom: 16px;
+}
+.final-h2 em { font-style: italic; color: #A78BFF; }
+.final-sub {
+  font-size: 17px;
+  color: rgba(255,255,255,.6);
+  max-width: 520px;
+  margin: 0 auto 36px;
+  line-height: 1.7;
+}
+.final-cta {
+  display: inline-block;
+  background: #fff;
+  color: var(--terra-dark);
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 700;
+  padding: 16px 36px;
+  border-radius: 100px;
+  text-decoration: none;
+  transition: background .2s, transform .2s;
+}
+@media (hover:hover) { .final-cta:hover { background: var(--terra-tint); transform: translateY(-2px); } }
+.final-note { font-size: 13px; color: rgba(255,255,255,.35); margin-top: 16px; }
+
+/* ─── FOOTER ─── */
+footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,.08); padding: 20px var(--rx); padding-bottom: max(20px, env(safe-area-inset-bottom, 0px)); }
+.footer-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.footer-disclaimer { padding: 8px 20px; text-align: center; }
+
+/* ─── REVEAL ─── */
+[data-reveal] { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+[data-reveal].visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { [data-reveal] { opacity: 1; transform: none; transition: none; } }
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav class="nav" role="navigation" aria-label="Main">
+  <div class="nav-inner">
+    <a href="/" class="logo" aria-label="FamilyForce Home">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Family<span class="logo-s">Force</span></span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="/milestones">Milestones</a></li>
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/earn" class="active">Earn</a></li>
+      <li><a href="/baby-shower-gifts">Gift Ideas</a></li>
+    </ul>
+    <a href="sign-in.html?intent=trial" class="btn-nav">Try Scout Free</a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <a href="/milestones">Milestones</a>
+  <a href="/blog">Blog</a>
+  <a href="/earn" class="active">Earn</a>
+  <a href="/baby-shower-gifts">Gift Ideas</a>
+  <a href="/scout-gift">Give as a gift 🎁</a>
+  <a href="sign-in.html?intent=trial" class="btn-mobile">Try Scout Free</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" aria-labelledby="hero-h1">
+  <div class="inner">
+    <span class="hero-eyebrow">Earn with Scout</span>
+    <h1 class="hero-h1" id="hero-h1">
+      Share Scout.<br>
+      Earn <em>25% for life.</em>
+    </h1>
+    <p class="hero-sub">
+      Whether you have 500 followers or 500,000 — every subscription you bring in pays you 25%, for as long as they stay subscribed. No application. No gatekeeping. Just sign in.
+    </p>
+    <a href="sign-in.html" class="hero-cta" id="hero-cta-btn">Get your link →</a>
+    <div class="hero-trust">
+      <div class="hero-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        No application needed
+      </div>
+      <div class="hero-trust-dot"></div>
+      <div class="hero-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        90-day cookie
+      </div>
+      <div class="hero-trust-dot"></div>
+      <div class="hero-trust-item">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Paid every month
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COMMISSION MATH ═══ -->
+<section class="section section-white" aria-labelledby="commission-h2">
+  <div class="inner">
+    <div data-reveal>
+      <p class="section-eyebrow">What you earn</p>
+      <h2 class="section-h2" id="commission-h2">Don't think in percentages.<br><em>Think in money.</em></h2>
+      <p class="section-sub">25% of every payment, for the life of the subscription. Here's what that actually looks like.</p>
+    </div>
+
+    <div class="commission-grid" data-reveal>
+      <div class="commission-card">
+        <div class="commission-card-plan">Monthly plan</div>
+        <div class="commission-card-price">$2.50<span style="font-size:16px;font-family:var(--sans);color:var(--text-dim)">/month</span></div>
+        <div class="commission-card-desc">Per active monthly subscriber, every month they stay subscribed.</div>
+      </div>
+      <div class="commission-card featured">
+        <div class="commission-card-plan">Annual plan · Most common</div>
+        <div class="commission-card-price">$12.50<span style="font-size:16px;font-family:var(--sans);color:rgba(255,255,255,.6)">/year</span></div>
+        <div class="commission-card-desc">Per annual subscriber, every year they renew.</div>
+      </div>
+      <div class="commission-card">
+        <div class="commission-card-plan">3-Year plan</div>
+        <div class="commission-card-price">$25.00<span style="font-size:16px;font-family:var(--sans);color:var(--text-dim)"> once</span></div>
+        <div class="commission-card-desc">One-time payment at purchase. Highest single-transaction earn.</div>
+      </div>
+    </div>
+
+    <div data-reveal>
+      <p style="font-size:13px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px">Earnings from one piece of content</p>
+      <div class="earn-table-wrap">
+        <table class="earn-table" aria-label="Earnings projections">
+          <thead>
+            <tr>
+              <th>Annual subscribers referred</th>
+              <th>After 1 year</th>
+              <th>After 2 years</th>
+              <th>After 3 years</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="earn-label">10 annual subscribers</td>
+              <td class="earn-amount">$125</td>
+              <td class="earn-amount">$250</td>
+              <td class="earn-amount">$375</td>
+            </tr>
+            <tr>
+              <td class="earn-label">25 annual subscribers</td>
+              <td class="earn-amount">$312</td>
+              <td class="earn-amount">$625</td>
+              <td class="earn-amount">$937</td>
+            </tr>
+            <tr>
+              <td class="earn-label">50 annual subscribers</td>
+              <td class="earn-amount">$625</td>
+              <td class="earn-amount">$1,250</td>
+              <td class="earn-amount">$1,875</td>
+            </tr>
+            <tr>
+              <td class="earn-label">100 annual subscribers</td>
+              <td class="earn-amount">$1,250</td>
+              <td class="earn-amount">$2,500</td>
+              <td class="earn-amount">$3,750</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="earn-table-note">Based on 25% of $49.99/year per annual subscriber renewing each year. Assumes subscriptions stay active. Most subscribers use Scout for 1–3 years as their child grows.</p>
+    </div>
+
+    <div class="lifetime-callout" data-reveal>
+      <div>
+        <h3 class="lifetime-callout-h">One post. <em>Years of income.</em></h3>
+        <p class="lifetime-callout-p">A parenting blogger who drives 50 annual subscribers from a single review earns $1,875 over three years — from content they wrote once. The link keeps working long after the post is published.</p>
+      </div>
+      <a href="sign-in.html" class="lifetime-callout-cta">Get your link →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="section section-alt" aria-labelledby="how-h2">
+  <div class="inner">
+    <div data-reveal>
+      <p class="section-eyebrow">How it works</p>
+      <h2 class="section-h2" id="how-h2">Three steps.<br><em>That's all.</em></h2>
+    </div>
+    <div class="steps" data-reveal>
+      <div class="step">
+        <div class="step-title">Sign in — your link is waiting</div>
+        <div class="step-desc">Every Scout account comes with a unique referral link. Sign in (or create a free account) and your link is ready instantly. No form. No waiting for approval.</div>
+      </div>
+      <div class="step">
+        <div class="step-title">Share it anywhere</div>
+        <div class="step-desc">Your newsletter. Instagram bio. A WhatsApp message to a pregnant friend. A blog post. A TikTok caption. Anywhere parents of babies and toddlers might see it.</div>
+      </div>
+      <div class="step">
+        <div class="step-title">Earn when they subscribe</div>
+        <div class="step-desc">When someone clicks your link and subscribes — monthly, annual, or 3-year — you earn 25% of every payment they make, for as long as they're subscribed.</div>
+      </div>
+    </div>
+    <div style="margin-top:40px;text-align:center" data-reveal>
+      <p style="font-size:14px;color:var(--text-dim);margin-bottom:6px">Their first payment is also discounted.</p>
+      <p style="font-size:15px;color:var(--text-mid)">Everyone who subscribes through your link gets <strong style="color:var(--text)">20% off their first payment</strong> — giving you something genuine to offer your audience.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHO IT'S FOR ═══ -->
+<section class="section section-white" aria-labelledby="who-h2">
+  <div class="inner">
+    <div data-reveal>
+      <p class="section-eyebrow">Who shares Scout</p>
+      <h2 class="section-h2" id="who-h2">If your audience includes<br><em>new or expecting parents —</em></h2>
+      <p class="section-sub" style="margin-bottom:36px">you already have everything you need.</p>
+    </div>
+    <div class="avatars" data-reveal>
+      <div class="avatar-card">
+        <div class="avatar-icon">🤱</div>
+        <div>
+          <div class="avatar-title">Postpartum doulas</div>
+          <div class="avatar-desc">You work with new families every week. Scout is the tool you can recommend to every single one of them — and earn from indefinitely.</div>
+        </div>
+      </div>
+      <div class="avatar-card">
+        <div class="avatar-icon">👩‍⚕️</div>
+        <div>
+          <div class="avatar-title">Pediatric & NICU nurses</div>
+          <div class="avatar-desc">Your audience trusts you completely on infant health. A Scout recommendation from a nurse carries weight no ad ever could.</div>
+        </div>
+      </div>
+      <div class="avatar-card">
+        <div class="avatar-icon">📱</div>
+        <div>
+          <div class="avatar-title">Parenting bloggers & influencers</div>
+          <div class="avatar-desc">One review post or newsletter mention. Your link keeps earning from it for years — every renewal, every month they stay subscribed.</div>
+        </div>
+      </div>
+      <div class="avatar-card">
+        <div class="avatar-icon">💬</div>
+        <div>
+          <div class="avatar-title">Speech & OT therapists</div>
+          <div class="avatar-desc">Milestone tracking is your world. Scout sends parents the language and motor development windows you care about most — on schedule.</div>
+        </div>
+      </div>
+      <div class="avatar-card">
+        <div class="avatar-icon">🧘</div>
+        <div>
+          <div class="avatar-title">Baby sleep consultants</div>
+          <div class="avatar-desc">Your clients are already paying attention to their baby's development. Scout is the natural next layer — and a natural recommendation from you.</div>
+        </div>
+      </div>
+      <div class="avatar-card">
+        <div class="avatar-icon">👨‍👩‍👧</div>
+        <div>
+          <div class="avatar-title">Parents who just want to help</div>
+          <div class="avatar-desc">No audience required. Your link is live from day one. If you recommend Scout to one pregnant friend and they subscribe, you earn from it. That's it.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ THE KIT ═══ -->
+<section class="section section-tint" aria-labelledby="kit-h2">
+  <div class="inner">
+    <div data-reveal>
+      <p class="section-eyebrow">The affiliate kit</p>
+      <h2 class="section-h2" id="kit-h2">We've done the work.<br><em>You just share it.</em></h2>
+      <p class="section-sub">Every active affiliate gets a complete content kit. Copy-paste ready. No blank page.</p>
+    </div>
+    <div class="kit-grid" data-reveal>
+      <div class="kit-item">
+        <div class="kit-check"><svg width="11" height="9" viewBox="0 0 11 9" fill="none" aria-hidden="true"><path d="M1 4.5l3 3 6-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <div class="kit-title">Email templates</div>
+          <div class="kit-desc">3 formats — newsletter mention, dedicated send, and re-engagement. Personalise or post as-is.</div>
+        </div>
+      </div>
+      <div class="kit-item">
+        <div class="kit-check"><svg width="11" height="9" viewBox="0 0 11 9" fill="none" aria-hidden="true"><path d="M1 4.5l3 3 6-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <div class="kit-title">Social captions</div>
+          <div class="kit-desc">Instagram, Pinterest, Facebook, and TikTok. 5 options per platform, keyword-ready.</div>
+        </div>
+      </div>
+      <div class="kit-item">
+        <div class="kit-check"><svg width="11" height="9" viewBox="0 0 11 9" fill="none" aria-hidden="true"><path d="M1 4.5l3 3 6-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <div class="kit-title">Pre-made graphics</div>
+          <div class="kit-desc">5 branded images in all platform sizes — square, portrait, Stories, Pinterest. Download and post.</div>
+        </div>
+      </div>
+      <div class="kit-item">
+        <div class="kit-check"><svg width="11" height="9" viewBox="0 0 11 9" fill="none" aria-hidden="true"><path d="M1 4.5l3 3 6-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <div class="kit-title">Sample Scout digest</div>
+          <div class="kit-desc">A real digest email, so you can show your audience exactly what they'll receive every month.</div>
+        </div>
+      </div>
+      <div class="kit-item">
+        <div class="kit-check"><svg width="11" height="9" viewBox="0 0 11 9" fill="none" aria-hidden="true"><path d="M1 4.5l3 3 6-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <div class="kit-title">Jack's story</div>
+          <div class="kit-desc">The 300-word founder narrative — why Scout exists, First Son to Second Son. Quote it, share it, or use it as your credibility anchor.</div>
+        </div>
+      </div>
+      <div class="kit-item">
+        <div class="kit-check"><svg width="11" height="9" viewBox="0 0 11 9" fill="none" aria-hidden="true"><path d="M1 4.5l3 3 6-7" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <div class="kit-title">Seasonal content calendar</div>
+          <div class="kit-desc">12 monthly content angles — one for every month of the year. Never stare at a blank caption again.</div>
+        </div>
+      </div>
+    </div>
+    <div class="kit-cta-row" data-reveal>
+      <a href="sign-in.html" class="btn-primary">Get your link and the kit →</a>
+      <a href="/earn/kit" class="btn-ghost">Preview the kit</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="section section-white" aria-labelledby="faq-h2">
+  <div class="inner" style="max-width:720px">
+    <div data-reveal>
+      <p class="section-eyebrow">Questions</p>
+      <h2 class="section-h2" id="faq-h2" style="margin-bottom:40px">Everything you need<br><em>to know.</em></h2>
+    </div>
+    <ul class="faq-list" data-reveal role="list">
+      <li class="faq-item">
+        <button class="faq-btn" aria-expanded="false">
+          How do I get my link?
+          <span class="faq-arrow" aria-hidden="true"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-body" id="faq-1">Sign in to Scout (or create a free account) and go to the Earn section in your dashboard. Your unique link is already there — ready to copy and share. No form, no waiting, no approval.</div>
+      </li>
+      <li class="faq-item">
+        <button class="faq-btn" aria-expanded="false">
+          What does "for life" mean exactly?
+          <span class="faq-arrow" aria-hidden="true"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-body" id="faq-2">It means for as long as your referral stays subscribed. Scout is designed for parents of children from birth to age 3 — most subscribers use it for 1–3 years. On a monthly plan, you earn $2.50 every month they pay. On an annual plan, you earn $12.50 every year they renew. When they cancel, the commission stops. No lifetime is truly forever — but it keeps paying far longer than most affiliate programs.</div>
+      </li>
+      <li class="faq-item">
+        <button class="faq-btn" aria-expanded="false">
+          When do I get paid?
+          <span class="faq-arrow" aria-hidden="true"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-body" id="faq-3">Payouts go out on the 15th of each month via PayPal or Wise. Minimum balance to trigger a payout is $25 — if you haven't hit $25 yet, your earnings roll over to the next month. New commissions go through a 30-day clearance period to account for refunds.</div>
+      </li>
+      <li class="faq-item">
+        <button class="faq-btn" aria-expanded="false">
+          Do I need a big audience?
+          <span class="faq-arrow" aria-hidden="true"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-body" id="faq-4">Not at all. If you recommend Scout to one pregnant friend and they subscribe annually, you earn $12.50 every year they renew. The program scales with you — a subscriber with three friends and a parenting blogger with 30,000 followers are both welcome, both earn the same rate.</div>
+      </li>
+      <li class="faq-item">
+        <button class="faq-btn" aria-expanded="false">
+          Is there anything I need to disclose to my audience?
+          <span class="faq-arrow" aria-hidden="true"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-body" id="faq-5">Yes — if you earn commission from a recommendation, FTC guidelines require you to disclose the relationship. Something like "I earn a small commission if you subscribe through my link" is sufficient and honest. Our email and caption templates include a disclosure line. We recommend being upfront — your audience will respect it.</div>
+      </li>
+      <li class="faq-item">
+        <button class="faq-btn" aria-expanded="false">
+          Is there a limit to how much I can earn?
+          <span class="faq-arrow" aria-hidden="true"><svg width="10" height="7" viewBox="0 0 10 7" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+        </button>
+        <div class="faq-body" id="faq-6">No cap, no ceiling. The more subscribers you bring in, the more you earn. There's no tier you "age out" of, no commission reduction at volume, no expiry date on your link.</div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<section class="final" aria-labelledby="final-h2">
+  <div class="inner">
+    <h2 class="final-h2" id="final-h2" data-reveal>
+      Your link is<br><em>already waiting.</em>
+    </h2>
+    <p class="final-sub" data-reveal data-d="1">Sign in to Scout and find it in the Earn section. It takes 30 seconds. Then share it with one parent who needs this.</p>
+    <a href="sign-in.html" class="final-cta" data-reveal data-d="2">Get your link →</a>
+    <p class="final-note" data-reveal data-d="3">No application. No approval. 25% for life.</p>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-inner">
+    <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none" aria-label="FamilyForce home">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-family:var(--sans);font-size:16px;font-weight:700;color:rgba(255,255,255,.9)">Family<span style="color:#A78BFF">Force</span></span>
+    </a>
+    <nav style="display:flex;gap:24px;flex-wrap:wrap" aria-label="Footer links">
+      <a href="/milestones"          style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Milestones</a>
+      <a href="/blog"                style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Blog</a>
+      <a href="/earn"                style="font-size:13px;color:rgba(255,255,255,.8);font-weight:600;text-decoration:none">Earn</a>
+      <a href="/baby-shower-gifts"   style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Gift Ideas</a>
+      <a href="/about"               style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">About</a>
+      <a href="/privacy"             style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Privacy</a>
+      <a href="/terms"               style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Terms</a>
+    </nav>
+    <span style="font-size:12px;color:rgba(255,255,255,.25)">© 2026 FamilyForce. All rights reserved.</span>
+  </div>
+  <div class="footer-disclaimer">
+    <p style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.6;margin:0">For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</p>
+  </div>
+</footer>
+
+<script>
+// ── Hamburger / mobile menu ──────────────────────────────────────
+var hamburger   = document.getElementById('hamburger-btn')
+var mobileMenu  = document.getElementById('mobile-menu')
+function toggleMenu(open) {
+  hamburger.setAttribute('aria-expanded', open)
+  hamburger.classList.toggle('open', open)
+  mobileMenu.classList.toggle('open', open)
+  document.body.style.overflow = open ? 'hidden' : ''
+}
+hamburger.addEventListener('click', function() {
+  toggleMenu(mobileMenu.classList.contains('open') ? false : true)
+})
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && mobileMenu.classList.contains('open')) toggleMenu(false)
+})
+
+// ── FAQ accordion ────────────────────────────────────────────────
+document.querySelectorAll('.faq-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var item = btn.closest('.faq-item')
+    var isOpen = item.classList.contains('open')
+    // Close all
+    document.querySelectorAll('.faq-item.open').forEach(function(i) {
+      i.classList.remove('open')
+      i.querySelector('.faq-btn').setAttribute('aria-expanded', 'false')
+    })
+    // Toggle clicked
+    if (!isOpen) {
+      item.classList.add('open')
+      btn.setAttribute('aria-expanded', 'true')
+    }
+  })
+})
+
+// ── Scroll reveal ─────────────────────────────────────────────────
+if ('IntersectionObserver' in window) {
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target) }
+    })
+  }, { threshold: 0.1 })
+  document.querySelectorAll('[data-reveal]').forEach(function(el) { io.observe(el) })
+} else {
+  document.querySelectorAll('[data-reveal]').forEach(function(el) { el.classList.add('visible') })
+}
+
+// ── Detect signed-in user → update hero CTA to go to Earn dashboard ──
+;(function() {
+  try {
+    // Check for Supabase session in localStorage
+    var keys = Object.keys(localStorage)
+    var sessionKey = keys.find(function(k) { return k.indexOf('supabase.auth.token') !== -1 || k.indexOf('sb-') !== -1 })
+    if (sessionKey) {
+      var session = JSON.parse(localStorage.getItem(sessionKey) || '{}')
+      var hasSession = !!(session && (session.access_token || (session.currentSession && session.currentSession.access_token)))
+      if (hasSession) {
+        var ctaBtn = document.getElementById('hero-cta-btn')
+        if (ctaBtn) {
+          ctaBtn.href = '/scout-dashboard/earn'
+          ctaBtn.textContent = 'Go to your Earn page →'
+        }
+      }
+    }
+  } catch(e) { /* non-critical */ }
+})()
+</script>
+</body>
+</html>
