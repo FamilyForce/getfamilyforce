@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ═══════════════════════════════════════════════════════════
+     FamilyForce Scout — Earn Tab
+     Affiliate/referral program dashboard page.
+     Stack: Vanilla HTML/CSS/JS · zero dependencies
+     ═══════════════════════════════════════════════════════════ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Earn — Scout Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260319b">
+<style>
+/* ─── PAGE-SPECIFIC STYLES ─────────────────────────────────── */
+
+/* Link card */
+.earn-link-card {
+  background: rgba(110,78,214,.06);
+  border: 1.5px solid rgba(110,78,214,.18);
+  border-radius: var(--radius-card, 14px);
+  padding: 18px 20px;
+  margin-bottom: 10px;
+}
+.earn-link-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--terra-dark, #5B3CC4);
+  margin-bottom: 6px;
+}
+.earn-link-url {
+  font-size: 13px; font-weight: 600; color: var(--text, #1D1D1F);
+  word-break: break-all; line-height: 1.5; margin-bottom: 12px;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+}
+.earn-link-url .earn-code-highlight { color: var(--terra, #6E4ED6); font-weight: 800; }
+.earn-share-row {
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.earn-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 16px; border-radius: var(--radius-pill, 100px);
+  font-family: var(--sans, 'Outfit'); font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: background .15s, color .15s, transform .1s;
+  border: none; white-space: nowrap; text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.earn-btn:active { transform: scale(.97); }
+.earn-btn-primary {
+  background: var(--terra, #6E4ED6); color: #fff;
+}
+.earn-btn-primary:hover { background: var(--terra-dark, #5B3CC4); }
+.earn-btn-primary.copied { background: #38A169; }
+.earn-btn-ghost {
+  background: var(--surface, #fff);
+  border: 1.5px solid var(--border, #E5E2EC);
+  color: var(--text-mid, #5C5960);
+}
+.earn-btn-ghost:hover { background: var(--elevated, #F4F2F9); }
+.earn-btn-wa {
+  background: #25D366; color: #fff;
+}
+.earn-btn-wa:hover { background: #1db954; }
+.earn-recipient-note {
+  font-size: 12px; color: var(--text-dim, #8A879A);
+  margin-top: 10px; line-height: 1.5;
+}
+.earn-recipient-note strong { color: var(--text-mid, #5C5960); }
+
+/* Stat grid */
+.earn-stat-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-bottom: 10px;
+}
+.earn-stat-card {
+  background: var(--surface, #fff);
+  border: 1.5px solid var(--border-light, #EDEBF2);
+  border-radius: 12px; padding: 14px 16px;
+}
+.earn-stat-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--text-dim, #8A879A); margin-bottom: 4px;
+}
+.earn-stat-value {
+  font-size: 22px; font-weight: 800; color: var(--text, #1D1D1F); line-height: 1.1;
+}
+.earn-stat-value.green  { color: #38A169; }
+.earn-stat-value.purple { color: var(--terra-dark, #5B3CC4); }
+.earn-stat-value.amber  { color: #D97706; }
+.earn-stat-sub {
+  font-size: 11px; color: var(--text-dim, #8A879A); margin-top: 3px;
+}
+.earn-payout-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--elevated, #F4F2F9);
+  border-radius: 10px; margin-bottom: 12px; gap: 12px; flex-wrap: wrap;
+}
+.earn-payout-label {
+  font-size: 10px; color: var(--text-dim); font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+}
+.earn-payout-date {
+  font-size: 14px; font-weight: 800; color: var(--text); margin-top: 2px;
+}
+.earn-payout-badge {
+  background: rgba(110,78,214,.1); color: var(--terra-dark, #5B3CC4);
+  border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 700;
+  white-space: nowrap; flex-shrink: 0;
+}
+.earn-pending-note {
+  font-size: 12px; color: var(--text-dim); line-height: 1.6;
+  padding: 10px 14px; background: var(--elevated); border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+/* Collapsible kit sections */
+.kit-section {
+  background: var(--surface, #fff);
+  border: 1.5px solid var(--border-light, #EDEBF2);
+  border-radius: var(--radius-card, 14px);
+  margin-bottom: 10px; overflow: hidden;
+}
+.kit-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; cursor: pointer; user-select: none;
+  gap: 12px;
+}
+.kit-section-header:hover { background: var(--elevated, #F4F2F9); }
+.kit-section-title {
+  font-size: 14px; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.kit-section-icon { font-size: 16px; flex-shrink: 0; }
+.kit-section-arrow {
+  font-size: 10px; color: var(--text-dim); transition: transform .2s;
+  flex-shrink: 0;
+}
+.kit-section.open .kit-section-arrow { transform: rotate(90deg); }
+.kit-section-body {
+  display: none;
+  border-top: 1.5px solid var(--border-light, #EDEBF2);
+}
+.kit-section.open .kit-section-body { display: block; }
+
+/* Copy cards inside kit */
+.copy-card {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-light, #EDEBF2);
+}
+.copy-card:last-child { border-bottom: none; }
+.copy-card-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.copy-card-text {
+  font-size: 13px; color: var(--text-mid); line-height: 1.7;
+  white-space: pre-wrap; word-break: break-word;
+  background: var(--bg, #FAFAFA); border-radius: 8px;
+  padding: 12px 14px; margin-bottom: 10px;
+  border: 1px solid var(--border-light);
+  max-height: 180px; overflow-y: auto;
+}
+.copy-card-text.expanded { max-height: none; }
+.copy-card-footer {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+}
+.btn-copy-text {
+  padding: 7px 14px;
+  background: var(--terra, #6E4ED6); color: #fff;
+  border: none; border-radius: var(--radius-pill, 100px);
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  cursor: pointer; transition: background .15s;
+  white-space: nowrap;
+}
+.btn-copy-text:hover { background: var(--terra-dark, #5B3CC4); }
+.btn-copy-text.copied { background: #38A169; }
+.btn-expand-text {
+  padding: 7px 14px;
+  background: transparent; color: var(--text-dim);
+  border: 1.5px solid var(--border, #E5E2EC);
+  border-radius: var(--radius-pill, 100px);
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  cursor: pointer; transition: background .15s;
+  white-space: nowrap;
+}
+.btn-expand-text:hover { background: var(--elevated); }
+
+/* Platform tabs inside kit */
+.platform-tabs {
+  display: flex; gap: 6px; padding: 14px 18px 0; flex-wrap: wrap;
+}
+.platform-tab {
+  padding: 6px 14px; border-radius: var(--radius-pill, 100px);
+  font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: background .15s, color .15s;
+  border: 1.5px solid var(--border, #E5E2EC);
+  color: var(--text-dim); background: var(--surface, #fff);
+  white-space: nowrap;
+}
+.platform-tab.active {
+  background: var(--terra, #6E4ED6); color: #fff; border-color: var(--terra);
+}
+.platform-content { display: none; }
+.platform-content.active { display: block; }
+
+/* Activity / referral tables */
+.earn-table-wrap {
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  border-radius: 0 0 var(--radius-card, 14px) var(--radius-card, 14px);
+}
+.earn-table {
+  width: 100%; min-width: 420px; border-collapse: collapse; font-size: 13px;
+}
+.earn-table th {
+  text-align: left; padding: 10px 18px;
+  font-size: 10px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--text-dim);
+  border-bottom: 1.5px solid var(--border-light); background: var(--bg);
+  white-space: nowrap;
+}
+.earn-table td {
+  padding: 11px 18px;
+  color: var(--text-mid);
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap; vertical-align: middle;
+}
+.earn-table tr:last-child td { border-bottom: none; }
+.earn-table td.col-name { color: var(--text); font-weight: 600; }
+.earn-table td.col-amount { font-weight: 700; color: var(--text); text-align: right; }
+.earn-table td.col-amount.earned { color: #38A169; }
+
+/* Badges */
+.badge {
+  display: inline-block; padding: 2px 9px; border-radius: 20px;
+  font-size: 10px; font-weight: 700; white-space: nowrap;
+}
+.badge.cleared    { background: #F0FFF4; color: #38A169; border: 1px solid #C6F6D5; }
+.badge.pending    { background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
+.badge.paid       { background: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
+.badge.processing { background: rgba(110,78,214,.08); color: var(--terra-dark); border: 1px solid var(--border); }
+.badge.completed  { background: #F0FFF4; color: #38A169; border: 1px solid #C6F6D5; }
+.badge.expired    { background: var(--bg); color: var(--text-dim); border: 1px solid var(--border); }
+
+/* How it works steps */
+.earn-steps { display: flex; flex-direction: column; gap: 14px; padding: 16px 18px; }
+.earn-step  { display: flex; gap: 12px; align-items: flex-start; }
+.earn-step-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(110,78,214,.1); color: var(--terra-dark);
+  font-size: 11px; font-weight: 800; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+}
+.earn-step-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.earn-step-desc  { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+
+/* Rewardful placeholder notice */
+.earn-rewardful-notice {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: #EFF6FF; border-radius: 8px;
+  margin-bottom: 12px; font-size: 12px; color: #2563EB; line-height: 1.5;
+}
+.earn-rewardful-notice svg { flex-shrink: 0; }
+
+/* Section labels */
+.earn-section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text-dim);
+  padding: 0 2px; margin: 24px 0 8px;
+}
+.earn-section-label:first-child { margin-top: 0; }
+
+/* Zero state */
+.earn-zero-state {
+  text-align: center; padding: 32px 20px 24px;
+}
+.earn-zero-state-icon { font-size: 40px; margin-bottom: 12px; }
+.earn-zero-state-title { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+.earn-zero-state-sub   { font-size: 13px; color: var(--text-dim); line-height: 1.6; max-width: 300px; margin: 0 auto; }
+
+/* Toast */
+.earn-toast {
+  position: fixed; bottom: max(24px, env(safe-area-inset-bottom, 24px));
+  left: 50%; transform: translateX(-50%) translateY(60px);
+  background: #1D1D1F; color: #fff; padding: 10px 20px;
+  border-radius: 24px; font-size: 13px; font-weight: 600;
+  transition: transform .25s ease; white-space: nowrap;
+  pointer-events: none; z-index: 9999;
+}
+.earn-toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Seasonal list */
+.seasonal-list { list-style: none; padding: 0; }
+.seasonal-item {
+  display: flex; gap: 12px; align-items: baseline;
+  padding: 9px 0; border-bottom: 1px solid var(--border-light);
+}
+.seasonal-item:last-child { border-bottom: none; }
+.seasonal-month {
+  font-size: 11px; font-weight: 700; color: var(--terra-dark);
+  width: 28px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .05em;
+}
+.seasonal-text { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+
+/* Mobile tweaks */
+@media (max-width: 480px) {
+  .earn-stat-value { font-size: 19px; }
+  .earn-table th, .earn-table td { padding: 9px 12px; }
+  .earn-link-url { font-size: 12px; }
+}
+</style>
+<script src="https://analytics.ahrefs.com/analytics.js" data-key="cEHq0DEXgToTIGshQyikjQ" async></script>
+</head>
+<body>
+
+<div class="mobile-child-header" id="mobileChildHeader">
+  <div class="mobile-child-pill" id="mobileChildName">Loading…</div>
+</div>
+
+<div class="scout-layout" id="scoutLayout">
+
+  <!-- ─── SIDEBAR ─── -->
+  <aside class="scout-sidebar">
+    <a href="/scout-dashboard" class="sidebar-logo">
+      <div class="sidebar-logo-mark"><svg viewBox="0 0 14 14"><path d="M7 1L13 5V9L7 13L1 9V5L7 1Z"/></svg></div>
+      <div>
+        <div class="sidebar-logo-name">FamilyForce</div>
+        <div class="sidebar-logo-product" id="sidebarProductLabel">Scout</div>
+      </div>
+    </a>
+    <div class="sidebar-child">
+      <div id="childSelectorWrap" style="position:relative">
+        <button class="child-selector" id="childSelectorBtn">Loading…</button>
+        <div class="child-dropdown" id="childDropdownList"></div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="/scout-dashboard"          class="sidebar-nav-item" data-nav="home"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Scout</a>
+      <a href="/scout-dashboard/library"  class="sidebar-nav-item" data-nav="library"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></span> Free Library</a>
+      <div class="sidebar-divider"></div>
+      <a href="/scout-dashboard/earn"     class="sidebar-nav-item active" data-nav="earn"><span class="nav-icon">💸</span> Earn</a>
+      <a href="/scout-dashboard/family"   class="sidebar-nav-item" data-nav="family"><span class="nav-icon">👨‍👩‍👧</span> Family Circle</a>
+      <a href="/scout-dashboard/history"  class="sidebar-nav-item" data-nav="history"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> History</a>
+      <a href="/scout-dashboard/settings" class="sidebar-nav-item" data-nav="settings"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2.5" fill="var(--bg)"/><circle cx="15" cy="12" r="2.5" fill="var(--bg)"/><circle cx="9" cy="18" r="2.5" fill="var(--bg)"/></svg></span> Settings</a>
+    </nav>
+    <div id="sidebarTrialWrap"></div>
+  </aside>
+
+  <!-- ─── MAIN ─── -->
+  <main class="scout-main">
+
+    <div class="trial-banner" id="trialBanner" style="display:none">
+      <span class="trial-banner-text"></span>
+      <a href="/scout-dashboard/settings" class="trial-banner-link">Subscribe →</a>
+      <button class="trial-banner-close">✕</button>
+    </div>
+
+    <h1 class="page-title">Earn</h1>
+    <p style="font-size:14px;color:var(--text-mid);margin-bottom:24px;margin-top:2px;line-height:1.5">
+      Share Scout with other parents. Earn 25% for the life of their subscription.
+    </p>
+
+    <!-- ── YOUR LINK ── -->
+    <p class="earn-section-label">Your referral link</p>
+
+    <div class="earn-link-card">
+      <div class="earn-link-label">Your link</div>
+      <div class="earn-link-url" id="earnLinkDisplay">
+        getfamilyforce.com?ref=<span class="earn-code-highlight" id="earnCodeHighlight">—</span>
+      </div>
+      <div class="earn-share-row">
+        <button class="earn-btn earn-btn-primary" id="copyLinkBtn" onclick="copyLink()">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="4" y="4" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 10V3a1 1 0 011-1h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Copy link
+        </button>
+        <a class="earn-btn earn-btn-wa" id="waShareBtn" href="#" onclick="shareWhatsApp(event)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.117 1.529 5.843L.057 23.75l6.099-1.598A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.641-.52-5.138-1.42L3.1 21.65l1.106-4.04A9.953 9.953 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+          WhatsApp
+        </a>
+        <button class="earn-btn earn-btn-ghost" onclick="shareSMS()">
+          💬 Text
+        </button>
+        <button class="earn-btn earn-btn-ghost" id="copyCodeBtn" onclick="copyCode()">
+          Copy code only
+        </button>
+      </div>
+      <p class="earn-recipient-note">
+        <strong>People who use your link get 20% off their first payment.</strong>
+        Clearance period: 30 days. Payout: 15th of each month. Min. balance: $25.
+      </p>
+    </div>
+
+    <!-- ── EARNINGS ── -->
+    <p class="earn-section-label">Your earnings</p>
+
+    <!-- NOTE: Stats below are placeholder until Rewardful is connected.
+         Will replace with live API data from Rewardful /referrals endpoint. -->
+    <div class="earn-stat-grid">
+      <div class="earn-stat-card">
+        <div class="earn-stat-label">Total earned</div>
+        <div class="earn-stat-value purple" id="statTotalEarned">$0.00</div>
+        <div class="earn-stat-sub">All time</div>
+      </div>
+      <div class="earn-stat-card">
+        <div class="earn-stat-label">Pending clearance</div>
+        <div class="earn-stat-value amber" id="statPending">$0.00</div>
+        <div class="earn-stat-sub">30-day return window</div>
+      </div>
+      <div class="earn-stat-card">
+        <div class="earn-stat-label">Available balance</div>
+        <div class="earn-stat-value green" id="statAvailable">$0.00</div>
+        <div class="earn-stat-sub">Ready for payout</div>
+      </div>
+      <div class="earn-stat-card">
+        <div class="earn-stat-label">Active referrals</div>
+        <div class="earn-stat-value" id="statReferrals">0</div>
+        <div class="earn-stat-sub">Paying subscribers</div>
+      </div>
+    </div>
+
+    <div class="earn-payout-row" id="payoutRow">
+      <div>
+        <div class="earn-payout-label">Next payout</div>
+        <div class="earn-payout-date" id="payoutDate">—</div>
+      </div>
+      <div class="earn-payout-badge" id="payoutBadge">—</div>
+    </div>
+
+    <div class="earn-rewardful-notice">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="#2563EB" stroke-width="1.5"/><line x1="7" y1="6" x2="7" y2="10" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/><circle cx="7" cy="4.5" r=".75" fill="#2563EB"/></svg>
+      Live earnings stats will appear here once your Rewardful account is connected. Your referral link is active now.
+    </div>
+
+    <!-- ── ACTIVITY ── -->
+    <p class="earn-section-label">Activity</p>
+
+    <div class="kit-section" id="activityReferrals">
+      <div class="kit-section-header" onclick="toggleSection('activityReferrals')">
+        <div class="kit-section-title">
+          <span class="kit-section-icon">🔗</span>
+          Recent referrals
+          <span style="background:rgba(110,78,214,.1);color:var(--terra-dark);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700" id="referralCount">0</span>
+        </div>
+        <span class="kit-section-arrow">▶</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="earn-zero-state" id="referralZeroState">
+          <div class="earn-zero-state-icon">🔗</div>
+          <div class="earn-zero-state-title">No referrals yet</div>
+          <div class="earn-zero-state-sub">Share your link and your first referral will appear here.</div>
+        </div>
+        <div class="earn-table-wrap" id="referralTableWrap" style="display:none">
+          <table class="earn-table" id="referralTable">
+            <thead>
+              <tr>
+                <th>Subscriber</th>
+                <th>Plan</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th style="text-align:right">Earned</th>
+              </tr>
+            </thead>
+            <tbody id="referralTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="kit-section" id="activityPayouts">
+      <div class="kit-section-header" onclick="toggleSection('activityPayouts')">
+        <div class="kit-section-title">
+          <span class="kit-section-icon">💳</span>
+          Payout history
+          <span style="background:rgba(110,78,214,.1);color:var(--terra-dark);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700" id="payoutCount">0</span>
+        </div>
+        <span class="kit-section-arrow">▶</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="earn-zero-state" id="payoutZeroState">
+          <div class="earn-zero-state-icon">💳</div>
+          <div class="earn-zero-state-title">No payouts yet</div>
+          <div class="earn-zero-state-sub">Once your balance reaches $25, a payout is scheduled for the 15th of the following month.</div>
+        </div>
+        <div class="earn-table-wrap" id="payoutTableWrap" style="display:none">
+          <table class="earn-table" id="payoutTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th style="text-align:right">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="payoutTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── EARN KIT ── -->
+    <p class="earn-section-label">Your earn kit</p>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;line-height:1.6">
+      Everything copy-paste ready. Grab what you need and share.
+    </p>
+
+    <!-- Jack's Story -->
+    <div class="kit-section open" id="kitStory">
+      <div class="kit-section-header" onclick="toggleSection('kitStory')">
+        <div class="kit-section-title"><span class="kit-section-icon">📖</span> Jack's story</div>
+        <span class="kit-section-arrow">▶</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="copy-card">
+          <div class="copy-card-label">
+            300-word founder narrative — use as your "why I recommend this"
+          </div>
+          <div class="copy-card-text" id="storyText">With my first son, I did everything wrong — not out of neglect, but out of not knowing what I didn't know. I'd Google milestones at 2am, panic at inconsistent results, and worry for a week about something that turned out to be completely normal. By the time I realized there was a language window I should have been nurturing, it had already closed. Not a disaster — but a missed opportunity.
+
+With my second son, I built Scout. Not because I became a better parent, but because I finally had a system. Each month, a simple email arrived: here's what's active right now, here's what to do, here's what not to worry about. One email. One calendar invite. That's it.
+
+The first time I used the tummy time guidance, he hit the milestone two weeks early. That probably would have happened anyway. But I was there for it — intentionally, not by accident.
+
+Scout doesn't make you a perfect parent. It just makes sure you're never caught off guard. Every pediatrician knows these windows exist. They just don't have time to walk every parent through each one at every appointment. That gap is exactly what Scout fills.
+
+If you have a baby or a toddler, or you know someone who does — this is the tool I wish I'd had with my first. I built it because it didn't exist. Now it does.
+
+— Jack Hartley, founder of FamilyForce</div>
+          <div class="copy-card-footer">
+            <button class="btn-copy-text" onclick="copyCardText('storyText', this)">Copy</button>
+            <button class="btn-expand-text" onclick="expandCard('storyText', this)">Show more</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email templates -->
+    <div class="kit-section open" id="kitEmail">
+      <div class="kit-section-header" onclick="toggleSection('kitEmail')">
+        <div class="kit-section-title"><span class="kit-section-icon">📧</span> Email templates</div>
+        <span class="kit-section-arrow">▶</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="copy-card">
+          <div class="copy-card-label">Newsletter mention — 2–3 sentences, drops into existing content</div>
+          <div class="copy-card-text" id="emailMention">Quick one: if you have a baby or toddler (or know someone who does), check out Scout by FamilyForce — [YOUR LINK]. It sends a monthly email tracking your child's active developmental windows — language, motor, cognitive, all of it — with simple, research-backed guidance on what to focus on. (Disclosure: I earn a small commission if you subscribe through my link.)</div>
+          <div class="copy-card-footer">
+            <button class="btn-copy-text" onclick="copyCardText('emailMention', this)">Copy</button>
+          </div>
+        </div>
+        <div class="copy-card">
+          <div class="copy-card-label">Dedicated send — full standalone email</div>
+          <div class="copy-card-text" id="emailDedicated">Subject: The one baby tool I actually use
+
+[First name],
+
+I don't recommend things often. When I do, it means I've used it, trusted it, and thought about whether it's actually right for the people I send it to.
+
+Scout by FamilyForce is that thing for me this year.
+
+Here's the simple version: every month, it sends you a short email about what's happening in your child's development right now. Not generic advice. Not a firehose of content. The specific windows that are open at your child's exact age — language, motor skills, cognitive development, social milestones — with clear guidance on what to do and what not to worry about.
+
+It also drops a calendar invite so you never forget to pay attention to the right thing at the right time.
+
+First month is free. Annual subscription is $49.99 — less than a single pediatric consultation.
+
+People who use my link get 20% off their first payment: [YOUR LINK]
+
+Worth it.
+
+[Your name]
+
+(Disclosure: I receive a commission if you subscribe through my link.)</div>
+          <div class="copy-card-footer">
+            <button class="btn-copy-text" onclick="copyCardText('emailDedicated', this)">Copy</button>
+            <button class="btn-expand-text" onclick="expandCard('emailDedicated', this)">Show more</button>
+          </div>
+        </div>
+        <div class="copy-card">
+          <div class="copy-card-label">Re-engagement — for a warm audience you've mentioned Scout to before</div>
+          <div class="copy-card-text" id="emailReengage">Hey [first name] — I mentioned Scout a while back. Wanted to follow up because I'm still using it and it's still good. If you have a little one, your link to try it free is still [YOUR LINK]. People who use it get 20% off. Worth a look.</div>
+          <div class="copy-card-footer">
+            <button class="btn-copy-text" onclick="copyCardText('emailReengage', this)">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Social captions -->
+    <div class="kit-section" id="kitSocial">
+      <div class="kit-section-header" onclick="toggleSection('kitSocial')">
+        <div class="kit-section-title"><span class="kit-section-icon">📱</span> Social captions</div>
+        <span class="kit-section-arrow">▶</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="platform-tabs" role="tablist">
+          <button class="platform-tab active" onclick="switchTab(this,'tabIG')"       role="tab" aria-selected="true">Instagram</button>
+          <button class="platform-tab"        onclick="switchTab(this,'tabFB')"       role="tab">Facebook</button>
+          <button class="platform-tab"        onclick="switchTab(this,'tabWA')"       role="tab">WhatsApp / Text</button>
+          <button class="platform-tab"        onclick="switchTab(this,'tabPinterest')" role="tab">Pinterest</button>
+          <button class="platform-tab"        onclick="switchTab(this,'tabTikTok')"   role="tab">TikTok</button>
+        </div>
+
+        <!-- Instagram -->
+        <div class="platform-content active" id="tabIG">
+          <div class="copy-card">
+            <div class="copy-card-label">Emotional story angle</div>
+            <div class="copy-card-text" id="igEmotional">Nobody told me there were specific windows where my baby's brain was most ready to learn language. Not the pediatrician. Not the books. We just… missed some of them.
+
+Now I use Scout — it sends one email a month with exactly what's active in [child's name]'s development and what to do about it. Link in bio if you have a baby or toddler. ✨
+
+(affiliate link — I earn if you subscribe, but I started using this before I was ever asked to share it)</div>
+            <div class="copy-card-footer">
+              <button class="btn-copy-text" onclick="copyCardText('igEmotional', this)">Copy</button>
+            </div>
+          </div>
+          <div class="copy-card">
+            <div class="copy-card-label">Practical angle</div>
+            <div class="copy-card-text" id="igPractical">One email a month. One calendar invite. That's the whole thing.
+
+Scout tells you what developmental windows are active for your baby right now and gives you simple, research-backed things to do. No app to open. No daily reminders. Just a monthly email that makes you feel like you've got this.
+
+Link in bio. (Heads up: affiliate link — I earn a small commission if you subscribe through my link)</div>
+            <div class="copy-card-footer">
+              <button class="btn-copy-text" onclick="copyCardText('igPractical', this)">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Facebook -->
+        <div class="platform-content" id="tabFB">
+          <div class="copy-card">
+            <div class="copy-card-label">Mom group friendly — sounds like a friend, not an ad</div>
+            <div class="copy-card-text" id="fbGroup">Has anyone else struggled with knowing what to actually focus on with their baby each month? I found something that's genuinely helped — it's called Scout and it sends one email a month with the developmental milestones that are active for your child's exact age, plus simple things to do.
+
+There's a free trial if you want to try it: [YOUR LINK]
+
+(Disclosure: I earn a small commission if you subscribe through my link, just so you know! 🙂)</div>
+            <div class="copy-card-footer">
+              <button class="btn-copy-text" onclick="copyCardText('fbGroup', this)">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- WhatsApp / Text -->
+        <div class="platform-content" id="tabWA">
+          <div class="copy-card">
+            <div class="copy-card-label">Short & personal — for a pregnant friend or new parent in your circle</div>
+            <div class="copy-card-text" id="waText">Hey — thought of you. This thing called Scout sends one email a month about what developmental milestones are active for your baby right now. Super simple, actually useful. Free to try: [YOUR LINK]</div>
+            <div class="copy-card-footer">
+              <button class="btn-copy-text" onclick="copyCardText('waText', this)">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pinterest -->
+        <div class="platform-content" id="tabPinterest">
+          <div class="copy-card">
+            <div class="copy-card-label">Keyword-rich pin description with hashtags</div>
+            <div class="copy-card-text" id="pinterestCaption">Baby milestone tracker email | Scout sends one monthly email with your child's active developmental windows — language, motor, cognitive, social — plus research-backed tips. No app, no daily reminders. Just one email a month. Free trial available. 📧 Tap to learn more.
+
+#babymilestones #newmomtips #infantdevelopment #toddlerdevelopment #parentingtips #firsttimemom #babydevelopment #childmilestones</div>
+            <div class="copy-card-footer">
+              <button class="btn-copy-text" onclick="copyCardText('pinterestCaption', this)">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TikTok -->
+        <div class="platform-content" id="tabTikTok">
+          <div class="copy-card">
+            <div class="copy-card-label">Hook-first — written for a video caption</div>
+            <div class="copy-card-text" id="tiktokCaption">POV: you finally found out there are specific brain development windows for babies and toddlers that open and close whether you know about them or not 🤯 Scout sends one email a month with exactly what's active for your child's age and what to do. Link in bio. (Affiliate link — I earn if you subscribe)</div>
+            <div class="copy-card-footer">
+              <button class="btn-copy-text" onclick="copyCardText('tiktokCaption', this)">Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seasonal angles -->
+    <div class="kit-section" id="kitSeasonal">
+      <div class="kit-section-header" onclick="toggleSection('kitSeasonal')">
+        <div class="kit-section-title"><span class="kit-section-icon">📅</span> Seasonal content angles</div>
+        <span class="kit-section-arrow">▶</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="copy-card">
+          <div class="copy-card-label">12 monthly content hooks — one per month, use as your caption angle</div>
+          <ul class="seasonal-list" style="padding:0 18px 14px">
+            <li class="seasonal-item"><span class="seasonal-month">Jan</span><span class="seasonal-text">New Year reset — "What developmental windows are open for your baby this year?"</span></li>
+            <li class="seasonal-item"><span class="seasonal-month">Feb</span><span class="seasonal-text">Valentine's — "The best thing you can give your baby this month is attention to these windows"</span></li>
+            <li class="seasonal-item"><span class="seasonal-month">Mar</span><span class="seasonal-text">Spring — "March milestones: what's opening and what's closing for your baby"</span></li>
+            <li class="seasonal-item"><span class="seasonal-month">Apr</span><span class="seasonal-text">Spring refresh — "Spring is the best time to start tracking your toddler's development"</span></li>
+            <li class="seasonal-item"><span class="seasonal-month">May</span><span class="seasonal-text">Mother's Day — "The gift every new mom actually needs (it's not a spa day)"</span></li>
+            <li class="seasonal-item"><span class="seasonal-month">Jun</span><span class="seasonal-text">Summer — "Summer with a new baby: what to focus on developmentally"</span></li>
+            <li class="seasonal-item"><span class="seasonal-month">Jul</span><span class="seasonal-text">Midyear check — "Halfway through the year: are you catching your baby's developmental windows?"</span></li>
+            <li class="seasonal-item"><span class="seasonal-month">Aug</span><span class="seasonal-text">Routine — "Back to schedule: the one tool that keeps your baby's development on track"</span></li>
+            <li class="seasonal-item"><span class="seasonal-month">Sep</span><span class="seasonal-text">New season — "September milestone check-in: what's active for your little one?"</span></li>
+            <li class="seasonal-item"><span class="seasonal-month">Oct</span><span class="seasonal-text">Colder months — "Cozy season, active development: what to focus on indoors"</span></li>
+            <li class="seasonal-item"><span class="seasonal-month">Nov</span><span class="seasonal-text">Gratitude — "Grateful for: the system that helped me not miss my baby's development windows"</span></li>
+            <li class="seasonal-item"><span class="seasonal-month">Dec</span><span class="seasonal-text">Year-end — "The best gift you gave your baby this year? Paying attention to the right things."</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick facts -->
+    <div class="kit-section" id="kitFacts">
+      <div class="kit-section-header" onclick="toggleSection('kitFacts')">
+        <div class="kit-section-title"><span class="kit-section-icon">⚡️</span> Quick facts about Scout</div>
+        <span class="kit-section-arrow">▶</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="copy-card">
+          <div class="copy-card-label">5 facts — for when your audience asks "what even is Scout?"</div>
+          <div class="copy-card-text" id="quickFacts">• Scout tracks 213 developmental milestone windows from birth to age 3
+• Every window is backed by peer-reviewed research (AAP, WHO, published studies)
+• Scout sends one email per month — not a daily app, not a notification feed
+• Subscribers also get a monthly calendar invite so the date is saved automatically
+• First month is free; annual subscription is $49.99</div>
+          <div class="copy-card-footer">
+            <button class="btn-copy-text" onclick="copyCardText('quickFacts', this)">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How it works -->
+    <div class="kit-section" id="kitHow">
+      <div class="kit-section-header" onclick="toggleSection('kitHow')">
+        <div class="kit-section-title"><span class="kit-section-icon">💡</span> How the program works</div>
+        <span class="kit-section-arrow">▶</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="earn-steps">
+          <div class="earn-step">
+            <div class="earn-step-num">1</div>
+            <div>
+              <div class="earn-step-title">Share your link</div>
+              <div class="earn-step-desc">When someone clicks your link and subscribes, they get 20% off their first payment and you're credited as the referrer. 90-day cookie window.</div>
+            </div>
+          </div>
+          <div class="earn-step">
+            <div class="earn-step-num">2</div>
+            <div>
+              <div class="earn-step-title">30-day clearance</div>
+              <div class="earn-step-desc">New commissions sit in "Pending" for 30 days to account for refunds. After 30 days they move to Available Balance.</div>
+            </div>
+          </div>
+          <div class="earn-step">
+            <div class="earn-step-num">3</div>
+            <div>
+              <div class="earn-step-title">Paid on the 15th</div>
+              <div class="earn-step-desc">When your Available Balance reaches $25, a payout is automatically scheduled for the 15th of the following month via PayPal or Wise. Recurring commissions: you earn 25% on every renewal for the life of the subscription.</div>
+            </div>
+          </div>
+        </div>
+        <div style="border-top:1.5px solid var(--border-light);padding:14px 18px">
+          <p style="font-size:12px;color:var(--text-dim);line-height:1.6">
+            Questions? Email <a href="mailto:earn@getfamilyforce.com" style="color:var(--terra-dark);font-weight:600">earn@getfamilyforce.com</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:32px"></div>
+
+  </main>
+</div>
+
+<div style="padding:12px 20px;text-align:center;border-top:1px solid rgba(0,0,0,.06);background:#FAFAFA">
+  <p style="font-size:11px;color:#9CA3AF;line-height:1.6;margin:0">For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</p>
+</div>
+
+<!-- Bottom nav (mobile) — 5 items unchanged -->
+<nav class="scout-bottom-nav">
+  <div class="bottom-nav-inner">
+    <a href="/scout-dashboard"         class="bottom-nav-item" data-nav="home"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Scout</a>
+    <a href="/scout-dashboard/library" class="bottom-nav-item" data-nav="library"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></span>Library</a>
+    <a href="/scout-dashboard/history" class="bottom-nav-item" data-nav="history"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>History</a>
+    <a href="/scout-dashboard/family"  class="bottom-nav-item" data-nav="family"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Family</a>
+    <a href="/scout-dashboard/settings" class="bottom-nav-item active" data-nav="settings"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2.5" fill="var(--bg)"/><circle cx="15" cy="12" r="2.5" fill="var(--bg)"/><circle cx="9" cy="18" r="2.5" fill="var(--bg)"/></svg></span>Settings</a>
+  </div>
+</nav>
+
+<!-- Toast -->
+<div class="earn-toast" id="earnToast"></div>
+
+<script src="/assets/scout-dashboard.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   EARN TAB — client-side logic
+   PLACEHOLDER: Stats/activity will pull from Rewardful API
+   Referral code/link pulled from localStorage (set at signup)
+   ═══════════════════════════════════════════════════════════ */
+
+// ── Referral code setup ──────────────────────────────────────
+;(function initEarnPage() {
+  var code = localStorage.getItem('ff_referral_code') || '';
+  var baseUrl = 'https://getfamilyforce.com?ref=';
+  var fullLink = baseUrl + (code || 'YOUR-CODE');
+
+  // Display
+  var linkDisplay = document.getElementById('earnLinkDisplay');
+  var codeHighlight = document.getElementById('earnCodeHighlight');
+  if (code) {
+    codeHighlight.textContent = code;
+  } else {
+    linkDisplay.innerHTML = '<span style="color:var(--text-dim);font-size:12px">Sign in to see your link</span>';
+  }
+
+  // Replace [YOUR LINK] in all kit copy cards
+  document.querySelectorAll('.copy-card-text').forEach(function(el) {
+    el.textContent = el.textContent.replace(/\[YOUR LINK\]/g, fullLink);
+  });
+
+  // Payout next-date calculation
+  var now = new Date();
+  var next15 = new Date(now.getFullYear(), now.getMonth(), 15);
+  if (now.getDate() >= 15) next15 = new Date(now.getFullYear(), now.getMonth() + 1, 15);
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dateStr = months[next15.getMonth()] + ' ' + next15.getDate() + ', ' + next15.getFullYear();
+  var daysUntil = Math.ceil((next15 - now) / 86400000);
+  document.getElementById('payoutDate').textContent = dateStr + ' · $0.00 to PayPal';
+  document.getElementById('payoutBadge').textContent = 'In ' + daysUntil + ' days';
+
+  // PLACEHOLDER: swap these with Rewardful API response when connected
+  // document.getElementById('statTotalEarned').textContent = '$' + data.total_earned.toFixed(2);
+  // document.getElementById('statPending').textContent = '$' + data.pending.toFixed(2);
+  // document.getElementById('statAvailable').textContent = '$' + data.available.toFixed(2);
+  // document.getElementById('statReferrals').textContent = data.active_referrals;
+  // renderReferrals(data.referrals);
+  // renderPayouts(data.payouts);
+})();
+
+// ── Toast ────────────────────────────────────────────────────
+function showToast(msg) {
+  var t = document.getElementById('earnToast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2200);
+}
+
+// ── Copy link / code ─────────────────────────────────────────
+function copyLink() {
+  var code = localStorage.getItem('ff_referral_code') || 'YOUR-CODE';
+  var link = 'https://getfamilyforce.com?ref=' + code;
+  _copyText(link);
+  var btn = document.getElementById('copyLinkBtn');
+  btn.textContent = '✓ Copied!';
+  btn.classList.add('copied');
+  setTimeout(function() { btn.textContent = 'Copy link'; btn.classList.remove('copied'); }, 2200);
+  showToast('Referral link copied!');
+}
+
+function copyCode() {
+  var code = localStorage.getItem('ff_referral_code') || 'YOUR-CODE';
+  _copyText(code);
+  var btn = document.getElementById('copyCodeBtn');
+  btn.textContent = '✓ Copied!';
+  setTimeout(function() { btn.textContent = 'Copy code only'; }, 2200);
+  showToast('Code copied!');
+}
+
+function _copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).catch(function() { _fallbackCopy(text); });
+  } else {
+    _fallbackCopy(text);
+  }
+}
+
+function _fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+// ── WhatsApp / SMS share ─────────────────────────────────────
+function shareWhatsApp(e) {
+  e.preventDefault();
+  var code = localStorage.getItem('ff_referral_code') || 'YOUR-CODE';
+  var link = 'https://getfamilyforce.com?ref=' + code;
+  var msg = encodeURIComponent('Hey — thought of you. Scout sends one email a month about what developmental milestones are active for your baby right now. Super simple, actually useful. Free to try: ' + link);
+  window.open('https://wa.me/?text=' + msg, '_blank');
+}
+
+function shareSMS() {
+  var code = localStorage.getItem('ff_referral_code') || 'YOUR-CODE';
+  var link = 'https://getfamilyforce.com?ref=' + code;
+  var msg = encodeURIComponent('Hey — this thing called Scout sends one email a month about what milestones are active for your baby. Actually useful. Free to try: ' + link);
+  window.location.href = 'sms:?body=' + msg;
+}
+
+// ── Kit: collapsible sections ────────────────────────────────
+function toggleSection(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('open');
+}
+
+// ── Kit: copy card text ──────────────────────────────────────
+function copyCardText(textId, btn) {
+  var el = document.getElementById(textId);
+  if (!el) return;
+  _copyText(el.textContent.trim());
+  var orig = btn.textContent;
+  btn.textContent = '✓ Copied!';
+  btn.classList.add('copied');
+  showToast('Copied to clipboard!');
+  setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 2200);
+}
+
+// ── Kit: expand collapsed copy cards ────────────────────────
+function expandCard(textId, btn) {
+  var el = document.getElementById(textId);
+  if (!el) return;
+  el.classList.toggle('expanded');
+  btn.textContent = el.classList.contains('expanded') ? 'Show less' : 'Show more';
+}
+
+// ── Social captions: platform tabs ──────────────────────────
+function switchTab(btn, contentId) {
+  var kitBody = btn.closest('.kit-section-body');
+  kitBody.querySelectorAll('.platform-tab').forEach(function(t) { t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+  kitBody.querySelectorAll('.platform-content').forEach(function(c) { c.classList.remove('active'); });
+  btn.classList.add('active');
+  btn.setAttribute('aria-selected','true');
+  document.getElementById(contentId).classList.add('active');
+}
+
+// ── Activity tables (Rewardful placeholder) ──────────────────
+// PLACEHOLDER FUNCTIONS — replace data params with real Rewardful API response
+
+var STATUS_LABEL = {
+  cleared:'Cleared', pending:'Pending', paid:'Paid Out',
+  expired:'Expired', processing:'Processing', completed:'Completed',
+};
+var STATUS_CLASS = {
+  cleared:'cleared', pending:'pending', paid:'paid',
+  expired:'expired', processing:'processing', completed:'completed',
+};
+
+function renderReferrals(referrals) {
+  var count = referrals ? referrals.length : 0;
+  document.getElementById('referralCount').textContent = count + ' referral' + (count !== 1 ? 's' : '');
+  if (!count) return;
+  document.getElementById('referralZeroState').style.display = 'none';
+  document.getElementById('referralTableWrap').style.display = 'block';
+  var tbody = document.getElementById('referralTableBody');
+  tbody.innerHTML = referrals.map(function(r) {
+    return '<tr>' +
+      '<td class="col-name">' + r.name + '</td>' +
+      '<td>' + r.plan + '</td>' +
+      '<td>' + r.date + '</td>' +
+      '<td><span class="badge ' + (STATUS_CLASS[r.status] || '') + '">' + (STATUS_LABEL[r.status] || r.status) + '</span></td>' +
+      '<td class="col-amount' + (r.earned > 0 ? ' earned' : '') + '">' + (r.earned > 0 ? '$' + r.earned.toFixed(2) : '—') + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function renderPayouts(payouts) {
+  var count = payouts ? payouts.length : 0;
+  document.getElementById('payoutCount').textContent = count + ' payout' + (count !== 1 ? 's' : '');
+  if (!count) return;
+  document.getElementById('payoutZeroState').style.display = 'none';
+  document.getElementById('payoutTableWrap').style.display = 'block';
+  var tbody = document.getElementById('payoutTableBody');
+  tbody.innerHTML = payouts.map(function(p) {
+    return '<tr>' +
+      '<td style="color:var(--text);font-weight:600">' + p.date + '</td>' +
+      '<td>' + p.method + '</td>' +
+      '<td><span class="badge ' + (STATUS_CLASS[p.status] || '') + '">' + (STATUS_LABEL[p.status] || p.status) + '</span></td>' +
+      '<td class="col-amount earned">$' + p.amount.toFixed(2) + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+// Demo: uncomment below to preview with sample data
+// renderReferrals([
+//   { name:'Alex M.',   plan:'Annual',  date:'Feb 28, 2026', status:'cleared', earned:12.50 },
+//   { name:'Sam T.',    plan:'Monthly', date:'Mar 3, 2026',  status:'pending', earned:2.50  },
+//   { name:'Priya K.',  plan:'Monthly', date:'Mar 10, 2026', status:'pending', earned:2.50  },
+// ]);
+// renderPayouts([
+//   { date:'Mar 15, 2026', amount:22.50, method:'PayPal', status:'processing' },
+//   { date:'Feb 15, 2026', amount:45.00, method:'PayPal', status:'completed'  },
+// ]);
+</script>
+</body>
+</html>
