@@ -310,8 +310,12 @@
       var end     = new Date(_sub.trial_end)
       var now     = new Date()
       var days    = Math.ceil((end - now) / 86400000)
+
+      // Trial already ended — hide the banner. The paywall handles the expired-trial state.
+      if (days < 0) { banner.style.display = 'none'; return }
+
       var dateStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-      var daysStr = days > 0 ? days + ' day' + (days === 1 ? '' : 's') : 'today'
+      var daysStr = days === 0 ? 'today' : days + ' day' + (days === 1 ? '' : 's')
 
       // Check if user dismissed within last 24h
       var dismissKey = 'scout_trial_banner_dismissed'
