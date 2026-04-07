@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1000px; height: 1500px; overflow: hidden; }
+body { background: #1E1248; font-family: 'Outfit', sans-serif; position: relative; }
+.bg-chevron { position: absolute; left: 50%; transform: translateX(-50%); top: 200px; width: 800px; height: 1300px; opacity: .07; }
+.content { position: relative; z-index: 2; padding: 80px; height: 100%; display: flex; flex-direction: column; }
+.logo { display: flex; align-items: center; gap: 10px; margin-bottom: 100px; }
+.logo-text { font-size: 32px; font-weight: 700; color: #fff; }
+.logo-text span { color: #A78BFF; }
+.eyebrow { font-size: 20px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 28px; }
+.headline { font-family: 'Instrument Serif', serif; font-size: 100px; color: #fff; line-height: 1.0; letter-spacing: -2px; margin-bottom: 36px; }
+.headline em { font-style: italic; color: #A78BFF; }
+.sub { font-size: 40px; color: rgba(255,255,255,.6); line-height: 1.55; margin-bottom: 56px; font-weight: 400; }
+.divider { width: 60px; height: 4px; background: #6E4ED6; border-radius: 2px; margin-bottom: 52px; }
+.tags { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: auto; }
+.tag { background: rgba(110,78,214,.15); border: 1px solid rgba(110,78,214,.3); border-radius: 100px; padding: 10px 22px; font-size: 26px; color: rgba(255,255,255,.6); font-weight: 500; }
+.footer { padding-top: 60px; border-top: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; justify-content: space-between; }
+.url { font-size: 30px; font-weight: 700; color: #A78BFF; }
+.badge { background: #6E4ED6; border-radius: 100px; padding: 14px 30px; font-size: 26px; font-weight: 700; color: #fff; }
+</style>
+</head>
+<body>
+<svg class="bg-chevron" viewBox="0 0 800 1300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M80 1260 L400 40 L720 1260" stroke="#6E4ED6" stroke-width="130" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<div class="content">
+  <div class="logo">
+    <svg width="30" height="35" viewBox="0 0 30 35" fill="none"><path d="M2 33 L15 2 L28 33" stroke="#A78BFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="logo-text">Family<span>Force</span></div>
+  </div>
+  <p class="eyebrow">Baby milestone tracker</p>
+  <div class="headline">Know exactly<br>what your<br>baby needs<br><em>right now.</em></div>
+  <p class="sub">One email a month. Research-backed developmental windows from birth to age 3.</p>
+  <div class="divider"></div>
+  <div class="tags">
+    <div class="tag">#babymilestones</div>
+    <div class="tag">#infantdevelopment</div>
+    <div class="tag">#newmomtips</div>
+    <div class="tag">#toddlerdevelopment</div>
+    <div class="tag">#parentingtips</div>
+    <div class="tag">#babydevelopment</div>
+  </div>
+  <div class="footer">
+    <div class="url">getfamilyforce.com</div>
+    <div class="badge">Free to try</div>
+  </div>
+</div>
+</body>
+</html>

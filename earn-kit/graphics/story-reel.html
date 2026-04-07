@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; }
+body { background: #1E1248; font-family: 'Outfit', sans-serif; position: relative; }
+.bg-chevron { position: absolute; left: 50%; transform: translateX(-50%); top: 200px; width: 900px; height: 1600px; opacity: .06; }
+.content { position: relative; z-index: 2; padding: 100px 90px; height: 100%; display: flex; flex-direction: column; }
+.logo { display: flex; align-items: center; gap: 12px; margin-bottom: 120px; }
+.logo-text { font-size: 36px; font-weight: 700; color: #fff; }
+.logo-text span { color: #A78BFF; }
+.eyebrow { font-size: 24px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 32px; }
+.headline { font-family: 'Instrument Serif', serif; font-size: 120px; color: #fff; line-height: 1.0; letter-spacing: -2px; margin-bottom: 48px; }
+.headline em { font-style: italic; color: #A78BFF; }
+.sub { font-size: 48px; color: rgba(255,255,255,.6); line-height: 1.5; margin-bottom: 64px; font-weight: 400; }
+.divider { width: 80px; height: 4px; background: #6E4ED6; border-radius: 2px; margin-bottom: 64px; }
+.list { display: flex; flex-direction: column; gap: 28px; margin-bottom: auto; }
+.list-item { display: flex; align-items: center; gap: 20px; font-size: 40px; color: rgba(255,255,255,.7); font-weight: 500; }
+.list-dot { width: 10px; height: 10px; background: #6E4ED6; border-radius: 50%; flex-shrink: 0; }
+.footer { padding-top: 80px; display: flex; align-items: center; justify-content: space-between; }
+.url { font-size: 36px; font-weight: 700; color: #A78BFF; }
+.badge { background: #6E4ED6; border-radius: 100px; padding: 16px 36px; font-size: 30px; font-weight: 700; color: #fff; }
+</style>
+</head>
+<body>
+<svg class="bg-chevron" viewBox="0 0 900 1600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M80 1540 L450 60 L820 1540" stroke="#6E4ED6" stroke-width="140" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<div class="content">
+  <div class="logo">
+    <svg width="34" height="40" viewBox="0 0 34 40" fill="none"><path d="M2 38 L17 2 L32 38" stroke="#A78BFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="logo-text">Family<span>Force</span></div>
+  </div>
+  <p class="eyebrow">Scout by FamilyForce</p>
+  <div class="headline">One email.<br><em>That's it.</em></div>
+  <p class="sub">One monthly email with your baby's active developmental windows and exactly what to do.</p>
+  <div class="divider"></div>
+  <div class="list">
+    <div class="list-item"><div class="list-dot"></div>Language development</div>
+    <div class="list-item"><div class="list-dot"></div>Motor milestones</div>
+    <div class="list-item"><div class="list-dot"></div>Cognitive windows</div>
+    <div class="list-item"><div class="list-dot"></div>Social development</div>
+    <div class="list-item"><div class="list-dot"></div>Screening reminders</div>
+  </div>
+  <div class="footer">
+    <div class="url">getfamilyforce.com</div>
+    <div class="badge">Free to try ↗</div>
+  </div>
+</div>
+</body>
+</html>

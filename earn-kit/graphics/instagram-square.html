@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1080px; overflow: hidden; }
+body {
+  background: #1E1248;
+  font-family: 'Outfit', sans-serif;
+  position: relative;
+}
+.bg-chevron {
+  position: absolute;
+  top: 0; right: -60px;
+  width: 700px; height: 1080px;
+  opacity: .07;
+}
+.content {
+  position: relative;
+  z-index: 2;
+  padding: 80px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: auto;
+}
+.logo-mark svg { display: block; }
+.logo-text { font-size: 32px; font-weight: 700; color: #fff; letter-spacing: -.5px; }
+.logo-text span { color: #A78BFF; }
+.headline {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 108px;
+  color: #fff;
+  line-height: 1.0;
+  letter-spacing: -2px;
+  margin-bottom: 40px;
+}
+.headline strong { font-style: normal; font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 96px; display: block; }
+.sub {
+  font-size: 40px;
+  color: rgba(255,255,255,.6);
+  line-height: 1.5;
+  margin-bottom: 48px;
+  font-weight: 400;
+  max-width: 680px;
+}
+.divider { width: 80px; height: 4px; background: #6E4ED6; border-radius: 2px; margin-bottom: 40px; }
+.props {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 60px;
+}
+.prop { font-size: 28px; color: rgba(255,255,255,.7); font-weight: 500; }
+.prop strong { color: #fff; font-weight: 700; }
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.url { font-size: 32px; font-weight: 700; color: #6E4ED6; letter-spacing: -.3px; }
+.badge {
+  background: #6E4ED6;
+  border-radius: 100px;
+  padding: 12px 28px;
+  font-size: 26px;
+  font-weight: 700;
+  color: #fff;
+}
+</style>
+</head>
+<body>
+<svg class="bg-chevron" viewBox="0 0 700 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M50 1040 L350 40 L650 1040" stroke="#6E4ED6" stroke-width="120" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<div class="content">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg width="32" height="36" viewBox="0 0 32 36" fill="none"><path d="M2 34 L16 2 L30 34" stroke="#A78BFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="logo-text">Family<span>Force</span></div>
+  </div>
+  <div>
+    <div class="headline">
+      <strong>One email.</strong>
+      Everything<br>your baby needs.
+    </div>
+    <p class="sub">Developmental milestone guidance, delivered once a month. Research-backed. Zero guesswork.</p>
+    <div class="divider"></div>
+    <div class="props">
+      <div class="prop"><strong>213</strong> milestone windows</div>
+      <div class="prop"><strong>Free</strong> to try</div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="url">getfamilyforce.com</div>
+    <div class="badge">Scout ↗</div>
+  </div>
+</div>
+</body>
+</html>
