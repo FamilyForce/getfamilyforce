@@ -582,14 +582,16 @@
 
     <!-- Payout setup prompt (shown in zero state when no method connected) -->
     <div id="payoutSetupWrap" style="margin-bottom:10px">
-      <div class="earn-payout-row" style="cursor:pointer" onclick="window.open(REWARDFUL_PORTAL,'_blank')">
+      <div class="earn-payout-row">
         <div>
           <div class="earn-payout-label">Payout method</div>
-          <div class="earn-payout-date" style="font-size:13px;font-weight:600;color:var(--terra-dark)">Set up via Rewardful →</div>
+          <div class="earn-payout-date" style="font-size:13px;font-weight:600;color:var(--text-mid)">Managed manually</div>
         </div>
-        <div class="earn-payout-badge">Not connected</div>
+        <div class="earn-payout-badge">Manual</div>
       </div>
-      <p style="font-size:11px;color:var(--text-dim);padding:0 2px;margin-top:4px;line-height:1.6">Connect PayPal or Wise to receive payouts. Paid on the 15th of each month when balance ≥ $25.</p>
+      <p style="font-size:11px;color:var(--text-dim);padding:0 2px;margin-top:4px;line-height:1.6">
+        You will receive an email on the 15th of the month if your balance is ≥ $25, with instructions on how to receive your payout. Check your <a href="#" onclick="window.open(REWARDFUL_PORTAL,'_blank')" style="color:var(--terra-dark);font-weight:600">Rewardful dashboard</a> for details.
+      </p>
     </div>
 
     <!-- ── EARN KIT ── -->
@@ -1102,11 +1104,11 @@ function setEarnState(clicks, data) {
     if (now.getDate() >= 15) next15 = new Date(now.getFullYear(), now.getMonth() + 1, 15);
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var daysUntil = Math.ceil((next15 - now) / 86400000);
-    var payoutMethod = data.payout_method || 'PayPal';
+    var payoutMethod = data.payout_method || 'manual'; // Default to manual
     document.getElementById('payoutDate').textContent =
       months[next15.getMonth()] + ' ' + next15.getDate() + ', ' + next15.getFullYear() +
-      ' · $' + (data.available || 0).toFixed(2) + ' via ' + payoutMethod;
-    document.getElementById('payoutBadge').textContent = 'In ' + daysUntil + ' days';
+      ' · Payout email sent';
+    document.getElementById('payoutBadge').textContent = 'Manual'; // Always manual now
 
     if (data.referrals)  renderReferrals(data.referrals);
     if (data.payouts)    renderPayouts(data.payouts);

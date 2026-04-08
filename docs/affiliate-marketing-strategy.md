@@ -66,8 +66,8 @@ A KOL who drives 50 annual subscribers from one genuine review post earns $1,875
 ### Payout
 
 - Minimum balance: $25 before payout triggers
-- Auto-payout on the 15th of each month
-- Via PayPal or Wise (Rewardful mass payout)
+- Manual payouts on the 15th of each month (via PayPal or Wise)
+- You will receive an email on the 15th of the month if you have a balance ≥ $25, with instructions on how to receive your payout.
 - 30-day clearance window on new referrals (covers refund period)
 
 The $25 minimum is important. It means dormant accounts with $0 never trigger payment processing. The vast majority of subscribers who never refer anyone cost exactly nothing to maintain as "affiliates."
