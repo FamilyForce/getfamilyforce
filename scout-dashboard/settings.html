@@ -512,6 +512,7 @@ function submitSubscribe() {
             btn.disabled = false; btn.textContent = 'Subscribe →'
             return
           }
+          if (window.rewardful) rewardful('convert', { email: user.email });
           ScoutDash.toast('You\'re subscribed. Welcome to Scout.', 'success')
           cancelStripeForm()
           window.location.reload()

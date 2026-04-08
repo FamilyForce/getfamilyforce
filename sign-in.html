@@ -3051,6 +3051,19 @@ button { font: inherit; cursor: pointer; }
 
     showStep('success');
 
+    // Rewardful conversion tracking
+    (function() {
+      var sb = window._supabaseClient;
+      if (!sb) return;
+      sb.auth.getSession().then(function(res) {
+        var session = res.data && res.data.session;
+        if (!session) return;
+        if (window.rewardful) {
+          rewardful('convert', { email: session.user.email });
+        }
+      });
+    })();
+
     // Log signup_completed event
     (function() {
       var sb = window._supabaseClient;
