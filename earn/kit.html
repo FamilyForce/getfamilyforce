@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Affiliate Kit Preview | Earn with Scout — FamilyForce</title>
+<meta name="description" content="See exactly what you get when you share Scout. Copy-paste content for email, Instagram, Pinterest, TikTok, and more. Sign up to get your personal referral link.">
+<link rel="canonical" href="https://www.getfamilyforce.com/earn/kit">
+<meta property="og:type"        content="website">
+<meta property="og:title"       content="Affiliate Kit Preview — Scout by FamilyForce">
+<meta property="og:description" content="Copy-paste content for email, Instagram, Pinterest, TikTok, and more. Sign up to get your personal referral link.">
+<meta property="og:url"         content="https://www.getfamilyforce.com/earn/kit">
+<meta property="og:image"       content="https://www.getfamilyforce.com/images/og-scout.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"></noscript>
+
+<style>
+:root {
+  --bg:           #FAFAFA;
+  --surface:      #FFFFFF;
+  --border:       #E5E2EC;
+  --border-light: #EDEBF2;
+  --elevated:     #F4F2F9;
+  --text:         #1D1D1F;
+  --text-mid:     #5C5960;
+  --text-dim:     #8A879A;
+  --terra:        #6E4ED6;
+  --terra-dark:   #5B3CC4;
+  --terra-tint:   #F0EBFF;
+  --sans:         'Outfit', system-ui, sans-serif;
+  --serif:        'Instrument Serif', Georgia, serif;
+  --rx:           clamp(16px, 4vw, 48px);
+  --max:          760px;
+  --radius-card:  14px;
+  --radius-pill:  100px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+::selection { background: rgba(110,78,214,.15); }
+:focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; border-radius: 4px; }
+
+/* ─── NAV ─── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--rx); height: 56px;
+  background: rgba(250,250,250,.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-light);
+}
+.nav-logo { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: 700; color: var(--text); }
+.nav-logo span { color: var(--terra); }
+.nav-back { font-size: 13px; font-weight: 600; color: var(--text-dim); display: flex; align-items: center; gap: 5px; transition: color .15s; }
+.nav-back:hover { color: var(--terra); }
+.nav-cta { padding: 8px 18px; background: var(--terra); color: #fff; border-radius: var(--radius-pill); font-size: 13px; font-weight: 700; transition: background .15s; white-space: nowrap; }
+.nav-cta:hover { background: var(--terra-dark); }
+
+/* ─── STICKY CTA BAR ─── */
+.cta-bar {
+  background: #1E1248; color: #fff;
+  padding: 14px var(--rx);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  flex-wrap: wrap;
+}
+.cta-bar-text { font-size: 14px; font-weight: 600; line-height: 1.4; }
+.cta-bar-text span { color: #A78BFF; }
+.cta-bar-btn { padding: 10px 22px; background: var(--terra); color: #fff; border-radius: var(--radius-pill); font-size: 13px; font-weight: 700; white-space: nowrap; transition: background .15s; flex-shrink: 0; }
+.cta-bar-btn:hover { background: #8B6EE8; }
+
+/* ─── PAGE ─── */
+.page { max-width: var(--max); margin: 0 auto; padding: 40px var(--rx) 80px; }
+.page-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--terra); margin-bottom: 8px; }
+.page-title { font-family: var(--serif); font-size: clamp(28px, 5vw, 42px); color: var(--text); line-height: 1.15; margin-bottom: 12px; }
+.page-title em { font-style: italic; color: var(--terra); }
+.page-sub { font-size: 15px; color: var(--text-mid); line-height: 1.65; margin-bottom: 36px; max-width: 560px; }
+
+/* ─── LINK PLACEHOLDER ─── */
+.link-placeholder {
+  background: rgba(110,78,214,.06);
+  border: 1.5px dashed rgba(110,78,214,.35);
+  border-radius: var(--radius-card);
+  padding: 18px 20px; margin-bottom: 28px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.link-placeholder-text { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+.link-placeholder-text strong { color: var(--terra-dark); font-family: 'SF Mono', monospace; }
+.link-placeholder-btn { padding: 9px 18px; background: var(--terra); color: #fff; border-radius: var(--radius-pill); font-size: 13px; font-weight: 700; white-space: nowrap; transition: background .15s; flex-shrink: 0; }
+.link-placeholder-btn:hover { background: var(--terra-dark); }
+
+/* ─── SECTION LABELS ─── */
+.section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--text-dim); padding: 0 2px; margin: 28px 0 8px;
+}
+.section-label:first-child { margin-top: 0; }
+
+/* ─── KIT SECTIONS ─── */
+.kit-section {
+  background: var(--surface);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-card);
+  margin-bottom: 10px; overflow: hidden;
+}
+.kit-section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; cursor: pointer; user-select: none; gap: 12px;
+}
+.kit-section-header:hover { background: var(--elevated); }
+.kit-section-title { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.kit-section-icon { font-size: 16px; flex-shrink: 0; }
+.kit-section-arrow { font-size: 10px; color: var(--text-dim); transition: transform .2s; flex-shrink: 0; }
+.kit-section.open .kit-section-arrow { transform: rotate(90deg); }
+.kit-section-body { display: none; border-top: 1.5px solid var(--border-light); }
+.kit-section.open .kit-section-body { display: block; }
+
+/* ─── COPY CARDS ─── */
+.copy-card { padding: 14px 18px; border-bottom: 1px solid var(--border-light); }
+.copy-card:last-child { border-bottom: none; }
+.copy-card-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 8px;
+}
+.copy-card-text {
+  font-size: 13px; color: var(--text-mid); line-height: 1.7; white-space: pre-wrap;
+  word-break: break-word; background: var(--bg); border-radius: 8px;
+  padding: 12px 14px; margin-bottom: 10px;
+  border: 1px solid var(--border-light);
+  max-height: 180px; overflow-y: auto;
+}
+.copy-card-text.expanded { max-height: none; }
+.copy-card-footer { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.btn-copy {
+  padding: 7px 14px; background: var(--terra); color: #fff;
+  border: none; border-radius: var(--radius-pill);
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  cursor: pointer; transition: background .15s; white-space: nowrap;
+}
+.btn-copy:hover { background: var(--terra-dark); }
+.btn-copy.copied { background: #38A169; }
+.btn-expand {
+  padding: 7px 14px; background: transparent; color: var(--text-dim);
+  border: 1.5px solid var(--border); border-radius: var(--radius-pill);
+  font-family: var(--sans); font-size: 11px; font-weight: 700;
+  cursor: pointer; transition: background .15s; white-space: nowrap;
+}
+.btn-expand:hover { background: var(--elevated); }
+
+/* ─── PLATFORM TABS ─── */
+.platform-tabs { display: flex; gap: 6px; padding: 14px 18px 0; flex-wrap: wrap; }
+.platform-tab {
+  padding: 6px 14px; border-radius: var(--radius-pill); font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: background .15s, color .15s;
+  border: 1.5px solid var(--border); color: var(--text-dim); background: var(--surface);
+}
+.platform-tab.active { background: var(--terra); color: #fff; border-color: var(--terra); }
+.platform-content { display: none; }
+.platform-content.active { display: block; }
+
+/* ─── SEASONAL ─── */
+.seasonal-list { list-style: none; padding: 0; }
+.seasonal-item { display: flex; gap: 12px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border-light); }
+.seasonal-item:last-child { border-bottom: none; }
+.seasonal-month { font-size: 11px; font-weight: 700; color: var(--terra-dark); width: 28px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .05em; }
+.seasonal-text { font-size: 13px; color: var(--text-mid); line-height: 1.5; flex: 1; }
+.btn-copy-seasonal {
+  flex-shrink: 0; padding: 4px 10px;
+  background: transparent; color: var(--terra-dark);
+  border: 1.5px solid var(--border); border-radius: var(--radius-pill);
+  font-family: var(--sans); font-size: 10px; font-weight: 700;
+  cursor: pointer; transition: background .15s; white-space: nowrap;
+}
+.btn-copy-seasonal:hover { background: rgba(110,78,214,.08); }
+.btn-copy-seasonal.copied { background: #38A169; color: #fff; border-color: #38A169; }
+
+/* ─── BRAND ASSET CARDS ─── */
+.asset-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.asset-card {
+  background: #1E1248; border: 1.5px solid rgba(110,78,214,.3);
+  border-radius: 10px; aspect-ratio: 1/1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; padding: 12px; text-align: center;
+}
+.asset-card-icon { font-size: 22px; }
+.asset-card-name { font-size: 11px; font-weight: 700; color: #fff; }
+.asset-card-hint { font-size: 10px; color: rgba(255,255,255,.4); }
+.asset-card-size { font-size: 10px; color: rgba(255,255,255,.3); }
+.asset-locked { font-size: 10px; font-weight: 700; color: #A78BFF; margin-top: 3px; }
+
+/* ─── HOW IT WORKS ─── */
+.earn-steps { display: flex; flex-direction: column; gap: 14px; padding: 16px 18px; }
+.earn-step  { display: flex; gap: 12px; align-items: flex-start; }
+.earn-step-num { width: 22px; height: 22px; border-radius: 50%; background: rgba(110,78,214,.1); color: var(--terra-dark); font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.earn-step-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+.earn-step-desc  { font-size: 12px; color: var(--text-dim); line-height: 1.55; }
+
+/* ─── FINAL CTA ─── */
+.final-cta-block {
+  background: linear-gradient(135deg, #1E1248 0%, #2D1B69 100%);
+  border-radius: 18px; padding: 36px 32px; text-align: center; margin-top: 40px;
+}
+.final-cta-block h2 { font-family: var(--serif); font-size: 26px; color: #fff; margin-bottom: 10px; line-height: 1.25; }
+.final-cta-block h2 em { font-style: italic; color: #A78BFF; }
+.final-cta-block p { font-size: 14px; color: rgba(255,255,255,.6); margin-bottom: 22px; line-height: 1.6; }
+.final-cta-block a { display: inline-block; padding: 14px 32px; background: var(--terra); color: #fff; border-radius: var(--radius-pill); font-size: 15px; font-weight: 700; transition: background .15s; }
+.final-cta-block a:hover { background: #8B6EE8; }
+
+/* ─── TOAST ─── */
+.kit-toast {
+  position: fixed; bottom: max(24px, env(safe-area-inset-bottom, 24px));
+  left: 50%; transform: translateX(-50%) translateY(60px);
+  background: #1D1D1F; color: #fff; padding: 10px 20px;
+  border-radius: 24px; font-size: 13px; font-weight: 600;
+  transition: transform .25s ease; white-space: nowrap;
+  pointer-events: none; z-index: 9999;
+}
+.kit-toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ─── FOOTER ─── */
+.page-footer { border-top: 1px solid var(--border-light); margin-top: 60px; padding: 20px var(--rx); text-align: center; }
+.page-footer p { font-size: 11px; color: var(--text-dim); }
+
+@media (max-width: 480px) {
+  .cta-bar { gap: 10px; }
+  .final-cta-block { padding: 28px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Family<span>Force</span>
+  </a>
+  <a href="/earn" class="nav-back">← Back to Earn</a>
+  <a href="/sign-in" class="nav-cta">Get your link →</a>
+</nav>
+
+<!-- CTA BAR -->
+<div class="cta-bar">
+  <div class="cta-bar-text">This is a preview. <span>Sign in to get your personal referral link</span> — every template auto-fills with it.</div>
+  <a href="/sign-in" class="cta-bar-btn">Get your link →</a>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <p class="page-eyebrow">Affiliate kit preview</p>
+  <h1 class="page-title">Everything copy-paste ready.<br><em>Nothing left to write.</em></h1>
+  <p class="page-sub">When you share Scout, you get a personal referral link and this complete kit. Every template below auto-fills with your link the moment you sign in.</p>
+
+  <!-- LINK PLACEHOLDER -->
+  <div class="link-placeholder">
+    <div class="link-placeholder-text">
+      Your link will look like: <strong>getfamilyforce.com?ref=YOUR-CODE</strong><br>
+      <span style="font-size:12px;color:var(--text-dim)">Auto-stamped on every template below once you sign in.</span>
+    </div>
+    <a href="/sign-in" class="link-placeholder-btn">Sign in to activate</a>
+  </div>
+
+  <!-- ── EARN KIT ── -->
+  <p class="section-label">Your earn kit</p>
+  <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;line-height:1.6">Everything below is yours when you sign up. Click any section to preview the content.</p>
+
+  <!-- Jack's Story -->
+  <div class="kit-section" id="kitStory">
+    <div class="kit-section-header" onclick="toggleSection('kitStory')">
+      <div class="kit-section-title"><span class="kit-section-icon">📖</span> Jack's story</div>
+      <span class="kit-section-arrow">▶</span>
+    </div>
+    <div class="kit-section-body">
+      <div class="copy-card">
+        <div class="copy-card-label">300-word founder narrative. Use as your "why I recommend this"</div>
+        <div class="copy-card-text" id="storyText">With my first son, I did everything wrong, not out of neglect, but out of not knowing what I didn't know. I'd Google milestones at 2am, panic at inconsistent results, and worry for a week about something that turned out to be completely normal. By the time I realized there was a language window I should have been nurturing, it had already closed. Not a disaster. A missed opportunity.
+
+With my second son, I built Scout. Not because I became a better parent, but because I finally had a system. Each month, a simple email arrived: here's what's active right now, here's what to do, here's what not to worry about. One email. One calendar invite. That's it.
+
+The first time I used the tummy time guidance, he hit the milestone two weeks early. That probably would have happened anyway. But I was there for it, intentionally, not by accident.
+
+Scout doesn't make you a perfect parent. It just makes sure you're never caught off guard. Every pediatrician knows these windows exist. They just don't have time to walk every parent through each one at every appointment. That gap is exactly what Scout fills.
+
+If you have a baby or a toddler, or you know someone who does: this is the tool I wish I'd had with my first. I built it because it didn't exist. Now it does.
+
+Jack Hartley, founder of FamilyForce</div>
+        <div class="copy-card-footer">
+          <button class="btn-copy" onclick="copyCardText('storyText',this)">Copy</button>
+          <button class="btn-expand" onclick="expandCard('storyText',this)">Show more</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email templates -->
+  <div class="kit-section" id="kitEmail">
+    <div class="kit-section-header" onclick="toggleSection('kitEmail')">
+      <div class="kit-section-title"><span class="kit-section-icon">📧</span> Email templates</div>
+      <span class="kit-section-arrow">▶</span>
+    </div>
+    <div class="kit-section-body">
+      <div class="copy-card">
+        <div class="copy-card-label">Newsletter mention: 2-3 sentences, drops into existing content</div>
+        <div class="copy-card-text" id="emailMention">Quick one: if you have a baby or toddler (or know someone who does), check out Scout by FamilyForce: [YOUR LINK]. It sends a monthly email tracking your child's active developmental windows (language, motor, cognitive, all of it) with simple, research-backed guidance on what to focus on. (Disclosure: I earn a small commission if you subscribe through my link.)</div>
+        <div class="copy-card-footer"><button class="btn-copy" onclick="copyCardText('emailMention',this)">Copy</button></div>
+      </div>
+      <div class="copy-card">
+        <div class="copy-card-label">Dedicated send: full standalone email</div>
+        <div class="copy-card-text" id="emailDedicated">Subject: The one baby tool I actually use
+
+[First name],
+
+I don't recommend things often. When I do, it means I've used it, trusted it, and thought about whether it's actually right for the people I send it to.
+
+Scout by FamilyForce is that thing for me this year.
+
+Here's the simple version: every month, it sends you a short email about what's happening in your child's development right now. Not generic advice. Not a firehose of content. The specific windows open at your child's exact age (language, motor skills, cognitive development, social milestones) with clear guidance on what to do and what not to worry about.
+
+It also drops a calendar invite so you never forget to pay attention to the right thing at the right time.
+
+First month is free. Annual subscription is $49.99. Less than a single pediatric consultation.
+
+People who use my link get 25% off their first payment: [YOUR LINK]
+
+Worth it.
+
+[Your name]
+
+(Disclosure: I receive a commission if you subscribe through my link.)</div>
+        <div class="copy-card-footer">
+          <button class="btn-copy" onclick="copyCardText('emailDedicated',this)">Copy</button>
+          <button class="btn-expand" onclick="expandCard('emailDedicated',this)">Show more</button>
+        </div>
+      </div>
+      <div class="copy-card">
+        <div class="copy-card-label">Re-engagement: for a warm audience you've mentioned Scout to before</div>
+        <div class="copy-card-text" id="emailReengage">Hey [first name], I mentioned Scout a while back. Wanted to follow up because I'm still using it and it's still good. If you have a little one, your link to try it free is still [YOUR LINK]. People who use it get 25% off. Worth a look.</div>
+        <div class="copy-card-footer"><button class="btn-copy" onclick="copyCardText('emailReengage',this)">Copy</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Social captions -->
+  <div class="kit-section" id="kitSocial">
+    <div class="kit-section-header" onclick="toggleSection('kitSocial')">
+      <div class="kit-section-title"><span class="kit-section-icon">📱</span> Social captions</div>
+      <span class="kit-section-arrow">▶</span>
+    </div>
+    <div class="kit-section-body">
+      <div class="platform-tabs" role="tablist">
+        <button class="platform-tab active" onclick="switchTab(this,'tabIG')"        role="tab">Instagram</button>
+        <button class="platform-tab"        onclick="switchTab(this,'tabFB')"        role="tab">Facebook</button>
+        <button class="platform-tab"        onclick="switchTab(this,'tabWA')"        role="tab">WhatsApp / Text</button>
+        <button class="platform-tab"        onclick="switchTab(this,'tabPinterest')" role="tab">Pinterest</button>
+        <button class="platform-tab"        onclick="switchTab(this,'tabTikTok')"    role="tab">TikTok</button>
+      </div>
+      <div class="platform-content active" id="tabIG">
+        <div class="copy-card">
+          <div class="copy-card-label">Emotional story angle</div>
+          <div class="copy-card-text" id="igEmotional">Nobody told me there were specific windows where my baby's brain was most ready to learn language. Not the pediatrician. Not the books. We just… missed some of them.
+
+Now I use Scout. It sends one email a month with exactly what's active in [child's name]'s development and what to do about it. Link in bio if you have a baby or toddler. ✨
+
+(affiliate link. I earn if you subscribe, but I started using this before I was ever asked to share it)</div>
+          <div class="copy-card-footer"><button class="btn-copy" onclick="copyCardText('igEmotional',this)">Copy</button></div>
+        </div>
+        <div class="copy-card">
+          <div class="copy-card-label">Practical angle</div>
+          <div class="copy-card-text" id="igPractical">One email a month. One calendar invite. That's the whole thing.
+
+Scout tells you what developmental windows are active for your baby right now and gives you simple, research-backed things to do. No app to open. No daily reminders. Just a monthly email that makes you feel like you've got this.
+
+Link in bio. (Heads up: affiliate link. I earn a small commission if you subscribe through my link)</div>
+          <div class="copy-card-footer"><button class="btn-copy" onclick="copyCardText('igPractical',this)">Copy</button></div>
+        </div>
+      </div>
+      <div class="platform-content" id="tabFB">
+        <div class="copy-card">
+          <div class="copy-card-label">Mom group friendly</div>
+          <div class="copy-card-text" id="fbGroup">Has anyone else struggled with knowing what to actually focus on with their baby each month? I found something that's genuinely helped. It's called Scout and it sends one email a month with the developmental milestones that are active for your child's exact age, plus simple things to do.
+
+There's a free trial if you want to try it: [YOUR LINK]
+
+(Disclosure: I earn a small commission if you subscribe through my link, just so you know! 🙂)</div>
+          <div class="copy-card-footer"><button class="btn-copy" onclick="copyCardText('fbGroup',this)">Copy</button></div>
+        </div>
+      </div>
+      <div class="platform-content" id="tabWA">
+        <div class="copy-card">
+          <div class="copy-card-label">Short &amp; personal</div>
+          <div class="copy-card-text" id="waText">Hey, thought of you. This thing called Scout sends one email a month about what developmental milestones are active for your baby right now. Super simple, actually useful. Free to try: [YOUR LINK]</div>
+          <div class="copy-card-footer"><button class="btn-copy" onclick="copyCardText('waText',this)">Copy</button></div>
+        </div>
+      </div>
+      <div class="platform-content" id="tabPinterest">
+        <div class="copy-card">
+          <div class="copy-card-label">Keyword-rich pin description with hashtags</div>
+          <div class="copy-card-text" id="pinterestCaption">Baby milestone tracker email | Scout sends one monthly email with your child's active developmental windows (language, motor, cognitive, social) plus research-backed tips. No app, no daily reminders. Just one email a month. Free trial available. 📧 Tap to learn more: [YOUR LINK]
+
+#babymilestones #newmomtips #infantdevelopment #toddlerdevelopment #parentingtips #firsttimemom #babydevelopment #childmilestones</div>
+          <div class="copy-card-footer"><button class="btn-copy" onclick="copyCardText('pinterestCaption',this)">Copy</button></div>
+        </div>
+      </div>
+      <div class="platform-content" id="tabTikTok">
+        <div class="copy-card">
+          <div class="copy-card-label">Hook-first: written for a video caption</div>
+          <div class="copy-card-text" id="tiktokCaption">POV: you finally found out there are specific brain development windows for babies and toddlers that open and close whether you know about them or not 🤯 Scout sends one email a month with exactly what's active for your child's age and what to do. Link in bio. (Affiliate link, I earn if you subscribe)</div>
+          <div class="copy-card-footer"><button class="btn-copy" onclick="copyCardText('tiktokCaption',this)">Copy</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Brand assets -->
+  <div class="kit-section" id="kitAssets">
+    <div class="kit-section-header" onclick="toggleSection('kitAssets')">
+      <div class="kit-section-title"><span class="kit-section-icon">🎨</span> Brand assets</div>
+      <span class="kit-section-arrow">▶</span>
+    </div>
+    <div class="kit-section-body">
+      <div class="copy-card" style="border-bottom:none">
+        <div class="copy-card-label">Logo</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;align-items:center">
+          <div style="background:var(--bg);border:1.5px solid var(--border-light);border-radius:10px;padding:16px 22px;display:flex;align-items:center;gap:10px">
+            <svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-family:var(--sans);font-size:15px;font-weight:700;color:#1D1D1F">Family<span style="color:#6E4ED6">Force</span></span>
+          </div>
+          <div style="background:#1E1248;border-radius:10px;padding:16px 22px;display:flex;align-items:center;gap:10px">
+            <svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M1 15 L7 1 L13 15" stroke="#A78BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span style="font-family:var(--sans);font-size:15px;font-weight:700;color:#fff">Family<span style="color:#A78BFF">Force</span></span>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--text-dim);margin-bottom:14px;line-height:1.6">Sign in to download logo files (SVG + PNG, light and dark).</p>
+        <div class="copy-card-label" style="margin-top:8px">Shareable graphics</div>
+        <p style="font-size:12px;color:var(--text-dim);margin-bottom:10px;line-height:1.6">Your referral link is stamped on each image automatically when you sign in.</p>
+        <div class="asset-grid">
+          <div class="asset-card">
+            <span class="asset-card-icon">📱</span>
+            <span class="asset-card-name">Instagram Square</span>
+            <span class="asset-card-hint">Feed &amp; Facebook</span>
+            <span class="asset-card-size">1080 × 1080</span>
+            <span class="asset-locked">🔒 Sign in</span>
+          </div>
+          <div class="asset-card">
+            <span class="asset-card-icon">📸</span>
+            <span class="asset-card-name">Story / Reel</span>
+            <span class="asset-card-hint">Stories &amp; Reels</span>
+            <span class="asset-card-size">1080 × 1920</span>
+            <span class="asset-locked">🔒 Sign in</span>
+          </div>
+          <div class="asset-card">
+            <span class="asset-card-icon">📌</span>
+            <span class="asset-card-name">Pinterest Pin</span>
+            <span class="asset-card-hint">Pinterest boards</span>
+            <span class="asset-card-size">1000 × 1500</span>
+            <span class="asset-locked">🔒 Sign in</span>
+          </div>
+          <div class="asset-card">
+            <span class="asset-card-icon">🌐</span>
+            <span class="asset-card-name">Blog Banner</span>
+            <span class="asset-card-hint">Blog &amp; email</span>
+            <span class="asset-card-size">1200 × 628</span>
+            <span class="asset-locked">🔒 Sign in</span>
+          </div>
+        </div>
+        <a href="/sign-in" style="display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:9px 18px;background:var(--terra);color:#fff;border-radius:var(--radius-pill);font-size:12px;font-weight:700;transition:background .15s" onmouseover="this.style.background='var(--terra-dark)'" onmouseout="this.style.background='var(--terra)'">Sign in to unlock graphics →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Seasonal angles -->
+  <div class="kit-section" id="kitSeasonal">
+    <div class="kit-section-header" onclick="toggleSection('kitSeasonal')">
+      <div class="kit-section-title"><span class="kit-section-icon">📅</span> Seasonal content angles</div>
+      <span class="kit-section-arrow">▶</span>
+    </div>
+    <div class="kit-section-body">
+      <div class="copy-card">
+        <div class="copy-card-label">12 monthly content hooks — one per month, use as your caption angle</div>
+        <ul class="seasonal-list" style="padding:0 18px 14px">
+          <li class="seasonal-item"><span class="seasonal-month">Jan</span><span class="seasonal-text" id="sJan">New Year reset: "What developmental windows are open for your baby this year?"</span><button class="btn-copy-seasonal" onclick="copySeasonal('sJan',this)">Copy</button></li>
+          <li class="seasonal-item"><span class="seasonal-month">Feb</span><span class="seasonal-text" id="sFeb">Valentine's: "The best thing you can give your baby this month is attention to these windows"</span><button class="btn-copy-seasonal" onclick="copySeasonal('sFeb',this)">Copy</button></li>
+          <li class="seasonal-item"><span class="seasonal-month">Mar</span><span class="seasonal-text" id="sMar">Spring: "March milestones, what's opening and what's closing for your baby"</span><button class="btn-copy-seasonal" onclick="copySeasonal('sMar',this)">Copy</button></li>
+          <li class="seasonal-item"><span class="seasonal-month">Apr</span><span class="seasonal-text" id="sApr">Spring refresh: "Spring is the best time to start tracking your toddler's development"</span><button class="btn-copy-seasonal" onclick="copySeasonal('sApr',this)">Copy</button></li>
+          <li class="seasonal-item"><span class="seasonal-month">May</span><span class="seasonal-text" id="sMay">Mother's Day: "The gift every new mom actually needs (it's not a spa day)"</span><button class="btn-copy-seasonal" onclick="copySeasonal('sMay',this)">Copy</button></li>
+          <li class="seasonal-item"><span class="seasonal-month">Jun</span><span class="seasonal-text" id="sJun">Summer: "Summer with a new baby, what to focus on developmentally"</span><button class="btn-copy-seasonal" onclick="copySeasonal('sJun',this)">Copy</button></li>
+          <li class="seasonal-item"><span class="seasonal-month">Jul</span><span class="seasonal-text" id="sJul">Midyear check: "Halfway through the year, are you catching your baby's developmental windows?"</span><button class="btn-copy-seasonal" onclick="copySeasonal('sJul',this)">Copy</button></li>
+          <li class="seasonal-item"><span class="seasonal-month">Aug</span><span class="seasonal-text" id="sAug">Routine: "Back to schedule, the one tool that keeps your baby's development on track"</span><button class="btn-copy-seasonal" onclick="copySeasonal('sAug',this)">Copy</button></li>
+          <li class="seasonal-item"><span class="seasonal-month">Sep</span><span class="seasonal-text" id="sSep">New season: "September milestone check-in, what's active for your little one?"</span><button class="btn-copy-seasonal" onclick="copySeasonal('sSep',this)">Copy</button></li>
+          <li class="seasonal-item"><span class="seasonal-month">Oct</span><span class="seasonal-text" id="sOct">Colder months: "Cozy season, active development, what to focus on indoors"</span><button class="btn-copy-seasonal" onclick="copySeasonal('sOct',this)">Copy</button></li>
+          <li class="seasonal-item"><span class="seasonal-month">Nov</span><span class="seasonal-text" id="sNov">Gratitude: "Grateful for the system that helped me not miss my baby's development windows"</span><button class="btn-copy-seasonal" onclick="copySeasonal('sNov',this)">Copy</button></li>
+          <li class="seasonal-item"><span class="seasonal-month">Dec</span><span class="seasonal-text" id="sDec">Year-end: "The best gift you gave your baby this year? Paying attention to the right things."</span><button class="btn-copy-seasonal" onclick="copySeasonal('sDec',this)">Copy</button></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick facts -->
+  <div class="kit-section" id="kitFacts">
+    <div class="kit-section-header" onclick="toggleSection('kitFacts')">
+      <div class="kit-section-title"><span class="kit-section-icon">⚡️</span> Quick facts about Scout</div>
+      <span class="kit-section-arrow">▶</span>
+    </div>
+    <div class="kit-section-body">
+      <div class="copy-card">
+        <div class="copy-card-label">5 facts for when your audience asks "what even is Scout?"</div>
+        <div class="copy-card-text" id="quickFacts">• Scout tracks 200+ developmental milestone windows from birth to age 3
+• Every window is backed by peer-reviewed research (AAP, WHO, published studies)
+• Scout sends one email per month — not a daily app, not a notification feed
+• Subscribers also get a monthly calendar invite so the date is saved automatically
+• First month is free; annual subscription is $49.99</div>
+        <div class="copy-card-footer"><button class="btn-copy" onclick="copyCardText('quickFacts',this)">Copy</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="kit-section" id="kitHow">
+    <div class="kit-section-header" onclick="toggleSection('kitHow')">
+      <div class="kit-section-title"><span class="kit-section-icon">💡</span> How the program works</div>
+      <span class="kit-section-arrow">▶</span>
+    </div>
+    <div class="kit-section-body">
+      <div class="earn-steps">
+        <div class="earn-step">
+          <div class="earn-step-num">1</div>
+          <div><div class="earn-step-title">Share your link</div><div class="earn-step-desc">When someone clicks your link and subscribes, they get 25% off their first payment and you're credited as the referrer. 90-day cookie window.</div></div>
+        </div>
+        <div class="earn-step">
+          <div class="earn-step-num">2</div>
+          <div><div class="earn-step-title">30-day clearance</div><div class="earn-step-desc">New commissions sit in "Pending" for 30 days to account for refunds. After 30 days they move to Available Balance.</div></div>
+        </div>
+        <div class="earn-step">
+          <div class="earn-step-num">3</div>
+          <div><div class="earn-step-title">Paid on the 15th</div><div class="earn-step-desc">When your balance reaches $25, a payout is scheduled for the 15th of the following month via PayPal or Wise. You earn 25% on every renewal for the life of the subscription.</div></div>
+        </div>
+      </div>
+      <div style="border-top:1.5px solid var(--border-light);padding:14px 18px">
+        <p style="font-size:12px;color:var(--text-dim);line-height:1.6">Questions? Email <a href="mailto:hello@getfamilyforce.com" style="color:var(--terra-dark);font-weight:600">hello@getfamilyforce.com</a></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FINAL CTA -->
+  <div class="final-cta-block">
+    <h2>Ready to start earning?<br><em>Your link takes 30 seconds.</em></h2>
+    <p>Sign in or create your free account. Your referral link is generated automatically and every template above fills in with it.</p>
+    <a href="/sign-in">Get your link →</a>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <p>For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</p>
+</footer>
+
+<!-- TOAST -->
+<div class="kit-toast" id="kitToast"></div>
+
+<script>
+function showToast(msg) {
+  var t = document.getElementById('kitToast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 2200);
+}
+
+function toggleSection(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function copyCardText(textId, btn) {
+  var el = document.getElementById(textId);
+  if (!el) return;
+  var text = el.textContent.trim();
+  // Replace [YOUR LINK] placeholder with sign-in prompt
+  text = text.replace(/\[YOUR LINK\]/g, 'https://getfamilyforce.com?ref=YOUR-CODE');
+  _copy(text);
+  var orig = btn.textContent;
+  btn.textContent = '✓ Copied!';
+  btn.classList.add('copied');
+  showToast('Copied! Sign in to get your real link.');
+  setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 2200);
+}
+
+function expandCard(textId, btn) {
+  var el = document.getElementById(textId);
+  if (!el) return;
+  el.classList.toggle('expanded');
+  btn.textContent = el.classList.contains('expanded') ? 'Show less' : 'Show more';
+}
+
+function switchTab(btn, contentId) {
+  var body = btn.closest('.kit-section-body');
+  body.querySelectorAll('.platform-tab').forEach(function(t) { t.classList.remove('active'); });
+  body.querySelectorAll('.platform-content').forEach(function(c) { c.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById(contentId).classList.add('active');
+}
+
+function copySeasonal(id, btn) {
+  var el = document.getElementById(id);
+  var text = el ? el.textContent.trim() : '';
+  if (!text) return;
+  var orig = btn.textContent;
+  _copy(text);
+  btn.textContent = '✓';
+  btn.classList.add('copied');
+  showToast('Copied!');
+  setTimeout(function() { btn.textContent = orig; btn.classList.remove('copied'); }, 2200);
+}
+
+function _copy(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).catch(function() { _fallback(text); });
+  } else { _fallback(text); }
+}
+
+function _fallback(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+</script>
+</body>
+</html>
