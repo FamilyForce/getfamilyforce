@@ -295,7 +295,7 @@
 /* Seasonal list */
 .seasonal-list { list-style: none; padding: 0; }
 .seasonal-item {
-  display: flex; gap: 12px; align-items: baseline;
+  display: flex; gap: 12px; align-items: center;
   padding: 9px 0; border-bottom: 1px solid var(--border-light);
 }
 .seasonal-item:last-child { border-bottom: none; }
@@ -303,7 +303,17 @@
   font-size: 11px; font-weight: 700; color: var(--terra-dark);
   width: 28px; flex-shrink: 0; text-transform: uppercase; letter-spacing: .05em;
 }
-.seasonal-text { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
+.seasonal-text { font-size: 13px; color: var(--text-mid); line-height: 1.5; flex: 1; }
+.btn-copy-seasonal {
+  flex-shrink: 0; padding: 4px 10px;
+  background: transparent; color: var(--terra-dark);
+  border: 1.5px solid var(--border); border-radius: var(--radius-pill, 100px);
+  font-family: var(--sans); font-size: 10px; font-weight: 700;
+  cursor: pointer; transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+.btn-copy-seasonal:hover { background: rgba(110,78,214,.08); }
+.btn-copy-seasonal.copied { background: #38A169; color: #fff; border-color: #38A169; }
 
 /* Mobile tweaks */
 @media (max-width: 480px) {
@@ -383,9 +393,7 @@
         <button class="earn-btn earn-btn-ghost" onclick="shareSMS()">
           💬 Text
         </button>
-        <button class="earn-btn earn-btn-ghost" id="copyCodeBtn" onclick="copyCode()">
-          Copy code only
-        </button>
+
       </div>
       <p class="earn-recipient-note">
         <strong>People who use your link get 25% off their first payment.</strong>
@@ -429,76 +437,7 @@
       <div class="earn-payout-badge" id="payoutBadge">—</div>
     </div>
 
-    <div class="earn-rewardful-notice">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="6" stroke="#2563EB" stroke-width="1.5"/><line x1="7" y1="6" x2="7" y2="10" stroke="#2563EB" stroke-width="1.5" stroke-linecap="round"/><circle cx="7" cy="4.5" r=".75" fill="#2563EB"/></svg>
-      Live earnings stats will appear here once your Rewardful account is connected. Your referral link is active now.
-    </div>
-
-    <!-- ── ACTIVITY ── -->
-    <p class="earn-section-label">Activity</p>
-
-    <div class="kit-section" id="activityReferrals">
-      <div class="kit-section-header" onclick="toggleSection('activityReferrals')">
-        <div class="kit-section-title">
-          <span class="kit-section-icon">🔗</span>
-          Recent referrals
-          <span style="background:rgba(110,78,214,.1);color:var(--terra-dark);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700" id="referralCount">0</span>
-        </div>
-        <span class="kit-section-arrow">▶</span>
-      </div>
-      <div class="kit-section-body">
-        <div class="earn-zero-state" id="referralZeroState">
-          <div class="earn-zero-state-icon">🔗</div>
-          <div class="earn-zero-state-title">No referrals yet</div>
-          <div class="earn-zero-state-sub">Share your link and your first referral will appear here.</div>
-        </div>
-        <div class="earn-table-wrap" id="referralTableWrap" style="display:none">
-          <table class="earn-table" id="referralTable">
-            <thead>
-              <tr>
-                <th>Subscriber</th>
-                <th>Plan</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th style="text-align:right">Earned</th>
-              </tr>
-            </thead>
-            <tbody id="referralTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div class="kit-section" id="activityPayouts">
-      <div class="kit-section-header" onclick="toggleSection('activityPayouts')">
-        <div class="kit-section-title">
-          <span class="kit-section-icon">💳</span>
-          Payout history
-          <span style="background:rgba(110,78,214,.1);color:var(--terra-dark);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700" id="payoutCount">0</span>
-        </div>
-        <span class="kit-section-arrow">▶</span>
-      </div>
-      <div class="kit-section-body">
-        <div class="earn-zero-state" id="payoutZeroState">
-          <div class="earn-zero-state-icon">💳</div>
-          <div class="earn-zero-state-title">No payouts yet</div>
-          <div class="earn-zero-state-sub">Once your balance reaches $25, a payout is scheduled for the 15th of the following month.</div>
-        </div>
-        <div class="earn-table-wrap" id="payoutTableWrap" style="display:none">
-          <table class="earn-table" id="payoutTable">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Method</th>
-                <th>Status</th>
-                <th style="text-align:right">Amount</th>
-              </tr>
-            </thead>
-            <tbody id="payoutTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    <!-- TODO: remove comment below once Rewardful is connected -->
 
     <!-- ── EARN KIT ── -->
     <p class="earn-section-label">Your earn kit</p>
@@ -507,7 +446,7 @@
     </p>
 
     <!-- Jack's Story -->
-    <div class="kit-section open" id="kitStory">
+    <div class="kit-section" id="kitStory">
       <div class="kit-section-header" onclick="toggleSection('kitStory')">
         <div class="kit-section-title"><span class="kit-section-icon">📖</span> Jack's story</div>
         <span class="kit-section-arrow">▶</span>
@@ -537,7 +476,7 @@ Jack Hartley, founder of FamilyForce</div>
     </div>
 
     <!-- Email templates -->
-    <div class="kit-section open" id="kitEmail">
+    <div class="kit-section" id="kitEmail">
       <div class="kit-section-header" onclick="toggleSection('kitEmail')">
         <div class="kit-section-title"><span class="kit-section-icon">📧</span> Email templates</div>
         <span class="kit-section-arrow">▶</span>
@@ -659,7 +598,7 @@ There's a free trial if you want to try it: [YOUR LINK]
         <div class="platform-content" id="tabPinterest">
           <div class="copy-card">
             <div class="copy-card-label">Keyword-rich pin description with hashtags</div>
-            <div class="copy-card-text" id="pinterestCaption">Baby milestone tracker email | Scout sends one monthly email with your child's active developmental windows (language, motor, cognitive, social) plus research-backed tips. No app, no daily reminders. Just one email a month. Free trial available. 📧 Tap to learn more.
+            <div class="copy-card-text" id="pinterestCaption">Baby milestone tracker email | Scout sends one monthly email with your child's active developmental windows (language, motor, cognitive, social) plus research-backed tips. No app, no daily reminders. Just one email a month. Free trial available. 📧 Tap to learn more: [YOUR LINK]
 
 #babymilestones #newmomtips #infantdevelopment #toddlerdevelopment #parentingtips #firsttimemom #babydevelopment #childmilestones</div>
             <div class="copy-card-footer">
@@ -761,18 +700,66 @@ There's a free trial if you want to try it: [YOUR LINK]
         <div class="copy-card">
           <div class="copy-card-label">12 monthly content hooks. One per month, use as your caption angle</div>
           <ul class="seasonal-list" style="padding:0 18px 14px">
-            <li class="seasonal-item"><span class="seasonal-month">Jan</span><span class="seasonal-text">New Year reset: "What developmental windows are open for your baby this year?"</span></li>
-            <li class="seasonal-item"><span class="seasonal-month">Feb</span><span class="seasonal-text">Valentine's: "The best thing you can give your baby this month is attention to these windows"</span></li>
-            <li class="seasonal-item"><span class="seasonal-month">Mar</span><span class="seasonal-text">Spring: "March milestones, what's opening and what's closing for your baby"</span></li>
-            <li class="seasonal-item"><span class="seasonal-month">Apr</span><span class="seasonal-text">Spring refresh: "Spring is the best time to start tracking your toddler's development"</span></li>
-            <li class="seasonal-item"><span class="seasonal-month">May</span><span class="seasonal-text">Mother's Day: "The gift every new mom actually needs (it's not a spa day)"</span></li>
-            <li class="seasonal-item"><span class="seasonal-month">Jun</span><span class="seasonal-text">Summer: "Summer with a new baby, what to focus on developmentally"</span></li>
-            <li class="seasonal-item"><span class="seasonal-month">Jul</span><span class="seasonal-text">Midyear check: "Halfway through the year, are you catching your baby's developmental windows?"</span></li>
-            <li class="seasonal-item"><span class="seasonal-month">Aug</span><span class="seasonal-text">Routine: "Back to schedule, the one tool that keeps your baby's development on track"</span></li>
-            <li class="seasonal-item"><span class="seasonal-month">Sep</span><span class="seasonal-text">New season: "September milestone check-in, what's active for your little one?"</span></li>
-            <li class="seasonal-item"><span class="seasonal-month">Oct</span><span class="seasonal-text">Colder months: "Cozy season, active development, what to focus on indoors"</span></li>
-            <li class="seasonal-item"><span class="seasonal-month">Nov</span><span class="seasonal-text">Gratitude: "Grateful for the system that helped me not miss my baby's development windows"</span></li>
-            <li class="seasonal-item"><span class="seasonal-month">Dec</span><span class="seasonal-text">Year-end: "The best gift you gave your baby this year? Paying attention to the right things."</span></li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">Jan</span>
+              <span class="seasonal-text" id="seasonalJan">New Year reset: "What developmental windows are open for your baby this year?"</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalJan',this)">Copy</button>
+            </li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">Feb</span>
+              <span class="seasonal-text" id="seasonalFeb">Valentine's: "The best thing you can give your baby this month is attention to these windows"</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalFeb',this)">Copy</button>
+            </li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">Mar</span>
+              <span class="seasonal-text" id="seasonalMar">Spring: "March milestones, what's opening and what's closing for your baby"</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalMar',this)">Copy</button>
+            </li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">Apr</span>
+              <span class="seasonal-text" id="seasonalApr">Spring refresh: "Spring is the best time to start tracking your toddler's development"</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalApr',this)">Copy</button>
+            </li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">May</span>
+              <span class="seasonal-text" id="seasonalMay">Mother's Day: "The gift every new mom actually needs (it's not a spa day)"</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalMay',this)">Copy</button>
+            </li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">Jun</span>
+              <span class="seasonal-text" id="seasonalJun">Summer: "Summer with a new baby, what to focus on developmentally"</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalJun',this)">Copy</button>
+            </li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">Jul</span>
+              <span class="seasonal-text" id="seasonalJul">Midyear check: "Halfway through the year, are you catching your baby's developmental windows?"</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalJul',this)">Copy</button>
+            </li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">Aug</span>
+              <span class="seasonal-text" id="seasonalAug">Routine: "Back to schedule, the one tool that keeps your baby's development on track"</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalAug',this)">Copy</button>
+            </li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">Sep</span>
+              <span class="seasonal-text" id="seasonalSep">New season: "September milestone check-in, what's active for your little one?"</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalSep',this)">Copy</button>
+            </li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">Oct</span>
+              <span class="seasonal-text" id="seasonalOct">Colder months: "Cozy season, active development, what to focus on indoors"</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalOct',this)">Copy</button>
+            </li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">Nov</span>
+              <span class="seasonal-text" id="seasonalNov">Gratitude: "Grateful for the system that helped me not miss my baby's development windows"</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalNov',this)">Copy</button>
+            </li>
+            <li class="seasonal-item">
+              <span class="seasonal-month">Dec</span>
+              <span class="seasonal-text" id="seasonalDec">Year-end: "The best gift you gave your baby this year? Paying attention to the right things."</span>
+              <button class="btn-copy-seasonal" onclick="copySeasonalText('seasonalDec',this)">Copy</button>
+            </li>
           </ul>
         </div>
       </div>
@@ -787,7 +774,7 @@ There's a free trial if you want to try it: [YOUR LINK]
       <div class="kit-section-body">
         <div class="copy-card">
           <div class="copy-card-label">5 facts for when your audience asks "what even is Scout?"</div>
-          <div class="copy-card-text" id="quickFacts">• Scout tracks 213 developmental milestone windows from birth to age 3
+          <div class="copy-card-text" id="quickFacts">• Scout tracks 200+ developmental milestone windows from birth to age 3
 • Every window is backed by peer-reviewed research (AAP, WHO, published studies)
 • Scout sends one email per month — not a daily app, not a notification feed
 • Subscribers also get a monthly calendar invite so the date is saved automatically
@@ -831,13 +818,80 @@ There's a free trial if you want to try it: [YOUR LINK]
         </div>
         <div style="border-top:1.5px solid var(--border-light);padding:14px 18px">
           <p style="font-size:12px;color:var(--text-dim);line-height:1.6">
-            Questions? Email <a href="mailto:earn@getfamilyforce.com" style="color:var(--terra-dark);font-weight:600">earn@getfamilyforce.com</a>
+            Questions? Email <a href="mailto:hello@getfamilyforce.com" style="color:var(--terra-dark);font-weight:600">hello@getfamilyforce.com</a>
           </p>
         </div>
       </div>
     </div>
 
     <div style="height:32px"></div>
+
+    <!-- ── ACTIVITY ── -->
+    <p class="earn-section-label">Activity</p>
+
+    <div class="kit-section" id="activityReferrals">
+      <div class="kit-section-header" onclick="toggleSection('activityReferrals')">
+        <div class="kit-section-title">
+          <span class="kit-section-icon">🔗</span>
+          Recent referrals
+          <span style="background:rgba(110,78,214,.1);color:var(--terra-dark);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700" id="referralCount">0</span>
+        </div>
+        <span class="kit-section-arrow">▶</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="earn-zero-state" id="referralZeroState">
+          <div class="earn-zero-state-icon">🔗</div>
+          <div class="earn-zero-state-title">No referrals yet</div>
+          <div class="earn-zero-state-sub">Share your link and your first referral will appear here.</div>
+        </div>
+        <div class="earn-table-wrap" id="referralTableWrap" style="display:none">
+          <table class="earn-table" id="referralTable">
+            <thead>
+              <tr>
+                <th>Subscriber</th>
+                <th>Plan</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th style="text-align:right">Earned</th>
+              </tr>
+            </thead>
+            <tbody id="referralTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="kit-section" id="activityPayouts">
+      <div class="kit-section-header" onclick="toggleSection('activityPayouts')">
+        <div class="kit-section-title">
+          <span class="kit-section-icon">💳</span>
+          Payout history
+          <span style="background:rgba(110,78,214,.1);color:var(--terra-dark);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:700" id="payoutCount">0</span>
+        </div>
+        <span class="kit-section-arrow">▶</span>
+      </div>
+      <div class="kit-section-body">
+        <div class="earn-zero-state" id="payoutZeroState">
+          <div class="earn-zero-state-icon">💳</div>
+          <div class="earn-zero-state-title">No payouts yet</div>
+          <div class="earn-zero-state-sub">Once your balance reaches $25, a payout is scheduled for the 15th of the following month.</div>
+        </div>
+        <div class="earn-table-wrap" id="payoutTableWrap" style="display:none">
+          <table class="earn-table" id="payoutTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th style="text-align:right">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="payoutTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
 
   </main>
 </div>
@@ -932,7 +986,7 @@ function copyCode() {
   _copyText(code);
   var btn = document.getElementById('copyCodeBtn');
   btn.textContent = '✓ Copied!';
-  setTimeout(function() { btn.textContent = 'Copy code only'; }, 2200);
+  /* copyCode button removed */
   showToast('Code copied!');
 }
 
@@ -1142,7 +1196,6 @@ function copyLogo(filename, cardId) {
   var btn      = document.getElementById('gc-' + cardId);
   var origText = btn ? btn.textContent.trim() : '';
   if (btn) btn.textContent = '⏳ Loading…';
-
   var img = new Image();
   img.onload = function() {
     var canvas = document.createElement('canvas');
@@ -1151,10 +1204,7 @@ function copyLogo(filename, cardId) {
     ctx.drawImage(img, 0, 0);
     canvas.toBlob(function(blob) {
       if (btn) btn.textContent = origText;
-      if (_isIOS) {
-        _showIOSModal(blob, filename, btn, origText);
-        return;
-      }
+      if (_isIOS) { _showIOSModal(blob, filename, btn, origText); return; }
       if (window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
         navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
           .then(function() {
@@ -1173,6 +1223,27 @@ function copyLogo(filename, cardId) {
     showToast('Could not load logo — try again');
   };
   img.src = '/images/' + filename + '?v=2';
+}
+
+// ── Copy individual seasonal text ────────────────────────────
+function copySeasonalText(elementId, btn) {
+  var el      = document.getElementById(elementId);
+  var text    = el ? el.textContent.trim() : '';
+  var origTxt = btn ? btn.textContent : '';
+  if (!text) { showToast('Nothing to copy!'); return; }
+  btn.textContent = '…';
+  navigator.clipboard.writeText(text)
+    .then(function() {
+      btn.textContent = '✓';
+      btn.classList.add('copied');
+      showToast('Copied!');
+      setTimeout(function() { btn.textContent = origTxt; btn.classList.remove('copied'); }, 2200);
+    })
+    .catch(function() {
+      _fallbackCopy(text);
+      btn.textContent = '✓';
+      setTimeout(function() { btn.textContent = origTxt; }, 2200);
+    });
 }
 
 // ── Activity tables (Rewardful placeholder) ──────────────────
