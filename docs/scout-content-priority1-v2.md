@@ -36,7 +36,7 @@ Most breastfed babies accept a bottle most easily somewhere in the first 3 to 4 
 * Don't panic if the first attempt fails; try again the next day
 
 **What not to worry about:**
-One or two rejected attempts early on don't mean this stage has typically passed. Persistence in the first few weeks almost always works.
+One or two rejected attempts early on are completely normal. Persistence in the first few weeks almost always works.
 
 **If you're past this stage:**
 Still worth trying. Use a slow-flow (Level 1) nipple, try different bottle shapes, and have your partner offer the bottle while you leave the room entirely. Some babies will accept a bottle at 5 to 6 months if you're persistent. Try for 2 to 3 weeks. Many families navigate breastfeeding without a bottle just fine.
