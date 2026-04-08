@@ -1172,6 +1172,7 @@
     if (linkEl) {
       _copyText(linkEl.textContent.trim());
       ScoutDash.toast('Link copied!');
+      _logModalEvent('postsub_modal_copy_link');
     }
   };
 
@@ -1181,29 +1182,75 @@
     var link = linkEl.textContent.trim();
     var msg = encodeURIComponent('Hey, thought of you. Scout sends one email a month about what developmental milestones are active for your baby right now. Super simple, actually useful. Free to try: ' + link);
     window.open('https://wa.me/?text=' + msg, '_blank');
+    _logModalEvent('postsub_modal_whatsapp');
   };
 
   window.skipPostSubModal = function() {
-    localStorage.setItem('ff_postsub_modal_shown', '1'); // Mark as shown
     _hideModal('postSubModal');
+    _logModalEvent('postsub_modal_skip');
   };
 
   /* ── Init logic (at the end of ScoutDash.init) ──────────────── */
-  // This will be called from within ScoutDash.init, after all other init is done
+  // This will be called from within ScoutDash._init, after all other init is done.
+  // Fix: if ff_referral_code is not in localStorage (race condition at signup),
+  // we fetch it directly from Supabase before deciding whether to show the modal.
   function _initPostSubModal() {
     var justSubscribed = sessionStorage.getItem('ff_just_subscribed') === '1';
-    var modalShown = localStorage.getItem('ff_postsub_modal_shown') === '1';
+    var modalShown     = localStorage.getItem('ff_postsub_modal_shown') === '1';
+
+    if (!justSubscribed || modalShown) return; // Nothing to do
+
+    sessionStorage.removeItem('ff_just_subscribed'); // Clear flag immediately — prevents re-show on refresh
+
     var referralCode = localStorage.getItem('ff_referral_code');
 
-    if (justSubscribed && !modalShown && referralCode) {
-      var linkEl = document.getElementById('modalReferralLink');
-      if (linkEl) {
-        linkEl.textContent = `https://getfamilyforce.com?via=${referralCode}`;
-      }
-      _showModal('postSubModal');
-      sessionStorage.removeItem('ff_just_subscribed'); // Clear flag immediately
-      localStorage.setItem('ff_postsub_modal_shown', '1'); // Set for one-time show
+    if (referralCode) {
+      // Code already in localStorage — show immediately
+      _displayPostSubModal(referralCode);
+    } else {
+      // Race condition: code not yet in localStorage — fetch from Supabase
+      var client = sb || (window._supabaseClient);
+      if (!client) return;
+      client.auth.getUser().then(function(res) {
+        if (res.error || !res.data || !res.data.user) return;
+        client
+          .from('profiles')
+          .select('referral_code')
+          .eq('id', res.data.user.id)
+          .single()
+          .then(function(result) {
+            if (result.error || !result.data || !result.data.referral_code) return;
+            var code = result.data.referral_code;
+            localStorage.setItem('ff_referral_code', code); // Hydrate localStorage for next time
+            _displayPostSubModal(code);
+          });
+      });
     }
+  }
+
+  function _displayPostSubModal(referralCode) {
+    var linkEl = document.getElementById('modalReferralLink');
+    if (!linkEl) return; // Not on a page with the modal
+
+    linkEl.textContent = 'https://getfamilyforce.com?via=' + referralCode;
+    _showModal('postSubModal');
+    localStorage.setItem('ff_postsub_modal_shown', '1'); // Mark as shown
+
+    // Analytics: log modal impression
+    _logModalEvent('postsub_modal_view');
+  }
+
+  function _logModalEvent(eventName) {
+    var client = sb || (window._supabaseClient);
+    if (!client) return;
+    client.auth.getUser().then(function(res) {
+      if (res.error || !res.data || !res.data.user) return;
+      client.from('scout_events').insert({
+        user_id:    res.data.user.id,
+        event_type: eventName,
+        payload:    {}
+      }).then(function() {}); // Fire and forget
+    });
   }
 
 })()
