@@ -176,10 +176,19 @@
       onmouseout="this.style.background='rgba(110,78,214,.05)';this.style.borderColor='rgba(110,78,214,.15)'">
       <p style="font-size:13px;color:var(--text-mid);margin:0;line-height:1.5">
         💸 <strong style="color:var(--terra-dark)">Know another parent?</strong>
-        Share your code and earn 25% every time they pay.
+        Share your code <strong id="nudgeCodeDisplay" style="color:var(--terra-dark);font-family:'SF Mono','Fira Code',monospace;font-size:12px"></strong> and earn 25% every time they pay.
       </p>
       <span style="font-size:12px;font-weight:700;color:var(--terra-dark);white-space:nowrap;flex-shrink:0">Earn →</span>
     </a>
+    <script>
+    (function(){
+      var code = localStorage.getItem('ff_referral_code');
+      if (code) {
+        var el = document.getElementById('nudgeCodeDisplay');
+        if (el) el.textContent = code;
+      }
+    })();
+    </script>
 
   </main>
 </div>

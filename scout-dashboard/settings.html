@@ -243,7 +243,6 @@ var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1'
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('settings', function (user, child, sub) {
     renderSettings(user, child, sub)
-    loadReferralCode()
 
     // Check if arriving from paywall (?checkout=annual or ?checkout=monthly)
     var params = new URLSearchParams(window.location.search)

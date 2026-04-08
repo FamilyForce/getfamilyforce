@@ -519,10 +519,18 @@
             <tr>
               <td class="col-subs">50 subscribers</td>
               <td>Annual</td>
-              <td class="col-earn">$1,875 over 3 yrs</td>
+              <td class="col-earn">$625 / yr</td>
             </tr>
           </tbody>
         </table>
+        <p style="font-size:11px;color:var(--text-dim);padding:10px 18px;border-top:1px solid var(--border-light);margin:0;line-height:1.6">
+          50 annual subscribers staying 3 years = <strong style="color:#38A169">up to $1,875</strong> from one piece of content.
+        </p>
+      </div>
+      <div style="padding:0 2px 14px;text-align:center">
+        <button onclick="copyLink()" class="earn-btn earn-btn-primary" style="width:100%;justify-content:center;font-size:13px">
+          Copy your link and start sharing ↑
+        </button>
       </div>
     </div>
 
@@ -571,7 +579,7 @@
 
     <!-- Payout setup prompt (shown in zero state when no method connected) -->
     <div id="payoutSetupWrap" style="margin-bottom:10px">
-      <div class="earn-payout-row" style="cursor:pointer" onclick="window.open('https://getfamilyforce.getrewardful.com','_blank')">
+      <div class="earn-payout-row" style="cursor:pointer" onclick="window.open(REWARDFUL_PORTAL,'_blank')">
         <div>
           <div class="earn-payout-label">Payout method</div>
           <div class="earn-payout-date" style="font-size:13px;font-weight:600;color:var(--terra-dark)">Set up via Rewardful →</div>
@@ -1071,10 +1079,12 @@ var REWARDFUL_PORTAL = 'https://getfamilyforce.getrewardful.com'; // update when
 // Zero state:  earnPotentialWrap visible,  earnStatsWrap hidden,  payoutSetupWrap visible
 // Active state: earnPotentialWrap hidden,  earnStatsWrap visible,  payoutSetupWrap hidden
 function setEarnState(clicks, data) {
-  var isActive = clicks > 0;
+  var isActive       = clicks > 0;
+  var hasPayoutMethod = data && !!data.payout_method;
   document.getElementById('earnPotentialWrap').style.display = isActive ? 'none' : 'block';
   document.getElementById('earnStatsWrap').style.display     = isActive ? 'block' : 'none';
-  document.getElementById('payoutSetupWrap').style.display   = isActive ? 'none' : 'block';
+  // Show payout setup when: zero state, OR active but payout method not yet connected
+  document.getElementById('payoutSetupWrap').style.display   = (!isActive || !hasPayoutMethod) ? 'block' : 'none';
 
   if (isActive && data) {
     document.getElementById('statClicks').textContent        = clicks;
