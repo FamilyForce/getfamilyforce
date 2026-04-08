@@ -39,7 +39,7 @@ Most breastfed babies accept a bottle most easily somewhere in the first 3 to 4 
 One or two rejected attempts early on don't mean this stage has typically passed. Persistence in the first few weeks almost always works.
 
 **If you're past this stage:**
-This stage has typically passed, but it's still worth trying. Use a slow-flow (Level 1) nipple, try different bottle shapes, and have your partner offer the bottle while you leave the room entirely. Some babies will accept a bottle at 5 to 6 months if you're persistent. Try for 2 to 3 weeks. Many families navigate breastfeeding without a bottle just fine.
+Still worth trying. Use a slow-flow (Level 1) nipple, try different bottle shapes, and have your partner offer the bottle while you leave the room entirely. Some babies will accept a bottle at 5 to 6 months if you're persistent. Try for 2 to 3 weeks. Many families navigate breastfeeding without a bottle just fine.
 
 **Source:** AAP Policy on Breastfeeding and the Use of Human Milk (2022); Academy of Breastfeeding Medicine; AAP Bright Futures: Guidelines for Health Supervision of Infants, Children, and Adolescents (4th Edition); Academy of Breastfeeding Medicine (ABM) Clinical Protocol #3: Supplementary Feedings in the Healthy Term Breastfed Neonate
 
@@ -86,7 +86,7 @@ The LEAP study, published in the New England Journal of Medicine in 2015, showed
 You don't need an allergist appointment unless your child has severe eczema or a known egg allergy. Most children can be introduced at home with no special preparation.
 
 **If you're past this stage:**
-This stage has typically passed, but peanut introduction is still worthwhile at any age. The risk of allergy is higher than if you'd introduced earlier, but first exposure can still happen after 12 months. Discuss the approach with your pediatrician. Many children introduced after this stage do just fine.
+Peanut introduction is still worthwhile at any age. The risk of allergy is higher than if you'd introduced earlier, but first exposure can still happen after 12 months. Discuss the approach with your pediatrician. Many children introduced after this stage do just fine.
 
 **Source:** Du Toit et al. (2015), LEAP Study, New England Journal of Medicine; AAP Updated Guidance on Early Peanut Introduction (2017); NIAID Addendum Guidelines (2017)
 
