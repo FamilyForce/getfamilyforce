@@ -1141,10 +1141,69 @@
       })
       // Flush on load in case there are queued items from a previous session
       if (navigator.onLine) self._flushQueue()
+
+      // Post-subscription modal init
+      _initPostSubModal()
     },
   }
 
   // Run init
   ScoutDash._init()
+
+  /* ── Modal helpers ────────────────────────────────────────── */
+  function _showModal(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // Prevent body scroll
+    // Inert attribute (accessibility) — exclude modal content
+    document.querySelectorAll('body > *:not(#' + id + ')').forEach(function(el) { el.inert = true; });
+  }
+
+  function _hideModal(id) {
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+    document.body.style.overflow = ''; // Restore body scroll
+    document.querySelectorAll('body > *:not(#' + id + ')').forEach(function(el) { el.inert = false; });
+  }
+
+  /* ── Post-subscription modal actions ──────────────────────── */
+  window.copyModalLink = function() {
+    var linkEl = document.getElementById('modalReferralLink');
+    if (linkEl) {
+      _copyText(linkEl.textContent.trim());
+      ScoutDash.toast('Link copied!');
+    }
+  };
+
+  window.shareModalWhatsApp = function() {
+    var linkEl = document.getElementById('modalReferralLink');
+    if (!linkEl) return;
+    var link = linkEl.textContent.trim();
+    var msg = encodeURIComponent('Hey, thought of you. Scout sends one email a month about what developmental milestones are active for your baby right now. Super simple, actually useful. Free to try: ' + link);
+    window.open('https://wa.me/?text=' + msg, '_blank');
+  };
+
+  window.skipPostSubModal = function() {
+    localStorage.setItem('ff_postsub_modal_shown', '1'); // Mark as shown
+    _hideModal('postSubModal');
+  };
+
+  /* ── Init logic (at the end of ScoutDash.init) ──────────────── */
+  // This will be called from within ScoutDash.init, after all other init is done
+  function _initPostSubModal() {
+    var justSubscribed = sessionStorage.getItem('ff_just_subscribed') === '1';
+    var modalShown = localStorage.getItem('ff_postsub_modal_shown') === '1';
+    var referralCode = localStorage.getItem('ff_referral_code');
+
+    if (justSubscribed && !modalShown && referralCode) {
+      var linkEl = document.getElementById('modalReferralLink');
+      if (linkEl) {
+        linkEl.textContent = `https://getfamilyforce.com?via=${referralCode}`;
+      }
+      _showModal('postSubModal');
+      sessionStorage.removeItem('ff_just_subscribed'); // Clear flag immediately
+      localStorage.setItem('ff_postsub_modal_shown', '1'); // Set for one-time show
+    }
+  }
 
 })()

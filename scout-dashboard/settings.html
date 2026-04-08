@@ -513,6 +513,7 @@ function submitSubscribe() {
             return
           }
           if (window.rewardful) rewardful('convert', { email: user.email });
+          sessionStorage.setItem('ff_just_subscribed', '1'); // Flag for post-sub modal
           ScoutDash.toast('You\'re subscribed. Welcome to Scout.', 'success')
           cancelStripeForm()
           window.location.reload()

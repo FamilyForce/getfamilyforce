@@ -1160,5 +1160,27 @@ function dismissOnboarding() {
   }
 }
 </script>
+<!-- Post-subscription modal -->
+<div id="postSubModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(14,5,40,.8);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--surface);border-radius:16px;padding:32px 24px;text-align:center;max-width:380px;box-shadow:0 12px 24px rgba(14,5,40,.2);">
+    <p style="font-size:32px;margin-bottom:12px">🎉</p>
+    <h3 style="font-family:var(--serif);font-size:22px;font-weight:400;color:var(--text);line-height:1.3;margin-bottom:16px;">
+      You're in.<br>Know another parent who needs Scout?
+    </h3>
+    <p style="font-size:15px;color:var(--text-mid);line-height:1.6;margin-bottom:24px;">
+      Share your link and earn 25% of every payment they make — for life.
+    </p>
+    <p style="font-family:'SF Mono','Fira Code',monospace;font-size:14px;font-weight:600;color:var(--terra-dark);word-break:break-all;margin-bottom:20px;" id="modalReferralLink"></p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;">
+      <button onclick="copyModalLink()" style="padding:12px 24px;background:var(--terra);color:#fff;border:none;border-radius:100px;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;min-width:140px;transition:background .15s;">Copy link</button>
+      <button onclick="shareModalWhatsApp()" style="padding:12px 24px;background:#25D366;color:#fff;border:none;border-radius:100px;font-family:var(--sans);font-size:14px;font-weight:700;cursor:pointer;min-width:140px;transition:background .15s;">WhatsApp</button>
+    </div>
+    <button onclick="skipPostSubModal()" style="background:none;border:none;font-size:13px;color:var(--text-dim);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;">Skip for now →</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="earn-toast" id="earnToast"></div>
+
 </body>
 </html>

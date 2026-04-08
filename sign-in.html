@@ -3061,6 +3061,7 @@ button { font: inherit; cursor: pointer; }
         if (window.rewardful) {
           rewardful('convert', { email: session.user.email });
         }
+        sessionStorage.setItem('ff_just_subscribed', '1'); // Flag for post-sub modal
       });
     })();
 
