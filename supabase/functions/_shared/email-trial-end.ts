@@ -64,21 +64,23 @@ const C = {
 
 // ─── Build trial-end email HTML (v2) ──────────────────────────────────────────
 export function buildTrialEndEmail(opts: {
-  childName:       string
-  parentName?:     string
-  childGender:     string | null
-  ageMonths:       number
-  weeksSinceJoin:  number
-  allWindowCount:  number
-  topWindows:      Array<{ title: string; why_it_matters: string; what_to_do?: string; urgency: string }>
-  annualCta:       string
-  triennialCta:    string
-  monthlyCta:      string
-  siteUrl:         string
-  userId:          string
+  childName:        string
+  parentName?:      string
+  childGender:      string | null
+  ageMonths:        number
+  weeksSinceJoin:   number
+  allWindowCount:   number
+  topWindows:       Array<{ title: string; why_it_matters: string; what_to_do?: string; urgency: string }>
+  completedWindows: Array<{ title: string }>
+  annualCta:        string
+  triennialCta:     string
+  monthlyCta:       string
+  siteUrl:          string
+  userId:           string
 }): string {
   const { childName, parentName, ageMonths, weeksSinceJoin,
-          allWindowCount, topWindows, annualCta, triennialCta, monthlyCta, siteUrl, userId } = opts
+          allWindowCount, topWindows, completedWindows,
+          annualCta, triennialCta, monthlyCta, siteUrl, userId } = opts
 
   const greeting = parentName ? `Hi ${parentName},` : 'Hi there,'
   const isFirstBirthday = ageMonths === 12
@@ -93,9 +95,49 @@ export function buildTrialEndEmail(opts: {
     ? 'You signed up last week.'
     : `You signed up ${weeksSinceJoin} weeks ago.`
 
+  // Passive voice — avoids wrong attribution when a family circle member marked the window
+  const progressCopy = completedWindows.length === 1
+    ? `One milestone is already marked done. ${childName} is making real progress.`
+    : completedWindows.length > 1
+      ? `${completedWindows.length} milestones are already marked done. ${childName} is making real progress.`
+      : ''
+
   const preheader = isFirstBirthday
     ? `${childName} turns 1 today. Your trial ends today. Here's what's open right now.`
     : `${childName} turns ${ageMonths} month${ageMonths === 1 ? '' : 's'} today. Your trial ends today. Here's what's open right now.`
+
+  // ── Completed windows card — built before return, consistent with windowCards pattern ──
+  const C_GREEN = { bg: '#F0FFF4', border: '#86C9A8', text: '#1A4731', label: '#2E7D5E' }
+  const completedCard = (() => {
+    if (completedWindows.length === 0) return ''
+    const shown    = completedWindows.slice(0, 3)
+    const extra    = completedWindows.length - shown.length
+    const rows     = shown.map(w =>
+      `<tr><td style="padding:4px 0">
+        <table cellpadding="0" cellspacing="0"><tr>
+          <td style="padding-right:8px;vertical-align:top">
+            <span style="display:inline-block;width:18px;height:18px;background:${C_GREEN.label};border-radius:50%;text-align:center;line-height:18px;font-size:11px;color:#fff;font-weight:700">✓</span>
+          </td>
+          <td><p style="font-family:Arial,sans-serif;font-size:14px;color:${C_GREEN.text};margin:0;line-height:1.5">${w.title}</p></td>
+        </tr></table>
+      </td></tr>`
+    ).join('')
+    const extraLine = extra > 0
+      ? `<tr><td style="padding-top:6px"><p style="font-family:Arial,sans-serif;font-size:13px;color:${C_GREEN.label};margin:0">+${extra} more completed</p></td></tr>`
+      : ''
+    return `
+<tr><td style="padding-bottom:16px">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:${C_GREEN.bg};border:1px solid ${C_GREEN.border};border-radius:12px">
+    <tr><td style="padding:16px 18px">
+      <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${C_GREEN.label};margin:0 0 10px">What ${childName} has already done</p>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        ${rows}
+        ${extraLine}
+      </table>
+    </td></tr>
+  </table>
+</td></tr>`
+  })()
 
   const windowCards = topWindows.map(w => {
     const bodyText = w.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim()
@@ -164,8 +206,11 @@ export function buildTrialEndEmail(opts: {
 <tr><td style="padding-bottom:24px;border-bottom:1px solid ${C.border}">
   <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.text};margin:0 0 14px;font-weight:600">${greeting}</p>
   <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0 0 10px;line-height:1.75">${joinCopy} As part of the trial, you received one digest email and one calendar event for ${childName}'s first month. There are ${allWindowCount} windows open this month -- and a new digest ready to go.</p>
+  ${progressCopy ? `<p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0;line-height:1.75">${progressCopy}</p>` : ''}
 </td></tr>
 <tr><td style="padding-bottom:16px"></td></tr>
+
+${completedCard}
 
 <!-- Heads up banner -->
 <tr><td style="padding-bottom:8px">

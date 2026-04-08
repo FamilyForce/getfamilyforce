@@ -181,6 +181,39 @@ Deno.serve(async (req: Request) => {
       const allWindowCount = windows?.length ?? 0
       const topWindows     = (windows ?? []).slice(0, 3)
 
+      // 4b. Query completed windows for this child — used to acknowledge progress in the email.
+      //     completed_date is nullable; null rows sort unpredictably under descending order
+      //     (PostgREST behaviour varies by version). Acceptable at this scale — ordering is cosmetic.
+      const { data: completedProgress, error: progressErr } = await sb
+        .from('window_progress')
+        .select('window_id, milestone_windows(title)')   // category fetched previously but unused — omitted
+        .eq('child_id', child.id)
+        .eq('status', 'completed')
+        .order('completed_date', { ascending: false })
+
+      if (progressErr) {
+        // Non-fatal: log and continue — email sends without the progress card
+        console.error(`[scout-trial-end] window_progress query failed for child ${child.id}:`, progressErr.message)
+      }
+
+      // Warn if rows returned but titles are all null — indicates FK relation not resolving
+      const nullTitleCount = (completedProgress ?? []).filter((p: any) => !p.milestone_windows?.title).length
+      if (nullTitleCount > 0) {
+        console.warn(`[scout-trial-end] ${nullTitleCount} window_progress rows with null milestone_windows join for child ${child.id} — check FK relation`)
+      }
+
+      // Deduplicate by title — family circle members can each mark the same window,
+      // producing multiple rows per window (unique constraint is user_id+child_id+window_id).
+      const seenTitles = new Set<string>()
+      const completedWindows: Array<{ title: string }> = (completedProgress ?? [])
+        .map((p: any) => ({ title: p.milestone_windows?.title ?? '' }))
+        .filter(({ title }: { title: string }) => {
+          if (!title) return false
+          if (seenTitles.has(title)) return false
+          seenTitles.add(title)
+          return true
+        })
+
       // 7. Weeks since signup
       const signupDate = new Date(sub.created_at)
       const wks        = ageInWeeks(signupDate, now)
@@ -198,13 +231,14 @@ Deno.serve(async (req: Request) => {
         ? `${child.name} turns 1 today — your Scout trial ends today`
         : `${child.name} turns ${months} month${months === 1 ? '' : 's'} today — your Scout trial ends today`
       const html     = buildTrialEndEmail({
-        childName:      child.name,
+        childName:        child.name,
         parentName,
-        childGender:    child.gender,
-        ageMonths:      months,
-        weeksSinceJoin: wks,
+        childGender:      child.gender,
+        ageMonths:        months,
+        weeksSinceJoin:   wks,
         allWindowCount,
         topWindows,
+        completedWindows,
         annualCta,
         triennialCta,
         monthlyCta,
