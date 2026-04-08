@@ -455,7 +455,7 @@
     <div class="earn-link-card">
       <div class="earn-link-label">Your link</div>
       <div class="earn-link-url" id="earnLinkDisplay">
-        getfamilyforce.com?ref=<span class="earn-code-highlight" id="earnCodeHighlight">—</span>
+        getfamilyforce.com?via=<span class="earn-code-highlight" id="earnCodeHighlight">—</span>
       </div>
       <div class="earn-share-row">
         <button class="earn-btn earn-btn-primary" id="copyLinkBtn" onclick="copyLink()">
@@ -1113,7 +1113,7 @@ function setEarnState(clicks, data) {
 // ── Referral code setup ──────────────────────────────────────
 ;(function initEarnPage() {
   var code = localStorage.getItem('ff_referral_code') || '';
-  var baseUrl = 'https://getfamilyforce.com?ref=';
+  var baseUrl = 'https://getfamilyforce.com?via=';
   var fullLink = baseUrl + (code || 'YOUR-CODE');
 
   // Display
@@ -1150,7 +1150,7 @@ function showToast(msg) {
 // ── Copy link / code ─────────────────────────────────────────
 function copyLink() {
   var code = localStorage.getItem('ff_referral_code') || 'YOUR-CODE';
-  var link = 'https://getfamilyforce.com?ref=' + code;
+  var link = 'https://getfamilyforce.com?via=' + code;
   _copyText(link);
   var btn = document.getElementById('copyLinkBtn');
   btn.textContent = '✓ Copied!';
@@ -1188,14 +1188,14 @@ function _fallbackCopy(text) {
 function shareWhatsApp(e) {
   e.preventDefault();
   var code = localStorage.getItem('ff_referral_code') || 'YOUR-CODE';
-  var link = 'https://getfamilyforce.com?ref=' + code;
+  var link = 'https://getfamilyforce.com?via=' + code;
   var msg = encodeURIComponent('Hey, thought of you. Scout sends one email a month about what developmental milestones are active for your baby right now. Super simple, actually useful. Free to try: ' + link);
   window.open('https://wa.me/?text=' + msg, '_blank');
 }
 
 function shareSMS() {
   var code = localStorage.getItem('ff_referral_code') || 'YOUR-CODE';
-  var link = 'https://getfamilyforce.com?ref=' + code;
+  var link = 'https://getfamilyforce.com?via=' + code;
   var msg = encodeURIComponent('Hey — this thing called Scout sends one email a month about what milestones are active for your baby. Actually useful. Free to try: ' + link);
   window.location.href = 'sms:?body=' + msg;
 }
@@ -1247,7 +1247,7 @@ function copyGraphic(filename, cardId) {
   if (cta) cta.textContent = '⏳ Loading…';
 
   var code    = localStorage.getItem('ff_referral_code') || '';
-  var refText = code ? 'getfamilyforce.com?ref=' + code : 'getfamilyforce.com';
+  var refText = code ? 'getfamilyforce.com?via=' + code : 'getfamilyforce.com';
   var imgUrl  = '/images/' + filename + '?v=2'; // cache-bust: forces re-fetch past stale browser cache
 
   var img = new Image();
@@ -1346,7 +1346,7 @@ function saveGraphic(filename, cardId) {
   var origText = cta ? cta.textContent : '';
   if (cta) cta.textContent = '⏳ Saving…';
   var code    = localStorage.getItem('ff_referral_code') || '';
-  var refText = code ? 'getfamilyforce.com?ref=' + code : 'getfamilyforce.com';
+  var refText = code ? 'getfamilyforce.com?via=' + code : 'getfamilyforce.com';
   var img = new Image();
   img.onload = function() {
     var canvas = document.createElement('canvas');
