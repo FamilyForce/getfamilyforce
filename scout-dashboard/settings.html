@@ -128,42 +128,23 @@
       </div>
     </div>
 
-    <!-- 11.25 Referral -->
+    <!-- 11.25 Earn -->
     <div class="settings-section">
-      <p class="settings-section-title">Refer a friend</p>
+      <p class="settings-section-title">Share &amp; Earn</p>
       <div class="settings-card">
-        <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:10px">
+        <div class="settings-row" style="align-items:center;justify-content:space-between">
           <div>
-            <p class="settings-row-label">Your referral code</p>
-            <p class="settings-row-sub">Friends who use your code get 25% off their first payment. You can share it anywhere.</p>
+            <p class="settings-row-label">Your referral link is ready</p>
+            <p class="settings-row-sub">Earn 25% on every subscription you refer — for life.</p>
           </div>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <div id="referralCodeBox" style="
-              font-family:var(--sans);font-size:15px;font-weight:700;letter-spacing:.08em;
-              color:var(--terra);background:var(--terra-tint);
-              border:1.5px solid var(--terra);border-radius:10px;
-              padding:10px 16px;min-width:180px;text-align:center;
-              user-select:all;cursor:text">
-              Loading…
-            </div>
-            <button id="copyReferralBtn" onclick="copyReferralCode()"
-              style="padding:9px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;
-                font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;
-                transition:all .15s"
-              onmouseover="this.style.borderColor='var(--terra)';this.style.color='var(--terra)'"
-              onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">
-              Copy code
-            </button>
-            <button id="shareReferralBtn" onclick="shareReferralLink()"
-              style="padding:9px 16px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;
-                font-family:var(--sans);font-size:13px;font-weight:600;color:var(--text);cursor:pointer;
-                transition:all .15s"
-              onmouseover="this.style.borderColor='var(--terra)';this.style.color='var(--terra)'"
-              onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text)'">
-              Share link
-            </button>
-          </div>
-          <p style="font-size:12px;color:var(--text-dim);line-height:1.5" id="referralShareLink"></p>
+          <a href="/scout-dashboard/earn"
+            style="flex-shrink:0;padding:9px 16px;background:var(--terra);color:#fff;border-radius:10px;
+              font-family:var(--sans);font-size:13px;font-weight:700;text-decoration:none;
+              white-space:nowrap;transition:background .15s"
+            onmouseover="this.style.background='var(--terra-dark)'"
+            onmouseout="this.style.background='var(--terra)'">
+            Go to Earn →
+          </a>
         </div>
       </div>
     </div>

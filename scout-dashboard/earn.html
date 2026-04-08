@@ -70,6 +70,62 @@
 }
 .earn-recipient-note strong { color: var(--text-mid, #5C5960); }
 
+/* Clicks card (full-width reach metric) */
+.earn-clicks-card {
+  background: rgba(110,78,214,.06);
+  border: 1.5px solid rgba(110,78,214,.18);
+  border-radius: 12px; padding: 14px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 10px;
+}
+.earn-clicks-left { flex: 1; }
+.earn-clicks-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--terra-dark, #5B3CC4); margin-bottom: 4px;
+}
+.earn-clicks-value {
+  font-size: 28px; font-weight: 800; color: var(--terra-dark, #5B3CC4); line-height: 1.1;
+}
+.earn-clicks-sub {
+  font-size: 11px; color: var(--text-dim, #8A879A); margin-top: 3px;
+}
+.earn-clicks-icon { font-size: 28px; opacity: .5; flex-shrink: 0; }
+
+/* Earnings potential table (zero state) */
+.earn-potential-wrap {
+  background: var(--surface); border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-card, 14px); margin-bottom: 10px; overflow: hidden;
+}
+.earn-potential-header {
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+.earn-potential-title {
+  font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 2px;
+}
+.earn-potential-sub {
+  font-size: 12px; color: var(--text-dim); line-height: 1.5;
+}
+.earn-potential-table {
+  width: 100%; border-collapse: collapse;
+}
+.earn-potential-table th {
+  text-align: left; padding: 8px 18px;
+  font-size: 10px; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--text-dim);
+  background: var(--bg); border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+.earn-potential-table td {
+  padding: 10px 18px; font-size: 13px;
+  color: var(--text-mid); border-bottom: 1px solid var(--border-light);
+}
+.earn-potential-table tr:last-child td { border-bottom: none; }
+.earn-potential-table td.col-earn {
+  font-weight: 800; color: #38A169; text-align: right;
+}
+.earn-potential-table td.col-subs { color: var(--text); font-weight: 600; }
+
 /* Stat grid */
 .earn-stat-grid {
   display: grid; grid-template-columns: 1fr 1fr;
@@ -424,40 +480,106 @@
     <!-- ── EARNINGS ── -->
     <p class="earn-section-label">Your earnings</p>
 
-    <!-- NOTE: Stats below are placeholder until Rewardful is connected.
-         Will replace with live API data from Rewardful /referrals endpoint. -->
-    <div class="earn-stat-grid">
-      <div class="earn-stat-card">
-        <div class="earn-stat-label">Total earned</div>
-        <div class="earn-stat-value purple" id="statTotalEarned">$0.00</div>
-        <div class="earn-stat-sub">All time</div>
-      </div>
-      <div class="earn-stat-card">
-        <div class="earn-stat-label">Pending clearance</div>
-        <div class="earn-stat-value amber" id="statPending">$0.00</div>
-        <div class="earn-stat-sub">30-day return window</div>
-      </div>
-      <div class="earn-stat-card">
-        <div class="earn-stat-label">Available balance</div>
-        <div class="earn-stat-value green" id="statAvailable">$0.00</div>
-        <div class="earn-stat-sub">Ready for payout</div>
-      </div>
-      <div class="earn-stat-card">
-        <div class="earn-stat-label">Active referrals</div>
-        <div class="earn-stat-value" id="statReferrals">0</div>
-        <div class="earn-stat-sub">Paying subscribers</div>
+    <!-- ZERO STATE: shown until Rewardful returns ≥1 click -->
+    <div id="earnPotentialWrap">
+      <div class="earn-potential-wrap">
+        <div class="earn-potential-header">
+          <div class="earn-potential-title">What you could earn</div>
+          <div class="earn-potential-sub">25% on every payment, for the life of the subscription.</div>
+        </div>
+        <table class="earn-potential-table" aria-label="Earnings potential">
+          <thead>
+            <tr>
+              <th>Referrals</th>
+              <th>Plan</th>
+              <th style="text-align:right">You earn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-subs">5 subscribers</td>
+              <td>Monthly</td>
+              <td class="col-earn">$12.50 / mo</td>
+            </tr>
+            <tr>
+              <td class="col-subs">10 subscribers</td>
+              <td>Monthly</td>
+              <td class="col-earn">$25 / mo</td>
+            </tr>
+            <tr>
+              <td class="col-subs">25 subscribers</td>
+              <td>Monthly</td>
+              <td class="col-earn">$62 / mo</td>
+            </tr>
+            <tr>
+              <td class="col-subs">10 subscribers</td>
+              <td>Annual</td>
+              <td class="col-earn">$125 / yr</td>
+            </tr>
+            <tr>
+              <td class="col-subs">50 subscribers</td>
+              <td>Annual</td>
+              <td class="col-earn">$1,875 over 3 yrs</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <div class="earn-payout-row" id="payoutRow">
-      <div>
-        <div class="earn-payout-label">Next payout</div>
-        <div class="earn-payout-date" id="payoutDate">—</div>
+    <!-- ACTIVE STATE: shown when Rewardful returns ≥1 click. Hidden by default. -->
+    <div id="earnStatsWrap" style="display:none">
+      <div class="earn-clicks-card">
+        <div class="earn-clicks-left">
+          <div class="earn-clicks-label">Link clicks</div>
+          <div class="earn-clicks-value" id="statClicks">0</div>
+          <div class="earn-clicks-sub">People who opened your link</div>
+        </div>
+        <div class="earn-clicks-icon">🔗</div>
       </div>
-      <div class="earn-payout-badge" id="payoutBadge">—</div>
+
+      <div class="earn-stat-grid">
+        <div class="earn-stat-card">
+          <div class="earn-stat-label">Total earned</div>
+          <div class="earn-stat-value purple" id="statTotalEarned">$0.00</div>
+          <div class="earn-stat-sub">All time</div>
+        </div>
+        <div class="earn-stat-card">
+          <div class="earn-stat-label">Pending clearance</div>
+          <div class="earn-stat-value amber" id="statPending">$0.00</div>
+          <div class="earn-stat-sub">30-day return window</div>
+        </div>
+        <div class="earn-stat-card">
+          <div class="earn-stat-label">Available balance</div>
+          <div class="earn-stat-value green" id="statAvailable">$0.00</div>
+          <div class="earn-stat-sub">Ready for payout</div>
+        </div>
+        <div class="earn-stat-card">
+          <div class="earn-stat-label">Active referrals</div>
+          <div class="earn-stat-value" id="statReferrals">0</div>
+          <div class="earn-stat-sub">Paying subscribers</div>
+        </div>
+      </div>
+
+      <div class="earn-payout-row" id="payoutRow">
+        <div>
+          <div class="earn-payout-label">Next payout</div>
+          <div class="earn-payout-date" id="payoutDate">—</div>
+        </div>
+        <div id="payoutBadge" class="earn-payout-badge">—</div>
+      </div>
     </div>
 
-    <!-- TODO: remove comment below once Rewardful is connected -->
+    <!-- Payout setup prompt (shown in zero state when no method connected) -->
+    <div id="payoutSetupWrap" style="margin-bottom:10px">
+      <div class="earn-payout-row" style="cursor:pointer" onclick="window.open('https://getfamilyforce.getrewardful.com','_blank')">
+        <div>
+          <div class="earn-payout-label">Payout method</div>
+          <div class="earn-payout-date" style="font-size:13px;font-weight:600;color:var(--terra-dark)">Set up via Rewardful →</div>
+        </div>
+        <div class="earn-payout-badge">Not connected</div>
+      </div>
+      <p style="font-size:11px;color:var(--text-dim);padding:0 2px;margin-top:4px;line-height:1.6">Connect PayPal or Wise to receive payouts. Paid on the 15th of each month when balance ≥ $25.</p>
+    </div>
 
     <!-- ── EARN KIT ── -->
     <p class="earn-section-label">Your earn kit</p>
@@ -942,6 +1064,42 @@ There's a free trial if you want to try it: [YOUR LINK]
    Referral code/link pulled from localStorage (set at signup)
    ═══════════════════════════════════════════════════════════ */
 
+// ── Config ───────────────────────────────────────────────────
+var REWARDFUL_PORTAL = 'https://getfamilyforce.getrewardful.com'; // update when Rewardful account is live
+
+// ── Earn page state management ───────────────────────────────
+// Zero state:  earnPotentialWrap visible,  earnStatsWrap hidden,  payoutSetupWrap visible
+// Active state: earnPotentialWrap hidden,  earnStatsWrap visible,  payoutSetupWrap hidden
+function setEarnState(clicks, data) {
+  var isActive = clicks > 0;
+  document.getElementById('earnPotentialWrap').style.display = isActive ? 'none' : 'block';
+  document.getElementById('earnStatsWrap').style.display     = isActive ? 'block' : 'none';
+  document.getElementById('payoutSetupWrap').style.display   = isActive ? 'none' : 'block';
+
+  if (isActive && data) {
+    document.getElementById('statClicks').textContent        = clicks;
+    document.getElementById('statTotalEarned').textContent   = '$' + (data.total_earned || 0).toFixed(2);
+    document.getElementById('statPending').textContent       = '$' + (data.pending || 0).toFixed(2);
+    document.getElementById('statAvailable').textContent     = '$' + (data.available || 0).toFixed(2);
+    document.getElementById('statReferrals').textContent     = data.active_referrals || 0;
+
+    // Payout date
+    var now = new Date();
+    var next15 = new Date(now.getFullYear(), now.getMonth(), 15);
+    if (now.getDate() >= 15) next15 = new Date(now.getFullYear(), now.getMonth() + 1, 15);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var daysUntil = Math.ceil((next15 - now) / 86400000);
+    var payoutMethod = data.payout_method || 'PayPal';
+    document.getElementById('payoutDate').textContent =
+      months[next15.getMonth()] + ' ' + next15.getDate() + ', ' + next15.getFullYear() +
+      ' · $' + (data.available || 0).toFixed(2) + ' via ' + payoutMethod;
+    document.getElementById('payoutBadge').textContent = 'In ' + daysUntil + ' days';
+
+    if (data.referrals)  renderReferrals(data.referrals);
+    if (data.payouts)    renderPayouts(data.payouts);
+  }
+}
+
 // ── Referral code setup ──────────────────────────────────────
 ;(function initEarnPage() {
   var code = localStorage.getItem('ff_referral_code') || '';
@@ -962,23 +1120,13 @@ There's a free trial if you want to try it: [YOUR LINK]
     el.textContent = el.textContent.replace(/\[YOUR LINK\]/g, fullLink);
   });
 
-  // Payout next-date calculation
-  var now = new Date();
-  var next15 = new Date(now.getFullYear(), now.getMonth(), 15);
-  if (now.getDate() >= 15) next15 = new Date(now.getFullYear(), now.getMonth() + 1, 15);
-  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  var dateStr = months[next15.getMonth()] + ' ' + next15.getDate() + ', ' + next15.getFullYear();
-  var daysUntil = Math.ceil((next15 - now) / 86400000);
-  document.getElementById('payoutDate').textContent = dateStr + ' · $0.00 to PayPal';
-  document.getElementById('payoutBadge').textContent = 'In ' + daysUntil + ' days';
+  // Default: zero state (no Rewardful data yet)
+  setEarnState(0, null);
 
-  // PLACEHOLDER: swap these with Rewardful API response when connected
-  // document.getElementById('statTotalEarned').textContent = '$' + data.total_earned.toFixed(2);
-  // document.getElementById('statPending').textContent = '$' + data.pending.toFixed(2);
-  // document.getElementById('statAvailable').textContent = '$' + data.available.toFixed(2);
-  // document.getElementById('statReferrals').textContent = data.active_referrals;
-  // renderReferrals(data.referrals);
-  // renderPayouts(data.payouts);
+  // PLACEHOLDER: when Rewardful is connected, replace above with:
+  // fetchRewardfulData(code).then(function(data) {
+  //   setEarnState(data.clicks, data);
+  // });
 })();
 
 // ── Toast ────────────────────────────────────────────────────
