@@ -43,7 +43,9 @@ This stage has typically passed, but it's still worth trying. Use a slow-flow (L
 
 **Source:** AAP Policy on Breastfeeding and the Use of Human Milk (2022); Academy of Breastfeeding Medicine; AAP Bright Futures: Guidelines for Health Supervision of Infants, Children, and Adolescents (4th Edition); Academy of Breastfeeding Medicine (ABM) Clinical Protocol #3: Supplementary Feedings in the Healthy Term Breastfed Neonate
 
----## `nutrition-iron-supplement-breastfed`
+---
+
+## `nutrition-iron-supplement-breastfed`
 **Title:** Iron supplementation, breastfed babies at 4 months
 **Starts around:** Week 17 | **Peak:** Week 17 | **Typically wraps up by:** Week 26
 **Urgency:** advisory | **Priority:** 1
@@ -64,7 +66,9 @@ Bring it up at the next pediatrician visit. A simple blood test can check iron l
 
 **Source:** AAP Clinical Report, Iron Deficiency and Iron Deficiency Anemia in Young Children (2020); CDC Iron Recommendations; Academy of Breastfeeding Medicine (ABM) Clinical Protocol #29: Iron, Zinc, and Vitamin D Supplementation During Breastfeeding
 
----## `nutrition-peanut-intro`
+---
+
+## `nutrition-peanut-intro`
 **Title:** ⚠️ Peanut introduction window
 **Starts around:** Week 17 | **Peak:** Week 20 | **Typically wraps up by:** Week 47
 **Urgency:** clinical | **Priority:** 1
@@ -86,7 +90,9 @@ This stage has typically passed, but peanut introduction is still worthwhile at 
 
 **Source:** Du Toit et al. (2015), LEAP Study, New England Journal of Medicine; AAP Updated Guidance on Early Peanut Introduction (2017); NIAID Addendum Guidelines (2017)
 
----## `nutrition-egg-intro`
+---
+
+## `nutrition-egg-intro`
 **Title:** Introduce eggs, early allergen
 **Starts around:** Week 17 | **Peak:** Week 26 | **Typically wraps up by:** Week 39
 **Urgency:** advisory | **Priority:** 1
@@ -182,7 +188,9 @@ If you're approaching 4 months without consistent tummy time, start immediately 
 
 **Source:** AAP Safe to Sleep Campaign; WHO Motor Development Milestones
 
----## `motor-head-control`
+---
+
+## `motor-head-control`
 **Title:** Head control, holds head steady when upright
 **Starts around:** Week 4 | **Peak:** Week 12 | **Typically wraps up by:** Week 17
 **Urgency:** clinical | **Priority:** 1
@@ -392,7 +400,9 @@ If your baby does not consistently respond to their name by 7 months, mention it
 
 **Source:** CDC Developmental Milestones (2024); Nadig et al. (2007), Name Response as Early ASD Predictor; AAP Autism Screening
 
----## `language-joint-attention-pointing`
+---
+
+## `language-joint-attention-pointing`
 **Title:** Pointing, joint attention
 **Starts around:** Week 30 | **Peak:** Week 34 | **Typically wraps up by:** Week 47
 **Urgency:** clinical | **Priority:** 1
@@ -437,7 +447,9 @@ No specific words by 12–13 months warrants a conversation with your pediatrici
 
 **Source:** CDC Developmental Milestones (2024); AAP Language Development Guidelines
 
----## `language-first-words`
+---
+
+## `language-first-words`
 **Title:** First words beyond mama and dada
 **Starts around:** Week 47 | **Peak:** Week 52 | **Typically wraps up by:** Week 65
 **Urgency:** clinical | **Priority:** 1
@@ -504,7 +516,9 @@ Fewer than 50 words at 24 months: bring this to the 24 month well child visit. T
 
 **Source:** Fenson et al., MacArthur CDI Research; Ganger & Brent (2004), Vocabulary Spurt; CDC Developmental Milestones; AAP Language Guidelines
 
----## `language-2-word-combinations`
+---
+
+## `language-2-word-combinations`
 **Title:** Two word combinations
 **Starts around:** Week 78 | **Peak:** Week 91 | **Typically wraps up by:** Week 104
 **Urgency:** clinical | **Priority:** 1
@@ -525,7 +539,9 @@ No two word combinations by 24 months: raise at the 24 month well child visit. T
 
 **Source:** CDC Developmental Milestones (2024); AAP 24 Month Well Child Visit Guidelines; Nelson (2022), Language Development Research
 
----## `language-vocab-200-words`
+---
+
+## `language-vocab-200-words`
 **Title:** Vocabulary: 200+ words
 **Starts around:** Week 91 | **Peak:** Week 104 | **Typically wraps up by:** Week 117
 **Urgency:** clinical | **Priority:** 1
@@ -691,7 +707,9 @@ Tantrums typically peak around age 2 and gradually decline through age 4. If the
 
 **Playbook link:** FamilyForce Tantrum Playbook (free), getfamilyforce.com/playbook tantrum
 
----## `social-joint-attention`
+---
+
+## `social-joint-attention`
 **Title:** Pointing, joint attention
 **Starts around:** Week 30 | **Peak:** Week 34 | **Typically wraps up by:** Week 47
 **Urgency:** clinical | **Priority:** 1
@@ -872,7 +890,7 @@ You don't need the most expensive car seat. The safest seat is any correctly ins
 **If you're past this stage:**
 If your baby is already here and the seat hasn't been checked: get it checked before the next car trip. Most inspections take 15 minutes.
 
-**Source:** NHTSA Child Passenger Safety Guidelines (2024); AAP Car Seat Safety; Safe Kids Worldwide, Installation Statistics; road safety guidelines vary by country — follow your local transport authority
+**Source:** NHTSA Child Passenger Safety Guidelines (2024); AAP Car Seat Safety; Safe Kids Worldwide, Installation Statistics; road safety guidelines vary by country, follow your local transport authority
 
 ---
 
@@ -1305,7 +1323,51 @@ If your child is past 12 months without a dental visit, schedule one now. It's n
 
 **Source:** AAPD Guideline on Infant Oral Health (2022); AAP Oral Health Guidelines; AAPD Policy on Early Childhood Caries
 
----## `nutrition-vitamin-d-breastfed`
+---
+
+## Window Count Summary
+
+| Category | Priority 1 Count | Written |
+|---|---|---|
+| Nutrition | 5 | ✅ |
+| Motor | 6 | ✅ |
+| Language | 15 | ✅ |
+| Social/Emotional | 7 (5 unique, 2 cross refs) | ✅ |
+| Cognitive | 0 | n/a |
+| Screening | 15 | ✅ |
+| Safety | 9 (8 unique, 1 cross ref) | ✅ |
+| **Total** | **57 (42 unique)** | ✅ |
+
+---
+
+## Next Step: Task 1B Continued
+
+Priority 1 content complete. Recommended next batch:
+
+**Priority 2 windows by category (volume):**
+* Language: 13 priority 2 windows (language flags, read aloud habits, screen time)
+* Nutrition: 16 priority 2 windows (texture progression, cup weaning, milk transition)
+* Motor: 12 priority 2 windows (rolling, sitting, crawling, fine motor)
+* Safety: 7 priority 2 windows (water, car seat, crib transition)
+* Social/Emotional: 10 priority 2 windows (stranger anxiety, separation, parallel play)
+* Screening: 3 priority 2 windows (vision, lead, hearing re screen)
+* Cognitive: 12 priority 2 windows (pretend play, object permanence, problem solving)
+
+Total priority 2: approximately 73 windows. Recommend writing nutrition and language next as these have highest subscriber anxiety and email visibility.
+
+---
+
+*This document feeds into the `milestone_windows` table. Each window's fields map directly to: why_it_matters, what_to_do, what_not_to_worry, missed_window, source_citation, playbook_link.*
+
+
+
+---
+
+# NUTRITION, Priority 2 (20 windows)
+
+---
+
+## `nutrition-vitamin-d-breastfed`
 **Title:** Vitamin D drops, start from birth for breastfed babies
 **Starts around:** Week 0 | **Peak:** Week 1 | **Typically wraps up by:** Week 52
 **Urgency:** advisory | **Priority:** 2
@@ -1487,7 +1549,9 @@ Introduce wheat now. For most babies, it's a straightforward addition to the die
 
 **Source:** NIAID Addendum Guidelines for Food Allergy Prevention
 
----## `nutrition-sesame-intro`
+---
+
+## `nutrition-sesame-intro`
 **Title:** Introduce sesame, early allergen
 **Starts around:** Week 17 | **Peak:** Week 26 | **Typically wraps up by:** Week 39
 **Urgency:** advisory | **Priority:** 2
@@ -1508,7 +1572,9 @@ If your baby is over 9 months and hasn't had sesame, add it to the menu this wee
 
 **Source:** FASTER Act (2021); AAP Guidelines
 
----## `nutrition-dairy-intro`
+---
+
+## `nutrition-dairy-intro`
 **Title:** Introduce dairy (yogurt and cheese), early allergen
 **Starts around:** Week 17 | **Peak:** Week 26 | **Typically wraps up by:** Week 39
 **Urgency:** advisory | **Priority:** 2
@@ -1575,7 +1641,9 @@ If your 10 month old is still on smooth purees, start introducing mashed texture
 
 **Source:** WHO Complementary Feeding Study; Illingworth (1986)
 
----## `nutrition-texture-finger-foods`
+---
+
+## `nutrition-texture-finger-foods`
 **Title:** Texture progression, soft finger foods
 **Starts around:** Week 30 | **Peak:** Week 34 | **Typically wraps up by:** Week 43
 **Urgency:** advisory | **Priority:** 2
@@ -1596,7 +1664,9 @@ If your 11 month old is not yet eating finger foods, start with very soft puffs 
 
 **Source:** CDC Infant Nutrition; UNICEF
 
----## `nutrition-3-meals-rhythm`
+---
+
+## `nutrition-3-meals-rhythm`
 **Title:** Move to 3 meals and 2 snacks daily
 **Starts around:** Week 34 | **Peak:** Week 43 | **Typically wraps up by:** Week 52
 **Urgency:** advisory | **Priority:** 2
@@ -1640,7 +1710,9 @@ If you are still buying jarred baby food at 14 months, it is an easy switch. Try
 
 **Source:** AAP Healthy Active Living; USDA
 
----## `nutrition-bottle-weaning`
+---
+
+## `nutrition-bottle-weaning`
 **Title:** Wean off the bottle, transition fully to cup
 **Starts around:** Week 47 | **Peak:** Week 52 | **Typically wraps up by:** Week 65
 **Urgency:** advisory | **Priority:** 2
@@ -2028,7 +2100,9 @@ If your 2 year old cannot stack more than 2 or 3 blocks, mention it at the 24 mo
 
 **Source:** CDC; Help Me Grow
 
----## `motor-object-transfer`
+---
+
+## `motor-object-transfer`
 **Title:** Transfers objects hand to hand
 **Starts around:** Week 21 | **Peak:** Week 26 | **Typically wraps up by:** Week 34
 **Urgency:** clinical | **Priority:** 2
@@ -2122,7 +2196,9 @@ If your 7 month old shows no imitation of sounds or expressions, mention it at t
 
 **Source:** Meltzoff and Moore (1977), Infant Imitation Research; CDC
 
----## `language-waving`
+---
+
+## `language-waving`
 **Title:** Waving bye bye
 **Starts around:** Week 34 | **Peak:** Week 39 | **Typically wraps up by:** Week 52
 **Urgency:** clinical | **Priority:** 2
@@ -2166,7 +2242,9 @@ If your 12 month old shows no response to "no" or their name, raise hearing and 
 
 **Source:** CDC Milestones (2024); AAP Language Surveillance
 
----## `language-1step-commands`
+---
+
+## `language-1step-commands`
 **Title:** Follows 1 step commands without gesture
 **Starts around:** Week 52 | **Peak:** Week 65 | **Typically wraps up by:** Week 78
 **Urgency:** clinical | **Priority:** 2
@@ -2302,7 +2380,9 @@ If your 30 month old is not using "I" or "me" at all, raise it at the 30 month v
 
 **Source:** CDC Milestones (2024); Chiat (1986)
 
----## `language-stranger-understands-50pct`
+---
+
+## `language-stranger-understands-50pct`
 **Title:** 50% of speech understandable to strangers
 **Starts around:** Week 91 | **Peak:** Week 104 | **Typically wraps up by:** Week 117
 **Urgency:** clinical | **Priority:** 2
@@ -2323,7 +2403,9 @@ If strangers cannot understand any of your child's speech by 24 months, a speech
 
 **Source:** ASHA Milestones; CDC
 
----## `language-stranger-understands-75pct`
+---
+
+## `language-stranger-understands-75pct`
 **Title:** 75% of speech understandable to strangers
 **Starts around:** Week 104 | **Peak:** Week 117 | **Typically wraps up by:** Week 130
 **Urgency:** clinical | **Priority:** 2
@@ -2344,7 +2426,9 @@ If strangers cannot understand the majority of your child's speech by age 3, req
 
 **Source:** ASHA; CDC Milestones (2024)
 
----## `language-names-colors`
+---
+
+## `language-names-colors`
 **Title:** Names at least 2 colors
 **Starts around:** Week 104 | **Peak:** Week 117 | **Typically wraps up by:** Week 130
 **Urgency:** advisory | **Priority:** 2
@@ -2365,7 +2449,9 @@ If your 3 year old cannot name a single color reliably, it is worth mentioning a
 
 **Source:** CDC Milestones (2024); Shatz et al. (1996)
 
----## `language-counts-to-3`
+---
+
+## `language-counts-to-3`
 **Title:** Counts to 3
 **Starts around:** Week 117 | **Peak:** Week 130 | **Typically wraps up by:** Week 156
 **Urgency:** advisory | **Priority:** 2
@@ -2479,7 +2565,9 @@ If your 3 year old cannot count even 2 objects with one to one correspondence, m
 
 **Source:** Gelman and Gallistel (1978); CDC
 
----## `language-knows-name-age`
+---
+
+## `language-knows-name-age`
 **Title:** Knows full first name and age
 **Starts around:** Week 130 | **Peak:** Week 156 | **Typically wraps up by:** Week 182
 **Urgency:** advisory | **Priority:** 2
@@ -2546,7 +2634,13 @@ If your family cannot understand the majority of your 2 year old's speech, ask f
 
 **Source:** ASHA; CDC Milestones (2024)
 
----## `cognitive-visual-stimulation`
+---
+
+# COGNITIVE, Priority 2 (16 windows)
+
+---
+
+## `cognitive-visual-stimulation`
 **Title:** Visual stimulation, high contrast patterns and faces
 **Starts around:** Week 0 | **Peak:** Week 0 | **Typically wraps up by:** Week 8
 **Urgency:** advisory | **Priority:** 2
@@ -2636,7 +2730,9 @@ If your 9 month old shows no interest in finding partially hidden objects, bring
 
 **Source:** Piaget (1954), Object Permanence; CDC; Baillargeon (1987)
 
----## `cognitive-object-permanence-solid`
+---
+
+## `cognitive-object-permanence-solid`
 **Title:** Object permanence solid, searches for fully hidden objects
 **Starts around:** Week 34 | **Peak:** Week 39 | **Typically wraps up by:** Week 52
 **Urgency:** clinical | **Priority:** 2
@@ -2680,7 +2776,9 @@ If your 12 month old shows no imitation of actions at all, mention it at the 12 
 
 **Source:** Meltzoff (1988); CDC
 
----## `cognitive-pretend-play-emerging`
+---
+
+## `cognitive-pretend-play-emerging`
 **Title:** Pretend play emerging, feeds stuffed animal, uses toy phone
 **Starts around:** Week 52 | **Peak:** Week 65 | **Typically wraps up by:** Week 78
 **Urgency:** advisory | **Priority:** 2
@@ -2839,7 +2937,9 @@ If your 30 month old cannot complete a simple two piece matching task, raise it 
 
 **Source:** CDC; Inhelder and Piaget (1964)
 
----## `cognitive-simple-problem-solving`
+---
+
+## `cognitive-simple-problem-solving`
 **Title:** Simple problem solving
 **Starts around:** Week 78 | **Peak:** Week 104 | **Typically wraps up by:** Week 130
 **Urgency:** advisory | **Priority:** 2
@@ -2860,7 +2960,9 @@ If your 2 year old cannot retrieve an object using any indirect method (pulling,
 
 **Source:** CDC; Piaget; Willats (1990), Means End Reasoning in Infants
 
----## `cognitive-memory-recalls-events`
+---
+
+## `cognitive-memory-recalls-events`
 **Title:** Memory, recalls recent events
 **Starts around:** Week 104 | **Peak:** Week 117 | **Typically wraps up by:** Week 156
 **Urgency:** advisory | **Priority:** 2
@@ -2906,6 +3008,10 @@ Absent self recognition by 24 months alongside other social cognitive delays is 
 
 ---
 
+# SOCIAL/EMOTIONAL, Priority 2 (15 windows)
+
+---
+
 ## `social-stranger-anxiety`
 **Title:** Stranger anxiety emerging, this is healthy
 **Starts around:** Week 26 | **Peak:** Week 30 | **Typically wraps up by:** Week 43
@@ -2927,7 +3033,9 @@ Complete absence of any stranger wariness by 9 months (universally happy with al
 
 **Source:** Ainsworth (1967); Bowlby (1969); CDC
 
----## `social-separation-anxiety`
+---
+
+## `social-separation-anxiety`
 **Title:** Separation anxiety, normal and how to handle it
 **Starts around:** Week 26 | **Peak:** Week 34 | **Typically wraps up by:** Week 65
 **Urgency:** advisory | **Priority:** 2
@@ -2948,7 +3056,9 @@ Severe separation anxiety that does not improve at all by age 3 is worth discuss
 
 **Source:** Bowlby (1969); Ainsworth (1967); AAP
 
----## `social-peek-a-boo`
+---
+
+## `social-peek-a-boo`
 **Title:** Peek a boo play, teaches object permanence and trust
 **Starts around:** Week 17 | **Peak:** Week 26 | **Typically wraps up by:** Week 43
 **Urgency:** advisory | **Priority:** 2
@@ -3015,7 +3125,9 @@ Complete absence of any prosocial concern for others by 30 months is worth notin
 
 **Source:** Zahn Waxler et al. (1992), Empathy Development Research; Hoffman (2000)
 
----## `social-cooperative-play`
+---
+
+## `social-cooperative-play`
 **Title:** Cooperative play begins, plays with other children
 **Starts around:** Week 104 | **Peak:** Week 117 | **Typically wraps up by:** Week 156
 **Urgency:** advisory | **Priority:** 2
@@ -3495,7 +3607,9 @@ If you delayed soy introduction past 9 months, introduce it now with standard al
 
 **Source:** LEAP Study (Du Toit et al. 2015); AAP Allergen Introduction Guidelines
 
----## `nutrition-water-cup`
+---
+
+## `nutrition-water-cup`
 **Title:** Introduce water in a cup
 **Starts around:** Week 26 | **Peak:** Week 26 | **Typically wraps up by:** Week 52
 **Urgency:** advisory | **Priority:** 3
@@ -3539,7 +3653,9 @@ If your 12 month old is not attempting to pick up small pieces of food at all, m
 
 **Source:** AAP Complementary Feeding Guidelines; Baby Led Weaning Research (Rapley and Murkett)
 
----## `nutrition-spoon-self-feeding`
+---
+
+## `nutrition-spoon-self-feeding`
 **Title:** Spoon self feeding, let them try
 **Starts around:** Week 52 | **Peak:** Week 65 | **Typically wraps up by:** Week 78
 **Urgency:** advisory | **Priority:** 3
@@ -3560,7 +3676,9 @@ If your 2 year old shows no interest in or ability to use a spoon at all, mentio
 
 **Source:** AAP; CDC Motor Milestones
 
----## `nutrition-fork-intro`
+---
+
+## `nutrition-fork-intro`
 **Title:** Fork introduction
 **Starts around:** Week 65 | **Peak:** Week 78 | **Typically wraps up by:** Week 104
 **Urgency:** advisory | **Priority:** 3
@@ -3581,7 +3699,9 @@ If your 2 year old has no interest in utensils at all, it is worth noting at the
 
 **Source:** AAP; CDC
 
----## `nutrition-juice-limit`
+---
+
+## `nutrition-juice-limit`
 **Title:** Limit juice, none under 12 months, max 4 oz after
 **Starts around:** Week 52 | **Peak:** Week 60 | **Typically wraps up by:** Week 104
 **Type:** reminder
@@ -3603,7 +3723,9 @@ If your toddler has been drinking significant amounts of juice daily, reducing g
 
 **Source:** AAP Fruit Juice Policy (2017); Pediatrics
 
----## `nutrition-2pct-milk-switch`
+---
+
+## `nutrition-2pct-milk-switch`
 **Title:** Switch from whole to 2% milk at age 2
 **Starts around:** Week 104 | **Peak:** Week 104 | **Typically wraps up by:** Week 117
 **Urgency:** advisory | **Priority:** 3
@@ -3746,7 +3868,9 @@ If your 20 month old cannot kick a stationary ball at all, mention it at the nex
 
 **Source:** CDC Milestones; AAP
 
----## `motor-scribbling`
+---
+
+## `motor-scribbling`
 **Title:** Scribbling with a crayon
 **Starts around:** Week 65 | **Peak:** Week 78 | **Typically wraps up by:** Week 91
 **Urgency:** advisory | **Priority:** 3
@@ -3790,7 +3914,9 @@ If your 27 month old cannot copy a simple vertical line, it is worth noting at t
 
 **Source:** CDC Milestones; HELP Strands; AAP
 
----## `motor-drawing-circle`
+---
+
+## `motor-drawing-circle`
 **Title:** Copies a circle
 **Starts around:** Week 104 | **Peak:** Week 117 | **Typically wraps up by:** Week 130
 **Urgency:** advisory | **Priority:** 3
@@ -3880,7 +4006,13 @@ If your 3 year old cannot interact with a ball at all (catch, kick, or throw), m
 
 **Source:** CDC; AAP
 
----## `language-bilingual-note`
+---
+
+# LANGUAGE, Priority 3 (5 windows)
+
+---
+
+## `language-bilingual-note`
 **Title:** Bilingual households, total vocabulary is what counts
 **Starts around:** Week 0 | **Peak:** Week 0 | **Typically wraps up by:** Week 156
 **Type:** reminder
@@ -4115,7 +4247,9 @@ If your 2 year old cannot demonstrate the function of common daily objects, ment
 
 **Source:** CDC; Mandler (1992), How to Build a Baby's Conceptual System
 
----## `cognitive-time-concepts`
+---
+
+## `cognitive-time-concepts`
 **Title:** Time concepts, morning, afternoon, night
 **Starts around:** Week 104 | **Peak:** Week 117 | **Typically wraps up by:** Week 130
 **Urgency:** advisory | **Priority:** 3
@@ -4136,7 +4270,9 @@ If your 3 year old has no concept of day/night or today/tomorrow, it is worth no
 
 **Source:** CDC; Harner (1975), How and When Children Learn Temporal Language
 
----## `cognitive-attention-span`
+---
+
+## `cognitive-attention-span`
 **Title:** Build attention span through focused play
 **Starts around:** Week 16 | **Peak:** Week 52 | **Typically wraps up by:** Week 156
 **Type:** reminder
@@ -4865,7 +5001,7 @@ If you left the hospital and are unsure whether all three screens were completed
 ## Month 33 (weeks 139 to 143)
 
 **Subject:** [Name] is 33 months. Strangers should understand most of what they say.
-**Preview:** The 75% stranger comprehension stage typically wraps up by 36 months. Here is what it means and when to act.
+**Preview:** The 75% stranger comprehension window closes at 36 months. Here is what it means and when to act.
 **Variant:** Speech clarity at 33 months. The benchmark.
 
 **Key windows:** stranger comprehension 75% (closes week 156), tells a simple story, follows complex instructions, counts objects 1 to 5, knows full name and age
@@ -5145,7 +5281,9 @@ This phase winds down naturally by 18 to 19 months as the child's interest shift
 
 **Source:** Piaget Sensorimotor Stage (1952); AAP Early Learning Guidelines
 
----## `motor-stairs-descending`
+---
+
+## `motor-stairs-descending`
 **Title:** Walking downstairs with support
 **Starts around:** Week 66 | **Peak:** Week 70 | **Typically wraps up by:** Week 78
 **Urgency:** advisory | **Priority:** 3
@@ -5191,7 +5329,9 @@ No clinical concern if assistance takes longer to emerge. Some toddlers cooperat
 
 **Source:** Gesell Institute of Child Development; AAP
 
----## `self-help-potty-readiness`
+---
+
+## `self-help-potty-readiness`
 **Title:** Potty training readiness. signs to watch for before you start
 **Starts around:** Week 79 | **Peak:** Week 95 | **Typically wraps up by:** Week 113
 **Urgency:** advisory | **Priority:** 2
@@ -5225,19 +5365,21 @@ Most toddlers begin asking constant questions around 20 to 23 months, most frequ
 
 **What to do:**
 * Answer every question, even the obvious ones. "That's a mailbox. The mail carrier puts letters in it."
-* Resist the urge to answer with a question back ("What do you think it is?") at this stage — they are asking because they genuinely do not know
-* When you do not know the answer, say so and look it up together: "I don't know — let's find out"
+* Resist the urge to answer with a question back ("What do you think it is?") at this stage, they are asking because they genuinely do not know
+* When you do not know the answer, say so and look it up together: "I don't know. Let's find out"
 * Expect the same question multiple times. Repetition is how they cement new words.
 
 **What not to worry about:**
-The sheer volume of questions at this age — sometimes dozens per hour — is developmentally normal and temporary. It peaks and fades as vocabulary grows.
+The sheer volume of questions at this age, sometimes dozens per hour, is developmentally normal and temporary. It peaks and fades as vocabulary grows.
 
 **If you're past this stage:**
 A child who rarely or never asks questions by 22 to 24 months, especially combined with limited vocabulary, is worth raising at the 24 month visit. Keep talking, reading, and answering questions as they come. Language development continues well beyond this stage, and there is always more you can do to support it.
 
 **Source:** Hart & Risley (1995) Meaningful Differences; Nelson (1973) language acquisition research
 
----## `motor-throw-overarm`
+---
+
+## `motor-throw-overarm`
 **Title:** Overarm throwing develops
 **Starts around:** Week 92 | **Peak:** Week 96 | **Typically wraps up by:** Week 108
 **Urgency:** advisory | **Priority:** 3
@@ -5247,9 +5389,9 @@ Early ball play (months 6 to 12) involves rolling and dropping. Most children de
 
 **What to do:**
 * Demonstrate an overarm throw with a soft ball and invite them to copy
-* Use soft, light balls — foam, cloth, or a small rubber ball — in a space where the throw can go far
+* Use soft, light balls, foam, cloth, or a small rubber ball, in a space where the throw can go far
 * Throwing at a target (a bucket, a couch cushion on the floor) adds motivation and direction
-* Celebrate range and enthusiasm over accuracy — accuracy comes much later
+* Celebrate range and enthusiasm over accuracy. Accuracy comes much later
 
 **What not to worry about:**
 Most toddlers throw with both feet planted for many months before developing the step-through technique. An in place overarm throw is a fully legitimate first throw.
@@ -5259,7 +5401,9 @@ No clinical concern if throwing is still underarm or pushing at 25 months. Motor
 
 **Source:** Gallahue & Ozmun (2006) Understanding Motor Development; CDC Motor Milestones
 
----## `cognitive-draw-copy-lines`
+---
+
+## `cognitive-draw-copy-lines`
 **Title:** Drawing and copying lines and circles
 **Starts around:** Week 92 | **Peak:** Week 100 | **Typically wraps up by:** Week 109
 **Urgency:** advisory | **Priority:** 3
@@ -5269,7 +5413,7 @@ Most children move from scribbling (which is purposeful mark-making without a ta
 
 **What to do:**
 * Draw a vertical line slowly and ask them to make one just like it
-* Use large crayons or chunky markers — they provide better grip feedback than thin pencils
+* Use large crayons or chunky markers. They provide better grip feedback than thin pencils
 * Praise the attempt, not the result. A wobbly vertical line is a real vertical line.
 * Progress goes: vertical line → horizontal line → circle → cross. Do not rush the sequence.
 
@@ -5281,17 +5425,19 @@ If your child shows no interest in mark-making at all by 24 months, mention it a
 
 **Source:** Beery VMI Developmental Norms; Gesell (1940) motor development sequence
 
----## `cognitive-humor-jokes`
+---
+
+## `cognitive-humor-jokes`
 **Title:** Using humor intentionally, first jokes and silly words
 **Starts around:** Week 109 | **Peak:** Week 117 | **Typically wraps up by:** Week 121
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
-Most children begin using humor deliberately around 25 to 28 months — saying the wrong word on purpose, making a funny face to get a reaction, turning a routine into a game with a punchline. This is one of the most significant markers of emerging theory of mind: the child understands that you have expectations, and they can subvert those expectations for effect. It is also the first evidence of social intelligence applied to entertainment.
+Most children begin using humor deliberately around 25 to 28 months, saying the wrong word on purpose, making a funny face to get a reaction, turning a routine into a game with a punchline. This is one of the most significant markers of emerging theory of mind: the child understands that you have expectations, and they can subvert those expectations for effect. It is also the first evidence of social intelligence applied to entertainment.
 
 **What to do:**
 * Play along. When they call a dog a cat on purpose and wait for your reaction, give them the laugh. That is exactly what they are going for.
-* Introduce simple silly games: "Is your nose your elbow? Nooooo!" — let them take the joke role
+* Introduce simple silly games: "Is your nose your elbow? Nooooo!", let them take the joke role
 * Read silly books together: Julia Donaldson, Mo Willems. Toddler humor literature is its own genre.
 * Laugh at their jokes, including the ones that make no sense. The intent is what matters.
 
@@ -5303,18 +5449,20 @@ No clinical concern if humor development is slower. Intentional humor is not a r
 
 **Source:** Reddy (2001) theory of mind and humor development; Loizou (2005) infant humor
 
----## `motor-tricycle-balance-bike`
+---
+
+## `motor-tricycle-balance-bike`
 **Title:** Tricycle or balance bike, first wheeled independence
 **Starts around:** Week 113 | **Peak:** Week 121 | **Typically wraps up by:** Week 126
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
-Most children develop the leg strength and coordination to pedal a tricycle or propel a balance bike around 26 to 29 months. This is a major gross motor milestone and one of the most motivating forms of independent movement available to toddlers. Beyond the physical benefits, wheeled transport gives children a sense of spatial independence — they can move themselves somewhere they choose to go.
+Most children develop the leg strength and coordination to pedal a tricycle or propel a balance bike around 26 to 29 months. This is a major gross motor milestone and one of the most motivating forms of independent movement available to toddlers. Beyond the physical benefits, wheeled transport gives children a sense of spatial independence. They can move themselves somewhere they choose to go.
 
 **What to do:**
 * For balance bikes: no pedals, child propels by walking then lifts feet to glide. Start there if introducing from scratch.
 * For tricycles: position the seat so legs have a slight bend at the bottom of the pedal stroke
-* Start on a flat, smooth surface — grass is too hard, slopes are dangerous
+* Start on a flat, smooth surface. Grass is too hard, slopes are dangerous
 * Helmet from day one, always. It builds the habit before speed makes it necessary.
 
 **What not to worry about:**
@@ -5325,16 +5473,18 @@ Tricycle pedaling that has not emerged by 30 months is worth noting as part of a
 
 **Source:** AAP Physical Activity Guidelines; Gallahue & Ozmun Motor Development
 
----## `self-help-undressing-independently`
+---
+
+## `self-help-undressing-independently`
 **Title:** Undressing independently, socks, shoes, and loose pants
 **Starts around:** Week 113 | **Peak:** Week 121 | **Typically wraps up by:** Week 126
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
-Most children develop the fine motor ability to undress themselves around 26 to 29 months: pulling off socks, removing shoes (especially velcro), and pulling down loose pants. Undressing always precedes dressing — it requires less precision. This is a practical independence skill and is directly relevant to toilet training, where the ability to pull pants down quickly matters a great deal.
+Most children develop the fine motor ability to undress themselves around 26 to 29 months: pulling off socks, removing shoes (especially velcro), and pulling down loose pants. Undressing always precedes dressing. It requires less precision. This is a practical independence skill and is directly relevant to toilet training, where the ability to pull pants down quickly matters a great deal.
 
 **What to do:**
-* Let them undress themselves at bath time and bedtime — it takes longer but builds the skill
+* Let them undress themselves at bath time and bedtime, it takes longer but builds the skill
 * Velcro shoes and elastic waists are the right starting equipment
 * Break it into steps and let them do the last part first: you loosen the shoe, they pull it off
 * Praise the effort: "You took your sock off all by yourself!"
@@ -5347,16 +5497,18 @@ No ability to remove any clothing by 30 months may indicate fine motor differenc
 
 **Source:** Gesell Developmental Schedules; AAP Developmental Milestones
 
----## `self-help-tooth-brushing`
+---
+
+## `self-help-tooth-brushing`
 **Title:** Tooth brushing, child takes a turn
 **Starts around:** Week 117 | **Peak:** Week 130 | **Typically wraps up by:** Week 139
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
-The American Academy of Pediatric Dentistry recommends brushing from the first tooth, done by the parent with a rice-grain amount of fluoride toothpaste. Most children are ready to hold the brush and take a turn around 27 to 32 months. This is not just oral hygiene — it is a lifelong habit being formed. Children who brush independently (with supervision) from this age have significantly better dental outcomes than those who are passive recipients.
+The American Academy of Pediatric Dentistry recommends brushing from the first tooth, done by the parent with a rice-grain amount of fluoride toothpaste. Most children are ready to hold the brush and take a turn around 27 to 32 months. This is not just oral hygiene. It is a lifelong habit being formed. Children who brush independently (with supervision) from this age have significantly better dental outcomes than those who are passive recipients.
 
 **What to do:**
-* Parent brushes first, child takes a turn second — not the other way around. Their technique is not yet sufficient to do it alone.
+* Parent brushes first, child takes a turn second. Not the other way around. Their technique is not yet sufficient to do it alone.
 * Let them pick their toothbrush (character brushes work) and their toothpaste flavor
 * Make it a routine, not a battle: same time, same sequence, every day
 * Electric toothbrushes are fine and often more effective at this age than manual
@@ -5369,17 +5521,19 @@ If your child has significant tooth brushing resistance past 36 months, discuss 
 
 **Source:** AAPD Periodicity Guidelines; AAP Bright Futures Dental Guidelines
 
----## `motor-handedness-emerging`
+---
+
+## `motor-handedness-emerging`
 **Title:** Dominant hand solidifies, and why you should not try to change it
 **Starts around:** Week 113 | **Peak:** Week 130 | **Typically wraps up by:** Week 139
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
-Between 26 and 32 months, most children settle into a consistent hand preference for drawing, eating, and throwing. This is neurological, not behavioral — the dominant hemisphere of the brain is establishing control over the contralateral hand. Approximately 10 percent of children are left handed. Attempting to switch a child's dominant hand causes stress, disrupts motor learning, and in some cases has lasting effects on speech and language development.
+Between 26 and 32 months, most children settle into a consistent hand preference for drawing, eating, and throwing. This is neurological, not behavioral. The dominant hemisphere of the brain is establishing control over the contralateral hand. Approximately 10 percent of children are left handed. Attempting to switch a child's dominant hand causes stress, disrupts motor learning, and in some cases has lasting effects on speech and language development.
 
 **What to do:**
 * Observe which hand the child naturally reaches with for drawing, spoon use, and throwing
-* Place objects in the midline — let them choose which hand to use, do not hand objects to the right hand specifically
+* Place objects in the midline. Let them choose which hand to use, do not hand objects to the right hand specifically
 * If left handedness is emerging, buy left handed scissors when they reach preschool age
 * Tell grandparents and caregivers: this is not something to correct
 
@@ -5399,12 +5553,12 @@ No dominant hand by age 4 or 5 is worth noting. Strong hand preference before 18
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
-Most children begin to form specific social preferences around 30 to 34 months — requesting particular children by name, showing excitement when they know a certain friend will be present, and expressing something that looks like genuine friendship. This is the emergence of selective social bonding beyond the family. It is one of the earliest signs of the social intelligence that will drive peer relationships throughout childhood.
+Most children begin to form specific social preferences around 30 to 34 months, requesting particular children by name, showing excitement when they know a certain friend will be present, and expressing something that looks like genuine friendship. This is the emergence of selective social bonding beyond the family. It is one of the earliest signs of the social intelligence that will drive peer relationships throughout childhood.
 
 **What to do:**
 * Take the preference seriously. If they ask for Ella, try to arrange it.
 * Facilitate the playdate: same age, low-key, short (60 to 90 minutes), small numbers (one friend is enough)
-* Stay nearby but let them navigate the social dynamic — resist the urge to direct the play
+* Stay nearby but let them navigate the social dynamic. Resist the urge to direct the play
 * Debrief naturally afterward: "Did you have fun with Ella? What did you play?"
 
 **What not to worry about:**
@@ -5415,18 +5569,20 @@ No interest in any peer interaction by 36 months, not just preference but comple
 
 **Source:** Hartup (1992) peer relations research; AAP Social Emotional Development
 
----## `motor-balance-one-foot`
+---
+
+## `motor-balance-one-foot`
 **Title:** Balancing on one foot for 2 seconds
 **Starts around:** Week 131 | **Peak:** Week 143 | **Typically wraps up by:** Week 152
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
-Most children develop the ability to stand briefly on one foot around 30 to 35 months. It requires the child to shift their center of gravity over a single support point while the raised leg is controlled — a demanding vestibular and proprioceptive task. This is the direct precursor to hopping, skipping, and the single-leg balance needed for kicking accuracy and stair climbing with alternating feet.
+Most children develop the ability to stand briefly on one foot around 30 to 35 months. It requires the child to shift their center of gravity over a single support point while the raised leg is controlled, a demanding vestibular and proprioceptive task. This is the direct precursor to hopping, skipping, and the single-leg balance needed for kicking accuracy and stair climbing with alternating feet.
 
 **What to do:**
 * Make it a game: "Can you stand on one foot like a flamingo?"
 * Hold their hand at first and gradually reduce support
-* Count out loud while they balance — makes it concrete and motivating
+* Count out loud while they balance. This makes it concrete and motivating
 * Practice during normal routines: standing on one foot to put on a sock is a real-world application
 
 **What not to worry about:**
@@ -5437,22 +5593,24 @@ Unable to balance on either foot for any duration by 36 months is worth noting a
 
 **Source:** Bayley Scales of Infant Development; CDC 3-Year Milestones
 
----## `cognitive-preschool-readiness`
+---
+
+## `cognitive-preschool-readiness`
 **Title:** Preschool readiness, what to look for before the first day
 **Starts around:** Week 135 | **Peak:** Week 143 | **Typically wraps up by:** Week 147
 **Urgency:** advisory | **Priority:** 2
 
 **Why it matters:**
-Many children start preschool between ages 2.5 and 3. Preschool readiness is not about knowing colors or counting — it is about the skills that allow a child to function in a group setting: separating from parents without extended distress, following basic two-step instructions, communicating their needs verbally, and managing basic self-help tasks (going to the bathroom, washing hands, handling a snack). A child who is not ready will have a harder start, not a faster one.
+Many children start preschool between ages 2.5 and 3. Preschool readiness is not about knowing colors or counting. It is about the skills that allow a child to function in a group setting: separating from parents without extended distress, following basic two-step instructions, communicating their needs verbally, and managing basic self-help tasks (going to the bathroom, washing hands, handling a snack). A child who is not ready will have a harder start, not a faster one.
 
 **What to do:**
 * Practice separation in low-stakes settings: grandparent visits, playdates without parents, church or community programs
 * Check the practical self-help list: can they pull pants up and down? Wash hands? Communicate hunger or need for the bathroom?
-* Visit the preschool together before the first day — familiarity dramatically reduces first day anxiety
+* Visit the preschool together before the first day. Familiarity dramatically reduces first day anxiety
 * Read books about starting school: "The Kissing Hand," "Wemberly Worried," "First Day Jitters"
 
 **What not to worry about:**
-Some children cry at drop-off for weeks. That is not a sign of unreadiness — it is a sign of healthy attachment. The question is whether they can recover and engage once you are gone.
+Some children cry at drop-off for weeks. That is not a sign of unreadiness. It is a sign of healthy attachment. The question is whether they can recover and engage once you are gone.
 
 **If you're past this stage:**
 No ability to separate from a parent in any context by 36 months, not just preschool but with any trusted adult, is worth discussing with your pediatrician. Separation anxiety is very common and highly responsive to gentle, consistent practice and support.
@@ -5467,12 +5625,12 @@ No ability to separate from a parent in any context by 36 months, not just presc
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
-Between 31 and 35 months, most children can put on simple clothing independently: a shirt pulled over the head, pants with an elastic waist, socks, and velcro shoes. This is a significant independence milestone with practical implications — it is also a preschool readiness requirement. Children who can dress themselves have meaningfully more autonomy and self-confidence in the morning routine and in group care settings.
+Between 31 and 35 months, most children can put on simple clothing independently: a shirt pulled over the head, pants with an elastic waist, socks, and velcro shoes. This is a significant independence milestone with practical implications, it is also a preschool readiness requirement. Children who can dress themselves have meaningfully more autonomy and self-confidence in the morning routine and in group care settings.
 
 **What to do:**
 * Start with the easiest items: loose pants and socks. Let them try while you narrate.
 * Teach front-from-back with a simple cue: "tag goes in the back"
-* Put out tomorrow's clothes the night before and let them get dressed independently in the morning — remove time pressure
+* Put out tomorrow's clothes the night before and let them get dressed independently in the morning. This removes time pressure
 * Avoid buttons, snaps, and laces during the learning phase. Elastic and velcro only.
 
 **What not to worry about:**
@@ -5491,12 +5649,12 @@ No ability to put on any clothing independently by 36 months may indicate fine m
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
-Many children can rote count to 10 by age 2 without understanding that the numbers represent quantities. Most children develop cardinal number understanding — knowing that "two" means exactly two objects — around 30 to 35 months, and it is a fundamentally different cognitive achievement from rote counting. It is one of the earliest building blocks of mathematical reasoning. Children who understand cardinality at this stage have consistently stronger math outcomes in primary school.
+Many children can rote count to 10 by age 2 without understanding that the numbers represent quantities. Most children develop cardinal number understanding, knowing that "two" means exactly two objects, around 30 to 35 months, and it is a fundamentally different cognitive achievement from rote counting. It is one of the earliest building blocks of mathematical reasoning. Children who understand cardinality at this stage have consistently stronger math outcomes in primary school.
 
 **What to do:**
 * Play "give me" games: "Can you give me two crackers? Can you give me one more?"
 * Count objects together by pointing to each one: "One bear, two bears, three bears. Three bears!" (emphasizing the last number as the total)
-* Avoid drilling — embed counting in normal activities: setting the table, getting socks out of the drawer, counting steps on the stairs
+* Avoid drilling. Embed counting in normal activities: setting the table, getting socks out of the drawer, counting steps on the stairs
 * Books with counting (Eric Carle's "The Very Hungry Caterpillar") reinforce this without pressure
 
 **What not to worry about:**
@@ -5507,19 +5665,21 @@ No understanding of any number quantity by 36 months is worth noting at the well
 
 **Source:** Wynn (1992) infant number sense; Gelman & Gallistel (1978) counting principles; AAP Cognitive Milestones
 
----## `language-receptive-vocabulary`
+---
+
+## `language-receptive-vocabulary`
 **Title:** Understands 50+ words, receptive language leads the way
 **Starts around:** Week 43 | **Peak:** Week 52 | **Typically wraps up by:** Week 61
 **Urgency:** advisory | **Priority:** 2
 
 **Why it matters:**
-Receptive language — words a child understands — always develops ahead of expressive language — words they can say. By 14 months, most children understand 50 or more words even though they may only say 5 to 10. This gap is normal and expected. However, a child who does not appear to understand common words, names, and simple instructions by 14 months is worth monitoring, as receptive delays can be an earlier indicator of language or hearing issues than expressive delays.
+Receptive language (words a child understands) always develops ahead of expressive language (words they can say). By 14 months, most children understand 50 or more words even though they may only say 5 to 10. This gap is normal and expected. However, a child who does not appear to understand common words, names, and simple instructions by 14 months is worth monitoring, as receptive delays can be an earlier indicator of language or hearing issues than expressive delays.
 
 **What to do:**
 * Test receptive vocabulary with natural prompts: "Where is the dog?" "Can you bring me the cup?" "Show me your shoes."
-* If the child looks, points, or retrieves the correct object, they understand it — even if they cannot say it
+* If the child looks, points, or retrieves the correct object, they understand it, even if they cannot say it
 * Continue narrating daily life: every word you use builds the receptive vocabulary bank
-* Read aloud daily — pointing to pictures and naming them builds word-to-object mapping
+* Read aloud daily, pointing to pictures and naming them builds word-to-object mapping
 
 **What not to worry about:**
 A 12 to 14 month old who says very few words but clearly understands what is being said is on a normal trajectory. Expressive language catches up.
@@ -5537,7 +5697,7 @@ If your 14 month old does not consistently respond to their own name, does not f
 **Urgency:** advisory | **Priority:** 3
 
 **Why it matters:**
-Most toddlers begin showing early prosocial behavior around 17 to 22 months: patting a crying person, offering their own comfort object to someone who appears distressed, or attempting to wipe someone's tears. This is not yet empathy in the adult sense — it is the earliest precursor to it. The child is registering emotional states in others and responding with a behavior intended to help. It is one of the most meaningful early social milestones, and one parents often miss because it appears spontaneous and brief.
+Most toddlers begin showing early prosocial behavior around 17 to 22 months: patting a crying person, offering their own comfort object to someone who appears distressed, or attempting to wipe someone's tears. This is not yet empathy in the adult sense. It is the earliest precursor to it. The child is registering emotional states in others and responding with a behavior intended to help. It is one of the most meaningful early social milestones, and one parents often miss because it appears spontaneous and brief.
 
 **What to do:**
 * When you are mildly upset or pretend to be, name the emotion and observe the child's response: "Oh, I bumped my knee. That hurt. I'm sad."
@@ -5546,7 +5706,7 @@ Most toddlers begin showing early prosocial behavior around 17 to 22 months: pat
 * Read books where characters help or comfort each other: "The Invisible String," "Llama Llama Red Pajama"
 
 **What not to worry about:**
-Some children show comfort behaviors at 15 months, others not until 24 months. Wide normal range. A child who is engrossed in play when another person cries is not demonstrating a lack of empathy — they may simply not have noticed.
+Some children show comfort behaviors at 15 months, others not until 24 months. Wide normal range. A child who is engrossed in play when another person cries is not demonstrating a lack of empathy. They may simply not have noticed.
 
 **If you're past this stage:**
 Complete absence of any prosocial or comfort response to others by 24 months, combined with limited eye contact and communication, is worth raising at the 24 month visit as part of the broader social emotional review. Raising it early means more options for support, and many children with social communication differences thrive with the right help.
@@ -5561,13 +5721,13 @@ Complete absence of any prosocial or comfort response to others by 24 months, co
 **Urgency:** advisory | **Priority:** 2
 
 **Why it matters:**
-Most children achieve consistent daytime dryness — fewer than one accident per day, most days — between 24 and 33 months. This is the functional endpoint of daytime potty training. Nighttime dryness comes later and is a separate milestone entirely (many children are not reliably dry at night until age 5 or 6, which is normal). By 33 months, if daytime dryness is not yet established, it is worth discussing with a pediatrician. This is not because something is necessarily wrong, but to review technique, readiness factors, and rule out physical contributors.
+Most children achieve consistent daytime dryness, fewer than one accident per day on most days, between 24 and 33 months. This is the functional endpoint of daytime potty training. Nighttime dryness comes later and is a separate milestone entirely (many children are not reliably dry at night until age 5 or 6, which is normal). By 33 months, if daytime dryness is not yet established, it is worth discussing with a pediatrician. This is not because something is necessarily wrong, but to review technique, readiness factors, and rule out physical contributors.
 
 **What to do:**
 * If training is complete: maintain consistency in routine, especially at transitions (leaving the house, before nap, before bed)
 * If still in progress: review the readiness checklist from the potty training window. If readiness signs are present but training is stalling, try a fresh three day intensive approach
-* Accidents are normal throughout this period — respond calmly, clean up together, no shame or punishment
-* Nighttime training is a separate milestone — pull-ups or training pants at night are fine indefinitely at this age
+* Accidents are normal throughout this period, respond calmly, clean up together, no shame or punishment
+* Nighttime training is a separate milestone. Pull-ups or training pants at night are fine indefinitely at this age
 
 **What not to worry about:**
 Nighttime accidents past age 3 are completely normal and are not a sign of failed training. Focus only on daytime dryness at this stage.
