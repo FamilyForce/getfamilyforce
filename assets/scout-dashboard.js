@@ -1210,38 +1210,70 @@
 
   /* ── Post-subscription modal actions ──────────────────────── */
 
+  // Generate a referral code for a user who doesn't have one yet.
+  // Derives a prefix from the email, appends 4 random chars, saves to DB + localStorage.
+  function _generateReferralCode(userId, email, onCode) {
+    var client = sb || window._supabaseClient;
+    if (!client) return;
+    var prefix = (email || '').split('@')[0].replace(/[^a-zA-Z]/g, '').slice(0, 6).toUpperCase() || 'FF';
+    var chars  = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+    var suffix = Array.from({length: 4}, function() {
+      return chars[Math.floor(Math.random() * chars.length)];
+    }).join('');
+    var code = prefix + '-' + suffix;
+    client.from('profiles').upsert({ id: userId, referral_code: code }, { onConflict: 'id', ignoreDuplicates: false })
+      .then(function(res) {
+        if (!res.error) {
+          localStorage.setItem('ff_own_referral', code);
+          onCode(code);
+        }
+      });
+  }
+
   // Resolve the referral link from 3 sources in order:
   //   1. #modalReferralLink element text (already populated)
   //   2. ff_own_referral in localStorage
-  //   3. profiles.referral_code from Supabase (final fallback)
-  // Calls onLink(link) once the link is resolved, or does nothing if unavailable.
+  //   3. profiles.referral_code from Supabase
+  //   4. Generate a new code if profile has none (users pre-dating referral system)
+  // Calls onLink(link) once the link is resolved, or does nothing if all paths fail.
   function _resolveModalLink(onLink) {
     var linkEl = document.getElementById('modalReferralLink');
     var link   = (linkEl && linkEl.textContent.trim()) || '';
 
     if (!link) {
-      var code = localStorage.getItem('ff_own_referral');
-      if (code) {
-        link = 'https://getfamilyforce.com?via=' + code;
+      var cached = localStorage.getItem('ff_own_referral');
+      if (cached) {
+        link = 'https://getfamilyforce.com?via=' + cached;
         if (linkEl) linkEl.textContent = link;
       }
     }
 
     if (link) { onLink(link); return; }
 
-    // Final fallback: fetch from Supabase
+    // Fetch from Supabase — generate if not yet set
     var client = sb || window._supabaseClient;
     if (!client) return;
     client.auth.getUser().then(function(res) {
       if (res.error || !res.data || !res.data.user) return;
-      client.from('profiles').select('referral_code').eq('id', res.data.user.id).single()
+      var userId = res.data.user.id;
+      var email  = res.data.user.email;
+      client.from('profiles').select('referral_code').eq('id', userId).single()
         .then(function(result) {
-          if (result.error || !result.data || !result.data.referral_code) return;
-          var code = result.data.referral_code;
-          localStorage.setItem('ff_own_referral', code);
-          var resolvedLink = 'https://getfamilyforce.com?via=' + code;
-          if (linkEl) linkEl.textContent = resolvedLink;
-          onLink(resolvedLink);
+          var code = result.data && result.data.referral_code;
+          if (code) {
+            // Found — cache and use
+            localStorage.setItem('ff_own_referral', code);
+            var resolvedLink = 'https://getfamilyforce.com?via=' + code;
+            if (linkEl) linkEl.textContent = resolvedLink;
+            onLink(resolvedLink);
+          } else {
+            // Not set yet — generate one on the spot
+            _generateReferralCode(userId, email, function(newCode) {
+              var resolvedLink = 'https://getfamilyforce.com?via=' + newCode;
+              if (linkEl) linkEl.textContent = resolvedLink;
+              onLink(resolvedLink);
+            });
+          }
         });
     });
   }
