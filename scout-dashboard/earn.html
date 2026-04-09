@@ -452,6 +452,24 @@
       Share Scout with other parents. Earn 25% for the life of their subscription.
     </p>
 
+    <!-- Re-surface post-sub referral modal if user hasn't shared yet (fix #3) -->
+    <div id="earnShareNudge" style="display:none;background:var(--terra-tint,#F0EBFF);border:1.5px solid rgba(110,78,214,.25);border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <p style="font-size:13px;color:var(--terra-dark,#5B3CC4);margin:0;line-height:1.5;font-weight:600">👋 Haven't shared yet? See your referral link and sharing options.</p>
+      <button onclick="window.resetPostSubModal && window.resetPostSubModal()" style="flex-shrink:0;background:var(--terra,#6E4ED6);color:#fff;border:none;border-radius:100px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Share now</button>
+    </div>
+    <script>
+    (function() {
+      // Show nudge only if: user is subscribed, modal was shown but no clicks recorded yet
+      // Simple proxy: ff_postsub_modal_shown is set but earnStatsWrap is still hidden
+      var shown = localStorage.getItem('ff_postsub_modal_shown') === '1';
+      var hasClicks = localStorage.getItem('ff_earn_has_clicks') === '1';
+      if (shown && !hasClicks) {
+        var nudge = document.getElementById('earnShareNudge');
+        if (nudge) nudge.style.display = 'flex';
+      }
+    })();
+    </script>
+
     <!-- ── YOUR LINK ── -->
     <p class="earn-section-label">Your referral link</p>
 
@@ -1069,7 +1087,7 @@ There's a free trial if you want to try it: [YOUR LINK]
 <!-- Toast -->
 <div class="earn-toast" id="earnToast"></div>
 
-<script src="/assets/scout-dashboard.js"></script>
+<script src="/assets/scout-dashboard.js?v=20260409b"></script>
 <script>
 /* ═══════════════════════════════════════════════════════════
    EARN TAB — client-side logic
@@ -1086,6 +1104,12 @@ var REWARDFUL_PORTAL = 'https://familyforce.getrewardful.com';
 function setEarnState(clicks, data) {
   var isActive       = clicks > 0;
   var hasPayoutMethod = data && !!data.payout_method;
+  // Hide the "haven't shared yet" nudge once clicks are recorded (fix #3)
+  if (isActive) {
+    localStorage.setItem('ff_earn_has_clicks', '1');
+    var nudge = document.getElementById('earnShareNudge');
+    if (nudge) nudge.style.display = 'none';
+  }
   document.getElementById('earnPotentialWrap').style.display = isActive ? 'none' : 'block';
   document.getElementById('earnStatsWrap').style.display     = isActive ? 'block' : 'none';
   // Show payout setup when: zero state, OR active but payout method not yet connected

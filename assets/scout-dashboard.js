@@ -1167,11 +1167,15 @@
   }
 
   /* ── Clipboard helpers ────────────────────────────────────── */
-  function _copyText(text) {
+  // Fix #2: toast fires only after clipboard write confirms (or fallback runs).
+  function _copyText(text, onSuccess) {
     if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).catch(function() { _fallbackCopy(text); });
+      navigator.clipboard.writeText(text)
+        .then(function() { if (onSuccess) onSuccess(); })
+        .catch(function() { _fallbackCopy(text); if (onSuccess) onSuccess(); });
     } else {
       _fallbackCopy(text);
+      if (onSuccess) onSuccess();
     }
   }
 
@@ -1186,11 +1190,11 @@
   /* ── Post-subscription modal actions ──────────────────────── */
   window.copyModalLink = function() {
     var linkEl = document.getElementById('modalReferralLink');
-    if (linkEl) {
-      _copyText(linkEl.textContent.trim());
+    if (!linkEl) return;
+    _copyText(linkEl.textContent.trim(), function() {
       ScoutDash.toast('Link copied!');
       _logModalEvent('postsub_modal_copy_link');
-    }
+    });
   };
 
   window.shareModalWhatsApp = function() {
@@ -1207,25 +1211,26 @@
     _logModalEvent('postsub_modal_skip');
   };
 
-  /* ── Init logic (at the end of ScoutDash.init) ──────────────── */
-  // This will be called from within ScoutDash._init, after all other init is done.
-  // Fix: if ff_referral_code is not in localStorage (race condition at signup),
-  // we fetch it directly from Supabase before deciding whether to show the modal.
+  /* ── Post-sub modal init ─────────────────────────────────────── */
+  // Called from ScoutDash._init after all other init is done.
+  // If ff_referral_code isn't in localStorage yet (race condition at signup),
+  // we fetch it from Supabase before deciding whether to show the modal.
+  //
+  // Fix #1: session flag is cleared only AFTER the modal successfully displays,
+  // not upfront. If the DB fetch fails, ff_just_subscribed is preserved so the
+  // next page load can retry — until ff_postsub_modal_shown is set.
   function _initPostSubModal() {
     var justSubscribed = sessionStorage.getItem('ff_just_subscribed') === '1';
     var modalShown     = localStorage.getItem('ff_postsub_modal_shown') === '1';
 
-    if (!justSubscribed || modalShown) return; // Nothing to do
-
-    sessionStorage.removeItem('ff_just_subscribed'); // Clear flag immediately — prevents re-show on refresh
+    if (!justSubscribed || modalShown) return;
 
     var referralCode = localStorage.getItem('ff_referral_code');
 
     if (referralCode) {
-      // Code already in localStorage — show immediately
       _displayPostSubModal(referralCode);
     } else {
-      // Race condition: code not yet in localStorage — fetch from Supabase
+      // Race condition: fetch referral code from DB
       var client = sb || (window._supabaseClient);
       if (!client) return;
       client.auth.getUser().then(function(res) {
@@ -1238,24 +1243,56 @@
           .then(function(result) {
             if (result.error || !result.data || !result.data.referral_code) return;
             var code = result.data.referral_code;
-            localStorage.setItem('ff_referral_code', code); // Hydrate localStorage for next time
+            localStorage.setItem('ff_referral_code', code);
             _displayPostSubModal(code);
           });
+          // No .catch() needed — if fetch fails, ff_just_subscribed stays set
+          // and the next dashboard load will retry automatically.
       });
     }
   }
 
   function _displayPostSubModal(referralCode) {
     var linkEl = document.getElementById('modalReferralLink');
-    if (!linkEl) return; // Not on a page with the modal
+    if (!linkEl) return; // Not on a page with the modal — retry on next load
 
     linkEl.textContent = 'https://getfamilyforce.com?via=' + referralCode;
     _showModal('postSubModal');
-    localStorage.setItem('ff_postsub_modal_shown', '1'); // Mark as shown
 
-    // Analytics: log modal impression
+    // Clear session flag and mark modal as shown only after successful display
+    sessionStorage.removeItem('ff_just_subscribed');
+    localStorage.setItem('ff_postsub_modal_shown', '1');
+
     _logModalEvent('postsub_modal_view');
   }
+
+  // Fix #3: expose a reset so the earn page can re-surface the referral modal.
+  // Called by the earn page's "Share your link" button when the user hasn't
+  // shared yet, giving them a second chance to see the modal.
+  window.resetPostSubModal = function() {
+    localStorage.removeItem('ff_postsub_modal_shown');
+    var referralCode = localStorage.getItem('ff_referral_code');
+    if (referralCode) {
+      _displayPostSubModal(referralCode);
+    } else {
+      // Fetch from DB if not cached
+      var client = sb || (window._supabaseClient);
+      if (!client) return;
+      client.auth.getUser().then(function(res) {
+        if (res.error || !res.data || !res.data.user) return;
+        client
+          .from('profiles')
+          .select('referral_code')
+          .eq('id', res.data.user.id)
+          .single()
+          .then(function(result) {
+            if (result.error || !result.data || !result.data.referral_code) return;
+            localStorage.setItem('ff_referral_code', result.data.referral_code);
+            _displayPostSubModal(result.data.referral_code);
+          });
+      });
+    }
+  };
 
   function _logModalEvent(eventName) {
     var client = sb || (window._supabaseClient);
