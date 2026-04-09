@@ -2139,14 +2139,19 @@ if (hamburger && mobileMenu) {
 <script src="/assets/inapp-browser.js"></script>
 <script>
 /* ── Inbound referral capture ────────────────────────────────────────────────
-   Stores ?ref=CODE from affiliate links so the code persists through to
-   sign-in.html even when the visitor lands on the homepage first.
-   sign-in.html reads ff_inbound_referral from localStorage for attribution.
+   Captures ?via=CODE (Rewardful / shared links) and ?ref=CODE (legacy).
+   Stores in ff_inbound_referral so sign-in.html can apply attribution
+   even when the visitor lands on the homepage first — the common path.
+
+   Pattern covers both code formats:
+     FRIEND-XXXX-XXXX  (referral codes, 2 hyphens)
+     XX-XXXX           (legacy short codes, 1 hyphen)
    ───────────────────────────────────────────────────────────────────────── */
 (function() {
   try {
-    var ref = new URLSearchParams(window.location.search).get('ref');
-    if (ref && /^[A-Z0-9]{2,10}-[A-Z0-9]{3,6}$/i.test(ref)) {
+    var params = new URLSearchParams(window.location.search);
+    var ref = params.get('via') || params.get('ref');
+    if (ref && /^[A-Za-z0-9]+-[A-Za-z0-9]{3,6}(-[A-Za-z0-9]{3,6})?$/.test(ref)) {
       localStorage.setItem('ff_inbound_referral', ref.toUpperCase());
     }
   } catch(e) {}
