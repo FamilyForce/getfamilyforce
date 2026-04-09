@@ -1209,35 +1209,16 @@
   }
 
   /* ── Post-subscription modal actions ──────────────────────── */
-  window.copyModalLink = function(btn) {
-    // Resolve the link — element text first, localStorage fallback if empty
+
+  // Resolve the referral link from 3 sources in order:
+  //   1. #modalReferralLink element text (already populated)
+  //   2. ff_own_referral in localStorage
+  //   3. profiles.referral_code from Supabase (final fallback)
+  // Calls onLink(link) once the link is resolved, or does nothing if unavailable.
+  function _resolveModalLink(onLink) {
     var linkEl = document.getElementById('modalReferralLink');
     var link   = (linkEl && linkEl.textContent.trim()) || '';
-    if (!link) {
-      var code = localStorage.getItem('ff_own_referral');
-      if (code) {
-        link = 'https://getfamilyforce.com?via=' + code;
-        if (linkEl) linkEl.textContent = link; // hydrate for next time
-      }
-    }
-    if (!link) return; // no code available — nothing to copy
 
-    // Visual feedback on the button itself (independent of toast system)
-    var btnEl = btn || document.querySelector('#postSubModal button[onclick*="copyModalLink"]');
-    var origText = btnEl ? btnEl.textContent : null;
-    if (btnEl) { btnEl.textContent = 'Copied ✓'; btnEl.disabled = true; }
-    setTimeout(function() {
-      if (btnEl) { btnEl.textContent = origText; btnEl.disabled = false; }
-    }, 2000);
-
-    _copyText(link, function() {
-      _logModalEvent('postsub_modal_copy_link');
-    });
-  };
-
-  window.shareModalWhatsApp = function() {
-    var linkEl = document.getElementById('modalReferralLink');
-    var link   = (linkEl && linkEl.textContent.trim()) || '';
     if (!link) {
       var code = localStorage.getItem('ff_own_referral');
       if (code) {
@@ -1245,10 +1226,53 @@
         if (linkEl) linkEl.textContent = link;
       }
     }
-    if (!link) return;
-    var msg = encodeURIComponent('Hey, thought of you. Scout sends one email a month about what developmental milestones are active for your baby right now. Super simple, actually useful. Free to try: ' + link);
-    window.open('https://wa.me/?text=' + msg, '_blank');
-    _logModalEvent('postsub_modal_whatsapp');
+
+    if (link) { onLink(link); return; }
+
+    // Final fallback: fetch from Supabase
+    var client = sb || window._supabaseClient;
+    if (!client) return;
+    client.auth.getUser().then(function(res) {
+      if (res.error || !res.data || !res.data.user) return;
+      client.from('profiles').select('referral_code').eq('id', res.data.user.id).single()
+        .then(function(result) {
+          if (result.error || !result.data || !result.data.referral_code) return;
+          var code = result.data.referral_code;
+          localStorage.setItem('ff_own_referral', code);
+          var resolvedLink = 'https://getfamilyforce.com?via=' + code;
+          if (linkEl) linkEl.textContent = resolvedLink;
+          onLink(resolvedLink);
+        });
+    });
+  }
+
+  window.copyModalLink = function(btn) {
+    var btnEl    = btn || document.querySelector('#postSubModal button[onclick*="copyModalLink"]');
+    var origText = btnEl ? btnEl.textContent : null;
+    if (btnEl) { btnEl.textContent = 'Copying…'; btnEl.disabled = true; }
+
+    _resolveModalLink(function(link) {
+      _copyText(link, function() {
+        if (btnEl) { btnEl.textContent = 'Copied ✓'; }
+        setTimeout(function() {
+          if (btnEl) { btnEl.textContent = origText; btnEl.disabled = false; }
+        }, 2000);
+        _logModalEvent('postsub_modal_copy_link');
+      });
+    });
+
+    // If resolution fails, restore button after timeout
+    setTimeout(function() {
+      if (btnEl && btnEl.disabled) { btnEl.textContent = origText; btnEl.disabled = false; }
+    }, 5000);
+  };
+
+  window.shareModalWhatsApp = function() {
+    _resolveModalLink(function(link) {
+      var msg = encodeURIComponent('Hey, thought of you. Scout sends one email a month about what developmental milestones are active for your baby right now. Super simple, actually useful. Free to try: ' + link);
+      window.open('https://wa.me/?text=' + msg, '_blank');
+      _logModalEvent('postsub_modal_whatsapp');
+    });
   };
 
   window.skipPostSubModal = function() {
