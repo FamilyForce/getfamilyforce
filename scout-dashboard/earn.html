@@ -454,8 +454,8 @@
 
     <!-- Re-surface post-sub referral modal if user hasn't shared yet (fix #3) -->
     <div id="earnShareNudge" style="display:none;background:var(--terra-tint,#F0EBFF);border:1.5px solid rgba(110,78,214,.25);border-radius:12px;padding:14px 18px;margin-bottom:20px;align-items:center;justify-content:space-between;gap:12px">
-      <p style="font-size:13px;color:var(--terra-dark,#5B3CC4);margin:0;line-height:1.5;font-weight:600">👋 Haven't shared yet? See your referral link and sharing options.</p>
-      <button onclick="window.resetPostSubModal && window.resetPostSubModal()" style="flex-shrink:0;background:var(--terra,#6E4ED6);color:#fff;border:none;border-radius:100px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Share now</button>
+      <p style="font-size:13px;color:var(--terra-dark,#5B3CC4);margin:0;line-height:1.5;font-weight:600">👋 Your referral link is ready. Share it and earn 25% of every payment — for life.</p>
+      <button onclick="document.getElementById('copyLinkBtn') && document.getElementById('copyLinkBtn').scrollIntoView({behavior:'smooth',block:'center'})" style="flex-shrink:0;background:var(--terra,#6E4ED6);color:#fff;border:none;border-radius:100px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Copy link</button>
     </div>
     <script>
     (function() {
@@ -1228,10 +1228,10 @@ function copyLink() {
 
 function copyCode() {
   var code = localStorage.getItem('ff_own_referral') || '';
+  if (!code) { showToast('Link not ready — try again in a moment'); return; }
   _copyText(code);
   var btn = document.getElementById('copyCodeBtn');
-  btn.textContent = '✓ Copied!';
-  /* copyCode button removed */
+  if (btn) { btn.textContent = '✓ Copied!'; }
   showToast('Code copied!');
 }
 
