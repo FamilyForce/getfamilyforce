@@ -26,7 +26,7 @@ Three windows appear in two categories and share the same content:
 **Urgency:** advisory | **Priority:** 1
 
 **Why it matters:**
-Most breastfed babies accept a bottle most easily somewhere in the first 3 to 4 months. Before 3 weeks, a bottle can interfere with establishing breastfeeding. After week 16 or so, many babies have developed a strong preference and find it harder to switch. Introducing earlier in this stage gives you the most flexibility: shared feeding, nighttime options, and more independence as breastfeeding continues. The AAP recommends starting the introduction around 3 to 4 weeks, early enough to give you the best chance.
+Most breastfed babies accept a bottle most easily somewhere between weeks 3 and 16. Before 3 weeks, a bottle can interfere with establishing breastfeeding. After week 16 or so, many babies have developed a strong preference and find it harder to switch. Introducing earlier in this stage gives you the most flexibility: shared feeding, nighttime options, and more independence as breastfeeding continues. The AAP recommends starting the introduction around 3 to 4 weeks, early enough to give you the best chance.
 
 **What to do:**
 * Introduce one bottle of expressed breast milk per day, starting around week 4 to 6
