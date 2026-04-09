@@ -282,6 +282,9 @@ Sleep will get worse before it gets better when you drop the swaddle. This is te
 **If you're past this stage:**
 If your baby is already rolling and still being swaddled, stop tonight. This is not a gradual transition, it's a safety call.
 
+**Prep tip:**
+Watch for rolling signs during tummy time: rocking onto one shoulder or getting a knee under the body. The day you see it, stop swaddling that night. A sleep sack with arms free is the easiest transition.
+
 **Source:** AAP Safe Sleep Guidelines (2022); SIDS and Other Sleep Related Infant Deaths: Evidence Base for 2016 Updated Recommendations (Pediatrics)
 
 ---
@@ -1074,6 +1077,9 @@ Gagging is not choking. Babies gag frequently when learning to eat, it's a safet
 
 **If you're past this stage:**
 This stage doesn't fully wind down until age 4. Review the food list at major food transitions: starting solids (6 months), starting finger foods (8–9 months), and starting family foods (12 months).
+
+**Prep tip:**
+Before you start solids, memorize the choking hazard list: whole grapes, cherry tomatoes, raw carrots, hot dogs, whole nuts, popcorn, and anything round and firm. Cut everything into small, soft pieces from day one.
 
 **Source:** AAP Choking Prevention Guidelines; Safe Kids Worldwide, Choking Hazard Data; National Capital Poison Center, Button Battery Guidelines
 
@@ -2849,6 +2855,9 @@ Occasional TV exposure is not harmful. The concern is habitual background noise 
 **If you're past this stage:**
 This applies throughout childhood. If screens are a constant background feature of your home, reducing them is one of the highest impact language interventions available.
 
+**Prep tip:**
+The habit to build is background TV off during meals and floor play. You don't need to eliminate screens entirely, just protect the times when you're talking to your child.
+
 **Source:** Christakis et al. (2009), TV and Language; AAP Screen Time Policy (2016, updated 2024)
 
 ---
@@ -3609,6 +3618,9 @@ You will not always stay calm. Rupture followed by repair is normal and also tea
 **If you're past this stage:**
 This window is open throughout childhood. Consistent co regulation practice at any age produces measurable improvements in self regulation.
 
+**Prep tip:**
+Your own calm is the tool. When your child is dysregulated, your job isn't to fix it fast. It's to stay regulated yourself. They borrow your nervous system until theirs can manage alone.
+
 **Source:** Shanker (2016), Self Reg; Siegel and Bryson (2011), The Whole Brain Child; Schore (1994)
 
 ---
@@ -3871,6 +3883,9 @@ Children with temporary hearing loss from fluid in the middle ear (glue ear) oft
 **If you're past this stage:**
 If you have a nagging feeling that your child's hearing is not quite right, act on it. Audiological evaluations are non invasive, and identifying any concerns early means you can get the right support in place quickly. Most hearing concerns are very manageable when caught and addressed early.
 
+**Prep tip:**
+If you ever wonder whether your child is hearing normally, ask at the next well child visit. Don't wait for the scheduled screen. Parent instinct about hearing is worth acting on immediately.
+
 **Source:** JCIH Position Statement (2019); AAP Hearing Screening Guidelines
 
 ---
@@ -3898,6 +3913,9 @@ Folded legs are safe. Discomfort from a cramped position is not a reason to swit
 
 **If you're past this stage:**
 If you have already turned your child forward facing, ensure the forward facing seat is correctly installed and the harness is properly fitted at the correct slot height. A correctly installed forward facing seat with a properly fitted harness still provides excellent protection.
+
+**Prep tip:**
+Check your specific car seat manual for its rear-facing height and weight limit. Most modern convertible seats allow rear facing well past age 2. There's no benefit to turning forward sooner.
 
 **Source:** NHTSA (2024); AAP Car Seat Safety Policy; Insurance Institute for Highway Safety; equivalent guidance from Transport for NSW (Australia), UK Road Safety Trust, Transport Canada
 
@@ -4168,6 +4186,9 @@ An occasional small amount of juice is not going to cause harm. The concern is h
 **If you're past this stage:**
 If your toddler has been drinking significant amounts of juice daily, reducing gradually over a few weeks is more effective than stopping abruptly.
 
+**Prep tip:**
+No juice under 12 months, and after that treat it like an occasional treat rather than a daily drink. Water and milk cover everything a toddler needs. Juice is dessert in a cup.
+
 **Source:** AAP Fruit Juice Policy (2017); Pediatrics
 
 ---
@@ -4217,6 +4238,9 @@ Occasional meals without iron rich foods are fine. The concern is a pattern of d
 
 **If you're past this stage:**
 At the 12 and 24 month visits, your pediatrician should check hemoglobin. If iron deficiency is found, dietary change is the first line intervention.
+
+**Prep tip:**
+Aim to include an iron-rich food at least once a day: red meat, lentils, beans, tofu, iron-fortified cereal, or dark leafy greens. Pair with vitamin C (tomatoes, citrus, bell pepper) to nearly double absorption.
 
 **Source:** AAP Iron Supplementation Policy; WHO Iron Deficiency Anemia Guidelines
 
@@ -4512,6 +4536,9 @@ Mixing languages (code switching) is normal and not a sign of confusion. It is a
 **If you're past this stage:**
 Apply the same milestones but count total words across all languages. If the combined total is below threshold, that is when to seek evaluation. A speech-language pathologist experienced with bilingual children can assess accurately and support both languages.
 
+**Prep tip:**
+If your household speaks more than one language, count words across both languages when tracking vocabulary. A child who knows 'dog' in English and 'perro' in Spanish has two words, not one.
+
 **Source:** Bialystok (2001), Bilingualism in Development; ASHA Bilingual Language Development
 
 ---
@@ -4535,6 +4562,9 @@ You do not need to turn every meal into a lesson. Casual narration is more natur
 
 **If you're past this stage:**
 If meals are quiet and screen based, this is an easy practice to start this week. One narrated meal per day is better than none.
+
+**Prep tip:**
+Narrate what's on the plate at every meal: name the food, describe the color and texture, ask what it tastes like. Three meals a day adds up to thousands of language exchanges per year.
 
 **Source:** Hart and Risley (1995), Meaningful Differences; AAP Language Promotion
 
@@ -4585,6 +4615,9 @@ Board books that are chewed, loved, and worn out are working exactly as intended
 
 **If you're past this stage:**
 If books are scarce in your home, visit your local library this week. Many libraries also have board book lending and gift programs.
+
+**Prep tip:**
+Build a small home library before you need it. Board books for babies, picture books for toddlers, early readers for preschoolers. Library trips count too. The habit of books in the environment matters as much as any single reading session.
 
 **Source:** Evans et al. (2010), Family Scholarly Culture and Children's Educational Attainment; AAP Literacy Promotion Guidelines
 
@@ -4796,6 +4829,9 @@ Normal attention spans at various ages: 3 to 5 minutes at age 1; 5 to 10 minutes
 **If you're past this stage:**
 If your 2 year old cannot focus on any single activity for more than 1 to 2 minutes, mention it at the 24 month visit. Reducing screen time and providing open-ended toys often makes a noticeable difference within weeks.
 
+**Prep tip:**
+Protect uninterrupted play time. When your child is focused on something, don't interrupt unless you have to. Sustained focus is a skill that gets stronger every time it's practiced.
+
 **Source:** Ruff and Rothbart (1996), Attention in Early Development; AAP Screen Time
 
 ---
@@ -4820,6 +4856,9 @@ Weather protection (sunscreen, layers, rain gear) removes most barriers to outdo
 **If you're past this stage:**
 If outdoor time is rare due to urban environment or climate, indoor sensory play (water, sand, playdough, painting) provides a partial substitute.
 
+**Prep tip:**
+Aim for outdoor time every day, even short bursts. Let them lead the exploration: turn over rocks, watch ants, touch bark. Unstructured outdoor time builds more than structured indoor activities.
+
 **Source:** Kuo and Faber Taylor (2004), Outdoor Play and Attention; WHO Physical Activity Guidelines for Under 5s
 
 ---
@@ -4843,6 +4882,9 @@ You do not need formal music classes for this. Dancing in the kitchen to any mus
 
 **If you're past this stage:**
 This stage is always active. Consistent musical engagement at any age produces measurable benefits. Start now if you haven't yet.
+
+**Prep tip:**
+Sing to your baby from the beginning, it doesn't matter how well. Songs with repetition and rhythm ('The Wheels on the Bus', 'Twinkle Twinkle') are exactly what the developing auditory brain is tuned for.
 
 **Source:** Trehub (2003); Moreno et al. (2011), Music Training and Language; AAP
 
@@ -4976,6 +5018,9 @@ An imaginary friend who the child knows is not real is healthy. The concern (whi
 **If you're past this stage:**
 There is no intervention needed for imaginary friends. Simply support and engage with the play.
 
+**Prep tip:**
+If an imaginary friend shows up, welcome them. Ask about them. Set a place at the table if that's what's wanted. It's a sign of healthy imagination and social development, not something to discourage.
+
 **Source:** Taylor (1999), Imaginary Companions and the Children Who Create Them; CDC; AAP
 
 ---
@@ -4999,6 +5044,9 @@ Young children will give arbitrary or silly answers ("I am grateful for dinosaur
 
 **If you're past this stage:**
 This practice is most powerful when started early but remains valuable at any age. Starting now is not too late.
+
+**Prep tip:**
+Pick one consistent mealtime ritual: one thing each person is grateful for, or one kind thing they did or saw today. It takes 30 seconds and compounds over years into a real family culture.
 
 **Source:** Emmons and McCullough (2003), Gratitude and Well Being Research; Eisenberg et al. (2006), Empathy in Childhood
 
@@ -5758,6 +5806,9 @@ Knocking the tower down is part of playing with blocks, not the absence of const
 
 **If you're past this stage:**
 If your 3 year old shows no interest in any construction or stacking activity at all, mention it at the 36 month visit as part of fine motor and play development review.
+
+**Prep tip:**
+Keep a set of simple wooden or foam blocks accessible at floor level. Open-ended building toys with no single correct outcome are more cognitively valuable than most electronic toys. The simpler the better.
 
 **Source:** Casey et al. (2008). Block Play and Math Achievement; Hanline et al. (2010); CDC
 
