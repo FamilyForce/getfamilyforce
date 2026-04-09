@@ -72,7 +72,7 @@ Deno.serve(async (req: Request) => {
     .maybeSingle()
 
   if (lookupErr || !member) {
-    return respondHtml(404, 'Link not found', 'Link not found', 'This unsubscribe link is invalid or has expired. If you\'re still receiving emails, contact us at hello@getfamilyforce.com.')
+    return respondHtml(404, 'Link not found', 'Link not found', 'This unsubscribe link is invalid or has expired. If you\'re still receiving emails, contact us at support@getfamilyforce.com.')
   }
 
   // Already unsubscribed
@@ -89,7 +89,7 @@ Deno.serve(async (req: Request) => {
 
   if (updateErr) {
     console.error('[scout-unsubscribe] update failed:', updateErr)
-    return respondHtml(500, 'Something went wrong', 'Something went wrong', 'We couldn\'t process your unsubscribe request. Please try again or contact us at hello@getfamilyforce.com.')
+    return respondHtml(500, 'Something went wrong', 'Something went wrong', 'We couldn\'t process your unsubscribe request. Please try again or contact us at support@getfamilyforce.com.')
   }
 
   const childName = (member.children as { name?: string } | null)?.name || 'this child'
