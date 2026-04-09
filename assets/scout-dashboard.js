@@ -1166,6 +1166,23 @@
     document.querySelectorAll('body > *:not(#' + id + ')').forEach(function(el) { el.inert = false; });
   }
 
+  /* ── Clipboard helpers ────────────────────────────────────── */
+  function _copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).catch(function() { _fallbackCopy(text); });
+    } else {
+      _fallbackCopy(text);
+    }
+  }
+
+  function _fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+
   /* ── Post-subscription modal actions ──────────────────────── */
   window.copyModalLink = function() {
     var linkEl = document.getElementById('modalReferralLink');
