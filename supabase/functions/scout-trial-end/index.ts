@@ -169,18 +169,20 @@ Deno.serve(async (req: Request) => {
       // Skip if child is past 36 months (nothing to sell)
       if (months > 36) { results.trialEnd.skipped++; continue }
 
-      // 4. Query all open windows for this age (for count + top 3)
+      // 4. Query all open milestone windows for this age
+      //    Filters match scout-digest: active, milestone type, non-prenatal, within age range
       const { data: windows } = await sb
         .from('milestone_windows')
         .select('id, title, why_it_matters, what_to_do, urgency')
         .eq('active', true)
+        .eq('window_type', 'milestone')
+        .eq('prenatal', false)
         .lte('open_age_weeks', weeks)
         .gte('close_age_weeks', weeks)
         .order('priority', { ascending: true })
 
-      const allWindowCount = windows?.length ?? 0
-      // NOTE: topWindows built AFTER completedProgress is fetched below,
-      // so completed windows are excluded. See line ~210.
+      // allWindowCount, topWindows, and allCaughtUp are all finalised after completedProgress
+      // is fetched below — do not hoist them above that block.
 
       // 4b. Query completed windows for this child — used to acknowledge progress in the email.
       //     completed_date is nullable; null rows sort unpredictably under descending order
@@ -215,14 +217,17 @@ Deno.serve(async (req: Request) => {
           return true
         })
 
-      // Build completed window ID set for filtering topWindows
-      // (fixes bug: completed windows were appearing in both "already done" and "still open" sections)
+      // ── Build topWindows (consolidated here — depends on completedProgress) ──────
+      // Excludes completed windows so the same window never appears in both
+      // "What [child] has already done" and "Still open this month" sections.
       const completedWindowIds = new Set<string>(
         (completedProgress ?? []).map((p: any) => p.window_id).filter(Boolean)
       )
-      const topWindows = (windows ?? [])
-        .filter((w: any) => !completedWindowIds.has(w.id))
-        .slice(0, 3)
+      const openWindows   = (windows ?? []).filter((w: any) => !completedWindowIds.has(w.id))
+      const topWindows    = openWindows.slice(0, 3)
+      const allCaughtUp   = openWindows.length === 0
+      // Correct count: total windows minus those already completed
+      const allWindowCount = Math.max(0, (windows?.length ?? 0) - completedWindowIds.size)
 
       // 7. Weeks since signup
       const signupDate = new Date(sub.created_at)
@@ -247,6 +252,7 @@ Deno.serve(async (req: Request) => {
         ageMonths:        months,
         weeksSinceJoin:   wks,
         allWindowCount,
+        allCaughtUp,
         topWindows,
         completedWindows,
         annualCta,

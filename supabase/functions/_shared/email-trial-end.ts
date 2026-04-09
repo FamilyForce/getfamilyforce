@@ -70,6 +70,7 @@ export function buildTrialEndEmail(opts: {
   ageMonths:        number
   weeksSinceJoin:   number
   allWindowCount:   number
+  allCaughtUp?:     boolean
   topWindows:       Array<{ title: string; why_it_matters: string; what_to_do?: string; urgency: string }>
   completedWindows: Array<{ title: string }>
   annualCta:        string
@@ -79,7 +80,7 @@ export function buildTrialEndEmail(opts: {
   userId:           string
 }): string {
   const { childName, parentName, ageMonths, weeksSinceJoin,
-          allWindowCount, topWindows, completedWindows,
+          allWindowCount, allCaughtUp = false, topWindows, completedWindows,
           annualCta, triennialCta, monthlyCta, siteUrl, userId } = opts
 
   const greeting = parentName ? `Hi ${parentName},` : 'Hi there,'
@@ -89,7 +90,9 @@ export function buildTrialEndEmail(opts: {
     ? `${childName} is one year old today.`
     : `${childName} is ${ageMonths} month${ageMonths === 1 ? '' : 's'} old today.`
 
-  const heroSub = `Your free trial ends today &nbsp;&middot;&nbsp; ${allWindowCount} windows open`
+  const heroSub = allCaughtUp
+    ? `Your free trial ends today &nbsp;&middot;&nbsp; All windows completed 🏆`
+    : `Your free trial ends today &nbsp;&middot;&nbsp; ${allWindowCount} window${allWindowCount === 1 ? '' : 's'} still open`
 
   const joinCopy = weeksSinceJoin <= 1
     ? 'You signed up last week.'
@@ -205,31 +208,41 @@ export function buildTrialEndEmail(opts: {
 <!-- Greeting -->
 <tr><td style="padding-bottom:24px;border-bottom:1px solid ${C.border}">
   <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.text};margin:0 0 14px;font-weight:600">${greeting}</p>
-  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0 0 10px;line-height:1.75">${joinCopy} As part of the trial, you received one digest email and one calendar event for ${childName}'s first month. There are ${allWindowCount} windows open this month -- and a new digest ready to go.</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0 0 10px;line-height:1.75">${joinCopy} As part of the trial, you received one digest email and one calendar event for ${childName}'s first month. ${allCaughtUp ? `You've marked everything done this month — that's genuinely rare. A new digest for next month is ready to go.` : `There ${allWindowCount === 1 ? 'is' : 'are'} ${allWindowCount} window${allWindowCount === 1 ? '' : 's'} still open this month — and a new digest ready to go.`}</p>
   ${progressCopy ? `<p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0;line-height:1.75">${progressCopy}</p>` : ''}
 </td></tr>
 <tr><td style="padding-bottom:16px"></td></tr>
 
 ${completedCard}
 
+${allCaughtUp ? `
+<!-- All caught up banner -->
+<tr><td style="padding-bottom:16px">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#F0FFF4;border:1px solid #86C9A8;border-radius:10px">
+    <tr><td style="padding:14px 16px">
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:#2E7D5E;margin:0;line-height:1.6"><strong>You're all caught up.</strong> You've completed every open window for ${childName} this month. Scout will keep tracking as new windows open each month — subscribe to stay ahead.</p>
+    </td></tr>
+  </table>
+</td></tr>` : `
 <!-- Heads up banner -->
 <tr><td style="padding-bottom:8px">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.amberBg};border:1px solid ${C.amberBorder};border-radius:10px">
     <tr><td style="padding:12px 16px">
-      <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.amber};margin:0;line-height:1.6"><strong>Heads up:</strong> Your trial ends today. The windows below are still open -- they don't close with the trial.</p>
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.amber};margin:0;line-height:1.6"><strong>Heads up:</strong> Your trial ends today. The windows below are still open — they don't close with the trial.</p>
     </td></tr>
   </table>
 </td></tr>
 <tr><td style="padding-bottom:10px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.textDim};margin:0">Still open this month</p></td></tr>
 
-${windowCards}
+${windowCards}`}
 
 <tr><td style="padding-bottom:32px"></td></tr>
 
 <!-- Keep going -->
 <tr><td style="padding-bottom:12px">
   <p style="font-family:Georgia,'Times New Roman',serif;font-size:22px;color:${C.text};margin:0 0 8px;line-height:1.3">Keep going with Scout.</p>
-  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">One email and one calendar event every month, on ${childName}'s birthday. The right information at the right time.</p>
+  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 10px;line-height:1.7">One email and one calendar event every month, on ${childName}'s birthday. The right information at the right time.</p>
+  <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textDim};margin:0;line-height:1.65">If you don't subscribe, your dashboard and progress history stay intact — you just won't receive future digests or calendar invites. You can subscribe any time from your dashboard.</p>
 </td></tr>
 <tr><td style="padding-bottom:10px"></td></tr>
 
