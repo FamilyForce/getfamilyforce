@@ -6,6 +6,26 @@
 ;(function () {
   'use strict'
 
+  /* ── localStorage key migration (one-time, runs on every load) ──
+     Renamed Apr 2026:
+       scout_referral_code → ff_inbound_referral  (code that referred you)
+       ff_referral_code    → ff_own_referral       (your code to share)
+     Migrates any existing values silently so returning users aren't affected. */
+  ;(function migrateLsKeys() {
+    var migrations = [
+      ['scout_referral_code', 'ff_inbound_referral'],
+      ['ff_referral_code',    'ff_own_referral'],
+    ]
+    migrations.forEach(function(m) {
+      var old = m[0], next = m[1]
+      var val = localStorage.getItem(old)
+      if (val && !localStorage.getItem(next)) {
+        localStorage.setItem(next, val)
+      }
+      if (val) localStorage.removeItem(old)
+    })
+  })()
+
   /* ── Config ───────────────────────────────────────────────── */
   var SUPABASE_URL  = 'https://ewjqbafaxeasyvknxmof.supabase.co'
   var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ'
@@ -1213,7 +1233,7 @@
 
   /* ── Post-sub modal init ─────────────────────────────────────── */
   // Called from ScoutDash._init after all other init is done.
-  // If ff_referral_code isn't in localStorage yet (race condition at signup),
+  // If ff_own_referral isn't in localStorage yet (race condition at signup),
   // we fetch it from Supabase before deciding whether to show the modal.
   //
   // Fix #1: session flag is cleared only AFTER the modal successfully displays,
@@ -1225,7 +1245,7 @@
 
     if (!justSubscribed || modalShown) return;
 
-    var referralCode = localStorage.getItem('ff_referral_code');
+    var referralCode = localStorage.getItem('ff_own_referral');
 
     if (referralCode) {
       _displayPostSubModal(referralCode);
@@ -1243,7 +1263,7 @@
           .then(function(result) {
             if (result.error || !result.data || !result.data.referral_code) return;
             var code = result.data.referral_code;
-            localStorage.setItem('ff_referral_code', code);
+            localStorage.setItem('ff_own_referral', code);
             _displayPostSubModal(code);
           });
           // No .catch() needed — if fetch fails, ff_just_subscribed stays set
@@ -1271,7 +1291,7 @@
   // shared yet, giving them a second chance to see the modal.
   window.resetPostSubModal = function() {
     localStorage.removeItem('ff_postsub_modal_shown');
-    var referralCode = localStorage.getItem('ff_referral_code');
+    var referralCode = localStorage.getItem('ff_own_referral');
     if (referralCode) {
       _displayPostSubModal(referralCode);
     } else {
@@ -1287,7 +1307,7 @@
           .single()
           .then(function(result) {
             if (result.error || !result.data || !result.data.referral_code) return;
-            localStorage.setItem('ff_referral_code', result.data.referral_code);
+            localStorage.setItem('ff_own_referral', result.data.referral_code);
             _displayPostSubModal(result.data.referral_code);
           });
       });

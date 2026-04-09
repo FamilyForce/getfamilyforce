@@ -426,7 +426,7 @@ function subRow(label, value, dataRow) {
 function updateFormTitle() {
   var titleEl  = document.getElementById('stripeFormTitle')
   if (!titleEl || !_checkoutPlan) return
-  var refCode  = localStorage.getItem('scout_referral_code')
+  var refCode  = localStorage.getItem('ff_inbound_referral')
   var hasRef   = refCode && /^[A-Z]+-[A-Z0-9]+-[A-Z0-9]+$/.test(refCode.trim().toUpperCase())
   var prices   = { annual: 49.99, monthly: 9.99, triennial: 99.99 }
   var orig     = prices[_checkoutPlan] || 0
@@ -503,7 +503,7 @@ function submitSubscribe() {
           body: JSON.stringify({
             paymentMethodId: result.paymentMethod.id,
             plan: _checkoutPlan,
-            referralCode: localStorage.getItem('scout_referral_code') || undefined,
+            referralCode: localStorage.getItem('ff_inbound_referral') || undefined,
             testMode: _testMode,
           }),
         }).then(function (r) { return r.json() }).then(function (data) {
@@ -570,7 +570,7 @@ function _genReferralCode() {
 
 // ── Referral code helpers ─────────────────────────────────────
 function initReferralBanner() {
-  var code = localStorage.getItem('scout_referral_code')
+  var code = localStorage.getItem('ff_inbound_referral')
   var banner = document.getElementById('referralAppliedBanner')
   var codeEl = document.getElementById('referralAppliedCode')
   if (!banner) return
@@ -588,7 +588,7 @@ function initReferralBanner() {
 }
 
 function removeReferralCode() {
-  localStorage.removeItem('scout_referral_code')
+  localStorage.removeItem('ff_inbound_referral')
   var banner = document.getElementById('referralAppliedBanner')
   if (banner) banner.style.display = 'none'
   var toggle = document.getElementById('referralEntryToggle')
@@ -619,7 +619,7 @@ function applyReferralCode() {
     if (errEl) { errEl.textContent = 'That code does not look right. Check the format (e.g. FRIEND-AB12-CD34).'; errEl.style.display = 'block' }
     return
   }
-  localStorage.setItem('scout_referral_code', code)
+  localStorage.setItem('ff_inbound_referral', code)
   var banner = document.getElementById('referralAppliedBanner')
   var codeEl = document.getElementById('referralAppliedCode')
   if (codeEl) codeEl.textContent = code

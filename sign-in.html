@@ -1282,6 +1282,11 @@ button { font: inherit; cursor: pointer; }
   if (window.location.hash && window.location.hash.indexOf('access_token') !== -1) {
     document.getElementById('verifying-overlay').style.display = 'flex';
   }
+  // localStorage key migration — renamed Apr 2026
+  ;(function() {
+    var m = [['scout_referral_code','ff_inbound_referral'],['ff_referral_code','ff_own_referral']]
+    m.forEach(function(p) { var v = localStorage.getItem(p[0]); if (v && !localStorage.getItem(p[1])) localStorage.setItem(p[1], v); if (v) localStorage.removeItem(p[0]); })
+  })()
 </script>
 
 <!-- Skip link (WCAG 2.4.1) -->
@@ -1933,7 +1938,7 @@ button { font: inherit; cursor: pointer; }
   // ?via= is Rewardful's tracking parameter; ?ref= is our legacy parameter (both supported)
   var inboundRef = params.get('via') || params.get('ref') || params.get('promo');
   if (inboundRef && /^[A-Za-z]+-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/.test(inboundRef)) {
-    localStorage.setItem('scout_referral_code', inboundRef.toUpperCase());
+    localStorage.setItem('ff_inbound_referral', inboundRef.toUpperCase());
   }
 
   /* ── Detect returning user mode from ?mode= param ── */
@@ -2184,7 +2189,7 @@ button { font: inherit; cursor: pointer; }
 
   /* ── Auto-apply referral code from localStorage on payment step ── */
   function autoApplyReferralCode() {
-    var code = localStorage.getItem('scout_referral_code');
+    var code = localStorage.getItem('ff_inbound_referral');
     if (!code || !code.trim()) return;
     var input = document.getElementById('promo-code');
     if (!input || input.value) return; // don't overwrite if user already typed something
@@ -2468,7 +2473,7 @@ button { font: inherit; cursor: pointer; }
     sb.from('profiles').upsert({ id: userId, referral_code: code }, { onConflict: 'id', ignoreDuplicates: false })
       .then(function(res) {
         if (!res.error) {
-          localStorage.setItem('ff_referral_code', code);
+          localStorage.setItem('ff_own_referral', code);
           localStorage.setItem('ff_advisor_referral', code); // keep legacy key in sync
         }
       });

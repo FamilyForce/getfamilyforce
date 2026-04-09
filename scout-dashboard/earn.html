@@ -1141,7 +1141,7 @@ function setEarnState(clicks, data) {
 
 // ── Referral code setup ──────────────────────────────────────
 ;(function initEarnPage() {
-  var code = localStorage.getItem('ff_referral_code') || '';
+  var code = localStorage.getItem('ff_own_referral') || '';
   var baseUrl = 'https://getfamilyforce.com?via=';
   var fullLink = baseUrl + (code || 'YOUR-CODE');
 
@@ -1178,7 +1178,7 @@ function showToast(msg) {
 
 // ── Copy link / code ─────────────────────────────────────────
 function copyLink() {
-  var code = localStorage.getItem('ff_referral_code') || 'YOUR-CODE';
+  var code = localStorage.getItem('ff_own_referral') || 'YOUR-CODE';
   var link = 'https://getfamilyforce.com?via=' + code;
   _copyText(link);
   var btn = document.getElementById('copyLinkBtn');
@@ -1189,7 +1189,7 @@ function copyLink() {
 }
 
 function copyCode() {
-  var code = localStorage.getItem('ff_referral_code') || 'YOUR-CODE';
+  var code = localStorage.getItem('ff_own_referral') || 'YOUR-CODE';
   _copyText(code);
   var btn = document.getElementById('copyCodeBtn');
   btn.textContent = '✓ Copied!';
@@ -1216,14 +1216,14 @@ function _fallbackCopy(text) {
 // ── WhatsApp / SMS share ─────────────────────────────────────
 function shareWhatsApp(e) {
   e.preventDefault();
-  var code = localStorage.getItem('ff_referral_code') || 'YOUR-CODE';
+  var code = localStorage.getItem('ff_own_referral') || 'YOUR-CODE';
   var link = 'https://getfamilyforce.com?via=' + code;
   var msg = encodeURIComponent('Hey, thought of you. Scout sends one email a month about what developmental milestones are active for your baby right now. Super simple, actually useful. Free to try: ' + link);
   window.open('https://wa.me/?text=' + msg, '_blank');
 }
 
 function shareSMS() {
-  var code = localStorage.getItem('ff_referral_code') || 'YOUR-CODE';
+  var code = localStorage.getItem('ff_own_referral') || 'YOUR-CODE';
   var link = 'https://getfamilyforce.com?via=' + code;
   var msg = encodeURIComponent('Hey — this thing called Scout sends one email a month about what milestones are active for your baby. Actually useful. Free to try: ' + link);
   window.location.href = 'sms:?body=' + msg;
@@ -1275,7 +1275,7 @@ function copyGraphic(filename, cardId) {
   var origText = cta ? cta.textContent : '';
   if (cta) cta.textContent = '⏳ Loading…';
 
-  var code    = localStorage.getItem('ff_referral_code') || '';
+  var code    = localStorage.getItem('ff_own_referral') || '';
   var refText = code ? 'getfamilyforce.com?via=' + code : 'getfamilyforce.com';
   var imgUrl  = '/images/' + filename + '?v=2'; // cache-bust: forces re-fetch past stale browser cache
 
@@ -1374,7 +1374,7 @@ function saveGraphic(filename, cardId) {
   var cta      = card ? card.querySelector('.gc-cta') : null;
   var origText = cta ? cta.textContent : '';
   if (cta) cta.textContent = '⏳ Saving…';
-  var code    = localStorage.getItem('ff_referral_code') || '';
+  var code    = localStorage.getItem('ff_own_referral') || '';
   var refText = code ? 'getfamilyforce.com?via=' + code : 'getfamilyforce.com';
   var img = new Image();
   img.onload = function() {

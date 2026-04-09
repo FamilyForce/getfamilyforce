@@ -6038,7 +6038,7 @@ function accRemoveChild(id, name) {
 async function accInitEarn() {
   const fmt     = n => '$' + n.toFixed(2);
   // Prefer Supabase-stored code, fall back to localStorage
-  let   code    = localStorage.getItem('ff_referral_code') || localStorage.getItem('ff_advisor_referral') || 'Loading...';
+  let   code    = localStorage.getItem('ff_own_referral') || localStorage.getItem('ff_advisor_referral') || 'Loading...';
   document.getElementById('earn-code').textContent = code;
 
   // Load from Supabase for freshness
@@ -6053,7 +6053,7 @@ async function accInitEarn() {
         .single();
       if (profile?.referral_code) {
         code = profile.referral_code;
-        localStorage.setItem('ff_referral_code',    code);
+        localStorage.setItem('ff_own_referral',    code);
         localStorage.setItem('ff_advisor_referral', code); // keep legacy key in sync
         document.getElementById('earn-code').textContent = code;
       }
