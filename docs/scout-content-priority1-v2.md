@@ -41,6 +41,9 @@ One or two rejected attempts early on are completely normal. Persistence in the 
 **If you're past this stage:**
 Still worth trying. Use a slow-flow (Level 1) nipple, try different bottle shapes, and have your partner offer the bottle while you leave the room entirely. Some babies will accept a bottle at 5 to 6 months if you're persistent. Try for 2 to 3 weeks. Many families navigate breastfeeding without a bottle just fine.
 
+**Prep tip:**
+If you're breastfeeding and want to introduce a bottle, 4 to 6 weeks is the recommended window, early enough that breastfeeding is established, late enough to avoid nipple confusion. Get a slow-flow bottle and have someone other than the primary nursing parent offer it.
+
 **Source:** AAP Policy on Breastfeeding and the Use of Human Milk (2022); Academy of Breastfeeding Medicine; AAP Bright Futures: Guidelines for Health Supervision of Infants, Children, and Adolescents (4th Edition); Academy of Breastfeeding Medicine (ABM) Clinical Protocol #3: Supplementary Feedings in the Healthy Term Breastfed Neonate
 
 ---
@@ -63,6 +66,9 @@ Liquid iron drops stain, but they're not harmful. The dark stools you may see ar
 
 **If you're past this stage:**
 Bring it up at the next pediatrician visit. A simple blood test can check iron levels. If iron is low, supplementation and dietary intervention can correct it. Most families who catch this late do just fine.
+
+**Prep tip:**
+Iron supplementation for breastfed babies is recommended starting at 4 months. It's a simple liquid drop, ask about it at the 4-month visit.
 
 **Source:** AAP Clinical Report, Iron Deficiency and Iron Deficiency Anemia in Young Children (2020); CDC Iron Recommendations; Academy of Breastfeeding Medicine (ABM) Clinical Protocol #29: Iron, Zinc, and Vitamin D Supplementation During Breastfeeding
 
@@ -88,6 +94,9 @@ You don't need an allergist appointment unless your child has severe eczema or a
 **If you're past this stage:**
 Peanut introduction is still worthwhile at any age. The risk of allergy is higher than if you'd introduced earlier, but first exposure can still happen after 12 months. Discuss the approach with your pediatrician. Many children introduced after this stage do just fine.
 
+**Prep tip:**
+Early peanut introduction is now recommended for most babies, it reduces allergy risk significantly. Talk to your pediatrician at the 4-month visit about timing and method before this window opens.
+
 **Source:** Du Toit et al. (2015), LEAP Study, New England Journal of Medicine; AAP Updated Guidance on Early Peanut Introduction (2017); NIAID Addendum Guidelines (2017)
 
 ---
@@ -112,6 +121,9 @@ Egg yolk and egg white have different allergen profiles. Most guidance now recom
 **If you're past this stage:**
 Eggs can still be introduced after 9 months. The early introduction benefit applies most strongly earlier in this stage, but food allergies to eggs can still be avoided. Introduce normally and watch for reactions. Many families who introduce eggs after this stage have no issues.
 
+**Prep tip:**
+Egg is a top allergen and should be introduced early. Scrambled egg or hard-boiled egg yolk, mashed fine, works well. Introduce alone first to watch for a reaction.
+
 **Source:** AAP Infant Food and Feeding Guidelines (2022); LEAP On Study; Australasian Society of Clinical Immunology and Allergy (ASCIA)
 
 ---
@@ -135,6 +147,9 @@ A mild rash around the mouth after tree nut introduction is often a contact reac
 
 **If you're past this stage:**
 Tree nuts can still be introduced after 9 months with appropriate caution. Early introduction is preferred but not the only option. Most families who introduce tree nuts after this window have no issues.
+
+**Prep tip:**
+Thinned nut butter mixed into puree is an easy tree nut introduction. Introduce one nut at a time on a day when you're home and can observe for a reaction.
 
 **Source:** AAP Infant Food and Feeding Guidelines (2022); ASCIA Early Introduction Guidelines
 
@@ -163,6 +178,9 @@ Babies hate tummy time. This is normal. Discomfort does not mean harm. The goal 
 **If you're past this stage:**
 If tummy time hasn't been happening consistently, start now. It's not too late before 3 months. Go slowly, build up in 30 second increments, and use the chest position if the floor is resisted.
 
+**Prep tip:**
+Get a firm, flat surface ready for tummy time, a play mat on the floor works perfectly. Starting from day one, even a minute at a time, makes a big difference.
+
 **Source:** AAP Safe to Sleep Campaign; AAP Policy on Tummy Time (2021)
 
 ---
@@ -185,6 +203,9 @@ Not all 20 minutes need to happen on the floor. Tummy time on a parent's chest, 
 
 **If you're past this stage:**
 If you're approaching 4 months without consistent tummy time, start immediately with short bursts and build up over the next few weeks. Every session still contributes to rolling and motor development.
+
+**Prep tip:**
+Tummy time will start feeling more productive this month as your baby gets stronger. Build toward 20 minutes total per day, it doesn't have to be in one session.
 
 **Source:** AAP Safe to Sleep Campaign; WHO Motor Development Milestones
 
@@ -209,6 +230,9 @@ Steady head control by 4 months is one of the foundational gross motor milestone
 **If you're past this stage:**
 If your baby is not holding their head up by 4 months, bring it up at your next pediatrician visit. This is worth discussing. It doesn't mean something is definitively wrong, but it warrants professional assessment. Most concerns at this stage are quickly identified and addressed.
 
+**Prep tip:**
+Keep up tummy time and begin carrying your baby upright against your shoulder, both build the neck strength for head control.
+
 **Source:** CDC Developmental Milestones (2024); Denver II Developmental Screening Test; WHO Multicentre Growth Reference Study
 
 ---
@@ -232,6 +256,9 @@ Sleep will get worse before it gets better when you drop the swaddle. This is te
 
 **If you're past this stage:**
 If your baby is already rolling and still being swaddled, stop tonight. This is a safety call, not a gradual transition. Most babies adjust to sleeping without a swaddle within a few nights.
+
+**Prep tip:**
+As soon as you see rolling attempts, stop swaddling immediately, arms must be free. If your baby isn't rolling yet, watch closely and be ready to transition fast.
 
 **Source:** AAP Safe Sleep Guidelines (2022); SIDS and Other Sleep Related Infant Deaths: Evidence Base for 2016 Updated Recommendations (Pediatrics)
 
@@ -279,6 +306,9 @@ Wide stance, toes turned out, and frequent falls are all completely normal in ne
 **If you're past this stage:**
 If your child is not taking independent steps by 15 months, bring it up at the 15 month well child visit if you haven't already. This is a standard assessment point and your pediatrician will be looking for it. Many children who are referred for assessment at this stage catch up quickly with support.
 
+**Prep tip:**
+Clear open floor space and get shoes that are flexible and flat, feet need to feel the ground to develop balance. Stiff soles actually slow the process.
+
 **Source:** CDC Developmental Milestones (2022 update); AAP Developmental Surveillance Guidelines; WHO Motor Milestone Windows
 
 ---
@@ -301,6 +331,9 @@ Walking style varies enormously in the first months. Tip toe walking, wide stanc
 
 **If you're past this stage:**
 Not walking by 15 months: raise this with your pediatrician. They may recommend physical therapy referral or simply observation. Most children who receive early support do catch up well.
+
+**Prep tip:**
+Clear the walking path and get shoes that are flexible and flat, feet need to feel the ground to develop balance. Stiff soled shoes actually slow the walking process.
 
 **Source:** CDC Developmental Milestones (2022); AAP 15 Month Well Child Visit Guidelines; WHO Motor Milestone Windows
 
@@ -329,6 +362,9 @@ You don't need special activities or toys. You are the activity. Talking to your
 **If you're past this stage:**
 This window never truly closes. Serve and return matters throughout childhood. If you're starting late, start now. The density of these interactions early in life matters most, but every additional exchange still builds something.
 
+**Prep tip:**
+When your baby makes sounds, respond to them. That's it. The habit of back-and-forth is what matters, not what you say.
+
 **Source:** Harvard Center on the Developing Child, Serve and Return; National Scientific Council on the Developing Child; AAP Literacy Guidelines
 
 ---
@@ -351,6 +387,9 @@ Newborns sleep deeply and may not startle to sounds when in deep sleep. Test whe
 
 **If you're past this stage:**
 If your baby does not appear to respond to sounds by 2 months, raise this at the 2 month well child visit or call your pediatrician before then. Hearing screening can be repeated. Early intervention for hearing loss is highly effective when started before 6 months.
+
+**Prep tip:**
+No prep needed, watch for your newborn to startle or calm in response to your voice and sounds. It's one of the earliest signs that hearing is working.
 
 **Source:** JCIH (Joint Committee on Infant Hearing) Year 2019 Position Statement; AAP Universal Newborn Hearing Screening
 
@@ -375,6 +414,9 @@ Babbling sounds like nonsense. It is nonsense, and it's exactly right for this s
 **If you're past this stage:**
 If there is minimal or no babbling by 6 months, raise this at the 6 month well child visit. The pediatrician will assess and may refer to a speech language pathologist for evaluation. Early speech therapy intervention has strong evidence behind it.
 
+**Prep tip:**
+Respond to every babble as if it's a word. Copy the sounds back and wait for a response. This reciprocal sound play is building the conversational structure that words will eventually fill.
+
 **Source:** CDC Developmental Milestones (2024); Oller et al., Babbling and Early Language Predictors; AAP Developmental Surveillance
 
 ---
@@ -397,6 +439,9 @@ Babies this age are easily distracted. Test name response when they're alert and
 
 **If you're past this stage:**
 If your baby does not consistently respond to their name by 7 months, mention it at the next well child visit or contact your pediatrician before then. Reliable name response is a key data point in developmental surveillance. The earlier any concerns are addressed, the more options are available.
+
+**Prep tip:**
+Use your baby's name frequently in natural interaction. The milestone is turning reliably toward their name, watch for that response across different rooms and situations.
 
 **Source:** CDC Developmental Milestones (2024); Nadig et al. (2007), Name Response as Early ASD Predictor; AAP Autism Screening
 
@@ -422,6 +467,9 @@ There are two kinds of pointing: imperative (pointing to get something) and decl
 **If you're past this stage:**
 No pointing by 12 months is one of the most significant developmental flags. Raise it immediately at the 12 month well child visit. This is a primary screening point on the M CHAT R/F autism checklist. Early screening leads to earlier support, and earlier support produces better outcomes for families.
 
+**Prep tip:**
+Start pointing at things and saying their names. Pointing-and-naming together builds joint attention, the shared focus that is the foundation of language learning.
+
 **Source:** Baron Cohen et al., Pointing as ASD Predictor; Carpenter et al. (1998), Joint Attention Research; CDC Developmental Milestones; AAP M CHAT R/F Screening
 
 ---
@@ -444,6 +492,9 @@ Many babies say "mama" and "dada" as sounds by around 9 months, without attachin
 
 **If you're past this stage:**
 No specific words by 12–13 months warrants a conversation with your pediatrician. Speech language referral at this stage, if indicated, is highly effective.
+
+**Prep tip:**
+Keep using 'mama' and 'dada' consistently and specifically, always pointing to the right person. The specific assignment is what they're working on, not just the sounds.
 
 **Source:** CDC Developmental Milestones (2024); AAP Language Development Guidelines
 
@@ -468,6 +519,9 @@ Words don't need to be clear to count. A consistent approximation, "bah" always 
 **If you're past this stage:**
 No words (including signs) by 15 months: raise at the 15 month well child visit. This is one of the primary assessment points. Early speech intervention at 12–18 months has strong evidence of effectiveness.
 
+**Prep tip:**
+First words beyond 'mama' and 'dada' are coming. Keep naming everything, reading aloud, and responding to all attempts at communication as real words.
+
 **Source:** CDC Developmental Milestones (2024); AAP Language Developmental Surveillance; Fenson et al., MacArthur CDI Norms
 
 ---
@@ -490,6 +544,9 @@ Boys tend to develop vocabulary slightly later than girls. This is well document
 
 **If you're past this stage:**
 Fewer than 10 words by 18 months is one of the core language flags at the 18 month M CHAT visit. Raise it with your pediatrician. Early speech evaluation and intervention at this stage is highly effective.
+
+**Prep tip:**
+Start keeping a mental note of the words your child uses consistently, not just sounds, but real words used with intent. You'll want a count for the 18-month visit.
 
 **Source:** CDC Developmental Milestones (2024); Fenson et al., MacArthur CDI Research; AAP 18 Month Well Child Visit Guidelines
 
@@ -514,6 +571,9 @@ The 50 word count is approximate. The research cares about the range of 40–60.
 **If you're past this stage:**
 Fewer than 50 words at 24 months: bring this to the 24 month well child visit. This is the primary language flag at that visit. Speech language pathology evaluation at this stage produces measurable improvement in outcomes.
 
+**Prep tip:**
+Keep reading aloud daily, it's the single highest-leverage action for vocabulary growth right now. Point to pictures, name them, and wait for your child to name them back.
+
 **Source:** Fenson et al., MacArthur CDI Research; Ganger & Brent (2004), Vocabulary Spurt; CDC Developmental Milestones; AAP Language Guidelines
 
 ---
@@ -536,6 +596,9 @@ Two word combinations don't need to be grammatically correct. "More" + any noun 
 
 **If you're past this stage:**
 No two word combinations by 24 months: raise at the 24 month well child visit. This is assessed alongside vocabulary count and is a primary flag for speech evaluation referral. Early speech evaluation at 24 months is highly effective.
+
+**Prep tip:**
+Model two-word phrases naturally in response to your child's single words: when they say 'ball,' you say 'throw ball' or 'big ball.' The pattern is what they're absorbing.
 
 **Source:** CDC Developmental Milestones (2024); AAP 24 Month Well Child Visit Guidelines; Nelson (2022), Language Development Research
 
@@ -560,6 +623,9 @@ Children who attend daycare and hear multiple caregivers often have larger passi
 **If you're past this stage:**
 Vocabulary significantly below expected range at 24 months warrants discussion at the 24 month visit and possible speech evaluation. The good news: early intervention at 2 years is highly effective.
 
+**Prep tip:**
+Keep the conversation going constantly, narrate, question, read aloud. If you have concerns about vocabulary at this stage, now is the time to bring them up.
+
 **Source:** CDC Developmental Milestones (2024); Fenson et al., MacArthur CDI; AAP Language Guidelines
 
 ---
@@ -582,6 +648,9 @@ Grammar errors at this stage are normal and expected. "I goed" instead of "I wen
 
 **If you're past this stage:**
 No 3 word sentences by 30 months: this is a primary flag at the 30 month well child visit. Speech evaluation is likely to be recommended. The 30 month visit was added to the AAP schedule specifically to catch this. Early speech therapy at this age shows strong results.
+
+**Prep tip:**
+Expand your child's two-word phrases: when they say 'daddy go,' you say 'daddy went to work.' Model without correcting, imitation is how grammar develops.
 
 **Source:** CDC Developmental Milestones (2024); AAP 30 Month Well Child Visit; Tomasello & Brooks (1999), Grammar Acquisition
 
@@ -606,6 +675,9 @@ Grammar is still developing through age 5–7. Irregular verbs, pronouns, and pl
 **If you're past this stage:**
 Speech that is mostly 2 word phrases at 36 months warrants evaluation. Raise it at the 36 month well child visit. A speech language pathologist assessment at 3 years can identify issues that are very addressable with early therapy.
 
+**Prep tip:**
+Keep having real conversations, ask open questions, let them finish sentences, don't rush to fill the gaps. Sentence length grows from being given space to talk.
+
 **Source:** CDC Developmental Milestones (2024); AAP 36 Month Well Child Visit; ASHA (American Speech Language Hearing Association) Developmental Milestones
 
 ---
@@ -628,6 +700,9 @@ Your baby will not understand a word. Read anyway. The sound of language, the rh
 
 **If you're past this stage:**
 It's never too late to start reading aloud. If the habit isn't established, start with one short book before bed tonight and build from there.
+
+**Prep tip:**
+Get a small collection of board books before your baby arrives. Reading aloud from birth builds the habit and the bond, the content matters less than the routine.
 
 **Source:** AAP Policy on Literacy Promotion (2014); REACH OUT AND READ Research Base; Strickland & Morrow, Emergent Literacy; Bus et al. (1995), Meta analysis on shared reading
 
@@ -656,6 +731,9 @@ If skin-to-skin wasn't possible at birth, medical complications, C section, NICU
 **If you're past this stage:**
 If the initial hours passed without skin-to-skin, continue with as much physical closeness as possible in the first weeks. Baby wearing, co sleeping safely, and responsive feeding all contribute to the same bonding outcomes over time.
 
+**Prep tip:**
+Nothing to buy or prepare, skin-to-skin happens in the first hours after birth. Tell your birth team you want it immediately if your baby is healthy. That's the whole plan.
+
 **Source:** AAP Breastfeeding Policy; Moore et al. (2016), Cochrane Review on Skin to Skin Care; ACOG Early Skin to Skin Guidelines
 
 ---
@@ -678,6 +756,9 @@ Attachment is built over months, not moments. One bad day, one missed cue, one n
 
 **If you're past this stage:**
 Attachment continues to develop beyond 6 months. This window represents the most critical foundation period, but the relationship continues to be shaped throughout childhood. If early months were difficult (illness, postpartum depression, NICU), focus on building consistency now.
+
+**Prep tip:**
+Responsive caregiving, picking up, responding to cries, making eye contact, is literally building your baby's brain right now. There's no such thing as spoiling a baby under 6 months.
 
 **Source:** Bowlby, J., Attachment and Loss; Ainsworth et al. (1978), Patterns of Attachment; Harvard Center on the Developing Child; van den Boom (1994), Attachment Intervention Research
 
@@ -703,6 +784,9 @@ Tantrums do not indicate a difficult child or poor parenting. They are developme
 **If you're past this stage:**
 Tantrums typically peak around age 2 and gradually decline through age 4. If they're intensifying after age 4 or involving breath holding, self harm, or lasting more than 25 minutes, discuss with your pediatrician. Most families see tantrums ease naturally as language develops.
 
+**Prep tip:**
+Tantrums peak between 18 and 30 months. The preparation is mental, not material: decide your response strategy before the next meltdown, not during it.
+
 **Source:** Potegal & Davidson (2003), Tantrums Research; Zelazo et al., Prefrontal Development Research; AAP Bright Futures Behavioral Guidance; FamilyForce Tantrum Playbook
 
 **Playbook link:** FamilyForce Tantrum Playbook (free), getfamilyforce.com/playbook tantrum
@@ -727,6 +811,9 @@ There are two kinds of pointing: imperative (pointing to get something) and decl
 **If you're past this stage:**
 No pointing by 12 months is one of the most significant developmental flags. Raise it immediately at the 12 month well child visit. This is a primary screening point on the M CHAT R/F autism checklist.
 
+**Prep tip:**
+Point to things and name them during your daily routine. Your baby is about to follow where you're pointing, that shared attention is a vocabulary-building superpower.
+
 **Source:** Baron Cohen et al., Pointing as ASD Predictor; Carpenter et al. (1998), Joint Attention Research; CDC Developmental Milestones; AAP M CHAT R/F Screening
 
 ---
@@ -748,6 +835,9 @@ Smiling at the ceiling or a pattern on the wall is reflexive, not social. The so
 
 **If you're past this stage:**
 No social smile by 3 months: bring it up at the 3 month mark or at the next scheduled visit, whichever comes first. This is one of the earliest and most reliable autism screening behaviors.
+
+**Prep tip:**
+Your baby's social smile is about to emerge, the real one, intentional and directed at you. Watch for it in quiet alert moments when they're gazing at your face.
 
 **Source:** CDC Developmental Milestones (2024); AAP Autism Screening Guidelines; Johnson et al. (2015), Early Social Smile and ASD Detection
 
@@ -771,6 +861,9 @@ Baby blues (tearfulness, emotional volatility in the first 2 weeks) are normal h
 
 **If you're past this stage:**
 Postpartum depression can emerge up to 12 months after birth. If you are experiencing persistent low mood, anxiety, numbness, or difficulty connecting with your baby at any point in the first year, raise it with your OB or family doctor. Treatment is effective, and getting support benefits both you and your baby.
+
+**Prep tip:**
+Postpartum depression affects 1 in 5 mothers and 1 in 10 fathers. Screens are given at 1 and 2 month visits. Know the signs: persistent sadness, disconnection, inability to function.
 
 **Source:** Edinburgh Postnatal Depression Scale (Cox et al., 1987); AAP Postpartum Depression Screening Guidelines; Paulson & Bazemore (2010), Paternal Postpartum Depression
 
@@ -799,6 +892,9 @@ You don't need an expensive crib. A firm, flat, appropriately sized sleep surfac
 **If you're past this stage:**
 If your baby is already here and the sleep environment doesn't meet these guidelines, change it tonight. This is a safety call, not a gradual transition. Simple changes tonight make the sleep space safe.
 
+**Prep tip:**
+Safe sleep setup should be ready before you leave the hospital. Firm mattress, no bumpers, no loose items. If you haven't done it yet, do it today.
+
 **Source:** AAP Safe Sleep Guidelines (2022); Pediatrics, SIDS and Other Sleep Related Infant Deaths (2022 Update); Safe to Sleep Campaign
 
 ---
@@ -821,6 +917,9 @@ Babies who are placed on their backs will not choke on spit up. The airway anato
 
 **If you're past this stage:**
 The back to sleep rule applies until 6 months. After that, a baby who can roll independently can sleep in whatever position they roll to, but always start on the back.
+
+**Prep tip:**
+Back-to-sleep is a reflex to build into your routine from day one. Every person who puts your baby down needs to know: always on their back.
 
 **Source:** AAP Safe Sleep Guidelines (2022); Moon et al., Back to Sleep Evidence Base; Pediatrics (2022)
 
@@ -845,6 +944,9 @@ Room sharing does not doom you to sleep disruption forever. The transition to th
 **If you're past this stage:**
 If your baby is already in a separate room before 6 months and you choose to maintain that, discuss the risk tradeoff with your pediatrician. Some families find that room sharing is more disruptive to parental sleep, which creates its own risks. Talk with your pediatrician and do what works best for your family.
 
+**Prep tip:**
+The AAP recommends room sharing (not bed sharing) for the first 6 months. A bassinet or bedside sleeper in your room is the setup to arrange before birth.
+
 **Source:** AAP Safe Sleep Guidelines (2022); Carpenter et al. (2013), Room Sharing Evidence; Pediatrics (2022)
 
 ---
@@ -868,6 +970,9 @@ You don't need to memorize every step. The muscle memory from hands on practice 
 **If you're past this stage:**
 It's never too late to take this class. If you're past 4 months and haven't done it, schedule it this week.
 
+**Prep tip:**
+Take an infant CPR class before your baby arrives or in the first few months. Your hospital or pediatrician's office usually offers them. It takes 2 hours and you hope to never use it.
+
 **Source:** American Red Cross, Infant CPR Guidelines; AAP Bright Futures; AHA Infant CPR Training Evidence
 
 ---
@@ -889,6 +994,9 @@ You don't need the most expensive car seat. The safest seat is any correctly ins
 
 **If you're past this stage:**
 If your baby is already here and the seat hasn't been checked: get it checked before the next car trip. Most inspections take 15 minutes.
+
+**Prep tip:**
+Get your car seat installed and inspected before your due date, many fire stations and hospitals offer free checks. You cannot leave the hospital without it.
 
 **Source:** NHTSA Child Passenger Safety Guidelines (2024); AAP Car Seat Safety; Safe Kids Worldwide, Installation Statistics; road safety guidelines vary by country, follow your local transport authority
 
@@ -913,6 +1021,9 @@ You don't need to buy everything at once. Start with the most dangerous hazards 
 **If you're past this stage:**
 If your baby is already crawling and the home isn't babyproofed: start today, beginning with the room where they spend the most time. Even a single afternoon of focused babyproofing makes a real difference.
 
+**Prep tip:**
+Crawling is coming, do the babyproofing now before you need it. Cover outlets, secure heavy furniture, add stair gates, and get cabinet locks. One weekend of setup prevents months of chasing.
+
 **Source:** AAP Injury Prevention Guidelines; Safe Kids Worldwide, Home Safety Checklist; CDC Child Injury Prevention
 
 ---
@@ -935,6 +1046,9 @@ Swimming lessons from 12 months onward reduce drowning risk, they are worth doin
 
 **If you're past this stage:**
 Water safety supervision is a principle that applies throughout early childhood. It remains essential until children are reliable, competent swimmers, which is typically not before age 6 or 7. Starting formal swimming lessons around age 1 is a great way to build skills and water confidence gradually.
+
+**Prep tip:**
+Water safety is not age-limited, it requires constant touch supervision at every age near any water. Now is the time to build that habit before your baby becomes mobile.
 
 **Source:** AAP Drowning Prevention Policy; CDC Child Drowning Statistics; American Red Cross Water Safety
 
@@ -989,6 +1103,9 @@ A "refer" result at the newborn screen is common and usually resolves with a rep
 **If you're past this stage:**
 If the hospital screen was missed: schedule an outpatient audiology test as soon as possible. The goal is confirmation of normal hearing before 3 months, and most outpatient audiology clinics can see newborns quickly.
 
+**Prep tip:**
+The newborn hearing screen happens at the hospital within the first day or two. No prep needed, just know it's coming and that a refer result means a follow-up, not a diagnosis.
+
 **Source:** JCIH Year 2019 Position Statement; AAP Universal Newborn Hearing Screening Policy
 
 ---
@@ -1011,6 +1128,9 @@ Most abnormal initial results are false positives that resolve on repeat testing
 
 **If you're past this stage:**
 If the hospital screen was missed: schedule it with your pediatrician or state health department immediately. The test is quick and widely available.
+
+**Prep tip:**
+The newborn metabolic screen is a heel prick done at the hospital before discharge. Nothing to prepare, just know it's routine and covers 30+ conditions.
 
 **Source:** AAP Newborn Screening Policy; March of Dimes Newborn Screening Guidelines
 
@@ -1035,6 +1155,9 @@ Mild jaundice visible only in the face and chest in the first week, with a baby 
 **If you're past this stage:**
 If severe jaundice signs appear after discharge: contact your pediatrician or emergency care immediately. Treatment for jaundice is very effective when caught early.
 
+**Prep tip:**
+Jaundice is common in newborns and checked before hospital discharge. Know the signs: yellowing of skin and whites of eyes. If you see it at home after discharge, call your pediatrician.
+
 **Source:** AAP Hyperbilirubinemia Management Guidelines (2022); Pediatrics, Newborn Bilirubin Screening
 
 ---
@@ -1056,6 +1179,9 @@ The 3–5 day visit is primarily about weight. Newborns lose up to 10% of their 
 * Is weight gain on track?
 * Is feeding working, how do we know?
 * What warning signs should bring us back sooner?
+
+**Prep tip:**
+Your first pediatrician visit happens at 3 to 5 days, it's already booked if you chose your pediatrician before birth. If not, call today.
 
 **Source:** AAP Periodicity Schedule 2024; AAP Newborn Discharge Guidelines
 
@@ -1081,6 +1207,9 @@ The 2 month visit is a developmental milestone check and the start of the vaccin
 * Should we start vitamin D drops if breastfeeding?
 * What should we expect at 4 months?
 
+**Prep tip:**
+Book your 2-month well-child visit now if you haven't. Vaccines are given at this visit, expect a fussier evening afterward. Have infant acetaminophen on hand.
+
 **Source:** AAP Periodicity Schedule 2024; CDC Immunization Schedule 2024
 
 _Visit timing above follows the AAP schedule (US). Your country's well child check schedule may have slightly different timing or names. The UK uses the PCHR schedule, Australia uses the Blue Book, and HK uses MCH clinics. The developmental milestones and questions to ask are universal._
@@ -1105,6 +1234,9 @@ The 4 month visit covers head control, rolling readiness, responsive feeding, an
 * Should we start iron drops?
 * What are the signs of the 4 month sleep regression?
 
+**Prep tip:**
+Book your 4-month well-child visit. The developmental check at this visit looks for head control, social smile, and tracking, all things you've been working on.
+
 **Source:** AAP Periodicity Schedule 2024; AAP Iron Supplementation Guidance
 
 _Visit timing above follows the AAP schedule (US). Your country's well child check schedule may have slightly different timing or names. The UK uses the PCHR schedule, Australia uses the Blue Book, and HK uses MCH clinics. The developmental milestones and questions to ask are universal._
@@ -1128,6 +1260,9 @@ The 6 month visit assesses sitting with support, babbling, hand to hand transfer
 * How do we introduce allergens?
 * What are the signs of peanut allergy?
 
+**Prep tip:**
+Book your 6-month well-child visit. This is a big one, developmental check, vaccines, and the start of the solid food conversation.
+
 **Source:** AAP Periodicity Schedule 2024; AAP Early Allergen Introduction Guidance
 
 _Visit timing above follows the AAP schedule (US). Your country's well child check schedule may have slightly different timing or names. The UK uses the PCHR schedule, Australia uses the Blue Book, and HK uses MCH clinics. The developmental milestones and questions to ask are universal._
@@ -1150,6 +1285,9 @@ The 9 month visit is the first formal developmental screening using a standardiz
 * Is responding to name where it should be?
 * What social emotional milestones should we see before 12 months?
 * When should first words appear?
+
+**Prep tip:**
+Book your 9-month well-child visit. This visit includes a developmental surveillance check and is the last one before the major 12-month milestone appointment.
 
 **Source:** AAP Periodicity Schedule 2024; ASQ 3 Developmental Screening
 
@@ -1175,6 +1313,9 @@ The 12 month visit is one of the most important in the first year. It assesses w
 * Is pointing happening?
 * When should we expect walking?
 
+**Prep tip:**
+Book your 12-month well-child visit, this is a major developmental checkpoint. The pediatrician will check for walking, words, and social development.
+
 **Source:** AAP Periodicity Schedule 2024; CDC 12 Month Milestones
 
 _Visit timing above follows the AAP schedule (US). Your country's well child check schedule may have slightly different timing or names. The UK uses the PCHR schedule, Australia uses the Blue Book, and HK uses MCH clinics. The developmental milestones and questions to ask are universal._
@@ -1198,6 +1339,9 @@ The 15 month visit assesses walking, word count (target: 10+ words), pointing, a
 * Is language development on track?
 * Should we be concerned about [any specific behavior]?
 * What milestones are next?
+
+**Prep tip:**
+Book your 15-month well-child visit. Bring a word count, how many words is your child saying consistently? The pediatrician will ask.
 
 **Source:** AAP Periodicity Schedule 2024; CDC 15 Month Milestones (2022 update)
 
@@ -1223,6 +1367,9 @@ The 18 month visit is the first formal autism screening, typically using the M-C
 * Should we see a speech language pathologist?
 * What are the signs I should watch for between now and 24 months?
 
+**Prep tip:**
+Book your 18-month well-child visit now, this one includes the M-CHAT autism screen. Complete the questionnaire based on what your child actually does, not what you hope they do.
+
 **Source:** AAP Autism Screening Policy; Robins et al. (2014), M CHAT R/F Validation; CDC Autism Screening Guidelines
 
 _Visit timing above follows the AAP schedule (US). Your country's well child check schedule may have slightly different timing or names. The UK uses the PCHR schedule, Australia uses the Blue Book, and HK uses MCH clinics. The developmental milestones and questions to ask are universal._
@@ -1246,6 +1393,9 @@ The 24 month visit includes a second autism screen (M-CHAT-R/F or an equivalent 
 * Is language development on track?
 * Should we pursue a speech evaluation?
 * What's the waitlist situation for speech therapy referrals?
+
+**Prep tip:**
+Book your 24-month well-child visit, a second autism screen (M-CHAT-R/F) is given here. Bring your language observations: sentence length, clarity, vocabulary breadth.
 
 **Source:** AAP Autism Screening Policy; CDC 24 Month Milestones; M CHAT R/F
 
@@ -1271,6 +1421,9 @@ The 30 month visit was added to the AAP schedule specifically for developmental 
 * When should tantrums start to reduce?
 * What does school readiness look like?
 
+**Prep tip:**
+Book your 30-month well-child visit. Bring language observations, sentence length, clarity, and vocabulary breadth. This is the last screen before the 3-year visit.
+
 **Source:** AAP Periodicity Schedule 2024 (30 month addition); CDC 30 Month Milestones
 
 _Visit timing above follows the AAP schedule (US). Your country's well child check schedule may have slightly different timing or names. The UK uses the PCHR schedule, Australia uses the Blue Book, and HK uses MCH clinics. The developmental milestones and questions to ask are universal._
@@ -1294,6 +1447,9 @@ The 36 month visit marks the end of the most intensive developmental surveillanc
 * Is speech development on track for school entry?
 * Should we be concerned about [any specific behavior]?
 * What should we focus on before age 4?
+
+**Prep tip:**
+Book your 36-month well-child visit, the final Scout milestone checkpoint. Prepare a summary of what your child can do: speech clarity, self-help skills, social interaction.
 
 **Source:** AAP Periodicity Schedule 2024; CDC 36 Month Milestones
 
@@ -1320,6 +1476,9 @@ The first dental visit is brief and non invasive. It's primarily about checking 
 
 **If you're past this stage:**
 If your child is past 12 months without a dental visit, schedule one now. It's never too late to start, and a first appointment is quick and low key. Getting into a routine early sets good habits for years to come.
+
+**Prep tip:**
+Book your baby's first dental visit now if you haven't. Most pediatric dentists want to see babies by their first tooth or first birthday. Don't wait for a problem.
 
 **Source:** AAPD Guideline on Infant Oral Health (2022); AAP Oral Health Guidelines; AAPD Policy on Early Childhood Caries
 
@@ -1386,6 +1545,9 @@ If you miss a day, do not double the dose. Just resume the normal routine the ne
 **If you're past this stage:**
 If you haven't started yet, start today. It's never too late to begin, and the full benefit of supplementation kicks in right away.
 
+**Prep tip:**
+Breast milk doesn't contain enough vitamin D. Get infant vitamin D drops before your baby arrives. 400 IU daily starting within the first few days of life.
+
 **Source:** AAP Clinical Report, Vitamin D Status of Infants (2023)
 
 ---
@@ -1408,6 +1570,9 @@ Most major brands sold in the US and Europe meet these standards automatically. 
 
 **If you're past this stage:**
 Check the label today. If your formula is not fortified, switch brands or start drops immediately. Either fix is simple and quick.
+
+**Prep tip:**
+Formula is fortified with vitamin D, no supplement needed if your baby is formula-fed. Confirm this at the first pediatrician visit.
 
 **Source:** FDA Infant Formula Nutrient Requirements; AAP Guidance
 
@@ -1432,6 +1597,9 @@ Cluster feeding, where baby wants to eat every hour, is normal and does not mean
 **If you're past this stage:**
 If you are struggling at week 4 or 6, it is not too late. Contact a lactation consultant as soon as you can. Many supply issues can be corrected with proper support, and families who reach out early often find the situation improves significantly.
 
+**Prep tip:**
+If you plan to breastfeed, connect with a lactation consultant before birth if possible, it's much easier to troubleshoot before than after. Your OB or midwife can refer you.
+
 **Source:** Academy of Breastfeeding Medicine; AAP Policy
 
 ---
@@ -1454,6 +1622,9 @@ If your baby is 5 months and shows no interest, that is fine. The 6 month mark i
 
 **If you're past this stage:**
 If your baby is 7 months and hasn't started solids, begin this week. Iron stores are naturally reducing at this age, and adding solid foods is a great way to support their nutrition. Most babies take to their first foods quickly.
+
+**Prep tip:**
+Watch for the three readiness signs before starting solids: good head control, ability to sit with support, and losing the tongue-thrust reflex. Not a specific age.
 
 **Source:** WHO Guidelines on Complementary Feeding; AAP Section on Breastfeeding
 
@@ -1478,6 +1649,9 @@ Most of the first few meals will end up on the floor or the bib. This is expecte
 **If you're past this stage:**
 If you are past 6 months and haven't tried purees, start today. Variety is important for developing a palate and preventing picky eating later. There's plenty of time to explore a wide range of flavors.
 
+**Prep tip:**
+Get a few soft-tipped spoons and a suction bowl before starting solids. A blender or food processor for purees is useful but not essential, fork-mashed banana and avocado work fine.
+
 **Source:** CDC Infant and Toddler Nutrition; AAP
 
 ---
@@ -1500,6 +1674,9 @@ Rice cereal was the old standard, but it is no longer recommended as a primary f
 
 **If you're past this stage:**
 If your baby is 8 months and only eating fruits and vegetables, they may be low on iron. Prioritize meat or iron-fortified cereal starting with the next meal. It's a straightforward addition that most babies accept well.
+
+**Prep tip:**
+Iron-rich foods should be among the first solids you introduce. Think pureed meat, iron-fortified cereal, or pureed legumes, not just fruit and vegetables.
 
 **Source:** AAP Clinical Report on Iron Deficiency; USDA Dietary Guidelines
 
@@ -1524,6 +1701,9 @@ Avoid high mercury fish like swordfish or king mackerel. Stick to salmon, trout,
 **If you're past this stage:**
 If you haven't introduced fish yet, add it to the menu soon. Introduction is still beneficial at any point in the first year, and most babies enjoy fish when it's well prepared and offered early.
 
+**Prep tip:**
+Mild white fish like cod or tilapia, flaked fine or pureed, is a good first fish. Rich in omega-3s. Introduce on a quiet day at home.
+
 **Source:** AAP Healthy Active Living for Families; NIAID Guidelines
 
 ---
@@ -1546,6 +1726,9 @@ Gluten is not something to fear unless there is a diagnosed medical reason. For 
 
 **If you're past this stage:**
 Introduce wheat now. For most babies, it's a straightforward addition to the diet. If you have a family history of Celiac disease, your doctor can guide you on the best approach for your child.
+
+**Prep tip:**
+Wheat is easily introduced through iron-fortified cereals or soft bread pieces. One of the simpler allergens to work into regular meals.
 
 **Source:** NIAID Addendum Guidelines for Food Allergy Prevention
 
@@ -1570,6 +1753,9 @@ Tahini has a strong taste. If baby rejects it at first, try mixing a tiny amount
 **If you're past this stage:**
 If your baby is over 9 months and hasn't had sesame, add it to the menu this week. Most babies tolerate it well, and it's easy to mix into foods they already enjoy.
 
+**Prep tip:**
+A small amount of tahini mixed into puree is the easiest sesame introduction. Introduce on its own before combining with other new foods.
+
 **Source:** FASTER Act (2021); AAP Guidelines
 
 ---
@@ -1592,6 +1778,9 @@ The digestive system can handle the proteins in yogurt and cheese much better th
 
 **If you're past this stage:**
 If you are past 9 months, start with plain yogurt today. Full fat dairy is important for brain development in the second half of the first year, and most babies take to yogurt and cheese quickly.
+
+**Prep tip:**
+Plain full-fat yogurt or mild soft cheese are the easiest dairy introductions at this stage. Start with a small amount and watch for reaction.
 
 **Source:** AAP Infant Food and Feeding; USDA
 
@@ -1616,6 +1805,9 @@ The mess is part of the learning process. Use a bib and a waterproof mat.
 **If you're past this stage:**
 If your baby is 10 months and hasn't tried a cup yet, start today with a straw or open cup at mealtimes. Starting now gives you plenty of time to build the habit, and most babies catch on quickly with a little practice.
 
+**Prep tip:**
+Pick up a simple weighted sippy cup or 360 cup. Introducing it now, before the 12-month bottle-weaning window, gives your baby time to practice without pressure.
+
 **Source:** AAPD Dental Health Guidelines; AAP
 
 ---
@@ -1638,6 +1830,9 @@ Gagging is a normal safety reflex. It is not the same as choking. If baby gags, 
 
 **If you're past this stage:**
 If your 10 month old is still on smooth purees, start introducing mashed textures now. It may take a few attempts for them to adjust, but with patience and consistency, most babies make the transition well within a few weeks.
+
+**Prep tip:**
+Move from smooth purees to mashed and lumpy textures, fork-mashed banana, soft-cooked vegetables. Texture progression now prevents pickiness later.
 
 **Source:** WHO Complementary Feeding Study; Illingworth (1986)
 
@@ -1662,6 +1857,9 @@ You do not need teeth to eat soft finger foods. Gums are incredibly strong and c
 **If you're past this stage:**
 If your 11 month old is not yet eating finger foods, start with very soft puffs or small bits of banana today. Self feeding is a major milestone for independence, and most babies pick it up quickly once they get a taste for it.
 
+**Prep tip:**
+Soft finger foods are coming, start thinking in pea-sized pieces of soft cooked vegetables, banana, or soft pasta. The pincer grasp and the eating skill develop together.
+
 **Source:** CDC Infant Nutrition; UNICEF
 
 ---
@@ -1684,6 +1882,9 @@ Some days they will eat everything, and some days they will eat nothing. Trust t
 
 **If you're past this stage:**
 If your 12 month old is still mostly on milk with one main meal a day, building toward 3 meals is a great next step. Starting with simple additions to mealtimes is all it takes, and most toddlers respond well to a regular eating rhythm.
+
+**Prep tip:**
+Start moving toward three meals and two snacks daily. The rhythm of structured meal timing now makes toddler eating significantly easier later.
 
 **Source:** USDA Dietary Guidelines for Infants; AAP
 
@@ -1708,6 +1909,9 @@ Toddlers are naturally skeptical of new foods. It can take 10 to 15 exposures be
 **If you're past this stage:**
 If you are still buying jarred baby food at 14 months, it is an easy switch. Try offering small portions of your own healthy dinner tonight. Toddlers often surprise you when they eat what everyone else is eating.
 
+**Prep tip:**
+Start thinking about your meals as their meals, modified for texture. Removing salt and adding variety now means less pickiness later.
+
 **Source:** AAP Healthy Active Living; USDA
 
 ---
@@ -1730,6 +1934,9 @@ A few days of protest are normal. Comfort the child with a book or a snuggle ins
 
 **If you're past this stage:**
 If your 18 month old is still on a bottle, it is a good time to make the transition. Replace bottles with straw or open cups and introduce a comforting new bedtime routine in their place. Most children adjust within a few days, especially with a little extra snuggle time.
+
+**Prep tip:**
+Start transitioning away from the bottle now, the longer it continues past 12 months, the harder it becomes. Replace one feeding at a time with a cup.
 
 **Source:** AAPD; AAP Section on Oral Health
 
@@ -1754,6 +1961,9 @@ If you are still breastfeeding, you do not need to add cow milk. Breast milk con
 **If you're past this stage:**
 If your 13 month old is still on formula, whole milk is a nutritious and cost effective next step. Switch this week unless your doctor has given specific medical instructions otherwise.
 
+**Prep tip:**
+Stock whole cow milk before the 12-month birthday so you're ready to make the switch. Introduce it gradually mixed with formula or breast milk if your baby resists the taste.
+
 **Source:** AAP; USDA
 
 ---
@@ -1777,6 +1987,9 @@ If a family member accidentally gives a tiny taste, monitor for signs like const
 **If you're past this stage:**
 This is a safety rule that stays in effect until the first birthday. After 12 months, honey is safe to introduce and can be enjoyed as part of a varied diet.
 
+**Prep tip:**
+Honey can contain botulism spores and must not be given to babies under 12 months. Check food labels, some surprising products contain honey.
+
 **Source:** CDC; AAP; WHO
 
 ---
@@ -1798,6 +2011,9 @@ The transition might feel like the child isn't getting enough at first. As long 
 
 **If you're past this stage:**
 If your toddler is drinking 30 or more ounces of milk a day, cut back by 4 ounces every two days until you are under the 24 ounce limit. Many families find their toddler adjusts quickly once solid foods start filling in the gaps.
+
+**Prep tip:**
+Whole milk is nutritious but displaces solid food if over-consumed. 16 to 24 ounces per day is the target, no more. Set that habit from the start.
 
 **Source:** AAP; USDA
 
@@ -1822,6 +2038,9 @@ Some babies do this once and then forget how to do it for two weeks. This is nor
 **If you're past this stage:**
 If your baby is not rolling from tummy to back by 5 months, mention it at your next pediatrician visit. It is usually a sign they need more tummy time practice. Most babies catch up with a bit more floor time and encouragement.
 
+**Prep tip:**
+Give your baby maximum floor time on a firm, safe surface. Rolling requires freedom to try, a bouncy seat doesn't build the same strength.
+
 **Source:** CDC Milestones; WHO
 
 ---
@@ -1844,6 +2063,9 @@ Once they can roll to their tummy, they might do it in their sleep and then cry 
 
 **If you're past this stage:**
 If your baby is not rolling in either direction by 6 months, discuss this with your pediatrician. Your pediatrician can offer guidance on what to try at home, and many babies respond well to a little extra encouragement.
+
+**Prep tip:**
+Once rolling tummy to back is established, back to tummy follows. Keep the floor clear and safe and let them explore the full range of movement.
 
 **Source:** CDC; AAP
 
@@ -1868,6 +2090,9 @@ The tripod sit, where baby leans forward on their hands, is a perfectly normal p
 **If you're past this stage:**
 If your baby cannot sit even with significant support by 6 months, bring it up at your next visit. Your care team can offer targeted exercises, and most babies make good progress with guided support.
 
+**Prep tip:**
+Start propping your baby to sit using a Boppy pillow or your own hands. Short supported-sit sessions build the core strength needed for independent sitting.
+
 **Source:** Denver II; CDC
 
 ---
@@ -1890,6 +2115,9 @@ Early attempts will be clumsy. They will miss the object or hit themselves in th
 
 **If you're past this stage:**
 If your 6 month old is not reaching for toys at all, mention it at your next pediatrician visit. Getting an early look is worthwhile, and there is usually a lot that can be done with support.
+
+**Prep tip:**
+Dangle a toy just within reach during tummy time or while lying on their back. The motivation to reach is what builds the skill.
 
 **Source:** CDC; Help Me Grow
 
@@ -1914,6 +2142,9 @@ They will still topple over occasionally when they get excited or distracted. Th
 **If you're past this stage:**
 If your baby is not sitting independently by 8 months, mention it at your well child visit. Your pediatrician can help clarify what to work on, and most babies who need extra time do well with support.
 
+**Prep tip:**
+Place your baby on a firm surface with a boppy ring around them and step back. Independent sitting is almost here, give it space to develop.
+
 **Source:** WHO Motor Milestones; CDC
 
 ---
@@ -1936,6 +2167,9 @@ Army crawling (on the belly), scooting on the butt, or rolling to get across the
 
 **If you're past this stage:**
 If your 10 month old is making no effort to move across the room in any way, talk to your pediatrician. Most babies who need encouragement in this area respond well to a few targeted strategies.
+
+**Prep tip:**
+Baby-proof the floor now. Crawling can arrive quickly and the floor becomes their world. Get down on your hands and knees and check for hazards at that height.
 
 **Source:** AAP; CDC
 
@@ -1960,6 +2194,9 @@ They will often get stuck standing and cry because they don't know how to sit ba
 **If you're past this stage:**
 If your child is not attempting to pull up by their first birthday, bring it up with your pediatrician. Many babies are simply on a slightly later timeline, and a check helps confirm things are on track.
 
+**Prep tip:**
+Lower the crib mattress this week. Once pulling to stand begins, the crib rail height matters for safety. Also check that furniture being used to pull up is stable.
+
 **Source:** CDC; Help Me Grow
 
 ---
@@ -1982,6 +2219,9 @@ Cruising can last for months. Some babies cruise for a long time because they ar
 
 **If you're past this stage:**
 If your one year old is not cruising or standing while holding on, discuss this at the 12 month visit. Your pediatrician can assess what is going on and suggest practical next steps.
+
+**Prep tip:**
+Create a cruising path of stable furniture pieces. This is the last phase before walking. Check that everything they'll grab onto won't tip over.
 
 **Source:** AAP; CDC
 
@@ -2006,6 +2246,9 @@ It starts messy. They will try to use their whole hand at first. The precision t
 **If you're past this stage:**
 If your 12 month old cannot pick up a small piece of food with their fingers, mention it to your pediatrician. Most children develop this skill with a bit more practice, and your pediatrician can suggest helpful activities.
 
+**Prep tip:**
+Small, soft finger foods are perfect for practicing the pincer grasp, pea-sized pieces of soft cooked vegetables, banana, or pasta. The eating is almost secondary to the fine motor work.
+
 **Source:** Denver II; CDC
 
 ---
@@ -2028,6 +2271,9 @@ The first run looks more like a fast, stiff legged walk. The smooth, rhythmic ru
 
 **If you're past this stage:**
 If your 20 month old is walking well but shows no attempt to move faster or run, mention it at your next visit. Most children who are walking well are very close to running, and a quick check is usually reassuring.
+
+**Prep tip:**
+Clear open floor space, carpets, parks, any long flat surface. Running attempts start with falling. That's normal and part of it.
 
 **Source:** CDC Milestones; WHO
 
@@ -2052,6 +2298,9 @@ Many children one foot jump for a long time before they can get both feet off th
 **If you're past this stage:**
 If your 2.5 year old cannot jump in place with both feet, it is worth a mention at the 30 month visit. Many children take a bit longer with this skill and do just fine with a little extra practice.
 
+**Prep tip:**
+Jumping with both feet takes real coordination. A low foam step or small trampoline gives a fun safe surface to practice. Demonstrate and invite copying.
+
 **Source:** CDC; Help Me Grow
 
 ---
@@ -2074,6 +2323,9 @@ They will prefer knocking your towers down for much longer than they will enjoy 
 
 **If you're past this stage:**
 If your 16 month old cannot stack two blocks, bring it up at the next visit. A little extra practice with stacking toys often makes a big difference quickly.
+
+**Prep tip:**
+Get a set of unit blocks or stackable cups. Stacking requires both fine motor control and spatial reasoning, leave them accessible for open-ended play.
 
 **Source:** CDC; Denver II
 
@@ -2098,6 +2350,9 @@ Frustration is common. If the tower falls, they might have a small tantrum. Use 
 **If you're past this stage:**
 If your 2 year old cannot stack more than 2 or 3 blocks, mention it at the 24 month visit. With continued practice and encouragement, most children make steady progress.
 
+**Prep tip:**
+Get a set of unit blocks or stackable cups if you don't have them. Stacking 6 requires fine motor control and patience. Let them problem-solve the wobble.
+
 **Source:** CDC; Help Me Grow
 
 ---
@@ -2120,6 +2375,9 @@ They will drop things constantly. At this age, dropping is often just as intenti
 
 **If you're past this stage:**
 If your 8 month old only ever uses one hand or cannot pass an object between them, talk to your pediatrician. Early attention to hand use is often very responsive to simple play activities.
+
+**Prep tip:**
+Offer small safe objects and watch your baby pass them hand to hand. Toys with easy gripping handles work well at this stage.
 
 **Source:** CDC; Help Me Grow
 
@@ -2148,6 +2406,9 @@ Cooing happens most during alert, calm states. A tired or overstimulated baby wi
 **If you're past this stage:**
 If there is no cooing or vocalization at all by 2 months, raise it at the 2 month well child visit. It may point to hearing concerns or a developmental delay. Issues identified early are often very treatable, and your care team can help you understand the next steps.
 
+**Prep tip:**
+Talk to your baby constantly. Describe what you're doing, name things, use a warm animated voice. You're building their brain with every word.
+
 **Source:** CDC Milestones (2024); AAP Developmental Surveillance
 
 ---
@@ -2170,6 +2431,9 @@ Some babies are more serious than others and laugh less frequently. The question
 
 **If you're past this stage:**
 If your baby is not laughing or producing any positive vocalizations by 4 months, bring this up at the 4 month visit. There is a wide range in how babies develop, and an early check can give you useful, personalized guidance.
+
+**Prep tip:**
+Your baby's first laugh is close. Gentle tickles, funny faces, and silly sounds are the most reliable triggers. Be ready, it will make your whole week.
 
 **Source:** CDC Milestones (2024); Zero to Three
 
@@ -2194,6 +2458,9 @@ The imitation will be rough and approximate at first. A baby who opens their mou
 **If you're past this stage:**
 If your 7 month old shows no imitation of sounds or expressions, mention it at the next visit. Most babies who are a little slower here respond quickly once given the right kind of back-and-forth interaction.
 
+**Prep tip:**
+Imitate your baby's sounds back to them and watch them imitate you. This reciprocal sound play is building the scaffolding for first words.
+
 **Source:** Meltzoff and Moore (1977), Infant Imitation Research; CDC
 
 ---
@@ -2216,6 +2483,9 @@ Some babies wave with their whole arm, some with just their hand, some with fing
 
 **If you're past this stage:**
 No waving or gestural communication by 12 months is worth raising at the 12 month visit. It is a quick topic to discuss, and most families get clear, actionable guidance.
+
+**Prep tip:**
+Start waving goodbye and hello consistently with the word, every time, with your baby watching. Imitation of social gestures develops from this repetitive modeling.
 
 **Source:** CDC Milestones (2024); AAP
 
@@ -2240,6 +2510,9 @@ Understanding "no" and consistently obeying it are different things. Comprehensi
 **If you're past this stage:**
 If your 12 month old shows no response to "no" or their name, raise hearing and comprehension concerns at the 12 month visit. A hearing check is quick and straightforward, and most concerns are easily addressed with early support.
 
+**Prep tip:**
+Say 'no' clearly and consistently, with a calm voice and neutral face. Your baby is building the connection between the word and the limit, tone matters as much as the word.
+
 **Source:** CDC Milestones (2024); AAP Language Surveillance
 
 ---
@@ -2262,6 +2535,9 @@ Children this age will sometimes comply and sometimes completely ignore you. Inc
 
 **If you're past this stage:**
 If your 18 month old cannot follow a single command without you pointing or showing them, raise it at the 18 month visit. Language comprehension often develops quickly with focused interaction, and many children catch up well with targeted support.
+
+**Prep tip:**
+Start giving clear one-step instructions without gesture: 'Get your shoes.' 'Put that down.' Your child is starting to understand these, give the language a chance to land.
 
 **Source:** CDC Milestones (2024); AAP 18 Month Visit Guidelines
 
@@ -2286,6 +2562,9 @@ They will point to the wrong body part sometimes and laugh. This is part of the 
 **If you're past this stage:**
 If your 2 year old cannot identify any body parts on request, bring it up at the 24 month visit. Many children are simply a little behind on vocabulary timing and catch up well with simple, consistent practice.
 
+**Prep tip:**
+Bath time is the easiest venue for body part practice, everything is visible and accessible. Aim for 5 named parts by 18 months: head, nose, eyes, mouth, belly.
+
 **Source:** CDC Milestones (2024); Fenson et al.
 
 ---
@@ -2308,6 +2587,9 @@ You do not need to follow the story text word for word. Describing what you see 
 
 **If you're past this stage:**
 If you have been reading without pointing, start today. It is never too late to add this layer.
+
+**Prep tip:**
+When reading aloud, point to pictures as you name them. Your baby is building the bridge between spoken words and their referents, pointing makes it visible.
 
 **Source:** Bus et al. (1995); Whitehurst and Lonigan (1998); AAP Literacy Promotion
 
@@ -2332,6 +2614,9 @@ You do not need to be a good singer. Babies do not care about pitch or quality. 
 **If you're past this stage:**
 If you haven't started, start today with one song. Repeat it every day this week. Songs are one of the easiest and most enjoyable language tools, and it is never too late to build the habit.
 
+**Prep tip:**
+Start singing nursery rhymes from day one, your baby doesn't care that you can't carry a tune. The rhythm and repetition are building early language circuits.
+
 **Source:** Bryant et al. (1990), Nursery Rhymes and Reading; AAP
 
 ---
@@ -2354,6 +2639,9 @@ Two step commands are much harder when a child is tired, hungry, or distracted. 
 
 **If you're past this stage:**
 If your 27 month old cannot follow a two step command, raise it at the 30 month visit. Working memory for instructions develops at different rates, and many children catch up quickly with daily practice.
+
+**Prep tip:**
+Start giving two-step instructions naturally: 'Get your shoes and bring them to me.' Pause between steps to let your child process before acting.
 
 **Source:** CDC Milestones (2024); AAP
 
@@ -2378,6 +2666,9 @@ Pronoun reversal ("you want milk" when they mean "I want milk") is very common a
 **If you're past this stage:**
 If your 30 month old is not using "I" or "me" at all, raise it at the 30 month visit. Pronoun development is often just a little behind the rest of speech, and most children work it out naturally with consistent modeling.
 
+**Prep tip:**
+Model correct pronoun use without correcting mistakes. When they say 'me want it,' you say 'you want it? Let me get it for you.' Imitation is how they learn.
+
 **Source:** CDC Milestones (2024); Chiat (1986)
 
 ---
@@ -2400,6 +2691,9 @@ Some sounds (r, l, th, s blends) are not expected to be mastered until age 5 to 
 
 **If you're past this stage:**
 If strangers cannot understand any of your child's speech by 24 months, a speech language evaluation is a helpful next step. Early speech support is highly effective, and most families find the process practical and reassuring.
+
+**Prep tip:**
+If strangers frequently can't understand what your child is saying, note that for the next visit. Some clarity gap is normal; more than 50% unintelligible by 24 months is worth flagging.
 
 **Source:** ASHA Milestones; CDC
 
@@ -2424,6 +2718,9 @@ Background noise, tiredness, and shyness all reduce speech clarity. Assess your 
 **If you're past this stage:**
 If strangers cannot understand the majority of your child's speech by age 3, request a speech evaluation referral at the 36 month visit. Speech therapy at this stage is very effective, and many children make significant gains quickly.
 
+**Prep tip:**
+If strangers frequently struggle to understand your child, note specific observations for the 30-month visit. Speech clarity should be improving steadily through this period.
+
 **Source:** ASHA; CDC Milestones (2024)
 
 ---
@@ -2446,6 +2743,9 @@ Color vision is usually fine even if naming is delayed. Many children confuse co
 
 **If you're past this stage:**
 If your 3 year old cannot name a single color reliably, it is worth mentioning at the 36 month visit. Color naming is one of the last abstract language concepts to click, and most children get there with continued daily exposure.
+
+**Prep tip:**
+Embed color naming in daily life rather than drilling: 'Pass me the yellow cup.' 'Look at that red car.' Repetition in context beats repetition in isolation.
 
 **Source:** CDC Milestones (2024); Shatz et al. (1996)
 
@@ -2470,6 +2770,9 @@ Reciting "one two three" without yet understanding that "three" means a quantity
 **If you're past this stage:**
 If your 3 year old has no interest in counting or numbers at all, mention it at the 36 month visit. Interest in numbers often appears in bursts, and weaving counting into daily routines tends to help a lot.
 
+**Prep tip:**
+Count everything together as you go about your day, stairs, crackers, toys. Three is the target but the habit of counting is what matters most.
+
 **Source:** CDC Milestones (2024); Baroody (1987)
 
 ---
@@ -2493,6 +2796,9 @@ Stories at this age will be out of sequence, missing details, and full of repeti
 **If you're past this stage:**
 If your 4 year old cannot describe any recent event in connected sentences, a speech and language check is worth requesting. Many children are still building their narrative skills at this stage, and a targeted evaluation can give you a clear picture and helpful strategies.
 
+**Prep tip:**
+After outings, ask open-ended questions: 'What happened at the park today?' Give them time to organize their thoughts. Narrate back what you heard to model storytelling structure.
+
 **Source:** CDC; Applebee (1978), Narrative Development Research
 
 ---
@@ -2515,6 +2821,9 @@ You are not teaching them to perform emotions, you are building their emotional 
 
 **If you're past this stage:**
 This window is always open. If you haven't started, start today. The practice is valuable at any age.
+
+**Prep tip:**
+Name emotions as they happen in everyday life: 'You seem frustrated.' 'That made you happy.' Building an emotional vocabulary now pays off in the tantrum years ahead.
 
 **Source:** Lieberman (2011), Putting Feelings into Words; Zero to Three; Gottman (1997)
 
@@ -2563,6 +2872,9 @@ Accurate one to one counting for 5 objects by age 3 is the goal. If they can cou
 **If you're past this stage:**
 If your 3 year old cannot count even 2 objects with one to one correspondence, mention it at the 36 month visit. With a little focused practice during daily routines, most children pick this up quickly.
 
+**Prep tip:**
+Practice one-to-one counting by touching each object: 'One bear, two bears, three bears, three!' The touch and the final total number are the two key elements.
+
 **Source:** Gelman and Gallistel (1978); CDC
 
 ---
@@ -2585,6 +2897,9 @@ Last name comes later than first name. Middle name is not part of this milestone
 
 **If you're past this stage:**
 If your 3.5 year old cannot state their first name when asked, it is worth a mention at the next visit. Most children this age know their name but may need a bit more practice saying it on request. A few fun repetitions a day tends to do the trick.
+
+**Prep tip:**
+Practice name and age in play: 'What's your name? How old are you?' Frame it as a game, not a quiz. By 30 months this should be automatic.
 
 **Source:** CDC; AAP Bright Futures
 
@@ -2609,6 +2924,9 @@ Compliance and comprehension are different. A child who understands the instruct
 **If you're past this stage:**
 If your 3 year old consistently cannot follow more than a single step instruction, discuss it at the 36 month visit. Practicing during familiar routines and breaking instructions into smaller parts can make a big difference, and many children catch up quickly.
 
+**Prep tip:**
+Start giving multi-step instructions in natural conversation: 'Go get your shoes, put them on, and come to the door.' Your child's comprehension is ahead of their speech.
+
 **Source:** CDC; AAP
 
 ---
@@ -2631,6 +2949,9 @@ Strangers will always understand less than family. The 75% family comprehension 
 
 **If you're past this stage:**
 If your family cannot understand the majority of your 2 year old's speech, ask for a speech language referral at the 24 month visit. Early referrals are quick and helpful, and most children respond very well to speech support.
+
+**Prep tip:**
+If you find yourself frequently interpreting for others what your child said, note it. A significant clarity gap at this stage is worth raising with your pediatrician.
 
 **Source:** ASHA; CDC Milestones (2024)
 
@@ -2659,6 +2980,9 @@ You do not need to buy anything special. Your face is the most powerful visual s
 **If you're past this stage:**
 This window matters most in the first 6 to 8 weeks. After that, color vision improves rapidly and high contrast loses its special advantage. Color vision continues to develop quickly, and rich visual engagement remains valuable well beyond this stage.
 
+**Prep tip:**
+High-contrast black-and-white images capture newborn attention best. A few printed cards or a simple mobile near the changing table is all you need.
+
 **Source:** Fantz (1961), Visual Preferences of Newborns; AAP
 
 ---
@@ -2681,6 +3005,9 @@ Eyes that occasionally cross or wander in the first weeks are often normal as th
 
 **If you're past this stage:**
 If your baby cannot track a slowly moving object smoothly by 3 months, raise it at the 2 or 4 month visit. Your pediatrician will assess this directly. Most concerns are quickly evaluated and either resolved or addressed early.
+
+**Prep tip:**
+Move a brightly colored object slowly across your baby's field of vision and watch their eyes follow. No equipment needed, just deliberate face and object time.
 
 **Source:** CDC Milestones; AAP 2 Month Well Child Visit
 
@@ -2705,6 +3032,9 @@ Recognition of the primary caregiver comes before recognition of secondary careg
 **If you're past this stage:**
 If your 4 month old shows no differential response to familiar versus unfamiliar faces or voices, raise this at the 4 month visit. Your pediatrician will help determine whether further observation is needed.
 
+**Prep tip:**
+No prep needed. Show up, make eye contact, and respond to your baby. Recognition develops from repetition of your face and voice.
+
 **Source:** AAP; DeCasper and Fifer (1980), Neonatal Recognition of Mother's Voice
 
 ---
@@ -2727,6 +3057,9 @@ Early versions of this behavior are brief and inconsistent. Sustained interest i
 
 **If you're past this stage:**
 If your 9 month old shows no interest in finding partially hidden objects, bring it up at the 9 month visit. Many babies develop this skill on a slightly different timeline and do just fine.
+
+**Prep tip:**
+Hide a toy under a cloth and watch your baby's reaction. This is the test for emerging object permanence, the understanding that things still exist when out of sight.
 
 **Source:** Piaget (1954), Object Permanence; CDC; Baillargeon (1987)
 
@@ -2751,6 +3084,9 @@ The "A not B error" is normal at this age: if you hide a toy in location B after
 **If you're past this stage:**
 If your 12 month old cannot find a toy hidden under a cloth, mention it at the 12 month well child visit. Pediatricians see a wide range of timelines for this milestone, and early conversations lead to early support if needed.
 
+**Prep tip:**
+Hide a toy completely under a blanket and watch your baby search for it. Full object permanence, searching for completely hidden objects, should be solid by 9 months.
+
 **Source:** Piaget (1954); Baillargeon (2004); CDC
 
 ---
@@ -2773,6 +3109,9 @@ Babies will not copy everything. They will selectively imitate actions that inte
 
 **If you're past this stage:**
 If your 12 month old shows no imitation of actions at all, mention it at the 12 month visit. Many babies start imitating more clearly in the months just after their first birthday.
+
+**Prep tip:**
+Do simple actions in front of your baby and watch them copy, clapping, banging a surface, waving. Imitation is how they learn everything.
 
 **Source:** Meltzoff (1988); CDC
 
@@ -2797,6 +3136,9 @@ Early pretend play looks very simple: one action, one object. Complex scenarios 
 **If you're past this stage:**
 No pretend play at all by 18 months is worth raising with your pediatrician, as it is one of the indicators reviewed in the M CHAT autism screening. Raising it early means you can get guidance and support while development is most responsive.
 
+**Prep tip:**
+Make sure there are a few simple pretend play props accessible: a toy phone, a baby doll, a toy cup. You don't need to direct the play, just make the props available.
+
 **Source:** Ungerer and Sigman (1981); AAP; CDC
 
 ---
@@ -2819,6 +3161,9 @@ They may point to the wrong picture and laugh. That is fine. The question is whe
 
 **If you're past this stage:**
 If your 15 month old cannot point to any named picture in a familiar book, mention it at the 15 month visit. Most toddlers catch up quickly with a bit of focused practice and encouragement.
+
+**Prep tip:**
+When reading aloud, pause and point to a picture: 'Where's the dog?' Your child is about to start pointing to pictures when you name them, encourage it.
 
 **Source:** CDC; AAP Literacy Guidelines
 
@@ -2843,6 +3188,9 @@ Toddlers find it funny to point to the wrong body part on purpose. This does not
 **If you're past this stage:**
 If your 18 month old cannot identify any body part on request, raise it at the 18 month visit. Body part recognition often clicks quickly once it's given consistent, playful attention.
 
+**Prep tip:**
+Bath time is the best venue for body part naming, everything is visible and accessible. 'Where's your nose? Ear? Knee?' Rotate through 5 to 10 parts.
+
 **Source:** CDC Milestones (2024); AAP
 
 ---
@@ -2865,6 +3213,9 @@ Children at this age frequently shift scenarios mid play. The lack of a sustaine
 
 **If you're past this stage:**
 If your 3 year old has no pretend play and no symbolic use of objects at all, raise it at the 36 month visit. Many children who start pretend play a little later quickly develop rich imaginative scenarios once they get going.
+
+**Prep tip:**
+Add props to the play space that support multi-step pretend scenarios, a toy kitchen, baby doll with accessories, simple dress-up items. The more open-ended, the better.
 
 **Source:** Singer and Singer (1990); Russ (2004); CDC
 
@@ -2889,6 +3240,9 @@ Getting it wrong is part of learning. A child who enthusiastically puts the wron
 **If you're past this stage:**
 If your 24 month old cannot match even two identical objects or recognize that two things are "the same," mention it at the 24 month visit. Early identification means early support, and sorting and matching skills often develop quickly with targeted activities.
 
+**Prep tip:**
+Get a simple matching game or shape sorter if you don't have one. Categorizing by attribute (all the red ones here) is a bigger cognitive step than it looks.
+
 **Source:** CDC; Inhelder and Piaget (1964)
 
 ---
@@ -2911,6 +3265,9 @@ Reciting numbers to 10 is easier than understanding what they mean. Most childre
 
 **If you're past this stage:**
 If your 3 year old cannot count to 5 at all, it is worth mentioning at the 36 month visit. Daily counting in routines and songs can make a noticeable difference in a short time.
+
+**Prep tip:**
+Keep up daily counting practice embedded in routine activities. Counting stairs, crackers, or toys is more effective than sitting down to count abstractly.
 
 **Source:** CDC; Gelman and Gallistel (1978)
 
@@ -2935,6 +3292,9 @@ They will confuse same and different verbally long after they can demonstrate th
 **If you're past this stage:**
 If your 30 month old cannot complete a simple two piece matching task, raise it at the 30 month visit. Simple sorting games in daily life can help build this skill quickly.
 
+**Prep tip:**
+Start pointing out same and different in everyday contexts: 'These socks match, they're the same.' 'This block is big, that one is different, it's little.'
+
 **Source:** CDC; Inhelder and Piaget (1964)
 
 ---
@@ -2957,6 +3317,9 @@ The first attempts will fail. Repeated failure followed by a successful solution
 
 **If you're past this stage:**
 If your 2 year old cannot retrieve an object using any indirect method (pulling, using a tool, asking for help), it is worth noting at your next visit. Many children respond quickly to a few simple changes in how problem solving opportunities are set up at home.
+
+**Prep tip:**
+Leave simple problems for your child to solve rather than solving them immediately. A lid that's almost off, a drawer that needs a pull, small problems build persistence.
 
 **Source:** CDC; Piaget; Willats (1990), Means End Reasoning in Infants
 
@@ -2981,6 +3344,9 @@ Memory at this age is patchy and often out of sequence. They will skip the most 
 **If you're past this stage:**
 If your 3 year old cannot recall or discuss any recent event at all, it is worth raising at the 36 month visit. Using photos and storytelling about recent events is a great way to support memory development at any point.
 
+**Prep tip:**
+After outings, ask open-ended recall questions: 'What did we see at the park today?' Give your child time to organize the memory. Don't fill in the blanks too quickly.
+
 **Source:** Nelson (1993), Episodic Memory Development; CDC
 
 ---
@@ -3003,6 +3369,9 @@ Enjoying the mirror without self recognition is completely normal through 12 mon
 
 **If you're past this stage:**
 Absent self recognition by 24 months alongside other social cognitive delays is worth raising with your pediatrician. Your pediatrician can help interpret what they're seeing in the full context of your child's development.
+
+**Prep tip:**
+Place an unbreakable mirror at floor level during tummy time. Your baby will be fascinated by the face they see, self-recognition develops gradually from this practice.
 
 **Source:** Amsterdam (1972); Gallup (1970); CDC
 
@@ -3031,6 +3400,9 @@ Grandparents and relatives who feel hurt by the baby's reaction need to understa
 **If you're past this stage:**
 Complete absence of any stranger wariness by 9 months (universally happy with all strangers) can occasionally be a flag worth noting in the context of other developmental observations. In most cases, this will resolve naturally and no intervention is needed.
 
+**Prep tip:**
+Stranger anxiety is coming, completely normal and a sign of healthy attachment. Brief, calm, consistent separations help your baby learn: you leave, you come back.
+
 **Source:** Ainsworth (1967); Bowlby (1969); CDC
 
 ---
@@ -3053,6 +3425,9 @@ The intensity of the goodbye cry is not an indicator of how the child feels two 
 
 **If you're past this stage:**
 Severe separation anxiety that does not improve at all by age 3 is worth discussing with your pediatrician. Manageable separation distress throughout the toddler years is normal. There are very effective strategies that can help, and most children make great progress with gentle, consistent support.
+
+**Prep tip:**
+Practice short separations with trusted adults now so the pattern is established before daycare or school drop-offs begin. Keep goodbyes brief and confident.
 
 **Source:** Bowlby (1969); Ainsworth (1967); AAP
 
@@ -3077,6 +3452,9 @@ They will want to play the exact same version of the same game many times in a r
 **If you're past this stage:**
 This is an opportunity, not a mandate. If you haven't done it, start now. It remains valuable through 18 months.
 
+**Prep tip:**
+Peek-a-boo is about to become your most useful trick. It teaches object permanence, you disappear, you come back, which is also the foundation for separation tolerance.
+
 **Source:** Bruner and Sherwood (1976), Peek a Boo and Shared Attention; AAP
 
 ---
@@ -3099,6 +3477,9 @@ A toddler who does not play with other children but plays near them is exactly o
 
 **If you're past this stage:**
 If your 3 year old completely avoids any proximity to other children or shows no interest in watching them, mention it at the 36 month visit. Most children this age engage socially in some way, and small supported play opportunities can make a big difference.
+
+**Prep tip:**
+Arrange low-key playdates with one same-age child. Expect them to play next to each other, not really together, that's parallel play, and it's exactly right for this stage.
 
 **Source:** Parten (1932), Social Play Stages; AAP
 
@@ -3123,6 +3504,9 @@ Early empathy is inconsistent. A child may comfort their parent one day and igno
 **If you're past this stage:**
 Complete absence of any prosocial concern for others by 30 months is worth noting in the context of other social observations. Empathy continues to develop throughout early childhood, and consistent modeling and warm responses go a long way.
 
+**Prep tip:**
+Model comforting behavior in front of your child: comfort a stuffed animal, name the emotion. When your child sees someone upset, narrate what's happening.
+
 **Source:** Zahn Waxler et al. (1992), Empathy Development Research; Hoffman (2000)
 
 ---
@@ -3145,6 +3529,9 @@ Conflict during early cooperative play is completely normal. Children are learni
 
 **If you're past this stage:**
 If your 3 year old has no interest in playing with other children at all (not just near them), mention it at the 36 month visit. Many children warm up to cooperative play gradually, especially with familiar peers and structured games.
+
+**Prep tip:**
+Keep arranging regular playdates with consistent peers. Cooperative play develops from the familiarity built over many interactions with the same children, one-off playdates help less.
 
 **Source:** Parten (1932); Vygotsky (1978), Zone of Proximal Development; CDC
 
@@ -3169,6 +3556,9 @@ You do not need the child to repeat the word back to you for this to work. The e
 **If you're past this stage:**
 This practice is valuable at any age. Starting now is never too late.
 
+**Prep tip:**
+Name your child's emotions as they happen: 'You're frustrated' or 'That scared you.' Building emotional vocabulary now lays the groundwork for self-regulation later.
+
 **Source:** Lieberman et al. (2011); Gottman (1997); Zero to Three
 
 ---
@@ -3191,6 +3581,9 @@ Everything taking twice as long is temporary. The investment in allowing indepen
 
 **If you're past this stage:**
 If your 2 year old shows no interest in doing anything for themselves and is passive about all tasks, it is worth discussing with your pediatrician. In most cases, a few small adjustments to the environment and routine can spark that independence quickly.
+
+**Prep tip:**
+Build extra time into routines now. The 'me do it' phase is coming and the children who are allowed to try, even slowly, build more confidence and fewer meltdowns.
 
 **Source:** Erikson (1950), Autonomy vs Shame; Deci and Ryan, Self Determination Theory; AAP
 
@@ -3239,6 +3632,9 @@ Not all children form close friendships at age 3. Some are more comfortable in s
 **If you're past this stage:**
 If your 4 year old has no interest in other children and avoids all social interaction, discuss it with your pediatrician. With patience and the right social settings, many children find their footing socially a little later and do very well.
 
+**Prep tip:**
+If your child is naming a favorite friend, take it seriously, arrange a playdate. Short, one-on-one, same-age play is the right format. Ninety minutes is plenty.
+
 **Source:** Dunn (1993), Young Children's Close Friendships; CDC
 
 ---
@@ -3261,6 +3657,9 @@ A partner who feels less confident than the primary caregiver is normal. Confide
 
 **If you're past this stage:**
 If one parent has taken on almost all caregiving through the first 6 months, it is not too late to rebalance. Co parents who become more involved at 6 months still form strong attachments.
+
+**Prep tip:**
+Skin-to-skin and diaper changes are for all caregivers, not just the birth parent. The bonding neurochemistry is the same. Start those routines from day one.
 
 **Source:** Lamb (1977), Paternal Involvement; Paquette (2004), Activation Relationship Theory; AAP
 
@@ -3285,6 +3684,9 @@ Crying at drop off is not evidence of trauma. Most children settle within minute
 **If you're past this stage:**
 If your child has been in daycare for several months and still does not settle within 10 minutes of drop off, talk to both the caregivers and your pediatrician. Most children do settle in time, and caregivers often have practical strategies that make a real difference.
 
+**Prep tip:**
+If starting daycare or a new caregiver, do gradual transitions, short visits first, then half days. The relationship needs time to build before full separation.
+
 **Source:** Bowlby (1969); NICHD Study of Early Child Care (2003)
 
 ---
@@ -3307,6 +3709,9 @@ You will miss many serves. Every parent does. The research shows it is the overa
 
 **If you're past this stage:**
 This practice is valuable throughout childhood. If you are starting later, start now. The brain retains plasticity well beyond infancy.
+
+**Prep tip:**
+When your baby makes a sound or expression, copy it back. That simple loop, they do something, you respond, they respond, is the foundation of language and social development.
 
 **Source:** Harvard Center on the Developing Child; Tronick (2007); Schore (1994)
 
@@ -3331,6 +3736,9 @@ Self care does not mean vacations and massages. It means meeting your basic need
 **If you're past this stage:**
 If you are consistently running on empty, this is worth raising at your own doctor's appointment, not just the baby's. Getting support is one of the best things you can do for your child.
 
+**Prep tip:**
+You cannot pour from an empty cup. Before your baby arrives, identify the one thing that most recharges you and build a plan to protect it, even if it's just 20 minutes.
+
 **Source:** Harvard Center on the Developing Child, Parent Wellbeing and Child Development; AAP Postpartum Care Guidelines
 
 ---
@@ -3354,6 +3762,9 @@ The specific activities matter less than the consistency. "Bath, book, bed" is a
 **If you're past this stage:**
 It is never too late to establish a bedtime routine. Even starting at 12 months produces measurable improvement within days to weeks.
 
+**Prep tip:**
+Start a consistent bedtime routine now, bath, feed, song, sleep. Predictability is a form of safety for your baby. The exact routine matters less than the consistency.
+
 **Source:** Mindell et al. (2009), Bedtime Routine Study; AAP Sleep Guidelines
 
 ---
@@ -3376,6 +3787,9 @@ The child will test the limit anyway. Consistent enforcement does not feel like 
 
 **If you're past this stage:**
 If discipline is chaotic or inconsistent in your household, starting a consistent approach at any age produces measurable improvement. The earlier the better, but it is always worth doing.
+
+**Prep tip:**
+Decide your discipline approach before you need it, not in the moment. Calm, consistent, brief responses to limit-testing are more effective than escalation.
 
 **Source:** Patterson (1982), Coercive Family Process; Baumrind (1971), Authoritative Parenting; AAP Discipline Guidance
 
@@ -3404,6 +3818,9 @@ A result at or near the detection limit is not a crisis. The goal is identifying
 **If you're past this stage:**
 If your child has not been screened by 24 months and you live in an older home or high risk area, request a blood lead test at the next visit. The test is simple and quick, and most results come back normal. Catching anything early makes treatment straightforward.
 
+**Prep tip:**
+Lead screening is recommended between 6 and 12 months for high-risk populations. Ask your pediatrician if a blood lead test is appropriate at your next visit.
+
 **Source:** AAP Council on Environmental Health (2016); CDC Blood Lead Reference Value
 
 ---
@@ -3426,6 +3843,9 @@ Eye crossing that resolved in the first few months of life is normal. Persistent
 
 **If you're past this stage:**
 If vision screening was not done at 12 months, ask for it at the next visit. Alternatively, request a referral to a pediatric ophthalmologist if you have any concerns. Vision conditions found early respond very well to treatment, and there is still plenty of time in the development window.
+
+**Prep tip:**
+Vision screening begins at the 12-month well-child visit. If you've noticed any squinting, eye-crossing, or asymmetric gaze before then, mention it sooner.
 
 **Source:** AAP Vision Screening Policy (2016); AAPOS Guidelines
 
@@ -3504,6 +3924,9 @@ Most poison control calls end without emergency intervention. The specialists wi
 **If you're past this stage:**
 Save the number today if you haven't. Check your home for accessible medications and batteries this week. It only takes a minute and gives you real peace of mind.
 
+**Prep tip:**
+Save your poison control number now: in the US it's 1-800-222-1222. Add it to your phone before you need it, not while you're panicking.
+
 **Source:** National Capital Poison Center; AAP Injury Prevention; Safe Kids Worldwide
 
 ---
@@ -3525,6 +3948,9 @@ Sunscreen is safe for babies from 6 months. The small amount of chemical absorpt
 
 **If you're past this stage:**
 If your baby under 6 months needs to be in the sun, protective clothing, a hat, and shade are the primary tools.
+
+**Prep tip:**
+Sunscreen can be used starting at 6 months. Get a mineral sunscreen (zinc oxide or titanium dioxide) and apply before any outdoor time.
 
 **Source:** AAP Sun Safety Guidelines (2023); Skin Cancer Foundation; FDA Sunscreen Safety
 
@@ -3549,6 +3975,9 @@ There is no developmental reason to rush this transition. A child still in a cri
 **If you're past this stage:**
 If you have already transitioned too early and are dealing with nightly escapes, use a consistent return to bed protocol: minimal interaction, same words, same calm return every time.
 
+**Prep tip:**
+The crib-to-bed transition works best when it's not rushed. If your child isn't climbing out, there's no urgency, most children do best in a crib until age 2.5 to 3.
+
 **Source:** AAP Sleep Guidelines; Mindell (2005), Sleeping Through the Night
 
 ---
@@ -3571,6 +4000,9 @@ There is no hurry to move to a booster. A forward facing harness is much safer t
 
 **If you're past this stage:**
 If your child is already in a booster before age 4 or before reaching 40 lbs, move them back to a harnessed seat if possible.
+
+**Prep tip:**
+The car seat forward-facing transition is based on weight and height limits, not age. Check your seat's manual, many children should still be rear-facing well past age 2.
 
 **Source:** NHTSA (2024); AAP Car Seat Guideline; Insurance Institute for Highway Safety; follow your country's transport authority for legal requirements
 
@@ -3605,6 +4037,9 @@ Soy allergy affects only about 0.4% of children. Most children tolerate soy easi
 **If you're past this stage:**
 If you delayed soy introduction past 9 months, introduce it now with standard allergen introduction precautions.
 
+**Prep tip:**
+Tofu cubes or edamame, mashed, are easy soy introductions. Soft, easy to portion, and straightforward to add to puree.
+
 **Source:** LEAP Study (Du Toit et al. 2015); AAP Allergen Introduction Guidelines
 
 ---
@@ -3627,6 +4062,9 @@ Your baby will spill most of it. That is the expected outcome. The goal is expos
 
 **If you're past this stage:**
 If your baby is 12 months and still on the bottle for all fluids, start cup practice now. The AAP recommends transitioning off the bottle entirely by 15 to 18 months.
+
+**Prep tip:**
+A small amount of water in a sippy cup alongside solid meals is recommended starting at 6 months. 2 to 4 ounces per day is plenty at this stage.
 
 **Source:** AAP Nutrition Guidelines; Healthy Eating Research
 
@@ -3651,6 +4089,9 @@ Most of the food will end up on the floor. Self feeding at this age is about mot
 **If you're past this stage:**
 If your 12 month old is not attempting to pick up small pieces of food at all, mention it at the 12 month visit alongside other fine motor observations. Most children in this range are developing on their own timeline.
 
+**Prep tip:**
+Small, soft finger foods are perfect for practicing the pincer grasp, pea-sized pieces of soft cooked vegetables, banana, or soft pasta. The eating is almost secondary to the fine motor work.
+
 **Source:** AAP Complementary Feeding Guidelines; Baby Led Weaning Research (Rapley and Murkett)
 
 ---
@@ -3674,6 +4115,9 @@ A 15 month old eating mostly with their hands despite having a spoon available i
 **If you're past this stage:**
 If your 2 year old shows no interest in or ability to use a spoon at all, mention it at the 24 month visit as part of fine motor review.
 
+**Prep tip:**
+Let them use the spoon themselves even though it's slower and messier. You can guide hand-over-hand for the scoop and then step back for the delivery.
+
 **Source:** AAP; CDC Motor Milestones
 
 ---
@@ -3696,6 +4140,9 @@ Using a fork with the whole fist grip is normal through age 3. A mature pencil l
 
 **If you're past this stage:**
 If your 2 year old has no interest in utensils at all, it is worth noting at the 24 month visit. Many children engage readily once they see others using utensils regularly.
+
+**Prep tip:**
+Add a toddler fork to meals alongside the spoon. Soft foods, banana chunks, cooked pasta, soft vegetables, work best for early forking attempts.
 
 **Source:** AAP; CDC
 
@@ -3744,6 +4191,9 @@ Whole milk is recommended from 12 to 24 months because the fat content supports 
 **If you're past this stage:**
 If your 3 year old is still on whole milk and growing well, switching to 2% at any point is appropriate.
 
+**Prep tip:**
+At age 2, the AAP recommends switching from whole milk to 2% or low-fat. Plan the transition for right around the 24-month birthday.
+
 **Source:** AAP Nutrition Guidelines; USDA Dietary Guidelines (2020)
 
 ---
@@ -3791,6 +4241,9 @@ Toddler food refusal is normal. The goal is continued exposure, not compliance. 
 **If you're past this stage:**
 If your 2 year old eats fewer than 10 different foods regularly, consider speaking to your pediatrician or a pediatric dietitian about expanding variety.
 
+**Prep tip:**
+Start building structured snack routines, same times, whole foods, no grazing. Toddler eating habits are easier to establish now than to reform at age 3.
+
 **Source:** Birch and Fisher (1998), Food Acceptance Patterns; AAP; USDA MyPlate
 
 ---
@@ -3814,6 +4267,9 @@ Naturally occurring sugars in whole fruit are different from added sugars. Whole
 
 **If you're past this stage:**
 The first dental visit should happen when the first tooth appears or by age 1, whichever comes first. If you have not been yet, schedule it now.
+
+**Prep tip:**
+Limit juice and sugary foods from the start, dental decay can begin as soon as the first tooth appears. Water and breast milk or formula are the only drinks needed before 12 months.
 
 **Source:** AAP Oral Health Policy; AAPD Caries Prevention Guidelines; WHO Sugar Guidelines
 
@@ -3843,6 +4299,9 @@ Most children use both hands and both feet (crawling up stairs) before they walk
 **If you're past this stage:**
 If your 18 month old cannot ascend even one step with support, raise it at the 18 month visit alongside other gross motor observations. Early input from a physical therapist can make a meaningful difference.
 
+**Prep tip:**
+Check your stair gate latches now. Stair climbing with support is about to begin and unsupervised stair access is not safe at this stage.
+
 **Source:** CDC Milestones; AAP
 
 ---
@@ -3865,6 +4324,9 @@ Kicking accurately takes much longer than kicking at all. A kick that goes sidew
 
 **If you're past this stage:**
 If your 20 month old cannot kick a stationary ball at all, mention it at the next visit as part of gross motor review. Most concerns at this stage are easily addressed with a little targeted practice and time.
+
+**Prep tip:**
+Pick up a large soft ball if you don't have one. That's the only preparation. Place it on the floor and step back.
 
 **Source:** CDC Milestones; AAP
 
@@ -3889,6 +4351,9 @@ Scribbling looks like scribbling. That is what it is supposed to look like. Repr
 **If you're past this stage:**
 If your 20 month old shows no interest in making marks on paper with any tool, mention it at the next visit as part of fine motor review. Many children take off quickly once they find a medium they enjoy.
 
+**Prep tip:**
+Get a box of thick crayons and a roll of cheap paper. Tape it to a low surface. Scribbling is about to become a daily activity.
+
 **Source:** CDC; Kellogg (1969), Stages of Children's Drawing
 
 ---
@@ -3911,6 +4376,9 @@ The copy will be rough and approximate. An imperfect vertical line is still a co
 
 **If you're past this stage:**
 If your 27 month old cannot copy a simple vertical line, it is worth noting at the 30 month visit. Early support is effective and straightforward to put in place.
+
+**Prep tip:**
+Draw a vertical line slowly in front of your child and invite them to try. Use chunky crayons and large paper. The attempt matters, not the result.
 
 **Source:** CDC Milestones; HELP Strands; AAP
 
@@ -3935,6 +4403,9 @@ Their circle will look like an oval, or a lumpy potato shape, or a loop. It coun
 **If you're past this stage:**
 If your 3 year old cannot produce any closed round shape at all, raise it at the 36 month visit. Most children respond well to simple fine motor activities and a bit more practice.
 
+**Prep tip:**
+Draw a circle slowly in front of your child and invite them to try. Circles are harder than lines, expect a wobbly oval for many months before a recognizable circle emerges.
+
 **Source:** CDC Milestones; HELP Strands; AAP
 
 ---
@@ -3957,6 +4428,9 @@ Some children jump with one foot slightly ahead of the other at first. True simu
 
 **If you're past this stage:**
 If your 30 month old cannot leave the ground with both feet at once in any context, mention it at the 30 month visit. Many children simply need a few more weeks of practice and encouragement.
+
+**Prep tip:**
+Jumping forward from a standing position requires balance and timing. Mark a start line and a landing spot, toddlers love a target to aim for.
 
 **Source:** CDC Milestones; AAP
 
@@ -3981,6 +4455,9 @@ Most children at age 3 can manage 1 to 2 hops before losing balance. Three or mo
 **If you're past this stage:**
 If your 4 year old cannot hop on one foot at all, mention it at the 48 month visit. This is a developable skill and with practice most children get there.
 
+**Prep tip:**
+Hopping on one foot requires core strength and balance. Practice the one-foot balance first before expecting a full hop. 'Stand like a flamingo' is a good starting game.
+
 **Source:** CDC Milestones; AAP 4 Year Visit Guidelines
 
 ---
@@ -4003,6 +4480,9 @@ Most toddlers catch by trapping the ball against their chest with both arms, not
 
 **If you're past this stage:**
 If your 3 year old cannot interact with a ball at all (catch, kick, or throw), mention it at the 36 month visit. A brief assessment can identify any support that would help.
+
+**Prep tip:**
+Roll a large ball toward your child and work up to a gentle underhand toss. Catching requires tracking the ball and timing the grab, it develops gradually over many months.
 
 **Source:** CDC; AAP
 
@@ -4079,6 +4559,9 @@ You do not need to be a good singer. Your child is not a music critic. They resp
 **If you're past this stage:**
 If singing is not part of your routine yet, starting at any age has demonstrable benefits. Pick three songs and repeat them this week.
 
+**Prep tip:**
+Keep singing with your baby. Songs with repeated phrases and built-in pauses, like 'The Wheels on the Bus' and 'Old MacDonald', are especially effective for language learning.
+
 **Source:** Trehub (2003), Musical Predispositions in Infancy; Bryant et al. (1990); AAP
 
 ---
@@ -4126,6 +4609,9 @@ The questions will continue regardless of how well you answer. This is not a tes
 **If you're past this stage:**
 If your 3 year old rarely asks why about anything, it is worth a brief mention at the next visit. Most children at this stage ask constantly, but the timing varies and many catch up quickly.
 
+**Prep tip:**
+When 'why?' starts, take it seriously. Answer honestly at an age-appropriate level. The child who learns that questions get real answers becomes a lifelong learner.
+
 **Source:** Chouinard (2007), Why Do Children Ask So Many Questions?; AAP; NAEYC
 
 ---
@@ -4153,6 +4639,9 @@ The repetition is the method. Babies repeat cause and effect actions hundreds of
 **If you're past this stage:**
 If your 8 month old shows no interest in producing effects with their actions and is entirely passive with objects, mention it at the 9 month visit. The pediatrician can help determine whether more observation is all that is needed.
 
+**Prep tip:**
+Give your baby toys that do something when touched, buttons that light up, rattles, crinkle toys. Cause-and-effect exploration is how they learn they can affect the world.
+
 **Source:** Piaget (1952), Sensorimotor Stage; CDC
 
 ---
@@ -4175,6 +4664,9 @@ They will dump the container before filling it to the top. They will put things 
 
 **If you're past this stage:**
 Container play opens naturally when the baby can sit independently and grasp objects. If your 12 month old shows no interest in putting objects into any container, mention it at the 12 month visit. Most children respond quickly once given the right materials and some focused play time.
+
+**Prep tip:**
+Set out containers of different sizes during floor play. Putting things in and taking them out is about to become a sustained activity, it's building fine motor and spatial reasoning.
 
 **Source:** CDC; Piaget (1952)
 
@@ -4199,6 +4691,9 @@ They will try to force the wrong piece into the wrong space. This is not a sign 
 **If you're past this stage:**
 If your 15 month old has no interest in shape based activities and cannot fit even a peg into a round hole, mention it at the 15 month visit. Many children simply need more exposure and the right level of challenge.
 
+**Prep tip:**
+A simple shape sorter, circle, square, triangle, is the ideal prep toy for this window. Buy one now and leave it accessible. No instruction needed; they'll figure it out.
+
 **Source:** CDC; Piaget (1952)
 
 ---
@@ -4221,6 +4716,9 @@ Possession concepts (mine, yours) require the child to understand perspective: t
 
 **If you're past this stage:**
 If your 24 month old has no concept of possession at all and treats all objects as equally available to everyone, note it as part of broader language and social development monitoring. This is a skill that tends to develop quickly once the language is in place.
+
+**Prep tip:**
+Start using 'mine' and 'yours' clearly in daily language. Understanding possession is foundational for navigating social situations, and for eventually learning to share.
 
 **Source:** Fasig (2000), Toddlers' Understanding of Mine and Yours; CDC
 
@@ -4245,6 +4743,9 @@ Knowing the function of an object does not mean using it correctly every time. A
 **If you're past this stage:**
 If your 2 year old cannot demonstrate the function of common daily objects, mention it at the 24 month visit. Simple daily narration often closes this gap quickly.
 
+**Prep tip:**
+Give your child access to objects with obvious functions, a toy phone, a toy broom, a toy cup. Watch them use them correctly. That's symbolic thinking in action.
+
 **Source:** CDC; Mandler (1992), How to Build a Baby's Conceptual System
 
 ---
@@ -4267,6 +4768,9 @@ Past, present, and future tense in language take years to fully develop. "Yester
 
 **If you're past this stage:**
 If your 3 year old has no concept of day/night or today/tomorrow, it is worth noting at the 36 month visit. Consistent daily use of time language is the best support and works quickly for most children.
+
+**Prep tip:**
+Start using time words consistently: 'We'll go to the park this afternoon.' 'Grandma is coming tomorrow.' Concepts like morning, afternoon, and tomorrow develop from language use.
 
 **Source:** CDC; Harner (1975), How and When Children Learn Temporal Language
 
@@ -4363,6 +4867,9 @@ Children often learn the animal sound before the animal name, "woof" before "dog
 **If you're past this stage:**
 If your 18 month old cannot associate any animal with its name or sound, mention it at the 18 month visit as part of receptive vocabulary review.
 
+**Prep tip:**
+Name animals and their sounds during books, toys, and outdoor time. 'Dog, what does the dog say? Woof!' The pairing of word, image, and sound builds vocabulary fast.
+
 **Source:** CDC; Fenson et al. (1994), MacArthur Communicative Development Inventories
 
 ---
@@ -4386,6 +4893,9 @@ Early signs and words will be approximate. A clapping motion used for "more" sti
 **If you're past this stage:**
 If your 12 month old has no way to signal hunger, fullness, or wanting more (verbally or gesturally), discuss communication development at the 12 month visit.
 
+**Prep tip:**
+Use 'more' and 'all done' with consistent hand gestures at every meal. Your baby will use these signs back to you before they can say the words.
+
 **Source:** Goodwyn et al. (2000), Baby Sign Language Research; CDC; AAP
 
 ---
@@ -4408,6 +4918,9 @@ Children at this age will frequently get big and little reversed, especially whe
 
 **If you're past this stage:**
 If your 30 month old has no concept of relative size at all, mention it at the 30 month visit.
+
+**Prep tip:**
+Use size words constantly in daily narration: 'big spoon, little spoon,' 'that's a big dog, this is a little dog.' Relative size concepts develop from consistent language exposure.
 
 **Source:** CDC; Mix et al. (2002), Mathematical Cognition in Early Childhood
 
@@ -4435,6 +4948,9 @@ Toddlers who refuse to share are not developing into selfish adults. They are be
 
 **If you're past this stage:**
 If your 3 to 4 year old is still completely unable to take turns or wait for a desired toy with any support, it is worth discussing at the next visit.
+
+**Prep tip:**
+Forced sharing doesn't teach sharing, it teaches resentment. Practice turn-taking instead: 'Liam's turn, then your turn.' True sharing emerges naturally around age 3.
 
 **Source:** Brownell et al. (2009), Spontaneous Sharing in Toddlers; AAP; Keltner (2009)
 
@@ -4531,6 +5047,9 @@ If your baby falls asleep in a swing, car seat, or bouncer, move them to the fla
 **If you're past this stage:**
 If the baby is already here and safe sleep is not in place, set it up today. It is never too late, and every sleep counts.
 
+**Prep tip:**
+Before your baby arrives, set up the sleep space: firm flat mattress, no loose bedding, nothing in the crib. This takes 10 minutes to get right and zero minutes to fix later.
+
 **Source:** AAP Safe Sleep Policy (2022); CDC SIDS Data; Moon et al. Pediatrics (2022)
 
 ---
@@ -4577,6 +5096,9 @@ You do not need a complete nursery ready before the baby comes home. You need: a
 **If you're past this stage:**
 If you are reading this at 38 or 39 weeks and the bag is not packed: do it this weekend. You may not get another clear window.
 
+**Prep tip:**
+Start packing your hospital bag now, most parents wish they'd done it earlier. Focus on comfort items for labor and the first 24 hours, not the whole stay.
+
 **Source:** ACOG Labor and Delivery Preparation Guidelines; NHTSA Car Seat Safety; Safe Kids Worldwide
 
 ---
@@ -4619,6 +5141,9 @@ You are not locked in forever. If the relationship does not work after 6 to 12 m
 **If you're past this stage:**
 If the baby is already here and you do not have a pediatrician, call practices today and explain your situation. Most will prioritize a newborn appointment.
 
+**Prep tip:**
+Now is the time to choose a pediatrician, not after the baby is born. Most pediatric practices require a prenatal consult appointment, book it in the next few weeks.
+
 **Source:** AAP Bright Futures Guidelines; ACOG Prenatal Care Guidelines
 
 ---
@@ -4655,6 +5180,9 @@ A rescreen for hearing is not a diagnosis of hearing loss. It is a standard prot
 
 **If you're past this stage:**
 If you left the hospital and are unsure whether all three screens were completed, call the hospital's newborn nursery directly and ask. Your pediatrician should have the results in your file from the 3 to 5 day visit.
+
+**Prep tip:**
+Newborn hearing and metabolic screens happen at the hospital automatically, nothing to prepare. Just know they're coming so you're not surprised when a nurse wheels in a machine.
 
 **Source:** AAP Newborn Screening Policy; HRSA Recommended Uniform Screening Panel (RUSP); JCIH Position Statement (2019)
 
@@ -5255,6 +5783,9 @@ Mess is part of the process. A 14 month old who spills constantly at cup practic
 **If you're past this stage:**
 If your child is still exclusively on a sippy cup past 18 months, make the switch. Most children adapt within a week or two with consistent practice.
 
+**Prep tip:**
+Pick up a small weighted open cup. Introduce it at one meal a day with just a small amount of water. Spills are expected and fine.
+
 **Source:** AAP Pediatric Nutrition; AAPD Oral Health Guidelines
 
 ---
@@ -5278,6 +5809,9 @@ The repetition feels purposeless but is not. A toddler who dumps the container f
 
 **If you're past this stage:**
 This phase winds down naturally by 18 to 19 months as the child's interest shifts to more complex play. No intervention needed if it resolves on its own.
+
+**Prep tip:**
+You don't need to do anything special, just resist the urge to stop the switch-flipping and drawer-opening that's about to start. It's intentional learning.
 
 **Source:** Piaget Sensorimotor Stage (1952); AAP Early Learning Guidelines
 
@@ -5303,6 +5837,9 @@ Many children prefer to bump down on their bottoms for months before walking dow
 **If you're past this stage:**
 If your 18 month-old cannot navigate stairs in any way (up or down) with or without support, mention it at the next well child visit.
 
+**Prep tip:**
+Show your child the feet-first, backward method for descending stairs. Demonstrate it slowly and repeat it every time. Keep stair gates in place during this learning phase.
+
 **Source:** CDC Motor Milestones; AAP Safety Guidelines
 
 ---
@@ -5326,6 +5863,9 @@ Speed is not the point at this stage. A five-minute dressing routine that involv
 
 **If you're past this stage:**
 No clinical concern if assistance takes longer to emerge. Some toddlers cooperate readily at 17 months, others not until 22 months. Wide normal range.
+
+**Prep tip:**
+Shift your approach to dressing: narrate each step and let your child push their arm through or pull the shirt down. It takes longer but builds real independence.
 
 **Source:** Gesell Institute of Child Development; AAP
 
@@ -5351,6 +5891,9 @@ Later is not worse. A child who trains at 30 months trains faster than one start
 **If you're past this stage:**
 If no readiness signs are present by 30 months, mention it at the next visit. Delay in readiness can occasionally indicate sensory processing differences or developmental factors worth reviewing.
 
+**Prep tip:**
+Start watching for readiness signs: staying dry for 2 hours, signaling need, showing interest in the toilet. Don't start training yet, just observe and note what you see.
+
 **Source:** Brazelton child-led approach (1962); AAP Toilet Training Guidelines; FamilyForce Potty Training Playbook
 
 ---
@@ -5374,6 +5917,9 @@ The sheer volume of questions at this age, sometimes dozens per hour, is develop
 
 **If you're past this stage:**
 A child who rarely or never asks questions by 22 to 24 months, especially combined with limited vocabulary, is worth raising at the 24 month visit. Keep talking, reading, and answering questions as they come. Language development continues well beyond this stage, and there is always more you can do to support it.
+
+**Prep tip:**
+Stock up on patience for 'What's that?', it's coming constantly. Answer every question genuinely. You are their dictionary and the habit of asking is exactly what you want.
 
 **Source:** Hart & Risley (1995) Meaningful Differences; Nelson (1973) language acquisition research
 
@@ -5399,6 +5945,9 @@ Most toddlers throw with both feet planted for many months before developing the
 **If you're past this stage:**
 No clinical concern if throwing is still underarm or pushing at 25 months. Motor variation is wide. Note only if gross motor development is delayed broadly. Plenty of ball play and physical activity at any age supports motor development.
 
+**Prep tip:**
+Soft balls, open space, and your enthusiastic reaction, that's all this milestone needs. A foam ball about the size of a tennis ball is ideal.
+
 **Source:** Gallahue & Ozmun (2006) Understanding Motor Development; CDC Motor Milestones
 
 ---
@@ -5422,6 +5971,9 @@ Circles are harder than lines and may not appear until 24 to 27 months. A child 
 
 **If you're past this stage:**
 If your child shows no interest in mark-making at all by 24 months, mention it at the next visit. Avoidance of drawing can sometimes reflect fine motor or sensory differences, both of which respond well to early support. Continuing to offer low-pressure art opportunities in the meantime is always helpful.
+
+**Prep tip:**
+Get chunky crayons and unlined paper on the regular rotation. Show your child a vertical line slowly and invite them to try. Keep the expectation low, the praise high.
 
 **Source:** Beery VMI Developmental Norms; Gesell (1940) motor development sequence
 
@@ -5447,6 +5999,9 @@ Toddler jokes are not funny to adults. That is fine. They are funny to toddlers.
 **If you're past this stage:**
 No clinical concern if humor development is slower. Intentional humor is not a red-flag milestone. Note only if broader social and communication development seems limited. Humor often emerges in its own time, and there is plenty you can do to encourage it through playful interaction and silly books.
 
+**Prep tip:**
+Be ready to laugh at deliberately wrong answers. Toddler humor is about expectation violation and your reaction is the entire reward.
+
 **Source:** Reddy (2001) theory of mind and humor development; Loizou (2005) infant humor
 
 ---
@@ -5470,6 +6025,9 @@ Pedaling coordination takes weeks or months to develop. A child who straddles a 
 
 **If you're past this stage:**
 Tricycle pedaling that has not emerged by 30 months is worth noting as part of a broader gross motor review, not as a standalone concern. Continuing to offer outdoor play and wheeled toys at your child's own pace supports motor development whenever the skill arrives.
+
+**Prep tip:**
+If you don't have a balance bike or tricycle, now is the time to get one. Start with a balance bike if choosing, it builds the skill set that transfers to pedaling later.
 
 **Source:** AAP Physical Activity Guidelines; Gallahue & Ozmun Motor Development
 
@@ -5495,6 +6053,9 @@ Dressing takes much longer to develop than undressing. A child who can take clot
 **If you're past this stage:**
 No ability to remove any clothing by 30 months may indicate fine motor differences worth reviewing at the next visit. With targeted support, most children catch up quickly, and there are many fun activities that build these skills in the meantime.
 
+**Prep tip:**
+Start letting your child undress at bath time and bedtime without help. Velcro shoes and elastic waists are the right gear for this learning phase.
+
 **Source:** Gesell Developmental Schedules; AAP Developmental Milestones
 
 ---
@@ -5518,6 +6079,9 @@ The child's brushing will be inadequate for years. That is fine. You are buildin
 
 **If you're past this stage:**
 If your child has significant tooth brushing resistance past 36 months, discuss with your pediatric dentist. Sensory-based resistance to brushing is real and treatable, and your pediatric dentist can help with practical strategies that make brushing easier for both of you.
+
+**Prep tip:**
+Get a second toothbrush so your child has their own to hold while you brush with yours. Choice of toothpaste flavor helps reduce resistance before it starts.
 
 **Source:** AAPD Periodicity Guidelines; AAP Bright Futures Dental Guidelines
 
@@ -5543,6 +6107,9 @@ Some children remain ambidextrous well past 30 months and settle into a preferen
 **If you're past this stage:**
 No dominant hand by age 4 or 5 is worth noting. Strong hand preference before 18 months (especially if one side is significantly weaker) may warrant review for asymmetric motor development. Early assessment is straightforward, and most concerns in this area resolve well with appropriate support.
 
+**Prep tip:**
+Observe which hand your child reaches with consistently. If it's the left hand, start sourcing left-handed scissors for when preschool begins. Tell caregivers not to redirect.
+
 **Source:** Coren (1992) The Left-Hander Syndrome; AAP Motor Development Guidelines
 
 ---
@@ -5566,6 +6133,9 @@ Toddler friendships do not look like adult friendships. There will be disputes, 
 
 **If you're past this stage:**
 No interest in any peer interaction by 36 months, not just preference but complete disinterest in other children, is worth noting at the 36 month visit. Social interest develops at different rates, and your pediatrician can help you understand what is typical for your child and offer the right next steps.
+
+**Prep tip:**
+If your child mentions a friend's name, take it seriously, arrange a playdate. Short, one-on-one, same-age play is the right format. Ninety minutes is plenty.
 
 **Source:** Hartup (1992) peer relations research; AAP Social Emotional Development
 
@@ -5591,6 +6161,9 @@ Two seconds is the target by 36 months. Five or ten seconds comes later. Brief w
 **If you're past this stage:**
 Unable to balance on either foot for any duration by 36 months is worth noting at the well child visit as part of gross motor review. Your provider can offer targeted activities and reassurance based on your child's overall motor picture.
 
+**Prep tip:**
+Turn balance practice into a game: flamingo pose, stepping stones, counting how long they can hold it. Two seconds by 36 months is the milestone target.
+
 **Source:** Bayley Scales of Infant Development; CDC 3-Year Milestones
 
 ---
@@ -5614,6 +6187,9 @@ Some children cry at drop-off for weeks. That is not a sign of unreadiness. It i
 
 **If you're past this stage:**
 No ability to separate from a parent in any context by 36 months, not just preschool but with any trusted adult, is worth discussing with your pediatrician. Separation anxiety is very common and highly responsive to gentle, consistent practice and support.
+
+**Prep tip:**
+Visit the preschool together before the first day, familiarity dramatically reduces first-day distress. Let your child explore the space at their own pace.
 
 **Source:** AAP Bright Futures; Lightbridge Academy Preschool Readiness Checklist; Bowlby Attachment Theory
 
@@ -5639,6 +6215,9 @@ Clothes on backward and inside out are fine. The goal right now is independent e
 **If you're past this stage:**
 No ability to put on any clothing independently by 36 months may indicate fine motor differences worth discussing at the 36 month visit. Fine motor skills respond well to practice and, where needed, early occupational therapy support.
 
+**Prep tip:**
+Lay out tomorrow's clothes the night before and let your child get dressed independently in the morning. Remove time pressure and the process becomes much smoother.
+
 **Source:** Gesell Developmental Schedules; AAP Developmental Milestones
 
 ---
@@ -5662,6 +6241,9 @@ Children often understand "one" and "two" before larger numbers. Being able to h
 
 **If you're past this stage:**
 No understanding of any number quantity by 36 months is worth noting at the well child visit as part of cognitive review. Everyday counting games and activities continue to build number sense at any stage.
+
+**Prep tip:**
+Embed counting into daily life with emphasis on the total: 'One, two, three crackers, you have three!' The final number as the quantity is the concept they're building.
 
 **Source:** Wynn (1992) infant number sense; Gelman & Gallistel (1978) counting principles; AAP Cognitive Milestones
 
@@ -5687,6 +6269,9 @@ A 12 to 14 month old who says very few words but clearly understands what is bei
 **If you're past this stage:**
 If your 14 month old does not consistently respond to their own name, does not follow simple one step instructions, and does not appear to understand common object names, bring it up at the 15 month visit. A hearing check is the first step, and early identification means early support, which makes a real difference.
 
+**Prep tip:**
+Test your child's understanding informally with natural prompts: 'Where is the dog?' 'Can you bring me the cup?' You'll be surprised how many words they know that they can't yet say.
+
 **Source:** Hart & Risley (1995); AAP Language Development Guidelines; CDC 12-Month Milestones
 
 ---
@@ -5711,6 +6296,9 @@ Some children show comfort behaviors at 15 months, others not until 24 months. W
 **If you're past this stage:**
 Complete absence of any prosocial or comfort response to others by 24 months, combined with limited eye contact and communication, is worth raising at the 24 month visit as part of the broader social emotional review. Raising it early means more options for support, and many children with social communication differences thrive with the right help.
 
+**Prep tip:**
+Model comforting behavior in front of your child: comfort a stuffed animal, name the emotion. When your child sees someone upset, narrate what's happening and watch their response.
+
 **Source:** Zahn-Waxler et al. (1992) prosocial development research; Eisenberg (2000) empathy development; AAP Social Emotional Milestones
 
 ---
@@ -5734,6 +6322,9 @@ Nighttime accidents past age 3 are completely normal and are not a sign of faile
 
 **If you're past this stage:**
 If your 33 month old has not begun showing any signs of toilet training progress despite months of effort and clear readiness signs, mention it at the next visit. Rarely, physical factors such as constipation, urinary tract issues, or sensory sensitivities are contributing. These are treatable once identified, and many families find that one simple change makes all the difference.
+
+**Prep tip:**
+If training is in progress, stay consistent with the potty routine: on waking, before meals, before leaving the house, before nap, and before bed. Consistency drives dryness.
 
 **Source:** Brazelton (1962) child-led toilet training; AAP Toilet Training Guidelines; American Urogynecologic Society; FamilyForce Potty Training Playbook
 
