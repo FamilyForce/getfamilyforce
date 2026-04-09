@@ -172,14 +172,15 @@ Deno.serve(async (req: Request) => {
       // 4. Query all open windows for this age (for count + top 3)
       const { data: windows } = await sb
         .from('milestone_windows')
-        .select('title, why_it_matters, what_to_do, urgency')
+        .select('id, title, why_it_matters, what_to_do, urgency')
         .eq('active', true)
         .lte('open_age_weeks', weeks)
         .gte('close_age_weeks', weeks)
         .order('priority', { ascending: true })
 
       const allWindowCount = windows?.length ?? 0
-      const topWindows     = (windows ?? []).slice(0, 3)
+      // NOTE: topWindows built AFTER completedProgress is fetched below,
+      // so completed windows are excluded. See line ~210.
 
       // 4b. Query completed windows for this child — used to acknowledge progress in the email.
       //     completed_date is nullable; null rows sort unpredictably under descending order
@@ -213,6 +214,15 @@ Deno.serve(async (req: Request) => {
           seenTitles.add(title)
           return true
         })
+
+      // Build completed window ID set for filtering topWindows
+      // (fixes bug: completed windows were appearing in both "already done" and "still open" sections)
+      const completedWindowIds = new Set<string>(
+        (completedProgress ?? []).map((p: any) => p.window_id).filter(Boolean)
+      )
+      const topWindows = (windows ?? [])
+        .filter((w: any) => !completedWindowIds.has(w.id))
+        .slice(0, 3)
 
       // 7. Weeks since signup
       const signupDate = new Date(sub.created_at)
