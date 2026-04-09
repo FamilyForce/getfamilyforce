@@ -1141,33 +1141,69 @@ function setEarnState(clicks, data) {
 }
 
 // ── Referral code setup ──────────────────────────────────────
-;(function initEarnPage() {
-  var code = localStorage.getItem('ff_own_referral') || '';
-  var baseUrl = 'https://getfamilyforce.com?via=';
-  var fullLink = baseUrl + (code || 'YOUR-CODE');
+// ── Page init (requires auth) ────────────────────────────────
+// updateEarnDisplay: set the referral code in the link block and all copy cards.
+// Uses data-orig to cache the original template text so repeated calls are safe.
+function updateEarnDisplay(code) {
+  var baseUrl  = 'https://getfamilyforce.com?via=';
+  var fullLink = baseUrl + code;
 
-  // Display
-  var linkDisplay = document.getElementById('earnLinkDisplay');
+  // Restore link display markup if it was overwritten with "Sign in" placeholder
+  var linkDisplay   = document.getElementById('earnLinkDisplay');
   var codeHighlight = document.getElementById('earnCodeHighlight');
-  if (code) {
-    codeHighlight.textContent = code;
-  } else {
-    linkDisplay.innerHTML = '<span style="color:var(--text-dim);font-size:12px">Sign in to see your link</span>';
+  if (linkDisplay && !codeHighlight) {
+    linkDisplay.innerHTML = 'getfamilyforce.com?via=<span class="earn-code-highlight" id="earnCodeHighlight">—</span>';
+    codeHighlight = document.getElementById('earnCodeHighlight');
   }
+  if (codeHighlight) codeHighlight.textContent = code;
 
-  // Replace [YOUR LINK] in all kit copy cards
+  // Replace [YOUR LINK] in all copy cards; cache original via data-orig
   document.querySelectorAll('.copy-card-text').forEach(function(el) {
-    el.textContent = el.textContent.replace(/\[YOUR LINK\]/g, fullLink);
+    var orig = el.getAttribute('data-orig');
+    if (!orig) { orig = el.textContent; el.setAttribute('data-orig', orig); }
+    el.textContent = orig.replace(/\[YOUR LINK\]/g, fullLink);
   });
+}
 
-  // Default: zero state (no Rewardful data yet)
+document.addEventListener('DOMContentLoaded', function() {
+  // Fast path: render immediately if code is already cached
+  var cachedCode = localStorage.getItem('ff_own_referral');
+  if (cachedCode) updateEarnDisplay(cachedCode);
   setEarnState(0, null);
 
-  // PLACEHOLDER: when Rewardful is connected, replace above with:
-  // fetchRewardfulData(code).then(function(data) {
-  //   setEarnState(data.clicks, data);
-  // });
-})();
+  ScoutDash.init('earn', function(user /*, child, sub */) {
+    // Auth resolved — sidebar now shows child name
+    var code = localStorage.getItem('ff_own_referral');
+    if (code) { updateEarnDisplay(code); return; }
+
+    // Fetch referral code from DB
+    var sb = ScoutDash.getSb();
+    sb.from('profiles').select('referral_code').eq('id', user.id).single()
+      .then(function(result) {
+        var dbCode = result.data && result.data.referral_code;
+        if (dbCode) {
+          localStorage.setItem('ff_own_referral', dbCode);
+          updateEarnDisplay(dbCode);
+          return;
+        }
+        // Not set yet — generate one for users pre-dating the referral system
+        var prefix = (user.email || '').split('@')[0].replace(/[^a-zA-Z]/g, '').slice(0, 6).toUpperCase() || 'FF';
+        var chars  = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+        var suffix = Array.from({length: 4}, function() {
+          return chars[Math.floor(Math.random() * chars.length)];
+        }).join('');
+        var newCode = prefix + '-' + suffix;
+        sb.from('profiles')
+          .upsert({ id: user.id, referral_code: newCode }, { onConflict: 'id', ignoreDuplicates: false })
+          .then(function(res) {
+            if (!res.error) {
+              localStorage.setItem('ff_own_referral', newCode);
+              updateEarnDisplay(newCode);
+            }
+          });
+      });
+  });
+});
 
 // ── Toast ────────────────────────────────────────────────────
 function showToast(msg) {
@@ -1179,7 +1215,8 @@ function showToast(msg) {
 
 // ── Copy link / code ─────────────────────────────────────────
 function copyLink() {
-  var code = localStorage.getItem('ff_own_referral') || 'YOUR-CODE';
+  var code = localStorage.getItem('ff_own_referral') || '';
+  if (!code) { showToast('Link not ready — try again in a moment'); return; }
   var link = 'https://getfamilyforce.com?via=' + code;
   _copyText(link);
   var btn = document.getElementById('copyLinkBtn');
@@ -1190,7 +1227,7 @@ function copyLink() {
 }
 
 function copyCode() {
-  var code = localStorage.getItem('ff_own_referral') || 'YOUR-CODE';
+  var code = localStorage.getItem('ff_own_referral') || '';
   _copyText(code);
   var btn = document.getElementById('copyCodeBtn');
   btn.textContent = '✓ Copied!';
@@ -1217,14 +1254,16 @@ function _fallbackCopy(text) {
 // ── WhatsApp / SMS share ─────────────────────────────────────
 function shareWhatsApp(e) {
   e.preventDefault();
-  var code = localStorage.getItem('ff_own_referral') || 'YOUR-CODE';
+  var code = localStorage.getItem('ff_own_referral') || '';
+  if (!code) { showToast('Link not ready — try again in a moment'); return; }
   var link = 'https://getfamilyforce.com?via=' + code;
   var msg = encodeURIComponent('Hey, thought of you. Scout sends one email a month about what developmental milestones are active for your baby right now. Super simple, actually useful. Free to try: ' + link);
   window.open('https://wa.me/?text=' + msg, '_blank');
 }
 
 function shareSMS() {
-  var code = localStorage.getItem('ff_own_referral') || 'YOUR-CODE';
+  var code = localStorage.getItem('ff_own_referral') || '';
+  if (!code) { showToast('Link not ready — try again in a moment'); return; }
   var link = 'https://getfamilyforce.com?via=' + code;
   var msg = encodeURIComponent('Hey — this thing called Scout sends one email a month about what milestones are active for your baby. Actually useful. Free to try: ' + link);
   window.location.href = 'sms:?body=' + msg;
