@@ -1175,8 +1175,9 @@
     var el = document.getElementById(id);
     if (el) el.style.display = 'flex';
     document.body.style.overflow = 'hidden'; // Prevent body scroll
-    // Inert attribute (accessibility) — exclude modal content
-    document.querySelectorAll('body > *:not(#' + id + ')').forEach(function(el) { el.inert = true; });
+    // Inert attribute (accessibility): exclude modal + toast containers so
+    // toasts and overlays remain functional while the modal is open.
+    document.querySelectorAll('body > *:not(#' + id + '):not(#toastContainer):not(#earnToast)').forEach(function(el) { el.inert = true; });
   }
 
   function _hideModal(id) {
@@ -1208,11 +1209,28 @@
   }
 
   /* ── Post-subscription modal actions ──────────────────────── */
-  window.copyModalLink = function() {
+  window.copyModalLink = function(btn) {
+    // Resolve the link — element text first, localStorage fallback if empty
     var linkEl = document.getElementById('modalReferralLink');
-    if (!linkEl) return;
-    _copyText(linkEl.textContent.trim(), function() {
-      ScoutDash.toast('Link copied!');
+    var link   = (linkEl && linkEl.textContent.trim()) || '';
+    if (!link) {
+      var code = localStorage.getItem('ff_own_referral');
+      if (code) {
+        link = 'https://getfamilyforce.com?via=' + code;
+        if (linkEl) linkEl.textContent = link; // hydrate for next time
+      }
+    }
+    if (!link) return; // no code available — nothing to copy
+
+    // Visual feedback on the button itself (independent of toast system)
+    var btnEl = btn || document.querySelector('#postSubModal button[onclick*="copyModalLink"]');
+    var origText = btnEl ? btnEl.textContent : null;
+    if (btnEl) { btnEl.textContent = 'Copied ✓'; btnEl.disabled = true; }
+    setTimeout(function() {
+      if (btnEl) { btnEl.textContent = origText; btnEl.disabled = false; }
+    }, 2000);
+
+    _copyText(link, function() {
       _logModalEvent('postsub_modal_copy_link');
     });
   };
