@@ -1237,8 +1237,15 @@
 
   window.shareModalWhatsApp = function() {
     var linkEl = document.getElementById('modalReferralLink');
-    if (!linkEl) return;
-    var link = linkEl.textContent.trim();
+    var link   = (linkEl && linkEl.textContent.trim()) || '';
+    if (!link) {
+      var code = localStorage.getItem('ff_own_referral');
+      if (code) {
+        link = 'https://getfamilyforce.com?via=' + code;
+        if (linkEl) linkEl.textContent = link;
+      }
+    }
+    if (!link) return;
     var msg = encodeURIComponent('Hey, thought of you. Scout sends one email a month about what developmental milestones are active for your baby right now. Super simple, actually useful. Free to try: ' + link);
     window.open('https://wa.me/?text=' + msg, '_blank');
     _logModalEvent('postsub_modal_whatsapp');
