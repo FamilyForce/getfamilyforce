@@ -34,33 +34,93 @@ a:hover { text-decoration: underline; }
 ::selection { background: rgba(110,78,214,.15); }
 :focus-visible { outline: 3px solid var(--terra); outline-offset: 3px; border-radius: 4px; }
 
-/* ─── NAV ─── */
+/* NAV */
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  background: rgba(250,250,250,.92); backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-light);
-  padding: 0 var(--rx);
+  padding-top: env(safe-area-inset-top, 0);
+  transition: background-color .25s ease, box-shadow .25s ease, backdrop-filter .25s ease;
+}
+.nav.solid {
+  background: rgba(250,250,250,.85);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  box-shadow: 0 1px 0 var(--border);
 }
 .nav-inner {
-  max-width: 1100px; margin: 0 auto;
-  height: 64px; display: flex; align-items: center; justify-content: space-between;
+  max-width: 1200px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+  height: 72px; padding: 0 var(--rx);
 }
-.nav-logo {
-  display: flex; align-items: center; gap: 8px;
-  font-weight: 700; font-size: 1.1rem; color: var(--text); text-decoration: none;
+.logo {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 22px; letter-spacing: -0.02em; font-weight: 600;
+  color: var(--text); text-decoration: none;
 }
-.nav-logo svg { width: 28px; height: 28px; }
-.nav-links { display: flex; align-items: center; gap: 28px; }
-.nav-links a { font-size: .92rem; font-weight: 500; color: var(--text-mid); transition: color .15s; }
-.nav-links a:hover { color: var(--terra); text-decoration: none; }
+.logo-f { color: var(--text); }
+.logo-s { color: var(--terra); }
+.nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+.nav-links a {
+  color: var(--text-dim); font-size: 13px; font-weight: 500;
+  transition: color .3s ease; letter-spacing: .01em;
+  padding: 4px 8px; border-radius: 4px; text-decoration: none;
+}
+@media (hover:hover) { .nav-links a:hover { color: var(--text); } }
 .btn-nav {
-  background: var(--terra); color: #fff; border: none; border-radius: 8px;
-  padding: 8px 20px; font-size: .9rem; font-weight: 600; cursor: pointer;
-  font-family: var(--sans); transition: background .15s;
+  padding: 11px 26px; background: var(--terra); color: #fff;
+  border: none; border-radius: 100px; font-size: 13px; font-weight: 600;
+  font-family: var(--sans); cursor: pointer; text-decoration: none;
+  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+  display: inline-block;
 }
-.btn-nav:hover { background: var(--terra-dark); }
+@media (hover:hover) { .btn-nav:hover { background: var(--terra-dark); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(110,78,214,.18); } }
+/* Hamburger */
+.hamburger {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; padding: 12px; cursor: pointer;
+}
+.hamburger span { display: block; height: 1.5px; background: var(--text); border-radius: 1px; transition: transform .3s, width .3s; }
+.hamburger span:first-child { width: 20px; }
+.hamburger span:last-child { width: 14px; }
+/* Mobile menu */
+.mobile-menu {
+  position: fixed; inset: 0; z-index: 1001;
+  background: rgba(250,250,250,.97); backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex; flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0);
+  opacity: 0; visibility: hidden; transform: translateY(8px);
+  transition: opacity .25s ease, visibility .25s ease, transform .3s ease;
+  pointer-events: none;
+}
+.mobile-menu.open { opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+.mobile-menu-header {
+  display: flex; justify-content: space-between; align-items: center;
+  height: 64px; padding: 0 20px; border-bottom: 1px solid var(--border-light);
+}
+.mobile-menu-close {
+  background: none; border: none; font-size: 18px; color: var(--text-dim);
+  width: 44px; height: 44px; display: flex; align-items: center;
+  justify-content: center; cursor: pointer; border-radius: 8px;
+}
+.mobile-menu-links { flex: 1; padding: 24px 20px; list-style: none; }
+.mobile-menu-links a {
+  display: block; padding: 16px 0;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 18px; font-weight: 500; color: var(--text); text-decoration: none;
+}
+.mobile-menu-cta { padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0)); }
+.mobile-menu-cta a {
+  display: block; width: 100%; padding: 16px; text-align: center;
+  background: var(--terra); color: #fff; border-radius: 12px;
+  font-size: 15px; font-weight: 700; font-family: var(--sans); text-decoration: none;
+}
+@media (max-width: 640px) {
+  .nav-links { display: none; }
+  .btn-nav { display: none; }
+  .hamburger { display: flex; }
+}
 
-/* ─── HERO ─── */
+/* HERO */
 .hero {
   padding: calc(64px + 72px) var(--rx) 64px;
   text-align: center;
@@ -84,13 +144,13 @@ a:hover { text-decoration: underline; }
   margin: 0 auto; line-height: 1.7;
 }
 
-/* ─── MAIN CONTENT ─── */
+/* MAIN CONTENT */
 .main {
   max-width: var(--max); margin: 0 auto;
   padding: 64px var(--rx) 96px;
 }
 
-/* ─── REVIEWER CARD ─── */
+/* REVIEWER CARD */
 .reviewer-card {
   background: var(--surface); border: 1.5px solid var(--border);
   border-radius: 20px; padding: 36px 40px;
@@ -130,7 +190,7 @@ a:hover { text-decoration: underline; }
 }
 .review-stamp svg { width: 14px; height: 14px; color: var(--terra); }
 
-/* ─── SECTION HEADINGS ─── */
+/* SECTION HEADINGS */
 .section { margin-bottom: 56px; }
 .section-label {
   font-size: .78rem; font-weight: 700; letter-spacing: .12em;
@@ -145,45 +205,7 @@ a:hover { text-decoration: underline; }
 }
 .section p:last-child { margin-bottom: 0; }
 
-/* ─── PROCESS STEPS ─── */
-.steps { list-style: none; margin-top: 8px; }
-.steps li {
-  display: flex; gap: 20px; align-items: flex-start;
-  padding: 20px 0; border-bottom: 1px solid var(--border-light);
-}
-.steps li:last-child { border-bottom: none; }
-.step-num {
-  width: 36px; height: 36px; flex-shrink: 0;
-  background: var(--terra-tint); border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: .85rem; font-weight: 700; color: var(--terra);
-}
-.step-body { flex: 1; padding-top: 4px; }
-.step-title { font-weight: 700; font-size: .95rem; color: var(--text); margin-bottom: 4px; }
-.step-desc { font-size: .92rem; color: var(--text-mid); line-height: 1.65; }
-
-/* ─── SCOPE TABLE ─── */
-.scope-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px;
-}
-.scope-block {
-  background: var(--surface); border: 1.5px solid var(--border);
-  border-radius: 14px; padding: 24px;
-}
-.scope-block.covered { border-color: rgba(110,78,214,.35); background: var(--terra-tint); }
-.scope-icon { font-size: 1.4rem; margin-bottom: 10px; }
-.scope-block h3 { font-size: .95rem; font-weight: 700; color: var(--text); margin-bottom: 10px; }
-.scope-block.covered h3 { color: var(--terra-dark); }
-.scope-item {
-  font-size: .88rem; color: var(--text-mid); line-height: 1.6;
-  padding: 5px 0; border-bottom: 1px solid var(--border-light);
-  display: flex; gap: 8px; align-items: baseline;
-}
-.scope-block.covered .scope-item { color: var(--terra-dark); border-color: rgba(110,78,214,.15); }
-.scope-item:last-child { border-bottom: none; }
-.scope-dot { flex-shrink: 0; font-size: .7rem; }
-
-/* ─── DISCLAIMER BOX ─── */
+/* DISCLAIMER BOX */
 .disclaimer {
   background: #FFF8ED; border: 1.5px solid #F5C97A;
   border-radius: 14px; padding: 24px 28px; margin-top: 56px;
@@ -193,7 +215,7 @@ a:hover { text-decoration: underline; }
 .disclaimer p { font-size: .9rem; color: #7A5A1A; line-height: 1.7; }
 .disclaimer strong { color: #6B4A0E; }
 
-/* ─── CTA ─── */
+/* CTA */
 .cta-block {
   text-align: center; margin-top: 72px;
   padding: 56px 40px;
@@ -214,42 +236,57 @@ a:hover { text-decoration: underline; }
 }
 .btn-cta:hover { background: #7D5EE8; text-decoration: none; }
 
-/* ─── FOOTER ─── */
-footer {
-  border-top: 1px solid var(--border); padding: 32px var(--rx);
-  text-align: center; font-size: .82rem; color: var(--text-dim);
-}
-footer a { color: var(--text-dim); }
-footer a:hover { color: var(--terra); }
-
-/* ─── RESPONSIVE ─── */
+/* RESPONSIVE */
 @media (max-width: 640px) {
   .reviewer-card { flex-direction: column; padding: 28px 24px; gap: 20px; }
   .reviewer-avatar { width: 72px; height: 72px; font-size: 1.8rem; }
-  .scope-grid { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
 <!-- NAV -->
-<nav class="nav" aria-label="Main navigation">
+<nav class="nav" id="nav" aria-label="Main navigation">
   <div class="nav-inner">
-    <a href="/" class="nav-logo" aria-label="FamilyForce home">
-      <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
-        <path d="M14 3L25 10.5V24H3V10.5L14 3Z" fill="#6E4ED6" opacity=".15"/>
-        <path d="M14 3L25 10.5V24H3V10.5L14 3Z" stroke="#6E4ED6" stroke-width="2" stroke-linejoin="round"/>
-        <path d="M14 7L8 20H20L14 7Z" fill="#6E4ED6"/>
+    <a href="/" class="logo" aria-label="FamilyForce Home">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      FamilyForce
+      <span>Family<span class="logo-s">Force</span></span>
     </a>
-    <div class="nav-links">
-      <a href="/about">About</a>
-      <a href="/blog">Blog</a>
-      <button class="btn-nav">Try Scout Free</button>
-    </div>
+    <ul class="nav-links" role="list">
+      <li><a href="/milestones">Milestones</a></li>
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/baby-shower-gifts">Gift Ideas</a></li>
+      <li><a href="/scout-gift">Give as a gift 🎁</a></li>
+    </ul>
+    <a href="/sign-in.html?intent=trial" class="btn-nav">Try Scout Free</a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+      <span></span>
+      <span></span>
+    </button>
   </div>
 </nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <div class="mobile-menu-header">
+    <a href="/" class="logo" style="font-size:17px" aria-label="FamilyForce Home">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Family<span class="logo-s">Force</span></span>
+    </a>
+    <button class="mobile-menu-close" id="mobile-close-btn" aria-label="Close menu">✕</button>
+  </div>
+  <ul class="mobile-menu-links" role="list">
+    <li><a href="/milestones">Milestones</a></li>
+    <li><a href="/blog">Blog</a></li>
+    <li><a href="/baby-shower-gifts">Gift Ideas</a></li>
+    <li><a href="/scout-gift">Give as a gift 🎁</a></li>
+  </ul>
+  <div class="mobile-menu-cta">
+    <a href="/sign-in.html?intent=trial">Try Scout Free →</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -260,32 +297,42 @@ footer a:hover { color: var(--terra); }
     Medically Reviewed
   </div>
   <h1>How we verify <em>every</em> developmental window</h1>
-  <p>Scout's milestone data isn't just sourced from pediatric literature — it's reviewed and validated by a practicing physician before it reaches you.</p>
+  <p>Scout's milestone data isn't just sourced from pediatric literature. It's reviewed and validated by a practicing physician before it reaches you.</p>
 </section>
 
 <!-- MAIN -->
 <main class="main">
 
+  <!-- SPIRIT OF DEVELOPMENTAL WINDOWS -->
+  <div class="section">
+    <div class="section-label">How to read these windows</div>
+    <h2>Guideposts, not checkboxes</h2>
+    <p>Every window in Scout has an opening age and a closing age. That might sound like a deadline. It isn't.</p>
+    <p>Children don't develop in straight lines. They surge forward in one area while barely moving in another. They skip things, circle back, and do things in their own order. That's not a warning sign. That's normal development.</p>
+    <p>The windows in Scout are goalposts, not grading criteria. They tell you when a skill is typically active and worth nurturing. Not when your child must perform it, or what it means if they haven't. A baby who walks at 9 months and one who walks at 15 months are both within the range of healthy development. Both families get the same window. The point isn't to compare. The point is to know when to pay attention.</p>
+    <p>Use the windows to focus your energy, not to measure your child. When a language window opens, talk more, read more, respond more. When it closes, move on. The windows are there to help you be present for what's happening right now. Not to give you something to worry about.</p>
+  </div>
+
   <!-- REVIEWER CARD -->
   <div class="reviewer-card">
     <div class="reviewer-avatar" aria-hidden="true">KS</div>
     <div class="reviewer-info">
-      <div class="reviewer-name">Karina Sanchez, MD</div>
-      <div class="reviewer-title">Pediatrician &amp; Neonatologist</div>
+      <div class="reviewer-name">Karina Sanchez Mercado, MD</div>
+      <div class="reviewer-title">Pediatrician and Newborn Medicine Specialist</div>
       <div class="reviewer-creds">
         <span class="cred-chip">Pediatrics</span>
-        <span class="cred-chip">Neonatology</span>
+        <span class="cred-chip">Newborn Medicine</span>
         <span class="cred-chip">Child Development</span>
       </div>
       <p class="reviewer-bio">
-        Dr. Sanchez is a physician specializing in pediatrics and neonatology with clinical experience in early childhood development. She reviewed all 214 developmental windows in Scout's milestone database, validating sources, assessing clinical accuracy, and flagging content for revision where needed.
+        Dr. Sanchez Mercado is a physician specializing in pediatrics and newborn medicine with clinical experience in early childhood development. She reviewed all developmental windows in Scout's milestone database, validating sources, assessing clinical accuracy, and flagging content for revision where needed.
       </p>
       <div class="review-stamp">
         <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
           <circle cx="8" cy="8" r="6.5" stroke="#6E4ED6" stroke-width="1.5"/>
           <path d="M5 8L7 10L11 6" stroke="#6E4ED6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        Reviewed April 2026 · 214 developmental windows
+        Reviewed April 2026 · License No. 12556287
       </div>
     </div>
   </div>
@@ -295,97 +342,89 @@ footer a:hover { color: var(--terra); }
     <div class="section-label">Why it matters</div>
     <h2>Parents deserve accurate information</h2>
     <p>Scout sends you developmental milestones timed to your baby's exact age. When you read that your 9-month-old should be doing something specific, that information needs to be right.</p>
-    <p>Babies develop on their own timelines — and the goal of Scout is never to cause anxiety, but to help you stay informed and catch things that genuinely matter. That only works if the underlying data is clinically sound.</p>
+    <p>Babies develop on their own timelines. The goal of Scout is never to cause anxiety, but to help you stay informed and catch things that genuinely matter. That only works if the underlying data is clinically sound.</p>
     <p>That's why we had every developmental window in our database reviewed by a physician before we called it ready.</p>
-  </div>
-
-  <!-- OUR REVIEW PROCESS -->
-  <div class="section">
-    <div class="section-label">Our process</div>
-    <h2>How the review works</h2>
-    <ul class="steps">
-      <li>
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Source-first research</div>
-          <div class="step-desc">Every developmental window is grounded in established pediatric literature — AAP guidelines, CDC developmental milestones, and peer-reviewed research on child development.</div>
-        </div>
-      </li>
-      <li>
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">Age window calibration</div>
-          <div class="step-desc">Each milestone has an open, peak, and closing age window. These ranges are carefully calibrated to reflect normal variation in healthy development — not just average onset.</div>
-        </div>
-      </li>
-      <li>
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Physician review</div>
-          <div class="step-desc">Dr. Sanchez reviewed all 214 windows for clinical accuracy — checking that age ranges, guidance, and framing reflect current pediatric standards and wouldn't cause undue parental anxiety.</div>
-        </div>
-      </li>
-      <li>
-        <div class="step-num">4</div>
-        <div class="step-body">
-          <div class="step-title">Revision &amp; sign-off</div>
-          <div class="step-desc">Content flagged during review was revised and re-checked before being published. The review date is recorded with every update cycle.</div>
-        </div>
-      </li>
-    </ul>
-  </div>
-
-  <!-- WHAT IS AND ISN'T REVIEWED -->
-  <div class="section">
-    <div class="section-label">Scope</div>
-    <h2>What's covered by this review</h2>
-    <p>We want to be transparent about exactly what Dr. Sanchez reviewed — and what she didn't.</p>
-    <div class="scope-grid">
-      <div class="scope-block covered">
-        <div class="scope-icon">✅</div>
-        <h3>Reviewed by Dr. Sanchez</h3>
-        <div class="scope-item"><span class="scope-dot">•</span> All 214 Scout developmental windows</div>
-        <div class="scope-item"><span class="scope-dot">•</span> Age ranges (open / peak / close)</div>
-        <div class="scope-item"><span class="scope-dot">•</span> Milestone descriptions &amp; prep tips</div>
-        <div class="scope-item"><span class="scope-dot">•</span> Nutrition, language, cognitive, social, motor, safety &amp; screening windows</div>
-      </div>
-      <div class="scope-block">
-        <div class="scope-icon">📝</div>
-        <h3>Not part of this review</h3>
-        <div class="scope-item"><span class="scope-dot">•</span> Blog posts &amp; articles</div>
-        <div class="scope-item"><span class="scope-dot">•</span> Parenting guidebooks &amp; playbooks</div>
-        <div class="scope-item"><span class="scope-dot">•</span> Third-party links &amp; references</div>
-        <div class="scope-item"><span class="scope-dot">•</span> User-generated content</div>
-      </div>
-    </div>
   </div>
 
   <!-- DISCLAIMER -->
   <div class="disclaimer" role="note">
     <div class="disclaimer-icon">⚠️</div>
-    <p><strong>For educational purposes only.</strong> Scout is not a medical device and does not provide medical advice. Every child develops at their own pace. The information in Scout is designed to inform and support — not diagnose or replace — the guidance of your child's pediatrician. Always consult your doctor with any concerns about your child's development.</p>
+    <div>
+      <p style="font-size:.82rem;color:#7A5A1A;margin-bottom:8px;font-weight:600">Medically reviewed by Karina Sanchez Mercado, MD, Pediatrician and Newborn Medicine Specialist (Medical License: 12556287).</p>
+      <p><strong>Medical Disclaimer:</strong> This content is for informational, educational, and general parental guidance purposes only. It summarizes current pediatric research and major organizational recommendations on childhood development and should be used as a general guide. This information is not intended to replace the personalized medical advice, diagnosis, or treatment provided by a qualified healthcare professional. Always consult with your pediatrician or healthcare provider for specific concerns regarding your child's health, development, or medical condition.</p>
+    </div>
   </div>
 
   <!-- CTA -->
   <div class="cta-block">
     <h2>Know what's coming before it happens</h2>
-    <p>Monthly milestone emails + calendar invites, timed to your baby's exact age.</p>
+    <p>Monthly milestone emails and calendar invites, timed to your baby's exact age.</p>
     <a href="/sign-in" class="btn-cta">Try Scout Free →</a>
   </div>
 
 </main>
 
 <!-- FOOTER -->
-<footer>
-  <p>
-    &copy; 2026 FamilyForce &nbsp;·&nbsp;
-    <a href="/privacy">Privacy</a> &nbsp;·&nbsp;
-    <a href="/terms">Terms</a> &nbsp;·&nbsp;
-    <a href="/about">About</a>
-    <br><br>
-    <em>Scout developmental data medically reviewed by Karina Sanchez, MD, Pediatrician &amp; Neonatologist · April 2026</em>
-  </p>
+<footer style="background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);padding:20px clamp(20px,5vw,64px);padding-bottom:max(20px,env(safe-area-inset-bottom,0px))">
+  <div style="max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px">
+    <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none" aria-label="FamilyForce home">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span style="font-family:var(--sans);font-size:16px;font-weight:700;color:rgba(255,255,255,.9)">Family<span style="color:#A78BFF">Force</span></span>
+    </a>
+    <nav style="display:flex;flex-wrap:wrap;gap:10px 18px" aria-label="Footer links">
+      <a href="/about" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">About Us</a>
+      <a href="https://www.getfamilyforce.com/privacy" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Privacy</a>
+      <a href="https://www.getfamilyforce.com/terms"   style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Terms</a>
+      <a href="https://www.getfamilyforce.com/contact" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Support</a>
+      <a href="/earn" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Earn</a>
+    </nav>
+    <span style="font-size:12px;color:rgba(255,255,255,.25)">© 2026 FamilyForce. All rights reserved.</span>
+  </div>
 </footer>
+
+<script>
+/* Nav scroll solid state */
+let ticking = false;
+window.addEventListener('scroll', () => {
+  if (!ticking) {
+    requestAnimationFrame(() => {
+      document.getElementById('nav').classList.toggle('solid', window.scrollY > 60);
+      ticking = false;
+    });
+    ticking = true;
+  }
+}, { passive: true });
+
+/* Mobile menu */
+const hamburger = document.getElementById('hamburger-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const mobileClose = document.getElementById('mobile-menu-close');
+const mainContent = document.querySelector('main');
+
+hamburger.addEventListener('click', () => {
+  mobileMenu.classList.add('open');
+  hamburger.setAttribute('aria-expanded', 'true');
+  mainContent.setAttribute('inert', '');
+  mobileClose.focus();
+  document.body.style.overflow = 'hidden';
+});
+
+function closeMenu() {
+  mobileMenu.classList.remove('open');
+  hamburger.setAttribute('aria-expanded', 'false');
+  mainContent.removeAttribute('inert');
+  hamburger.focus();
+  document.body.style.overflow = '';
+}
+
+mobileClose.addEventListener('click', closeMenu);
+mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && mobileMenu.classList.contains('open')) closeMenu();
+});
+</script>
 
 </body>
 </html>
