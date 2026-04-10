@@ -563,8 +563,11 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                    &nbsp;·&nbsp;
                    <a href="${siteUrl}/unsubscribe?user=${userId}" style="color:${C.terra};text-decoration:none">Unsubscribe</a>`}
             </p>
-            <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0;line-height:1.6;opacity:0.8">
+            <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0 0 4px;line-height:1.6;opacity:0.8">
               For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.
+            </p>
+            <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0;line-height:1.6;opacity:0.6">
+              Scout content medically reviewed by Dr. Karina Sanchez Mercado, MD — Pediatrician &amp; Newborn Medicine Specialist.
             </p>
           </td>
         </tr>
