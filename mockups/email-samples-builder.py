@@ -231,6 +231,18 @@ NAV = [
     ("Month 10",  "month10-redesign.html"),
     ("Month 11",  "month11-redesign.html"),
     ("Month 12",  "month12-redesign.html"),
+    ("Month 13",  "month13-redesign.html"),
+    ("Month 14",  "month14-redesign.html"),
+    ("Month 15",  "month15-redesign.html"),
+    ("Month 16",  "month16-redesign.html"),
+    ("Month 17",  "month17-redesign.html"),
+    ("Month 18",  "month18-redesign.html"),
+    ("Month 19",  "month19-redesign.html"),
+    ("Month 20",  "month20-redesign.html"),
+    ("Month 21",  "month21-redesign.html"),
+    ("Month 22",  "month22-redesign.html"),
+    ("Month 23",  "month23-redesign.html"),
+    ("Month 24",  "month24-redesign.html"),
 ]
 
 def nav_bar(active_label):
@@ -1128,3 +1140,734 @@ with open(f"{OUT}/month12-redesign.html", "w") as f: f.write(html)
 print("Written: month12-redesign.html")
 
 print("\nMonths 6-12 done.")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 13
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 13", title_label="Month 13",
+    subject="The first steps. The first words. The beginning of everything.",
+    preheader="Olivia is 13 months old. Walking, words, and getting off the bottle — here's what to know.",
+    hero_age="Month 13", hero_name="Olivia · 56 weeks old",
+    opening="Olivia is 13 months old. The first birthday is behind you, and the toddler years are beginning. Walking is happening or on the way. Words are starting to land. And the bottle is ready to go. Here's what to focus on.",
+    context="Thirteen months: a walker, a talker, and an opinion-holder — all at once.",
+    theme="👣 This month: first steps, first words, and leaving the bottle behind.",
+    total_windows=52,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "First steps",
+        "Walking is normal anytime from 9 to 18 months. If it's happening — here's how to support it.",
+        "First independent steps typically appear between 10 and 15 months. Updated CDC 2022 guidance moved the expected milestone from 12 to 15 months — so if she's not walking yet at 13 months, that's well within normal range. Walking isn't a milestone to rush. It's one to support.",
+        """* Create safe floor space: remove rugs that slip, soft landing surfaces nearby
+* Encourage cruising (furniture walking) — it continues building the balance and strength needed for independent steps
+* Do not use baby walkers with wheels — they delay walking development and the AAP calls for a ban on their sale due to severe injury risk
+* Barefoot on hard floors is better than shoes — toes provide the grip and feedback the brain uses for balance
+* Let her fall safely and get back up. The falls are how the balance system learns.
+* If not walking by 18 months, the 18-month visit is the clinical checkpoint — mention it there""",
+    ),
+    dyk_html=dyk_card("Baby sign language doesn't delay speech — it **accelerates** it. Babies who learn signs like 'more,' 'all done,' and 'milk' reduce frustration and build word-concept connections faster. The sign and the word fire in the brain together."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "First words beyond mama and dada",
+        "A consistent label for anything counts. 'Ba' for ball counts. Signing counts.",
+        "Beyond 'mama' and 'dada,' most children produce their first true words — consistent labels for people, objects, or actions — between 11 and 14 months. 'Ball,' 'dog,' 'more,' 'up' all count. Sign language counts. Any consistent, intentional communication counts.",
+        """* Label everything, constantly: "That's a cup. Cup." "Here's your ball. Ball."
+* Read aloud daily — pointing to pictures and naming them builds the word-object connection
+* Baby sign language: 'more,' 'all done,' 'milk,' 'please' — signs count as words for developmental assessment
+* When she says a word, expand it: she says "dog," you say "yes, big dog." This is called expansion and it accelerates acquisition.
+* Target: 1–3 words with intent by 12 months, 10 words by 15 months, 50 words by 24 months
+* If no words at all by 15 months, flag it at the 15-month visit""",
+    ) + window_card(
+        "⏱ Closing this month", "",
+        "Wean off the bottle — transition fully to a cup",
+        "The AAP recommends fully off the bottle by 15–18 months. Starting now makes it easier.",
+        "Prolonged bottle use is a leading cause of tooth decay and can interfere with solid food intake and speech development. The bottle is a comfort object at this age — so the transition takes patience, but starting earlier makes it much easier.",
+        """* Drop midday bottles first, replacing with a cup of milk or water at meals
+* Drop the morning bottle next
+* The before-bed bottle is usually the hardest and should be the last to go
+* Replace the bedtime bottle ritual with another routine: a book, a song, a snuggle — the comfort is the routine, not the bottle
+* Never put a toddler to sleep with a bottle — even milk causes significant tooth decay overnight
+* Goal: fully off bottles by 15–18 months. After 18 months, the habit becomes much harder to break.""",
+    ),
+    tackled_html=tackled_section([
+        ("12-month checkup — done", "Both"),
+        ("Whole cow's milk — switched", "Both"),
+        ("First dental visit — complete", "Mum"),
+    ]),
+    next_month_html=next_month_section([
+        "Joint attention and pointing — shared interest is early language",
+        "Walking independently — from steps to full locomotion",
+        "Identifies own body parts — nose, ears, belly on request",
+    ]),
+    closing_text="The second year is a completely different experience. The pace of change slows a little — and then the language starts to explode. Stay with us. — Jack",
+)
+with open(f"{OUT}/month13-redesign.html", "w") as f: f.write(html)
+print("Written: month13-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 14
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 14", title_label="Month 14",
+    subject="She's pointing at things. That's language — even without words.",
+    preheader="Olivia is 14 months old. Joint attention, walking, and body parts — here's what they mean.",
+    hero_age="Month 14", hero_name="Olivia · 61 weeks old",
+    opening="Olivia is 14 months old. She's pointing. She's looking back at you after she points, checking to see if you saw what she saw. That's joint attention — and it's one of the most important communication milestones of the whole first two years.",
+    context="Fourteen months: a walker who points. That's a communicator in the making.",
+    theme="👉 This month: pointing and shared attention, walking as a full mode of travel, and body part identification.",
+    total_windows=48,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Pointing and joint attention",
+        "Pointing to share interest — then looking back at you — is more important than first words.",
+        "Joint attention — pointing at something to share interest, then looking back to check your reaction — emerges around 9–14 months and is one of the most important developmental milestones of the first two years. It shows theory of mind in its earliest form: she understands that you have a separate perspective, and she wants to share hers. It's a key marker on the M-CHAT autism screen.",
+        """* Point at things yourself, constantly: "Look, a dog." Then look at her to see if she follows your point.
+* When she points, respond immediately — name what she's pointing at and share the moment: "Yes! A bird!"
+* Make a habit of looking where she looks, not just at her face. Joint attention requires both of you attending to the same thing.
+* She should be pointing to share interest (declarative pointing) by 15–18 months. Pointing to request something (imperative pointing) is slightly different — both matter.
+* Absent pointing by 18 months is a clinical flag on the M-CHAT. This will be checked at the 15-month and 18-month visits.""",
+    ),
+    dyk_html=dyk_card("Children who walk **barefoot on varied surfaces** — grass, sand, carpet, hardwood — develop stronger foot muscles, better balance, and more refined proprioception than those kept in shoes. Reserve shoes for outdoors and cold floors."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Walking independently — from first steps to full locomotion",
+        "Walking well and walking confidently are two different milestones. This month is about the second.",
+        "Independent walking typically establishes between 12 and 15 months. By 15 months, most children are using walking as their primary mode of locomotion. The 15-month visit is the checkpoint — if she's not walking well by then, your pediatrician will assess.",
+        """* Barefoot or soft-sole shoes on hard floors — stiff shoes interfere with balance development
+* Limit time in bouncers, ride-on toys, and carriers when indoors — walking practice is the goal
+* Let her navigate uneven terrain: grass, small inclines, different floor textures build the balance system
+* If walking hasn't started by 15 months, mention it at the 15-month visit. The clinical red flag is 18 months.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Identifies own body parts when asked",
+        "Touch your nose. Touch your ear. This is vocabulary, comprehension, and instruction-following all at once.",
+        "Pointing to their nose, eyes, ears, or belly when asked shows vocabulary comprehension, body self-awareness, and the ability to follow simple instructions without gesture. It's a standard checkpoint at the 15-month and 18-month visits.",
+        """* Make it a daily game: "Touch your nose!" while you touch yours — then wait for her to copy
+* Bath time is a natural opportunity: "Let's wash your ears. Where are your ears?"
+* Songs like Head, Shoulders, Knees and Toes make this memorable and repeatable
+* By 18 months, she should reliably identify at least 2–3 body parts on request
+* Use correct anatomical words — children learn what they're taught, and correct vocabulary costs nothing""",
+    ),
+    tackled_html=tackled_section([
+        ("First steps — happening!", "Both"),
+        ("First words — 3 consistent words", "Mum"),
+        ("Bottle — down to bedtime only", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "15-month checkup + M-CHAT — walking, words, and social engagement all assessed",
+        "Vocabulary: 10 words — the first language milestone checkpoint",
+        "Pretend play emerging — feeding a stuffed animal, toy phone",
+    ]),
+    closing_text="Joint attention is the bridge between pointing and talking. When she points and looks back at you — respond every time. That's the lesson she's practicing. — Jack",
+)
+with open(f"{OUT}/month14-redesign.html", "w") as f: f.write(html)
+print("Written: month14-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 15
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 15", title_label="Month 15",
+    subject="The 15-month visit checks 10 things. Here's how to come prepared.",
+    preheader="Olivia is 15 months old. Walking, 10 words, and pretend play — all on the list.",
+    hero_age="Month 15", hero_name="Olivia · 65 weeks old",
+    opening="Olivia is 15 months old. The 15-month well child visit is one of the more important developmental checkpoints of the second year — it's the first visit that specifically checks word count, walking quality, and the beginnings of social play. Here's how to come prepared.",
+    context="Fifteen months: the first real language checkpoint. Start counting words.",
+    theme="🩺 This month: the 15-month checkup, the 10-word milestone, and pretend play beginning.",
+    total_windows=45,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "15-month well child visit",
+        "Count her words before you go. The pediatrician will ask.",
+        "The 15-month visit assesses walking, word count (target: 10+ words), pointing, and social engagement. It's the first visit to formally check language development as a primary concern. Vaccines: DTaP (dose 4), Hib (dose 4), PCV (dose 4 if not given at 12 months), varicella (dose 1 if not given at 12 months), influenza (annual).",
+        """* Count words before the visit: consistent, intentional labels for people, objects, or actions in any form — signs count, approximations count, any language counts
+* Note whether she's walking independently — 15 months is the expected age, 18 months is the clinical red flag per CDC 2022
+* Mention any regression: if she had words and lost them, or had skills and lost them, say so immediately
+* Ask about speech therapy referrals if you have any concerns — early is always better
+* Ask about fluoride: if your tap water isn't fluoridated, a supplement is recommended from 6 months""",
+    ),
+    dyk_html=dyk_card("Once a child hits **50 words**, vocabulary growth often becomes exponential — jumping from 50 to 200+ words in just a few months. The slow build from 1 to 50 words is doing the work. Every word added now accelerates what comes next."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Vocabulary: 10 words",
+        "Ten consistent, intentional words — in any form, including signs. That's the bar at 15 months.",
+        "A vocabulary of 10 words by 15–18 months is the standard developmental checkpoint. 'Ten perfect words' is not the measure — 10 consistent, intentional labels for people, objects, or actions, in any form including approximations and signs, is what counts.",
+        """* Keep a rough mental count of consistent words — ones she uses reliably, not just once
+* Signs count: 'more,' 'all done,' 'milk,' 'please' are words for developmental assessment
+* Approximations count: 'ba' for ball, 'wawa' for water — consistent use and consistent meaning is the standard
+* Read aloud with pointing: "Where's the dog? There's the dog." This is the highest-leverage vocabulary builder
+* If she has fewer than 10 words at 15 months, flag it. If no words at all, ask for a speech referral today.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Pretend play emerging — feeding a stuffed animal, toy phone",
+        "When she pretends to drink from an empty cup, something important is happening in the brain.",
+        "Early pretend play — feeding a stuffed animal, pretending to drink from an empty cup, talking into a toy phone — shows the child can hold a mental representation of an action separate from the real thing. This is symbolic thinking, and it's the cognitive foundation of language, reading, and mathematics.",
+        """* Provide simple props: a toy phone, a stuffed animal, a small bowl and spoon, a toy cup
+* Model pretend actions: pretend to drink from the empty cup, then offer it to her
+* Follow her lead — if she feeds the stuffed animal, feed yours too. Join her world.
+* Don't correct the pretend. If the banana is a phone, the banana is a phone.
+* By 18 months, most children are engaging in simple pretend sequences. By 24 months, multi-step scenarios.""",
+    ),
+    tackled_html=tackled_section([
+        ("Bottle — fully weaned", "Both"),
+        ("Walking — independent and confident", "Both"),
+        ("Pointing — sharing interest with a look back", "Mum"),
+    ]),
+    next_month_html=next_month_section([
+        "Label big feelings out loud — naming emotions builds regulation",
+        "Follows 1-step commands without gesture — comprehension milestone",
+        "Stair climbing with support — up and down, step by step",
+    ]),
+    closing_text="The 15-month visit is one of the most useful ones of the second year. Come with your word count, your walking update, and your questions. — Jack",
+)
+with open(f"{OUT}/month15-redesign.html", "w") as f: f.write(html)
+print("Written: month15-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 16
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 16", title_label="Month 16",
+    subject="The meltdown is not the problem. Your response is the lesson.",
+    preheader="Olivia is 16 months old. Big feelings, first instructions, and stairs.",
+    hero_age="Month 16", hero_name="Olivia · 69 weeks old",
+    opening="Olivia is 16 months old. The big feelings are arriving. Frustration, excitement, fury, joy — she has all of them and very few tools to manage any of them. That's completely normal. Here's how to respond in a way that helps.",
+    context="Sixteen months: enormous emotions, a tiny prefrontal cortex. That mismatch is the whole toddler experience.",
+    theme="😤 This month: naming big feelings, following simple instructions, and navigating stairs.",
+    total_windows=42,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Label big feelings out loud",
+        "Naming the emotion during the meltdown is not just compassionate — it's neuroscience.",
+        "Naming emotions is one of the most important things a parent can do during the toddler years. When you say 'you are so frustrated right now' during a meltdown, you are not just describing the situation — you are helping the brain process it. Research by Dr. Dan Siegel shows that labeling feelings activates the prefrontal cortex and calms the amygdala. 'Name it to tame it' is not a platitude — it's physiology.",
+        """* Name the emotion before you redirect or problem-solve: "I can see you're really angry. You wanted that toy."
+* Use precise words: angry, frustrated, disappointed, excited, nervous — not just "upset"
+* You don't need to fix the feeling. You need to acknowledge it. "That's so frustrating. I get it."
+* Label your own emotions too: "I'm feeling frustrated right now. I'm going to take a breath." You're the model.
+* Read books with emotional vocabulary: picture books where characters feel things and name them
+* The goal is not to stop the meltdown immediately — it's to build the skill of emotional recognition over months and years""",
+    ),
+    dyk_html=dyk_card("Children whose parents label their emotions during early childhood show **measurably better emotional regulation, fewer behavioral problems, and stronger peer relationships at school age.** The investment is invisible in the moment and pays off for years."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Follows 1-step commands without gesture",
+        "'Get your shoe' — without pointing at it. That's the bar. Here's how to practice it.",
+        "Following a one-step command without a gesture shows that language comprehension has moved beyond simple word recognition. The brain is now processing the instruction as a meaningful directive. This is a key step toward following more complex instructions at 18 and 24 months.",
+        """* Give single-step instructions using clear, simple words: "Sit down," "Bring it here," "Wave bye"
+* Resist pointing or adding gestures — the goal is to test and build word comprehension alone
+* Praise compliance immediately: "You did it! You got your cup." Positive reinforcement locks the skill in.
+* If she doesn't follow: show her once, then try again later. Don't repeat the instruction multiple times — it teaches her to wait for the third ask.
+* By 18 months, most children reliably follow 1-step commands. By 24 months, 2-step commands.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Stair climbing with support",
+        "Up is easier than down. Going down is the harder skill — and it comes later.",
+        "Climbing stairs with support — one step at a time, holding a railing or a hand — typically develops around 13 to 15 months alongside walking consolidation. It requires balance, coordination, and enough leg strength to lift body weight in a controlled way. Going down stairs is a separate and later-developing skill.",
+        """* Let her try stairs with your hand or a railing for support
+* Go up together, step by step, narrating: "Up, up, up."
+* Don't carry her past stairs if she wants to try — the practice builds the skill
+* Keep gates at the top of all stairs until she can descend safely and independently (typically 24–30 months)
+* Going down: teach sitting and scooting first, then controlled step-by-step descent — feet first, facing the stairs
+* Supervise always. Most stair accidents happen in the brief unsupervised moment.""",
+    ),
+    tackled_html=tackled_section([
+        ("15-month checkup — done", "Both"),
+        ("10 words — count confirmed", "Both"),
+        ("Pretend play — feeding the stuffed animal", "Mum"),
+    ]),
+    next_month_html=next_month_section([
+        "Parallel play — plays alongside other children (not yet with them)",
+        "Spoon self-feeding — messy, important, let them try",
+        "Separation anxiety — normal at this age, here's how to handle it",
+    ]),
+    closing_text="Labeling feelings feels awkward at first. It gets natural fast. And the payoff — a child who can eventually name their own emotions — is one of the most useful things you can give. — Jack",
+)
+with open(f"{OUT}/month16-redesign.html", "w") as f: f.write(html)
+print("Written: month16-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 17
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 17", title_label="Month 17",
+    subject="She cries when you leave. That means something good.",
+    preheader="Olivia is 17 months old. Separation anxiety, spoons, and playing next to other kids.",
+    hero_age="Month 17", hero_name="Olivia · 74 weeks old",
+    opening="Olivia is 17 months old. Separation anxiety may be peaking — the crying at daycare drop-off, the reaching for you when you try to leave the room. It's hard to watch. It's also a healthy sign. Here's what's actually happening.",
+    context="Seventeen months: she wants you near. That's not clingy — that's securely attached.",
+    theme="🧸 This month: parallel play, the spoon, and why goodbye has to be out loud.",
+    total_windows=40,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Separation anxiety — normal and how to handle it",
+        "The crying at drop-off is not a problem to fix. It's a developmental phase to understand.",
+        "For most children, separation anxiety peaks between 9 and 18 months. It reflects two things working correctly: she understands that you exist when you leave (object permanence), and she has formed a strong enough attachment to miss you. Both are signs of healthy development, not signs that something is wrong.",
+        """* **Always say goodbye — never sneak out.** Sneaking out increases anxiety long-term because it makes your absence unpredictable. The goodbye is the safety signal.
+* Keep goodbyes brief and confident. Your tone communicates safety: "I love you. I'll be back after lunch." Then go.
+* Practice short separations at home so she learns the pattern: you leave, you come back.
+* Ask the caregiver to report back honestly — most toddlers stop crying within 5 minutes of drop-off.
+* If drop-off distress is severe and lasting more than 20–30 minutes consistently, mention it at the 18-month visit.
+* This phase softens naturally through the second year as language develops and she can hold your return in mind.""",
+    ),
+    dyk_html=dyk_card("Children allowed to **self-feed with a spoon from 12–15 months** develop fine motor skills faster and have a stronger relationship with varied textures by age 2. The mess is the lesson. A splat mat costs $15."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Spoon self-feeding — let them try",
+        "Loading the spoon and handing it over is the move. Full independence comes later.",
+        "Most children begin spoon self-feeding around 12 to 15 months. It is messy, inefficient, and completely developmentally appropriate. The fine motor coordination required to scoop and bring a spoon to the mouth without tipping it is a skill that takes months to build — but it has to be practiced to develop.",
+        """* Load the spoon and hand it to her — she manages the transport. This is the scaffold phase.
+* Use a wide, shallow spoon designed for toddlers — the geometry matters
+* Accept the mess. A splat mat under the chair makes cleanup a non-event.
+* Let her use her hands too — finger feeding alongside spoon practice is fine
+* By 18–24 months, most children can load their own spoon. Full independent spoon use is typically 24 months.
+* If she's not attempting to use a spoon at all by 18 months, mention it at the visit""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Parallel play — plays alongside other children",
+        "Playing next to another child, not with them, is exactly right at this age.",
+        "Parallel play — playing near other children, doing similar activities independently, without direct interaction — is the developmentally normal form of social play from age 1 to 3. It is not antisocial. It is the scaffolding for cooperative play that comes later.",
+        """* Arrange playdates or park time with children of similar age — proximity is the work
+* Do not force interaction. Let them play near each other without expectation.
+* Narrate what other children are doing: "Oscar is building a tower. What are you building?"
+* Sharing is not developmentally realistic before age 3. Do not expect it or enforce it.
+* Conflict over toys is normal — model turn-taking rather than forcing it. "First you have a turn. Then she gets a turn."
+* Cooperative play — actually playing together, taking roles — emerges around age 3–4""",
+    ),
+    tackled_html=tackled_section([
+        ("Big feelings — naming them at meltdown time", "Both"),
+        ("1-step commands — she's following them", "Both"),
+        ("Stairs — up with support, down still learning", "Dad"),
+    ]),
+    next_month_html=next_month_section([
+        "18-month checkup + M-CHAT autism screen — the most important toddler visit",
+        "Two-word combinations — 'more milk,' 'daddy go'",
+        "Tantrums peak — the response strategy that matters",
+    ]),
+    closing_text="Seventeen months is peak separation anxiety for many kids. It's hard at drop-off. It almost always passes quickly once you're gone. Stay consistent. Stay warm. Keep the goodbye brief. — Jack",
+)
+with open(f"{OUT}/month17-redesign.html", "w") as f: f.write(html)
+print("Written: month17-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 18
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 18", title_label="Month 18",
+    subject="The 18-month visit includes the first autism screen. Here's how to prepare.",
+    preheader="Olivia is 18 months old. M-CHAT, two-word combinations, and the tantrums.",
+    hero_age="Month 18", hero_name="Olivia · 78 weeks old",
+    opening="Olivia is 18 months old. A year and a half. The 18-month well child visit is the most important developmental checkpoint of the toddler years — it includes the first formal autism screening. Here's how to come prepared.",
+    context="Eighteen months: the first autism screen, the first two-word combinations, and probably the first spectacular tantrum.",
+    theme="🩺 This month: the M-CHAT screen, two-word language, and tantrums at their peak.",
+    total_windows=38,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "18-month well child visit + M-CHAT autism screen",
+        "Answer the M-CHAT honestly. Not what you hope is true — what you actually observe.",
+        "The 18-month visit is the first formal autism screening, using the M-CHAT-R/F or an equivalent standardized tool. It also assesses vocabulary (target: 10+ words, ideally building toward 50), walking, pointing, and social engagement. Vaccines: influenza (annual), Hepatitis A (dose 1 if not yet given).",
+        """* Complete the M-CHAT questionnaire honestly — answer what you actually observe, not what you wish were true
+* Know your answers to: Does she point to share interest? Does she respond to her name? Does she make eye contact and social smiles? Does she show interest in other children?
+* Count her words before the visit: target 10+ words at 18 months, on the way to 50 by 24 months
+* If the M-CHAT flags concerns: this does not mean a diagnosis. It means follow-up. Follow up promptly — waiting months for reassurance is not the right move.
+* If you have your own concerns that the M-CHAT doesn't capture: say them out loud at this visit. The clinician can only respond to what you raise.
+* A second M-CHAT is done at 24 months — the two together give a much fuller picture""",
+    ),
+    dyk_html=dyk_card("Two-word combinations — 'more milk,' 'daddy go,' 'big dog' — represent a **qualitative leap** in language, not just more words. The child is now constructing meaning, not just labeling. Once two-word phrases start, three-word sentences usually follow within months."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Two-word combinations — 'more milk,' 'daddy go'",
+        "The first time she combines two words is a bigger deal than it looks.",
+        "Two-word combinations represent a qualitative leap in language development. The child is no longer just labeling things — they're constructing meaning. 'More milk' means 'I want more milk.' 'Daddy go' means 'daddy is leaving.' Most children reach this milestone between 18 and 24 months. Absence at 24 months is a clinical flag.",
+        """* Model two-word utterances naturally: when she says "milk," expand: "more milk" or "cold milk"
+* Don't correct — expand. Corrections discourage output. Expansions model without punishing.
+* Narrate your own actions in two-word phrases: "Mummy sit." "Daddy eat." This is the target form.
+* If not combining words at all by 24 months, ask for a speech evaluation — early intervention has the highest impact window
+* Signs count: if she signs 'more' + 'milk' together, that's a two-word combination for developmental purposes""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Tantrums peak — your response strategy is the lesson",
+        "The tantrum is not the problem. How you respond is what she's learning.",
+        "Most children hit their peak tantrum behavior somewhere between 18 months and 3 years. This is not a discipline problem — it's a brain development problem. The prefrontal cortex, which governs emotional regulation, is years away from maturity. She literally cannot regulate the emotion on her own yet. That's your job for now.",
+        """* During a tantrum: stay physically present, stay calm, say very little. You're a co-regulator, not a negotiator.
+* Never negotiate during a tantrum — it teaches that tantrums are effective tools for getting what she wants
+* Don't try to reason or explain during a tantrum. Wait for the window of calm, then talk.
+* Physical co-regulation works: sit near her, speak quietly, breathe slowly. Your nervous system is contagious.
+* After she calms: "That was really hard. You were so frustrated." Name it without judgment.
+* Consistency matters more than perfection. Every time you stay calm, you're modeling what calm looks like.""",
+    ),
+    tackled_html=tackled_section([
+        ("Separation anxiety — better at drop-off", "Both"),
+        ("Spoon — getting more food in, less on the floor", "Both"),
+        ("Parallel play — at the park with other kids", "Dad"),
+    ]),
+    next_month_html=next_month_section([
+        "The 'me do it' independence phase — support it safely",
+        "Vocabulary: 50 words — the gate that opens everything",
+        "Self-regulation — it starts with co-regulation from you",
+    ]),
+    closing_text="The 18-month visit is one of the most important ones. Come prepared. Answer the M-CHAT honestly. Ask your questions. — Jack",
+)
+with open(f"{OUT}/month18-redesign.html", "w") as f: f.write(html)
+print("Written: month18-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 19
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 19", title_label="Month 19",
+    subject="'Me do it.' The two most important words of the toddler years.",
+    preheader="Olivia is 19 months old. Independence, 50 words, and emotional self-regulation.",
+    hero_age="Month 19", hero_name="Olivia · 82 weeks old",
+    opening="Olivia is 19 months old. The fierce independence has arrived — 'me do it' is a phrase you'll be hearing a lot. This is not defiance. This is the emergence of autonomy, and it's one of the most important developmental forces of the second year.",
+    context="Nineteen months: the will to do it herself is the whole point. Support it.",
+    theme="🙌 This month: the independence phase, the 50-word gate, and building the self-regulation foundation.",
+    total_windows=36,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Supporting the 'me do it' independence phase",
+        "The insistence on doing it herself is not defiance. It's a healthy developmental drive.",
+        "The fierce insistence on doing things independently — 'me do it!' — that peaks around 18 to 24 months is not defiance. It's the emergence of autonomy, which is a healthy and necessary developmental drive. Suppressing it consistently creates learned helplessness. Supporting it builds confidence, competence, and self-efficacy.",
+        """* Build extra time into routines so she can try things herself: putting on shoes, carrying her cup, opening the door
+* Offer limited choices to support autonomy: "Do you want the red shirt or the blue one?" — both are acceptable to you
+* When she fails, resist rescuing immediately. Give her time to problem-solve. The struggle is the learning.
+* When she succeeds after trying: "You did it! You put your shoe on." The pride is the fuel.
+* Redirect rather than prohibit: instead of "don't touch that," give her something she can do independently nearby
+* The goal is not compliance — it's a child who believes she's capable. That belief starts here.""",
+    ),
+    dyk_html=dyk_card("At around **50 words**, vocabulary growth often goes exponential — some children add 5–10 new words per day. The slow, patient work from 1 word to 50 words is what makes that explosion possible. Every word you name is a seed."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Vocabulary: 50 words — the gate that opens everything",
+        "Fifty words is the inflection point where language starts to compound.",
+        "Research consistently shows that once a child has approximately 50 words, two things happen: vocabulary grows exponentially, and two-word combinations begin. The slow build from 1 to 50 words is doing the work — every word now accelerates the next.",
+        """* Keep reading aloud — this is the single highest-leverage language intervention, full stop
+* Expand what she says: if she says "dog," you say "big dog" or "brown dog running" — this is called expansion, and it works
+* Narrate daily activities: "Now we're washing your hands. Soap, water, rub rub rub."
+* Name emotions as well as objects: "you look frustrated," "that made you happy" — emotional vocabulary counts
+* Target: 50 words by 24 months. If fewer than 50 words at 24 months, ask for a speech evaluation.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Self-regulation — co-regulation comes first",
+        "She can't regulate her own emotions yet. That's your job — and it's also the teaching.",
+        "Self-regulation — the ability to manage emotions and behavior — does not develop in isolation. It develops through co-regulation first: a calm adult repeatedly helping a dysregulated child return to baseline. Over thousands of these experiences, the child internalises the regulatory system. Your calm is the template.",
+        """* Stay calm during meltdowns — your nervous system is the co-regulator. She literally borrows yours.
+* Use physical co-regulation: hold her, sit with her, speak slowly and quietly
+* After she calms, name what happened: "That was really hard. You were so angry. And then you calmed down. I'm proud of you."
+* Consistent response matters more than perfect response — every calm repair teaches the pattern
+* You don't need to be perfect. The repair after losing your own cool models recovery, which is itself a regulation skill.""",
+    ),
+    tackled_html=tackled_section([
+        ("18-month checkup + M-CHAT — done, all clear", "Both"),
+        ("Two-word combinations — 'more please,' 'daddy go'", "Both"),
+        ("Tantrums — riding them out calmly", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "The 'why' question explosion — answer every single one",
+        "Matches shapes and colors — first classification skills",
+        "Names 5 body parts — nose, ears, belly, eyes, feet",
+    ]),
+    closing_text="'Me do it' is the sound of a child becoming someone. Let her. — Jack",
+)
+with open(f"{OUT}/month19-redesign.html", "w") as f: f.write(html)
+print("Written: month19-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 20
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 20", title_label="Month 20",
+    subject="'Why?' is the best question she'll ever ask. Answer it every time.",
+    preheader="Olivia is 20 months old. The question explosion, matching skills, and body parts.",
+    hero_age="Month 20", hero_name="Olivia · 87 weeks old",
+    opening="Olivia is 20 months old. The questions are starting — 'What's that?' over and over, about everything. This is not noise. This is one of the most productive cognitive strategies a toddler has for building vocabulary. Answer every single one.",
+    context="Twenty months: questions are the learning mechanism. The repetition is the point.",
+    theme="❓ This month: the question explosion, sorting by shape and color, and naming the body.",
+    total_windows=35,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "The question explosion — 'What's that?' and 'Why?'",
+        "The repetitive questions are not annoying. They're one of the most efficient learning strategies the brain has.",
+        "Most toddlers begin asking 'What's that?' constantly around 20 to 24 months — this is a deliberate vocabulary-building strategy. True 'Why?' questions, which require understanding cause and effect, typically emerge around 24 to 30 months. Both represent significant cognitive milestones.",
+        """* Answer every question, even the obvious ones: "That's a mailbox. The mail carrier puts letters in it."
+* Resist the urge to answer with a question back — "What do you think it is?" — at this stage, she genuinely doesn't know. Give her the answer first.
+* Expand the answer: she asks "What's that?" about a garbage truck, you say: "That's a garbage truck. It picks up our rubbish and takes it away so our street stays clean."
+* When 'Why?' arrives: take it seriously. She's asking about causation. Give real answers, simply.
+* Never mock or minimize the questions. Toddlers who get engaged answers ask more questions — and questioning is the engine of all future learning.""",
+    ),
+    dyk_html=dyk_card("Sorting and matching games aren't just fun — they're building the **logical classification skills** the brain will use for reading, mathematics, and science. When she sorts shapes, she's doing early logic. When she matches colors, she's building categorical reasoning."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Matches shapes and colors",
+        "Sorting by shape and color is early mathematics. It's also a great rainy day activity.",
+        "Sorting and matching by shape and color is an early classification skill. It shows the child can identify a shared property between objects and use it to group them. This is the foundation of logical thinking, and it's building right now through play.",
+        """* Use simple shape sorters and color-sorting games — the classics exist for a reason
+* Describe what you're doing as you sort: "This one is round — it goes with the other round ones"
+* Don't turn it into a drill. Make it playful. "Can you find all the red ones?" is a game, not a test.
+* Everyday sorting counts: separating socks by color, putting big blocks with big blocks
+* Praise the process, not just the outcome: "You're really looking carefully" reinforces the habit of attention""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Names 5 body parts",
+        "Nose, ears, belly, eyes, feet. Name them. Ask for them. Make it a game.",
+        "Pointing to or naming body parts on request is a sign of growing vocabulary and object identification. It also shows the child can follow instructions and understands that things have labels. By 24 months, most children can identify 5 or more body parts.",
+        """* Make it a game during bath time: "Where's your nose? Where's your belly?"
+* Read books with pictures of faces and bodies, point to the parts
+* Use the correct anatomical words — children learn what they're taught, and correct vocabulary costs nothing
+* Songs make it memorable: Head, Shoulders, Knees and Toes covers four at once
+* By 24 months: target 5 reliable body parts. By 36 months: most children know significantly more.""",
+    ),
+    tackled_html=tackled_section([
+        ("'Me do it' — we're building in the extra time", "Both"),
+        ("50 words — getting close, counting carefully", "Mum"),
+        ("Meltdowns — staying calmer on our end", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "Family understands 75% of speech — the comprehension checkpoint",
+        "Empathy emerging — shows concern when others are upset",
+        "Understands function of common objects — spoon for eating, brush for hair",
+    ]),
+    closing_text="Answer the questions. All of them. Every answered question is a word, a concept, a connection. — Jack",
+)
+with open(f"{OUT}/month20-redesign.html", "w") as f: f.write(html)
+print("Written: month20-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 21
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 21", title_label="Month 21",
+    subject="If you can understand 75% of what she says, the speech is on track.",
+    preheader="Olivia is 21 months old. Speech clarity, empathy, and understanding how things work.",
+    hero_age="Month 21", hero_name="Olivia · 91 weeks old",
+    opening="Olivia is 21 months old. Her speech is getting clearer — most of what she says should be understandable to the people who know her best. And something new is happening too: she's starting to notice when other people feel something.",
+    context="Twenty-one months: words getting clearer, and a little person who notices when you're sad.",
+    theme="🗣️ This month: speech clarity milestone, empathy beginning, and knowing what things are for.",
+    total_windows=33,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Family understands 75% or more of speech",
+        "You should be able to understand most of what she says, most of the time.",
+        "By around 24 months, children should be understood by the people who know them best the majority of the time. If even familiar adults struggle to interpret her speech — guessing from context more than understanding words — it's worth flagging at the 24-month visit.",
+        """* Pay attention honestly: how much do you actually understand versus how much do you guess from context and gesture?
+* Ask your partner or other regular caregivers — they're a useful second data point
+* Strangers understanding speech is a later milestone: 50% by 24 months, 75% by 36 months
+* At the 24-month visit: report your honest estimate of how understandable her speech is
+* If you're struggling to understand more than 50% of her speech, flag it now — don't wait for the visit
+* Speech clarity improves rapidly with language expansion — the more words, the clearer the articulation""",
+    ),
+    dyk_html=dyk_card("Toddlers who see adults **modeling empathic behavior** — comforting others, asking 'are you okay?', naming concern — develop empathy faster and show stronger prosocial behavior at age 4 and 5. She's watching everything you do."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Empathy emerging — shows concern when others are upset",
+        "When she pats your arm because you look sad, that's one of the most important milestones of the second year.",
+        "Most children begin to show genuine concern for others who are distressed around 18 to 24 months: offering a toy to a crying child, patting a parent who looks sad, looking worried when someone gets hurt. This is early empathy — the beginning of a social-emotional skill that underlies almost all human relationships.",
+        """* Acknowledge and respond to her empathic behavior: "You gave your teddy to the baby. That was so kind."
+* Label the emotions of people in books and real life: "The boy in the story is crying because he lost his dog. He feels sad."
+* Model empathic behavior yourself: show concern when others are upset, and name what you're doing
+* Don't force empathy — toddlers who are pressured to comfort others often resist. Let it emerge naturally.
+* When she's upset herself: name it and stay with her. You're showing her what being comforted looks like.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Understands function of common objects",
+        "Spoons are for eating. Cups are for drinking. Brushes are for hair. She knows.",
+        "By around 18 to 24 months, most children understand that common objects have specific functions. This is called functional knowledge, and it shows the child is building a mental model of the world — not just identifying things by name, but understanding what they're for.",
+        """* Name objects and their function during daily routines: "This is a brush. We use it to brush hair."
+* During pretend play, follow her lead — if she hands you the toy phone, answer it. She's showing you she knows what it's for.
+* Simple object-function books work well: "what do you do with a cup?" as a game
+* If she's using objects in clearly wrong ways consistently (brushing with a spoon, drinking from a block) past 24 months, mention it at the 24-month visit""",
+    ),
+    tackled_html=tackled_section([
+        ("Questions — answering every 'What's that?'", "Both"),
+        ("Sorting — shapes and colors at home", "Dad"),
+        ("Body parts — she knows 6 now", "Mum"),
+    ]),
+    next_month_html=next_month_section([
+        "Vocabulary: 200+ words — the 24-month target",
+        "Follows 2-step commands — working memory milestone",
+        "Uses pronouns — I, me, you",
+    ]),
+    closing_text="When she notices you're sad — that's not nothing. That's the beginning of everything that makes us human. — Jack",
+)
+with open(f"{OUT}/month21-redesign.html", "w") as f: f.write(html)
+print("Written: month21-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 22
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 22", title_label="Month 22",
+    subject="200 words by 24 months. Here's where you are — and what to do.",
+    preheader="Olivia is 22 months old. The 200-word target, 2-step commands, and pronouns.",
+    hero_age="Month 22", hero_name="Olivia · 95 weeks old",
+    opening="Olivia is 22 months old. Two months from the second birthday — and the 24-month language targets are in sight. Here's where things should be, and what to watch for.",
+    context="Twenty-two months: two months to the 24-month checkup. Language is the main event.",
+    theme="📚 This month: the 200-word target, 2-step commands, and the pronoun shift.",
+    total_windows=31,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Vocabulary: 200+ words",
+        "Two hundred words by 24 months. The range is wide — what matters more is growth.",
+        "By 24 months, most children have approximately 200 words, though the range is genuinely wide. What matters more than the exact count is that language is growing rapidly and that two-word combinations are present. A child with 100 words and rapid growth is in a different position than a child with 100 words and a plateau.",
+        """* Continue daily reading, narrating daily activities, and expanding their utterances — these are the highest-leverage inputs
+* Name emotions as well as objects: "you look frustrated," "that made you happy" — emotional vocabulary counts toward the total
+* Introduce new vocabulary in context: at the playground, name the equipment. In the kitchen, name the ingredients.
+* If she's not at 50 words by 24 months, ask for a speech evaluation — don't wait for 'catching up on her own'
+* Two-word combinations (more milk, daddy go, big dog) should be present by 24 months — absence at this point is a flag""",
+    ),
+    dyk_html=dyk_card("Following a **2-step command** requires holding two pieces of information in working memory and executing them in order. It's not just language — it's executive function. The same mental process underlies planning, problem-solving, and academic learning."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Follows 2-step commands",
+        "'Get your cup and put it on the table.' Without repeating it. That's the milestone.",
+        "Following a two-step command without prompts — 'Get your shoes and bring them to me' — requires holding two pieces of information in working memory and executing them in sequence. This represents a significant cognitive step beyond single-step commands.",
+        """* Start with two steps that are naturally connected: "Go get your cup and put it on the table"
+* Give the instruction once and wait — do not repeat immediately. You're building the habit of listening the first time.
+* If she forgets the second step, gently prompt: "And now?" rather than repeating the full instruction
+* Praise two-step completion: "You did it — you got your shoes AND brought them to me!"
+* By 36 months, most children follow multi-step instructions reliably. Absent two-step compliance at 24 months is worth flagging.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Uses pronouns — I, me, you",
+        "Getting pronouns right requires understanding that perspective shifts depending on who's speaking.",
+        "Using pronouns correctly requires understanding that 'I' changes based on who's speaking — which is a genuinely sophisticated cognitive operation. Most children begin using pronouns between 18 and 30 months, but errors are normal for much longer.",
+        """* Model pronoun use constantly: "I am eating. You are eating. We are eating."
+* Do not correct errors directly — expand and rephrase. If she says "Emma want cookie," say "You want a cookie? Here you go."
+* Point out pronouns in books: "He's running. She's laughing. They're playing together."
+* Errors like "me do it" (instead of "I do it") are completely normal through age 3 — the cognitive mapping is still being built
+* If she's still referring to herself exclusively by name (never 'I' or 'me') past 30 months, mention it at the next visit""",
+    ),
+    tackled_html=tackled_section([
+        ("Speech — family understanding 75%+", "Both"),
+        ("Empathy — she pats your arm when you're tired", "Mum"),
+        ("Object function — using things correctly", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "Jumping in place — both feet leave the ground",
+        "Complex pretend play — multi-step scenarios, characters, scripts",
+        "Understands big vs. little — first size comparisons",
+    ]),
+    closing_text="Two months to the second birthday. The language targets are in sight. Keep reading, keep narrating, keep expanding. — Jack",
+)
+with open(f"{OUT}/month22-redesign.html", "w") as f: f.write(html)
+print("Written: month22-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 23
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 23", title_label="Month 23",
+    subject="She's jumping. Both feet. That's a bigger deal than it looks.",
+    preheader="Olivia is 23 months old. Jumping, complex pretend play, and big vs. little.",
+    hero_age="Month 23", hero_name="Olivia · 100 weeks old",
+    opening="Olivia is 23 months old. One month from the second birthday. The motor, language, and cognitive development happening this month is accelerating fast. Here's what's worth watching.",
+    context="Twenty-three months: the last month before the second birthday checkup.",
+    theme="🦘 This month: jumping with both feet, pretend play getting complex, and first size concepts.",
+    total_windows=29,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Jumping in place — both feet leave the ground",
+        "Jumping requires coordinating both sides of the body at once. That's harder than it looks.",
+        "Jumping in place — with both feet leaving the ground simultaneously — requires significant leg power and the ability to coordinate both sides of the body at the same moment. It's a major milestone for physical confidence and bilateral coordination. Most children achieve this between 20 and 30 months.",
+        """* Practice jumping off a very small height — a 2-inch curb onto grass — to build confidence
+* Model it: "Look, I jump!" Toddlers learn motor skills by watching and imitating.
+* Use a mini-trampoline with a handle, or a soft mat for landing practice
+* Make it playful: jump over a rope on the ground, jump between two cushions
+* If she's not attempting to jump at all by 30 months, mention it at the 30-month visit""",
+    ),
+    dyk_html=dyk_card("Complex pretend play — multi-step scenarios with characters and scripts — uses the same cognitive machinery as **narrative comprehension and writing** later in school. Children who engage in rich pretend play at 2–3 years show stronger literacy skills at age 5."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Complex pretend play — multi-step scenarios",
+        "From feeding a stuffed animal to cooking dinner for the whole family: the complexity is growing fast.",
+        "Complex pretend play — multi-step scenarios like cooking dinner for dolls, taking toys on a trip, acting out a doctor visit — shows advanced symbolic thinking, narrative construction, and social understanding. This is a direct precursor to literacy, mathematical thinking, and social cognition.",
+        """* Set up simple play scenarios: a play kitchen, a pretend doctor kit, stuffed animals as characters
+* Join the play and follow her script — do not take over the narrative. Let her be the director.
+* Introduce new elements to extend the scenario: "Oh no, the baby is hungry. What should we feed her?"
+* Ask open-ended questions to develop the story: "Where are we going?" "What happens next?"
+* Complex pretend play peaks between ages 3 and 5 — what she's doing now is the foundation.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Understands big vs. little",
+        "Size comparison is the foundation of early mathematics. It builds from play.",
+        "Size comparison — big and little, more and less, long and short — is an early mathematical concept. It emerges around 21 to 27 months through repeated comparison and labeling. It is foundational for counting, measurement, and later mathematical reasoning.",
+        """* Compare sizes explicitly in daily life: "This is the big spoon. That's the little spoon."
+* Sort objects by size and narrate: "The big blocks go here. The little blocks go there."
+* Books with size concepts: 'Too Big, Too Small, Just Right' types make it concrete
+* Use size language in context: "You need the big cup today" or "That's a tiny piece of apple"
+* Once 'big' and 'little' are solid, introduce 'bigger,' 'biggest,' 'smaller,' 'smallest'""",
+    ),
+    tackled_html=tackled_section([
+        ("200 words — she's there", "Both"),
+        ("2-step commands — following reliably", "Both"),
+        ("Pronouns — 'me do it' slowly becoming 'I do it'", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "24-month checkup + second autism screen — prepare your observations",
+        "Switch to 2% milk at age 2 — confirm at the visit",
+        "Understands same and different — matching and classification",
+    ]),
+    closing_text="One month to the second birthday. She's come so far — and the pace doesn't slow down. — Jack",
+)
+with open(f"{OUT}/month23-redesign.html", "w") as f: f.write(html)
+print("Written: month23-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 24
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 24", title_label="Month 24",
+    subject="Two years. The second autism screen is at this visit — here's how to prepare.",
+    preheader="Olivia is 24 months old. M-CHAT-R/F, 2% milk, same and different.",
+    hero_age="Month 24", hero_name="Olivia · 104 weeks old",
+    opening="Olivia is 24 months old. Two years old. The 24-month checkup includes the second formal autism screening — two years after you started. Here's how to come prepared and what to expect.",
+    context="Two years. The second birthday. One of the most important developmental checkpoints of the whole first two years.",
+    theme="🩺 This month: the 24-month checkup + second autism screen, the milk switch, and same vs. different.",
+    total_windows=44,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "24-month well child visit + second autism screen",
+        "The M-CHAT at 18 months and the M-CHAT at 24 months together give a much fuller picture than either alone.",
+        "The 24-month visit includes a second autism screen (M-CHAT-R/F or equivalent). It also assesses vocabulary (target: 50+ words), two-word combinations, social play, and tantrum patterns. This is one of the most comprehensive developmental assessments of the first two years.",
+        """* Complete the developmental questionnaire accurately — answer what you actually observe, not what you hope is true
+* Be direct about any concerns — this is not the time to minimize. If it's been on your mind, say it.
+* If there are language or social concerns: ask for a speech evaluation referral today. Early intervention has the highest impact window and there are often waiting lists.
+* Know your language stats: approximate word count, whether two-word combinations are present, and how much of her speech is understood by strangers
+* If the M-CHAT flags something: follow up immediately. A flag is not a diagnosis — it's an instruction to investigate.""",
+    ),
+    dyk_html=dyk_card("The AAP recommends switching to **2% milk at age 2** because after the second birthday, children no longer need the high fat content of whole milk for brain development. The brain's fat-intensive growth phase is winding down. 2% supports continued development without excess saturated fat."),
+    supporting_cards_html=window_card(
+        "⏱ Closing this month", "",
+        "Switch from whole to 2% milk at age 2",
+        "One switch, at the pediatrician's confirmation. Most children don't notice the difference.",
+        "Whole milk is recommended from 12 to 24 months because the fat content supports brain development. After age 2, the AAP recommends switching to 2% reduced-fat milk — unless the child's growth trajectory or family history of cardiovascular disease suggests otherwise.",
+        """* At the 24-month visit, confirm the switch is appropriate for her growth trajectory
+* Simply buy 2% from the next shop — most children do not notice the difference in taste
+* If there's a strong family history of high cholesterol or early heart disease, mention it — your pediatrician may recommend continuing whole milk or moving to 1%
+* Cap milk intake at 16–20 oz/day. More than that displaces iron-rich solid food.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Understands same and different",
+        "Same and different is the foundation of sorting, matching, reading, and mathematics.",
+        "The concept of same and different is a foundational logical operation. It's required for sorting, matching, classifying, and eventually reading (these two letters are the same; these are different) and mathematics. It emerges around 21 to 27 months through repeated comparison.",
+        """* Play matching games: "Find the one that looks the same as this"
+* Narrate sameness and difference in daily life: "You have the same shoes as your friend"
+* Simple memory card matching games develop this directly and are also excellent for attention
+* Use the language constantly: "These are the same color. These are different."
+* Once solid, extend to: "What's the same about an apple and an orange?" (both are round, both are fruit)""",
+    ),
+    tackled_html=tackled_section([
+        ("Jumping — both feet, consistent", "Both"),
+        ("Complex pretend play — full scripts with characters", "Mum"),
+        ("Big and little — sorting by size", "Dad"),
+    ]),
+    next_month_html=next_month_section([
+        "3-word sentences — 'I want more milk'",
+        "Recalls recent events — memory becoming narrative",
+        "Cooperative play begins — playing with, not just beside",
+    ]),
+    closing_text="Happy second birthday to Olivia — and to you. Two years in, and you know exactly what you're doing. The third year is different again. We'll keep you on track. — Jack",
+)
+with open(f"{OUT}/month24-redesign.html", "w") as f: f.write(html)
+print("Written: month24-redesign.html")
+
+print("\nMonths 13-24 done.")
