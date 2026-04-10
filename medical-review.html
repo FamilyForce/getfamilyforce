@@ -218,7 +218,7 @@ a:hover { text-decoration: underline; }
 /* CTA */
 .cta-block {
   text-align: center; margin-top: 72px;
-  padding: 56px 40px;
+  padding: 56px clamp(20px, 5vw, 40px);
   background: var(--indigo-deep);
   border-radius: 24px;
   color: #fff;
@@ -240,6 +240,8 @@ a:hover { text-decoration: underline; }
 @media (max-width: 640px) {
   .reviewer-card { flex-direction: column; padding: 28px 24px; gap: 20px; }
   .reviewer-avatar { width: 72px; height: 72px; font-size: 1.8rem; }
+  .disclaimer { padding: 20px; gap: 12px; }
+  .cta-block h2 { font-size: 1.5rem; }
 }
 </style>
 </head>
@@ -359,7 +361,7 @@ a:hover { text-decoration: underline; }
   <div class="cta-block">
     <h2>Know what's coming before it happens</h2>
     <p>Monthly milestone emails and calendar invites, timed to your baby's exact age.</p>
-    <a href="/sign-in" class="btn-cta">Try Scout Free →</a>
+    <a href="/sign-in.html?intent=trial" class="btn-cta">Try Scout Free →</a>
   </div>
 
 </main>
@@ -400,7 +402,7 @@ window.addEventListener('scroll', () => {
 /* Mobile menu */
 const hamburger = document.getElementById('hamburger-btn');
 const mobileMenu = document.getElementById('mobile-menu');
-const mobileClose = document.getElementById('mobile-menu-close');
+const mobileClose = document.getElementById('mobile-close-btn');
 const mainContent = document.querySelector('main');
 
 hamburger.addEventListener('click', () => {
