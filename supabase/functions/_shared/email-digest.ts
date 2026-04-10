@@ -192,7 +192,7 @@ interface MonthContent {
 // Month 0 = pre-birth; months 1-36 = baby's age
 const MONTH_CONTENT: Record<number, MonthContent> = {
   0:  { theme: '📋 This month: three things to sort before the due date.', dyk: 'In the first hour after birth, your baby is in what neuroscientists call the **quiet alert state** — the most receptive window for bonding. Skin-to-skin in that first hour shapes the attachment system for years.', opening: 'The due date is close. Most of the preparation below is far easier to do now than with a newborn in the room.', context: 'A few things that take an hour now and save a lot of stress later.', closing: "You're close now. Everything you do in the next few weeks makes the first days easier. — Jack" },
-  1:  { theme: '👶 This month: the 1-month checkup, tummy time, and something worth screening for.', dyk: 'Babies who have tummy time **every day from the first week of life** build neck and shoulder strength 40% faster than those who start later. Gravity is the trainer — and the earlier you start, the easier it gets.', opening: 'The first month is the steepest learning curve of any parent\'s life. Here\'s what actually matters right now.', context: 'Survival mode is real. These three things are worth doing anyway.', closing: 'Month 1 is hard. You\'re doing it. Month 2 gets better. — Jack' },
+  1:  { theme: '👶 This month: the 1-month checkup, tummy time, and something worth screening for.', dyk: 'In the first month of life, a baby\'s brain creates more than **1 million new neural connections per second** — a rate that will never be matched again. Every time you talk to her, hold her, and respond to her cries, you\'re building the architecture of her brain.', opening: 'The first month is the steepest learning curve of any parent\'s life. Here\'s what actually matters right now.', context: 'Survival mode is real. These three things are worth doing anyway.', closing: 'Month 1 is hard. You\'re doing it. Month 2 gets better. — Jack' },
   2:  { theme: '😊 This month: the 2-month checkup, the first real smile, and the habit that builds everything.', dyk: 'The social smile — the first **intentional smile in response to your face** — activates the same brain regions as adult social bonding. It\'s not reflex. It\'s the beginning of a relationship.', opening: 'Two months in. The fog is still real, but something is shifting — she\'s starting to respond to you. Here\'s what matters this month.', context: 'The fog is lifting. And she\'s starting to know your face.', closing: 'The social smile changes things. You\'ll feel it when it happens. — Jack' },
   3:  { theme: '🧠 This month: one milestone closing, a new one emerging, and the bedtime habit to lock in now.', dyk: 'A consistent 3–4 step bedtime routine can produce **measurable sleep improvements within one week** — even in babies as young as 3 months. Same steps, same order, every night.', opening: 'Three months in is when most parents feel like they\'ve finally found their footing. Here\'s what\'s worth your attention right now.', context: 'You made it through the fourth trimester. The development is accelerating.', closing: 'Month 3 is when it starts feeling real. You\'re watching her become someone. — Jack' },
   4:  { theme: '😴 This month: nobody warns you about the 4-month sleep regression. We\'re warning you.', dyk: 'The 4-month sleep regression isn\'t random — it\'s caused by the brain **permanently reorganising its sleep architecture** from newborn cycles to adult cycles. It doesn\'t go back. But it does get better.', opening: 'Four months. The sleep regression may have arrived — or it\'s coming. Here\'s what it is and what to do.', context: 'The hardest sleep phase of the first year. Understanding it helps.', closing: 'The regression passes. Your response to it shapes the next 6 months of sleep. — Jack' },
@@ -364,10 +364,30 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     <tr><td style="padding:${closing.length > 0 ? '8px' : '0'} 0 4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.textDim};margin:0">Also this month</p></td></tr>
     ${openWindows.map(w => windowCard(w, ageMonths, dashboardUrl, false)).join('')}` : ''
 
-  // Coming next month from getReadyWindows
-  const comingNextHtml = comingNextSection(getReadyWindows)
+  // Coming next month from getReadyWindows — replaced with farewell at month 36
+  const farewellHtml = (!isExpecting && ageMonths >= 36 && getReadyWindows.length === 0) ? `
+    <tr>
+      <td style="padding-bottom:24px">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.indigoDeep};border-radius:16px;overflow:hidden">
+          <tr>
+            <td style="padding:32px 28px;text-align:center">
+              <p style="font-family:Arial,sans-serif;font-size:36px;margin:0 0 14px">🎓</p>
+              <p style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;color:#fff;margin:0 0 16px;line-height:1.3">Three years done.</p>
+              <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 14px;line-height:1.75">
+                Scout is built for the first three years — the most intensive developmental period of any human life. You've been through all of it: every checkup, every window, every month.
+              </p>
+              <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0;line-height:1.75">
+                From here, well child visits go annual — ages 4, 5, 6, 7, and 8. Keep reading every day. Keep talking. Keep being curious about who ${childName} is becoming. The habits you've built in these three years are the foundation for everything that comes next.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>` : ''
 
-  const remainingCount = allCaughtUp ? 0 : allWindowCount - topWindows.length
+  const comingNextHtml = farewellHtml || comingNextSection(getReadyWindows)
+
+  const remainingCount = allCaughtUp ? 0 : Math.max(0, allWindowCount - topWindows.length - completedWindows.length)
 
   // "What you did" section — split into closing-this-month vs everything else
   const closingDone  = completedWindows.filter(w => w.close_age_weeks - ageWeeks <= 4)

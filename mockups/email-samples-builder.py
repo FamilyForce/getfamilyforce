@@ -86,9 +86,6 @@ CSS = """
   .birth-reminder p { font-size:14px; color:#2d1b69; line-height:1.65; margin:0 0 10px; }
   .birth-reminder a { color:#6E4ED6; font-weight:700; text-decoration:none; }
   /* Co-parent */
-  .coparent { text-align:center; padding:14px 0; }
-  .coparent p { font-size:13px; color:#888; margin:0; }
-  .coparent a { color:#6E4ED6; font-weight:600; text-decoration:none; }
   /* Closing */
   .closing-card { background:linear-gradient(160deg,#1a0f3e 0%,#0d0820 100%); border-radius:14px; padding:24px 26px; margin-bottom:10px; }
   .closing-card p { font-size:14px; color:rgba(255,255,255,.7); line-height:1.85; margin:0; font-style:italic; }
@@ -184,7 +181,7 @@ def tackled_section(items):
 </div>"""
     rows = ""
     for title, who in items:
-        who_html = f'<span class="tackled-who">— {who}</span>' if who else ""
+        who_html = f'<span class="tackled-who"> — {who}</span>' if who else ""
         rows += f'<div class="tackled-item"><span class="tackled-check">✅</span>{md_to_html(title)}{who_html}</div>\n'
     return f"""
 <div class="tackled">
@@ -201,6 +198,17 @@ def next_month_section(items):
 <div class="next-month">
   <p class="next-lbl">🔜 A few things coming next month</p>
   {rows}
+</div>"""
+
+
+def farewell_block():
+    """Graduation card for month 36 — replaces 'coming next month'."""
+    return """
+<div style="background:#1E1248;border-radius:14px;padding:32px 28px;text-align:center;margin-bottom:10px">
+  <p style="font-family:Arial,sans-serif;font-size:36px;margin:0 0 14px">🎓</p>
+  <p style="font-family:Georgia,serif;font-size:22px;color:#fff;margin:0 0 16px;line-height:1.3">Three years done.</p>
+  <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 14px;line-height:1.75">Scout is built for the first three years — the most intensive developmental period of any human life. You've been through all of it: every checkup, every window, every month.</p>
+  <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0;line-height:1.75">From here, well child visits go annual — ages 4, 5, 6, 7, and 8. Keep reading every day. Keep talking. Keep being curious about who Olivia is becoming. The habits you've built in these three years are the foundation for everything that comes next.</p>
 </div>"""
 
 def birth_reminder_card():
@@ -288,7 +296,7 @@ def page(nav_label, title_label, subject, preheader,
 
   <div class="preview-note"><strong>Redesign sample — {title_label}.</strong>
   Full bullet content (up to 8) · 3 windows · active window count · monthly theme ·
-  Did you know · Jack bridges · tackled section · coming next month · co-parent prompt.</div>
+  Did you know · Jack bridges · tackled section · coming next month.</div>
 
   {nav_bar(nav_label)}
 
@@ -320,7 +328,6 @@ def page(nav_label, title_label, subject, preheader,
   {next_month_html}
   {extra_card_html}
 
-  <div class="coparent"><p>📩 <a href="#">Forward this to your co-parent</a> — they need it too.</p></div>
 
   <div class="closing-card"><p>{closing_text}</p></div>
 
@@ -428,7 +435,7 @@ html = page(
     nav_label="Month 1", title_label="Month 1",
     subject="The visit you didn't know to book — and three things that matter right now",
     preheader="Olivia is 1 month old. One appointment saves you weeks of worry.",
-    hero_age="Month 1", hero_name="Olivia · 4 weeks old",
+    hero_age="Month 1", hero_name="Olivia · 1 month old",
     opening="Olivia is 1 month old. You've kept a human alive for a whole month — and she's growing. This is Scout's first monthly digest: a look at what's worth your attention right now, no more than 5 minutes.",
     context="The first month is survival mode. You're doing it right.",
     theme="🗓 This month: one appointment to book, one habit to start, and one question to answer honestly.",
@@ -448,7 +455,7 @@ html = page(
 * Feeding taking more than 45 minutes per session, or baby seeming exhausted during feeds
 * Any yellowing of skin or eyes persisting past 2 weeks"""
     ),
-    dyk_html=dyk_card("Tummy time is one of the **strongest predictors of motor milestones through age 2.** Babies who do consistent daily tummy time crawl earlier, stand earlier, and walk earlier. You don't need equipment or a schedule — a few minutes on your chest counts."),
+    dyk_html=dyk_card("In the first month of life, a baby's brain creates more than **1 million new neural connections per second** — a rate that will never be matched again. Every time you talk to her, hold her, and respond to her cries, you're building the architecture of her brain."),
     supporting_cards_html=window_card(
         "⏱ Closing this month", "",
         "Tummy time — build to 15–30 minutes per day by week 7",
@@ -489,7 +496,7 @@ html = page(
     nav_label="Month 2", title_label="Month 2",
     subject="The smile that changes everything — and what to do before Thursday",
     preheader="Olivia is 2 months old. One vaccine visit, one milestone to watch for.",
-    hero_age="Month 2", hero_name="Olivia · 9 weeks old",
+    hero_age="Month 2", hero_name="Olivia · 2 months old",
     opening="Olivia is 2 months old. The hard edge of the newborn phase is starting to soften. She's more awake, more alert, and more interested in you. Here's what to focus on this month.",
     context="Something shifts around 6–8 weeks. If you haven't seen the first real smile yet — it's close.",
     theme="😊 This month: one appointment to book, one milestone to watch for, and one habit worth locking in.",
@@ -547,7 +554,7 @@ html = page(
     nav_label="Month 3", title_label="Month 3",
     subject="A window closing this month — and the routine that changes everything at bedtime",
     preheader="Olivia is 3 months old. Head control closes this month. Plus: the bedtime habit worth starting now.",
-    hero_age="Month 3", hero_name="Olivia · 13 weeks old",
+    hero_age="Month 3", hero_name="Olivia · 3 months old",
     opening="Olivia is 3 months old. Three months in is when most parents feel like they've finally figured something out. Here's what's worth your attention — she's got a lot going on right now.",
     context="You made it through the fourth trimester. Three months of adjusting, recovering, and learning on the job.",
     theme="🧠 This month: one milestone to close out, a new one just emerging, and a bedtime habit to lock in now.",
@@ -606,7 +613,7 @@ html = page(
     nav_label="Month 4", title_label="Month 4",
     subject="Nobody warns you about this. We're warning you.",
     preheader="Olivia is 4 months old. Sleep is about to change — and that's a good sign.",
-    hero_age="Month 4", hero_name="Olivia · 17 weeks old",
+    hero_age="Month 4", hero_name="Olivia · 4 months old",
     opening="Olivia is 4 months old. Month 4 is one of the most developmentally active stretches of the first year — and the one that catches most parents off guard. Here's what to know.",
     context="Four months is when development accelerates. Sleep often gets harder before it gets easier. Both are normal.",
     theme="😴 This month: the sleep change nobody warns you about, the visit to bring your questions to, and what her eyes are telling you.",
@@ -669,7 +676,7 @@ html = page(
     nav_label="Month 5", title_label="Month 5",
     subject="She's eyeing your food. Here's what to watch for.",
     preheader="Olivia is 5 months old. Solids are one month away — if the signs are right.",
-    hero_age="Month 5", hero_name="Olivia · 22 weeks old",
+    hero_age="Month 5", hero_name="Olivia · 5 months old",
     opening="Olivia is 5 months old. She's not a newborn anymore — she's an active, curious baby who wants to explore everything in reach. Here's what's worth your attention this month.",
     context="Five months is full of firsts. Grabbing, batting, reaching — and starting to eye what you're eating.",
     theme="🥄 This month: watch for solids readiness, check in on iron, and understand what you're building every day.",
@@ -732,7 +739,7 @@ html = page(
     nav_label="Month 6", title_label="Month 6",
     subject="Six months: the checkup, the first real food, and a milestone worth celebrating",
     preheader="Olivia is 6 months old. Solids start now, sitting is happening — here's what to know.",
-    hero_age="Month 6", hero_name="Olivia · 26 weeks old",
+    hero_age="Month 6", hero_name="Olivia · 6 months old",
     opening="Olivia is 6 months old. Six months is a turning point — solids are starting, she's sitting up on her own, and she's starting to look less like a baby and more like a little person with opinions. Here's what matters this month.",
     context="Six months. Solids, sitting, and a whole new level of curiosity about the world.",
     theme="🥄 This month: the 6-month checkup, first real foods, and a motor milestone that changes everything.",
@@ -793,7 +800,7 @@ html = page(
     nav_label="Month 7", title_label="Month 7",
     subject="Mobility is coming. Is your home ready?",
     preheader="Olivia is 7 months old. Babyproofing closes this month — here's the checklist.",
-    hero_age="Month 7", hero_name="Olivia · 30 weeks old",
+    hero_age="Month 7", hero_name="Olivia · 7 months old",
     opening="Olivia is 7 months old. Mobility is coming — crawling, pulling, rolling — and with it comes a world that suddenly needs a closer look for hazards. Here's what to focus on.",
     context="Seven months: the world is getting much more interesting. And so are the hazards.",
     theme="🔒 This month: babyproof before she moves, establish name response, and open the dairy window.",
@@ -856,7 +863,7 @@ html = page(
     nav_label="Month 8", title_label="Month 8",
     subject="Allergen introductions: the window is open and the science is clear",
     preheader="Olivia is 8 months old. Eggs, tree nuts, dairy — here's how to do it right.",
-    hero_age="Month 8", hero_name="Olivia · 35 weeks old",
+    hero_age="Month 8", hero_name="Olivia · 8 months old",
     opening="Olivia is 8 months old. Object permanence is kicking in — she knows things exist even when she can't see them. This month is also peak allergen introduction time. Here's what to focus on.",
     context="Eight months: things that disappear are suddenly the end of the world. That's object permanence — it means her brain is working.",
     theme="🥚 This month: three allergens to introduce, and one language milestone building under the surface.",
@@ -916,7 +923,7 @@ html = page(
     nav_label="Month 9", title_label="Month 9",
     subject="The 9-month checkup is the first real developmental screen — here's what to expect",
     preheader="Olivia is 9 months old. Plus: the peanut window and two more allergens.",
-    hero_age="Month 9", hero_name="Olivia · 39 weeks old",
+    hero_age="Month 9", hero_name="Olivia · 9 months old",
     opening="Olivia is 9 months old. This is one of the biggest developmental months of the whole first year — crawling, pulling up, pointing, and early communication are all happening at once. Here's what to watch.",
     context="Nine months is a surge. Gross motor, language, and social development are all firing at the same time.",
     theme="🩺 This month: the first formal developmental screening, the peanut window, and sesame.",
@@ -976,7 +983,7 @@ html = page(
     nav_label="Month 10", title_label="Month 10",
     subject="The last allergen on the list — and she's pulling up to stand.",
     preheader="Olivia is 10 months old. Fish intro, peek-a-boo, and the beginning of upright life.",
-    hero_age="Month 10", hero_name="Olivia · 43 weeks old",
+    hero_age="Month 10", hero_name="Olivia · 10 months old",
     opening="Olivia is 10 months old. She's pulling up to stand, cruising the furniture, and making it very clear she has places to be. Here's what matters this month.",
     context="Ten months: upright and opinionated. The walking window is getting closer.",
     theme="🐟 This month: the last major allergen to introduce, peek-a-boo for the brain, and the milestone that changes your safety checklist.",
@@ -1037,7 +1044,7 @@ html = page(
     nav_label="Month 11", title_label="Month 11",
     subject="Almost one. She's cruising the furniture — here's what that means.",
     preheader="Olivia is 11 months old. First words, first dental visit, and the last step before walking.",
-    hero_age="Month 11", hero_name="Olivia · 48 weeks old",
+    hero_age="Month 11", hero_name="Olivia · 11 months old",
     opening="Olivia is 11 months old. Almost one. She's pulling up, holding on, and moving sideways along anything she can grip. That's cruising — and it's the last bridge before independent walking. Here's what to watch for this month.",
     context="Eleven months: the walk is coming. You can see it in her eyes every time she lets go for half a second.",
     theme="🚶 This month: cruising along furniture, first words getting specific, and the first dental visit.",
@@ -1097,7 +1104,7 @@ html = page(
     nav_label="Month 12", title_label="Month 12",
     subject="One year. Here's what the 12-month visit actually covers.",
     preheader="Olivia is 12 months old. Walking, first words, whole milk — all of it, explained.",
-    hero_age="Month 12", hero_name="Olivia · 52 weeks old",
+    hero_age="Month 12", hero_name="Olivia · 12 months old",
     opening="Olivia is 12 months old. One year. You did it. The first year of life is one of the most developmentally dense periods of any human life — and you navigated all of it. Here's what the 12-month visit covers and what to focus on now.",
     context="The first year is done. One of the most remarkable developmental years of any human life — and you were there for all of it.",
     theme="🎂 This month: the 12-month visit, reading aloud every day, and the switch to whole milk.",
@@ -1160,7 +1167,7 @@ html = page(
     nav_label="Month 13", title_label="Month 13",
     subject="The first steps. The first words. The beginning of everything.",
     preheader="Olivia is 13 months old. Walking, words, and getting off the bottle — here's what to know.",
-    hero_age="Month 13", hero_name="Olivia · 56 weeks old",
+    hero_age="Month 13", hero_name="Olivia · 13 months old",
     opening="Olivia is 13 months old. The first birthday is behind you, and the toddler years are beginning. Walking is happening or on the way. Words are starting to land. And the bottle is ready to go. Here's what to focus on.",
     context="Thirteen months: a walker, a talker, and an opinion-holder — all at once.",
     theme="👣 This month: first steps, first words, and leaving the bottle behind.",
@@ -1223,7 +1230,7 @@ html = page(
     nav_label="Month 14", title_label="Month 14",
     subject="She's pointing at things. That's language — even without words.",
     preheader="Olivia is 14 months old. Joint attention, walking, and body parts — here's what they mean.",
-    hero_age="Month 14", hero_name="Olivia · 61 weeks old",
+    hero_age="Month 14", hero_name="Olivia · 14 months old",
     opening="Olivia is 14 months old. She's pointing. She's looking back at you after she points, checking to see if you saw what she saw. That's joint attention — and it's one of the most important communication milestones of the whole first two years.",
     context="Fourteen months: a walker who points. That's a communicator in the making.",
     theme="👉 This month: pointing and shared attention, walking as a full mode of travel, and body part identification.",
@@ -1282,7 +1289,7 @@ html = page(
     nav_label="Month 15", title_label="Month 15",
     subject="The 15-month visit checks 10 things. Here's how to come prepared.",
     preheader="Olivia is 15 months old. Walking, 10 words, and pretend play — all on the list.",
-    hero_age="Month 15", hero_name="Olivia · 65 weeks old",
+    hero_age="Month 15", hero_name="Olivia · 15 months old",
     opening="Olivia is 15 months old. The 15-month well child visit is one of the more important developmental checkpoints of the second year — it's the first visit that specifically checks word count, walking quality, and the beginnings of social play. Here's how to come prepared.",
     context="Fifteen months: the first real language checkpoint. Start counting words.",
     theme="🩺 This month: the 15-month checkup, the 10-word milestone, and pretend play beginning.",
@@ -1342,7 +1349,7 @@ html = page(
     nav_label="Month 16", title_label="Month 16",
     subject="The meltdown is not the problem. Your response is the lesson.",
     preheader="Olivia is 16 months old. Big feelings, first instructions, and stairs.",
-    hero_age="Month 16", hero_name="Olivia · 69 weeks old",
+    hero_age="Month 16", hero_name="Olivia · 16 months old",
     opening="Olivia is 16 months old. The big feelings are arriving. Frustration, excitement, fury, joy — she has all of them and very few tools to manage any of them. That's completely normal. Here's how to respond in a way that helps.",
     context="Sixteen months: enormous emotions, a tiny prefrontal cortex. That mismatch is the whole toddler experience.",
     theme="😤 This month: naming big feelings, following simple instructions, and navigating stairs.",
@@ -1404,7 +1411,7 @@ html = page(
     nav_label="Month 17", title_label="Month 17",
     subject="She cries when you leave. That means something good.",
     preheader="Olivia is 17 months old. Separation anxiety, spoons, and playing next to other kids.",
-    hero_age="Month 17", hero_name="Olivia · 74 weeks old",
+    hero_age="Month 17", hero_name="Olivia · 17 months old",
     opening="Olivia is 17 months old. Separation anxiety may be peaking — the crying at daycare drop-off, the reaching for you when you try to leave the room. It's hard to watch. It's also a healthy sign. Here's what's actually happening.",
     context="Seventeen months: she wants you near. That's not clingy — that's securely attached.",
     theme="🧸 This month: parallel play, the spoon, and why goodbye has to be out loud.",
@@ -1467,7 +1474,7 @@ html = page(
     nav_label="Month 18", title_label="Month 18",
     subject="The 18-month visit includes the first autism screen. Here's how to prepare.",
     preheader="Olivia is 18 months old. M-CHAT, two-word combinations, and the tantrums.",
-    hero_age="Month 18", hero_name="Olivia · 78 weeks old",
+    hero_age="Month 18", hero_name="Olivia · 18 months old",
     opening="Olivia is 18 months old. A year and a half. The 18-month well child visit is the most important developmental checkpoint of the toddler years — it includes the first formal autism screening. Here's how to come prepared.",
     context="Eighteen months: the first autism screen, the first two-word combinations, and probably the first spectacular tantrum.",
     theme="🩺 This month: the M-CHAT screen, two-word language, and tantrums at their peak.",
@@ -1529,7 +1536,7 @@ html = page(
     nav_label="Month 19", title_label="Month 19",
     subject="'Me do it.' The two most important words of the toddler years.",
     preheader="Olivia is 19 months old. Independence, 50 words, and emotional self-regulation.",
-    hero_age="Month 19", hero_name="Olivia · 82 weeks old",
+    hero_age="Month 19", hero_name="Olivia · 19 months old",
     opening="Olivia is 19 months old. The fierce independence has arrived — 'me do it' is a phrase you'll be hearing a lot. This is not defiance. This is the emergence of autonomy, and it's one of the most important developmental forces of the second year.",
     context="Nineteen months: the will to do it herself is the whole point. Support it.",
     theme="🙌 This month: the independence phase, the 50-word gate, and building the self-regulation foundation.",
@@ -1590,7 +1597,7 @@ html = page(
     nav_label="Month 20", title_label="Month 20",
     subject="'Why?' is the best question she'll ever ask. Answer it every time.",
     preheader="Olivia is 20 months old. The question explosion, matching skills, and body parts.",
-    hero_age="Month 20", hero_name="Olivia · 87 weeks old",
+    hero_age="Month 20", hero_name="Olivia · 20 months old",
     opening="Olivia is 20 months old. The questions are starting — 'What's that?' over and over, about everything. This is not noise. This is one of the most productive cognitive strategies a toddler has for building vocabulary. Answer every single one.",
     context="Twenty months: questions are the learning mechanism. The repetition is the point.",
     theme="❓ This month: the question explosion, sorting by shape and color, and naming the body.",
@@ -1650,7 +1657,7 @@ html = page(
     nav_label="Month 21", title_label="Month 21",
     subject="If you can understand 75% of what she says, the speech is on track.",
     preheader="Olivia is 21 months old. Speech clarity, empathy, and understanding how things work.",
-    hero_age="Month 21", hero_name="Olivia · 91 weeks old",
+    hero_age="Month 21", hero_name="Olivia · 21 months old",
     opening="Olivia is 21 months old. Her speech is getting clearer — most of what she says should be understandable to the people who know her best. And something new is happening too: she's starting to notice when other people feel something.",
     context="Twenty-one months: words getting clearer, and a little person who notices when you're sad.",
     theme="🗣️ This month: speech clarity milestone, empathy beginning, and knowing what things are for.",
@@ -1710,7 +1717,7 @@ html = page(
     nav_label="Month 22", title_label="Month 22",
     subject="200 words by 24 months. Here's where you are — and what to do.",
     preheader="Olivia is 22 months old. The 200-word target, 2-step commands, and pronouns.",
-    hero_age="Month 22", hero_name="Olivia · 95 weeks old",
+    hero_age="Month 22", hero_name="Olivia · 22 months old",
     opening="Olivia is 22 months old. Two months from the second birthday — and the 24-month language targets are in sight. Here's where things should be, and what to watch for.",
     context="Twenty-two months: two months to the 24-month checkup. Language is the main event.",
     theme="📚 This month: the 200-word target, 2-step commands, and the pronoun shift.",
@@ -1770,7 +1777,7 @@ html = page(
     nav_label="Month 23", title_label="Month 23",
     subject="She's jumping. Both feet. That's a bigger deal than it looks.",
     preheader="Olivia is 23 months old. Jumping, complex pretend play, and big vs. little.",
-    hero_age="Month 23", hero_name="Olivia · 100 weeks old",
+    hero_age="Month 23", hero_name="Olivia · 23 months old",
     opening="Olivia is 23 months old. One month from the second birthday. The motor, language, and cognitive development happening this month is accelerating fast. Here's what's worth watching.",
     context="Twenty-three months: the last month before the second birthday checkup.",
     theme="🦘 This month: jumping with both feet, pretend play getting complex, and first size concepts.",
@@ -1830,7 +1837,7 @@ html = page(
     nav_label="Month 24", title_label="Month 24",
     subject="Two years. The second autism screen is at this visit — here's how to prepare.",
     preheader="Olivia is 24 months old. M-CHAT-R/F, 2% milk, same and different.",
-    hero_age="Month 24", hero_name="Olivia · 104 weeks old",
+    hero_age="Month 24", hero_name="Olivia · 24 months old",
     opening="Olivia is 24 months old. Two years old. The 24-month checkup includes the second formal autism screening — two years after you started. Here's how to come prepared and what to expect.",
     context="Two years. The second birthday. One of the most important developmental checkpoints of the whole first two years.",
     theme="🩺 This month: the 24-month checkup + second autism screen, the milk switch, and same vs. different.",
@@ -2603,11 +2610,7 @@ html = page(
         ("Counting with meaning — gives you exactly 3", "Dad"),
         ("Turn-taking — sharing is starting to click", "Both"),
     ]),
-    next_month_html=next_month_section([
-        "Annual well child visits from now on — next at 4 years",
-        "Language continues to accelerate — stories, questions, explanations",
-        "Social confidence — preschool friendships deepening",
-    ]),
+    next_month_html=farewell_block(),
     closing_text="Happy third birthday to Olivia — and to you. Three years of showing up. Three years of learning on the job. The work you've done in these first three years is the most important work of her life. From here, the visits go annual. Scout will keep sending these monthly — because development doesn't stop at 3. We'll see you next month. — Jack",
 )
 with open(f"{OUT}/month36-redesign.html", "w") as f: f.write(html)

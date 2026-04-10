@@ -155,6 +155,76 @@ def dyk_card(fact):
     </td>
   </tr>"""
 
+FAREWELL_HTML = f"""
+  <tr>
+    <td style="padding-bottom:24px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:{C['indigoDeep']};border-radius:16px;overflow:hidden">
+        <tr><td style="padding:32px 28px;text-align:center">
+          <p style="font-family:Arial,sans-serif;font-size:36px;margin:0 0 14px">🎓</p>
+          <p style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;color:#fff;margin:0 0 16px;line-height:1.3">Three years done.</p>
+          <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 14px;line-height:1.75">
+            Scout is built for the first three years — the most intensive developmental period of any human life. You've been through all of it: every checkup, every window, every month.
+          </p>
+          <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0;line-height:1.75">
+            From here, well child visits go annual — ages 4, 5, 6, 7, and 8. Keep reading every day. Keep talking. Keep being curious about who {CHILD_NAME} is becoming. The habits you've built in these three years are the foundation for everything that comes next.
+          </p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>"""
+
+PREBIRTH_ON_THE_DAY = f"""
+  <tr>
+    <td style="padding-bottom:32px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px">
+        <tr><td style="padding:20px 22px">
+          <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#16A34A;margin:0 0 4px">On the day</p>
+          <p style="font-family:Arial,sans-serif;font-size:13px;color:#374151;margin:0 0 16px;line-height:1.6">Four things worth deciding before you go in. You won't want to Google them in the delivery room.</p>
+          <p style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#111827;margin:0 0 2px">Skin-to-skin — ask for it immediately</p>
+          <p style="font-family:Arial,sans-serif;font-size:13px;color:#4B5563;margin:0 0 12px;line-height:1.6">Even for C-sections. Regulates temperature, heart rate, and blood sugar. Promotes breastfeeding and bonding. Tell your OB before you go in so it's already the plan.</p>
+          <p style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#111827;margin:0 0 2px">Delayed cord clamping</p>
+          <p style="font-family:Arial,sans-serif;font-size:13px;color:#4B5563;margin:0 0 12px;line-height:1.6">Wait at least 60 seconds before clamping. Transfers roughly 80ml of extra blood and iron. Ask explicitly even if it's standard practice at your hospital.</p>
+          <p style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#111827;margin:0 0 2px">The golden hour</p>
+          <p style="font-family:Arial,sans-serif;font-size:13px;color:#4B5563;margin:0 0 12px;line-height:1.6">The first hour uninterrupted with your baby. Weighing, measuring, and vitamin K can usually wait. Ask the room to hold non-urgent procedures until after you've had that first hour together.</p>
+          <p style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#111827;margin:0 0 2px">Rooming-in</p>
+          <p style="font-family:Arial,sans-serif;font-size:13px;color:#4B5563;margin:0;line-height:1.6">Keep {CHILD_NAME} in the room with you rather than the nursery. Better for feeding cues, bonding, and breastfeeding. Hospitals often default to the nursery — you have to ask to keep her close.</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td style="padding-bottom:32px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:{C['indigoDeep']};border-radius:12px;overflow:hidden">
+        <tr><td style="padding:24px 28px">
+          <p style="font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:400;color:#fff;margin:0 0 10px;line-height:1.3">When {CHILD_NAME} is born, Scout tracks 200+ developmental windows through the first three years. Get ready.</p>
+          <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 20px;line-height:1.7">Confirm the birth in Scout and your first full digest fires straight away.</p>
+          <table cellpadding="0" cellspacing="0">
+            <tr><td style="background:#fff;border-radius:8px">
+              <a href="{DASHBOARD_URL}" style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:{C['indigoDeep']};text-decoration:none;display:block;padding:12px 24px">Confirm birth in Scout →</a>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+    </td>
+  </tr>"""
+
+DEMO_COMPLETED = f"""
+  <tr>
+    <td style="padding-bottom:24px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#F0FDF4;border:1px solid #BBF7D0;border-radius:12px">
+        <tr><td style="padding:18px 20px">
+          <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#16A34A;margin:0 0 10px">What you did this month</p>
+          <p style="font-family:Arial,sans-serif;font-size:14px;color:#1D1D1F;margin:0 0 6px;padding-left:18px;position:relative">
+            <span style="position:absolute;left:0;color:#16A34A">✓</span>Example window — marked done
+          </p>
+          <p style="font-family:Arial,sans-serif;font-size:14px;color:#1D1D1F;margin:0;padding-left:18px;position:relative">
+            <span style="position:absolute;left:0;color:#16A34A">✓</span>Another window — completed this month
+          </p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>"""
+
 def coming_next_section(windows):
     if not windows: return ""
     items = "".join(
@@ -186,7 +256,7 @@ MONTH_CONTENT = {
          "context":"A few things that take an hour now and save a lot of stress later.",
          "closing":"You're close now. Everything you do in the next few weeks makes the first days easier. — Jack"},
     1:  {"theme":"👶 This month: the 1-month checkup, tummy time, and something worth screening for.",
-         "dyk":"Babies who have tummy time **every day from the first week of life** build neck and shoulder strength 40% faster than those who start later. Gravity is the trainer — and the earlier you start, the easier it gets.",
+         "dyk":"In the first month of life, a baby's brain creates more than **1 million new neural connections per second** — a rate that will never be matched again. Every time you talk to her, hold her, and respond to her cries, you're building the architecture of her brain.",
          "opening":f"{CHILD_NAME} is 1 month old. The first month is the steepest learning curve of any parent's life. Here's what actually matters right now.",
          "context":"Survival mode is real. These three things are worth doing anyway.",
          "closing":"Month 1 is hard. You're doing it. Month 2 gets better. — Jack"},
@@ -408,7 +478,20 @@ def render_email(age_months, above_fold, get_ready, total_count, is_prebirth=Fal
       </td></tr>
       {"".join(window_card(w, age_weeks) for w in open_wins)}""" if open_wins else ""
 
-    coming_next = coming_next_section(get_ready)
+    # Coming next / farewell / pre-birth confirm
+    if is_prebirth:
+        coming_next = PREBIRTH_ON_THE_DAY
+    elif age_months >= 36 and not get_ready:
+        coming_next = FAREWELL_HTML
+    else:
+        coming_next = coming_next_section(get_ready)
+
+    # Demo completions (months 2+ — first month has nothing to complete yet)
+    completed_demo = DEMO_COMPLETED if (not is_prebirth and age_months >= 2) else ""
+
+    # Remaining count (subtract 2 demo completions for months 2+)
+    remaining = total_count - len(above_fold) - (2 if age_months >= 2 else 0)
+    remaining = max(0, remaining)
 
     # Header label
     if is_prebirth:
@@ -425,7 +508,7 @@ def render_email(age_months, above_fold, get_ready, total_count, is_prebirth=Fal
         hero_title = f"{CHILD_NAME} at {mo} old"
         window_badge = f"{len(above_fold)} of {total_count} active windows · See all"
 
-    remaining = total_count - len(above_fold)
+    # remaining already computed above; remaining_html:
     remaining_html = (
         f"<p style='font-family:Arial,sans-serif;font-size:14px;color:{C['textMid']};"
         f"margin:0 0 16px;line-height:1.65'>There are "
@@ -470,7 +553,10 @@ def render_email(age_months, above_fold, get_ready, total_count, is_prebirth=Fal
       {dyk_html}
       {open_label}
 
-      <!-- Coming next month -->
+      <!-- Completed this month (demo) -->
+      {completed_demo}
+
+      <!-- Coming next month / farewell / prebirth confirm -->
       {coming_next}
 
       <!-- Dashboard CTA -->
@@ -481,18 +567,6 @@ def render_email(age_months, above_fold, get_ready, total_count, is_prebirth=Fal
             <a href="{DASHBOARD_URL}" style="display:inline-block;background:{C['terra']};color:#fff;
               font-family:Arial,sans-serif;font-size:14px;font-weight:700;
               padding:13px 30px;border-radius:100px;text-decoration:none">Open {CHILD_NAME}'s dashboard →</a>
-          </td></tr>
-        </table>
-      </td></tr>
-
-      <!-- Co-parent forward -->
-      <tr><td style="padding-bottom:28px">
-        <table width="100%" cellpadding="0" cellspacing="0" style="border-left:3px solid {C['border']};background:{C['terraTint']};border-radius:0 10px 10px 0">
-          <tr><td style="padding:14px 18px">
-            <p style="font-family:Arial,sans-serif;font-size:13px;color:{C['textMid']};margin:0;line-height:1.7">
-              📨 <strong style="color:{C['text']}">Forward to your co-parent.</strong>
-              These windows are easier to hit when both parents know about them.
-            </p>
           </td></tr>
         </table>
       </td></tr>
