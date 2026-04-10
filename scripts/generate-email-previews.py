@@ -346,21 +346,58 @@ FALLBACK_PREBIRTH = [
      "urgency": "advisory"},
 ]
 
+def format_what_to_do(text):
+    """Convert markdown-ish what_to_do text to inline-style HTML for email."""
+    if not text:
+        return ""
+    lines = text.strip().split("\n")
+    html_lines = []
+    for line in lines:
+        line = line.strip()
+        if not line:
+            html_lines.append('<tr><td style="height:8px"></td></tr>')
+            continue
+        # Bold: **text** → <strong>
+        line = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', line)
+        # Section header (no leading bullet, ends with :)
+        if not line.startswith(("*", "-", "•", "1.", "2.", "3.", "4.", "5.")):
+            html_lines.append(
+                f'<tr><td style="padding:6px 0 2px">'
+                f'<p style="font-family:Arial,sans-serif;font-size:13px;font-weight:700;color:{C["text"]};margin:0;line-height:1.5">{line}</p>'
+                f'</td></tr>'
+            )
+        else:
+            # Bullet or numbered item
+            clean = re.sub(r'^[\*\-•]\s*', '', line)
+            clean = re.sub(r'^\d+\.\s*', '', clean)
+            terra = C["terra"]
+            textMid = C["textMid"]
+            html_lines.append(
+                f'<tr><td style="padding:3px 0 3px 12px">'
+                f'<p style="font-family:Arial,sans-serif;font-size:13px;color:{textMid};margin:0;line-height:1.6">'
+                f'<span style="color:{terra};font-weight:700;margin-right:6px">›</span>{clean}'
+                f'</p></td></tr>'
+            )
+    return "\n".join(html_lines)
+
+
 def render_prebirth_email(windows):
     cards_src  = windows if windows else FALLBACK_PREBIRTH
     cards_html = ""
     for w in cards_src[:5]:
-        exc = excerpt(w.get("why_it_matters",""))
-        act = action_line(w.get("what_to_do",""))
-        act_html = f"""
-              <tr><td>
+        exc      = excerpt(w.get("why_it_matters",""))
+        what_html = format_what_to_do(w.get("what_to_do",""))
+        act_section = f"""
+              <tr><td style="padding-top:4px">
                 <table width="100%" cellpadding="0" cellspacing="0" style="background:{C['terraTint']};border-radius:10px">
-                  <tr><td style="padding:12px 16px">
-                    <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:{C['terra']};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p>
-                    <p style="font-family:Arial,sans-serif;font-size:14px;color:{C['text']};margin:0;line-height:1.6">{act}</p>
+                  <tr><td style="padding:14px 18px">
+                    <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:{C['terra']};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">The move</p>
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      {what_html}
+                    </table>
                   </td></tr>
                 </table>
-              </td></tr>""" if act else ""
+              </td></tr>""" if what_html else ""
         cards_html += f"""
   <tr><td style="padding-bottom:16px">
     <table width="100%" cellpadding="0" cellspacing="0" style="background:{C['surface']};border:1px solid {C['border']};border-radius:14px">
@@ -368,7 +405,7 @@ def render_prebirth_email(windows):
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr><td style="padding-bottom:8px"><p style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:{C['text']};margin:0;line-height:1.3">{w['title']}</p></td></tr>
           <tr><td style="padding-bottom:14px"><p style="font-family:Arial,sans-serif;font-size:14px;color:{C['textMid']};margin:0;line-height:1.7">{exc}</p></td></tr>
-          {act_html}
+          {act_section}
         </table>
       </td></tr>
     </table>
@@ -393,7 +430,7 @@ def render_prebirth_email(windows):
             <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.12em;margin:0 0 10px">Scout · Pre-birth</p>
             <p style="font-family:Georgia,'Times New Roman',serif;font-size:28px;color:#fff;margin:0 0 16px;line-height:1.2;font-style:italic">{CHILD_NAME} arrives in 18 days.</p>
             <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.75);margin:0 0 12px;line-height:1.7">Hi there,</p>
-            <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.65);margin:0 0 12px;line-height:1.7">Scout is designed for when your baby is born — covering every developmental milestone through the first three years. The 200 windows we track all start at birth. But we wanted to be helpful before {CHILD_NAME} arrives too, so below are a few things worth sorting now. It's not an exhaustive list — just the things that are genuinely easier to do before a newborn is in the room.</p>
+            <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.65);margin:0 0 12px;line-height:1.7">Scout is designed for when your baby is born — covering every developmental milestone through the first three years. The 200+ windows we track all start at birth. But we wanted to be helpful before {CHILD_NAME} arrives too, so below are a few things worth sorting now. It's not an exhaustive list — just the things that are genuinely easier to do before a newborn is in the room.</p>
             <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.5);margin:0;line-height:1.7;font-style:italic">The preparation windows below close at birth. Most of them are quick — and much easier to do now than with a newborn in the room.</p>
           </td></tr>
         </table>
@@ -405,7 +442,20 @@ def render_prebirth_email(windows):
 
       {cards_html}
 
-      <tr><td align="center" style="padding:8px 0 32px">
+      <!-- Warm closing -->
+      <tr><td style="padding-bottom:24px">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:{C['indigoDeep']};border-radius:16px">
+          <tr><td style="padding:28px 32px">
+            <p style="font-family:Georgia,'Times New Roman',serif;font-size:20px;color:#fff;margin:0 0 14px;line-height:1.3;font-style:italic">When {CHILD_NAME} arrives, come back and tell us.</p>
+            <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 10px;line-height:1.7">It takes 30 seconds — just confirm the birth date in Scout and we'll immediately start sending you monthly digests timed to exactly where {CHILD_NAME} is developmentally. Everything shifts from prep mode to real-time tracking.</p>
+            <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 16px;line-height:1.7">This is one of the biggest things that will ever happen to you. Lots of ups, some lows, and more excitement than you'll know what to do with. We're in this together — and we'll help you stay on track every step of the way.</p>
+            <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0;line-height:1.7;font-style:italic">— Jack</p>
+          </td></tr>
+        </table>
+      </td></tr>
+
+      <!-- CTA -->
+      <tr><td align="center" style="padding:0 0 32px">
         <table cellpadding="0" cellspacing="0"><tr>
           <td style="background:{C['terra']};border-radius:100px;padding:14px 32px">
             <a href="{DASHBOARD_URL}" style="font-family:Arial,sans-serif;font-size:15px;font-weight:700;color:#fff;text-decoration:none">Open your Scout dashboard →</a>
