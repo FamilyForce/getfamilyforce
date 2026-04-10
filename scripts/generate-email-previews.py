@@ -124,26 +124,63 @@ def select_above_fold(windows, age_weeks, n=ABOVE_FOLD_N):
     open_w.sort(key=lambda w: w["priority"])
     return (closing + open_w)[:n]
 
+# ── Format what_to_do for digest cards (max 4 bullets) ───────────────────────
+def format_what_to_do_digest(text, max_bullets=4):
+    """Render up to max_bullets lines from what_to_do for a monthly window card."""
+    if not text:
+        return ""
+    lines   = text.strip().split("\n")
+    terra   = C["terra"]
+    textMid = C["textMid"]
+    textStr = C["text"]
+    html    = []
+    bullets = 0
+    for line in lines:
+        line = line.strip()
+        if not line:
+            continue
+        line = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', line)
+        if line.startswith(("*", "-", "•")) or re.match(r'^\d+\.', line):
+            if bullets >= max_bullets:
+                continue
+            clean = re.sub(r'^[\*\-•]\s*', '', line)
+            clean = re.sub(r'^\d+\.\s*', '', clean)
+            html.append(
+                f'<tr><td style="padding:3px 0 3px 0">'
+                f'<p style="font-family:Arial,sans-serif;font-size:13px;color:{textMid};margin:0;line-height:1.6">'
+                f'<span style="color:{terra};font-weight:700;margin-right:6px">›</span>{clean}'
+                f'</p></td></tr>'
+            )
+            bullets += 1
+        else:
+            # Section header or plain sentence — show as bold label
+            html.append(
+                f'<tr><td style="padding:6px 0 2px">'
+                f'<p style="font-family:Arial,sans-serif;font-size:12px;font-weight:700;color:{textStr};margin:0">{line}</p>'
+                f'</td></tr>'
+            )
+    return "\n".join(html)
+
+
 # ── Render: single window card ────────────────────────────────────────────────
 def render_window_card(w, age_weeks):
-    cfg       = urgency_cfg(w.get("urgency", "advisory"))
-    exc       = excerpt(w.get("why_it_matters", ""))
-    act       = action_line(w.get("what_to_do", ""))
-    badge     = weeks_left_badge(w, age_weeks)
-    is_closing = w["close_age_weeks"] - age_weeks <= 4
+    cfg        = urgency_cfg(w.get("urgency", "advisory"))
+    exc        = excerpt(w.get("why_it_matters", ""))
+    what_html  = format_what_to_do_digest(w.get("what_to_do", ""), max_bullets=4)
+    badge      = weeks_left_badge(w, age_weeks)
     action_html = f"""
               <tr>
                 <td>
                   <table width="100%" cellpadding="0" cellspacing="0" style="background:{C['terraTint']};border-radius:10px">
                     <tr>
-                      <td style="padding:12px 16px">
-                        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:{C['terra']};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p>
-                        <p style="font-family:Arial,sans-serif;font-size:14px;color:{C['text']};margin:0;line-height:1.6">{act}</p>
+                      <td style="padding:14px 16px">
+                        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:{C['terra']};text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px">The move</p>
+                        <table width="100%" cellpadding="0" cellspacing="0">{what_html}</table>
                       </td>
                     </tr>
                   </table>
                 </td>
-              </tr>""" if act else ""
+              </tr>""" if what_html else ""
     return f"""
   <tr>
     <td style="padding-bottom:16px">
@@ -183,26 +220,199 @@ def render_get_ready(w):
     </td>
   </tr>"""
 
-# ── Intro text (mirrors email-digest.ts logic) ───────────────────────────────
+# ── Per-month unique copy ────────────────────────────────────────────────────
+MONTH_COPY = {
+    1:  {
+        "opening": "{n} is 1 month old. You've kept a human alive for a whole month — and she's growing. This is Scout's first monthly digest: a look at what's worth your attention right now, no more than 5 minutes.",
+        "context": "The first month is survival mode. You're doing it right.",
+        "closing": "You're one month in. The hardest stretch — the absolute chaos of week one through four — is behind you. She's easier to read than she was, and she'll be easier still next month. We'll be back. — Jack",
+    },
+    2:  {
+        "opening": "{n} is 2 months old. The hard edge of the newborn phase is starting to soften. She's more awake, more alert, and more interested in you. Here's what to focus on this month.",
+        "context": "Something shifts around 6–8 weeks. If you haven't seen the first real smile yet — it's close.",
+        "closing": "Two months down. That first real smile — if it's happened, you already know why people do this twice. If it hasn't, watch for it this week. It changes the whole thing. See you next month. — Jack",
+    },
+    3:  {
+        "opening": "{n} is 3 months old. Three months in is often when parents feel like they've finally figured something out. Here's what's worth your attention — she's got a lot going on right now.",
+        "context": "You made it through the fourth trimester. Three months of adjusting, recovering, and learning on the job — that's no small thing.",
+        "closing": "Month 3 is when it starts feeling real. You're not just keeping her alive — you're watching her become someone. Month 4 is full of new things. We'll make sure you're ready. — Jack",
+    },
+    4:  {
+        "opening": "{n} is 4 months old. Month 4 is one of the most developmentally active stretches of the first year — and the one that catches most parents off guard. Here's what to know.",
+        "context": "Four months is when development accelerates. Sleep often gets harder before it gets easier. Both are normal.",
+        "closing": "Month 4 is a lot. If sleep just got worse — that's the 4-month sleep regression and it means her brain is doing exactly what it should. Hang in there. Back next month. — Jack",
+    },
+    5:  {
+        "opening": "{n} is 5 months old. She's not a newborn anymore — she's an active, curious baby who wants to explore everything in reach. Here's what's worth your attention this month.",
+        "context": "Five months is full of firsts. Grabbing, batting, babbling — it's all picking up at once.",
+        "closing": "Five months goes fast. She's a different baby than she was four weeks ago — and she'll be different again in four more. Enjoy this stretch. We'll be back. — Jack",
+    },
+    6:  {
+        "opening": "{n} is 6 months old. Six months is a turning point — solids are starting, she's sitting with support, and she's starting to look less like a baby and more like a little person. Here's what matters this month.",
+        "context": "Six months. Solids, sitting, and a whole new level of curiosity about the world.",
+        "closing": "Halfway through the first year. You've done more right than you know. Month 7 is where it gets mobile — we'll walk you through it. — Jack",
+    },
+    7:  {
+        "opening": "{n} is 7 months old. Mobility is coming — crawling, pulling, rolling — and with it comes a world that suddenly needs a closer look for hazards. Here's what to focus on.",
+        "context": "Seven months: the world is getting much more interesting. And so are the hazards.",
+        "closing": "Seven months is when parents start babyproofing in earnest. If you haven't started, this month is the time. We'll cover it next month too. — Jack",
+    },
+    8:  {
+        "opening": "{n} is 8 months old. Object permanence is kicking in — she now knows things exist even when she can't see them. That's a huge cognitive shift. Here's what it means for this month.",
+        "context": "Eight months: things that disappear are suddenly the end of the world. That's object permanence. It means her brain is working.",
+        "closing": "Eight months is the start of a lot of big things — object permanence, separation anxiety, more deliberate communication. All normal. All good. — Jack",
+    },
+    9:  {
+        "opening": "{n} is 9 months old. This is one of the biggest developmental months of the whole first year — crawling, pulling up, pointing, and early communication are all happening at once. Here's what to watch.",
+        "context": "Nine months is a surge. Gross motor, language, and social development are all firing at the same time.",
+        "closing": "Nine months is one of my favorites. She's communicating more deliberately, moving on her own, and becoming someone with opinions. A lot happens between now and 12 months. — Jack",
+    },
+    10: {
+        "opening": "{n} is 10 months old. She's getting more intentional — pointing, gesturing, looking at you when something interests her. That's joint attention, and it's one of the most important things happening right now.",
+        "context": "Ten months: watch for pointing and shared looks. That's communication, even without words.",
+        "closing": "Two months to the first birthday. She's changing fast. The 12-month well visit is a big one — we'll prep you for it next month. — Jack",
+    },
+    11: {
+        "opening": "{n} is 11 months old. Almost one. Some babies are walking at 11 months. Most aren't. Both are completely fine — the walking window runs through 18 months. Here's what actually matters right now.",
+        "context": "Eleven months: walking isn't required yet. What matters is that she's pulling up, cruising, and curious.",
+        "closing": "One month to the first birthday. It goes fast — and then it really goes fast. The 12-month digest is a big one. — Jack",
+    },
+    12: {
+        "opening": "{n} is 12 months old. One year. You did it. The first year of life is one of the most developmentally dense periods of any human life — and you navigated all of it. Here's what the 12-month well visit covers and what to focus on now.",
+        "context": "The first year is done. One of the most remarkable developmental years of any human life — and you were there for all of it.",
+        "closing": "Happy first birthday to Olivia — and to you. Year two is different. Faster in some ways, slower in others. We'll keep you on track every month. — Jack",
+    },
+    13: {
+        "opening": "{n} is 13 months old. The toddler era has officially started. Language is about to take off, independence is the new theme, and the word 'no' is going to become very familiar. Here's what to focus on.",
+        "context": "Thirteen months: the toddler phase begins. Language is building fast beneath the surface.",
+        "closing": "Welcome to toddlerhood. It's chaotic and wonderful. The language explosion you're about to see over the next few months is one of the most amazing things to watch. — Jack",
+    },
+    14: {
+        "opening": "{n} is 14 months old. Walking is getting more confident, and with mobility comes a new level of curiosity — and risk. Here's what's worth your attention this month.",
+        "context": "Fourteen months: everything is an obstacle course, and she knows it.",
+        "closing": "Fourteen months is busy. Keep talking to her — every word you say is going in, even when it doesn't look like it. — Jack",
+    },
+    15: {
+        "opening": "{n} is 15 months old. This is a big developmental checkpoint — the 15-month well visit includes the M-CHAT autism screen. It's also when language development is most closely watched. Here's what to know going in.",
+        "context": "Fifteen months is a significant milestone check. Don't skip the well visit.",
+        "closing": "The 15-month visit is worth taking seriously. It's one of the most informative checkups of the toddler years. Come back and tell us how it went. — Jack",
+    },
+    16: {
+        "opening": "{n} is 16 months old. Vocabulary is building — some kids have 10 words, some have 50, both are within range at this age. The more you talk to her, the faster it grows. Here's what to focus on.",
+        "context": "Sixteen months: vocabulary is growing. Narrate your day. It works.",
+        "closing": "Sixteen months is a great time to just talk. Constantly. About everything. It sounds simple because it is — and it's one of the most powerful things you can do. — Jack",
+    },
+    17: {
+        "opening": "{n} is 17 months old. Tantrums may be arriving — if they haven't already. This isn't bad behavior. It's a sign that she understands more than she can express, and the frustration is real. Here's how to handle it.",
+        "context": "Seventeen months: big feelings, limited words. That gap is what tantrums are.",
+        "closing": "Tantrums are exhausting. They're also completely normal and actually a sign of good cognitive development. Naming her feelings out loud helps more than you'd think. — Jack",
+    },
+    18: {
+        "opening": "{n} is 18 months old. Another major milestone check — the 18-month well visit covers language, walking, and social development in detail. It's also when the second M-CHAT screen happens. Here's what to know.",
+        "context": "Eighteen months: language, walking, and social development are all under the spotlight this month.",
+        "closing": "Eighteen months is one of the most important checkups of the toddler years. If anything at the visit raised a flag, follow up quickly — early intervention makes a significant difference. — Jack",
+    },
+    19: {
+        "opening": "{n} is 19 months old. Pretend play is starting — feeding a doll, talking into a toy phone, pretending a block is a car. It's not just cute. It's cognition, language, and social development happening in real time.",
+        "context": "Nineteen months: pretend play begins. It's cognitive development in action.",
+        "closing": "Get down on the floor and play pretend with her. It's one of the best investments you can make at this age — and it's fun. — Jack",
+    },
+    20: {
+        "opening": "{n} is 20 months old. Two-word combinations are starting to emerge — 'more juice,' 'big dog,' 'daddy go.' Simple, but they mean something important is clicking in her language development.",
+        "context": "Twenty months: two-word combinations. Simple phrases that signal a big shift.",
+        "closing": "Two-word phrases are a sign that language is taking off. By 24 months, most kids have sentences. You're almost there. — Jack",
+    },
+    21: {
+        "opening": "{n} is 21 months old. Defiance is real at this age, and it's actually healthy — she's learning what she can and can't control. Here's how to work with it rather than against it.",
+        "context": "Twenty-one months: the will is strong. That's a feature, not a bug.",
+        "closing": "The defiance of a 21-month-old is one of the more exhausting things in parenting. It also means she's developing exactly as she should. Pick your battles. — Jack",
+    },
+    22: {
+        "opening": "{n} is 22 months old. The vocabulary explosion is in full force — words are coming in fast now. The gap between what she understands and what she can say is finally starting to close.",
+        "context": "Twenty-two months: the words are coming. The vocabulary explosion is real.",
+        "closing": "The difference between 22 months and 24 months in terms of language is striking. Enjoy watching this unfold. — Jack",
+    },
+    23: {
+        "opening": "{n} is 23 months old. One month to the second birthday — and the 24-month well visit, which is one of the most comprehensive developmental checkups of the first two years. Here's how to prepare.",
+        "context": "Twenty-three months: almost two. The 24-month well visit is one of the most important of the early years.",
+        "closing": "The second birthday is a milestone worth celebrating — for her and for you. Two years of showing up, every single day. — Jack",
+    },
+    24: {
+        "opening": "{n} is 24 months old. Two years. The second year transforms a baby into a kid — walking, talking, and a personality that's fully formed. Here's what the 24-month visit covers and what to focus on going into year three.",
+        "context": "Two years. The second year is wild. You made it.",
+        "closing": "Happy second birthday to Olivia. Year three is where the conversations start. She'll surprise you. — Jack",
+    },
+    25: {
+        "opening": "{n} is 25 months old. Sentences are getting longer and questions are starting. 'Why' is coming — possibly a lot of it. Here's what's worth your attention this month.",
+        "context": "Twenty-five months: sentences are forming. 'Why' is coming. Brace yourself.",
+        "closing": "Answer the 'why' questions. Even the relentless ones. It builds exactly the kind of thinking you want her to have. — Jack",
+    },
+    26: {
+        "opening": "{n} is 26 months old. Social play is evolving — she's shifting from playing beside other kids to playing with them. That's a meaningful developmental step. Here's what it looks like.",
+        "context": "Twenty-six months: other kids are interesting now, not just present.",
+        "closing": "Playdates matter more now than they did six months ago. The social practice is real. — Jack",
+    },
+    27: {
+        "opening": "{n} is 27 months old. Fine motor skills are getting precise — crayons, puzzles, turning pages, opening containers. She wants to do things herself. Here's how to support that.",
+        "context": "Twenty-seven months: the hands are getting precise. Let her try things, even the slow way.",
+        "closing": "Resist the urge to do it for her. The struggle with the puzzle piece or the jacket zipper is the whole point. — Jack",
+    },
+    28: {
+        "opening": "{n} is 28 months old. Memory is consolidating in a meaningful way — she remembers things you've said, places you've been, people she likes. Here's what that means for this stage.",
+        "context": "Twenty-eight months: she remembers things now. Act accordingly.",
+        "closing": "The things you do consistently now are being stored. Routines, rituals, the way you say goodnight — it all goes in. — Jack",
+    },
+    29: {
+        "opening": "{n} is 29 months old. Narrative play is in full swing — she's creating stories, assigning roles, making rules for games she invented. Imagination is running and it's worth nurturing.",
+        "context": "Twenty-nine months: the stories she tells are more complex than they look.",
+        "closing": "Follow her lead in pretend play. She's the director — your job is to be a good supporting character. — Jack",
+    },
+    30: {
+        "opening": "{n} is 30 months old. The 30-month well visit is coming — it's a key checkpoint for speech clarity and social development. Here's what typically gets evaluated and what to watch for.",
+        "context": "Thirty months: speech and social development are closely evaluated at the well visit.",
+        "closing": "The 30-month visit is a good one to prepare for. If speech has been a question mark, now is the time to bring it up directly. — Jack",
+    },
+    31: {
+        "opening": "{n} is 31 months old. Emotional regulation is a work in progress — she's learning to manage big feelings with tools that are still developing. Here's what helps and what doesn't.",
+        "context": "Thirty-one months: emotional regulation is a skill that takes years. You're in the thick of teaching it.",
+        "closing": "Stay calm when she can't. Your regulation is the model for hers. It's a long game. — Jack",
+    },
+    32: {
+        "opening": "{n} is 32 months old. Literacy foundations are being built right now — not through drills, but through stories, conversations, and books read together every day. Here's what the research actually says.",
+        "context": "Thirty-two months: every book you read together is building neural pathways for reading.",
+        "closing": "If you only do one thing consistently at this age, make it reading together at bedtime. The payoff runs for years. — Jack",
+    },
+    33: {
+        "opening": "{n} is 33 months old. Friendships are forming in a real way — she's noticing who she likes to be around, and those preferences matter. Here's what social development looks like at this stage.",
+        "context": "Thirty-three months: friendships are becoming real. She knows who she likes.",
+        "closing": "The social world matters more every month now. Make space for it. — Jack",
+    },
+    34: {
+        "opening": "{n} is 34 months old. Independence is the theme of this stretch — she wants to do things herself, make her own choices, and push back on yours. Here's how to channel that productively.",
+        "context": "Thirty-four months: independence is the mission. Work with it, not against it.",
+        "closing": "Give her real choices. Not unlimited ones — two or three. It's a small thing that makes a big difference in cooperation. — Jack",
+    },
+    35: {
+        "opening": "{n} is 35 months old. The 36-month well visit is one month away — it covers speech, cognition, and social development in depth. Here's how to prepare and what questions to bring.",
+        "context": "Thirty-five months: the 3-year well visit is coming. It's one of the most thorough checkups of the toddler years.",
+        "closing": "Write down your questions before the 36-month visit. The things you've been wondering about for six months are worth asking directly. — Jack",
+    },
+    36: {
+        "opening": "{n} is 36 months old. Three years. The third year of life transforms a baby into a kid — a person with opinions, stories, fears, jokes, and a clear sense of self. Here's what the 3-year checkup covers and where to focus now.",
+        "context": "Three years. You made it through the most intense developmental stretch of a human life. She's a kid now.",
+        "closing": "Three years of monthly digests. You showed up for every one of them. That consistency is part of why she's doing as well as she is. Onwards. — Jack",
+    },
+}
+
 def get_intro(age_months, child_name, above_fold, total_count):
-    his = "her"   # using female pronouns for Olivia in mockup
-    mo  = f"{age_months} month{'s' if age_months != 1 else ''}"
-
-    opening = (
-        f"{child_name} is {mo} old. This is her Scout digest for the month — "
-        f"a quick look at what's worth your attention right now, written to take about 5 minutes to read."
-    )
-
-    if age_months <= 2:
-        context = "The first few months are a blur. You're doing better than you think."
-    elif age_months <= 6:
-        context = f"{age_months} months in. The fog is starting to lift — and her development is picking up fast."
-    elif age_months <= 12:
-        context = f"{child_name} is in one of the most active developmental stretches of the whole first year."
-    else:
-        context = f"Month {age_months}. Every month has something new — here's what to know this one."
-
+    copy = MONTH_COPY.get(age_months, {})
+    opening = copy.get("opening", f"{child_name} is {age_months} months old. Here's what's worth your attention this month.").replace("{n}", child_name)
+    context = copy.get("context", f"Month {age_months}. Every month has something new.")
     return opening, context
+
+def get_closing(age_months, child_name):
+    copy = MONTH_COPY.get(age_months, {})
+    return copy.get("closing", f"See you next month. — Jack").replace("{n}", child_name)
 
 
 # ── Render: full digest email ─────────────────────────────────────────────────
@@ -212,6 +422,7 @@ def render_digest_email(age_months, above_fold, get_ready, total_count):
     open_wins  = [w for w in above_fold if w["close_age_weeks"] - age_weeks > 4]
 
     opening_para, context_line = get_intro(age_months, CHILD_NAME, above_fold, total_count)
+    closing_text = get_closing(age_months, CHILD_NAME)
 
     # Subject line
     if closing:
@@ -308,8 +519,17 @@ def render_digest_email(age_months, above_fold, get_ready, total_count):
       <!-- Get ready -->
       {get_ready_section}
 
+      <!-- Warm closing -->
+      <tr><td style="padding-top:8px;padding-bottom:24px">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:{C['indigoDeep']};border-radius:16px">
+          <tr><td style="padding:24px 28px">
+            <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0;line-height:1.8;font-style:italic">{closing_text}</p>
+          </td></tr>
+        </table>
+      </td></tr>
+
       <!-- CTA -->
-      <tr><td align="center" style="padding:8px 0 32px">
+      <tr><td align="center" style="padding:0 0 32px">
         <table cellpadding="0" cellspacing="0"><tr>
           <td style="background:{C['terra']};border-radius:100px;padding:14px 32px">
             <a href="{DASHBOARD_URL}" style="font-family:Arial,sans-serif;font-size:15px;font-weight:700;color:#fff;text-decoration:none">Open Scout dashboard →</a>
