@@ -243,6 +243,18 @@ NAV = [
     ("Month 22",  "month22-redesign.html"),
     ("Month 23",  "month23-redesign.html"),
     ("Month 24",  "month24-redesign.html"),
+    ("Month 25",  "month25-redesign.html"),
+    ("Month 26",  "month26-redesign.html"),
+    ("Month 27",  "month27-redesign.html"),
+    ("Month 28",  "month28-redesign.html"),
+    ("Month 29",  "month29-redesign.html"),
+    ("Month 30",  "month30-redesign.html"),
+    ("Month 31",  "month31-redesign.html"),
+    ("Month 32",  "month32-redesign.html"),
+    ("Month 33",  "month33-redesign.html"),
+    ("Month 34",  "month34-redesign.html"),
+    ("Month 35",  "month35-redesign.html"),
+    ("Month 36",  "month36-redesign.html"),
 ]
 
 def nav_bar(active_label):
@@ -1871,3 +1883,734 @@ with open(f"{OUT}/month24-redesign.html", "w") as f: f.write(html)
 print("Written: month24-redesign.html")
 
 print("\nMonths 13-24 done.")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 25
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 25", title_label="Month 25",
+    subject="Three words together. That's a sentence. That's everything.",
+    preheader="Olivia is 25 months old. 3-word sentences, memory, and playing with other kids.",
+    hero_age="Month 25", hero_name="Olivia · 25 months old",
+    opening="Olivia is 25 months old. The language is accelerating. Three-word sentences are arriving — 'I want milk,' 'daddy come here,' 'no more nap' — and with them, the beginning of real communication. Here's what to watch for.",
+    context="Twenty-five months: telegraphic speech is giving way to early grammar. Each sentence is a step forward.",
+    theme="🗣️ This month: 3-word sentences, memory taking shape, and true cooperative play beginning.",
+    total_windows=30,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "3-word sentences — 'I want milk,' 'daddy come here'",
+        "Three words strung together is when language stops being labels and starts being grammar.",
+        "Three-word sentences — 'I want milk,' 'daddy come here,' 'no more nap' — mark the transition from telegraphic speech to early grammar. They typically appear between 24 and 30 months. By 30 months, most children are using 3-word sentences regularly — and the 30-month visit checks for them specifically.",
+        """* Model slightly longer speech than what she produces: if she uses 2-word combos, you use 3-word sentences in response
+* Ask open-ended questions: "What happened?" rather than "Did you like it?" — open questions demand more language
+* Avoid finishing her sentences — give her time to complete the thought. The pause is part of the learning.
+* Read books with simple storylines — narrative structure builds sentence structure
+* Target: 3-word sentences consistently by 30 months. If absent at 30 months, flag it at the visit.""",
+    ),
+    dyk_html=dyk_card("Asking **'what happened?'** after an outing does more for language development than almost any other single prompt. It exercises memory, narrative structure, vocabulary, and sentence construction simultaneously — and the answer tells you a lot about where her language is."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Memory — recalls recent events",
+        "When she tells you what happened at the park, she's doing something cognitively remarkable.",
+        "The ability to recall and describe a past event — not just respond to immediate stimuli — reflects the development of episodic memory and narrative thought. It is also one of the most powerful language development prompts available: 'what did we do today?' is a full workout for vocabulary, grammar, and memory all at once.",
+        """* Ask open-ended recall questions: "What did we have for lunch?" "Who did you see at the park?"
+* Use photos as memory prompts — scrolling through recent photos and narrating them together is excellent language practice
+* Model recall yourself: "Today we went to the shop. We bought apples. I remember you picked the green ones."
+* Bedtime is a natural recall moment: "Tell me one thing that happened today." Make it a ritual.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Cooperative play — playing with other children",
+        "From playing next to kids to playing with them: a major social leap.",
+        "Cooperative play — taking turns, following shared rules, working toward a common goal — emerges around 2.5 to 3 years. It requires theory of mind (understanding that others have their own thoughts and intentions) and enough self-regulation to take turns. It's a significant predictor of school readiness.",
+        """* Arrange regular play with the same children — familiarity accelerates cooperative play
+* Simple structured games scaffold the turn-taking concept: rolling a ball back and forth, simple board games with clear rules
+* Narrate turns: "Now it's Ella's turn. Now it's your turn."
+* When conflict happens, coach rather than referee: "How could you both play with it?" Then step back.
+* Don't expect consistent cooperative play before 3 — parallel play is still normal and healthy alongside it""",
+    ),
+    tackled_html=tackled_section([
+        ("24-month checkup + M-CHAT — done, all clear", "Both"),
+        ("Switched to 2% milk", "Both"),
+        ("Same and different — sorting games at home", "Dad"),
+    ]),
+    next_month_html=next_month_section([
+        "Names 2+ colors — red, blue, yellow, green",
+        "Asks 'why' — the question explosion is coming",
+        "Counts to 10 — rote sequence, building toward meaning",
+    ]),
+    closing_text="Three-word sentences are the beginning of the language explosion. The more you respond, the faster it comes. — Jack",
+)
+with open(f"{OUT}/month25-redesign.html", "w") as f: f.write(html)
+print("Written: month25-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 26
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 26", title_label="Month 26",
+    subject="'Why?' The question that means her brain is working perfectly.",
+    preheader="Olivia is 26 months old. Colors, counting, and the why-question explosion.",
+    hero_age="Month 26", hero_name="Olivia · 26 months old",
+    opening="Olivia is 26 months old. The 'why' questions are arriving — or they're coming. Research found that children in this phase ask up to 100 questions per hour. That's not an exaggeration. Here's why it matters and how to handle it.",
+    context="Twenty-six months: the world is suddenly explicable. She wants to know everything about why.",
+    theme="❓ This month: the why-question phase, colors she can name, and counting in sequence.",
+    total_windows=29,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Asks 'why' — engage it fully",
+        "Up to 100 questions per hour. The quality of your answers predicts her scientific reasoning at age 10.",
+        "The 'why' question phase — typically beginning around 27 to 30 months and peaking between 3 and 4 years — represents a massive cognitive leap. The child has discovered that the world is explicable, that things have causes, and that you know things they don't. Research by Chouinard (2007) found that the quality of answers children receive significantly predicts scientific reasoning ability later.",
+        """* Answer 'why' questions genuinely and simply: "Because water is heavier than oil."
+* If you don't know the answer: "I don't know — let's find out." Then find out. This models intellectual humility and curiosity.
+* Use the question as a conversation opener rather than a one-shot answer: "Why do you think the sky is blue?"
+* Resist the urge to deflect with "because I said so" — reserve that for behavioral limits, not factual questions
+* The repetitive 'why after why' chain is normal: she's testing whether causes have causes. They do. Go as deep as you can.
+* Never shame the question. A child who stops asking 'why' has learned that curiosity is unwelcome.""",
+    ),
+    dyk_html=dyk_card("Color naming is one of the **trickier early language concepts** — colors are not things, they're properties of things. 'Red' describes the cup, the apple, and the fire engine, but 'red' is none of those things. That abstraction is why color vocabulary arrives later than object vocabulary."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Names at least 2 colors",
+        "Red, blue, yellow, green — in any combination of two. That's the 30-month bar.",
+        "Color naming is a cognitive and language milestone that most children reach around 24 to 30 months. It requires learning abstract category labels — colors are properties of things, not things themselves — which is a more complex linguistic concept than naming objects.",
+        """* Name colors in daily life constantly: "Here's your red cup." "Look at the blue car." "Want the yellow banana?"
+* Use simple color sorting games with blocks or toys
+* Read books that feature color concepts — Eric Carle's work is ideal
+* Don't test colors as drills — embed color language in everything you already say
+* By 36 months, most children can reliably name 4+ colors""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Counts to 10 — rote sequence",
+        "Reciting 1 to 10 by age 3. The sequence comes before understanding what the numbers mean.",
+        "Reciting numbers in sequence to 10 by age 3 is an early numeracy milestone. At this stage, it reflects the ability to memorize and reproduce a sequence — a precursor to true counting with one-to-one correspondence, which comes later.",
+        """* Count everything in daily life: stairs going up, crackers on the plate, shoes by the door
+* Songs encode the sequence musically: "One, Two, Three, Four, Five, Once I Caught a Fish Alive"
+* Counting books reinforce the sequence with visual anchors
+* Don't worry if the sequence is imperfect — skipping 4 or repeating 6 is developmentally normal at this age
+* True understanding that '3' means exactly 3 objects typically arrives around 30 to 35 months""",
+    ),
+    tackled_html=tackled_section([
+        ("3-word sentences — consistent now", "Both"),
+        ("Memory — telling us about her day", "Both"),
+        ("Cooperative play — starting to play with other kids", "Mum"),
+    ]),
+    next_month_html=next_month_section([
+        "Potty training readiness signs — watch for them this month",
+        "Catches a large ball — visual-motor milestone",
+        "Strangers understand 75% of speech — the 3-year speech clarity target",
+    ]),
+    closing_text="Answer the 'why' questions. Every single one. That's the whole job this month. — Jack",
+)
+with open(f"{OUT}/month26-redesign.html", "w") as f: f.write(html)
+print("Written: month26-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 27
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 27", title_label="Month 27",
+    subject="Is she ready for potty training? Here's the checklist.",
+    preheader="Olivia is 27 months old. Readiness signs, catching a ball, and speech clarity.",
+    hero_age="Month 27", hero_name="Olivia · 27 months old",
+    opening="Olivia is 27 months old. Parents often ask about potty training around this age. The answer isn't about age — it's about readiness signs. Here's what to look for before you start.",
+    context="Twenty-seven months: potty training readiness varies widely. The signs matter more than the calendar.",
+    theme="🚽 This month: potty readiness signs, catching a ball, and the 3-year speech clarity benchmark.",
+    total_windows=27,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Potty training readiness — signs to watch for before you start",
+        "Starting before she's ready makes it longer and harder. Waiting for the signs makes it faster.",
+        "Most children show readiness signs between 18 and 36 months. Starting before a child is ready leads to a longer, more frustrating process with more accidents and more resistance. Waiting for readiness signs — rather than starting at a fixed age — is the single most reliable predictor of a faster, lower-conflict potty training experience.",
+        """* **Stay dry for 2+ hours:** this shows bladder capacity and some control
+* **Shows awareness of going:** tells you before, during, or just after — any awareness is a good sign
+* **Interest in the toilet or underwear:** if she wants to sit on the potty, that's your opening
+* **Can follow 2-step instructions:** "Go to the toilet and sit down" requires the same working memory as training
+* **Can pull pants up and down independently:** this is a practical necessity for self-initiated toilet use
+* Do not start if she cannot yet signal need — early training without signaling is toilet timing, not potty training
+* Buy a floor potty and leave it out without pressure now — familiarity reduces fear when training begins""",
+    ),
+    dyk_html=dyk_card("Catching a ball isn't just a sports skill — it's **visual-motor integration**: anticipating a moving object's path, timing a movement, and adjusting for error in real time. These same skills underpin reading (tracking a moving line of text) and writing (anticipating where the pen needs to go)."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Catches a large ball",
+        "Arms out, trap it against the body. That's the 30-month bar — a beach ball from close range.",
+        "Most children develop the ability to catch a large ball around 30 to 36 months. It requires anticipating the ball's trajectory, timing the arm movement, and adjusting for errors in real time — visual-motor integration skills that also underpin reading and writing.",
+        """* Use a large, soft ball (beach-ball size) — smaller balls require more precision than toddlers have
+* Throw gently and directly to her outstretched arms from close range
+* Celebrate any contact with the ball, not just a clean catch — the attempt is the learning
+* Once catching is consistent: step back a little, or switch to a slightly smaller ball
+* Kicking, throwing overarm, and catching all develop around this window — outdoor play time is the practice""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Strangers understand 75% of speech",
+        "By age 3, unfamiliar adults should understand most of what she says. Here's how to gauge it.",
+        "Most children are understood by strangers approximately 75% of the time by around 36 months. This is the benchmark used by speech-language pathologists for evaluating speech clarity at age 3. Below this threshold often indicates a speech sound disorder that benefits from early therapy.",
+        """* Note how often you have to translate for her in interactions with unfamiliar adults
+* At the 36-month visit, your pediatrician will assess speech intelligibility — come with an honest estimate
+* Family members who know her well may understand 90%+ — what matters here is strangers
+* If unclear to strangers less than 50% of the time by 36 months, ask for a speech-language pathology evaluation
+* Early speech therapy has a much higher success rate than intervention started at school age""",
+    ),
+    tackled_html=tackled_section([
+        ("Colors — knows red, blue, and yellow", "Both"),
+        ("Counts to 10 — in sequence with some gaps", "Dad"),
+        ("Why questions — answering every one", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "First jokes — using humor intentionally",
+        "Time concepts — morning, afternoon, yesterday, tomorrow",
+        "Named friendships — 'I want to play with Ella'",
+    ]),
+    closing_text="Potty training: wait for the signs. When they're there, go fast and don't look back. When they're not, wait. — Jack",
+)
+with open(f"{OUT}/month27-redesign.html", "w") as f: f.write(html)
+print("Written: month27-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 28
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 28", title_label="Month 28",
+    subject="She made a joke on purpose. That's theory of mind.",
+    preheader="Olivia is 28 months old. First jokes, time concepts, and a best friend named Ella.",
+    hero_age="Month 28", hero_name="Olivia · 28 months old",
+    opening="Olivia is 28 months old. Something happened recently — she said something wrong on purpose, waited, and then laughed. That's not silliness. That's the first evidence of social intelligence applied to humor. Here's what it means.",
+    context="Twenty-eight months: she's figured out that she can surprise you. That's a cognitive leap.",
+    theme="😄 This month: first jokes, understanding time, and a specific friend she wants to see.",
+    total_windows=25,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "First jokes — using humor intentionally",
+        "Calling a dog a cat on purpose and watching for your reaction is theory of mind in action.",
+        "Most children begin using humor deliberately around 25 to 28 months — saying the wrong word on purpose, making a funny face to get a reaction, turning a routine into a game with a punchline. This is one of the most significant markers of emerging theory of mind: she understands that you have expectations, and she can subvert those expectations for effect.",
+        """* Play along immediately. When she calls a dog a cat on purpose and waits for your reaction, give her the laugh. That is exactly what she's going for.
+* Introduce simple silly games: "Is your nose your elbow? Nooooo!" — let her take the joke role next
+* Read silly books together: Mo Willems' Pigeon books, Julia Donaldson's works. Toddler humor literature is its own genre.
+* Laugh at her jokes, including the ones that make no sense. The intent is what matters, not the execution.
+* A child who jokes is a child who understands the social contract well enough to play with it. That's a good sign.""",
+    ),
+    dyk_html=dyk_card("A visual daily schedule — pictures of the sequence of events, not words — reduces toddler anxiety and improves cooperation dramatically. When she knows what comes next, 'no more park' stops being a surprise ambush and becomes a predictable transition. **Predictability is safety** for toddlers."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Time concepts — morning, afternoon, yesterday, tomorrow",
+        "Abstract time language helps her anticipate the day and reduces transition anxiety.",
+        "Most children develop understanding of basic time language between 24 and 30 months. 'We will go to the park this afternoon' only works as communication if the child has a concept of afternoon. Time language reduces anxiety: the day becomes a predictable structure rather than a series of surprises.",
+        """* Use time language consistently in daily narration: "Good morning," "This afternoon we're going to the park," "We'll do that tomorrow"
+* A visual daily schedule — pictures of the sequence of events — makes abstract time concepts concrete
+* Don't expect accuracy: a toddler who says "yesterday" for any past event is completely on track
+* Future-orient with her: "After lunch, we're going to the park." This builds the habit of temporal thinking.
+* The concept of 'tomorrow' is harder than 'this afternoon' — it requires understanding that a full sleep cycle separates now from then""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Named friendships — 'I want to play with Ella'",
+        "When she asks for a specific child by name, that's not preference — that's the beginning of friendship.",
+        "Most children begin to form specific social preferences around 30 to 34 months — requesting particular children by name, showing excitement when they know a certain friend will be present. This is the emergence of selective social bonding beyond the family. It is one of the earliest signs of social intelligence that will drive peer relationships throughout childhood.",
+        """* Take the preference seriously. If she asks for Ella, try to arrange it.
+* Keep playdates short (60–90 minutes), small (one friend is enough), and low-key
+* Stay nearby but let them navigate the social dynamic themselves — resist the urge to direct the play
+* Debrief naturally afterward: "Did you have fun with Ella? What did you play?"
+* Conflict is part of friendship learning — resist rescuing too quickly when they disagree""",
+    ),
+    tackled_html=tackled_section([
+        ("Potty — showing readiness signs", "Both"),
+        ("Ball catching — getting there with a big soft ball", "Dad"),
+        ("Speech — strangers understanding more", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "Preschool readiness — what the first day actually requires",
+        "Balances on one foot for 2 seconds — the flamingo game",
+        "Counts objects 1–5 — one-to-one correspondence starting",
+    ]),
+    closing_text="When she tells a joke, laugh. Every single time. You're not indulging silliness — you're reinforcing the social intelligence that will carry her through life. — Jack",
+)
+with open(f"{OUT}/month28-redesign.html", "w") as f: f.write(html)
+print("Written: month28-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 29
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 29", title_label="Month 29",
+    subject="Preschool readiness: it's not about colors and counting. It's about this.",
+    preheader="Olivia is 29 months old. What preschool readiness actually means, plus balance and counting.",
+    hero_age="Month 29", hero_name="Olivia · 29 months old",
+    opening="Olivia is 29 months old. Many families are starting to think about preschool around now. The question isn't 'does she know her colors?' It's a different set of questions — and they matter more than most parents realize.",
+    context="Twenty-nine months: preschool readiness is about separation, communication, and self-help skills — not academics.",
+    theme="🏫 This month: what preschool readiness really means, the flamingo balance, and counting 1–5 with meaning.",
+    total_windows=24,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Preschool readiness — what to look for before the first day",
+        "Readiness isn't about knowing colors or counting. It's about functioning in a group.",
+        "Preschool readiness is not about academics. It's about the skills that allow a child to function in a group setting: separating from parents without extended distress, following basic two-step instructions, communicating her needs verbally, and managing basic self-help tasks. A child who isn't ready won't have a faster start — just a harder one.",
+        """* **Separation:** can she separate without extended distress? Practice in low-stakes settings: grandparent visits, playdates without parents
+* **Communication:** can she tell an unfamiliar adult she needs the toilet or is hungry? This is the practical communication bar
+* **Instructions:** can she follow a 2-step instruction from a teacher she's just met?
+* **Self-help:** can she pull her pants up and down? Wash hands? Handle a snack independently?
+* **Visit the preschool before the first day** — familiarity dramatically reduces first-day anxiety
+* Read books about starting school: *The Kissing Hand*, *Wemberly Worried*, *First Day Jitters*
+* A child who meets these criteria is ready. A child who doesn't yet — isn't, and that's information, not failure.""",
+    ),
+    dyk_html=dyk_card("True counting — where each object gets exactly one number — is called **one-to-one correspondence** and is fundamentally different from reciting number sequences. It's one of the earliest building blocks of mathematical reasoning, and children who have it at this age show consistently stronger math outcomes in primary school."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Balances on one foot for 2 seconds — the flamingo game",
+        "Standing on one foot briefly is a demanding vestibular task. And it's the gateway to hopping.",
+        "Most children develop the ability to stand briefly on one foot around 30 to 35 months. It requires shifting the center of gravity over a single support point while the raised leg is controlled — a demanding vestibular and proprioceptive task. It's the direct precursor to hopping, skipping, and stair climbing with alternating feet.",
+        """* Make it a game: "Can you stand on one foot like a flamingo?"
+* Hold her hand at first and gradually reduce support as she improves
+* Count out loud while she balances — it makes it concrete and motivating: "1... 2... 3!"
+* Practice during normal routines: standing on one foot to put on a sock is a real-world application
+* By 36 months, most children can balance 2+ seconds. By 48 months, 4–8 seconds.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Counts objects 1–5 with one-to-one correspondence",
+        "Touching each object once and assigning it a number — that's real counting. Different from reciting.",
+        "True counting — touching each object once and assigning it a number word in sequence — is different from reciting numbers. One-to-one correspondence is a foundational math skill: the understanding that each item gets exactly one number. Most children develop this between 30 and 36 months.",
+        """* Count small groups of physical objects together: "One cracker, two crackers, three crackers — three total"
+* Move each item as you count it — the physical movement reinforces the one-to-one mapping
+* Correct gently when she skips an object or counts one twice: "Let's count again — touch each one"
+* Make it tactile: counting grapes onto a plate, counting steps onto the bus
+* By 36 months, most children can accurately count 5 objects with one-to-one correspondence""",
+    ),
+    tackled_html=tackled_section([
+        ("Jokes — she's hilarious and knows it", "Both"),
+        ("Time concepts — using 'this afternoon' correctly", "Both"),
+        ("Named friendships — regular playdates with Ella", "Mum"),
+    ]),
+    next_month_html=next_month_section([
+        "30-month checkup — language, play, and behavior all assessed",
+        "Crib to bed transition — timing and how to do it right",
+        "Daytime dryness — the potty training finish line",
+    ]),
+    closing_text="Preschool readiness is built over months of practice at home. Separation, communication, self-help. That's the curriculum — and you're already teaching it. — Jack",
+)
+with open(f"{OUT}/month29-redesign.html", "w") as f: f.write(html)
+print("Written: month29-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 30
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 30", title_label="Month 30",
+    subject="The 30-month visit was added to the schedule specifically to catch language delays.",
+    preheader="Olivia is 30 months old. The checkup, the crib transition, and the potty finish line.",
+    hero_age="Month 30", hero_name="Olivia · 30 months old",
+    opening="Olivia is 30 months old. Two and a half years. The 30-month well child visit is relatively new to the AAP schedule — it was added specifically because the gap between 24 and 36 months was too long, and language delays were becoming entrenched before anyone caught them. Here's what it covers.",
+    context="Thirty months: the halfway point between the 2-year and 3-year checkups — and one of the most useful.",
+    theme="🩺 This month: the 30-month checkup, the crib-to-bed transition, and the potty training finish line.",
+    total_windows=22,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "30-month well child visit",
+        "Specifically added to catch language delays while intervention is still most effective.",
+        "The 30-month visit was added to the AAP schedule specifically for developmental surveillance. It assesses 3-word sentences, cooperative play, comprehension, and behavior. The gap between 24 months and 36 months is long enough that language delays can become significantly entrenched — this visit catches issues while intervention is still highly effective.",
+        """* Note sentence length before the visit: most 30-month-olds use 3-word sentences regularly
+* Note social behavior: does she play with other children (cooperative play), or still just alongside them (parallel play)?
+* Bring concerns about behavior, tantrums, sleep, or language — this visit is designed specifically for them
+* 3-word sentences absent at 30 months: ask for a speech evaluation referral today, not at 36 months
+* Ask about potty training if it's in progress — your pediatrician has practical guidance""",
+    ),
+    dyk_html=dyk_card("Moving from crib to bed **too early** is one of the most common causes of sleep regression in the second and third years. The crib is a boundary. Keeping it in place until age 3 — unless there's a safety reason — makes bedtime more predictable and sleep more reliable for everyone."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Crib to bed transition — timing matters",
+        "Most sleep experts say 3 years, unless she's climbing out. Here's the full guidance.",
+        "Moving from crib to toddler bed too early is one of the most common causes of sleep regression. Most sleep experts recommend keeping children in a crib until age 3 unless there is a safety reason (climbing out consistently). The crib is a sleep boundary — keeping it in place makes bedtime more predictable.",
+        """* If she's climbing out: lower the mattress first, use a sleep sack to limit leg range, then transition if climbing continues
+* Transition around age 3 when she can understand and follow the boundary of staying in bed
+* Transition when she reaches 35 inches in height, or when the crib rail is less than ¾ of her height — whichever comes first, regardless of age
+* Involve her in choosing her new bed — buy-in matters
+* The transition may mean earlier wake times and more bedtime curtain calls for a few weeks. It passes.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Daytime dryness — the potty training finish line",
+        "Fewer than one accident per day, most days. That's the milestone.",
+        "Most children achieve consistent daytime dryness — fewer than one accident per day on most days — between 24 and 33 months. This is the functional endpoint of daytime potty training. Nighttime dryness is a completely separate milestone — many children are not reliably dry at night until age 5 or 6, which is normal.",
+        """* If training is complete: maintain consistency at transitions — leaving the house, before nap, before bed
+* If still in progress: review the readiness checklist. If readiness signs are present but training is stalling, try a fresh 3-day intensive approach
+* Respond to accidents calmly — clean up together, no shame, no punishment
+* Nighttime training is separate. Pull-ups or training pants at night are fine indefinitely at this age.
+* By 33 months, if daytime dryness is not established, mention it at the 30-month visit. Not because something is necessarily wrong — but to rule out physical factors.""",
+    ),
+    tackled_html=tackled_section([
+        ("Preschool visit — done, she loved it", "Both"),
+        ("Counting 1–5 — touching each object", "Dad"),
+        ("Balance on one foot — 2 seconds in the flamingo game", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "Peer friendships forming — consistent, named relationships",
+        "Number-quantity concept — '2' means exactly 2 things",
+        "Getting dressed independently — simple clothes, elastic and velcro",
+    ]),
+    closing_text="Two and a half. The language has come so far. The 30-month visit is worth taking seriously — come prepared. — Jack",
+)
+with open(f"{OUT}/month30-redesign.html", "w") as f: f.write(html)
+print("Written: month30-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 31
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 31", title_label="Month 31",
+    subject="She has a best friend. And she can get dressed by herself.",
+    preheader="Olivia is 31 months old. Peer friendships, number concepts, and dressing independently.",
+    hero_age="Month 31", hero_name="Olivia · 31 months old",
+    opening="Olivia is 31 months old. Friendships are becoming specific, real, and important to her. And the self-help skills are expanding — getting dressed, managing the bathroom, navigating snacks. Here's what's worth supporting.",
+    context="Thirty-one months: independence is expanding on every front — social, cognitive, and physical.",
+    theme="👗 This month: real peer friendships, understanding what numbers mean, and getting dressed solo.",
+    total_windows=21,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Peer friendship formation begins",
+        "Consistent preference for a specific child, seeking them out, joy at reunion — that's friendship.",
+        "True peer friendships — consistent preference for a specific other child, seeking them out, showing joy at reunion — begin to emerge around age 3. They're different from general sociability. These friendships are important for language development, theory of mind, conflict resolution skills, and emotional wellbeing.",
+        """* Facilitate regular time with the same small group of children — familiarity is what deepens into friendship
+* Help her learn to enter play: "You could ask if you can play too" — give her the words
+* Take her social preferences seriously: if she keeps talking about one child, make that friendship a priority
+* Coach conflict rather than referee: when there's a disagreement, ask "What could you do?" before stepping in
+* Friendships at this age are fragile but real — the child who doesn't want to share today may be her best friend by 4""",
+    ),
+    dyk_html=dyk_card("Children who understand **cardinality** — that '3' means exactly 3 things, not just a word in a sequence — at age 3 show consistently stronger mathematics outcomes in primary school. The 'give me' game (give me 2 crackers) is one of the most powerful math activities you can do, anywhere, anytime."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Number-quantity concept — '2' means exactly 2 things",
+        "Rote counting and real counting are different. This is when real counting clicks.",
+        "Many children can rote count to 10 without understanding that numbers represent quantities. Most children develop cardinal number understanding — knowing that '2' means exactly 2 objects — around 30 to 35 months. It's one of the earliest building blocks of mathematical reasoning.",
+        """* Play 'give me' games: "Can you give me 2 crackers? Can you give me 1 more?"
+* Count objects together by pointing to each one, then announce the total: "One, two, three — three bears!"
+* Avoid drilling. Embed counting in normal activities: setting the table, getting socks out of the drawer
+* Books like Eric Carle's *The Very Hungry Caterpillar* reinforce this naturally
+* The goal is for her to understand that the last number said is the total — called the 'cardinal principle'""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Gets dressed independently — simple clothes",
+        "Elastic waist, velcro shoes, no buttons. That's the dressing curriculum at 31 months.",
+        "Between 31 and 35 months, most children can put on simple clothing independently: a shirt pulled over the head, pants with an elastic waist, socks, and velcro shoes. This is a significant independence milestone and a preschool readiness requirement.",
+        """* Start with the easiest items: loose pants and socks. Let her try while you narrate.
+* Teach front-from-back with a simple cue: "Tag goes in the back"
+* Put out tomorrow's clothes the night before and let her get dressed independently in the morning — this removes time pressure
+* Avoid buttons, snaps, and laces during the learning phase. Elastic and velcro only.
+* By 36 months, most children can dress themselves in simple clothes. By 48 months, buttons and zippers.""",
+    ),
+    tackled_html=tackled_section([
+        ("30-month checkup — 3-word sentences confirmed", "Both"),
+        ("Crib — still in it, one more year", "Both"),
+        ("Potty — daytime dry most days", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "Knows full name and age — a practical safety milestone",
+        "Hops on one foot — bunny jumps, hopscotch",
+        "Tooth brushing — child takes a turn, parent finishes",
+    ]),
+    closing_text="The friendships she's making now are the first ones she'll remember. Take them seriously. — Jack",
+)
+with open(f"{OUT}/month31-redesign.html", "w") as f: f.write(html)
+print("Written: month31-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 32
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 32", title_label="Month 32",
+    subject="She should know her full name. Here's why — and what else matters this month.",
+    preheader="Olivia is 32 months old. Name and age, hopping, and tooth brushing independence.",
+    hero_age="Month 32", hero_name="Olivia · 32 months old",
+    opening="Olivia is 32 months old. Knowing and stating her full first name and age is both a developmental milestone and a practical safety skill. If she were ever lost, that information is the first thing a stranger would need. Here's what matters this month.",
+    context="Thirty-two months: self-concept, physical confidence, and daily health habits.",
+    theme="🦷 This month: name and age, hopping on one foot, and the tooth brushing handoff.",
+    total_windows=20,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Knows full first name and age",
+        "This is a developmental milestone and a safety skill — both matter.",
+        "Knowing and stating their full first name and age by age 3 shows autobiographical memory, self-concept, and language integration. It's also a practical safety milestone: a child who can state their name is better equipped to communicate with an adult if lost.",
+        """* Practice at home in a fun, low-stakes way: "What's your name?" "How old are you?"
+* Celebrate birthday awareness: "You're 2 years old now! You'll be 3 on your birthday."
+* Teach first and last name for safety purposes as soon as she can manage it — ideally before age 3
+* Make it part of games: puppets asking her name, role-playing scenarios
+* By age 3, she should also know the full names of her parents — another safety milestone worth practicing""",
+    ),
+    dyk_html=dyk_card("Hopping on one foot is a precursor to **skipping** — which is itself a precursor to the lateral coordination needed for sports, dance, and smooth stair negotiation. The physical milestones build on each other in a sequence that spans years."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Hops on one foot",
+        "Multiple consecutive hops on the same foot. Harder than it looks — and a 3-year milestone.",
+        "Hopping on one foot — taking multiple consecutive hops on the same foot — is a milestone around age 3 to 3.5. It requires single-leg balance, dynamic stability, and rhythmic motor planning. It's a precursor to skipping and is commonly assessed at the 4-year visit.",
+        """* Demonstrate hopping and make it a game: "Hop like a bunny!"
+* Hopscotch (even a rough chalk version) is excellent practice
+* Try the "hot lava" game — hopping between cushions on the floor
+* Don't push the milestone — it develops on its own timeline. Encouragement and play are enough.
+* By 36 months, most children can take 2+ consecutive hops. By 48 months, 10+ on each foot.""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Tooth brushing — child takes a turn, parent finishes",
+        "The handoff: she brushes first, you brush second. Her technique alone isn't sufficient yet.",
+        "The AAPD recommends brushing from the first tooth. Most children are ready to hold the brush and take a turn around 27 to 32 months. This is not just oral hygiene — it's a lifelong habit being formed. Children who brush independently (with adult follow-through) from this age have significantly better dental outcomes.",
+        """* Let her brush first — this honors her autonomy and makes cooperation much easier
+* Then the parent does a thorough second pass — non-negotiable. Her technique alone is not sufficient.
+* Let her pick her toothbrush (character brushes work) and her toothpaste flavor
+* Make it a routine, not a battle: same time, same sequence, every day
+* Electric toothbrushes are fine and often more effective than manual at this age
+* If she's resisting: try brushing teeth on a stuffed animal first, or let her 'brush' your teeth""",
+    ),
+    tackled_html=tackled_section([
+        ("Peer friendships — 2 regular playdates per week", "Both"),
+        ("Getting dressed — elastic waist, mostly solo", "Both"),
+        ("Number-quantity — knows 2 means exactly 2", "Dad"),
+    ]),
+    next_month_html=next_month_section([
+        "Imaginary friends — healthy, normal, and worth engaging",
+        "Tells stories about recent events — narrative skill",
+        "Follows complex multi-step instructions",
+    ]),
+    closing_text="Teach her her full name and your name this month. It takes one week of practice. It could matter a lot. — Jack",
+)
+with open(f"{OUT}/month32-redesign.html", "w") as f: f.write(html)
+print("Written: month32-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 33
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 33", title_label="Month 33",
+    subject="She has an imaginary friend. That's a very good sign.",
+    preheader="Olivia is 33 months old. Imaginary friends, telling stories, and multi-step instructions.",
+    hero_age="Month 33", hero_name="Olivia · 33 months old",
+    opening="Olivia is 33 months old. She may have an imaginary friend — or be on the verge of inventing one. Research by Marjorie Taylor found that children with imaginary friends are not confused, lonely, or concerning. They're often the most socially skilled kids in the room.",
+    context="Thirty-three months: imagination is at full power. Harness it.",
+    theme="🌟 This month: imaginary friends, storytelling, and following complex instructions.",
+    total_windows=19,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Imaginary friends — healthy and normal",
+        "25 to 65% of children have imaginary friends. The ones who do are often more socially skilled than those who don't.",
+        "Imaginary companions are a common and healthy feature of social development in 25 to 65% of children between ages 2.5 and 7. Research by Marjorie Taylor shows that children with imaginary friends are not lonely or confused about reality — they are often more socially skilled, better at perspective-taking, and more creative than peers without them. The imaginary friend is a safe space to practice social interaction.",
+        """* Engage with the imaginary friend playfully: "Should we set a place at the table for them?"
+* Do not dismiss or ridicule the imaginary companion — it shuts down the imaginative play immediately
+* Do not reinforce any genuinely confusing reality/fantasy blending — gently clarify when needed
+* Take it as a positive sign: evidence of active imagination, strong narrative capacity, and social rehearsal
+* Imaginary friends often disappear naturally as real friendships deepen. That's also a positive sign.""",
+    ),
+    dyk_html=dyk_card("Children who regularly **tell stories** about their own experiences — even simple ones — show stronger reading comprehension and writing ability at age 6 and 7. Storytelling builds the narrative scaffolding that books are built on. The dinner table is the classroom."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Tells stories — describes a recent event",
+        "'We went to the park. I saw a dog. The dog was big.' That's a story. That's remarkable.",
+        "Telling a story — even a simple one — requires narrative structure, memory retrieval, and connected sentence production. It is one of the most advanced language milestones in the early childhood window and a predictor of reading comprehension and academic success.",
+        """* After outings, ask open-ended questions: "What happened at the park?" rather than "Did you have fun?"
+* Build the narrative with her: "You told me about the dog — what did the dog do?"
+* Use photos from recent events as prompts for storytelling practice
+* Model storytelling yourself: "Today at work, something funny happened. I was walking to my desk and I..."
+* Story-rich read-alouds — books with clear narrative arcs — provide the template""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Follows complex multi-step instructions",
+        "'Go to your room, get your shoes, and bring them here.' All three steps. That's the target.",
+        "Following a 3 to 4 step instruction without prompting is a school readiness skill. It requires working memory, sustained attention, and language comprehension all working together. Children who can follow complex instructions transition more smoothly into structured classroom environments.",
+        """* Practice with daily routines: "Go to your room, put your shoes by the door, and come back here"
+* Break tasks into verbal steps instead of doing them for her — the independence is the practice
+* If she loses track, ask "What comes next?" rather than restating the whole instruction
+* Use multi-step instructions at mealtimes, getting ready for outings, and bedtime routines — these are the natural contexts
+* The school-readiness bar: 3-step instructions followed reliably by age 3""",
+    ),
+    tackled_html=tackled_section([
+        ("Name and age — knows her full name", "Both"),
+        ("Hopping — two or three in a row", "Both"),
+        ("Tooth brushing — she goes first now", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "Copies a circle — letter readiness milestone",
+        "Gratitude and empathy practice at the table",
+        "Tricycle or balance bike — wheeled independence",
+    ]),
+    closing_text="The imaginary friend is practicing social skills. Let her. — Jack",
+)
+with open(f"{OUT}/month33-redesign.html", "w") as f: f.write(html)
+print("Written: month33-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 34
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 34", title_label="Month 34",
+    subject="She drew a circle. That's closer to writing than it looks.",
+    preheader="Olivia is 34 months old. Drawing, gratitude practice, and the balance bike.",
+    hero_age="Month 34", hero_name="Olivia · 34 months old",
+    opening="Olivia is 34 months old. She's drawing with intention now — not just scribbling. Copying a circle is a standard 3-year motor milestone, and it's a direct precursor to writing letters. Here's what else is happening.",
+    context="Thirty-four months: fine motor, character, and wheeled independence.",
+    theme="✏️ This month: copies a circle, gratitude at the table, and the first wheels.",
+    total_windows=18,
+    priority_card_html=window_card(
+        "⏳ Open window", "open",
+        "Copies a circle — letter readiness milestone",
+        "A closed, approximately circular shape. That's enough. The wrist rotation is what matters.",
+        "Copying a circle — drawing a closed, approximately circular shape after seeing one drawn — is a standard motor milestone around 30 months. It requires more wrist rotation and planning than a straight line. It's a direct letter readiness skill and a common item on developmental screening tests at age 3.",
+        """* Draw a circle slowly in front of her and invite her to copy it: "Can you draw one like mine?"
+* Accept any closed or approximately circular shape — perfection is not the milestone
+* Practice with finger painting, tracing circles in sand or on fogged glass, drawing on a whiteboard
+* Next in sequence: copying a cross (vertical + horizontal lines), then a square, then a triangle
+* Drawing on vertical surfaces (an easel or whiteboard) builds different wrist and shoulder strength than drawing flat""",
+    ),
+    dyk_html=dyk_card("Families with regular **gratitude practices at mealtimes** — even one sentence each — show measurably higher wellbeing, more prosocial behavior, and stronger relationship quality in children by age 10. The mechanism is habit formation through repetition. It takes about 3 weeks to feel natural."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Gratitude and empathy practice at the table",
+        "One sentence each at dinner. That's the whole intervention. The research is clear.",
+        "Gratitude and empathy are teachable through repeated practice in low-stakes, everyday contexts. Mealtime provides a consistent, captive setting. Research by Robert Emmons and others shows that children in families with regular gratitude practices show measurably higher wellbeing, prosocial behavior, and relationship quality by age 10.",
+        """* Introduce a simple mealtime ritual: one thing each person is grateful for today — including you
+* Name emotions at the table: "You look frustrated — what happened today?"
+* Express genuine appreciation for the meal and for each other in simple terms: "Thank you for making dinner"
+* When she says something ungrateful or unkind: name it neutrally and model the alternative
+* Consistency matters far more than depth — 30 seconds every dinner is more powerful than an occasional 10-minute conversation""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Tricycle or balance bike — first wheeled independence",
+        "Balance bike first if starting from scratch. Pedaling comes later — around 36 months.",
+        "Most children can propel and steer a balance bike or walk a tricycle around 26 to 29 months. True pedaling — coordinating the reciprocal leg motion to drive a tricycle forward — typically arrives closer to 36 months. This is a major gross motor milestone and one of the most motivating forms of independent movement available to toddlers.",
+        """* **Balance bike first** if introducing from scratch: no pedals, child propels by walking then lifts feet to glide. This builds balance and makes the later transition to a pedal bike much easier.
+* For tricycles: position the seat so legs have a slight bend at the bottom of the pedal stroke
+* Start on a flat, smooth surface — grass is too hard, slopes are dangerous
+* Helmet from day one, always. It builds the habit before speed makes it necessary.
+* Children who start on balance bikes typically skip training wheels entirely when they transition to a pedal bike""",
+    ),
+    tackled_html=tackled_section([
+        ("Imaginary friend — fully engaged with her", "Both"),
+        ("Storytelling — telling us about her day", "Both"),
+        ("3-step instructions — following reliably", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "Car seat forward-facing transition — when it's time to move",
+        "Counts to 3 with meaning — not just reciting",
+        "Sharing is developmentally appropriate now — gentle scaffolding",
+    ]),
+    closing_text="Draw circles together. It's fine motor practice for her and a moment of stillness for you. — Jack",
+)
+with open(f"{OUT}/month34-redesign.html", "w") as f: f.write(html)
+print("Written: month34-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 35
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 35", title_label="Month 35",
+    subject="One month to the 3-year checkup. Here's what to bring.",
+    preheader="Olivia is 35 months old. Car seat transition, counting with meaning, and sharing finally makes sense.",
+    hero_age="Month 35", hero_name="Olivia · 35 months old",
+    opening="Olivia is 35 months old. One month from the 3-year checkup — and the 3-year milestone set is nearly complete. Here's what to focus on in this final stretch.",
+    context="Thirty-five months: the 3-year checkup is one month away. Come prepared.",
+    theme="🚗 This month: car seat safety update, counting with real meaning, and why sharing now makes sense.",
+    total_windows=17,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "Car seat forward-facing transition",
+        "This isn't an age milestone — it's a size milestone. Check the seat, not the calendar.",
+        "When a child has outgrown the rear-facing limits of their seat — by height or weight, not by age — they transition to a forward-facing harness seat. Forward-facing is still significantly safer than a booster. The forward-facing harness should be used until the child outgrows it too.",
+        """* Check your seat's rear-facing limit: if her head is within 1 inch of the top of the seat back, she's outgrown it
+* Check the weight limit: most convertible seats rear-face to 40–50 lbs; check your specific seat's manual
+* Move to a forward-facing convertible seat with a 5-point harness — not a booster. Boosters come much later.
+* In forward-facing mode: ensure the harness straps are at or above shoulder level
+* Many children can safely stay rear-facing well past age 2 — don't rush it if the seat limits haven't been reached
+* Weight and height limits vary by country and seat — check your specific seat's manual and your local road safety guidelines""",
+    ),
+    dyk_html=dyk_card("The '**give me 3**' game — asking a child to hand you exactly 3 objects — is one of the most reliable ways to test whether she understands what 3 means, versus just being able to recite '1, 2, 3.' Both matter, but understanding cardinality is the deeper skill."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Counts to 3 with meaning",
+        "'1, 2, 3 — three!' She knows 3 is the total, not just the third word in a sequence.",
+        "Counting to 3 by age 3 is an early numeracy milestone. Note the distinction: reciting '1, 2, 3' is a sequence. Knowing that '3' means exactly 3 objects is cardinality. Both are building — and at this age, cardinality for small numbers (1, 2, 3) should be solid.",
+        """* Count everything: stairs, crackers, fingers, steps to the car
+* Use fingers to show the count alongside the word — the visual anchor reinforces the meaning
+* Test cardinality: "Give me 3 crackers" — not "count to 3." Counting is reciting. Giving 3 requires understanding.
+* Books and songs with counting sequences reinforce both the sequence and the meaning
+* By 36 months: counts to 10 in sequence, understands cardinality for numbers 1–3""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Sharing is developmentally appropriate now — gentle scaffolding",
+        "Before age 3, forcing sharing doesn't work. After age 3, it can be taught. This is that moment.",
+        "True sharing requires theory of mind (understanding that another person wants something you have) and enough impulse control to override the desire to keep it. Research by Dacher Keltner and others is consistent: forcing sharing before these capacities are in place teaches that adults take things arbitrarily. Around age 3, both capacities are beginning to arrive.",
+        """* Shift from 'forced sharing' to scaffolded turn-taking: "When you're done with the truck, it's Finn's turn"
+* Validate ownership first: "That is your truck. You decide when you're done."
+* Model generosity explicitly: "I have two pieces of apple. I'll give one to you."
+* Narrate the social contract: "She waited so patiently for her turn. That made her feel happy."
+* Don't force immediate sharing — but do hold the expectation that a turn will come, and follow through""",
+    ),
+    tackled_html=tackled_section([
+        ("Circle drawing — closed shapes, some quite round", "Both"),
+        ("Gratitude at dinner — everyone shares one thing", "Both"),
+        ("Balance bike — she's gliding!", "Dad"),
+    ]),
+    next_month_html=next_month_section([
+        "36-month checkup — the end of the intensive developmental surveillance period",
+        "Full sentences (4+ words) — the 3-year language milestone",
+        "Consistent, calm discipline — the approach that actually works",
+    ]),
+    closing_text="One month to the third birthday — and the 3-year checkup. Come with your observations, your concerns, and your word count. — Jack",
+)
+with open(f"{OUT}/month35-redesign.html", "w") as f: f.write(html)
+print("Written: month35-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 36
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 36", title_label="Month 36",
+    subject="Three years. The most intensive developmental period of any human life is complete.",
+    preheader="Olivia is 3 years old. The 36-month checkup, full sentences, and consistent discipline.",
+    hero_age="Month 36", hero_name="Olivia · 36 months old",
+    opening="Olivia is 3 years old. Three years. The 36-month well child visit marks the end of the most intensive developmental surveillance period in medicine. From here, visits go annual. You've made it through all of it.",
+    context="Three years. The intensive developmental surveillance window closes. Annual visits from here.",
+    theme="🎉 This month: the 3-year checkup, full sentences, and the discipline approach that actually works.",
+    total_windows=25,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "36-month well child visit",
+        "This is the last visit in the intensive surveillance schedule. Come prepared — it covers a lot.",
+        "The 36-month visit marks the end of the most intensive developmental surveillance period. It assesses full sentences (4+ words), imaginative play, social skills, potty training progress, and school readiness. From age 3, well child visits go annual. Vaccines: DTaP (dose 5), MMR (dose 2), varicella (dose 2), IPV (dose 4), influenza (annual).",
+        """* Note speech clarity: strangers should understand approximately 75% of her speech by now
+* Count sentence length: 4+ word sentences should be consistent ("I want to go to the park")
+* Note potty status: daytime dryness is the 3-year target; nighttime is a separate, later milestone
+* Discuss preschool if applicable — the 3-year visit is the right moment to ask school-readiness questions
+* Ask about anything that's been on your mind. Annual visits means the next opportunity is 12 months away.
+* The M-CHAT autism screen at 18 and 24 months has now been completed — if any concerns were raised, ask for the follow-up status""",
+    ),
+    dyk_html=dyk_card("By age 3, the brain has reached **80% of its adult size** — and the connections built in the first three years are the scaffolding for everything that comes after. You have been building the most important architecture of her life. Every conversation, every book, every patient repair after a meltdown. All of it counted."),
+    supporting_cards_html=window_card(
+        "⏳ Open window", "open",
+        "Full sentences — 4+ words, consistent",
+        "'I want to go to the park.' That's a sentence. That's language doing its job.",
+        "By 36 months, most children are speaking in sentences of 4 or more words and can be understood by unfamiliar adults roughly 75% of the time. Full sentences mark the point at which language is a reliable communication tool — not just labels and requests, but narrative, explanation, and emotional expression. Absent 4-word sentences by 36 months is a significant language flag.",
+        """* Have real conversations: ask about her day, her feelings, what she noticed. Give her space to answer fully.
+* Read books with storylines, not just picture books — narrative structure builds sentence structure
+* Limit screens at this age: screen time still primarily displaces conversation, and conversation is the input
+* If 4-word sentences are not consistent by 36 months, ask for a speech-language pathology evaluation at this visit
+* The next language milestones: complex questions, storytelling with sequence, explaining her reasoning — all building now""",
+    ) + window_card(
+        "⏳ Open window", "open",
+        "Consistent, calm discipline — the approach that actually works",
+        "The approach matters less than the consistency. Pick one. Apply it every time.",
+        "Consistency is the single most important variable in discipline effectiveness. The specific approach — time-outs, natural consequences, redirection, positive reinforcement — matters less than whether it's applied consistently. A child who receives the same response to a behavior every time learns quickly. Unpredictable responses teach that limits are negotiable.",
+        """* Agree on the approach with your co-parent and apply it the same way every time
+* State the limit clearly and calmly before enforcing it: "If you throw the food again, we will leave the table"
+* Follow through. Every single time. One exception teaches her that persistence pays off.
+* Calm is non-negotiable: a parent who loses their temper unpredictably creates anxiety, not compliance
+* Natural consequences are often the most effective teacher: if she won't put her shoes on, she gets cold feet
+* Praise the behavior you want to see, specifically: "Thank you for using your words when you were angry. That was mature."
+* You don't have to be perfect — but you do have to be consistent. That's the whole thing.""",
+    ),
+    tackled_html=tackled_section([
+        ("Car seat — forward-facing with 5-point harness", "Both"),
+        ("Counting with meaning — gives you exactly 3", "Dad"),
+        ("Turn-taking — sharing is starting to click", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "Annual well child visits from now on — next at 4 years",
+        "Language continues to accelerate — stories, questions, explanations",
+        "Social confidence — preschool friendships deepening",
+    ]),
+    closing_text="Happy third birthday to Olivia — and to you. Three years of showing up. Three years of learning on the job. The work you've done in these first three years is the most important work of her life. From here, the visits go annual. Scout will keep sending these monthly — because development doesn't stop at 3. We'll see you next month. — Jack",
+)
+with open(f"{OUT}/month36-redesign.html", "w") as f: f.write(html)
+print("Written: month36-redesign.html")
+
+print("\nMonths 25-36 done. All 37 emails complete (pre-birth + months 1-36).")

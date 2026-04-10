@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Scout · Month 27 Sample</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin:0; padding:32px 16px; background:#f0ede8; font-family:Arial,sans-serif; }
+  .wrap { max-width:600px; margin:0 auto; }
+  .preview-note { background:#fffbea; border:1px solid #f0d060; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:#7a6010; }
+  .preview-note strong { color:#5a4000; }
+  .nav-bar { background:#fff; border-radius:10px; padding:10px 16px; margin-bottom:14px; display:flex; justify-content:center; gap:6px; flex-wrap:wrap; border:1px solid #e8e0f4; }
+  .nav-bar a { font-size:12px; color:#6E4ED6; text-decoration:none; padding:4px 12px; border:1px solid #e0d8f0; border-radius:20px; }
+  .nav-bar a.active { background:#6E4ED6; color:#fff; border-color:#6E4ED6; }
+  .subject-display { background:#fff; border-radius:10px; padding:16px 20px; margin-bottom:14px; border:1px solid #e0d8f0; }
+  .subject-display .label { margin:0 0 4px; font-size:11px; color:#999; text-transform:uppercase; letter-spacing:.08em; font-weight:700; }
+  .subject-display .subject { font-size:15px; font-weight:700; color:#1a0f3e; margin:0 0 5px; }
+  .subject-display .preheader { font-size:13px; color:#666; margin:0; font-style:italic; }
+  /* Hero */
+  .hero { background:linear-gradient(160deg,#2d1b69 0%,#1a0f3e 100%); border-radius:16px; overflow:hidden; padding:32px 28px 24px; margin-bottom:10px; }
+  .hero .logo { font-size:13px; font-weight:700; color:rgba(255,255,255,.45); letter-spacing:.15em; text-transform:uppercase; margin:0 0 18px; }
+  .hero .age { font-size:34px; font-weight:700; color:#fff; margin:0 0 4px; }
+  .hero .childname { font-size:15px; color:rgba(255,255,255,.55); margin:0 0 22px; }
+  .hero .greeting { font-size:15px; color:rgba(255,255,255,.8); line-height:1.7; margin:0 0 10px; }
+  .hero .opening { font-size:15px; color:rgba(255,255,255,.65); line-height:1.7; margin:0 0 14px; }
+  .hero .context { font-size:13px; color:rgba(255,255,255,.4); font-style:italic; margin:0; border-top:1px solid rgba(255,255,255,.1); padding-top:14px; }
+  /* Theme stripe */
+  .theme-stripe { background:#f7f4ff; border-left:3px solid #6E4ED6; padding:12px 18px; margin-bottom:14px; border-radius:0 8px 8px 0; }
+  .theme-stripe p { margin:0; font-size:13px; color:#5B3CC4; font-weight:600; }
+  /* Section headers */
+  .section-hdr { display:flex; align-items:baseline; justify-content:space-between; margin:20px 0 8px 4px; }
+  .section-hdr .section-label { font-size:11px; font-weight:700; color:#999; text-transform:uppercase; letter-spacing:.1em; }
+  .section-hdr .window-count { font-size:11px; color:#6E4ED6; font-weight:600; text-decoration:none; }
+  /* Window card */
+  .window { background:#fff; border-radius:14px; overflow:hidden; margin-bottom:10px; border:1px solid #ece8f0; }
+  .window-inner { padding:18px 20px 12px; }
+  .win-flag { font-size:10px; font-weight:700; color:#c0392b; text-transform:uppercase; letter-spacing:.1em; margin:0 0 6px; }
+  .win-flag.open { color:#6E4ED6; }
+  .win-title { font-size:16px; font-weight:700; color:#1a0f3e; margin:0 0 7px; line-height:1.3; }
+  .jack-bridge { font-size:13px; color:#888; font-style:italic; margin:0 0 9px; }
+  .win-why { font-size:14px; color:#555; line-height:1.65; margin:0; }
+  .the-move { background:#faf7ff; border-top:1px solid #ece8f0; padding:14px 20px 16px; }
+  .move-lbl { font-size:10px; font-weight:700; color:#6E4ED6; text-transform:uppercase; letter-spacing:.1em; margin:0 0 10px; }
+  .move-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:9px; }
+  .move-bullet { color:#6E4ED6; font-weight:700; font-size:14px; flex-shrink:0; margin-top:2px; }
+  .move-text { font-size:14px; color:#333; line-height:1.55; margin:0; }
+  .move-text strong { color:#1a0f3e; }
+  .move-text em { color:#555; font-style:italic; }
+  .move-subhead { font-size:13px; font-weight:700; color:#1a0f3e; margin:10px 0 4px; }
+  .dash-link { margin-top:10px; font-size:12px; color:#6E4ED6; text-decoration:none; display:block; font-weight:600; }
+  /* Did you know */
+  .dyk { background:linear-gradient(135deg,#e8f4f0 0%,#d4eee6 100%); border-radius:14px; padding:20px 22px; margin-bottom:10px; border:1px solid #b8ddd3; }
+  .dyk-lbl { font-size:10px; font-weight:700; color:#1a7a5e; text-transform:uppercase; letter-spacing:.1em; margin:0 0 8px; }
+  .dyk p { font-size:14px; color:#1a3d32; line-height:1.65; margin:0; }
+  /* Tackled section */
+  .tackled { background:#fff; border-radius:14px; padding:18px 20px; margin-bottom:10px; border:1px solid #d4eed9; }
+  .tackled-lbl { font-size:10px; font-weight:700; color:#1a7a4e; text-transform:uppercase; letter-spacing:.1em; margin:0 0 10px; }
+  .tackled-item { display:flex; align-items:center; gap:10px; margin-bottom:7px; font-size:14px; color:#333; line-height:1.4; }
+  .tackled-check { font-size:16px; flex-shrink:0; }
+  .tackled-who { font-size:11px; color:#999; margin-left:4px; }
+  .tackled-nudge { font-size:14px; color:#555; line-height:1.65; }
+  .tackled-nudge a { color:#6E4ED6; font-weight:600; }
+  /* Next month */
+  .next-month { background:#fff; border-radius:14px; padding:18px 20px; margin-bottom:10px; border:1px solid #dde4f5; }
+  .next-lbl { font-size:10px; font-weight:700; color:#2d5bb5; text-transform:uppercase; letter-spacing:.1em; margin:0 0 12px; }
+  .next-item { display:flex; align-items:flex-start; gap:8px; margin-bottom:10px; }
+  .next-dot { color:#6E4ED6; font-weight:700; font-size:16px; flex-shrink:0; line-height:1.5; width:14px; text-align:center; }
+  .next-title { font-size:14px; color:#333; line-height:1.5; margin:0; flex:1; }
+  /* Birth reminder */
+  .birth-reminder { background:linear-gradient(135deg,#f3f0ff 0%,#ebe4ff 100%); border-radius:14px; padding:20px 22px; margin-bottom:10px; border:1px solid #c8b8f0; }
+  .birth-reminder-lbl { font-size:10px; font-weight:700; color:#5B3CC4; text-transform:uppercase; letter-spacing:.1em; margin:0 0 8px; }
+  .birth-reminder p { font-size:14px; color:#2d1b69; line-height:1.65; margin:0 0 10px; }
+  .birth-reminder a { color:#6E4ED6; font-weight:700; text-decoration:none; }
+  /* Co-parent */
+  .coparent { text-align:center; padding:14px 0; }
+  .coparent p { font-size:13px; color:#888; margin:0; }
+  .coparent a { color:#6E4ED6; font-weight:600; text-decoration:none; }
+  /* Closing */
+  .closing-card { background:linear-gradient(160deg,#1a0f3e 0%,#0d0820 100%); border-radius:14px; padding:24px 26px; margin-bottom:10px; }
+  .closing-card p { font-size:14px; color:rgba(255,255,255,.7); line-height:1.85; margin:0; font-style:italic; }
+  /* CTA */
+  .cta { text-align:center; padding:8px 0 24px; }
+  .cta a { background:#6E4ED6; color:#fff; font-size:15px; font-weight:700; text-decoration:none; padding:14px 36px; border-radius:100px; display:inline-block; }
+  /* Footer */
+  .footer { text-align:center; padding:0 0 32px; }
+  .footer p { font-size:11px; color:#aaa; margin:0 0 4px; line-height:1.7; }
+  .footer a { color:#aaa; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="preview-note"><strong>Redesign sample — Month 27.</strong>
+  Full bullet content (up to 8) · 3 windows · active window count · monthly theme ·
+  Did you know · Jack bridges · tackled section · coming next month · co-parent prompt.</div>
+
+  <div class="nav-bar"><a href="month0-redesign.html">Pre-birth</a><a href="month1-redesign.html">Month 1</a><a href="month2-redesign.html">Month 2</a><a href="month3-redesign.html">Month 3</a><a href="month4-redesign.html">Month 4</a><a href="month5-redesign.html">Month 5</a><a href="month6-redesign.html">Month 6</a><a href="month7-redesign.html">Month 7</a><a href="month8-redesign.html">Month 8</a><a href="month9-redesign.html">Month 9</a><a href="month10-redesign.html">Month 10</a><a href="month11-redesign.html">Month 11</a><a href="month12-redesign.html">Month 12</a><a href="month13-redesign.html">Month 13</a><a href="month14-redesign.html">Month 14</a><a href="month15-redesign.html">Month 15</a><a href="month16-redesign.html">Month 16</a><a href="month17-redesign.html">Month 17</a><a href="month18-redesign.html">Month 18</a><a href="month19-redesign.html">Month 19</a><a href="month20-redesign.html">Month 20</a><a href="month21-redesign.html">Month 21</a><a href="month22-redesign.html">Month 22</a><a href="month23-redesign.html">Month 23</a><a href="month24-redesign.html">Month 24</a><a href="month25-redesign.html">Month 25</a><a href="month26-redesign.html">Month 26</a><a href="month27-redesign.html" class="active">Month 27</a><a href="month28-redesign.html">Month 28</a><a href="month29-redesign.html">Month 29</a><a href="month30-redesign.html">Month 30</a><a href="month31-redesign.html">Month 31</a><a href="month32-redesign.html">Month 32</a><a href="month33-redesign.html">Month 33</a><a href="month34-redesign.html">Month 34</a><a href="month35-redesign.html">Month 35</a><a href="month36-redesign.html">Month 36</a></div>
+
+  <div class="subject-display">
+    <p class="label">Subject line</p>
+    <p class="subject">Is she ready for potty training? Here's the checklist.</p>
+    <p class="preheader">Olivia is 27 months old. Readiness signs, catching a ball, and speech clarity.</p>
+  </div>
+
+  <div class="hero">
+    <p class="logo">Scout</p>
+    <p class="age">Month 27</p>
+    <p class="childname">Olivia · 27 months old</p>
+    <p class="greeting">Hi there,</p>
+    <p class="opening">Olivia is 27 months old. Parents often ask about potty training around this age. The answer isn't about age — it's about readiness signs. Here's what to look for before you start.</p>
+    <p class="context">Twenty-seven months: potty training readiness varies widely. The signs matter more than the calendar.</p>
+  </div>
+
+  <div class="theme-stripe"><p>🚽 This month: potty readiness signs, catching a ball, and the 3-year speech clarity benchmark.</p></div>
+
+  <div class="section-hdr"><span class="section-label">This month's priority</span><a class="window-count" href="https://getfamilyforce.com/scout-dashboard.html">1 of 27 active windows · See all</a></div>
+  
+<div class="window">
+  <div class="window-inner">
+    <p class="win-flag open">⏳ Open window</p>
+    <p class="win-title">Potty training readiness — signs to watch for before you start</p>
+    <p class="jack-bridge">Starting before she's ready makes it longer and harder. Waiting for the signs makes it faster.</p>
+    <p class="win-why">Most children show readiness signs between 18 and 36 months. Starting before a child is ready leads to a longer, more frustrating process with more accidents and more resistance. Waiting for readiness signs — rather than starting at a fixed age — is the single most reliable predictor of a faster, lower-conflict potty training experience.</p>
+  </div>
+  <div class="the-move">
+    <p class="move-lbl">The move</p>
+    <div class="move-item"><span class="move-bullet">›</span><p class="move-text"><strong>Stay dry for 2+ hours:</strong> this shows bladder capacity and some control</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text"><strong>Shows awareness of going:</strong> tells you before, during, or just after — any awareness is a good sign</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text"><strong>Interest in the toilet or underwear:</strong> if she wants to sit on the potty, that's your opening</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text"><strong>Can follow 2-step instructions:</strong> "Go to the toilet and sit down" requires the same working memory as training</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text"><strong>Can pull pants up and down independently:</strong> this is a practical necessity for self-initiated toilet use</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Do not start if she cannot yet signal need — early training without signaling is toilet timing, not potty training</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Buy a floor potty and leave it out without pressure now — familiarity reduces fear when training begins</p></div>
+  </div>
+</div>
+  
+<div class="dyk">
+  <p class="dyk-lbl">💡 Did you know</p>
+  <p>Catching a ball isn't just a sports skill — it's <strong>visual-motor integration</strong>: anticipating a moving object's path, timing a movement, and adjusting for error in real time. These same skills underpin reading (tracking a moving line of text) and writing (anticipating where the pen needs to go).</p>
+</div>
+
+  <div class="section-hdr"><span class="section-label">Also this month</span><a class="window-count" href="https://getfamilyforce.com/scout-dashboard.html">2 of 27 active windows · See all</a></div>
+  
+<div class="window">
+  <div class="window-inner">
+    <p class="win-flag open">⏳ Open window</p>
+    <p class="win-title">Catches a large ball</p>
+    <p class="jack-bridge">Arms out, trap it against the body. That's the 30-month bar — a beach ball from close range.</p>
+    <p class="win-why">Most children develop the ability to catch a large ball around 30 to 36 months. It requires anticipating the ball's trajectory, timing the arm movement, and adjusting for errors in real time — visual-motor integration skills that also underpin reading and writing.</p>
+  </div>
+  <div class="the-move">
+    <p class="move-lbl">The move</p>
+    <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Use a large, soft ball (beach-ball size) — smaller balls require more precision than toddlers have</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Throw gently and directly to her outstretched arms from close range</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Celebrate any contact with the ball, not just a clean catch — the attempt is the learning</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Once catching is consistent: step back a little, or switch to a slightly smaller ball</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Kicking, throwing overarm, and catching all develop around this window — outdoor play time is the practice</p></div>
+  </div>
+</div>
+<div class="window">
+  <div class="window-inner">
+    <p class="win-flag open">⏳ Open window</p>
+    <p class="win-title">Strangers understand 75% of speech</p>
+    <p class="jack-bridge">By age 3, unfamiliar adults should understand most of what she says. Here's how to gauge it.</p>
+    <p class="win-why">Most children are understood by strangers approximately 75% of the time by around 36 months. This is the benchmark used by speech-language pathologists for evaluating speech clarity at age 3. Below this threshold often indicates a speech sound disorder that benefits from early therapy.</p>
+  </div>
+  <div class="the-move">
+    <p class="move-lbl">The move</p>
+    <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Note how often you have to translate for her in interactions with unfamiliar adults</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">At the 36-month visit, your pediatrician will assess speech intelligibility — come with an honest estimate</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Family members who know her well may understand 90%+ — what matters here is strangers</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">If unclear to strangers less than 50% of the time by 36 months, ask for a speech-language pathology evaluation</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Early speech therapy has a much higher success rate than intervention started at school age</p></div>
+  </div>
+</div>
+
+  
+<div class="tackled">
+  <p class="tackled-lbl">✅ What you've tackled this month</p>
+  <div class="tackled-item"><span class="tackled-check">✅</span>Colors — knows red, blue, and yellow<span class="tackled-who">— Both</span></div>
+<div class="tackled-item"><span class="tackled-check">✅</span>Counts to 10 — in sequence with some gaps<span class="tackled-who">— Dad</span></div>
+<div class="tackled-item"><span class="tackled-check">✅</span>Why questions — answering every one<span class="tackled-who">— Both</span></div>
+
+</div>
+  
+<div class="next-month">
+  <p class="next-lbl">🔜 A few things coming next month</p>
+  <div class="next-item"><span class="next-dot">›</span><p class="next-title">First jokes — using humor intentionally</p></div>
+<div class="next-item"><span class="next-dot">›</span><p class="next-title">Time concepts — morning, afternoon, yesterday, tomorrow</p></div>
+<div class="next-item"><span class="next-dot">›</span><p class="next-title">Named friendships — 'I want to play with Ella'</p></div>
+
+</div>
+  
+
+  <div class="coparent"><p>📩 <a href="#">Forward this to your co-parent</a> — they need it too.</p></div>
+
+  <div class="closing-card"><p>Potty training: wait for the signs. When they're there, go fast and don't look back. When they're not, wait. — Jack</p></div>
+
+  <div class="cta"><a href="https://getfamilyforce.com/scout-dashboard.html">Open Scout dashboard →</a></div>
+
+  <div class="footer">
+    <p><em>For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</em></p>
+    <p>Developmental windows medically reviewed by Karina Sanchez Mercado, MD · April 2026</p>
+    <p><a href="#">Unsubscribe</a> · FamilyForce, 6th Floor, 12P Smithfield, Kennedy Town, Hong Kong</p>
+  </div>
+
+</div>
+</body>
+</html>
