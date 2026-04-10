@@ -626,3 +626,166 @@ export function buildDigestSubject(
 
   return `${childName} at ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'} — ${aboveFold.length} things to know this month`
 }
+
+// ─── Pre-birth email ──────────────────────────────────────────────────────────
+export interface PreBirthEmailOptions {
+  childName:    string
+  dueDate:      Date
+  daysLeft:     number      // negative = overdue
+  windows:      DigestWindow[]
+  dashboardUrl: string
+  siteUrl:      string
+  userId:       string
+}
+
+export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
+  const { childName, dueDate, daysLeft, windows, dashboardUrl, siteUrl } = opts
+
+  const dueDateStr = dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
+  const isOverdue  = daysLeft <= 0
+
+  const headline = isOverdue
+    ? `Is ${childName} here?`
+    : daysLeft === 1
+      ? `${childName} arrives tomorrow.`
+      : `${childName} arrives in ${daysLeft} days.`
+
+  const subhead = isOverdue
+    ? `Your due date (${dueDateStr}) has passed. When your baby arrives, confirm their birth in Scout to start full milestone tracking.`
+    : `Your due date is ${dueDateStr}. Here's what to have ready before they arrive.`
+
+  const windowCards = windows.length > 0
+    ? windows.map(w => {
+        const excerpt    = (w.why_it_matters || '').replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim()
+        const actionLine = (w.what_to_do || '').split('\n')[0].replace(/^[-•·]\s*/, '').trim()
+        return `
+  <tr>
+    <td style="padding-bottom:16px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1px solid ${C.border};border-radius:14px;overflow:hidden">
+        <tr>
+          <td style="padding:20px 22px">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding-bottom:8px">
+                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:${C.text};margin:0;line-height:1.3">${w.title}</p>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding-bottom:14px">
+                  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${excerpt}</p>
+                </td>
+              </tr>
+              ${actionLine ? `
+              <tr>
+                <td>
+                  <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:10px">
+                    <tr>
+                      <td style="padding:12px 16px">
+                        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p>
+                        <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.6">${actionLine}</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>` : ''}
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>`
+      }).join('')
+    : `<tr><td style="padding-bottom:16px"><p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};line-height:1.7">No active prep windows right now — you're all caught up before arrival.</p></td></tr>`
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>${headline}</title></head>
+<body style="margin:0;padding:0;background:${C.bg};font-family:Arial,sans-serif;-webkit-font-smoothing:antialiased">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:${C.bg}">
+  <tr>
+    <td align="center" style="padding:32px 16px 48px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="max-width:600px">
+
+        <!-- Logo -->
+        <tr>
+          <td align="center" style="padding-bottom:28px">
+            <a href="${siteUrl}" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none">
+              <span style="font-family:Arial,sans-serif;font-size:17px;font-weight:700;color:${C.text}">Family<span style="color:${C.terra}">Force</span></span>
+            </a>
+          </td>
+        </tr>
+
+        <!-- Header card -->
+        <tr>
+          <td style="padding-bottom:24px">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.indigoDeep};border-radius:20px">
+              <tr>
+                <td style="padding:36px 32px">
+                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:28px;color:#fff;margin:0 0 12px;line-height:1.2;font-style:italic">${headline}</p>
+                  <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.7);margin:0;line-height:1.7">${subhead}</p>
+                  ${isOverdue ? `
+                  <table cellpadding="0" cellspacing="0" style="margin-top:24px">
+                    <tr>
+                      <td style="background:${C.terra};border-radius:100px;padding:12px 24px">
+                        <a href="${dashboardUrl}" style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:#fff;text-decoration:none">Confirm arrival in Scout →</a>
+                      </td>
+                    </tr>
+                  </table>` : ''}
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        ${!isOverdue && windows.length > 0 ? `
+        <!-- Section label -->
+        <tr>
+          <td style="padding-bottom:16px">
+            <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${C.terra};margin:0">Before ${childName} arrives</p>
+          </td>
+        </tr>
+
+        <!-- Window cards -->
+        ${windowCards}` : ''}
+
+        ${isOverdue ? `
+        <!-- Overdue encouragement -->
+        <tr>
+          <td style="padding-bottom:24px">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:14px">
+              <tr>
+                <td style="padding:24px 28px">
+                  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.7">Once you confirm ${childName}'s arrival, Scout will send your first milestone digest — timed to their exact birth date, with everything that matters in the first weeks and months ahead.</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>` : `
+        <!-- Dashboard CTA -->
+        <tr>
+          <td align="center" style="padding-top:8px;padding-bottom:32px">
+            <table cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="background:${C.terra};border-radius:100px;padding:14px 32px">
+                  <a href="${dashboardUrl}" style="font-family:Arial,sans-serif;font-size:15px;font-weight:700;color:#fff;text-decoration:none">Open your Scout dashboard →</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>`}
+
+        <!-- Footer -->
+        <tr>
+          <td style="border-top:1px solid ${C.border};padding-top:24px">
+            <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0 0 8px;line-height:1.6;text-align:center">Scout by FamilyForce · <a href="${siteUrl}" style="color:${C.textDim}">getfamilyforce.com</a></p>
+            <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0;line-height:1.6;text-align:center">For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>`
+}
