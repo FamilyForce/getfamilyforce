@@ -772,7 +772,7 @@ html = page(
     hero_age="Month 7", hero_name="Olivia · 30 weeks old",
     opening="Olivia is 7 months old. Mobility is coming — crawling, pulling, rolling — and with it comes a world that suddenly needs a closer look for hazards. Here's what to focus on.",
     context="Seven months: the world is getting much more interesting. And so are the hazards.",
-    theme="🔒 This month: babyproof before she moves, establish name response, and close out the iron window.",
+    theme="🔒 This month: babyproof before she moves, establish name response, and open the dairy window.",
     total_windows=50,
     priority_card_html=window_card(
         "⏱ Closing this month", "",
@@ -800,19 +800,19 @@ html = page(
 * Make name calling a positive event: say the name, she turns, you smile and engage
 * If reliable name response isn't there by 9 months, flag it at the next well visit — it's a developmental marker on the M-CHAT""",
     ) + window_card(
-        "⏱ Closing this month", "",
-        "Introduce iron-fortified foods with first solids",
-        "Breast milk is excellent nutrition — but iron stores run out around now.",
-        "Around 6 months, a baby's natural iron stores are nearly gone. Iron is non-negotiable for brain development. Iron-fortified cereals or pureed meats are the easiest way to close the gap.",
-        """* Choose iron-fortified infant cereals like oat or barley — mix with breast milk or formula to increase acceptance
-* Pureed meats (beef, chicken, turkey) are excellent natural sources of iron and zinc
-* Offer iron-rich foods at most meals — consistency matters more than quantity at this stage
-* Continue iron drops if still predominantly breastfeeding and not yet eating consistent iron-rich foods
-* Pair iron-rich foods with vitamin C (pureed sweet potato, peas) to increase iron absorption""",
+        "⏳ Open window", "open",
+        "Introduce dairy (yogurt and cheese) — early allergen",
+        "No cow's milk to drink yet — but yogurt and cheese start now.",
+        "While babies should not drink cow's milk as a beverage until 12 months, they can and should have dairy products like yogurt and cheese starting around 6 months. Early exposure helps prevent milk protein allergies — the same principle that changed guidance on peanut and egg introduction.",
+        """* Offer plain, full-fat Greek yogurt — no added sugar. It's an excellent source of protein, fat, and calcium.
+* Provide small pieces of pasteurised, mild cheese: cheddar, mozzarella, or cream cheese work well. Always confirm it's pasteurised — raw milk cheeses carry a severe infection risk for infants.
+* Introduce one at a time over a few days to monitor for reactions
+* Watch for skin rashes, hives, excessive spitting up, or changes in stool
+* Once tolerated, offer dairy regularly — consistency is how tolerance is maintained""",
     ),
     tackled_html=tackled_section([
-        ("Room sharing transition — done", "Both"),
-        ("First solids — iron-fortified foods started", "Mum"),
+        ("6-month checkup — done", "Both"),
+        ("First solids — purées going well", "Mum"),
         ("Babyproofing — in progress", "Dad"),
     ]),
     next_month_html=next_month_section([
@@ -950,54 +950,56 @@ print("Written: month9-redesign.html")
 # ═══════════════════════════════════════════════════════════════════════════════
 html = page(
     nav_label="Month 10", title_label="Month 10",
-    subject="She knows you come back. That's the whole thing.",
-    preheader="Olivia is 10 months old. Object permanence, stranger anxiety, and the peanut window closing.",
+    subject="The last allergen on the list — and she's pulling up to stand.",
+    preheader="Olivia is 10 months old. Fish intro, peek-a-boo, and the beginning of upright life.",
     hero_age="Month 10", hero_name="Olivia · 43 weeks old",
-    opening="Olivia is 10 months old. She's getting more intentional — pointing, gesturing, looking at you when something interests her. That's joint attention, and it's one of the most important things happening right now.",
-    context="Ten months: watch for pointing and shared looks. That's communication, even without words.",
-    theme="🧸 This month: the peanut window closes, peek-a-boo matters more than you think, and stranger anxiety is healthy.",
+    opening="Olivia is 10 months old. She's pulling up to stand, cruising the furniture, and making it very clear she has places to be. Here's what matters this month.",
+    context="Ten months: upright and opinionated. The walking window is getting closer.",
+    theme="🐟 This month: the last major allergen to introduce, peek-a-boo for the brain, and the milestone that changes your safety checklist.",
     total_windows=43,
     priority_card_html=window_card(
-        "⏱ Closing this month", "",
-        "⚠️ Peanut introduction — closing window",
-        "If this hasn't happened yet, this month is the last of the high-benefit window.",
-        "The LEAP study showed early peanut introduction (4–11 months) reduces allergy risk by up to 80%. Month 11 is outside the primary window. If you haven't introduced peanuts yet, this month matters.",
-        """* If your child has no eczema and no known food allergies: introduce at home today, no doctor visit required
-* Method: small tip-of-the-spoon taste of smooth peanut butter thinned with water or purée — never whole peanuts (choking hazard)
-* Wait 10 minutes after the first taste. If no reaction, continue offering.
-* Once tolerated: offer peanut-containing foods 3 times per week. Irregular exposure is not sufficient to maintain tolerance.
-* If you have any concerns: call your pediatrician. The worst outcome is delaying unnecessarily.""",
+        "⏳ Open window", "open",
+        "Introduce fish — early allergen",
+        "Fish is on the major allergen list. Early introduction is the protective move.",
+        "Fish is a common allergen — but early introduction during the first year reduces the risk of a lifelong fish allergy. Fish also provides DHA, which is essential for brain and eye development. This rounds out the major allergen introductions that started at 6 months.",
+        """* Offer well-cooked, puréed or finely flaked white fish — cod, sole, or haddock are good starting options; salmon works too
+* Check absolutely for bones before offering — even a tiny bone is a choking hazard
+* Introduce fish alone for 3 days before mixing with other foods, so any reaction can be identified clearly
+* Watch for 20 minutes after the first introduction
+* Once tolerated, keep fish in regular rotation — DHA continues to support brain development through early childhood
+* Shellfish (shrimp, crab, lobster) is a separate allergen — introduce separately from fin fish""",
     ),
     dyk_html=dyk_card("Peek-a-boo teaches three things simultaneously: **object permanence** (you disappear and still exist), **trust** (you always come back), and **conversational turn-taking**. It's one of the most cognitively rich games in early childhood — and it costs nothing."),
     supporting_cards_html=window_card(
-        "⏱ Closing this month", "",
+        "⏳ Open window", "open",
         "Peek-a-boo — object permanence and trust",
         "This isn't just a game. It's a cognitive and emotional workout.",
         "Peek-a-boo teaches object permanence (you disappear and reappear, you still exist), trust (you always come back), and the structure of social turn-taking. These are foundational concepts being built right now.",
         """* Use your hands, a cloth, a corner — any method of disappearing and reappearing
 * Build anticipation: slow down before the reveal to create the suspense
 * Let her initiate as she gets older — and follow her lead on timing
-* Vary it: peek from behind a door, a pillow, a high chair tray""",
+* Vary it: peek from behind a door, a pillow, a high chair tray
+* Her laughter during peek-a-boo isn't just joy — it's the brain consolidating the lesson that things exist even when hidden""",
     ) + window_card(
-        "⏱ Closing this month", "",
-        "Stranger anxiety — this is healthy",
-        "When she cries at grandma, it's not rudeness. It's a sign of secure attachment.",
-        "Stranger anxiety — wariness or distress around unfamiliar people — is something most babies develop between 6 and 10 months. It's a sign of healthy attachment: she has formed a clear primary bond and can now distinguish between safe and unfamiliar.",
-        """* Do not force interaction with strangers or unfamiliar relatives — this backfires
-* Stay in sight when introducing a new person. Your presence is the safety signal.
-* Give her time to warm up on her own terms. Most babies do, given space.
-* Brief the grandparents: *"Give her a few minutes. Don't push for hugs. Let her come to you."*
-* This phase typically peaks at 8–10 months and softens through the second year""",
+        "⏳ Open window", "open",
+        "Pulls to standing",
+        "The moment she pulls up, your safety checklist changes.",
+        "Pulling to standing is the beginning of the transition from floor life to upright life. It requires significant leg and grip strength, and once she can do it, she can reach things on low tables and counters that were previously safe. This is when furniture anchoring becomes urgent if it isn't already done.",
+        """* **Lower the crib mattress to the lowest setting immediately** — she can now pull up in the crib and could fall over the rail
+* Ensure all heavy furniture — bookshelves, dressers, TVs — is anchored to the wall. Tip-over accidents are a leading cause of child injury.
+* Provide sturdy surfaces for practice: a heavy coffee table, a sofa edge, or a low windowsill
+* She may not be able to get back down yet — that's normal. Show her how to bend her knees and sit safely.
+* If she's not attempting to pull up by 12 months, flag it at the 12-month visit""",
     ),
     tackled_html=tackled_section([
         ("9-month checkup — developmental screen passed", "Both"),
-        ("Peanut intro — started", "Mum"),
+        ("Peanut intro — started, offering 3x/week", "Mum"),
         ("Sesame introduced — no reaction", "Dad"),
     ]),
     next_month_html=next_month_section([
-        "Infant CPR training — know what to do in an emergency",
-        "Back to sleep — review safe sleep practices as she becomes more mobile",
-        "Read aloud every day — the habit that builds school readiness",
+        "Cruising along furniture — the last step before walking",
+        "'Mama' and 'dada' used specifically — the 12-month visit will ask",
+        "First dental visit — at first tooth or by 12 months",
     ]),
     closing_text="Ten months goes fast. She's a communicator now — not with words yet, but with everything else. Two months to the first birthday. — Jack",
 )
@@ -1074,7 +1076,7 @@ html = page(
     hero_age="Month 12", hero_name="Olivia · 52 weeks old",
     opening="Olivia is 12 months old. One year. You did it. The first year of life is one of the most developmentally dense periods of any human life — and you navigated all of it. Here's what the 12-month visit covers and what to focus on now.",
     context="The first year is done. One of the most remarkable developmental years of any human life — and you were there for all of it.",
-    theme="🎂 This month: the 12-month visit, reading aloud every day, and transitioning to a cup.",
+    theme="🎂 This month: the 12-month visit, reading aloud every day, and the switch to whole milk.",
     total_windows=56,
     priority_card_html=window_card(
         "⏱ Closing this month", "",
@@ -1100,17 +1102,18 @@ html = page(
 * Reading for 15 minutes per day adds up to roughly 90 hours per year. At age 5, that's 450 hours of language-rich interaction on top of everything else you do.""",
     ) + window_card(
         "⏱ Closing this month", "",
-        "Sippy or straw cup introduction",
-        "Start the transition now. Bottle dependence past 18 months causes dental and speech issues.",
-        "Learning to use a cup is a motor skill that prevents dental and speech problems associated with long-term bottle use. Starting at 6 months with small sips of water builds the skill early. By 12–15 months, aim to phase out bottles entirely.",
-        """* Offer a straw cup or open cup with a tiny amount of water at meal times
-* Weighted straw cups are often easier for babies to learn than traditional sippy cups with valves
-* Be patient: it takes weeks of practice before they swallow more than they spill
-* By 12–15 months: start reducing bottle use at meals, keeping it only for sleep feeds if needed
-* Goal: fully off bottles by 15–18 months. The longer bottle use continues past that, the harder the transition.""",
+        "Switch to whole cow's milk at 12 months",
+        "Formula and exclusive breast milk give way to whole milk. Here's how to do it right.",
+        "At one year, most babies can digest the proteins in cow's milk and no longer need formula. Whole milk provides the specific fats needed for brain development through age two. Do not switch before 12 months — infant kidneys cannot handle the protein load of cow's milk before that point.",
+        """* Transition gradually: mix ¼ whole milk with ¾ formula for a few days, then ½ and ½, then all milk
+* Use full-fat (whole) milk — not 2% or skim. The brain needs those fats through age two.
+* Cap intake at 16–24 oz per day. More than 24 oz/day displaces solid food and can cause iron-deficiency anaemia.
+* If breastfeeding, you can continue alongside cow's milk — no need to stop if it's working
+* If there's a family history of dairy allergy, consult your pediatrician before the switch
+* Transition to a straw cup or open cup at the same time — milk in a bottle past 15–18 months causes dental decay""",
     ),
     tackled_html=tackled_section([
-        ("CPR training — done", "Both"),
+        ("Cruising — furniture laps every day", "Both"),
         ("First dental visit — complete", "Mum"),
         ("'Mama' and 'dada' — specific and consistent", "Both"),
     ]),
