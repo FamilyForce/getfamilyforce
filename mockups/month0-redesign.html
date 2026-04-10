@@ -63,10 +63,15 @@
   .tackled-nudge a { color:#6E4ED6; font-weight:600; }
   /* Next month */
   .next-month { background:#fff; border-radius:14px; padding:18px 20px; margin-bottom:10px; border:1px solid #dde4f5; }
-  .next-lbl { font-size:10px; font-weight:700; color:#2d5bb5; text-transform:uppercase; letter-spacing:.1em; margin:0 0 10px; }
-  .next-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:7px; }
-  .next-dot { color:#6E4ED6; font-size:18px; flex-shrink:0; line-height:1; }
-  .next-title { font-size:14px; color:#333; line-height:1.4; }
+  .next-lbl { font-size:10px; font-weight:700; color:#2d5bb5; text-transform:uppercase; letter-spacing:.1em; margin:0 0 12px; }
+  .next-item { display:flex; align-items:flex-start; gap:8px; margin-bottom:10px; }
+  .next-dot { color:#6E4ED6; font-weight:700; font-size:16px; flex-shrink:0; line-height:1.5; width:14px; text-align:center; }
+  .next-title { font-size:14px; color:#333; line-height:1.5; margin:0; flex:1; }
+  /* Birth reminder */
+  .birth-reminder { background:linear-gradient(135deg,#f3f0ff 0%,#ebe4ff 100%); border-radius:14px; padding:20px 22px; margin-bottom:10px; border:1px solid #c8b8f0; }
+  .birth-reminder-lbl { font-size:10px; font-weight:700; color:#5B3CC4; text-transform:uppercase; letter-spacing:.1em; margin:0 0 8px; }
+  .birth-reminder p { font-size:14px; color:#2d1b69; line-height:1.65; margin:0 0 10px; }
+  .birth-reminder a { color:#6E4ED6; font-weight:700; text-decoration:none; }
   /* Co-parent */
   .coparent { text-align:center; padding:14px 0; }
   .coparent p { font-size:13px; color:#888; margin:0; }
@@ -128,8 +133,10 @@
 <div class="move-item"><span class="move-bullet">›</span><p class="move-text"><em></em> What hospital are you affiliated with?</p></div>
 <div class="move-item"><span class="move-bullet">›</span><p class="move-text"><em></em> What is your approach to breastfeeding support?</p></div>
 <div class="move-item"><span class="move-bullet">›</span><p class="move-text"><em></em> What is your vaccine policy?</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text"><em></em> How long does it typically take to get a sick visit?</p></div>
 <p class="move-subhead">What matters most:</p>
-    <a class="dash-link" href="https://getfamilyforce.com/scout-dashboard.html">Full question list for the prenatal consult →</a>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Find someone you can call at 2am without hesitation. Bedside manner matters more than credentials on the wall.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Confirm the practice is in your insurance network before you commit. This is the most common post-birth billing surprise.</p></div>
   </div>
 </div>
   
@@ -157,7 +164,14 @@
 <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Toiletries: toothbrush, shampoo, dry shampoo, face wash, lip balm</p></div>
 <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Nursing bra and breast pads if planning to breastfeed</p></div>
 <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Snacks for labor: granola bars, electrolyte drinks (hospitals often restrict eating during active labor)</p></div>
-    <a class="dash-link" href="https://getfamilyforce.com/scout-dashboard.html">Full hospital bag checklist →</a>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Going-home outfit sized for 6 months pregnant — you won't fit into pre-pregnancy clothes yet</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">For the baby:</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Car seat — installed and inspected before you leave home (many hospitals won't discharge without it)</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Going-home outfit in both newborn and 0–3 months sizes</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">One swaddle blanket</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">For the partner or support person:</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Snacks, change of clothes, phone charger</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">A pillow from home — hospital pillows are thin</p></div>
   </div>
 </div>
 <div class="window">
@@ -177,7 +191,6 @@
 <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Don't panic. Most follow-up results are false positives.</p></div>
 <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Call your pediatrician — they will guide next steps.</p></div>
 <div class="move-item"><span class="move-bullet">›</span><p class="move-text">The screen exists because catching these conditions early changes the outcome. A follow-up call is the system working.</p></div>
-    <a class="dash-link" href="https://getfamilyforce.com/scout-dashboard.html">Newborn screening — full guide →</a>
   </div>
 </div>
 
@@ -189,11 +202,16 @@
   
 <div class="next-month">
   <p class="next-lbl">🔜 Coming next month</p>
-  <div class="next-item"><span class="next-dot">·</span><p class="next-title">Serve and return — the foundation of language (starts at birth)</p></div>
-<div class="next-item"><span class="next-dot">·</span><p class="next-title">Skin-to-skin bonding — the first hours matter</p></div>
-<div class="next-item"><span class="next-dot">·</span><p class="next-title">Parent mental health — screen for postpartum depression</p></div>
+  <div class="next-item"><span class="next-dot">›</span><p class="next-title">Serve and return — the foundation of language (starts at birth)</p></div>
+<div class="next-item"><span class="next-dot">›</span><p class="next-title">Skin-to-skin bonding — the first hours matter</p></div>
+<div class="next-item"><span class="next-dot">›</span><p class="next-title">Parent mental health — screen for postpartum depression</p></div>
 
-  <a class="dash-link" href="https://getfamilyforce.com/scout-dashboard.html">See all upcoming windows in Scout →</a>
+</div>
+  
+<div class="birth-reminder">
+  <p class="birth-reminder-lbl">📅 When Olivia arrives</p>
+  <p>Open Scout and update her birthday — your <strong>Month 1 digest fires automatically</strong> on her 4-week birthday. You won't need to do anything else.</p>
+  <a href="https://getfamilyforce.com/scout-dashboard.html">Update in Scout →</a>
 </div>
 
   <div class="coparent"><p>📩 <a href="#">Forward this to your co-parent</a> — they need it too.</p></div>

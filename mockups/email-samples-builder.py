@@ -76,10 +76,15 @@ CSS = """
   .tackled-nudge a { color:#6E4ED6; font-weight:600; }
   /* Next month */
   .next-month { background:#fff; border-radius:14px; padding:18px 20px; margin-bottom:10px; border:1px solid #dde4f5; }
-  .next-lbl { font-size:10px; font-weight:700; color:#2d5bb5; text-transform:uppercase; letter-spacing:.1em; margin:0 0 10px; }
-  .next-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:7px; }
-  .next-dot { color:#6E4ED6; font-size:18px; flex-shrink:0; line-height:1; }
-  .next-title { font-size:14px; color:#333; line-height:1.4; }
+  .next-lbl { font-size:10px; font-weight:700; color:#2d5bb5; text-transform:uppercase; letter-spacing:.1em; margin:0 0 12px; }
+  .next-item { display:flex; align-items:flex-start; gap:8px; margin-bottom:10px; }
+  .next-dot { color:#6E4ED6; font-weight:700; font-size:16px; flex-shrink:0; line-height:1.5; width:14px; text-align:center; }
+  .next-title { font-size:14px; color:#333; line-height:1.5; margin:0; flex:1; }
+  /* Birth reminder */
+  .birth-reminder { background:linear-gradient(135deg,#f3f0ff 0%,#ebe4ff 100%); border-radius:14px; padding:20px 22px; margin-bottom:10px; border:1px solid #c8b8f0; }
+  .birth-reminder-lbl { font-size:10px; font-weight:700; color:#5B3CC4; text-transform:uppercase; letter-spacing:.1em; margin:0 0 8px; }
+  .birth-reminder p { font-size:14px; color:#2d1b69; line-height:1.65; margin:0 0 10px; }
+  .birth-reminder a { color:#6E4ED6; font-weight:700; text-decoration:none; }
   /* Co-parent */
   .coparent { text-align:center; padding:14px 0; }
   .coparent p { font-size:13px; color:#888; margin:0; }
@@ -104,8 +109,8 @@ def md_to_html(text):
     text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', text)
     return text
 
-def format_bullets(what_to_do, max_bullets=8):
-    """Render up to max_bullets bullet points from what_to_do markdown."""
+def format_bullets(what_to_do, max_bullets=999):
+    """Render all bullet points from what_to_do markdown (no cap by default)."""
     if not what_to_do:
         return ""
     lines   = what_to_do.strip().split("\n")
@@ -145,7 +150,7 @@ def format_bullets(what_to_do, max_bullets=8):
                 bullets += 1
     return "\n".join(html)
 
-def window_card(flag_text, flag_cls, title, bridge, why_excerpt, what_to_do_text, link_text, link_href):
+def window_card(flag_text, flag_cls, title, bridge, why_excerpt, what_to_do_text):
     bullets = format_bullets(what_to_do_text)
     flag_class = "win-flag" + (" open" if flag_cls == "open" else "")
     return f"""
@@ -159,7 +164,6 @@ def window_card(flag_text, flag_cls, title, bridge, why_excerpt, what_to_do_text
   <div class="the-move">
     <p class="move-lbl">The move</p>
     {bullets}
-    <a class="dash-link" href="{link_href}">{link_text} →</a>
   </div>
 </div>"""
 
@@ -192,12 +196,19 @@ def next_month_section(items):
     """items = list of title strings."""
     rows = ""
     for title in items:
-        rows += f'<div class="next-item"><span class="next-dot">·</span><p class="next-title">{md_to_html(title)}</p></div>\n'
+        rows += f'<div class="next-item"><span class="next-dot">›</span><p class="next-title">{md_to_html(title)}</p></div>\n'
     return f"""
 <div class="next-month">
   <p class="next-lbl">🔜 Coming next month</p>
   {rows}
-  <a class="dash-link" href="{DASHBOARD}">See all upcoming windows in Scout →</a>
+</div>"""
+
+def birth_reminder_card():
+    return f"""
+<div class="birth-reminder">
+  <p class="birth-reminder-lbl">📅 When Olivia arrives</p>
+  <p>Open Scout and update her birthday — your <strong>Month 1 digest fires automatically</strong> on her 4-week birthday. You won't need to do anything else.</p>
+  <a href="{DASHBOARD}">Update in Scout →</a>
 </div>"""
 
 def section_header(label, count_shown, count_total):
@@ -230,7 +241,8 @@ def page(nav_label, title_label, subject, preheader,
          supporting_cards_html,
          tackled_html,
          next_month_html,
-         closing_text):
+         closing_text,
+         extra_card_html=""):
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -275,6 +287,7 @@ def page(nav_label, title_label, subject, preheader,
 
   {tackled_html}
   {next_month_html}
+  {extra_card_html}
 
   <div class="coparent"><p>📩 <a href="#">Forward this to your co-parent</a> — they need it too.</p></div>
 
@@ -323,8 +336,7 @@ html = page(
 
 **What matters most:**
 * Find someone you can call at 2am without hesitation. Bedside manner matters more than credentials on the wall.
-* Confirm the practice is in your insurance network before you commit. This is the most common post-birth billing surprise.""",
-        "Full question list for the prenatal consult", DASHBOARD,
+* Confirm the practice is in your insurance network before you commit. This is the most common post-birth billing surprise."""
     ),
     dyk_html=dyk_card("Babies can hear their mother's voice in the womb from around week 18. **By birth, she already recognises you.** The moment you start talking to her in the delivery room, she knows who you are."),
     supporting_cards_html=window_card(
@@ -349,8 +361,7 @@ For the baby:
 
 For the partner or support person:
 * Snacks, change of clothes, phone charger
-* A pillow from home — hospital pillows are thin""",
-        "Full hospital bag checklist", DASHBOARD,
+* A pillow from home — hospital pillows are thin"""
     ) + window_card(
         "ℹ️ Know before you go", "open",
         "Understand newborn screening before the birth",
@@ -365,8 +376,7 @@ For the partner or support person:
 **What to do if a result needs follow-up:**
 * Don't panic. Most follow-up results are false positives.
 * Call your pediatrician — they will guide next steps.
-* The screen exists because catching these conditions early changes the outcome. A follow-up call is the system working.""",
-        "Newborn screening — full guide", DASHBOARD,
+* The screen exists because catching these conditions early changes the outcome. A follow-up call is the system working."""
     ),
     tackled_html=tackled_section(None),  # first email — nudge state
     next_month_html=next_month_section([
@@ -374,6 +384,7 @@ For the partner or support person:
         "Skin-to-skin bonding — the first hours matter",
         "Parent mental health — screen for postpartum depression",
     ]),
+    extra_card_html=birth_reminder_card(),
     closing_text="You're close now. Everything you do in the next few weeks makes the first days easier. We'll be with you from day one — your first monthly digest arrives when Olivia turns 1 month old. Until then: you're ready. — Jack",
 )
 with open(f"{OUT}/month0-redesign.html", "w") as f: f.write(html)
@@ -404,8 +415,7 @@ html = page(
 **What to watch for before this visit:**
 * Baby not back to birth weight by week 2 to 3 — flag this early
 * Feeding taking more than 45 minutes per session, or baby seeming exhausted during feeds
-* Any yellowing of skin or eyes persisting past 2 weeks""",
-        "Full 1-month visit checklist", DASHBOARD,
+* Any yellowing of skin or eyes persisting past 2 weeks"""
     ),
     dyk_html=dyk_card("Tummy time is one of the **strongest predictors of motor milestones through age 2.** Babies who do consistent daily tummy time crawl earlier, stand earlier, and walk earlier. You don't need equipment or a schedule — a few minutes on your chest counts."),
     supporting_cards_html=window_card(
@@ -418,8 +428,7 @@ html = page(
 * Start on your chest if she hates it on the floor — chest tummy time counts
 * Toys, mirrors, and siblings make it more tolerable
 * Try a rolled towel under the chest for support on a flat surface
-* If she cries immediately: pick her up, wait, try again in 30 minutes. Short sessions with no crying build the habit better than long sessions with distress.""",
-        "Full tummy time guide", DASHBOARD,
+* If she cries immediately: pick her up, wait, try again in 30 minutes. Short sessions with no crying build the habit better than long sessions with distress."""
     ) + window_card(
         "⏱ Closing this month", "",
         "Screen for postpartum depression — both of you",
@@ -429,8 +438,7 @@ html = page(
 * If your provider doesn't offer it, ask: *"Can we do the postpartum depression screen today?"*
 * Partners should also screen. Paternal postpartum depression is real, underdiagnosed, and treatable.
 * A high score is not a diagnosis. It's a flag that starts a conversation with your doctor.
-* Treatment is effective. Therapy, medication, and support groups all have strong evidence. Most people improve significantly within 3 months of starting treatment.""",
-        "What to do if you screen positive", "https://postpartum.net/get-help",
+* Treatment is effective. Therapy, medication, and support groups all have strong evidence. Most people improve significantly within 3 months of starting treatment."""
     ),
     tackled_html=tackled_section(None),  # first email — nudge state
     next_month_html=next_month_section([
@@ -463,8 +471,7 @@ html = page(
         """* Schedule on time. Vaccines are timed to the immune system's development — delays matter.
 * For fever post-vaccine: infant acetaminophen is appropriate after 2 months. Ask your pediatrician about dosing at the visit. A rectal temperature of 100.4°F (38°C) or higher in a baby under 3 months requires a call regardless of vaccine status.
 * Bring your tummy time progress update. Your pediatrician will ask and tell you what to expect before the 4-month visit.
-* Ask about the social smile — whether you've seen it, and what to do if you haven't by 3 months.""",
-        "What to expect at the 2-month visit", DASHBOARD,
+* Ask about the social smile — whether you've seen it, and what to do if you haven't by 3 months."""
     ),
     dyk_html=dyk_card("The social smile requires your baby to recognise your face, recall past interactions, and coordinate a voluntary muscle response — all at once. **It's one of the most cognitively complex things she'll do in her entire first year.** When it comes, you'll understand why people do this twice."),
     supporting_cards_html=window_card(
@@ -476,8 +483,7 @@ html = page(
 * Smile, talk, and wait. Give her time to respond. The social smile takes a beat — it's not instant.
 * Respond to every smile: smile back, say something, make it a two-way exchange.
 * Try different expressions and tones. Some babies respond more to high-pitched voices. Some respond more to animated faces.
-* Not there yet at 8 weeks? Keep trying. The range is 6–12 weeks. If it's absent at 3 months, flag it.""",
-        "What the social smile means developmentally", DASHBOARD,
+* Not there yet at 8 weeks? Keep trying. The range is 6–12 weeks. If it's absent at 3 months, flag it."""
     ) + window_card(
         "⏳ Open window", "open",
         "Serve and return — the foundation of language",
@@ -487,8 +493,7 @@ html = page(
 * When your baby coos, coo back. When they look at something, look at it too and name it.
 * Put the phone down during feeding and face-to-face time. Your face is the most interesting thing in their world right now.
 * Pause after responding to see if she initiates again. You're teaching her the rhythm of conversation.
-* Books count as serve and return: point at pictures, wait for her to look, name what she sees.""",
-        "Serve and return — full guide", DASHBOARD,
+* Books count as serve and return: point at pictures, wait for her to look, name what she sees."""
     ),
     tackled_html=tackled_section([
         ("1-month well child visit", "Mum"),
@@ -525,8 +530,7 @@ html = page(
 * Hold her in supported upright positions during waking hours: facing outward in your arms, or in a baby carrier.
 * At the 4-month well child visit, your pediatrician will assess this directly.
 * If head control isn't there by 4 months: flag it at the visit. There's a wide range, but it's worth checking.
-* Practice "airplane" hold: face-down on your forearm, hand supporting the chest — builds neck and core simultaneously.""",
-        "Head control milestone — full guide", DASHBOARD,
+* Practice "airplane" hold: face-down on your forearm, hand supporting the chest — builds neck and core simultaneously."""
     ),
     dyk_html=dyk_card("Children who had more serve and return interactions in infancy **score measurably higher on language tests at age 5.** No flashcards, no apps. Responding to her sounds and looks is the whole thing."),
     supporting_cards_html=window_card(
@@ -538,8 +542,7 @@ html = page(
 * Name her emotions when they're obvious: *"You're frustrated. I hear you."* Emotional vocabulary starts here.
 * Books count. Point to pictures, wait for her to look, name what she's looking at.
 * Move serve and return into new contexts: bath time, walks, meal prep. Narrate everything.
-* You don't need a special activity or class. This happens in the margins of everyday life.""",
-        "Serve and return — full guide", DASHBOARD,
+* You don't need a special activity or class. This happens in the margins of everyday life."""
     ) + window_card(
         "⏳ Open window", "open",
         "Room sharing without bed sharing",
@@ -549,8 +552,7 @@ html = page(
 * If you're tempted to bring the baby into your bed during a night feed: set up the return to be easy — darkness, white noise, firm surface nearby.
 * After 6 months, transitioning to their own room is developmentally appropriate and safe.
 * The 'ideally the full first year' language was removed from the 2022 AAP update. Six months is the evidence-based minimum.
-* Weighted sleep sacks, crib bumpers, and loose bedding are not safe. Firm, flat surface only.""",
-        "Safe sleep — full guide", DASHBOARD,
+* Weighted sleep sacks, crib bumpers, and loose bedding are not safe. Firm, flat surface only."""
     ),
     tackled_html=tackled_section([
         ("2-month well child visit", "Dad"),
@@ -592,8 +594,7 @@ html = page(
 
 4. **You can start formal sleep training after 4 months.** Most pediatric sleep specialists set 4 months as the earliest window. Not required — but if you want to try a method, the window is open.
 
-5. **It gets better.** Most babies stabilise within 4–6 weeks. Sleep usually improves once they learn to connect cycles on their own.""",
-        "4-month sleep regression — full guide", DASHBOARD,
+5. **It gets better.** Most babies stabilise within 4–6 weeks. Sleep usually improves once they learn to connect cycles on their own."""
     ),
     dyk_html=dyk_card("Babies put down **drowsy but awake** learn to fall asleep independently — which means they also learn to *re*-fall asleep independently between sleep cycles. That's the whole secret to longer stretches. It's a skill, not a personality trait."),
     supporting_cards_html=window_card(
@@ -604,8 +605,7 @@ html = page(
         """* Ask specifically about iron supplementation if you're breastfeeding — it's easy to miss and important.
 * Bring your sleep regression questions. Your pediatrician has seen this a thousand times.
 * Ask about solid food readiness signs to watch for over the next month.
-* Bring up anything you've been meaning to ask for weeks. That 'is this normal?' question you've been googling at 3am — ask it now.""",
-        "What to ask at the 4-month visit", DASHBOARD,
+* Bring up anything you've been meaning to ask for weeks. That 'is this normal?' question you've been googling at 3am — ask it now."""
     ) + window_card(
         "⏱ Closing this month", "",
         "Visual tracking — smooth follow across midline",
@@ -615,8 +615,7 @@ html = page(
 * Do this when she's alert and not tired — you want her best attention.
 * Her eyes should follow smoothly, both together, all the way across. Jerky movement or one eye tracking slower than the other is worth flagging.
 * You can also use your face — slow side-to-side movement while talking to her.
-* If she's not tracking at all by 3 months, mention it at the visit.""",
-        "Visual development milestones", DASHBOARD,
+* If she's not tracking at all by 3 months, mention it at the visit."""
     ),
     tackled_html=tackled_section([
         ("Head control — steady when upright", "Dad"),
@@ -655,8 +654,7 @@ html = page(
 * If baby reaches for your food and can hold their head steady, they are likely ready
 * Never put infant cereal in a bottle to try to help your baby sleep — it is a choking hazard, it does not actually improve sleep, and it bypasses your baby's natural ability to regulate how much they eat
 * Start with single-ingredient purées or soft mashable foods. Baby-led weaning (soft finger foods from the start) is also evidence-supported — discuss with your pediatrician.
-* Introduce allergenic foods early. The research has reversed on this — early introduction of peanut, egg, tree nut, and fish reduces allergy risk.""",
-        "Starting solids — full readiness guide", DASHBOARD,
+* Introduce allergenic foods early. The research has reversed on this — early introduction of peanut, egg, tree nut, and fish reduces allergy risk."""
     ),
     dyk_html=dyk_card("**Readiness signs are more reliable than age.** A 5-month-old with all three signs — sitting support, head control, and interest in food — is more ready than a 6-month-old without them. Watch her behaviour at mealtimes. It tells you more than the calendar."),
     supporting_cards_html=window_card(
@@ -668,8 +666,7 @@ html = page(
 * The AAP recommends 1 mg/kg/day for exclusively or predominantly breastfed infants
 * Continue drops until your baby is regularly eating iron-rich foods: iron-fortified cereals, pureed meats, tofu, or beans. For most babies this aligns with 6 to 7 months, but the transition should be based on actual intake, not age alone.
 * If your baby was born prematurely or with a low birth weight, their iron protocol may differ — discuss with your pediatrician
-* Formula-fed babies get iron from formula — no supplement needed unless your pediatrician recommends it""",
-        "Iron supplementation — full guide", DASHBOARD,
+* Formula-fed babies get iron from formula — no supplement needed unless your pediatrician recommends it"""
     ) + window_card(
         "⏳ Open window", "open",
         "Primary attachment — what you're building right now",
@@ -679,8 +676,7 @@ html = page(
 * Be present during waking hours: face-to-face time, physical closeness, eye contact.
 * Regulate yourself. A calm parent creates a calm baby. The nervous system is contagious.
 * Attachment is built through thousands of ordinary moments, not grand gestures. The diaper change, the feeding, the eye contact — that's it.
-* You don't need to be perfect. Repair after moments of disconnection actually *strengthens* attachment. 'Rupture and repair' is part of the model.""",
-        "Attachment theory — what the research says", DASHBOARD,
+* You don't need to be perfect. Repair after moments of disconnection actually *strengthens* attachment. 'Rupture and repair' is part of the model."""
     ),
     tackled_html=tackled_section([
         ("4-month sleep regression — handled", "Both"),
