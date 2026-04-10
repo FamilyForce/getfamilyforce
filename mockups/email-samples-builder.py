@@ -521,12 +521,12 @@ print("Written: month2-redesign.html")
 # ═══════════════════════════════════════════════════════════════════════════════
 html = page(
     nav_label="Month 3", title_label="Month 3",
-    subject="A window closing this month — and the habit that pays off at 6 months",
-    preheader="Olivia is 3 months old. Head control closes this month. Here's what that means.",
+    subject="A window closing this month — and the routine that changes everything at bedtime",
+    preheader="Olivia is 3 months old. Head control closes this month. Plus: the bedtime habit worth starting now.",
     hero_age="Month 3", hero_name="Olivia · 13 weeks old",
     opening="Olivia is 3 months old. Three months in is when most parents feel like they've finally figured something out. Here's what's worth your attention — she's got a lot going on right now.",
     context="You made it through the fourth trimester. Three months of adjusting, recovering, and learning on the job.",
-    theme="🧠 This month: one milestone to close out, one habit to lock in, and one safety setup to get right.",
+    theme="🧠 This month: one milestone to close out, a new one just emerging, and a bedtime habit to lock in now.",
     total_windows=26,
     priority_card_html=window_card(
         "⏱ Closing this month", "",
@@ -539,27 +539,26 @@ html = page(
 * If head control isn't there by 4 months: flag it at the visit. There's a wide range, but it's worth checking.
 * Practice "airplane" hold: face-down on your forearm, hand supporting the chest — builds neck and core simultaneously."""
     ),
-    dyk_html=dyk_card("Children who had more serve and return interactions in infancy **score measurably higher on language tests at age 5.** No flashcards, no apps. Responding to her sounds and looks is the whole thing."),
+    dyk_html=dyk_card("A consistent 3–4 step bedtime routine can produce **measurable sleep improvements within one week** — even in babies as young as 3 months. The routine doesn't have to be elaborate. It just has to be the same, every night."),
     supporting_cards_html=window_card(
         "⏳ Open window", "open",
-        "Serve and return — keep building it",
-        "This is how she learns to have a conversation before she has words.",
-        "The serve and return habit from last month is compounding. Every response you give to her sounds and gestures builds neural pathways for language. This is the single most evidence-backed thing you can do for her development.",
-        """* Step it up: pause after you respond to see if she initiates again. You're teaching her conversation rhythm.
-* Name her emotions when they're obvious: *"You're frustrated. I hear you."* Emotional vocabulary starts here.
-* Books count. Point to pictures, wait for her to look, name what she's looking at.
-* Move serve and return into new contexts: bath time, walks, meal prep. Narrate everything.
-* You don't need a special activity or class. This happens in the margins of everyday life."""
+        "Laughs out loud",
+        "The first real laugh is one of the best moments of the first year. It's also a milestone.",
+        "Social laughter — a real, responsive laugh at something funny or playful — typically emerges between 2 and 5 months. It signals that the social brain is online: she's reading your expressions, anticipating what comes next, and responding with joy.",
+        """* Make silly faces, do gentle raspberries on the belly, play peekaboo — she's primed to find these funny right now
+* Pause after each attempt and watch her face. The anticipation is half the fun for her.
+* Respond to every laugh with genuine delight. You're reinforcing her social engagement — and this is serve and return in action.
+* If you haven't heard a real laugh by 5 months, mention it at the 4-month visit."""
     ) + window_card(
         "⏳ Open window", "open",
-        "Room sharing without bed sharing",
-        "The AAP recommendation changed. Here's what it actually says now.",
-        "Room sharing — baby in your room, in their own sleep space — reduces SIDS risk by up to 50% compared to a separate room. The current AAP recommendation is at least 6 months. Bed sharing is a different thing, and increases risk.",
-        """* Keep the crib or bassinet in your room through at least 6 months.
-* If you're tempted to bring the baby into your bed during a night feed: set up the return to be easy — darkness, white noise, firm surface nearby.
-* After 6 months, transitioning to their own room is developmentally appropriate and safe.
-* The 'ideally the full first year' language was removed from the 2022 AAP update. Six months is the evidence-based minimum.
-* Weighted sleep sacks, crib bumpers, and loose bedding are not safe. Firm, flat surface only."""
+        "Consistent bedtime routine builds emotional security",
+        "Three months is the right time to start. Even a short, simple routine pays off fast.",
+        "A predictable bedtime routine reduces cortisol levels in children before sleep, shortens the time it takes to fall asleep, and improves sleep quality. Research by Mindell et al. found measurable sleep improvements within one week of starting a 3–4 step routine. The routine signals safety: what happens next is predictable, and predictability is the foundation of emotional security.",
+        """* Choose 3 to 4 steps that work for your family and do them in the same order every night
+* Classic sequence: bath → massage → feed → song → bed
+* Keep it under 30 minutes — longer routines lead to overtiredness, which makes sleep harder
+* Both parents should be able to run the same routine — you don't want a dependency on one person
+* Consistency matters more than perfection. A routine done most nights is far better than a perfect routine done sometimes."""
     ),
     tackled_html=tackled_section([
         ("2-month well child visit", "Dad"),
@@ -569,7 +568,7 @@ html = page(
     next_month_html=next_month_section([
         "The 4-month sleep regression — what it is and what to do",
         "4-month checkup — bring your sleep questions",
-        "Recognizes and responds to primary caregiver",
+        "Rolls tummy to back — first intentional movement",
     ]),
     closing_text="Month 3 is when it starts feeling real. You're not just keeping her alive — you're watching her become someone. Month 4 is full of new things. We'll make sure you're ready. — Jack",
 )
@@ -614,25 +613,25 @@ html = page(
 * Ask about solid food readiness signs to watch for over the next month.
 * Bring up anything you've been meaning to ask for weeks. That 'is this normal?' question you've been googling at 3am — ask it now."""
     ) + window_card(
-        "⏱ Closing this month", "",
-        "Visual tracking — smooth follow across midline",
-        "When she follows a moving toy with her eyes, something significant is happening.",
-        "Tracking a moving object smoothly — rather than in jerky, uncoordinated movements — is an early sign that the visual and motor systems are integrating correctly. Crossing the midline (following from one side to the other) is a milestone in itself.",
-        """* Slowly move a high-contrast toy from one side to the other, about 12 inches from her face.
-* Do this when she's alert and not tired — you want her best attention.
-* Her eyes should follow smoothly, both together, all the way across. Jerky movement or one eye tracking slower than the other is worth flagging.
-* You can also use your face — slow side-to-side movement while talking to her.
-* If she's not tracking at all by 3 months, mention it at the visit."""
+        "⏳ Open window", "open",
+        "Rolls tummy to back — first intentional movement",
+        "Often happens by accident at first. Then they figure out they did it on purpose.",
+        "Rolling from tummy to back usually happens first, often accidentally during tummy time as the baby pushes up. It's a sign of increasing core and neck strength — and the very beginning of independent mobility. Most babies achieve this between 2 and 5 months.",
+        """* Provide plenty of floor time during tummy time — the rolling usually happens there
+* Place a toy just out of reach to encourage twisting and reaching, which primes the roll
+* When it happens, cheer — positive reinforcement encourages them to try again
+* Don't be alarmed if they get stuck on their tummy after rolling there from their back: that direction usually comes later
+* If she hasn't rolled either direction by 5 months, mention it at the next visit"""
     ),
     tackled_html=tackled_section([
         ("Head control — steady when upright", "Dad"),
         ("Tummy time — 20 min/day", "Both"),
-        ("Serve and return — daily habit", "Mum"),
+        ("Bedtime routine — started this month", "Both"),
     ]),
     next_month_html=next_month_section([
-        "Room sharing — the 6-month window closes soon, review your setup",
-        "Primary attachment — what you're building in the first 6 months",
-        "Iron supplementation — closing window for breastfed babies",
+        "Solids readiness signs — one month away, know what to watch for",
+        "Iron supplement — closing window for breastfed babies",
+        "Primary attachment — what you've been building all along",
     ]),
     closing_text="Month 4 is a lot. If sleep just got worse — that's the regression and it means her brain is doing exactly what it should. Hang in there. Back next month. — Jack",
 )
@@ -707,55 +706,56 @@ print("\nAll 6 samples written.")
 # ═══════════════════════════════════════════════════════════════════════════════
 html = page(
     nav_label="Month 6", title_label="Month 6",
-    subject="Six months: the room-sharing window closes, and solids are starting",
-    preheader="Olivia is 6 months old. Three things closing this month — one is a safety window.",
+    subject="Six months: the checkup, the first real food, and a milestone worth celebrating",
+    preheader="Olivia is 6 months old. Solids start now, sitting is happening — here's what to know.",
     hero_age="Month 6", hero_name="Olivia · 26 weeks old",
-    opening="Olivia is 6 months old. Six months is a turning point — solids are starting, she's sitting with support, and she's starting to look less like a baby and more like a little person. Here's what matters this month.",
+    opening="Olivia is 6 months old. Six months is a turning point — solids are starting, she's sitting up on her own, and she's starting to look less like a baby and more like a little person with opinions. Here's what matters this month.",
     context="Six months. Solids, sitting, and a whole new level of curiosity about the world.",
-    theme="🏠 This month: a safety window that closes now, the language habit that builds everything, and the attachment foundation you've been building.",
+    theme="🥄 This month: the 6-month checkup, first real foods, and a motor milestone that changes everything.",
     total_windows=56,
     priority_card_html=window_card(
         "⏱ Closing this month", "",
-        "Room sharing without bed sharing",
-        "The 6-month window closes now. If you haven't made this call yet, it's time.",
-        "Room sharing reduces SIDS risk by up to 50% compared to a separate room. The AAP recommends at least 6 months. After 6 months, transitioning to their own room is developmentally appropriate and safe.",
-        """* Keep the crib or bassinet in your room through at least 6 months — that window closes now
-* If you're tempted to bring the baby into your bed during a night feed: set up the return to be easy — darkness, white noise, firm surface nearby
-* After 6 months, transitioning to their own room is developmentally appropriate and safe
-* When you do transition: white noise, consistent bedtime routine, and a firm sleep surface in their own room all help
-* The 'ideally the full first year' language was removed from the 2022 AAP update. Six months is the evidence-based minimum.""",
+        "6-month well child visit",
+        "This is the green light for solids — and the first flu shot.",
+        "The 6-month visit assesses sitting with support, babbling, hand-to-hand transfer, and object permanence emerging. It's also the official green light for solid food introduction and the first flu vaccine. Vaccines: DTaP (dose 3), Hib (dose 3), PCV (dose 3), polio (dose 3), rotavirus (dose 3 if applicable), influenza (first of the annual series), hepatitis B (dose 3).",
+        """* Bring your solid food questions — this is the right visit to ask about purée progression and allergen introduction
+* Ask about the peanut protocol specifically: your pediatrician should walk you through it based on your baby's eczema history and family allergy history
+* Ask about iron: if you're breastfeeding, iron supplementation may still be needed alongside iron-rich first foods
+* Note whether she's sitting with support and reaching for objects — both are developmental markers this visit covers
+* If you have any concerns about hearing, vision, or social engagement, raise them now""",
     ),
-    dyk_html=dyk_card("Children whose parents read aloud to them every day from birth enter school with **a vocabulary 1.4 million words larger** than children who weren't read to regularly. You don't need special books. Any book, every day."),
+    dyk_html=dyk_card("When babies sit **independently**, it frees both hands for exploration — and exploration is how the brain builds. Independent sitting isn't just a motor milestone. It's what unlocks the next 6 months of cognitive development."),
     supporting_cards_html=window_card(
-        "⏱ Closing this month", "",
-        "Serve and return — the language foundation",
-        "Six months in and this habit is the most compounding thing you're doing.",
-        "Harvard's Center on the Developing Child calls serve and return 'the most important thing parents can do for brain development.' Every exchange — coo for coo, look for look — builds neural pathways for language and emotional regulation.",
-        """* Narrate everything you do: *"I'm changing your diaper now. Left leg first."*
-* When she coos or babbles, respond — not just with sound but with meaning: *"Yes, I see it too."*
-* Put the phone down during feeding and face-to-face time. Your face is still the most interesting thing in her world.
-* Pause after responding to see if she initiates again. You're teaching her the rhythm of conversation.
-* Books are serve and return: point at pictures, wait for her to look, name what she sees.""",
+        "⏳ Open window", "open",
+        "First solids — single-ingredient purées",
+        "The goal at this stage is exposure, not nutrition. Food is practice.",
+        "The goal of first solids is exposure and safety — breast milk or formula is still the primary nutrition. Single-ingredient purées let you identify any reactions clearly. Most babies are ready around 6 months: they can hold their head steady, sit with support, and show interest in food.",
+        """* Start with smooth purées of vegetables or fruits: sweet potato, avocado, peas, banana
+* Offer a small amount (1–2 teaspoons) once a day to start — this is about learning, not volume
+* When introducing highly allergenic foods (egg, peanut, dairy, tree nuts, sesame, fish, wheat, soy): introduce one at a time, 3–4 days apart, to isolate any reactions
+* For low-risk foods (most vegetables, fruits, grains): no need to space them — variety is the goal
+* Watch for rashes, vomiting, or diarrhoea after each new food and stop if a reaction occurs
+* Never add cereal to a bottle — it poses a choking risk and displaces the nutrition balance""",
     ) + window_card(
-        "⏱ Closing this month", "",
-        "Primary attachment — the 6-month foundation",
-        "Everything you've done in the last 6 months is building something that lasts a lifetime.",
-        "Secure attachment in the first 6 months predicts better emotional regulation, stronger relationships, and higher academic achievement years later. It's built through consistency, not perfection.",
-        """* Respond to cries consistently and promptly. Research is unambiguous: you cannot spoil an infant.
-* Be present during waking hours — face-to-face time, physical closeness, eye contact.
-* Regulate yourself. A calm parent creates a calm baby. The nervous system is contagious.
-* Attachment is built through thousands of ordinary moments, not grand gestures. The diaper change, the feeding, the eye contact — that's it.
-* You don't need to be perfect. Repair after moments of disconnection actually *strengthens* attachment.""",
+        "⏳ Open window", "open",
+        "Sits without support",
+        "When the tripod sit becomes a steady sit, a whole new world opens up.",
+        "Independent sitting is a major milestone. It frees up both hands for play and exploration, and is a key safety marker for moving to a high chair and progressing to more varied solid food textures. Most babies achieve this between 5 and 7 months.",
+        """* Practice on a flat, firm surface — remove the pillows propped around her and let her build the core strength to balance
+* Place toys in front of her to keep her attention focused while she holds position
+* Stay close — she will topple, and the landing should be soft
+* Once she's steady, add reaching while sitting: grabbing a toy slightly to one side builds the rotational core control she'll need for crawling
+* If she's not sitting independently by 9 months, flag it at the 9-month visit""",
     ),
     tackled_html=tackled_section([
-        ("Solids started — first foods introduced", "Both"),
-        ("5-month checkup — done", "Mum"),
-        ("Iron drops — ongoing", "Dad"),
+        ("4-month sleep regression — survived", "Both"),
+        ("Bedtime routine — locked in", "Both"),
+        ("First laugh — heard it", "Mum"),
     ]),
     next_month_html=next_month_section([
-        "Babyproof the home — before crawling begins (time-sensitive)",
-        "Responds to own name — watch for reliable name response",
-        "Iron-fortified foods — introducing with first solids",
+        "Babyproof before crawling begins — once she's mobile, you'll wish you'd done this",
+        "Responds to own name — a key language and social milestone",
+        "Introduce dairy — yogurt and cheese, early allergen window open",
     ]),
     closing_text="Halfway through the first year. You've done more right than you know. Month 7 is where it gets mobile — we'll walk you through it. — Jack",
 )
@@ -1009,25 +1009,26 @@ print("Written: month10-redesign.html")
 # ═══════════════════════════════════════════════════════════════════════════════
 html = page(
     nav_label="Month 11", title_label="Month 11",
-    subject="Almost one. Three things to do before the birthday.",
-    preheader="Olivia is 11 months old. The 12-month visit is coming — here's how to prepare.",
+    subject="Almost one. She's cruising the furniture — here's what that means.",
+    preheader="Olivia is 11 months old. First words, first dental visit, and the last step before walking.",
     hero_age="Month 11", hero_name="Olivia · 48 weeks old",
-    opening="Olivia is 11 months old. Almost one. Some babies are walking at 11 months. Most aren't. Both are completely fine — the walking window runs through 18 months. Here's what actually matters right now.",
-    context="Eleven months: walking isn't required yet. What matters is pulling up, cruising, and curiosity.",
-    theme="📅 This month: CPR training, first dental visit, and 'mama' and 'dada' getting specific.",
+    opening="Olivia is 11 months old. Almost one. She's pulling up, holding on, and moving sideways along anything she can grip. That's cruising — and it's the last bridge before independent walking. Here's what to watch for this month.",
+    context="Eleven months: the walk is coming. You can see it in her eyes every time she lets go for half a second.",
+    theme="🚶 This month: cruising along furniture, first words getting specific, and the first dental visit.",
     total_windows=42,
     priority_card_html=window_card(
-        "⏱ Closing this month", "",
-        "Infant CPR training",
-        "If you haven't done this yet, this month. Not next month.",
-        "Infant CPR is one of the most important skills a new parent can have, and one of the least likely to be used. In a choking or respiratory emergency, the minutes before paramedics arrive are the window where a trained parent can make a life-or-death difference.",
-        """* Take a hands-on infant CPR and first aid class — hospital classes, Red Cross, or local fire stations often offer them
-* Video-only learning is significantly less effective than hands-on practice. Do the in-person class.
-* Ensure any regular caregivers — grandparents, nanny, daycare providers — are also trained
-* CPR guidelines update periodically. If you took a class more than 2 years ago, refresh.
-* The Heimlich maneuver for infants (back blows + chest thrusts) is different from adult Heimlich. Make sure your class covers it.""",
+        "⏳ Open window", "open",
+        "Cruises along furniture — the last step before walking",
+        "Sideways walking while holding on is how the brain and body train for independent steps.",
+        "Cruising — walking sideways while holding onto furniture — develops the lateral balance and hip strength needed for independent walking. It typically begins between 8 and 12 months. Most babies cruise for several weeks before they let go and take their first unsupported steps.",
+        """* Arrange furniture to create a safe continuous path — sofa to coffee table to chair — so she can cruise laps
+* Go barefoot as much as possible indoors: toes provide essential grip and proprioceptive feedback for balance development
+* Never use baby walkers with wheels — the AAP has called for a ban on their manufacture due to high risk of severe head trauma, skull fractures, and stair falls. They also delay proper walking development.
+* Soft-soled shoes or socks with grip are fine when outdoors or on cold floors, but bare feet are always best for skill development
+* Encourage her to reach slightly further than comfortable — controlled instability is how balance improves
+* If she's not cruising by 12 months, mention it at the 12-month visit""",
     ),
-    dyk_html=dyk_card("Babies say 'mama' and 'dada' as sounds around 9 months — but using them **specifically** (mama when looking at mom, dada when looking at dad) typically locks in by 12 months. That specificity is the milestone, not the sound."),
+    dyk_html=dyk_card("Babies say 'mama' and 'dada' as sounds around 9 months — but using them **specifically** (mama when looking at mum, dada when looking at dad) typically locks in by 12 months. That specificity is the milestone, not the sound."),
     supporting_cards_html=window_card(
         "⏱ Closing this month", "",
         "Uses 'mama' and 'dada' specifically",
@@ -1041,8 +1042,8 @@ html = page(
         "⏱ Closing this month", "",
         "First dental visit — at first tooth, or by 12 months",
         "Baby teeth matter. Tooth decay in baby teeth affects the permanent teeth growing beneath them.",
-        "The AAPD recommends the first dental visit when the first tooth appears or by 12 months, whichever comes first. Most parents assume baby teeth don't matter much. They do — they hold space for permanent teeth and tooth decay in baby teeth affects the adult teeth growing beneath them.",
-        """* Schedule when the first tooth appears. Don't wait until 12 months if teeth arrive early.
+        "The AAPD recommends the first dental visit when the first tooth appears or by 12 months, whichever comes first. Most parents assume baby teeth don't matter much. They do — they hold space for permanent teeth, and tooth decay in baby teeth affects the adult teeth growing beneath them.",
+        """* Schedule when the first tooth appears — don't wait until 12 months if teeth arrive early
 * Before teeth: wipe gums with a soft damp cloth after feeds
 * Once the first tooth erupts: switch to a soft-bristled infant toothbrush immediately
 * Use a rice-grain smear of fluoride toothpaste from the first tooth — fluoride is safe and recommended from day one of brushing. Increase to a pea-sized amount at age 3.
@@ -1050,13 +1051,13 @@ html = page(
     ),
     tackled_html=tackled_section([
         ("Peanut introduction — complete, offering 3x/week", "Both"),
-        ("First words — 'mama' and 'dada' starting", "Mum"),
-        ("CPR class — booked", "Dad"),
+        ("Babbling — consonant sounds consistent", "Both"),
+        ("First dental visit — booked", "Mum"),
     ]),
     next_month_html=next_month_section([
-        "12-month well child visit — walking, first words, social engagement all assessed",
-        "Infant CPR — if not yet completed this month",
-        "Back to sleep — review safe sleep for the increasingly mobile baby",
+        "12-month well child visit — walking, first words, and social engagement all assessed",
+        "Read aloud every day — build the habit now, it compounds for years",
+        "Switch to whole cow's milk — at 12 months, the transition begins",
     ]),
     closing_text="One month to the first birthday. It goes fast — and then it really goes fast. The 12-month digest is a big one. — Jack",
 )
