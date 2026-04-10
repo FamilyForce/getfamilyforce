@@ -464,7 +464,7 @@ For the partner or support person:
         "Responds to sounds, startles, calms to your voice",
     ]),
     extra_card_html=birth_reminder_card(),
-    closing_text="You're close now. Everything you do in the next few weeks makes the first days easier. We'll be with you from day one — your first monthly digest arrives when Olivia turns 1 month old. Until then: you're ready. — Jack",
+    closing_text="You're close now. Everything you do in the next few weeks makes the first days easier. We'll be with you from day one — your first monthly digest arrives when Olivia turns 1 month old. Until then: you're ready. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month0-redesign.html", "w") as f: f.write(html)
 print("Written: month0-redesign.html")
