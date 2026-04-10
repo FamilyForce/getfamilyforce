@@ -5,147 +5,200 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Scout · Month 2 Sample</title>
 <style>
+  * { box-sizing: border-box; }
   body { margin:0; padding:32px 16px; background:#f0ede8; font-family:Arial,sans-serif; }
-  .wrap { max-width:580px; margin:0 auto; }
-  .meta { text-align:center; margin-bottom:12px; }
-  .meta p { font-size:12px; color:#888; margin:0 0 4px; }
-  .meta a { color:#6E4ED6; font-size:11px; }
-  .card { background:#fff; border-radius:16px; overflow:hidden; margin-bottom:12px; }
-  .hero { background:linear-gradient(160deg,#2d1b69 0%,#1a0f3e 100%); padding:32px 28px 24px; text-align:center; }
-  .hero .logo { font-size:13px; font-weight:700; color:rgba(255,255,255,.5); letter-spacing:.15em; text-transform:uppercase; margin-bottom:20px; }
-  .hero .age { font-size:32px; font-weight:700; color:#fff; margin:0 0 4px; }
-  .hero .name { font-size:15px; color:rgba(255,255,255,.6); margin:0 0 24px; }
-  .hero .greeting { font-size:15px; color:rgba(255,255,255,.75); line-height:1.7; margin:0 0 12px; text-align:left; }
-  .hero .opening { font-size:15px; color:rgba(255,255,255,.65); line-height:1.7; margin:0 0 16px; text-align:left; }
-  .hero .context { font-size:13px; color:rgba(255,255,255,.45); font-style:italic; margin:0; text-align:left; border-top:1px solid rgba(255,255,255,.1); padding-top:14px; }
-  .theme-stripe { background:#f7f4ff; border-left:3px solid #6E4ED6; padding:12px 18px; margin-bottom:12px; border-radius:0 8px 8px 0; }
+  .wrap { max-width:600px; margin:0 auto; }
+  .preview-note { background:#fffbea; border:1px solid #f0d060; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:13px; color:#7a6010; }
+  .preview-note strong { color:#5a4000; }
+  .nav-bar { background:#fff; border-radius:10px; padding:10px 16px; margin-bottom:14px; display:flex; justify-content:center; gap:6px; flex-wrap:wrap; border:1px solid #e8e0f4; }
+  .nav-bar a { font-size:12px; color:#6E4ED6; text-decoration:none; padding:4px 12px; border:1px solid #e0d8f0; border-radius:20px; }
+  .nav-bar a.active { background:#6E4ED6; color:#fff; border-color:#6E4ED6; }
+  .subject-display { background:#fff; border-radius:10px; padding:16px 20px; margin-bottom:14px; border:1px solid #e0d8f0; }
+  .subject-display .label { margin:0 0 4px; font-size:11px; color:#999; text-transform:uppercase; letter-spacing:.08em; font-weight:700; }
+  .subject-display .subject { font-size:15px; font-weight:700; color:#1a0f3e; margin:0 0 5px; }
+  .subject-display .preheader { font-size:13px; color:#666; margin:0; font-style:italic; }
+  /* Hero */
+  .hero { background:linear-gradient(160deg,#2d1b69 0%,#1a0f3e 100%); border-radius:16px; overflow:hidden; padding:32px 28px 24px; margin-bottom:10px; }
+  .hero .logo { font-size:13px; font-weight:700; color:rgba(255,255,255,.45); letter-spacing:.15em; text-transform:uppercase; margin:0 0 18px; }
+  .hero .age { font-size:34px; font-weight:700; color:#fff; margin:0 0 4px; }
+  .hero .childname { font-size:15px; color:rgba(255,255,255,.55); margin:0 0 22px; }
+  .hero .greeting { font-size:15px; color:rgba(255,255,255,.8); line-height:1.7; margin:0 0 10px; }
+  .hero .opening { font-size:15px; color:rgba(255,255,255,.65); line-height:1.7; margin:0 0 14px; }
+  .hero .context { font-size:13px; color:rgba(255,255,255,.4); font-style:italic; margin:0; border-top:1px solid rgba(255,255,255,.1); padding-top:14px; }
+  /* Theme stripe */
+  .theme-stripe { background:#f7f4ff; border-left:3px solid #6E4ED6; padding:12px 18px; margin-bottom:14px; border-radius:0 8px 8px 0; }
   .theme-stripe p { margin:0; font-size:13px; color:#5B3CC4; font-weight:600; }
-  .section-label { font-size:11px; font-weight:700; color:#999; text-transform:uppercase; letter-spacing:.1em; padding:0 4px; margin:20px 0 8px; }
+  /* Section headers */
+  .section-hdr { display:flex; align-items:baseline; justify-content:space-between; margin:20px 0 8px 4px; }
+  .section-hdr .section-label { font-size:11px; font-weight:700; color:#999; text-transform:uppercase; letter-spacing:.1em; }
+  .section-hdr .window-count { font-size:11px; color:#6E4ED6; font-weight:600; text-decoration:none; }
+  /* Window card */
   .window { background:#fff; border-radius:14px; overflow:hidden; margin-bottom:10px; border:1px solid #ece8f0; }
-  .window-header { padding:18px 20px 12px; }
-  .window-label { font-size:10px; font-weight:700; color:#c0392b; text-transform:uppercase; letter-spacing:.1em; margin:0 0 6px; }
-  .window-label.open { color:#6E4ED6; }
-  .window-title { font-size:16px; font-weight:700; color:#1a0f3e; margin:0 0 8px; line-height:1.3; }
-  .jack-bridge { font-size:13px; color:#888; font-style:italic; margin:0 0 10px; }
-  .window-why { font-size:14px; color:#555; line-height:1.65; margin:0; }
+  .window-inner { padding:18px 20px 12px; }
+  .win-flag { font-size:10px; font-weight:700; color:#c0392b; text-transform:uppercase; letter-spacing:.1em; margin:0 0 6px; }
+  .win-flag.open { color:#6E4ED6; }
+  .win-title { font-size:16px; font-weight:700; color:#1a0f3e; margin:0 0 7px; line-height:1.3; }
+  .jack-bridge { font-size:13px; color:#888; font-style:italic; margin:0 0 9px; }
+  .win-why { font-size:14px; color:#555; line-height:1.65; margin:0; }
   .the-move { background:#faf7ff; border-top:1px solid #ece8f0; padding:14px 20px 16px; }
-  .move-label { font-size:10px; font-weight:700; color:#6E4ED6; text-transform:uppercase; letter-spacing:.1em; margin:0 0 10px; }
-  .move-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; }
-  .move-bullet { color:#6E4ED6; font-weight:700; font-size:14px; flex-shrink:0; margin-top:1px; }
+  .move-lbl { font-size:10px; font-weight:700; color:#6E4ED6; text-transform:uppercase; letter-spacing:.1em; margin:0 0 10px; }
+  .move-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:9px; }
+  .move-bullet { color:#6E4ED6; font-weight:700; font-size:14px; flex-shrink:0; margin-top:2px; }
   .move-text { font-size:14px; color:#333; line-height:1.55; margin:0; }
   .move-text strong { color:#1a0f3e; }
-  .move-text em { color:#555; }
-  .dashboard-link { margin-top:10px; font-size:12px; color:#6E4ED6; text-decoration:none; display:block; }
+  .move-text em { color:#555; font-style:italic; }
+  .move-subhead { font-size:13px; font-weight:700; color:#1a0f3e; margin:10px 0 4px; }
+  .dash-link { margin-top:10px; font-size:12px; color:#6E4ED6; text-decoration:none; display:block; font-weight:600; }
+  /* Did you know */
   .dyk { background:linear-gradient(135deg,#e8f4f0 0%,#d4eee6 100%); border-radius:14px; padding:20px 22px; margin-bottom:10px; border:1px solid #b8ddd3; }
-  .dyk-label { font-size:10px; font-weight:700; color:#1a7a5e; text-transform:uppercase; letter-spacing:.1em; margin:0 0 8px; }
+  .dyk-lbl { font-size:10px; font-weight:700; color:#1a7a5e; text-transform:uppercase; letter-spacing:.1em; margin:0 0 8px; }
   .dyk p { font-size:14px; color:#1a3d32; line-height:1.65; margin:0; }
-  .dyk strong { color:#0d2d24; }
-  .closing { background:linear-gradient(160deg,#1a0f3e 0%,#0d0820 100%); border-radius:14px; padding:24px 26px; margin-bottom:10px; }
-  .closing p { font-size:14px; color:rgba(255,255,255,.7); line-height:1.8; margin:0; font-style:italic; }
-  .coparent { text-align:center; padding:14px; }
+  /* Tackled section */
+  .tackled { background:#fff; border-radius:14px; padding:18px 20px; margin-bottom:10px; border:1px solid #d4eed9; }
+  .tackled-lbl { font-size:10px; font-weight:700; color:#1a7a4e; text-transform:uppercase; letter-spacing:.1em; margin:0 0 10px; }
+  .tackled-item { display:flex; align-items:center; gap:10px; margin-bottom:7px; font-size:14px; color:#333; line-height:1.4; }
+  .tackled-check { font-size:16px; flex-shrink:0; }
+  .tackled-who { font-size:11px; color:#999; margin-left:4px; }
+  .tackled-nudge { font-size:14px; color:#555; line-height:1.65; }
+  .tackled-nudge a { color:#6E4ED6; font-weight:600; }
+  /* Next month */
+  .next-month { background:#fff; border-radius:14px; padding:18px 20px; margin-bottom:10px; border:1px solid #dde4f5; }
+  .next-lbl { font-size:10px; font-weight:700; color:#2d5bb5; text-transform:uppercase; letter-spacing:.1em; margin:0 0 10px; }
+  .next-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:7px; }
+  .next-dot { color:#6E4ED6; font-size:18px; flex-shrink:0; line-height:1; }
+  .next-title { font-size:14px; color:#333; line-height:1.4; }
+  /* Co-parent */
+  .coparent { text-align:center; padding:14px 0; }
   .coparent p { font-size:13px; color:#888; margin:0; }
   .coparent a { color:#6E4ED6; font-weight:600; text-decoration:none; }
-  .cta { text-align:center; padding:8px 0 28px; }
+  /* Closing */
+  .closing-card { background:linear-gradient(160deg,#1a0f3e 0%,#0d0820 100%); border-radius:14px; padding:24px 26px; margin-bottom:10px; }
+  .closing-card p { font-size:14px; color:rgba(255,255,255,.7); line-height:1.85; margin:0; font-style:italic; }
+  /* CTA */
+  .cta { text-align:center; padding:8px 0 24px; }
   .cta a { background:#6E4ED6; color:#fff; font-size:15px; font-weight:700; text-decoration:none; padding:14px 36px; border-radius:100px; display:inline-block; }
+  /* Footer */
   .footer { text-align:center; padding:0 0 32px; }
-  .footer p { font-size:11px; color:#aaa; margin:0 0 4px; line-height:1.6; }
+  .footer p { font-size:11px; color:#aaa; margin:0 0 4px; line-height:1.7; }
   .footer a { color:#aaa; }
-  .preview-note { background:#fffbea; border:1px solid #f0d060; border-radius:8px; padding:12px 16px; margin-bottom:20px; font-size:13px; color:#7a6010; }
-  .preview-note strong { color:#5a4000; }
-  .subject-display { background:#fff; border-radius:10px; padding:16px 20px; margin-bottom:14px; border:1px solid #e0d8f0; }
-  .subject-display p { margin:0 0 4px; font-size:12px; color:#999; text-transform:uppercase; letter-spacing:.08em; font-weight:600; }
-  .subject-display .subject { font-size:15px; font-weight:700; color:#1a0f3e; margin:0 0 6px; }
-  .subject-display .preheader { font-size:13px; color:#666; margin:0; font-style:italic; }
-  .nav-bar { background:#fff; border-radius:10px; padding:12px 20px; margin-bottom:16px; display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
-  .nav-bar a { font-size:12px; color:#6E4ED6; text-decoration:none; padding:4px 10px; border:1px solid #e0d8f0; border-radius:20px; }
-  .nav-bar a.active { background:#6E4ED6; color:#fff; border-color:#6E4ED6; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="preview-note"><strong>Redesign sample — Month 2.</strong> Format: 3 windows · 3-bullet max · monthly theme · Did you know · Jack bridges · co-parent prompt.</div>
+
+  <div class="preview-note"><strong>Redesign sample — Month 2.</strong>
+  Full bullet content (up to 8) · 3 windows · active window count · monthly theme ·
+  Did you know · Jack bridges · tackled section · coming next month · co-parent prompt.</div>
+
   <div class="nav-bar"><a href="month0-redesign.html">Pre-birth</a><a href="month1-redesign.html">Month 1</a><a href="month2-redesign.html" class="active">Month 2</a><a href="month3-redesign.html">Month 3</a><a href="month4-redesign.html">Month 4</a><a href="month5-redesign.html">Month 5</a></div>
+
   <div class="subject-display">
-    <p>Subject line</p>
+    <p class="label">Subject line</p>
     <p class="subject">The smile that changes everything — and what to do before Thursday</p>
     <p class="preheader">Olivia is 2 months old. One vaccine visit, one milestone to watch for.</p>
   </div>
-  <div class="card">
-    <div class="hero">
-      <p class="logo">Scout</p>
-      <p class="age">Month 2</p>
-      <p class="name">Olivia · 9 weeks old</p>
-      <p class="greeting">Hi there,</p>
-      <p class="opening">Olivia is 2 months old. The hard edge of the newborn phase is starting to soften. She's more awake, more alert, and more interested in you. Here's what to focus on this month.</p>
-      <p class="context">Something shifts around 6–8 weeks. If you haven't seen the first real smile yet — it's close.</p>
-    </div>
-  </div>
-  <div class="theme-stripe"><p>😊 This month: one appointment to book, one milestone to watch for, and one habit worth starting now.</p></div>
-  <p class="section-label">This month's priority</p>
-  
-  <div class="window">
-    <div class="window-header">
-      <p class="window-label">⏱ Closing this month</p>
-      <p class="window-title">2-month well child visit</p>
-      <p class="jack-bridge">The most vaccine-heavy visit of the first year. You can prepare for that.</p>
-      <p class="window-why">The 2-month visit kicks off the vaccination schedule. Vaccines: DTaP, Hib, PCV, rotavirus, polio, Hepatitis B, and RSV immunization. Expect fussiness and a low fever for 24–48 hours after — that's the immune system working.</p>
-    </div>
-    <div class="the-move">
-      <p class="move-label">The move</p>
-      <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Schedule on time. Vaccines are timed to the immune system's development — delays matter.</p></div>
-<div class="move-item"><span class="move-bullet">›</span><p class="move-text">For fever: infant acetaminophen is appropriate after 2 months. Ask your pediatrician about dosing before the visit. A rectal temperature of 100.4°F (38°C) or higher in a baby under 3 months requires a call.</p></div>
-<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Bring your tummy time questions. Your pediatrician will ask about progress and tell you what to expect before month 4.</p></div>
 
-      <a class="dashboard-link" href="https://getfamilyforce.com/scout-dashboard.html">What to expect at the 2-month visit →</a>
-    </div>
+  <div class="hero">
+    <p class="logo">Scout</p>
+    <p class="age">Month 2</p>
+    <p class="childname">Olivia · 9 weeks old</p>
+    <p class="greeting">Hi there,</p>
+    <p class="opening">Olivia is 2 months old. The hard edge of the newborn phase is starting to soften. She's more awake, more alert, and more interested in you. Here's what to focus on this month.</p>
+    <p class="context">Something shifts around 6–8 weeks. If you haven't seen the first real smile yet — it's close.</p>
   </div>
-  
-  <div class="dyk">
-    <p class="dyk-label">💡 Did you know</p>
-    <p>The social smile requires your baby to recognize your face, remember past interactions, and coordinate a voluntary muscle response — all at once. <strong>It's one of the most cognitively complex things she'll do in her first year.</strong> When it comes, you'll understand why people do this twice.</p>
-  </div>
-  <p class="section-label">Also this month</p>
-  
-  <div class="window">
-    <div class="window-header">
-      <p class="window-label">⏱ Closing this month</p>
-      <p class="window-title">The social smile — her first intentional interaction</p>
-      <p class="jack-bridge">When it comes, it will stop you cold. Nothing prepares you for it.</p>
-      <p class="window-why">The social smile — in direct response to your face and voice, not gas — typically appears around 6 weeks. It's the first sign your baby is engaging with the social world on purpose. Absent by 3 months is a flag worth raising.</p>
-    </div>
-    <div class="the-move">
-      <p class="move-label">The move</p>
-      <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Get close. Babies can only focus clearly at 8–12 inches. Your face needs to be in range.</p></div>
-<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Smile, talk, and wait. Give her time to respond. The social smile takes a beat.</p></div>
-<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Respond every time: smile back, say something. This is her first conversation.</p></div>
 
-      <a class="dashboard-link" href="https://getfamilyforce.com/scout-dashboard.html">What the social smile means developmentally →</a>
-    </div>
-  </div>
-  <div class="window">
-    <div class="window-header">
-      <p class="window-label open">⏳ Open window</p>
-      <p class="window-title">Serve and return — the foundation of language</p>
-      <p class="jack-bridge">The most researched interaction in early childhood. You're already doing it.</p>
-      <p class="window-why">Harvard's Center on the Developing Child calls serve and return 'the most important thing parents can do for brain development.' Your baby makes a sound or gesture — you respond. Back and forth. That's it. That's the whole thing.</p>
-    </div>
-    <div class="the-move">
-      <p class="move-label">The move</p>
-      <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Narrate everything: <em>'I'm changing your diaper now. Left leg first.'</em> She's building vocabulary before she can speak.</p></div>
-<div class="move-item"><span class="move-bullet">›</span><p class="move-text">When she coos, coo back. When she looks at something, look at it and name it.</p></div>
-<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Put the phone down during face-to-face time. Your face is the most interesting thing in her world right now.</p></div>
+  <div class="theme-stripe"><p>😊 This month: one appointment to book, one milestone to watch for, and one habit worth locking in.</p></div>
 
-      <a class="dashboard-link" href="https://getfamilyforce.com/scout-dashboard.html">Why serve and return matters for language →</a>
-    </div>
+  <div class="section-hdr"><span class="section-label">This month's priority</span><a class="window-count" href="https://getfamilyforce.com/scout-dashboard.html">1 of 25 active windows · See all</a></div>
+  
+<div class="window">
+  <div class="window-inner">
+    <p class="win-flag">⏱ Closing this month</p>
+    <p class="win-title">2-month well child visit</p>
+    <p class="jack-bridge">The most vaccine-heavy visit of the first year. You can prepare for that.</p>
+    <p class="win-why">The 2-month visit kicks off the vaccination schedule in earnest. Vaccines given: DTaP, Hib, PCV15 or PCV20, rotavirus, polio, Hepatitis B (dose 2 if not given at 1 month), and RSV immunization (Nirsevimab/Beyfortus). Expect fussiness and a low fever for 24–48 hours after — that's the immune system responding, not something wrong.</p>
   </div>
+  <div class="the-move">
+    <p class="move-lbl">The move</p>
+    <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Schedule on time. Vaccines are timed to the immune system's development — delays matter.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">For fever post-vaccine: infant acetaminophen is appropriate after 2 months. Ask your pediatrician about dosing at the visit. A rectal temperature of 100.4°F (38°C) or higher in a baby under 3 months requires a call regardless of vaccine status.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Bring your tummy time progress update. Your pediatrician will ask and tell you what to expect before the 4-month visit.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Ask about the social smile — whether you've seen it, and what to do if you haven't by 3 months.</p></div>
+    <a class="dash-link" href="https://getfamilyforce.com/scout-dashboard.html">What to expect at the 2-month visit →</a>
+  </div>
+</div>
+  
+<div class="dyk">
+  <p class="dyk-lbl">💡 Did you know</p>
+  <p>The social smile requires your baby to recognise your face, recall past interactions, and coordinate a voluntary muscle response — all at once. <strong>It's one of the most cognitively complex things she'll do in her entire first year.</strong> When it comes, you'll understand why people do this twice.</p>
+</div>
+
+  <div class="section-hdr"><span class="section-label">Also this month</span><a class="window-count" href="https://getfamilyforce.com/scout-dashboard.html">2 of 25 active windows · See all</a></div>
+  
+<div class="window">
+  <div class="window-inner">
+    <p class="win-flag">⏱ Closing this month</p>
+    <p class="win-title">The social smile — her first intentional interaction</p>
+    <p class="jack-bridge">When it comes, it will stop you cold. Nothing prepares you for it.</p>
+    <p class="win-why">The social smile — a smile in direct response to your face and voice, not gas — typically appears around 6 weeks. It is the first sign that your baby is engaging with the social world on purpose. Absence of a social smile by 3 months is a flag worth raising at your pediatrician visit.</p>
+  </div>
+  <div class="the-move">
+    <p class="move-lbl">The move</p>
+    <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Get close. Babies can only focus clearly at 8–12 inches. Your face needs to be in range.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Smile, talk, and wait. Give her time to respond. The social smile takes a beat — it's not instant.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Respond to every smile: smile back, say something, make it a two-way exchange.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Try different expressions and tones. Some babies respond more to high-pitched voices. Some respond more to animated faces.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Not there yet at 8 weeks? Keep trying. The range is 6–12 weeks. If it's absent at 3 months, flag it.</p></div>
+    <a class="dash-link" href="https://getfamilyforce.com/scout-dashboard.html">What the social smile means developmentally →</a>
+  </div>
+</div>
+<div class="window">
+  <div class="window-inner">
+    <p class="win-flag open">⏳ Open window</p>
+    <p class="win-title">Serve and return — the foundation of language</p>
+    <p class="jack-bridge">The most researched interaction in early childhood. You're already doing it.</p>
+    <p class="win-why">Harvard's Center on the Developing Child calls serve and return 'the most important thing parents can do for brain development.' Your baby makes a sound, a gesture, or a facial expression — you respond. Back and forth. That's it. That's the whole thing.</p>
+  </div>
+  <div class="the-move">
+    <p class="move-lbl">The move</p>
+    <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Narrate everything you do: <em>"I'm changing your diaper now. Left leg first."</em></p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">When your baby coos, coo back. When they look at something, look at it too and name it.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Put the phone down during feeding and face-to-face time. Your face is the most interesting thing in their world right now.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Pause after responding to see if she initiates again. You're teaching her the rhythm of conversation.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Books count as serve and return: point at pictures, wait for her to look, name what she sees.</p></div>
+    <a class="dash-link" href="https://getfamilyforce.com/scout-dashboard.html">Serve and return — full guide →</a>
+  </div>
+</div>
+
+  
+<div class="tackled">
+  <p class="tackled-lbl">✅ What you've tackled this month</p>
+  <div class="tackled-item"><span class="tackled-check">✅</span>1-month well child visit<span class="tackled-who">— Mum</span></div>
+<div class="tackled-item"><span class="tackled-check">✅</span>Tummy time — building the habit<span class="tackled-who">— Both</span></div>
+
+</div>
+  
+<div class="next-month">
+  <p class="next-lbl">🔜 Coming next month</p>
+  <div class="next-item"><span class="next-dot">·</span><p class="next-title">4-month sleep regression — what it is and how to handle it</p></div>
+<div class="next-item"><span class="next-dot">·</span><p class="next-title">Rolls back to tummy — the harder roll, and when to expect it</p></div>
+<div class="next-item"><span class="next-dot">·</span><p class="next-title">Sits with support — the first step toward independent sitting</p></div>
+
+  <a class="dash-link" href="https://getfamilyforce.com/scout-dashboard.html">See all upcoming windows in Scout →</a>
+</div>
+
   <div class="coparent"><p>📩 <a href="#">Forward this to your co-parent</a> — they need it too.</p></div>
-  <div class="closing"><p>Two months down. That first real smile — if it's happened, you already know why people do this twice. If it hasn't, watch for it this week. When it comes, it changes the whole thing. See you next month. — Jack</p></div>
+
+  <div class="closing-card"><p>Two months down. That first real smile — if it's happened, you already know why people do this twice. If it hasn't, watch for it this week. When it comes, it changes the whole thing. See you next month. — Jack</p></div>
+
   <div class="cta"><a href="https://getfamilyforce.com/scout-dashboard.html">Open Scout dashboard →</a></div>
+
   <div class="footer">
     <p><em>For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</em></p>
     <p>Developmental windows medically reviewed by Karina Sanchez Mercado, MD · April 2026</p>
     <p><a href="#">Unsubscribe</a> · FamilyForce, 6th Floor, 12P Smithfield, Kennedy Town, Hong Kong</p>
   </div>
+
 </div>
 </body>
 </html>
