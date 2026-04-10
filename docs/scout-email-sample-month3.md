@@ -35,7 +35,7 @@ Here's what matters most in the next four weeks — before Oliver turns 4 months
 
 &nbsp;
 
-**1. Tummy time — build to 20 minutes a day**
+**1. Tummy time — aim for 15–30 minutes spread across the day**
 
 Not all at once. Two minutes after a diaper change. Three minutes on your chest while you watch TV. It adds up.
 

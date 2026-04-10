@@ -26,11 +26,12 @@ DESCRIPTION:Oliver turns 4 months today. These are the developmental
  ⚠️ CLOSING NOW\n
  • Bottle introduction — breastfed babies who haven't tried a bottle
  by 4 months often refuse one entirely. Last chance for flexibility.\n
- • Swaddling — if Oliver is showing any signs of rolling\, stop
- swaddling now. A swaddled baby who rolls is a safety risk.\n\n
+ • Swaddling — stop now if Oliver is past 8 weeks OR showing any
+ signs of rolling\, whichever comes first. A swaddled baby who
+ rolls is a safety risk.\n\n
  ✅ CHECK IN\n
- • Tummy time — is he reaching 20 minutes a day? Month 4 is the
- baseline. Month 5 he needs it to push up.\n
+ • Tummy time — is he getting 15–30 minutes spread across the day?
+ The habit window closed at 7 weeks\, but keep the practice going.\n
  • Social smiling — is he smiling back at you responsively? If not\,
  mention it at your next pediatrician visit.\n\n
  📱 Full details + progress tracking:\n
@@ -89,15 +90,15 @@ developmental windows closing at this milestone.
   haven't tried a bottle by 4 months often refuse
   one entirely. Last chance for flexibility.
 
-• Swaddling — if Oliver is showing any signs of
-  rolling, stop swaddling now. A swaddled baby
-  who rolls is a safety risk.
+• Swaddling — stop now if Oliver is past 8 weeks
+  OR showing any signs of rolling, whichever comes
+  first. A swaddled baby who rolls is a safety risk.
 
 ✅ CHECK IN
 
-• Tummy time — is he reaching 20 minutes a day?
-  Month 4 is the baseline. Month 5 he needs it
-  to push up.
+• Tummy time — is he getting 15–30 minutes spread
+  across the day? The habit window closed at 7
+  weeks, but keep the practice going.
 
 • Social smiling — is he smiling back at you
   responsively? If not, mention it at your next
