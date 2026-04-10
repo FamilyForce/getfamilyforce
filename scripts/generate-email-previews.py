@@ -20,6 +20,42 @@ DASHBOARD_URL = "https://getfamilyforce.com/scout-dashboard"
 SITE_URL      = "https://getfamilyforce.com"
 MAX_WINDOWS   = 3   # matches email-digest.ts v3 cap
 
+# #3 — Editorial featured-window override (mirrors MONTH_FEATURED_SLUGS in email-digest.ts)
+# Months 10, 27, 28, 29, 34 omitted — DB timing issues (see content backlog)
+MONTH_FEATURED_SLUGS = {
+    1:  'screening-visit-1month',
+    2:  'screening-visit-2months',
+    3:  'motor-head-control',
+    4:  'cognitive-sleep-regression-4month',
+    5:  'nutrition-solids-readiness',
+    6:  'screening-visit-6months',
+    7:  'safety-babyproofing',
+    8:  'nutrition-egg-intro',
+    9:  'screening-visit-9months',
+    11: 'motor-cruising',
+    12: 'screening-visit-12months',
+    13: 'motor-first-steps',
+    14: 'social-joint-attention',
+    15: 'screening-visit-15months',
+    16: 'social-label-big-feelings',
+    17: 'social-parallel-play',
+    18: 'screening-visit-18months-autism',
+    19: 'social-independence-me-do-it',
+    20: 'language-question-asking',
+    21: 'language-speech-clarity-family',
+    22: 'language-vocab-200-words',
+    23: 'motor-jumping-both-feet',
+    24: 'screening-visit-24months-autism',
+    25: 'language-3-word-sentences',
+    26: 'language-names-colors',
+    30: 'screening-visit-30months',
+    31: 'social-peer-friendships',
+    32: 'language-knows-name-age',
+    33: 'social-imaginary-friends',
+    35: 'safety-forward-facing-transition',
+    36: 'screening-visit-36months',
+}
+
 C = {
     "bg":          "#F7F5FF",
     "surface":     "#FFFFFF",
@@ -67,10 +103,18 @@ def get_ready_windows(age_weeks):
         f"&open_age_weeks=gt.{aw}&open_age_weeks=lte.{aw+8}&order=open_age_weeks.asc&limit=3"
     )
 
-def select_above_fold(windows, age_weeks):
+def select_above_fold(windows, age_weeks, age_months=None):
     closing = sorted([w for w in windows if w["close_age_weeks"] - age_weeks <= 4], key=lambda w: w["priority"])
     opens   = sorted([w for w in windows if w["close_age_weeks"] - age_weeks > 4],  key=lambda w: w["priority"])
-    return (closing + opens)[:MAX_WINDOWS]
+    top = (closing + opens)[:MAX_WINDOWS]
+    # Apply editorial featured-window override (#3)
+    if age_months is not None:
+        featured_slug = MONTH_FEATURED_SLUGS.get(age_months)
+        if featured_slug:
+            idx = next((i for i, w in enumerate(top) if w["slug"] == featured_slug), -1)
+            if idx > 0:
+                top.insert(0, top.pop(idx))
+    return top
 
 # ── Rendering helpers (mirror email-digest.ts v3) ─────────────────────────────
 def render_bullets(text):
@@ -461,22 +505,32 @@ def render_email(age_months, above_fold, get_ready, total_count, is_prebirth=Fal
           margin:0;line-height:1.65;font-style:italic">{mc['theme']}</p>
       </td></tr>""" if above_fold else ""
 
-    # Window sections
-    closing_label = f"""
-      <tr><td style="padding-bottom:4px">
-        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;
-          letter-spacing:.12em;text-transform:uppercase;color:{C['amber']};margin:0">⏱ Closing this month</p>
-      </td></tr>
-      {"".join(window_card(w, age_weeks) for w in closing_wins)}""" if closing_wins else ""
+    # Window layout (#4: DYK after window 1 when no mix; #6: headers only with mix)
+    dyk_html    = dyk_card(mc["dyk"])
+    show_headers = bool(closing_wins) and bool(open_wins)
 
-    dyk_html = dyk_card(mc["dyk"])
-
-    open_label = f"""
-      <tr><td style="padding:{'8px' if closing_wins else '0'} 0 4px">
-        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;
-          letter-spacing:.12em;text-transform:uppercase;color:{C['textDim']};margin:0">Also this month</p>
-      </td></tr>
-      {"".join(window_card(w, age_weeks) for w in open_wins)}""" if open_wins else ""
+    if show_headers:
+        # Mix: header+closing → DYK → header+open
+        closing_sec = (
+            f'\n      <tr><td style="padding-bottom:4px">'
+            f'<p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;'
+            f'letter-spacing:.12em;text-transform:uppercase;color:{C["amber"]};margin:0">'
+            f'⏱ Closing this month</p></td></tr>\n'
+        ) + "".join(window_card(w, age_weeks) for w in closing_wins)
+        open_sec = (
+            f'\n      <tr><td style="padding:8px 0 4px">'
+            f'<p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;'
+            f'letter-spacing:.12em;text-transform:uppercase;color:{C["textDim"]};margin:0">'
+            f'Also this month</p></td></tr>\n'
+        ) + "".join(window_card(w, age_weeks) for w in open_wins)
+        windows_layout = closing_sec + dyk_html + open_sec
+    else:
+        # All same type — DYK after first window
+        all_wins  = closing_wins + open_wins
+        is_close  = bool(closing_wins)
+        first_win = window_card(all_wins[0], age_weeks) if all_wins else ""
+        rest_wins = "".join(window_card(w, age_weeks) for w in all_wins[1:])
+        windows_layout = first_win + dyk_html + rest_wins
 
     # Coming next / farewell / pre-birth confirm
     if is_prebirth:
@@ -549,9 +603,7 @@ def render_email(age_months, above_fold, get_ready, total_count, is_prebirth=Fal
 
       <!-- Theme + windows -->
       {theme_stripe}
-      {closing_label}
-      {dyk_html}
-      {open_label}
+      {windows_layout}
 
       <!-- Completed this month (demo) -->
       {completed_demo}
@@ -685,7 +737,7 @@ def main():
         age_w = mo * 4.33
         print(f"  Month {mo} ({age_w:.1f}w)...")
         wins = get_windows_at_age(age_w)
-        af   = select_above_fold(wins, age_w)
+        af   = select_above_fold(wins, age_w, age_months=mo)
         try:
             gr = get_ready_windows(age_w)
         except:

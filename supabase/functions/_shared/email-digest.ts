@@ -296,6 +296,55 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   const topWindows  = aboveFold.slice(0, 3)
   const allCaughtUp = topWindows.length === 0 && digestType === 'monthly'
 
+  // #3 — Editorial featured-window override: ensure the month's priority window leads.
+  // DB priority sort can be overridden by a closing window we don't want to lead.
+  // Map: month → slug that should always appear first if present in top 3.
+  // Months omitted = no override (DB priority determines order).
+  // Note: months 10, 27, 28, 29, 34 have DB timing issues — see content backlog.
+  const MONTH_FEATURED_SLUGS: Record<number, string> = {
+    1:  'screening-visit-1month',
+    2:  'screening-visit-2months',
+    3:  'motor-head-control',
+    4:  'cognitive-sleep-regression-4month',
+    5:  'nutrition-solids-readiness',
+    6:  'screening-visit-6months',
+    7:  'safety-babyproofing',
+    8:  'nutrition-egg-intro',
+    9:  'screening-visit-9months',
+    11: 'motor-cruising',
+    12: 'screening-visit-12months',
+    13: 'motor-first-steps',
+    14: 'social-joint-attention',
+    15: 'screening-visit-15months',
+    16: 'social-label-big-feelings',
+    17: 'social-parallel-play',
+    18: 'screening-visit-18months-autism',
+    19: 'social-independence-me-do-it',
+    20: 'language-question-asking',
+    21: 'language-speech-clarity-family',
+    22: 'language-vocab-200-words',
+    23: 'motor-jumping-both-feet',
+    24: 'screening-visit-24months-autism',
+    25: 'language-3-word-sentences',
+    26: 'language-names-colors',
+    30: 'screening-visit-30months',
+    31: 'social-peer-friendships',
+    32: 'language-knows-name-age',
+    33: 'social-imaginary-friends',
+    35: 'safety-forward-facing-transition',
+    36: 'screening-visit-36months',
+  }
+  if (!isExpecting) {
+    const featuredSlug = MONTH_FEATURED_SLUGS[ageMonths]
+    if (featuredSlug) {
+      const idx = topWindows.findIndex(w => w.slug === featuredSlug)
+      if (idx > 0) {
+        const [featured] = topWindows.splice(idx, 1)
+        topWindows.unshift(featured)
+      }
+    }
+  }
+
   const His = cap(pronoun(childGender, 'possess'))
   const his = pronoun(childGender, 'possess')
   const him = pronoun(childGender, 'object')
@@ -354,15 +403,29 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     </tr>` : ''
 
   // Build window sections
-  const closingSection = closing.length > 0 ? `
+  // #6: section headers only when BOTH closing and open windows exist
+  // #4: DYK after first window when all same type (no mix)
+  const dykSection  = dykCard(mc.dyk)
+  const showHeaders = closing.length > 0 && openWindows.length > 0
+
+  let windowsLayout: string
+  if (showHeaders) {
+    // Mix: header+closing → DYK → header+open
+    const closingSec = `
     <tr><td style="padding-bottom:4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.amber};margin:0">⏱ Closing this month</p></td></tr>
-    ${closing.map(w => windowCard(w, ageMonths, dashboardUrl, true)).join('')}` : ''
-
-  const dykSection = dykCard(mc.dyk)
-
-  const openSection = openWindows.length > 0 ? `
-    <tr><td style="padding:${closing.length > 0 ? '8px' : '0'} 0 4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.textDim};margin:0">Also this month</p></td></tr>
-    ${openWindows.map(w => windowCard(w, ageMonths, dashboardUrl, false)).join('')}` : ''
+    ${closing.map(w => windowCard(w, ageMonths, dashboardUrl, true)).join('')}`
+    const openSec = `
+    <tr><td style="padding:8px 0 4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.textDim};margin:0">Also this month</p></td></tr>
+    ${openWindows.map(w => windowCard(w, ageMonths, dashboardUrl, false)).join('')}`
+    windowsLayout = closingSec + dykSection + openSec
+  } else {
+    // All same type (all closing or all open): DYK after window 1 for visual break
+    const allWins   = [...closing, ...openWindows]
+    const isClose   = closing.length > 0
+    const firstCard = allWins.length > 0 ? windowCard(allWins[0], ageMonths, dashboardUrl, isClose) : ''
+    const restCards = allWins.slice(1).map(w => windowCard(w, ageMonths, dashboardUrl, isClose)).join('')
+    windowsLayout   = firstCard + dykSection + restCards
+  }
 
   // Coming next month from getReadyWindows — replaced with farewell at month 36
   const farewellHtml = (!isExpecting && ageMonths >= 36 && getReadyWindows.length === 0) ? `
@@ -558,7 +621,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
               ${themeStripe}
 
               <!-- Windows (or all-caught-up hero) -->
-              ${allCaughtUp ? allCaughtUpSection : closingSection + dykSection + openSection}
+              ${allCaughtUp ? allCaughtUpSection : windowsLayout}
               ${completedSection}
 
               <!-- Coming next month -->
