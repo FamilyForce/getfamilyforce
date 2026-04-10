@@ -104,13 +104,13 @@ function renderBullets(text: string): string {
 // ─── Window card (v3 — full bullets) ──────────────────────────────────────────
 function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, isClosing: boolean): string {
   const ageWeeks  = ageMonths * 4.33
-  const weeksLeft = Math.round(w.close_age_weeks - ageWeeks)
+  const weeksLeft = Math.max(0, Math.round(w.close_age_weeks - ageWeeks))  // #6: guard ≤0
 
   // 2-sentence excerpt for the why
   const sentences = (w.why_it_matters || '').replace(/([.!?])\s+/g, '$1|||').split('|||')
   const excerpt   = sentences.slice(0, 2).join(' ').trim()
 
-  const badgeText = isClosing ? `Closing in ${weeksLeft}w` : 'This month'
+  const badgeText = isClosing ? (weeksLeft === 0 ? 'Last chance' : `Closing in ${weeksLeft}w`) : 'This month'
   const badgeColor = isClosing ? C.amber : C.terraDark
   const badgeBg    = isClosing ? C.amberBg : C.terraTint
 
@@ -226,7 +226,7 @@ const MONTH_CONTENT: Record<number, MonthContent> = {
   32: { theme: '🦷 This month: name and age, hopping on one foot, and the tooth brushing handoff.', dyk: 'Hopping on one foot is a precursor to **skipping** — which is itself a precursor to the lateral co-ordination needed for sports, dance, and smooth stair negotiation. The physical milestones build on each other in a sequence that spans years.', opening: 'Thirty-two months. Knowing and stating her full name and age is both a developmental milestone and a practical safety skill. Here\'s what matters this month.', context: 'Thirty-two months: self-concept, physical confidence, and daily health habits.', closing: 'Teach her her full name and your name this month. It takes one week of practice. It could matter a lot. — Jack' },
   33: { theme: '🌟 This month: imaginary friends, storytelling, and following complex instructions.', dyk: 'Children who regularly **tell stories** about their own experiences show stronger reading comprehension and writing ability at age 6 and 7. Storytelling builds the narrative scaffolding that books are built on. The dinner table is the classroom.', opening: 'Thirty-three months. She may have an imaginary friend — or be on the verge of inventing one. Research shows this is a very good sign.', context: 'Thirty-three months: imagination is at full power. Harness it.', closing: 'The imaginary friend is practising social skills. Let her. — Jack' },
   34: { theme: '🚲 This month: first wheels, gratitude at the table, and the fine motor milestone building toward writing.', dyk: 'Families with regular **gratitude practices at mealtimes** — even one sentence each — show measurably higher wellbeing, more prosocial behaviour, and stronger relationship quality in children by age 10. The mechanism is habit formation through repetition. It takes about 3 weeks to feel natural.', opening: 'Thirty-four months. Two months from the 3-year checkup. The balance and co-ordination developing this month are the foundation for sport, dance, and physical confidence.', context: 'Thirty-four months: wheels, character, and the last stretch before the 3-year checkup.', closing: 'The tricycle or balance bike is one of the best investments you can make at this age. Get outside. — Jack' },
-  35: { theme: '🚗 This month: car seat safety update, counting with real meaning, and why sharing now makes sense.', dyk: 'The **\'give me 3\'** game — asking a child to hand you exactly 3 objects — is one of the most reliable ways to test whether she understands what 3 means, versus just being able to recite \'1, 2, 3.\' Both matter, but understanding cardinality is the deeper skill.', opening: 'Thirty-five months. One month from the 3-year checkup — and the 3-year milestone set is nearly complete. Here\'s what to focus on in this final stretch.', context: 'Thirty-five months: the 3-year checkup is one month away. Come prepared.', closing: 'One month to the third birthday — and the 3-year checkup. Come with your observations, your concerns, and your word count. — Jack' },
+  35: { theme: '🚗 This month: car seat safety update, counting with real meaning, and the forward-facing milestone.', dyk: 'The **\'give me 3\'** game — asking a child to hand you exactly 3 objects — is one of the most reliable ways to test whether she understands what 3 means, versus just being able to recite \'1, 2, 3.\' Both matter, but understanding cardinality is the deeper skill.', opening: 'Thirty-five months. One month from the 3-year checkup — and the 3-year milestone set is nearly complete. Here\'s what to focus on in this final stretch.', context: 'Thirty-five months: the 3-year checkup is one month away. Come prepared.', closing: 'One month to the third birthday — and the 3-year checkup. Come with your observations, your concerns, and your word count. — Jack' },
   36: { theme: '🎉 This month: the 3-year checkup, full sentences, and the discipline approach that actually works.', dyk: 'By age 3, the brain has reached **80% of its adult size** — and the connections built in the first three years are the scaffolding for everything that comes after. Every conversation, every book, every patient repair after a meltdown. All of it counted.', opening: 'Three years old. The 36-month well child visit marks the end of the most intensive developmental surveillance period. From here, visits go annual.', context: 'Three years. The intensive developmental surveillance window closes. Annual visits from here.', closing: 'Happy third birthday. Three years of showing up. The work you\'ve done is the most important work of her life. — Jack' },
 }
 
@@ -238,6 +238,25 @@ function getMonthContent(ageMonths: number): MonthContent {
     context: `${ageMonths} months old. Development is always moving.`,
     closing: 'Stay curious, stay consistent. We\'ll keep you on track. — Jack',
   }
+}
+
+// ─── Apply gender pronouns to MONTH_CONTENT editorial copy ───────────────────
+// MONTH_CONTENT strings are static and default to female pronouns.
+// This function does a safe runtime swap so boy/neutral babies get correct copy.
+function applyPronouns(text: string, gender: string | null): string {
+  if (!gender || gender === 'girl') return text  // default is already female
+  const she = pronoun(gender, 'subject')   // he / they
+  const her = pronoun(gender, 'possess')   // his / their
+  const She = cap(she), Her = cap(her)
+  return text
+    .replace(/\bShe's\b/g, `${She}'s`)
+    .replace(/\bshe's\b/g, `${she}'s`)
+    .replace(/\bShe\b/g, She)
+    .replace(/\bshe\b/g, she)
+    .replace(/\bHer\b/g, Her)
+    .replace(/\bher\b/g, her)
+    .replace(/\bHim\b/g, cap(pronoun(gender, 'object')))
+    .replace(/\bhim\b/g, pronoun(gender, 'object'))
 }
 
 // ─── Coming next month list ────────────────────────────────────────────────────
@@ -380,7 +399,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `You already know how Scout works. This is ${childName}'s first digest — the same system, tuned to exactly where ${his} is right now. Every child has their own set of windows. Here's ${childName}'s.`
     : digestType === 'signup'
     ? `This is ${childName}'s first Scout digest. It's the beginning of something that I wish I'd had with my first son — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now.`
-    : mc.opening
+    : applyPronouns(mc.opening, childGender)  // #3: runtime pronoun substitution
 
   // Context line
   const contextLine = isExpecting
@@ -391,12 +410,12 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `${childName}'s windows are live. Here's what's worth your attention this month.`
     : allCaughtUp
     ? `You've marked everything done this month. That's genuinely rare — and it shows.`
-    : mc.context
+    : applyPronouns(mc.context, childGender)  // #3: runtime pronoun substitution
 
   // Jack closing
   const jackClosing = isExpecting
     ? `You're close now. Everything you do in the next few weeks makes the first days easier. — Jack`
-    : mc.closing
+    : applyPronouns(mc.closing, childGender)  // #3: runtime pronoun substitution
 
   // Theme stripe
   const themeStripe = (!allCaughtUp && topWindows.length > 0) ? `
@@ -412,7 +431,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   const dykSection  = dykCard(mc.dyk)
   const showHeaders = closing.length > 0 && openWindows.length > 0
 
-  let windowsLayout: string
+  let windowsLayout = ''  // #5: initialize to avoid strict-mode uninitialized warning
   if (showHeaders) {
     // Mix: header+closing → DYK → header+open
     const closingSec = `
@@ -711,7 +730,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                         <table cellpadding="0" cellspacing="0">
                           <tr>
                             <td style="background:#fff;border-radius:8px">
-                              <a href="${dashboardUrl}" style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:${C.indigo};text-decoration:none;display:block;padding:12px 24px">
+                              <a href="${dashboardUrl}" style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:${C.terraDark};text-decoration:none;display:block;padding:12px 24px">
                                 Confirm birth in Scout →
                               </a>
                             </td>
@@ -788,7 +807,30 @@ export function buildDigestSubject(
   ageWeeks:   number,
   digestType: 'signup' | 'birth_signup' | 'monthly' | 'conversion' | 'additional_child' = 'monthly'
 ): string {
-  const closing = aboveFold.filter(w => w.close_age_weeks - ageWeeks <= 4)
+  // #4: apply same MONTH_FEATURED_SLUGS reorder so subject matches the email lead
+  const SUBJECT_FEATURED_SLUGS: Record<number, string> = {
+    1:'screening-visit-1month', 2:'screening-visit-2months', 3:'motor-head-control',
+    4:'cognitive-sleep-regression-4month', 5:'nutrition-solids-readiness',
+    6:'screening-visit-6months', 7:'safety-babyproofing', 8:'nutrition-egg-intro',
+    9:'screening-visit-9months', 10:'motor-pull-to-stand', 11:'motor-cruising',
+    12:'screening-visit-12months', 13:'motor-first-steps', 14:'social-joint-attention',
+    15:'screening-visit-15months', 16:'social-label-big-feelings', 17:'social-parallel-play',
+    18:'screening-visit-18months-autism', 19:'social-independence-me-do-it',
+    20:'language-question-asking', 21:'language-speech-clarity-family',
+    22:'language-vocab-200-words', 23:'motor-jumping-both-feet',
+    24:'screening-visit-24months-autism', 25:'language-3-word-sentences',
+    26:'language-names-colors', 27:'motor-catching-ball', 29:'language-counts-objects-5',
+    30:'screening-visit-30months', 31:'social-peer-friendships',
+    32:'language-knows-name-age', 33:'social-imaginary-friends',
+    35:'safety-forward-facing-transition', 36:'screening-visit-36months',
+  }
+  const sortedFold = [...aboveFold.slice(0, 3)]
+  const featSlug = SUBJECT_FEATURED_SLUGS[ageMonths]
+  if (featSlug) {
+    const idx = sortedFold.findIndex(w => w.slug === featSlug)
+    if (idx > 0) { const [f] = sortedFold.splice(idx, 1); sortedFold.unshift(f) }
+  }
+  const closing = sortedFold.filter(w => w.close_age_weeks - ageWeeks <= 4)
 
   if (digestType === 'birth_signup') {
     return `${childName} is here — and so is your first Scout digest 🎉`
@@ -822,11 +864,11 @@ export function buildDigestSubject(
     return `${childName} at ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'} — ${timeLeft} on ${w.title.toLowerCase()}`
   }
 
-  if (aboveFold.length === 0) {
+  if (sortedFold.length === 0) {
     return `${childName} at ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'} — you've done it all this month 🏆`
   }
 
-  return `${childName} at ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'} — ${aboveFold.length} things to know this month`
+  return `${childName} at ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'} — ${sortedFold.length} things to know this month`
 }
 
 // ─── Pre-birth email ──────────────────────────────────────────────────────────

@@ -317,12 +317,10 @@ def page(nav_label, title_label, subject, preheader,
 
   <div class="theme-stripe"><p>{theme}</p></div>
 
-  {section_header("This month's priority", 1, total_windows)}
   {priority_card_html}
   {dyk_html}
 
-  {section_header("Also this month", 2, total_windows)}
-  {supporting_cards_html}
+  {(section_header("Also this month", 2, total_windows) + supporting_cards_html) if supporting_cards_html.strip() else ""}
 
   {tackled_html}
   {next_month_html}
@@ -2506,7 +2504,7 @@ html = page(
     hero_age="Month 35", hero_name="Olivia · 35 months old",
     opening="Olivia is 35 months old. One month from the 3-year checkup — and the 3-year milestone set is nearly complete. Here's what to focus on in this final stretch.",
     context="Thirty-five months: the 3-year checkup is one month away. Come prepared.",
-    theme="🚗 This month: car seat safety update, counting with real meaning, and why sharing now makes sense.",
+    theme="🚗 This month: car seat safety update, counting with real meaning, and the forward-facing milestone.",
     total_windows=17,
     priority_card_html=window_card(
         "⏱ Closing this month", "",

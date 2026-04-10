@@ -142,8 +142,8 @@ def excerpt(text, n=2):
 
 def window_card(w, age_weeks):
     is_closing   = (w["close_age_weeks"] - age_weeks) <= 4
-    weeks_left   = round(w["close_age_weeks"] - age_weeks)
-    badge_text   = f"Closing in {weeks_left}w" if is_closing else "This month"
+    weeks_left   = max(0, round(w["close_age_weeks"] - age_weeks))
+    badge_text   = "Last chance" if weeks_left == 0 else f"Closing in {weeks_left}w" if is_closing else "This month"
     badge_color  = C["amber"] if is_closing else C["terraDark"]
     badge_bg     = C["amberBg"] if is_closing else C["terraTint"]
     exc          = excerpt(w.get("why_it_matters",""))
@@ -473,7 +473,7 @@ MONTH_CONTENT = {
          "opening":f"{CHILD_NAME} is 34 months old. She's drawing with intention now — copying a circle is a standard 3-year motor milestone and a direct precursor to writing letters.",
          "context":"Thirty-four months: fine motor, character, and wheeled independence.",
          "closing":"Draw circles together. Fine motor practice for her and a moment of stillness for you. — Jack"},
-    35: {"theme":"🚗 This month: car seat safety update, counting with real meaning, and why sharing now makes sense.",
+    35: {"theme":"🚗 This month: car seat safety update, counting with real meaning, and the forward-facing milestone.",
          "dyk":"The **'give me 3'** game — asking a child to hand you exactly 3 objects — is one of the most reliable ways to test whether she understands what 3 means, versus just reciting '1, 2, 3.'",
          "opening":f"{CHILD_NAME} is 35 months old. One month from the 3-year checkup — and the 3-year milestone set is nearly complete.",
          "context":"Thirty-five months: the 3-year checkup is one month away. Come prepared.",
