@@ -525,7 +525,7 @@ html = page(
         "The social smile — her first intentional interaction, watch for it around week 6",
         "Head control — holds her head steady when upright",
     ]),
-    closing_text="You're one month in. The hardest stretch — the absolute chaos of week one through four — is behind you. She's easier to read than she was, and she'll be easier still next month. We'll be back. — Jack",
+    closing_text="You're one month in. The hardest stretch — the absolute chaos of week one through four — is behind you. She's easier to read than she was, and she'll be easier still next month. We'll be back. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month1-redesign.html", "w") as f: f.write(html)
 print("Written: month1-redesign.html")
@@ -583,7 +583,7 @@ html = page(
         "Serve and return — the language habit that compounds",
         "Room sharing — the 6-month safety window, check your setup",
     ]),
-    closing_text="Two months down. That first real smile — if it's happened, you already know why people do this twice. If it hasn't, watch for it this week. When it comes, it changes the whole thing. See you next month. — Jack",
+    closing_text="Two months down. That first real smile — if it's happened, you already know why people do this twice. If it hasn't, watch for it this week. When it comes, it changes the whole thing. See you next month. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month2-redesign.html", "w") as f: f.write(html)
 print("Written: month2-redesign.html")
@@ -642,7 +642,7 @@ html = page(
         "4-month checkup — bring your sleep questions",
         "Rolls tummy to back — first intentional movement",
     ]),
-    closing_text="Month 3 is when it starts feeling real. You're not just keeping her alive — you're watching her become someone. Month 4 is full of new things. We'll make sure you're ready. — Jack",
+    closing_text="Month 3 is when it starts feeling real. You're not just keeping her alive — you're watching her become someone. Month 4 is full of new things. We'll make sure you're ready. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month3-redesign.html", "w") as f: f.write(html)
 print("Written: month3-redesign.html")
@@ -705,7 +705,7 @@ html = page(
         "Iron supplement — closing window for breastfed babies",
         "Primary attachment — what you've been building all along",
     ]),
-    closing_text="Month 4 is a lot. If sleep just got worse — that's the regression and it means her brain is doing exactly what it should. Hang in there. Back next month. — Jack",
+    closing_text="Month 4 is a lot. If sleep just got worse — that's the regression and it means her brain is doing exactly what it should. Hang in there. Back next month. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month4-redesign.html", "w") as f: f.write(html)
 print("Written: month4-redesign.html")
@@ -766,7 +766,7 @@ html = page(
         "Room sharing review — 6 months is the minimum safe room-sharing window",
         "Primary attachment — the 6-month foundation closes",
     ]),
-    closing_text="Five months goes fast. She's a different baby than she was four weeks ago — and she'll be different again in four more. Enjoy this stretch. We'll be back. — Jack",
+    closing_text="Five months goes fast. She's a different baby than she was four weeks ago — and she'll be different again in four more. Enjoy this stretch. We'll be back. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month5-redesign.html", "w") as f: f.write(html)
 print("Written: month5-redesign.html")
@@ -829,7 +829,7 @@ html = page(
         "Responds to own name — a key language and social milestone",
         "Introduce dairy — yogurt and cheese, early allergen window open",
     ]),
-    closing_text="Halfway through the first year. You've done more right than you know. Month 7 is where it gets mobile — we'll walk you through it. — Jack",
+    closing_text="Halfway through the first year. You've done more right than you know. Month 7 is where it gets mobile — we'll walk you through it. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month6-redesign.html", "w") as f: f.write(html)
 print("Written: month6-redesign.html")
@@ -892,7 +892,7 @@ html = page(
         "Babbling — consonant sounds (ba, da, ma) starting around now",
         "Introduce tree nuts — another key early allergen window",
     ]),
-    closing_text="Seven months is when parents start babyproofing in earnest. If you haven't started, this month is the time — not next month. — Jack",
+    closing_text="Seven months is when parents start babyproofing in earnest. If you haven't started, this month is the time — not next month. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month7-redesign.html", "w") as f: f.write(html)
 print("Written: month7-redesign.html")
@@ -952,7 +952,7 @@ html = page(
         "Tree nut introduction — if not yet completed",
         "9-month checkup — first formal developmental screening",
     ]),
-    closing_text="Eight months is the start of a lot of big things — object permanence, allergen introductions, separation anxiety. All normal. All good. — Jack",
+    closing_text="Eight months is the start of a lot of big things — object permanence, allergen introductions, separation anxiety. All normal. All good. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month8-redesign.html", "w") as f: f.write(html)
 print("Written: month8-redesign.html")
@@ -1012,7 +1012,7 @@ html = page(
         "Peek-a-boo play — object permanence and trust building",
         "Crawling or alternative locomotion — watch for consistent movement",
     ]),
-    closing_text="Nine months is one of my favorites. She's communicating more deliberately, moving on her own, and becoming someone with opinions. A lot happens between now and 12 months. — Jack",
+    closing_text="Nine months is one of my favorites. She's communicating more deliberately, moving on her own, and becoming someone with opinions. A lot happens between now and 12 months. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month9-redesign.html", "w") as f: f.write(html)
 print("Written: month9-redesign.html")
@@ -1073,7 +1073,7 @@ html = page(
         "'Mama' and 'dada' used specifically — the 12-month visit will ask",
         "First dental visit — at first tooth or by 12 months",
     ]),
-    closing_text="Ten months goes fast. She's a communicator now — not with words yet, but with everything else. Two months to the first birthday. — Jack",
+    closing_text="Ten months goes fast. She's a communicator now — not with words yet, but with everything else. Two months to the first birthday. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month10-redesign.html", "w") as f: f.write(html)
 print("Written: month10-redesign.html")
@@ -1133,7 +1133,7 @@ html = page(
         "Read aloud every day — build the habit now, it compounds for years",
         "Switch to whole cow's milk — at 12 months, the transition begins",
     ]),
-    closing_text="One month to the first birthday. It goes fast — and then it really goes fast. The 12-month digest is a big one. — Jack",
+    closing_text="One month to the first birthday. It goes fast — and then it really goes fast. The 12-month digest is a big one. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month11-redesign.html", "w") as f: f.write(html)
 print("Written: month11-redesign.html")
@@ -1194,7 +1194,7 @@ html = page(
         "Water safety — never leave unattended near water, even the bath",
         "Joint attention and pointing — key toddler communication milestone",
     ]),
-    closing_text="Happy first birthday to Olivia — and to you. Year two is different. Faster in some ways, slower in others. We'll keep you on track every month. — Jack",
+    closing_text="Happy first birthday to Olivia — and to you. Year two is different. Faster in some ways, slower in others. We'll keep you on track every month. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month12-redesign.html", "w") as f: f.write(html)
 print("Written: month12-redesign.html")
@@ -1259,7 +1259,7 @@ html = page(
         "Walking independently — from steps to full locomotion",
         "Identifies own body parts — nose, ears, belly on request",
     ]),
-    closing_text="The second year is a completely different experience. The pace of change slows a little — and then the language starts to explode. Stay with us. — Jack",
+    closing_text="The second year is a completely different experience. The pace of change slows a little — and then the language starts to explode. Stay with us. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month13-redesign.html", "w") as f: f.write(html)
 print("Written: month13-redesign.html")
@@ -1318,7 +1318,7 @@ html = page(
         "Vocabulary: 10 words — the first language milestone checkpoint",
         "Pretend play emerging — feeding a stuffed animal, toy phone",
     ]),
-    closing_text="Joint attention is the bridge between pointing and talking. When she points and looks back at you — respond every time. That's the lesson she's practicing. — Jack",
+    closing_text="Joint attention is the bridge between pointing and talking. When she points and looks back at you — respond every time. That's the lesson she's practicing. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month14-redesign.html", "w") as f: f.write(html)
 print("Written: month14-redesign.html")
@@ -1378,7 +1378,7 @@ html = page(
         "Follows 1-step commands without gesture — comprehension milestone",
         "Stair climbing with support — up and down, step by step",
     ]),
-    closing_text="The 15-month visit is one of the most useful ones of the second year. Come with your word count, your walking update, and your questions. — Jack",
+    closing_text="The 15-month visit is one of the most useful ones of the second year. Come with your word count, your walking update, and your questions. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month15-redesign.html", "w") as f: f.write(html)
 print("Written: month15-redesign.html")
@@ -1440,7 +1440,7 @@ html = page(
         "Spoon self-feeding — messy, important, let them try",
         "Separation anxiety — normal at this age, here's how to handle it",
     ]),
-    closing_text="Labeling feelings feels awkward at first. It gets natural fast. And the payoff — a child who can eventually name their own emotions — is one of the most useful things you can give. — Jack",
+    closing_text="Labeling feelings feels awkward at first. It gets natural fast. And the payoff — a child who can eventually name their own emotions — is one of the most useful things you can give. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month16-redesign.html", "w") as f: f.write(html)
 print("Written: month16-redesign.html")
@@ -1503,7 +1503,7 @@ html = page(
         "Two-word combinations — 'more milk,' 'daddy go'",
         "Tantrums peak — the response strategy that matters",
     ]),
-    closing_text="Seventeen months is peak separation anxiety for many kids. It's hard at drop-off. It almost always passes quickly once you're gone. Stay consistent. Stay warm. Keep the goodbye brief. — Jack",
+    closing_text="Seventeen months is peak separation anxiety for many kids. It's hard at drop-off. It almost always passes quickly once you're gone. Stay consistent. Stay warm. Keep the goodbye brief. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month17-redesign.html", "w") as f: f.write(html)
 print("Written: month17-redesign.html")
@@ -1565,7 +1565,7 @@ html = page(
         "Vocabulary: 50 words — the gate that opens everything",
         "Self-regulation — it starts with co-regulation from you",
     ]),
-    closing_text="The 18-month visit is one of the most important ones. Come prepared. Answer the M-CHAT honestly. Ask your questions. — Jack",
+    closing_text="The 18-month visit is one of the most important ones. Come prepared. Answer the M-CHAT honestly. Ask your questions. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month18-redesign.html", "w") as f: f.write(html)
 print("Written: month18-redesign.html")
@@ -1626,7 +1626,7 @@ html = page(
         "Matches shapes and colors — first classification skills",
         "Names 5 body parts — nose, ears, belly, eyes, feet",
     ]),
-    closing_text="'Me do it' is the sound of a child becoming someone. Let her. — Jack",
+    closing_text="'Me do it' is the sound of a child becoming someone. Let her. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month19-redesign.html", "w") as f: f.write(html)
 print("Written: month19-redesign.html")
@@ -1686,7 +1686,7 @@ html = page(
         "Empathy emerging — shows concern when others are upset",
         "Understands function of common objects — spoon for eating, brush for hair",
     ]),
-    closing_text="Answer the questions. All of them. Every answered question is a word, a concept, a connection. — Jack",
+    closing_text="Answer the questions. All of them. Every answered question is a word, a concept, a connection. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month20-redesign.html", "w") as f: f.write(html)
 print("Written: month20-redesign.html")
@@ -1746,7 +1746,7 @@ html = page(
         "Follows 2-step commands — working memory milestone",
         "Uses pronouns — I, me, you",
     ]),
-    closing_text="When she notices you're sad — that's not nothing. That's the beginning of everything that makes us human. — Jack",
+    closing_text="When she notices you're sad — that's not nothing. That's the beginning of everything that makes us human. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month21-redesign.html", "w") as f: f.write(html)
 print("Written: month21-redesign.html")
@@ -1806,7 +1806,7 @@ html = page(
         "Complex pretend play — multi-step scenarios, characters, scripts",
         "Understands big vs. little — first size comparisons",
     ]),
-    closing_text="Two months to the second birthday. The language targets are in sight. Keep reading, keep narrating, keep expanding. — Jack",
+    closing_text="Two months to the second birthday. The language targets are in sight. Keep reading, keep narrating, keep expanding. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month22-redesign.html", "w") as f: f.write(html)
 print("Written: month22-redesign.html")
@@ -1866,7 +1866,7 @@ html = page(
         "Switch to 2% milk at age 2 — confirm at the visit",
         "Understands same and different — matching and classification",
     ]),
-    closing_text="One month to the second birthday. She's come so far — and the pace doesn't slow down. — Jack",
+    closing_text="One month to the second birthday. She's come so far — and the pace doesn't slow down. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month23-redesign.html", "w") as f: f.write(html)
 print("Written: month23-redesign.html")
@@ -1925,7 +1925,7 @@ html = page(
         "Recalls recent events — memory becoming narrative",
         "Cooperative play begins — playing with, not just beside",
     ]),
-    closing_text="Happy second birthday to Olivia — and to you. Two years in, and you know exactly what you're doing. The third year is different again. We'll keep you on track. — Jack",
+    closing_text="Happy second birthday to Olivia — and to you. Two years in, and you know exactly what you're doing. The third year is different again. We'll keep you on track. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month24-redesign.html", "w") as f: f.write(html)
 print("Written: month24-redesign.html")
@@ -1986,7 +1986,7 @@ html = page(
         "Asks 'why' — the question explosion is coming",
         "Counts to 10 — rote sequence, building toward meaning",
     ]),
-    closing_text="Three-word sentences are the beginning of the language explosion. The more you respond, the faster it comes. — Jack",
+    closing_text="Three-word sentences are the beginning of the language explosion. The more you respond, the faster it comes. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month25-redesign.html", "w") as f: f.write(html)
 print("Written: month25-redesign.html")
@@ -2047,7 +2047,7 @@ html = page(
         "Catches a large ball — visual-motor milestone",
         "Strangers understand 75% of speech — the 3-year speech clarity target",
     ]),
-    closing_text="Answer the 'why' questions. Every single one. That's the whole job this month. — Jack",
+    closing_text="Answer the 'why' questions. Every single one. That's the whole job this month. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month26-redesign.html", "w") as f: f.write(html)
 print("Written: month26-redesign.html")
@@ -2109,7 +2109,7 @@ html = page(
         "Time concepts — morning, afternoon, yesterday, tomorrow",
         "Named friendships — 'I want to play with Ella'",
     ]),
-    closing_text="Potty training: wait for the signs. When they're there, go fast and don't look back. When they're not, wait. — Jack",
+    closing_text="Potty training: wait for the signs. When they're there, go fast and don't look back. When they're not, wait. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month27-redesign.html", "w") as f: f.write(html)
 print("Written: month27-redesign.html")
@@ -2169,7 +2169,7 @@ html = page(
         "Balances on one foot for 2 seconds — the flamingo game",
         "Counts objects 1–5 — one-to-one correspondence starting",
     ]),
-    closing_text="When she tells a joke, laugh. Every single time. You're not indulging silliness — you're reinforcing the social intelligence that will carry her through life. — Jack",
+    closing_text="When she tells a joke, laugh. Every single time. You're not indulging silliness — you're reinforcing the social intelligence that will carry her through life. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month28-redesign.html", "w") as f: f.write(html)
 print("Written: month28-redesign.html")
@@ -2231,7 +2231,7 @@ html = page(
         "Crib to bed transition — timing and how to do it right",
         "Daytime dryness — the potty training finish line",
     ]),
-    closing_text="Preschool readiness is built over months of practice at home. Separation, communication, self-help. That's the curriculum — and you're already teaching it. — Jack",
+    closing_text="Preschool readiness is built over months of practice at home. Separation, communication, self-help. That's the curriculum — and you're already teaching it. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month29-redesign.html", "w") as f: f.write(html)
 print("Written: month29-redesign.html")
@@ -2291,7 +2291,7 @@ html = page(
         "Number-quantity concept — '2' means exactly 2 things",
         "Getting dressed independently — simple clothes, elastic and velcro",
     ]),
-    closing_text="Two and a half. The language has come so far. The 30-month visit is worth taking seriously — come prepared. — Jack",
+    closing_text="Two and a half. The language has come so far. The 30-month visit is worth taking seriously — come prepared. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month30-redesign.html", "w") as f: f.write(html)
 print("Written: month30-redesign.html")
@@ -2351,7 +2351,7 @@ html = page(
         "Hops on one foot — bunny jumps, hopscotch",
         "Tooth brushing — child takes a turn, parent finishes",
     ]),
-    closing_text="The friendships she's making now are the first ones she'll remember. Take them seriously. — Jack",
+    closing_text="The friendships she's making now are the first ones she'll remember. Take them seriously. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month31-redesign.html", "w") as f: f.write(html)
 print("Written: month31-redesign.html")
@@ -2412,7 +2412,7 @@ html = page(
         "Tells stories about recent events — narrative skill",
         "Follows complex multi-step instructions",
     ]),
-    closing_text="Teach her her full name and your name this month. It takes one week of practice. It could matter a lot. — Jack",
+    closing_text="Teach her her full name and your name this month. It takes one week of practice. It could matter a lot. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month32-redesign.html", "w") as f: f.write(html)
 print("Written: month32-redesign.html")
@@ -2472,7 +2472,7 @@ html = page(
         "Gratitude and empathy practice at the table",
         "Tricycle or balance bike — wheeled independence",
     ]),
-    closing_text="The imaginary friend is practicing social skills. Let her. — Jack",
+    closing_text="The imaginary friend is practicing social skills. Let her. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month33-redesign.html", "w") as f: f.write(html)
 print("Written: month33-redesign.html")
@@ -2532,7 +2532,7 @@ html = page(
         "Counts to 3 with meaning — not just reciting",
         "Sharing is developmentally appropriate now — gentle scaffolding",
     ]),
-    closing_text="Draw circles together. It's fine motor practice for her and a moment of stillness for you. — Jack",
+    closing_text="Draw circles together. It's fine motor practice for her and a moment of stillness for you. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month34-redesign.html", "w") as f: f.write(html)
 print("Written: month34-redesign.html")
@@ -2593,7 +2593,7 @@ html = page(
         "Full sentences (4+ words) — the 3-year language milestone",
         "Consistent, calm discipline — the approach that actually works",
     ]),
-    closing_text="One month to the third birthday — and the 3-year checkup. Come with your observations, your concerns, and your word count. — Jack",
+    closing_text="One month to the third birthday — and the 3-year checkup. Come with your observations, your concerns, and your word count. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month35-redesign.html", "w") as f: f.write(html)
 print("Written: month35-redesign.html")
@@ -2652,7 +2652,7 @@ html = page(
         ("Turn-taking — sharing is starting to click", "Both"),
     ]),
     next_month_html=farewell_block(),
-    closing_text="Happy third birthday to Olivia — and to you. Three years of showing up. Three years of learning on the job. The work you've done in these first three years is the most important work of her life. From here, the visits go annual. Scout will keep sending these monthly — because development doesn't stop at 3. We'll see you next month. — Jack",
+    closing_text="Happy third birthday to Olivia — and to you. Three years of showing up. Three years of learning on the job. The work you've done in these first three years is the most important work of her life. From here, the visits go annual. Scout will keep sending these monthly — because development doesn't stop at 3. We'll see you next month. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month36-redesign.html", "w") as f: f.write(html)
 print("Written: month36-redesign.html")
