@@ -583,6 +583,17 @@ Deno.serve(async (req: Request) => {
 
       if (existingPre) { results.skipped++; continue }
 
+      // Overdue cap: stop sending after 2 overdue reminders (child likely confirmed or abandoned)
+      if (daysLeft <= 0) {
+        const { count: overdueCount } = await sb
+          .from('scout_digest_log')
+          .select('id', { count: 'exact', head: true })
+          .eq('child_id', child.id)
+          .eq('digest_type', 'prebirth_reminder')
+          .lt('child_age_months', 0)   // sentinel -1 = pre-birth sends
+        if ((overdueCount ?? 0) >= 2) { results.skipped++; continue }
+      }
+
       // Load open pre-birth windows for this gestational age
       const ageWeeks = Math.floor((now.getTime() - due.getTime()) / (7 * 24 * 3600 * 1000)) // negative
       const { data: preBirthWindows } = await sb
@@ -602,13 +613,14 @@ Deno.serve(async (req: Request) => {
         : `Is ${child.name} here? Confirm their arrival to start Scout.`
 
       const html = buildPreBirthEmail({
-        childName:    child.name,
-        dueDate:      due,
+        childName:      child.name,
+        dueDate:        due,
         daysLeft,
-        windows:      (preBirthWindows ?? []) as MilestoneWindow[],
-        dashboardUrl: dashUrl,
+        windows:        (preBirthWindows ?? []) as MilestoneWindow[],
+        dashboardUrl:   dashUrl,
         siteUrl,
-        userId:       child.user_id,
+        userId:         child.user_id,
+        unsubscribeUrl: `${siteUrl}/unsubscribe?user=${child.user_id}`,
       })
 
       const preheader = daysLeft > 0

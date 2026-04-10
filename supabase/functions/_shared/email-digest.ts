@@ -553,7 +553,10 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
             <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0 0 8px;line-height:1.6">
               FamilyForce · <a href="${siteUrl}" style="color:${C.textDim};text-decoration:none">getfamilyforce.com</a>
             </p>
-            <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0 0 8px;line-height:1.6">
+            <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0 0 6px;line-height:1.6">
+              FamilyForce, 6th Floor, 12P Smithfield, Kennedy Town, Hong Kong
+            </p>
+            <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0 0 6px;line-height:1.6">
               ${opts.recipientType === 'family_member'
                 ? `You're receiving this because you were added to ${childName}'s family circle.`
                 : `You're receiving this because you're a Scout member.`}
@@ -629,20 +632,41 @@ export function buildDigestSubject(
 
 // ─── Pre-birth email ──────────────────────────────────────────────────────────
 export interface PreBirthEmailOptions {
-  childName:    string
-  dueDate:      Date
-  daysLeft:     number      // negative = overdue
-  windows:      DigestWindow[]
-  dashboardUrl: string
-  siteUrl:      string
-  userId:       string
+  childName:      string
+  dueDate:        Date
+  daysLeft:       number      // negative = overdue
+  windows:        DigestWindow[]
+  dashboardUrl:   string
+  siteUrl:        string
+  userId:         string
+  unsubscribeUrl?: string     // one-click unsubscribe
 }
 
-export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
-  const { childName, dueDate, daysLeft, windows, dashboardUrl, siteUrl } = opts
+// Evergreen fallback cards shown when no prenatal windows match gestational age
+const PREBIRTH_FALLBACK_CARDS = [
+  {
+    title:      'Choose your pediatrician',
+    excerpt:    'Many pediatric practices require you to register before delivery. Your baby will have their first visit within 2–5 days of birth — you need a doctor lined up before that.',
+    actionLine: 'Research practices near you now, schedule a meet-the-doctor visit, and confirm they accept your insurance. Don\'t wait until after birth.',
+  },
+  {
+    title:      'Pack your hospital bag',
+    excerpt:    'Packing after labor begins is stressful. Having a bag ready by week 36 means one less thing to think about when the real countdown starts.',
+    actionLine: 'Include: insurance card, ID, birth plan (if any), phone charger, going-home outfit for baby (0–3 months), and a few days of comfortable clothing for yourself.',
+  },
+  {
+    title:      'Set up the sleep space',
+    excerpt:    'A safe sleep environment reduces the risk of SIDS and accidental suffocation. The AAP recommends a firm, flat surface with no soft bedding, bumpers, or positioners — nothing else in the crib.',
+    actionLine: 'Set up the bassinet or crib before birth with a firm mattress and fitted sheet only. Practice snapping it together at 2pm, not 2am.',
+  },
+]
 
-  const dueDateStr = dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
-  const isOverdue  = daysLeft <= 0
+export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
+  const { childName, dueDate, daysLeft, windows, dashboardUrl, siteUrl, userId, unsubscribeUrl } = opts
+
+  const dueDateStr  = dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
+  const isOverdue   = daysLeft <= 0
+  const showWindows = !isOverdue
 
   const headline = isOverdue
     ? `Is ${childName} here?`
@@ -654,11 +678,23 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
     ? `Your due date (${dueDateStr}) has passed. When your baby arrives, confirm their birth in Scout to start full milestone tracking.`
     : `Your due date is ${dueDateStr}. Here's what to have ready before they arrive.`
 
-  const windowCards = windows.length > 0
-    ? windows.map(w => {
-        const excerpt    = (w.why_it_matters || '').replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim()
-        const actionLine = (w.what_to_do || '').split('\n')[0].replace(/^[-•·]\s*/, '').trim()
-        return `
+  // Preheader text (hidden, shown as email preview)
+  const preheaderText = isOverdue
+    ? `Your due date has passed. Confirm ${childName}'s arrival to start full Scout tracking.`
+    : daysLeft === 1
+      ? `${childName} arrives tomorrow. Three things to have ready.`
+      : `${childName} arrives in ${daysLeft} days. Here's your prep checklist.`
+
+  // Use DB windows if available, otherwise evergreen fallback
+  const cardsToRender = windows.length > 0
+    ? windows.map(w => ({
+        title:      w.title,
+        excerpt:    (w.why_it_matters || '').replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim(),
+        actionLine: (w.what_to_do || '').split('\n')[0].replace(/^[-•·]\s*/, '').trim(),
+      }))
+    : PREBIRTH_FALLBACK_CARDS
+
+  const windowCards = cardsToRender.map(card => `
   <tr>
     <td style="padding-bottom:16px">
       <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1px solid ${C.border};border-radius:14px;overflow:hidden">
@@ -667,22 +703,22 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td style="padding-bottom:8px">
-                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:${C.text};margin:0;line-height:1.3">${w.title}</p>
+                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:${C.text};margin:0;line-height:1.3">${card.title}</p>
                 </td>
               </tr>
               <tr>
                 <td style="padding-bottom:14px">
-                  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${excerpt}</p>
+                  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${card.excerpt}</p>
                 </td>
               </tr>
-              ${actionLine ? `
+              ${card.actionLine ? `
               <tr>
                 <td>
                   <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:10px">
                     <tr>
                       <td style="padding:12px 16px">
                         <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p>
-                        <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.6">${actionLine}</p>
+                        <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.6">${card.actionLine}</p>
                       </td>
                     </tr>
                   </table>
@@ -693,14 +729,20 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
         </tr>
       </table>
     </td>
-  </tr>`
-      }).join('')
-    : `<tr><td style="padding-bottom:16px"><p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};line-height:1.7">No active prep windows right now — you're all caught up before arrival.</p></td></tr>`
+  </tr>`).join('')
+
+  const unsubLine = unsubscribeUrl
+    ? `<a href="${unsubscribeUrl}" style="color:${C.textDim}">Unsubscribe</a>`
+    : `<a href="${siteUrl}/unsubscribe?user=${userId}" style="color:${C.textDim}">Unsubscribe</a>`
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>${headline}</title></head>
 <body style="margin:0;padding:0;background:${C.bg};font-family:Arial,sans-serif;-webkit-font-smoothing:antialiased">
+
+<!-- Preheader (hidden preview text) -->
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:${C.bg};line-height:1px">${preheaderText}&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;&nbsp;&#847;</div>
+
 <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.bg}">
   <tr>
     <td align="center" style="padding:32px 16px 48px">
@@ -737,7 +779,7 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
           </td>
         </tr>
 
-        ${!isOverdue && windows.length > 0 ? `
+        ${showWindows ? `
         <!-- Section label -->
         <tr>
           <td style="padding-bottom:16px">
@@ -745,22 +787,9 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
           </td>
         </tr>
 
-        <!-- Window cards -->
-        ${windowCards}` : ''}
+        <!-- Window / fallback cards -->
+        ${windowCards}
 
-        ${isOverdue ? `
-        <!-- Overdue encouragement -->
-        <tr>
-          <td style="padding-bottom:24px">
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:14px">
-              <tr>
-                <td style="padding:24px 28px">
-                  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.7">Once you confirm ${childName}'s arrival, Scout will send your first milestone digest — timed to their exact birth date, with everything that matters in the first weeks and months ahead.</p>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>` : `
         <!-- Dashboard CTA -->
         <tr>
           <td align="center" style="padding-top:8px;padding-bottom:32px">
@@ -772,13 +801,36 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
               </tr>
             </table>
           </td>
+        </tr>` : `
+        <!-- Overdue encouragement -->
+        <tr>
+          <td style="padding-bottom:32px">
+            <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:14px">
+              <tr>
+                <td style="padding:24px 28px">
+                  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.7">Once you confirm ${childName}'s arrival, Scout will send your first milestone digest — timed to their exact birth date, with everything that matters in the first weeks and months ahead.</p>
+                </td>
+              </tr>
+            </table>
+          </td>
         </tr>`}
 
         <!-- Footer -->
         <tr>
           <td style="border-top:1px solid ${C.border};padding-top:24px">
-            <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0 0 8px;line-height:1.6;text-align:center">Scout by FamilyForce · <a href="${siteUrl}" style="color:${C.textDim}">getfamilyforce.com</a></p>
-            <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0;line-height:1.6;text-align:center">For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</p>
+            <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textDim};margin:0 0 6px;line-height:1.6;text-align:center">
+              Scout by FamilyForce · <a href="${siteUrl}" style="color:${C.textDim}">getfamilyforce.com</a>
+            </p>
+            <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0 0 6px;line-height:1.6;text-align:center">
+              FamilyForce, 6th Floor, 12P Smithfield, Kennedy Town, Hong Kong
+            </p>
+            <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0 0 6px;line-height:1.6;text-align:center">
+              You're receiving this because you're a Scout member.
+              &nbsp;·&nbsp;${unsubLine}
+            </p>
+            <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0;line-height:1.6;text-align:center;opacity:0.8">
+              For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.
+            </p>
           </td>
         </tr>
 
