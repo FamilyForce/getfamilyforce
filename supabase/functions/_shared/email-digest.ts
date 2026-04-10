@@ -147,12 +147,7 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
                   ${renderBullets(w.what_to_do)}
                 </td>
               </tr>` : ''}
-              <!-- Dashboard link -->
-              <tr>
-                <td style="padding-top:10px;border-top:1px solid ${C.border}">
-                  <a href="${dashboardUrl}" style="font-family:Arial,sans-serif;font-size:13px;color:${C.terra};text-decoration:none;font-weight:600">Track this in your dashboard →</a>
-                </td>
-              </tr>
+              <!-- (per-card dashboard link removed — single CTA below serves this) -->
             </table>
           </td>
         </tr>
@@ -182,11 +177,12 @@ function dykCard(fact: string): string {
 
 // ─── Per-month editorial content ──────────────────────────────────────────────
 interface MonthContent {
-  theme:   string  // emoji + theme sentence shown above priority window
-  dyk:     string  // "Did you know?" fact (markdown **bold** supported)
-  opening: string  // opening paragraph (uses childName, pronoun vars at runtime)
-  context: string  // context/subtitle line
-  closing: string  // Jack's closing sentence
+  theme:   string   // emoji + theme sentence shown above priority window
+  dyk:     string   // "Did you know?" fact (markdown **bold** supported)
+  opening: string   // opening paragraph (uses childName, pronoun vars at runtime)
+  context: string   // context/subtitle line
+  closing: string   // Jack's closing sentence
+  subject?: string  // optional subject line override — use {{childName}} placeholder
 }
 
 // Month 0 = pre-birth; months 1-36 = baby's age
@@ -209,13 +205,13 @@ const MONTH_CONTENT: Record<number, MonthContent> = {
   15: { theme: '🩺 This month: the 15-month checkup, the 10-word milestone, and pretend play beginning.', dyk: 'Once a child hits **50 words**, vocabulary growth often becomes exponential — jumping from 50 to 200+ words in just a few months. The slow build from 1 to 50 words is doing the work. Every word added now accelerates what comes next.', opening: 'Fifteen months. The 15-month visit is the first to formally check word count and walking quality. Here\'s how to come prepared.', context: 'Fifteen months: the first real language checkpoint. Start counting words.', closing: 'The 15-month visit is worth taking seriously. Come with your word count, your walking update, and your questions. — Jack' },
   16: { theme: '😤 This month: naming big feelings, following simple instructions, and stairs.', dyk: 'Children whose parents **label their emotions** during early childhood show measurably better emotional regulation, fewer behavioural problems, and stronger peer relationships at school age. The investment is invisible in the moment and pays off for years.', opening: 'Sixteen months. The big feelings are arriving — frustration, excitement, fury, joy. Here\'s how to respond in a way that actually helps.', context: 'Sixteen months: enormous emotions, a tiny prefrontal cortex. That mismatch is the whole toddler experience.', closing: 'Labelling feelings feels awkward at first. It gets natural fast. The payoff is a child who can eventually name their own emotions. — Jack' },
   17: { theme: '🧸 This month: parallel play, the spoon, and why goodbye has to be out loud.', dyk: 'Children allowed to **self-feed with a spoon from 12–15 months** develop fine motor skills faster and have a stronger relationship with varied textures by age 2. The mess is the lesson. A splat mat costs £15.', opening: 'Seventeen months. Separation anxiety may be peaking — the crying at drop-off, the reaching when you try to leave the room. It\'s hard to watch. It\'s also a healthy sign.', context: 'Seventeen months: she wants you near. That\'s not clingy — that\'s securely attached.', closing: 'Seventeen months is peak separation anxiety for many kids. Stay consistent. Stay warm. Keep the goodbye brief. — Jack' },
-  18: { theme: '🩺 This month: the M-CHAT screen, two-word language, and tantrums at their peak.', dyk: 'Two-word combinations — \'more milk,\' \'daddy go,\' \'big dog\' — represent a **qualitative leap** in language, not just more words. The child is now constructing meaning, not just labelling. Once two-word phrases start, three-word sentences usually follow within months.', opening: 'Eighteen months. The 18-month well child visit is the most important developmental checkpoint of the toddler years — it includes the first formal autism screening.', context: 'Eighteen months: the first autism screen, the first two-word combinations, and probably the first spectacular tantrum.', closing: 'The 18-month visit is one of the most important ones. Come prepared. Answer the M-CHAT honestly. — Jack' },
+  18: { subject: '{{childName}} at 18 months — the most important developmental checkup of the toddler years', theme: '🩺 This month: the M-CHAT screen, two-word language, and tantrums at their peak.', dyk: 'Two-word combinations — \'more milk,\' \'daddy go,\' \'big dog\' — represent a **qualitative leap** in language, not just more words. The child is now constructing meaning, not just labelling. Once two-word phrases start, three-word sentences usually follow within months.', opening: 'Eighteen months. The 18-month well child visit is the most important developmental checkpoint of the toddler years — it includes the first formal autism screening.', context: 'Eighteen months: the first autism screen, the first two-word combinations, and probably the first spectacular tantrum.', closing: 'The 18-month visit is one of the most important ones. Come prepared. Answer the M-CHAT honestly. — Jack' },
   19: { theme: '🙌 This month: the independence phase, the 50-word gate, and building the self-regulation foundation.', dyk: 'At around **50 words**, vocabulary growth often goes exponential — some children add 5–10 new words per day. The slow, patient work from 1 word to 50 words is what makes that explosion possible. Every word you name is a seed.', opening: 'Nineteen months. The fierce independence has arrived — \'me do it\' is a phrase you\'re hearing a lot. This is not defiance. This is healthy.', context: 'Nineteen months: the will to do it herself is the whole point. Support it.', closing: '\'Me do it\' is the sound of a child becoming someone. Let her. — Jack' },
   20: { theme: '❓ This month: the why-question explosion, sorting by shape and color, and naming the body.', dyk: 'Research by Chouinard (2007) found that children in the question-asking phase ask up to **100 questions per hour** — and that the quality of the answers they receive significantly predicts scientific reasoning ability at age 10.', opening: 'Twenty months. The questions are starting — \'What\'s that?\' over and over, about everything. Answer every single one.', context: 'Twenty months: questions are the learning mechanism. The repetition is the point.', closing: 'Answer the questions. All of them. Every answered question is a word, a concept, a connection. — Jack' },
   21: { theme: '🗣️ This month: speech clarity milestone, empathy beginning, and knowing what things are for.', dyk: 'Toddlers who see adults **modelling empathic behaviour** — comforting others, asking \'are you okay?\', naming concern — develop empathy faster and show stronger prosocial behaviour at ages 4 and 5. She\'s watching everything you do.', opening: 'Twenty-one months. Her speech is getting clearer — and something new is happening: she\'s starting to notice when other people feel something.', context: 'Twenty-one months: words getting clearer, and a little person who notices when you\'re sad.', closing: 'When she notices you\'re sad — that\'s not nothing. That\'s the beginning of everything that makes us human. — Jack' },
   22: { theme: '📚 This month: the 200-word target, 2-step commands, and the pronoun shift.', dyk: 'Following a **2-step command** requires holding two pieces of information in working memory and executing them in order. It\'s not just language — it\'s executive function. The same mental process underlies planning, problem-solving, and academic learning.', opening: 'Twenty-two months. Two months from the second birthday — and the 24-month language targets are in sight.', context: 'Twenty-two months: two months to the 24-month checkup. Language is the main event.', closing: 'Two months to the second birthday. Keep reading, keep narrating, keep expanding. — Jack' },
   23: { theme: '🦘 This month: jumping with both feet, pretend play getting complex, and first size concepts.', dyk: 'Complex pretend play — multi-step scenarios with characters and scripts — uses the same cognitive machinery as **narrative comprehension and writing** later in school. Children who engage in rich pretend play at 2–3 years show stronger literacy skills at age 5.', opening: 'Twenty-three months. One month from the second birthday. The motor, language, and cognitive development happening this month is accelerating fast.', context: 'Twenty-three months: the last month before the second birthday checkup.', closing: 'One month to the second birthday. She\'s come so far — and the pace doesn\'t slow down. — Jack' },
-  24: { theme: '🩺 This month: the 24-month checkup + second autism screen, the milk switch, and same vs. different.', dyk: 'The AAP recommends switching to **2% milk at age 2** because after the second birthday, children no longer need the high fat content of whole milk for brain development. The brain\'s fat-intensive growth phase is winding down.', opening: 'Twenty-four months. Two years old. The 24-month checkup includes the second formal autism screening. Here\'s how to come prepared.', context: 'Two years. One of the most comprehensive developmental checkpoints of the first two years.', closing: 'Happy second birthday. Two years of showing up, learning on the job. Year three is different again. — Jack' },
+  24: { subject: '{{childName}} at 24 months — the second birthday checkup covers a lot. Here\'s how to prepare.', theme: '🩺 This month: the 24-month checkup + second autism screen, the milk switch, and same vs. different.', dyk: 'The AAP recommends switching to **2% milk at age 2** because after the second birthday, children no longer need the high fat content of whole milk for brain development. The brain\'s fat-intensive growth phase is winding down.', opening: 'Twenty-four months. Two years old. The 24-month checkup includes the second formal autism screening. Here\'s how to come prepared.', context: 'Two years. One of the most comprehensive developmental checkpoints of the first two years.', closing: 'Happy second birthday. Two years of showing up, learning on the job. Year three is different again. — Jack' },
   25: { theme: '🗣️ This month: 3-word sentences, memory taking shape, and cooperative play beginning.', dyk: 'Asking **\'what happened?\'** after an outing does more for language development than almost any other single prompt. It exercises memory, narrative structure, vocabulary, and sentence construction simultaneously.', opening: 'Twenty-five months. Three-word sentences are arriving — and with them, the beginning of real grammar. Here\'s what to watch for.', context: 'Twenty-five months: telegraphic speech is giving way to early grammar. Each sentence is a step forward.', closing: 'Three-word sentences are the beginning of the language explosion. The more you respond, the faster it comes. — Jack' },
   26: { theme: '❓ This month: the why-question phase, colors she can name, and counting in sequence.', dyk: 'Color naming is one of the **trickier early language concepts** — colors are not things, they\'re properties of things. \'Red\' describes the cup, the apple, and the fire engine — but \'red\' is none of those things. That abstraction is why color vocabulary arrives later than object vocabulary.', opening: 'Twenty-six months. The \'why\' questions are arriving — or they\'re coming. Here\'s why it matters and how to handle it.', context: 'Twenty-six months: the world is suddenly explicable. She wants to know everything about why.', closing: 'Answer the \'why\' questions. Every single one. That\'s the whole job this month. — Jack' },
   27: { theme: '⚾ This month: catching a ball, potty readiness still in the picture, and speech clarity for strangers.', dyk: 'Starting potty training **before a child shows readiness signs** leads to a longer, more frustrating process with more accidents and more resistance. Waiting for the signs — rather than starting at a fixed age — is the single most reliable predictor of a faster, lower-conflict experience.', opening: 'Twenty-seven months. The gross motor development happening right now — throwing, catching, kicking — is also building the neural coordination for balance and sport. Here\'s what to focus on.', context: 'Twenty-seven months: motor coordination is accelerating. The best investment is unstructured outdoor play.', closing: 'Catching a ball is harder than it looks. Let her miss it a hundred times. That\'s the training. — Jack' },
@@ -417,6 +413,42 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `You're close now. Everything you do in the next few weeks makes the first days easier. — Jack`
     : applyPronouns(mc.closing, childGender)  // #3: runtime pronoun substitution
 
+  // #6: Birthday hero emoji suffix
+  const BIRTHDAY_EMOJI: Record<number, string> = { 1: ' 🎉', 12: ' 🎂', 24: ' 🎉', 36: ' 🎓' }
+  const heroBirthdaySuffix = !isExpecting ? (BIRTHDAY_EMOJI[ageMonths] ?? '') : ''
+
+  // #3: Birthday share prompt — appears at bottom of greeting section on milestone months
+  const BIRTHDAY_SHARE: Record<number, string> = {
+    1:  `📸 One month old. Take a photo today — you'll want it later.`,
+    12: `🎂 One year. Take a photo and share this email with whoever was in the room when it all started.`,
+    24: `🎉 Two years old. Take a photo together today.`,
+    36: `🎓 Three years. Take a photo — this one's worth marking.`,
+  }
+  const birthdayShareBlock = (!isExpecting && BIRTHDAY_SHARE[ageMonths]) ? `
+  <tr>
+    <td style="padding-top:14px">
+      <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.terra};margin:0;font-weight:600">${BIRTHDAY_SHARE[ageMonths]}</p>
+    </td>
+  </tr>` : ''
+
+  // #7: DYK forward prompt — light share nudge after Did You Know
+  const forwardSubject = encodeURIComponent(`Scout: ${childName} at ${ageMonths} month${ageMonths === 1 ? '' : 's'}`)
+  const forwardBody    = encodeURIComponent(`Thought you'd want to see what Scout sent this month — ${dashboardUrl}`)
+  const forwardPrompt  = !isExpecting ? `
+  <tr>
+    <td style="padding-bottom:16px;text-align:center">
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textDim};margin:0">📩 Worth sharing with your partner? <a href="mailto:?subject=${forwardSubject}&body=${forwardBody}" style="color:${C.terra};font-weight:600;text-decoration:none">Forward this email →</a></p>
+    </td>
+  </tr>` : ''
+
+  // #8: Jack bridge — one-liner before first window
+  const jackBridge = (!isExpecting && !allCaughtUp && topWindows.length > 0) ? `
+  <tr>
+    <td style="padding-bottom:16px">
+      <p style="font-family:Georgia,'Times New Roman',serif;font-size:15px;color:${C.textMid};margin:0;line-height:1.7;font-style:italic">Here's what to focus on this month:</p>
+    </td>
+  </tr>` : ''
+
   // Theme stripe
   const themeStripe = (!allCaughtUp && topWindows.length > 0) ? `
     <tr>
@@ -433,25 +465,28 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
 
   let windowsLayout = ''  // #5: initialize to avoid strict-mode uninitialized warning
   if (showHeaders) {
-    // Mix: header+closing → DYK → header+open
+    // Mix: header+closing → DYK+forward → header+open
     const closingSec = `
     <tr><td style="padding-bottom:4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.amber};margin:0">⏱ Closing this month</p></td></tr>
     ${closing.map(w => windowCard(w, ageMonths, dashboardUrl, true)).join('')}`
     const openSec = `
     <tr><td style="padding:8px 0 4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.textDim};margin:0">Also this month</p></td></tr>
     ${openWindows.map(w => windowCard(w, ageMonths, dashboardUrl, false)).join('')}`
-    windowsLayout = closingSec + dykSection + openSec
+    windowsLayout = closingSec + dykSection + forwardPrompt + openSec
   } else {
-    // All same type (all closing or all open): DYK after window 1 for visual break
+    // All same type (all closing or all open): DYK+forward after window 1 for visual break
     const allWins   = [...closing, ...openWindows]
     const isClose   = closing.length > 0
     const firstCard = allWins.length > 0 ? windowCard(allWins[0], ageMonths, dashboardUrl, isClose) : ''
     const restCards = allWins.slice(1).map(w => windowCard(w, ageMonths, dashboardUrl, isClose)).join('')
-    windowsLayout   = firstCard + dykSection + restCards
+    windowsLayout   = firstCard + dykSection + forwardPrompt + restCards
   }
 
+  // #4: filter coming-next to avoid repeating slugs already in current email
+  const filteredReadyWindows = getReadyWindows.filter(w => !topWindows.some(t => t.slug === w.slug))
+
   // Coming next month from getReadyWindows — replaced with farewell at month 36
-  const farewellHtml = (!isExpecting && ageMonths >= 36 && getReadyWindows.length === 0) ? `
+  const farewellHtml = (!isExpecting && ageMonths >= 36 && filteredReadyWindows.length === 0) ? `
     <tr>
       <td style="padding-bottom:24px">
         <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.indigoDeep};border-radius:16px;overflow:hidden">
@@ -471,7 +506,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
       </td>
     </tr>` : ''
 
-  const comingNextHtml = farewellHtml || comingNextSection(getReadyWindows)
+  const comingNextHtml = farewellHtml || comingNextSection(filteredReadyWindows)
 
   const remainingCount = allCaughtUp ? 0 : Math.max(0, allWindowCount - topWindows.length - completedWindows.length)
 
@@ -615,7 +650,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
               <tr>
                 <td>
                   <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 24px">Scout by FamilyForce</p>
-                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:400;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${isExpecting ? `Getting ready for ${childName}` : ageMonths === 0 ? `${childName} is here! 🎉` : `${childName} at ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'}`}</p>
+                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:400;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${isExpecting ? `Getting ready for ${childName}` : ageMonths === 0 ? `${childName} is here! 🎉` : `${childName} at ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'}${heroBirthdaySuffix}`}</p>
                   <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0;line-height:1.6">${allCaughtUp ? `All ${allWindowCount} window${allWindowCount === 1 ? '' : 's'} completed this month 🏆` : `${allWindowCount} open developmental window${allWindowCount === 1 ? '' : 's'} &nbsp;·&nbsp; ${closingCount > 0 ? `${closingCount} closing this month` : 'none closing this month'}`}</p>
                 </td>
               </tr>
@@ -634,6 +669,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                   <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.text};margin:0 0 14px;font-weight:600">${greeting}</p>
                   <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0 0 10px;line-height:1.75">${openingParagraph}</p>
                   <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0;line-height:1.75">${contextLine}</p>
+                  ${birthdayShareBlock}
                 </td>
               </tr>
 
@@ -642,6 +678,9 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
 
               <!-- Theme stripe -->
               ${themeStripe}
+
+              <!-- Jack bridge line (#8) -->
+              ${jackBridge}
 
               <!-- Windows (or all-caught-up hero) -->
               ${allCaughtUp ? allCaughtUpSection : windowsLayout}
@@ -807,6 +846,12 @@ export function buildDigestSubject(
   ageWeeks:   number,
   digestType: 'signup' | 'birth_signup' | 'monthly' | 'conversion' | 'additional_child' = 'monthly'
 ): string {
+  // Month-level subject override (e.g. avoid "autism screen" in months 18/24)
+  const mcSubject = MONTH_CONTENT[ageMonths]?.subject
+  if (mcSubject && digestType === 'monthly') {
+    return mcSubject.replace('{{childName}}', childName)
+  }
+
   // #4: apply same MONTH_FEATURED_SLUGS reorder so subject matches the email lead
   const SUBJECT_FEATURED_SLUGS: Record<number, string> = {
     1:'screening-visit-1month', 2:'screening-visit-2months', 3:'motor-head-control',

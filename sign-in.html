@@ -1541,6 +1541,11 @@ button { font: inherit; cursor: pointer; }
         <div id="child-step-error" role="alert" style="display:none;background:#FEF2F2;border:1.5px solid #FECACA;border-radius:10px;padding:12px 14px;margin-bottom:20px;font-size:13px;color:#B91C1C;line-height:1.5"></div>
 
         <div class="step-form-group">
+          <label class="step-label" for="parent-name">Your first name <span style="color:var(--text-dim);font-weight:400">(optional — for personalised emails)</span></label>
+          <input class="step-input" id="parent-name" type="text" placeholder="e.g. Sarah" autocomplete="given-name" autocapitalize="words">
+        </div>
+
+        <div class="step-form-group">
           <label class="step-label" for="child-name">Child's first name</label>
           <input class="step-input" id="child-name" type="text" placeholder="e.g. Olivia" autocomplete="off" autocapitalize="words">
         </div>
@@ -2470,7 +2475,10 @@ button { font: inherit; cursor: pointer; }
     }).join('');
     var code = prefix + '-' + suffix;
     // Save to profiles — if collision, Supabase will return an error and we skip silently
-    sb.from('profiles').upsert({ id: userId, referral_code: code }, { onConflict: 'id', ignoreDuplicates: false })
+    var parentNameStored = parentName || (typeof window._ff_parent_name !== 'undefined' ? window._ff_parent_name : '');
+    var profilePayload = { id: userId, referral_code: code };
+    if (parentNameStored) profilePayload.name = parentNameStored;
+    sb.from('profiles').upsert(profilePayload, { onConflict: 'id', ignoreDuplicates: false })
       .then(function(res) {
         if (!res.error) {
           localStorage.setItem('ff_own_referral', code);
@@ -2537,10 +2545,12 @@ button { font: inherit; cursor: pointer; }
   /* ── Start free trial (no credit card) — Stream 3B ── */
   window.startFreeTrial = function() {
     clearChildError();
-    var nameEl      = document.getElementById('child-name');
-    var btn         = document.getElementById('start-trial-btn');
-    var isExpecting = document.getElementById('child-expecting').checked;
-    var name        = nameEl.value.trim();
+    var nameEl       = document.getElementById('child-name');
+    var parentNameEl = document.getElementById('parent-name');
+    var btn          = document.getElementById('start-trial-btn');
+    var isExpecting  = document.getElementById('child-expecting').checked;
+    var name         = nameEl.value.trim();
+    var parentName   = parentNameEl ? parentNameEl.value.trim() : '';
 
     // Reset field borders
     nameEl.style.borderColor = '';
@@ -2720,8 +2730,22 @@ button { font: inherit; cursor: pointer; }
       sessionStorage.setItem('ff_child_gender', gender || '');
     } catch(_) {}
 
+    // Persist parent name for later profile upsert (referral code step runs async)
+    if (parentName) window._ff_parent_name = parentName;
+
     // Persist to Supabase (non-blocking — show payment step immediately)
     saveChildToSupabase(name, dob, gender);
+
+    // Save parent name to profiles immediately if session already exists
+    if (parentName) {
+      var sbp = window._supabaseClient;
+      if (sbp) {
+        sbp.auth.getSession().then(function(r) {
+          var s = r.data && r.data.session;
+          if (s) sbp.from('profiles').upsert({ id: s.user.id, name: parentName }, { onConflict: 'id', ignoreDuplicates: false });
+        });
+      }
+    }
 
     showStep('payment');
   };
