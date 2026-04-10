@@ -183,10 +183,35 @@ def render_get_ready(w):
     </td>
   </tr>"""
 
+# ── Intro text (mirrors email-digest.ts logic) ───────────────────────────────
+def get_intro(age_months, child_name, above_fold, total_count):
+    his = "her"   # using female pronouns for Olivia in mockup
+    mo  = f"{age_months} month{'s' if age_months != 1 else ''}"
+
+    opening = (
+        f"{child_name} is {mo} old. This is her Scout digest for the month — "
+        f"a quick look at what's worth your attention right now, written to take about 5 minutes to read."
+    )
+
+    if age_months <= 2:
+        context = "The first few months are a blur. You're doing better than you think."
+    elif age_months <= 6:
+        context = f"{age_months} months in. The fog is starting to lift — and her development is picking up fast."
+    elif age_months <= 12:
+        context = f"{child_name} is in one of the most active developmental stretches of the whole first year."
+    else:
+        context = f"Month {age_months}. Every month has something new — here's what to know this one."
+
+    return opening, context
+
+
 # ── Render: full digest email ─────────────────────────────────────────────────
 def render_digest_email(age_months, above_fold, get_ready, total_count):
-    age_weeks   = age_months * 4.33
-    closing     = [w for w in above_fold if w["close_age_weeks"] - age_weeks <= 4]
+    age_weeks  = age_months * 4.33
+    closing    = [w for w in above_fold if w["close_age_weeks"] - age_weeks <= 4]
+    open_wins  = [w for w in above_fold if w["close_age_weeks"] - age_weeks > 4]
+
+    opening_para, context_line = get_intro(age_months, CHILD_NAME, above_fold, total_count)
 
     # Subject line
     if closing:
@@ -200,18 +225,45 @@ def render_digest_email(age_months, above_fold, get_ready, total_count):
     else:
         subject = f"{CHILD_NAME} at {age_months} month{'s' if age_months != 1 else ''} — {len(above_fold)} things to know this month"
 
-    cards_html   = "".join(render_window_card(w, age_weeks) for w in above_fold)
-    gr_html      = "".join(render_get_ready(w) for w in get_ready[:3])
+    # Closing-priority amber banner
+    closing_banner = f"""
+      <tr><td style="padding-bottom:8px">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:{C['amberBg']};border:1px solid {C['amberBorder']};border-radius:10px">
+          <tr><td style="padding:12px 16px">
+            <p style="font-family:Arial,sans-serif;font-size:13px;color:{C['amber']};margin:0;line-height:1.6">
+              <strong>Heads up:</strong> {"One window closes" if len(closing)==1 else f"{len(closing)} windows close"} this month — meaning the natural developmental timing is ending. {"This is" if len(closing)==1 else "These are"} worth doing first.
+            </p>
+          </td></tr>
+        </table>
+      </td></tr>""" if closing else ""
 
+    # Priority section (closing windows)
+    priority_section = f"""
+      <tr><td style="padding-bottom:4px">
+        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:{C['amber']};margin:0">This month's priority</p>
+      </td></tr>
+      {"".join(render_window_card(w, age_weeks) for w in closing)}""" if closing else ""
+
+    # Open windows section
+    open_section = f"""
+      <tr><td style="padding:{'8px' if closing else '0'} 0 8px">
+        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:{C['textDim']};margin:0">Also worth knowing this month</p>
+      </td></tr>
+      {"".join(render_window_card(w, age_weeks) for w in open_wins)}""" if open_wins else ""
+
+    # Get ready section
+    gr_html = "".join(render_get_ready(w) for w in get_ready[:3])
     get_ready_section = f"""
-        <tr><td style="padding-bottom:16px">
-          <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:{C['terra']};margin:0">On the horizon</p>
-        </td></tr>
-        {gr_html}""" if gr_html else ""
+      <tr><td style="padding:16px 0 8px">
+        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:{C['terra']};margin:0">Get ready for next month</p>
+      </td></tr>
+      {gr_html}""" if gr_html else ""
 
     empty_msg = f"""<tr><td style="padding:24px 0;text-align:center">
       <p style="font-family:Arial,sans-serif;font-size:15px;color:{C['textMid']};margin:0">Nothing closing this month — {CHILD_NAME} is right on track 🏆</p>
     </td></tr>""" if not above_fold else ""
+
+    mo = f"{age_months} month{'s' if age_months != 1 else ''}"
 
     return f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8">
@@ -230,18 +282,27 @@ def render_digest_email(age_months, above_fold, get_ready, total_count):
       <tr><td style="padding-bottom:24px">
         <table width="100%" cellpadding="0" cellspacing="0" style="background:{C['indigoDeep']};border-radius:20px">
           <tr><td style="padding:36px 32px">
-            <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.12em;margin:0 0 10px">Scout · {age_months} month{'s' if age_months != 1 else ''} old</p>
-            <p style="font-family:Georgia,'Times New Roman',serif;font-size:28px;color:#fff;margin:0 0 12px;line-height:1.2;font-style:italic">{CHILD_NAME} at {age_months} month{'s' if age_months != 1 else ''} old.</p>
-            <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.65);margin:0;line-height:1.7">{"Here's what to focus on this month." if above_fold else "You've covered everything this month — great work."}</p>
+            <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.12em;margin:0 0 10px">Scout · {mo} old</p>
+            <p style="font-family:Georgia,'Times New Roman',serif;font-size:28px;color:#fff;margin:0 0 16px;line-height:1.2;font-style:italic">{CHILD_NAME} at {mo} old.</p>
+            <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.75);margin:0 0 12px;line-height:1.7">Hi there,</p>
+            <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.65);margin:0 0 12px;line-height:1.7">{opening_para}</p>
+            <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.5);margin:0;line-height:1.7;font-style:italic">{context_line}</p>
           </td></tr>
         </table>
       </td></tr>
 
-      <!-- Section label -->
+      <!-- Window count -->
       {"<tr><td style='padding-bottom:16px'><p style='font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:" + C['terra'] + ";margin:0'>This month — " + str(len(above_fold)) + " of " + str(total_count) + " active windows</p></td></tr>" if above_fold else ""}
 
-      <!-- Window cards -->
-      {cards_html}
+      <!-- Closing banner -->
+      {closing_banner}
+
+      <!-- Priority windows (closing) -->
+      {priority_section}
+
+      <!-- Open windows -->
+      {open_section}
+
       {empty_msg}
 
       <!-- Get ready -->
@@ -260,7 +321,7 @@ def render_digest_email(age_months, above_fold, get_ready, total_count):
       <tr><td style="border-top:1px solid {C['border']};padding-top:20px;text-align:center">
         <p style="font-family:Arial,sans-serif;font-size:12px;color:{C['textDim']};margin:0 0 6px">Scout by FamilyForce · getfamilyforce.com</p>
         <p style="font-family:Arial,sans-serif;font-size:11px;color:{C['textDim']};margin:0 0 6px">FamilyForce, 6th Floor, 12P Smithfield, Kennedy Town, Hong Kong</p>
-        <p style="font-family:Arial,sans-serif;font-size:11px;color:{C['textDim']};margin:0 0 6px">You're receiving this because you're a Scout member. · <a href="#" style="color:{C['textDim']}">Unsubscribe</a></p>
+        <p style="font-family:Arial,sans-serif;font-size:11px;color:{C['textDim']};margin:0 0 6px">You're receiving this because you're a Scout member. &nbsp;·&nbsp; <a href="#" style="color:{C['textDim']}">Unsubscribe</a></p>
         <p style="font-family:Arial,sans-serif;font-size:11px;color:{C['textDim']};margin:0;opacity:.8">For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</p>
       </td></tr>
 
