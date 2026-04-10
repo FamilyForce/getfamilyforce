@@ -272,6 +272,30 @@ def nav_bar(active_label):
         links += f'<a href="{href}"{cls}>{label}</a>'
     return f'<div class="nav-bar">{links}</div>'
 
+CHILD_NAME = "Olivia"
+# (DASHBOARD already defined at top of file)
+
+# Forward prompt (matches email-digest.ts #7)
+def forward_prompt(age_months):
+    subj = f"Scout: {CHILD_NAME} at {age_months} month{'s' if age_months != 1 else ''}"
+    body = f"Thought you'd want to see what Scout sent this month — {DASHBOARD}"
+    import urllib.parse
+    return (f'<p style="text-align:center;font-size:13px;color:#8A879A;margin:0 0 14px">'
+            f'📩 Worth sharing with your partner? '
+            f'<a href="mailto:?subject={urllib.parse.quote(subj)}&body={urllib.parse.quote(body)}" '
+            f'style="color:#6E4ED6;font-weight:600;text-decoration:none">Forward this email →</a></p>')
+
+# Birthday share blocks (matches email-digest.ts #3)
+BIRTHDAY_SHARE = {
+    1:  "📸 One month old. Take a photo today — you'll want it later.",
+    12: "🎂 One year. Take a photo and share this email with whoever was in the room when it all started.",
+    24: "🎉 Two years old. Take a photo together today.",
+    36: "🎓 Three years. Take a photo — this one's worth marking.",
+}
+
+# Birthday hero emoji suffix (#6)
+BIRTHDAY_EMOJI = {1: ' 🎉', 12: ' 🎂', 24: ' 🎉', 36: ' 🎓'}
+
 def page(nav_label, title_label, subject, preheader,
          hero_age, hero_name, opening, context,
          theme, total_windows,
@@ -282,6 +306,21 @@ def page(nav_label, title_label, subject, preheader,
          next_month_html,
          closing_text,
          extra_card_html=""):
+
+    # Derive age_months from hero_age string (e.g. "Month 12" → 12, "Pre-birth" → 0)
+    import re as _re
+    _m = _re.search(r'Month (\d+)', hero_age)
+    _age_mo = int(_m.group(1)) if _m else 0
+
+    # Birthday share html (#3)
+    _bday_share_html = (f'<p style="font-size:14px;color:#6E4ED6;font-weight:600;margin:10px 0 0">'
+                        f'{BIRTHDAY_SHARE[_age_mo]}</p>') if _age_mo in BIRTHDAY_SHARE else ''
+
+    # Birthday hero emoji suffix (#6)
+    _hero_age_display = hero_age + BIRTHDAY_EMOJI.get(_age_mo, '')
+
+    # Forward prompt (#7)
+    _fwd = forward_prompt(_age_mo) if _age_mo > 0 else ''
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -308,17 +347,21 @@ def page(nav_label, title_label, subject, preheader,
 
   <div class="hero">
     <p class="logo">Scout</p>
-    <p class="age">{hero_age}</p>
+    <p class="age">{_hero_age_display}</p>
     <p class="childname">{hero_name}</p>
     <p class="greeting">Hi there,</p>
     <p class="opening">{opening}</p>
     <p class="context">{context}</p>
+    {_bday_share_html}
   </div>
 
   <div class="theme-stripe"><p>{theme}</p></div>
 
+  <p style="font-family:Georgia,serif;font-size:15px;color:#5C5960;margin:0 0 14px;font-style:italic">Here's what to focus on this month:</p>
+
   {priority_card_html}
   {dyk_html}
+  {_fwd}
 
   {(section_header("Also this month", 2, total_windows) + supporting_cards_html) if supporting_cards_html.strip() else ""}
 
