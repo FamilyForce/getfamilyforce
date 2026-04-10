@@ -166,7 +166,7 @@ def format_what_to_do_digest(text, max_bullets=4):
 def render_window_card(w, age_weeks):
     cfg        = urgency_cfg(w.get("urgency", "advisory"))
     exc        = excerpt(w.get("why_it_matters", ""))
-    what_html  = format_what_to_do_digest(w.get("what_to_do", ""), max_bullets=4)
+    what_html  = format_what_to_do_digest(w.get("what_to_do", ""), max_bullets=8)
     badge      = weeks_left_badge(w, age_weeks)
     action_html = f"""
               <tr>
