@@ -26,3 +26,5 @@ audio-files/
 .DS_Store
 Thumbs.db
 *.log
+docs/
+scripts/output/
