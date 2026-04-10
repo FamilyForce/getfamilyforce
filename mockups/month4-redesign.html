@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Scout · Month 4 Sample</title>
+<style>
+  body { margin:0; padding:32px 16px; background:#f0ede8; font-family:Arial,sans-serif; }
+  .wrap { max-width:580px; margin:0 auto; }
+  .meta { text-align:center; margin-bottom:12px; }
+  .meta p { font-size:12px; color:#888; margin:0 0 4px; }
+  .meta a { color:#6E4ED6; font-size:11px; }
+  .card { background:#fff; border-radius:16px; overflow:hidden; margin-bottom:12px; }
+  .hero { background:linear-gradient(160deg,#2d1b69 0%,#1a0f3e 100%); padding:32px 28px 24px; text-align:center; }
+  .hero .logo { font-size:13px; font-weight:700; color:rgba(255,255,255,.5); letter-spacing:.15em; text-transform:uppercase; margin-bottom:20px; }
+  .hero .age { font-size:32px; font-weight:700; color:#fff; margin:0 0 4px; }
+  .hero .name { font-size:15px; color:rgba(255,255,255,.6); margin:0 0 24px; }
+  .hero .greeting { font-size:15px; color:rgba(255,255,255,.75); line-height:1.7; margin:0 0 12px; text-align:left; }
+  .hero .opening { font-size:15px; color:rgba(255,255,255,.65); line-height:1.7; margin:0 0 16px; text-align:left; }
+  .hero .context { font-size:13px; color:rgba(255,255,255,.45); font-style:italic; margin:0; text-align:left; border-top:1px solid rgba(255,255,255,.1); padding-top:14px; }
+  .theme-stripe { background:#f7f4ff; border-left:3px solid #6E4ED6; padding:12px 18px; margin-bottom:12px; border-radius:0 8px 8px 0; }
+  .theme-stripe p { margin:0; font-size:13px; color:#5B3CC4; font-weight:600; }
+  .section-label { font-size:11px; font-weight:700; color:#999; text-transform:uppercase; letter-spacing:.1em; padding:0 4px; margin:20px 0 8px; }
+  .window { background:#fff; border-radius:14px; overflow:hidden; margin-bottom:10px; border:1px solid #ece8f0; }
+  .window-header { padding:18px 20px 12px; }
+  .window-label { font-size:10px; font-weight:700; color:#c0392b; text-transform:uppercase; letter-spacing:.1em; margin:0 0 6px; }
+  .window-label.open { color:#6E4ED6; }
+  .window-title { font-size:16px; font-weight:700; color:#1a0f3e; margin:0 0 8px; line-height:1.3; }
+  .jack-bridge { font-size:13px; color:#888; font-style:italic; margin:0 0 10px; }
+  .window-why { font-size:14px; color:#555; line-height:1.65; margin:0; }
+  .the-move { background:#faf7ff; border-top:1px solid #ece8f0; padding:14px 20px 16px; }
+  .move-label { font-size:10px; font-weight:700; color:#6E4ED6; text-transform:uppercase; letter-spacing:.1em; margin:0 0 10px; }
+  .move-item { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; }
+  .move-bullet { color:#6E4ED6; font-weight:700; font-size:14px; flex-shrink:0; margin-top:1px; }
+  .move-text { font-size:14px; color:#333; line-height:1.55; margin:0; }
+  .move-text strong { color:#1a0f3e; }
+  .move-text em { color:#555; }
+  .dashboard-link { margin-top:10px; font-size:12px; color:#6E4ED6; text-decoration:none; display:block; }
+  .dyk { background:linear-gradient(135deg,#e8f4f0 0%,#d4eee6 100%); border-radius:14px; padding:20px 22px; margin-bottom:10px; border:1px solid #b8ddd3; }
+  .dyk-label { font-size:10px; font-weight:700; color:#1a7a5e; text-transform:uppercase; letter-spacing:.1em; margin:0 0 8px; }
+  .dyk p { font-size:14px; color:#1a3d32; line-height:1.65; margin:0; }
+  .dyk strong { color:#0d2d24; }
+  .closing { background:linear-gradient(160deg,#1a0f3e 0%,#0d0820 100%); border-radius:14px; padding:24px 26px; margin-bottom:10px; }
+  .closing p { font-size:14px; color:rgba(255,255,255,.7); line-height:1.8; margin:0; font-style:italic; }
+  .coparent { text-align:center; padding:14px; }
+  .coparent p { font-size:13px; color:#888; margin:0; }
+  .coparent a { color:#6E4ED6; font-weight:600; text-decoration:none; }
+  .cta { text-align:center; padding:8px 0 28px; }
+  .cta a { background:#6E4ED6; color:#fff; font-size:15px; font-weight:700; text-decoration:none; padding:14px 36px; border-radius:100px; display:inline-block; }
+  .footer { text-align:center; padding:0 0 32px; }
+  .footer p { font-size:11px; color:#aaa; margin:0 0 4px; line-height:1.6; }
+  .footer a { color:#aaa; }
+  .preview-note { background:#fffbea; border:1px solid #f0d060; border-radius:8px; padding:12px 16px; margin-bottom:20px; font-size:13px; color:#7a6010; }
+  .preview-note strong { color:#5a4000; }
+  .subject-display { background:#fff; border-radius:10px; padding:16px 20px; margin-bottom:14px; border:1px solid #e0d8f0; }
+  .subject-display p { margin:0 0 4px; font-size:12px; color:#999; text-transform:uppercase; letter-spacing:.08em; font-weight:600; }
+  .subject-display .subject { font-size:15px; font-weight:700; color:#1a0f3e; margin:0 0 6px; }
+  .subject-display .preheader { font-size:13px; color:#666; margin:0; font-style:italic; }
+  .nav-bar { background:#fff; border-radius:10px; padding:12px 20px; margin-bottom:16px; display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
+  .nav-bar a { font-size:12px; color:#6E4ED6; text-decoration:none; padding:4px 10px; border:1px solid #e0d8f0; border-radius:20px; }
+  .nav-bar a.active { background:#6E4ED6; color:#fff; border-color:#6E4ED6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="preview-note"><strong>Redesign sample — Month 4.</strong> Format: 3 windows · 3-bullet max · monthly theme · Did you know · Jack bridges · co-parent prompt.</div>
+  <div class="nav-bar"><a href="month0-redesign.html">Pre-birth</a><a href="month1-redesign.html">Month 1</a><a href="month2-redesign.html">Month 2</a><a href="month3-redesign.html">Month 3</a><a href="month4-redesign.html" class="active">Month 4</a><a href="month5-redesign.html">Month 5</a></div>
+  <div class="subject-display">
+    <p>Subject line</p>
+    <p class="subject">Nobody warns you about this. We're warning you.</p>
+    <p class="preheader">Olivia is 4 months old. Sleep is about to change — and that's a good sign.</p>
+  </div>
+  <div class="card">
+    <div class="hero">
+      <p class="logo">Scout</p>
+      <p class="age">Month 4</p>
+      <p class="name">Olivia · 17 weeks old</p>
+      <p class="greeting">Hi there,</p>
+      <p class="opening">Olivia is 4 months old. Month 4 is one of the most developmentally active stretches of the first year — and the one that catches most parents off guard. Here's what to know.</p>
+      <p class="context">Four months is when development accelerates. Sleep often gets harder before it gets easier. Both are normal.</p>
+    </div>
+  </div>
+  <div class="theme-stripe"><p>😴 This month: the sleep change nobody warns you about, the visit to bring your questions to, and what her eyes are telling you.</p></div>
+  <p class="section-label">This month's priority</p>
+  
+  <div class="window">
+    <div class="window-header">
+      <p class="window-label">⏱ Closing this month</p>
+      <p class="window-title">The 4-month sleep regression — what it is and what to do</p>
+      <p class="jack-bridge">This is the one nobody warns you about until you're in it.</p>
+      <p class="window-why">Around 15–18 weeks, the brain permanently restructures how it sleeps. Sleep cycles lengthen to match adult patterns. This is not a phase — it's a permanent change. The adjustment period, when she learns to connect cycles independently, takes 2–6 weeks.</p>
+    </div>
+    <div class="the-move">
+      <p class="move-label">The move</p>
+      <div class="move-item"><span class="move-bullet">›</span><p class="move-text">If she suddenly starts waking every 45 minutes after sleeping well — this is it. Not illness, not hunger, not teething.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Watch your sleep associations. If you nurse or rock to full sleep at every wake, you'll need to do it each time she rouses. Consider putting down drowsy but awake.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">You can start formal sleep training after 4 months. Most pediatric sleep specialists set this as the earliest window. Not required — but it's open.</p></div>
+
+      <a class="dashboard-link" href="https://getfamilyforce.com/scout-dashboard.html">4-month sleep regression — full guide →</a>
+    </div>
+  </div>
+  
+  <div class="dyk">
+    <p class="dyk-label">💡 Did you know</p>
+    <p>Babies who are put down <strong>drowsy but awake</strong> from early on learn to fall asleep independently — which means they also learn to <em>re</em>-fall asleep independently between sleep cycles. That's the whole secret to longer stretches.</p>
+  </div>
+  <p class="section-label">Also this month</p>
+  
+  <div class="window">
+    <div class="window-header">
+      <p class="window-label">⏱ Closing this month</p>
+      <p class="window-title">4-month well child visit</p>
+      <p class="jack-bridge">Bring your sleep questions. The timing is not a coincidence.</p>
+      <p class="window-why">The 4-month visit covers head control, rolling readiness, and iron supplementation for breastfed babies. Vaccines: DTaP (dose 2), Hib (dose 2), PCV (dose 2), rotavirus (dose 2), polio (dose 2).</p>
+    </div>
+    <div class="the-move">
+      <p class="move-label">The move</p>
+      <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Ask specifically about iron supplementation if you're breastfeeding — it's easy to miss.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Bring your sleep regression questions. Your pediatrician has seen this a thousand times.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Ask what solid food readiness signs to watch for — you'll be looking for them next month.</p></div>
+
+      <a class="dashboard-link" href="https://getfamilyforce.com/scout-dashboard.html">What to ask at the 4-month visit →</a>
+    </div>
+  </div>
+  <div class="window">
+    <div class="window-header">
+      <p class="window-label">⏱ Closing this month</p>
+      <p class="window-title">Visual tracking — smooth follow across midline</p>
+      <p class="jack-bridge">When she follows a moving toy with her eyes, something significant is happening.</p>
+      <p class="window-why">Tracking a moving object smoothly — rather than in jerky, uncoordinated movements — is an early sign that the visual and motor systems are integrating correctly. Crossing the midline is a milestone in itself.</p>
+    </div>
+    <div class="the-move">
+      <p class="move-label">The move</p>
+      <div class="move-item"><span class="move-bullet">›</span><p class="move-text">Slowly move a high-contrast toy from one side to the other, about 12 inches from her face.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Do this when she's alert and not tired — you want her best attention.</p></div>
+<div class="move-item"><span class="move-bullet">›</span><p class="move-text">Her eyes should follow smoothly, both together, all the way across. Jerky or one-eye-only tracking is worth flagging.</p></div>
+
+      <a class="dashboard-link" href="https://getfamilyforce.com/scout-dashboard.html">Visual development milestones →</a>
+    </div>
+  </div>
+  <div class="coparent"><p>📩 <a href="#">Forward this to your co-parent</a> — they need it too.</p></div>
+  <div class="closing"><p>Month 4 is a lot. If sleep just got worse — that's the regression and it means her brain is doing exactly what it should. Hang in there. Back next month. — Jack</p></div>
+  <div class="cta"><a href="https://getfamilyforce.com/scout-dashboard.html">Open Scout dashboard →</a></div>
+  <div class="footer">
+    <p><em>For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</em></p>
+    <p>Developmental windows medically reviewed by Karina Sanchez Mercado, MD · April 2026</p>
+    <p><a href="#">Unsubscribe</a> · FamilyForce, 6th Floor, 12P Smithfield, Kennedy Town, Hong Kong</p>
+  </div>
+</div>
+</body>
+</html>
