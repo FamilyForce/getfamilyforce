@@ -390,8 +390,11 @@ def render_prebirth_email(windows):
       <tr><td style="padding-bottom:24px">
         <table width="100%" cellpadding="0" cellspacing="0" style="background:{C['indigoDeep']};border-radius:20px">
           <tr><td style="padding:36px 32px">
-            <p style="font-family:Georgia,'Times New Roman',serif;font-size:28px;color:#fff;margin:0 0 12px;line-height:1.2;font-style:italic">{CHILD_NAME} arrives in 18 days.</p>
-            <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.7);margin:0;line-height:1.7">Your due date is April 28. Here's what to have ready before they arrive.</p>
+            <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.12em;margin:0 0 10px">Scout · Pre-birth</p>
+            <p style="font-family:Georgia,'Times New Roman',serif;font-size:28px;color:#fff;margin:0 0 16px;line-height:1.2;font-style:italic">{CHILD_NAME} arrives in 18 days.</p>
+            <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.75);margin:0 0 12px;line-height:1.7">Hi there,</p>
+            <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.65);margin:0 0 12px;line-height:1.7">Scout is designed for when your baby is born — covering every developmental milestone through the first three years. The 200 windows we track all start at birth. But we wanted to be helpful before {CHILD_NAME} arrives too, so below are a few things worth sorting now. It's not an exhaustive list — just the things that are genuinely easier to do before a newborn is in the room.</p>
+            <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.5);margin:0;line-height:1.7;font-style:italic">The preparation windows below close at birth. Most of them are quick — and much easier to do now than with a newborn in the room.</p>
           </td></tr>
         </table>
       </td></tr>
