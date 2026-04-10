@@ -224,6 +224,13 @@ NAV = [
     ("Month 3",   "month3-redesign.html"),
     ("Month 4",   "month4-redesign.html"),
     ("Month 5",   "month5-redesign.html"),
+    ("Month 6",   "month6-redesign.html"),
+    ("Month 7",   "month7-redesign.html"),
+    ("Month 8",   "month8-redesign.html"),
+    ("Month 9",   "month9-redesign.html"),
+    ("Month 10",  "month10-redesign.html"),
+    ("Month 11",  "month11-redesign.html"),
+    ("Month 12",  "month12-redesign.html"),
 ]
 
 def nav_bar(active_label):
@@ -694,3 +701,426 @@ with open(f"{OUT}/month5-redesign.html", "w") as f: f.write(html)
 print("Written: month5-redesign.html")
 
 print("\nAll 6 samples written.")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 6
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 6", title_label="Month 6",
+    subject="Six months: the room-sharing window closes, and solids are starting",
+    preheader="Olivia is 6 months old. Three things closing this month — one is a safety window.",
+    hero_age="Month 6", hero_name="Olivia · 26 weeks old",
+    opening="Olivia is 6 months old. Six months is a turning point — solids are starting, she's sitting with support, and she's starting to look less like a baby and more like a little person. Here's what matters this month.",
+    context="Six months. Solids, sitting, and a whole new level of curiosity about the world.",
+    theme="🏠 This month: a safety window that closes now, the language habit that builds everything, and the attachment foundation you've been building.",
+    total_windows=56,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "Room sharing without bed sharing",
+        "The 6-month window closes now. If you haven't made this call yet, it's time.",
+        "Room sharing reduces SIDS risk by up to 50% compared to a separate room. The AAP recommends at least 6 months. After 6 months, transitioning to their own room is developmentally appropriate and safe.",
+        """* Keep the crib or bassinet in your room through at least 6 months — that window closes now
+* If you're tempted to bring the baby into your bed during a night feed: set up the return to be easy — darkness, white noise, firm surface nearby
+* After 6 months, transitioning to their own room is developmentally appropriate and safe
+* When you do transition: white noise, consistent bedtime routine, and a firm sleep surface in their own room all help
+* The 'ideally the full first year' language was removed from the 2022 AAP update. Six months is the evidence-based minimum.""",
+    ),
+    dyk_html=dyk_card("Children whose parents read aloud to them every day from birth enter school with **a vocabulary 1.4 million words larger** than children who weren't read to regularly. You don't need special books. Any book, every day."),
+    supporting_cards_html=window_card(
+        "⏱ Closing this month", "",
+        "Serve and return — the language foundation",
+        "Six months in and this habit is the most compounding thing you're doing.",
+        "Harvard's Center on the Developing Child calls serve and return 'the most important thing parents can do for brain development.' Every exchange — coo for coo, look for look — builds neural pathways for language and emotional regulation.",
+        """* Narrate everything you do: *"I'm changing your diaper now. Left leg first."*
+* When she coos or babbles, respond — not just with sound but with meaning: *"Yes, I see it too."*
+* Put the phone down during feeding and face-to-face time. Your face is still the most interesting thing in her world.
+* Pause after responding to see if she initiates again. You're teaching her the rhythm of conversation.
+* Books are serve and return: point at pictures, wait for her to look, name what she sees.""",
+    ) + window_card(
+        "⏱ Closing this month", "",
+        "Primary attachment — the 6-month foundation",
+        "Everything you've done in the last 6 months is building something that lasts a lifetime.",
+        "Secure attachment in the first 6 months predicts better emotional regulation, stronger relationships, and higher academic achievement years later. It's built through consistency, not perfection.",
+        """* Respond to cries consistently and promptly. Research is unambiguous: you cannot spoil an infant.
+* Be present during waking hours — face-to-face time, physical closeness, eye contact.
+* Regulate yourself. A calm parent creates a calm baby. The nervous system is contagious.
+* Attachment is built through thousands of ordinary moments, not grand gestures. The diaper change, the feeding, the eye contact — that's it.
+* You don't need to be perfect. Repair after moments of disconnection actually *strengthens* attachment.""",
+    ),
+    tackled_html=tackled_section([
+        ("Solids started — first foods introduced", "Both"),
+        ("5-month checkup — done", "Mum"),
+        ("Iron drops — ongoing", "Dad"),
+    ]),
+    next_month_html=next_month_section([
+        "Babyproof the home — before crawling begins (time-sensitive)",
+        "Responds to own name — watch for reliable name response",
+        "Iron-fortified foods — introducing with first solids",
+    ]),
+    closing_text="Halfway through the first year. You've done more right than you know. Month 7 is where it gets mobile — we'll walk you through it. — Jack",
+)
+with open(f"{OUT}/month6-redesign.html", "w") as f: f.write(html)
+print("Written: month6-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 7
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 7", title_label="Month 7",
+    subject="Mobility is coming. Is your home ready?",
+    preheader="Olivia is 7 months old. Babyproofing closes this month — here's the checklist.",
+    hero_age="Month 7", hero_name="Olivia · 30 weeks old",
+    opening="Olivia is 7 months old. Mobility is coming — crawling, pulling, rolling — and with it comes a world that suddenly needs a closer look for hazards. Here's what to focus on.",
+    context="Seven months: the world is getting much more interesting. And so are the hazards.",
+    theme="🔒 This month: babyproof before she moves, establish name response, and close out the iron window.",
+    total_windows=50,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "Babyproof the home — before crawling begins",
+        "Once she's mobile, you'll wish you'd done this last week.",
+        "The window between birth and crawling is the time to babyproof. Mobility happens faster than almost all first-time parents expect — often overnight. The goal is to make your home safe before she can reach hazards independently.",
+        """* Get on your hands and knees and look at your home from baby's height — this reveals hazards invisible from standing
+* **Stairs:** hardware-mounted gates at the top, drilled into the wall. Pressure-mounted gates are only safe at the bottom or between rooms — never at the top of stairs.
+* **Outlet covers:** plug all unused outlets
+* **Cabinet locks:** cleaning products, medications, and anything under the sink
+* **Furniture anchoring:** bookshelves, dressers, and TVs to the wall. Tip-over accidents kill children every year.
+* **Blind cord safety:** loop or secure all window blind cords out of reach
+* **Small objects:** anything that fits through a toilet paper tube is a choking hazard — do a sweep of the floor
+* **Sharp edges:** coffee table corners, hearth edges
+* **Water:** never leave water in a bucket or bathtub unattended, even an inch""",
+    ),
+    dyk_html=dyk_card("Babies who hear their **own name used consistently and positively** develop name response faster and show stronger early social attention. Use her name — not just nicknames — especially when you want her focus."),
+    supporting_cards_html=window_card(
+        "⏱ Closing this month", "",
+        "Responds to own name",
+        "This is more than a party trick — it's a key social-cognitive milestone.",
+        "Reliable name response — turning specifically toward her own name rather than any voice or sound — typically develops between 5 and 7 months. It signals that the brain has formed a stable representation of self and that language processing is advancing.",
+        """* Use her name frequently and consistently, not just nicknames
+* Test when she's not looking at you: call her name from across the room and see if she turns
+* Make name calling a positive event: say the name, she turns, you smile and engage
+* If reliable name response isn't there by 9 months, flag it at the next well visit — it's a developmental marker on the M-CHAT""",
+    ) + window_card(
+        "⏱ Closing this month", "",
+        "Introduce iron-fortified foods with first solids",
+        "Breast milk is excellent nutrition — but iron stores run out around now.",
+        "Around 6 months, a baby's natural iron stores are nearly gone. Iron is non-negotiable for brain development. Iron-fortified cereals or pureed meats are the easiest way to close the gap.",
+        """* Choose iron-fortified infant cereals like oat or barley — mix with breast milk or formula to increase acceptance
+* Pureed meats (beef, chicken, turkey) are excellent natural sources of iron and zinc
+* Offer iron-rich foods at most meals — consistency matters more than quantity at this stage
+* Continue iron drops if still predominantly breastfeeding and not yet eating consistent iron-rich foods
+* Pair iron-rich foods with vitamin C (pureed sweet potato, peas) to increase iron absorption""",
+    ),
+    tackled_html=tackled_section([
+        ("Room sharing transition — done", "Both"),
+        ("First solids — iron-fortified foods started", "Mum"),
+        ("Babyproofing — in progress", "Dad"),
+    ]),
+    next_month_html=next_month_section([
+        "Introduce eggs — one of the most common allergens, early is better",
+        "Babbling — consonant sounds (ba, da, ma) starting around now",
+        "Introduce tree nuts — another key early allergen window",
+    ]),
+    closing_text="Seven months is when parents start babyproofing in earnest. If you haven't started, this month is the time — not next month. — Jack",
+)
+with open(f"{OUT}/month7-redesign.html", "w") as f: f.write(html)
+print("Written: month7-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 8
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 8", title_label="Month 8",
+    subject="Allergen introductions: the window is open and the science is clear",
+    preheader="Olivia is 8 months old. Eggs, tree nuts, dairy — here's how to do it right.",
+    hero_age="Month 8", hero_name="Olivia · 35 weeks old",
+    opening="Olivia is 8 months old. Object permanence is kicking in — she knows things exist even when she can't see them. This month is also peak allergen introduction time. Here's what to focus on.",
+    context="Eight months: things that disappear are suddenly the end of the world. That's object permanence — it means her brain is working.",
+    theme="🥚 This month: three allergens to introduce, and one language milestone building under the surface.",
+    total_windows=48,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "Introduce eggs — early allergen",
+        "The research reversed on this. Early introduction reduces allergy risk significantly.",
+        "Egg is the second most common food allergy in children after peanut. The same early introduction research that changed peanut guidelines also applies to eggs: introducing eggs during the first year reduces allergy risk. Waiting increases it.",
+        """* Introduce well-cooked egg (scrambled or hard-boiled) first — raw or undercooked egg carries salmonella risk
+* Mix a small amount into purée on day one; give alone on day two and three to isolate any reaction
+* Watch for 20 minutes after first introduction
+* A mild rash around the mouth can occur as a contact reaction — monitor closely. If it spreads, worsens, or is accompanied by hives, vomiting, or breathing changes, call your pediatrician.
+* Once tolerated, keep offering eggs regularly — regular exposure maintains tolerance
+* Scrambled eggs are often the easiest first form; hard-boiled egg yolk mashed is also good""",
+    ),
+    dyk_html=dyk_card("Babies who are exposed to **varied sounds and babble-back interactions** at 8–10 months have measurably larger productive vocabularies at 18 months. The babbling stage is when the foundation is literally being laid — neuron by neuron."),
+    supporting_cards_html=window_card(
+        "⏱ Closing this month", "",
+        "Babbling — consonant sounds (ba, da, ma)",
+        "This is the bridge between cooing and first words. It's not random noise.",
+        "Babbling — repeating consonant-vowel combinations — is the bridge between cooing and first words. It typically emerges between 6 and 9 months. Absent or significantly limited babbling by 9 months is a developmental flag.",
+        """* Babble back. If she says "ba ba," say "ba ba" back, then add to it: *"ba ba, ball."*
+* Use simple, slow speech — infant-directed speech (what used to be called 'baby talk') genuinely accelerates language acquisition. The research is clear on this.
+* Minimize background TV and audio. Language learning requires conversation, not noise.
+* Respond to babble as if it's communication — because it is. She's practicing the sounds she'll use as words.""",
+    ) + window_card(
+        "⏱ Closing this month", "",
+        "Introduce tree nuts — early allergen",
+        "One at a time, 3–4 days apart. Don't rush — but don't skip this.",
+        "Tree nut allergies — cashew, almond, walnut, pistachio — are among the most common causes of severe allergic reactions in children, and they tend to be lifelong. Like peanut and egg, early introduction reduces risk.",
+        """* Introduce as a thinned nut butter (almond or cashew butter thinned with water or purée) — never whole nuts, which are a choking hazard
+* Introduce one tree nut at a time, 3–4 days apart, so reactions can be traced
+* Watch for 20 minutes after each first introduction
+* Don't rush: you don't need to introduce all tree nuts in one week
+* Once tolerated, keep offering regularly — this is how tolerance is maintained""",
+    ),
+    tackled_html=tackled_section([
+        ("Babyproofing — complete", "Dad"),
+        ("Name response — she turns when called", "Both"),
+        ("Eggs introduced — no reaction", "Mum"),
+    ]),
+    next_month_html=next_month_section([
+        "Babbling continues — canonical babbling should be consistent by month 9",
+        "Tree nut introduction — if not yet completed",
+        "9-month checkup — first formal developmental screening",
+    ]),
+    closing_text="Eight months is the start of a lot of big things — object permanence, allergen introductions, separation anxiety. All normal. All good. — Jack",
+)
+with open(f"{OUT}/month8-redesign.html", "w") as f: f.write(html)
+print("Written: month8-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 9
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 9", title_label="Month 9",
+    subject="The 9-month checkup is the first real developmental screen — here's what to expect",
+    preheader="Olivia is 9 months old. Plus: the peanut window and two more allergens.",
+    hero_age="Month 9", hero_name="Olivia · 39 weeks old",
+    opening="Olivia is 9 months old. This is one of the biggest developmental months of the whole first year — crawling, pulling up, pointing, and early communication are all happening at once. Here's what to watch.",
+    context="Nine months is a surge. Gross motor, language, and social development are all firing at the same time.",
+    theme="🩺 This month: the first formal developmental screening, the peanut window, and sesame.",
+    total_windows=51,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "9-month well child visit — first formal developmental screening",
+        "This is the first visit that uses a standardized developmental screening tool. It's more than a checkup.",
+        "The 9-month visit is the first to include formal developmental screening using a standardized tool (ASQ or similar). It assesses sitting independently, pulling to stand, babbling, responding to name, and early social engagement. What the pediatrician finds here shapes what happens next.",
+        """* Complete any pre-visit developmental questionnaire the practice sends — the ASQ-3 is common. Answer accurately, not optimistically.
+* Bring specific behavioral observations: does she respond to her name? Point at things? Babble with consonant sounds?
+* Know her approximate word-sound inventory: how many distinct sounds does she make? Any consistent sound-meaning pairs?
+* Ask specifically about crawling or alternative locomotion — some babies bottom-shuffle or roll instead of crawl, and both are developmentally acceptable
+* If anything was flagged at a previous visit, bring it up again and ask for follow-up""",
+    ),
+    dyk_html=dyk_card("The **peanut introduction window** (4–11 months) is one of the most important in early childhood nutrition. The LEAP study showed early introduction reduces peanut allergy risk by **up to 80%** in high-risk infants. This month is in the window."),
+    supporting_cards_html=window_card(
+        "⏱ Closing this month", "",
+        "⚠️ Peanut introduction window",
+        "The research on this is unambiguous. Early introduction is protective.",
+        "The LEAP study (NEJM, 2015) showed introducing peanuts between 4 and 11 months reduces peanut allergy risk by up to 80% in high-risk infants. This is one of the most significant findings in pediatric nutrition in decades.",
+        """* **No eczema, no known food allergies:** introduce at home, no doctor visit required
+* **Mild to moderate eczema:** introduce at home around 6 months. The older recommendation to consult a doctor first was updated.
+* **Severe eczema or existing egg allergy:** consult your pediatrician first — allergy testing may be recommended before introduction
+* Method: small tip-of-the-spoon taste of smooth peanut butter thinned with water or purée. Wait 10 minutes. If no reaction, offer more.
+* Never give whole peanuts or chunky peanut butter — choking hazard
+* Once tolerated: offer peanut-containing foods 3 times per week to maintain tolerance. Irregular exposure is not enough.""",
+    ) + window_card(
+        "⏱ Closing this month", "",
+        "Introduce sesame — early allergen",
+        "Sesame was recently added to the major allergen list. The window is the same.",
+        "Sesame was added to the list of major allergens because reactions can be severe. Like other allergens, early introduction during the first year is the protective approach.",
+        """* Hummus or tahini thinned with water or purée is the easiest way to introduce sesame
+* Do not give whole sesame seeds — they are a choking hazard
+* Monitor for 20 minutes after the first few exposures
+* Once tolerated, offer regularly to maintain tolerance""",
+    ),
+    tackled_html=tackled_section([
+        ("Babbling — consistent consonant sounds", "Both"),
+        ("Tree nuts introduced — no reaction", "Mum"),
+        ("Dairy introduced — tolerating well", "Dad"),
+    ]),
+    next_month_html=next_month_section([
+        "Peanut introduction — if not yet done, this is the closing window",
+        "Peek-a-boo play — object permanence and trust building",
+        "Crawling or alternative locomotion — watch for consistent movement",
+    ]),
+    closing_text="Nine months is one of my favorites. She's communicating more deliberately, moving on her own, and becoming someone with opinions. A lot happens between now and 12 months. — Jack",
+)
+with open(f"{OUT}/month9-redesign.html", "w") as f: f.write(html)
+print("Written: month9-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 10
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 10", title_label="Month 10",
+    subject="She knows you come back. That's the whole thing.",
+    preheader="Olivia is 10 months old. Object permanence, stranger anxiety, and the peanut window closing.",
+    hero_age="Month 10", hero_name="Olivia · 43 weeks old",
+    opening="Olivia is 10 months old. She's getting more intentional — pointing, gesturing, looking at you when something interests her. That's joint attention, and it's one of the most important things happening right now.",
+    context="Ten months: watch for pointing and shared looks. That's communication, even without words.",
+    theme="🧸 This month: the peanut window closes, peek-a-boo matters more than you think, and stranger anxiety is healthy.",
+    total_windows=43,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "⚠️ Peanut introduction — closing window",
+        "If this hasn't happened yet, this month is the last of the high-benefit window.",
+        "The LEAP study showed early peanut introduction (4–11 months) reduces allergy risk by up to 80%. Month 11 is outside the primary window. If you haven't introduced peanuts yet, this month matters.",
+        """* If your child has no eczema and no known food allergies: introduce at home today, no doctor visit required
+* Method: small tip-of-the-spoon taste of smooth peanut butter thinned with water or purée — never whole peanuts (choking hazard)
+* Wait 10 minutes after the first taste. If no reaction, continue offering.
+* Once tolerated: offer peanut-containing foods 3 times per week. Irregular exposure is not sufficient to maintain tolerance.
+* If you have any concerns: call your pediatrician. The worst outcome is delaying unnecessarily.""",
+    ),
+    dyk_html=dyk_card("Peek-a-boo teaches three things simultaneously: **object permanence** (you disappear and still exist), **trust** (you always come back), and **conversational turn-taking**. It's one of the most cognitively rich games in early childhood — and it costs nothing."),
+    supporting_cards_html=window_card(
+        "⏱ Closing this month", "",
+        "Peek-a-boo — object permanence and trust",
+        "This isn't just a game. It's a cognitive and emotional workout.",
+        "Peek-a-boo teaches object permanence (you disappear and reappear, you still exist), trust (you always come back), and the structure of social turn-taking. These are foundational concepts being built right now.",
+        """* Use your hands, a cloth, a corner — any method of disappearing and reappearing
+* Build anticipation: slow down before the reveal to create the suspense
+* Let her initiate as she gets older — and follow her lead on timing
+* Vary it: peek from behind a door, a pillow, a high chair tray""",
+    ) + window_card(
+        "⏱ Closing this month", "",
+        "Stranger anxiety — this is healthy",
+        "When she cries at grandma, it's not rudeness. It's a sign of secure attachment.",
+        "Stranger anxiety — wariness or distress around unfamiliar people — is something most babies develop between 6 and 10 months. It's a sign of healthy attachment: she has formed a clear primary bond and can now distinguish between safe and unfamiliar.",
+        """* Do not force interaction with strangers or unfamiliar relatives — this backfires
+* Stay in sight when introducing a new person. Your presence is the safety signal.
+* Give her time to warm up on her own terms. Most babies do, given space.
+* Brief the grandparents: *"Give her a few minutes. Don't push for hugs. Let her come to you."*
+* This phase typically peaks at 8–10 months and softens through the second year""",
+    ),
+    tackled_html=tackled_section([
+        ("9-month checkup — developmental screen passed", "Both"),
+        ("Peanut intro — started", "Mum"),
+        ("Sesame introduced — no reaction", "Dad"),
+    ]),
+    next_month_html=next_month_section([
+        "Infant CPR training — know what to do in an emergency",
+        "Back to sleep — review safe sleep practices as she becomes more mobile",
+        "Read aloud every day — the habit that builds school readiness",
+    ]),
+    closing_text="Ten months goes fast. She's a communicator now — not with words yet, but with everything else. Two months to the first birthday. — Jack",
+)
+with open(f"{OUT}/month10-redesign.html", "w") as f: f.write(html)
+print("Written: month10-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 11
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 11", title_label="Month 11",
+    subject="Almost one. Three things to do before the birthday.",
+    preheader="Olivia is 11 months old. The 12-month visit is coming — here's how to prepare.",
+    hero_age="Month 11", hero_name="Olivia · 48 weeks old",
+    opening="Olivia is 11 months old. Almost one. Some babies are walking at 11 months. Most aren't. Both are completely fine — the walking window runs through 18 months. Here's what actually matters right now.",
+    context="Eleven months: walking isn't required yet. What matters is pulling up, cruising, and curiosity.",
+    theme="📅 This month: CPR training, first dental visit, and 'mama' and 'dada' getting specific.",
+    total_windows=42,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "Infant CPR training",
+        "If you haven't done this yet, this month. Not next month.",
+        "Infant CPR is one of the most important skills a new parent can have, and one of the least likely to be used. In a choking or respiratory emergency, the minutes before paramedics arrive are the window where a trained parent can make a life-or-death difference.",
+        """* Take a hands-on infant CPR and first aid class — hospital classes, Red Cross, or local fire stations often offer them
+* Video-only learning is significantly less effective than hands-on practice. Do the in-person class.
+* Ensure any regular caregivers — grandparents, nanny, daycare providers — are also trained
+* CPR guidelines update periodically. If you took a class more than 2 years ago, refresh.
+* The Heimlich maneuver for infants (back blows + chest thrusts) is different from adult Heimlich. Make sure your class covers it.""",
+    ),
+    dyk_html=dyk_card("Babies say 'mama' and 'dada' as sounds around 9 months — but using them **specifically** (mama when looking at mom, dada when looking at dad) typically locks in by 12 months. That specificity is the milestone, not the sound."),
+    supporting_cards_html=window_card(
+        "⏱ Closing this month", "",
+        "Uses 'mama' and 'dada' specifically",
+        "This is one of the clearest early language milestones — and the 12-month visit will ask about it.",
+        "Many babies say 'mama' and 'dada' as sounds by around 9 months, without attaching specific meaning. Using them specifically — 'mama' when looking at mum, 'dada' when looking at dad — is a key 12-month milestone.",
+        """* Use 'mama' and 'dada' in self-referential sentences: *"Mama is right here." "Dada is coming."*
+* Point to each parent when saying the word — connect the sound to the face
+* Respond enthusiastically when she uses the words correctly. Positive reinforcement locks it in.
+* At the 12-month visit, your pediatrician will ask about this directly. Note whether she's using the words with intent.""",
+    ) + window_card(
+        "⏱ Closing this month", "",
+        "First dental visit — at first tooth, or by 12 months",
+        "Baby teeth matter. Tooth decay in baby teeth affects the permanent teeth growing beneath them.",
+        "The AAPD recommends the first dental visit when the first tooth appears or by 12 months, whichever comes first. Most parents assume baby teeth don't matter much. They do — they hold space for permanent teeth and tooth decay in baby teeth affects the adult teeth growing beneath them.",
+        """* Schedule when the first tooth appears. Don't wait until 12 months if teeth arrive early.
+* Before teeth: wipe gums with a soft damp cloth after feeds
+* Once the first tooth erupts: switch to a soft-bristled infant toothbrush immediately
+* Use a rice-grain smear of fluoride toothpaste from the first tooth — fluoride is safe and recommended from day one of brushing. Increase to a pea-sized amount at age 3.
+* Never put a baby to sleep with a bottle of milk or juice — this causes 'bottle rot,' severe early childhood tooth decay""",
+    ),
+    tackled_html=tackled_section([
+        ("Peanut introduction — complete, offering 3x/week", "Both"),
+        ("First words — 'mama' and 'dada' starting", "Mum"),
+        ("CPR class — booked", "Dad"),
+    ]),
+    next_month_html=next_month_section([
+        "12-month well child visit — walking, first words, social engagement all assessed",
+        "Infant CPR — if not yet completed this month",
+        "Back to sleep — review safe sleep for the increasingly mobile baby",
+    ]),
+    closing_text="One month to the first birthday. It goes fast — and then it really goes fast. The 12-month digest is a big one. — Jack",
+)
+with open(f"{OUT}/month11-redesign.html", "w") as f: f.write(html)
+print("Written: month11-redesign.html")
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# MONTH 12
+# ═══════════════════════════════════════════════════════════════════════════════
+html = page(
+    nav_label="Month 12", title_label="Month 12",
+    subject="One year. Here's what the 12-month visit actually covers.",
+    preheader="Olivia is 12 months old. Walking, first words, whole milk — all of it, explained.",
+    hero_age="Month 12", hero_name="Olivia · 52 weeks old",
+    opening="Olivia is 12 months old. One year. You did it. The first year of life is one of the most developmentally dense periods of any human life — and you navigated all of it. Here's what the 12-month visit covers and what to focus on now.",
+    context="The first year is done. One of the most remarkable developmental years of any human life — and you were there for all of it.",
+    theme="🎂 This month: the 12-month visit, reading aloud every day, and transitioning to a cup.",
+    total_windows=56,
+    priority_card_html=window_card(
+        "⏱ Closing this month", "",
+        "12-month well child visit",
+        "This is one of the most important visits of the first year. Come prepared.",
+        "The 12-month visit assesses walking, first words, pointing, social engagement, and the transition to whole cow's milk. Vaccines: MMR, Varicella, Hep A (dose 1), PCV (dose 4), and flu vaccine if not yet given this season.",
+        """* Track words before the visit: how many specific, consistent words does she have? (Target: 1–3 words with intent by 12 months)
+* Note pointing behavior — pointing to share interest (declarative pointing) is a key milestone at this visit
+* Discuss the transition to whole cow's milk: 16–24 oz/day is the target range; more than 24 oz/day displaces solid food intake
+* Ask about walking: walking is normal anytime from 9 to 18 months — this visit will assess the trajectory
+* Questions to bring: sleep, diet, any behavioral concerns, fluoride supplement if your water isn't fluoridated""",
+    ),
+    dyk_html=dyk_card("Children read to every day from birth enter kindergarten with **a vocabulary equivalent to 1,000 additional hours of classroom instruction.** The habit you build now pays off for years. Any book. Every day. That's the whole prescription."),
+    supporting_cards_html=window_card(
+        "⏱ Closing this month", "",
+        "Read aloud every day — build the habit",
+        "This is the single highest-impact habit you can build in the first year.",
+        "Reading aloud from birth is one of the highest-impact things a parent can do for language development, school readiness, and the parent-child relationship. The AAP recommends reading aloud as part of every well child visit discussion.",
+        """* Start now regardless of age — they benefit from the voice, rhythm, and closeness from day one
+* Any book counts. Board books, picture books, library books, whatever's available.
+* Make it a daily routine: before the first nap, at bedtime, during a quiet feed
+* Point at pictures and name them. Wait for her to look. This is serve and return through books.
+* Reading for 15 minutes per day adds up to roughly 90 hours per year. At age 5, that's 450 hours of language-rich interaction on top of everything else you do.""",
+    ) + window_card(
+        "⏱ Closing this month", "",
+        "Sippy or straw cup introduction",
+        "Start the transition now. Bottle dependence past 18 months causes dental and speech issues.",
+        "Learning to use a cup is a motor skill that prevents dental and speech problems associated with long-term bottle use. Starting at 6 months with small sips of water builds the skill early. By 12–15 months, aim to phase out bottles entirely.",
+        """* Offer a straw cup or open cup with a tiny amount of water at meal times
+* Weighted straw cups are often easier for babies to learn than traditional sippy cups with valves
+* Be patient: it takes weeks of practice before they swallow more than they spill
+* By 12–15 months: start reducing bottle use at meals, keeping it only for sleep feeds if needed
+* Goal: fully off bottles by 15–18 months. The longer bottle use continues past that, the harder the transition.""",
+    ),
+    tackled_html=tackled_section([
+        ("CPR training — done", "Both"),
+        ("First dental visit — complete", "Mum"),
+        ("'Mama' and 'dada' — specific and consistent", "Both"),
+    ]),
+    next_month_html=next_month_section([
+        "Container play — in and out, fills a key cognitive window",
+        "Water safety — never leave unattended near water, even the bath",
+        "Joint attention and pointing — key toddler communication milestone",
+    ]),
+    closing_text="Happy first birthday to Olivia — and to you. Year two is different. Faster in some ways, slower in others. We'll keep you on track every month. — Jack",
+)
+with open(f"{OUT}/month12-redesign.html", "w") as f: f.write(html)
+print("Written: month12-redesign.html")
+
+print("\nMonths 6-12 done.")
