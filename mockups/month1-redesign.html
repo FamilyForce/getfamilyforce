@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scout · Month 1 Redesign Sample</title>
+<style>
+  body { margin: 0; padding: 32px 16px; background: #f0ede8; font-family: Arial, sans-serif; }
+  .wrap { max-width: 580px; margin: 0 auto; }
+
+  /* Meta bar */
+  .meta { text-align: center; margin-bottom: 12px; }
+  .meta p { font-size: 12px; color: #888; margin: 0 0 4px; }
+  .meta a { color: #6E4ED6; font-size: 11px; }
+
+  /* Card base */
+  .card { background: #fff; border-radius: 16px; overflow: hidden; margin-bottom: 12px; }
+
+  /* Hero */
+  .hero { background: linear-gradient(160deg, #2d1b69 0%, #1a0f3e 100%); padding: 32px 28px 24px; text-align: center; }
+  .hero .logo { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.5); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 20px; }
+  .hero .age { font-size: 32px; font-weight: 700; color: #fff; margin: 0 0 4px; }
+  .hero .name { font-size: 15px; color: rgba(255,255,255,.6); margin: 0 0 24px; }
+  .hero .greeting { font-size: 15px; color: rgba(255,255,255,.75); line-height: 1.7; margin: 0 0 12px; text-align: left; }
+  .hero .opening { font-size: 15px; color: rgba(255,255,255,.65); line-height: 1.7; margin: 0 0 16px; text-align: left; }
+  .hero .context { font-size: 13px; color: rgba(255,255,255,.45); font-style: italic; margin: 0; text-align: left; border-top: 1px solid rgba(255,255,255,.1); padding-top: 14px; }
+
+  /* Theme stripe */
+  .theme-stripe { background: #f7f4ff; border-left: 3px solid #6E4ED6; padding: 12px 18px; margin-bottom: 12px; border-radius: 0 8px 8px 0; }
+  .theme-stripe p { margin: 0; font-size: 13px; color: #5B3CC4; font-weight: 600; }
+
+  /* Section label */
+  .section-label { font-size: 11px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: .1em; padding: 0 4px; margin: 20px 0 8px; }
+
+  /* Window card */
+  .window { background: #fff; border-radius: 14px; overflow: hidden; margin-bottom: 10px; border: 1px solid #ece8f0; }
+  .window-header { padding: 18px 20px 12px; }
+  .window-label { font-size: 10px; font-weight: 700; color: #c0392b; text-transform: uppercase; letter-spacing: .1em; margin: 0 0 6px; display: flex; align-items: center; gap: 5px; }
+  .window-label.open { color: #6E4ED6; }
+  .window-title { font-size: 16px; font-weight: 700; color: #1a0f3e; margin: 0 0 8px; line-height: 1.3; }
+  .jack-bridge { font-size: 13px; color: #888; font-style: italic; margin: 0 0 10px; }
+  .window-why { font-size: 14px; color: #555; line-height: 1.65; margin: 0; }
+
+  /* The move */
+  .the-move { background: #faf7ff; border-top: 1px solid #ece8f0; padding: 14px 20px 16px; }
+  .move-label { font-size: 10px; font-weight: 700; color: #6E4ED6; text-transform: uppercase; letter-spacing: .1em; margin: 0 0 10px; }
+  .move-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .move-bullet { color: #6E4ED6; font-weight: 700; font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .move-text { font-size: 14px; color: #333; line-height: 1.55; margin: 0; }
+  .move-text strong { color: #1a0f3e; }
+  .dashboard-link { margin-top: 10px; font-size: 12px; color: #6E4ED6; text-decoration: none; display: block; }
+
+  /* Did you know */
+  .dyk { background: linear-gradient(135deg, #e8f4f0 0%, #d4eee6 100%); border-radius: 14px; padding: 20px 22px; margin-bottom: 10px; border: 1px solid #b8ddd3; }
+  .dyk-label { font-size: 10px; font-weight: 700; color: #1a7a5e; text-transform: uppercase; letter-spacing: .1em; margin: 0 0 8px; display: flex; align-items: center; gap: 6px; }
+  .dyk p { font-size: 14px; color: #1a3d32; line-height: 1.65; margin: 0; }
+  .dyk strong { color: #0d2d24; }
+
+  /* Closing */
+  .closing { background: linear-gradient(160deg, #1a0f3e 0%, #0d0820 100%); border-radius: 14px; padding: 24px 26px; margin-bottom: 10px; }
+  .closing p { font-size: 14px; color: rgba(255,255,255,.7); line-height: 1.8; margin: 0; font-style: italic; }
+
+  /* Co-parent nudge */
+  .coparent { text-align: center; padding: 14px; }
+  .coparent p { font-size: 13px; color: #888; margin: 0; }
+  .coparent a { color: #6E4ED6; font-weight: 600; text-decoration: none; }
+
+  /* CTA */
+  .cta { text-align: center; padding: 8px 0 28px; }
+  .cta a { background: #6E4ED6; color: #fff; font-size: 15px; font-weight: 700; text-decoration: none; padding: 14px 36px; border-radius: 100px; display: inline-block; }
+
+  /* Footer */
+  .footer { text-align: center; padding: 0 0 32px; }
+  .footer p { font-size: 11px; color: #aaa; margin: 0 0 4px; line-height: 1.6; }
+  .footer a { color: #aaa; }
+
+  /* Preview note */
+  .preview-note { background: #fffbea; border: 1px solid #f0d060; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 13px; color: #7a6010; }
+  .preview-note strong { color: #5a4000; }
+
+  /* Subject line display */
+  .subject-display { background: #fff; border-radius: 10px; padding: 16px 20px; margin-bottom: 14px; border: 1px solid #e0d8f0; }
+  .subject-display p { margin: 0 0 4px; font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: .08em; font-weight: 600; }
+  .subject-display .subject { font-size: 15px; font-weight: 700; color: #1a0f3e; margin: 0 0 6px; }
+  .subject-display .preheader { font-size: 13px; color: #666; margin: 0; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="preview-note">
+    <strong>Redesign sample — Month 1.</strong> New format: 3 windows · 3-bullet limit · monthly theme · "Did you know" card · Jack voice bridges · co-parent prompt.
+  </div>
+
+  <!-- Subject line preview -->
+  <div class="subject-display">
+    <p>Subject line</p>
+    <p class="subject">The visit you didn't know to book — and three things that matter right now</p>
+    <p class="preheader">Olivia is 1 month old. One appointment saves you weeks of worry.</p>
+  </div>
+
+  <!-- Hero -->
+  <div class="card">
+    <div class="hero">
+      <p class="logo">Scout</p>
+      <p class="age">Month 1</p>
+      <p class="name">Olivia · 4 weeks old</p>
+      <p class="greeting">Hi there,</p>
+      <p class="opening">Olivia is 1 month old. You've kept a human alive for a whole month — and she's growing. This is Scout's first monthly digest: a look at what's worth your attention right now, no more than 5 minutes.</p>
+      <p class="context">The first month is survival mode. You're doing it right.</p>
+    </div>
+  </div>
+
+  <!-- Monthly theme -->
+  <div class="theme-stripe">
+    <p>🗓 This month: One appointment to book, one habit to start, and one question to answer honestly.</p>
+  </div>
+
+  <!-- Priority window -->
+  <p class="section-label">This month's priority</p>
+
+  <div class="window">
+    <div class="window-header">
+      <p class="window-label">⏱ Closing this month</p>
+      <p class="window-title">The 1-month well child visit</p>
+      <p class="jack-bridge">Most parents don't know this visit exists. Book it before you leave the hospital — ask for the 4-week appointment on the way out.</p>
+      <p class="window-why">The 1-month visit is the first well child check after the newborn visit. It's on the AAP schedule for good reason — your baby should be back to birth weight by now, and your pediatrician will check that, plus screen you for postpartum depression at the same time.</p>
+    </div>
+    <div class="the-move">
+      <p class="move-label">The move</p>
+      <div class="move-item">
+        <span class="move-bullet">›</span>
+        <p class="move-text">Schedule it at 3 to 5 weeks. If it hasn't been booked — call today.</p>
+      </div>
+      <div class="move-item">
+        <span class="move-bullet">›</span>
+        <p class="move-text">Bring your feeding questions: how often, how long, how much weight gained since discharge.</p>
+      </div>
+      <div class="move-item">
+        <span class="move-bullet">›</span>
+        <p class="move-text"><strong>Watch for before the visit:</strong> baby not back to birth weight by week 2–3, feeding sessions over 45 minutes, or any yellowing of skin or eyes past 2 weeks — flag all of these.</p>
+      </div>
+      <a class="dashboard-link" href="#">See full checklist in Scout →</a>
+    </div>
+  </div>
+
+  <!-- Did you know -->
+  <div class="dyk">
+    <p class="dyk-label">💡 Did you know</p>
+    <p>Tummy time is one of the <strong>strongest predictors of motor milestones through age 2.</strong> Babies who do consistent daily tummy time crawl earlier, stand earlier, and walk earlier. You don't need equipment or a schedule — a few minutes on your chest counts.</p>
+  </div>
+
+  <!-- Also this month -->
+  <p class="section-label">Also this month</p>
+
+  <div class="window">
+    <div class="window-header">
+      <p class="window-label open">⏳ Open window</p>
+      <p class="window-title">Tummy time: build to 15–30 min/day by week 7</p>
+      <p class="jack-bridge">This is the single highest-impact physical habit you can start right now.</p>
+      <p class="window-why">The AAP recommends 15–30 minutes of daily tummy time by 7 weeks — spread across the day, not all at once. Most babies who build this consistently roll between 3 and 5 months. The ones who skip it often struggle with rolling, crawling, and core strength later.</p>
+    </div>
+    <div class="the-move">
+      <p class="move-label">The move</p>
+      <div class="move-item">
+        <span class="move-bullet">›</span>
+        <p class="move-text">Build gradually: 4–5 short sessions per day is as good as one long one.</p>
+      </div>
+      <div class="move-item">
+        <span class="move-bullet">›</span>
+        <p class="move-text">Start on your chest if she hates it on the floor — chest tummy time counts.</p>
+      </div>
+      <div class="move-item">
+        <span class="move-bullet">›</span>
+        <p class="move-text">A rolled towel under the chest helps. Mirrors, siblings, and your face are the best motivation.</p>
+      </div>
+      <a class="dashboard-link" href="#">See full tummy time guide →</a>
+    </div>
+  </div>
+
+  <div class="window">
+    <div class="window-header">
+      <p class="window-label">⏱ Closing this month</p>
+      <p class="window-title">Screen for postpartum depression — both of you</p>
+      <p class="jack-bridge">This one's for you, not for Olivia.</p>
+      <p class="window-why">Postpartum depression affects 1 in 5 mothers and 1 in 10 fathers. It's one of the most common and most undertreated complications of childbirth. Your pediatrician should screen you at this 1-month visit — if they don't ask, you ask.</p>
+    </div>
+    <div class="the-move">
+      <p class="move-label">The move</p>
+      <div class="move-item">
+        <span class="move-bullet">›</span>
+        <p class="move-text">At the 1-month visit, say: <em>"Can we do the postpartum depression screen today?"</em> if they don't offer it.</p>
+      </div>
+      <div class="move-item">
+        <span class="move-bullet">›</span>
+        <p class="move-text">Answer honestly. The Edinburgh scale isn't a test you pass or fail — it's information your doctor uses to help you.</p>
+      </div>
+      <div class="move-item">
+        <span class="move-bullet">›</span>
+        <p class="move-text"><strong>Partners:</strong> paternal postpartum depression is real, underdiagnosed, and treatable. Ask to be screened too.</p>
+      </div>
+      <a class="dashboard-link" href="#">What to do if you screen positive →</a>
+    </div>
+  </div>
+
+  <!-- Co-parent nudge -->
+  <div class="coparent">
+    <p>📩 <a href="#">Forward this to your co-parent</a> — they need it too.</p>
+  </div>
+
+  <!-- Closing from Jack -->
+  <div class="closing">
+    <p>You're one month in. The hardest stretch — the absolute chaos of week one through four — is behind you. She's easier to read than she was, and she'll be easier still next month. We'll be back. — Jack</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <a href="#">Open Scout dashboard →</a>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p><em>For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</em></p>
+    <p>Developmental windows medically reviewed by Karina Sanchez Mercado, MD · April 2026</p>
+    <p><a href="#">Unsubscribe</a> · FamilyForce, 6th Floor, 12P Smithfield, Kennedy Town, Hong Kong</p>
+  </div>
+
+</div>
+</body>
+</html>
