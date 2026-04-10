@@ -199,7 +199,7 @@ def next_month_section(items):
         rows += f'<div class="next-item"><span class="next-dot">›</span><p class="next-title">{md_to_html(title)}</p></div>\n'
     return f"""
 <div class="next-month">
-  <p class="next-lbl">🔜 Coming next month</p>
+  <p class="next-lbl">🔜 A few things coming next month</p>
   {rows}
 </div>"""
 
@@ -318,7 +318,7 @@ html = page(
     opening="Your due date is getting close. This is Scout's pre-birth digest — three things worth doing before she arrives, each one easier to do now than after. Shouldn't take more than 5 minutes to read.",
     context="Everything you do before birth is infinitely easier than doing it with a newborn in the house.",
     theme="📋 Before she arrives: three things that will matter in the first 24 hours.",
-    total_windows=6,
+    total_windows=5,
     priority_card_html=window_card(
         "⏱ Closing — do before birth", "",
         "Choose your pediatrician before the baby is born",
@@ -380,9 +380,9 @@ For the partner or support person:
     ),
     tackled_html=tackled_section(None),  # first email — nudge state
     next_month_html=next_month_section([
-        "Serve and return — the foundation of language (starts at birth)",
-        "Skin-to-skin bonding — the first hours matter",
-        "Parent mental health — screen for postpartum depression",
+        "Tummy time — building to 15–30 minutes per day (closes month 1)",
+        "Screen for postpartum depression — the 1-month visit includes this",
+        "Responds to sounds, startles, calms to your voice",
     ]),
     extra_card_html=birth_reminder_card(),
     closing_text="You're close now. Everything you do in the next few weeks makes the first days easier. We'll be with you from day one — your first monthly digest arrives when Olivia turns 1 month old. Until then: you're ready. — Jack",
@@ -442,9 +442,9 @@ html = page(
     ),
     tackled_html=tackled_section(None),  # first email — nudge state
     next_month_html=next_month_section([
-        "2-month well child visit — the most vaccine-heavy visit of the first year",
-        "The social smile — her first intentional interaction (watch for it around week 6)",
-        "Rolls tummy to back — the first intentional movement",
+        "Tummy time — a different window opens (building daily minutes)",
+        "The social smile — her first intentional interaction, watch for it around week 6",
+        "Head control — holds her head steady when upright",
     ]),
     closing_text="You're one month in. The hardest stretch — the absolute chaos of week one through four — is behind you. She's easier to read than she was, and she'll be easier still next month. We'll be back. — Jack",
 )
@@ -500,9 +500,9 @@ html = page(
         ("Tummy time — building the habit", "Both"),
     ]),
     next_month_html=next_month_section([
-        "4-month sleep regression — what it is and how to handle it",
-        "Rolls back to tummy — the harder roll, and when to expect it",
-        "Sits with support — the first step toward independent sitting",
+        "Head control — closes next month, last chance to build it",
+        "Serve and return — the language habit that compounds",
+        "Room sharing — the 6-month safety window, check your setup",
     ]),
     closing_text="Two months down. That first real smile — if it's happened, you already know why people do this twice. If it hasn't, watch for it this week. When it comes, it changes the whole thing. See you next month. — Jack",
 )
@@ -560,9 +560,9 @@ html = page(
         ("Social smile — seen and celebrated", "Mum"),
     ]),
     next_month_html=next_month_section([
-        "Babyproof the home — before crawling begins",
-        "4-month well child visit",
-        "Iron supplementation for breastfed babies",
+        "The 4-month sleep regression — what it is and what to do",
+        "4-month checkup — bring your sleep questions",
+        "Recognizes and responds to primary caregiver",
     ]),
     closing_text="Month 3 is when it starts feeling real. You're not just keeping her alive — you're watching her become someone. Month 4 is full of new things. We'll make sure you're ready. — Jack",
 )
@@ -599,7 +599,7 @@ html = page(
     dyk_html=dyk_card("Babies put down **drowsy but awake** learn to fall asleep independently — which means they also learn to *re*-fall asleep independently between sleep cycles. That's the whole secret to longer stretches. It's a skill, not a personality trait."),
     supporting_cards_html=window_card(
         "⏱ Closing this month", "",
-        "4-month well child visit",
+        "4-month checkup",
         "Bring your sleep questions. The timing with the regression is not a coincidence.",
         "The 4-month visit covers head control, rolling readiness, and iron supplementation for breastfed babies. Vaccines: DTaP (dose 2), Hib (dose 2), PCV (dose 2), rotavirus (dose 2), polio (dose 2).",
         """* Ask specifically about iron supplementation if you're breastfeeding — it's easy to miss and important.
@@ -623,9 +623,9 @@ html = page(
         ("Serve and return — daily habit", "Mum"),
     ]),
     next_month_html=next_month_section([
-        "Transfers objects hand to hand — the first sign of intentional manipulation",
-        "Sits without support — building toward independent sitting",
-        "Cause and effect — banging and dropping are learning",
+        "Room sharing — the 6-month window closes soon, review your setup",
+        "Primary attachment — what you're building in the first 6 months",
+        "Iron supplementation — closing window for breastfed babies",
     ]),
     closing_text="Month 4 is a lot. If sleep just got worse — that's the regression and it means her brain is doing exactly what it should. Hang in there. Back next month. — Jack",
 )
@@ -680,13 +680,13 @@ html = page(
     ),
     tackled_html=tackled_section([
         ("4-month sleep regression — handled", "Both"),
-        ("4-month well child visit", "Mum"),
+        ("4-month checkup", "Mum"),
         ("Iron drops started", "Dad"),
     ]),
     next_month_html=next_month_section([
-        "Water safety — never leave unattended near water (even bath)",
-        "Babbling — consonant sounds (ba, da, ma) starting now",
-        "6-month well child visit — solids conversation, iron check",
+        "Serve and return — continues to build language pathways",
+        "Room sharing review — 6 months is the minimum safe room-sharing window",
+        "Primary attachment — the 6-month foundation closes",
     ]),
     closing_text="Five months goes fast. She's a different baby than she was four weeks ago — and she'll be different again in four more. Enjoy this stretch. We'll be back. — Jack",
 )
