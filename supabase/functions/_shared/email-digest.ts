@@ -87,62 +87,173 @@ function urgencyConfig(u: 'clinical' | 'screening' | 'advisory') {
   return                        { dot: C.textDim, bg: '#F9F8FF', label: 'This month'  }
 }
 
-// ─── Window card (redesigned) ─────────────────────────────────────────────────
+// ─── Parse what_to_do bullets into HTML list items ────────────────────────────
+function renderBullets(text: string): string {
+  if (!text) return ''
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
+  const items = lines.map(line => {
+    // Strip leading markers: *, -, •, 1., 2., etc.
+    const clean = line.replace(/^(\*|-|•|\d+\.)\s*/, '').trim()
+    // Bold any **text** spans
+    const bolded = clean.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${C.text}">$1</strong>`)
+    return `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 9px;padding-left:16px;line-height:1.65;position:relative"><span style="position:absolute;left:0;color:${C.terra}">·</span>${bolded}</p>`
+  })
+  return items.join('')
+}
+
+// ─── Window card (v3 — full bullets) ──────────────────────────────────────────
 function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, isClosing: boolean): string {
-  const cfg      = urgencyConfig(w.urgency)
-  const ageWeeks = ageMonths * 4.33
+  const ageWeeks  = ageMonths * 4.33
   const weeksLeft = Math.round(w.close_age_weeks - ageWeeks)
 
-  // Trim to 2 sentences
+  // 2-sentence excerpt for the why
   const sentences = (w.why_it_matters || '').replace(/([.!?])\s+/g, '$1|||').split('|||')
   const excerpt   = sentences.slice(0, 2).join(' ').trim()
 
-  // First action — only rendered if content exists
-  const actionLine = (w.what_to_do || '').split('\n')[0].replace(/^[-•·]\s*/, '').trim()
-
-  const closingBadge = isClosing
-    ? `<span style="display:inline-block;background:${C.amberBg};color:${C.amber};border:1px solid ${C.amberBorder};font-size:11px;font-weight:700;padding:2px 10px;border-radius:100px;margin-left:8px;letter-spacing:.02em">Closes in ${weeksLeft}w</span>`
-    : ''
-
-  const guideLink = w.playbook_link
-    ? `<tr><td style="padding-top:12px"><a href="${dashboardUrl}" style="font-size:13px;color:${C.terra};text-decoration:none;font-weight:600">Read the free guide →</a></td></tr>`
-    : ''
+  const badgeText = isClosing ? `Closing in ${weeksLeft}w` : 'This month'
+  const badgeColor = isClosing ? C.amber : C.terraDark
+  const badgeBg    = isClosing ? C.amberBg : C.terraTint
 
   return `
   <tr>
-    <td style="padding-bottom:16px">
+    <td style="padding-bottom:14px">
       <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1px solid ${C.border};border-radius:14px;overflow:hidden">
         <tr>
-          <td style="padding:20px 22px">
+          <td style="padding:20px 22px 18px">
             <table width="100%" cellpadding="0" cellspacing="0">
-              <!-- Title row -->
+              <!-- Badge -->
               <tr>
                 <td style="padding-bottom:8px">
-                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:${C.text};margin:0;line-height:1.3;letter-spacing:-.01em">${w.title}${closingBadge}</p>
+                  <span style="display:inline-block;background:${badgeBg};color:${badgeColor};font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:2px 10px;border-radius:100px;letter-spacing:.05em">${badgeText}</span>
                 </td>
               </tr>
-              <!-- Body -->
+              <!-- Title -->
+              <tr>
+                <td style="padding-bottom:10px">
+                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:19px;color:${C.text};margin:0;line-height:1.3;letter-spacing:-.01em">${w.title}</p>
+                </td>
+              </tr>
+              <!-- Why excerpt -->
               <tr>
                 <td style="padding-bottom:14px">
                   <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${excerpt}</p>
                 </td>
               </tr>
-              <!-- Action box — only shown when what_to_do is populated -->
-              ${actionLine ? `
+              <!-- Full what_to_do bullets -->
+              ${w.what_to_do ? `
               <tr>
-                <td>
-                  <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:10px">
-                    <tr>
-                      <td style="padding:12px 16px">
-                        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p>
-                        <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.6">${actionLine}</p>
-                      </td>
-                    </tr>
-                  </table>
+                <td style="padding-bottom:4px;border-top:1px solid ${C.border};padding-top:14px">
+                  <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">What to do</p>
+                  ${renderBullets(w.what_to_do)}
                 </td>
               </tr>` : ''}
-              ${guideLink}
+              <!-- Dashboard link -->
+              <tr>
+                <td style="padding-top:10px;border-top:1px solid ${C.border}">
+                  <a href="${dashboardUrl}" style="font-family:Arial,sans-serif;font-size:13px;color:${C.terra};text-decoration:none;font-weight:600">Track this in your dashboard →</a>
+                </td>
+              </tr>
             </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>`
+}
+
+// ─── DYK card ─────────────────────────────────────────────────────────────────
+function dykCard(fact: string): string {
+  // Convert **bold** to <strong>
+  const html = fact.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${C.text}">$1</strong>`)
+  return `
+  <tr>
+    <td style="padding-bottom:14px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:12px;border-left:4px solid ${C.terra}">
+        <tr>
+          <td style="padding:16px 18px">
+            <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 7px">Did you know?</p>
+            <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${html}</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>`
+}
+
+// ─── Per-month editorial content ──────────────────────────────────────────────
+interface MonthContent {
+  theme:   string  // emoji + theme sentence shown above priority window
+  dyk:     string  // "Did you know?" fact (markdown **bold** supported)
+  opening: string  // opening paragraph (uses childName, pronoun vars at runtime)
+  context: string  // context/subtitle line
+  closing: string  // Jack's closing sentence
+}
+
+// Month 0 = pre-birth; months 1-36 = baby's age
+const MONTH_CONTENT: Record<number, MonthContent> = {
+  0:  { theme: '📋 This month: three things to sort before the due date.', dyk: 'In the first hour after birth, your baby is in what neuroscientists call the **quiet alert state** — the most receptive window for bonding. Skin-to-skin in that first hour shapes the attachment system for years.', opening: 'The due date is close. Most of the preparation below is far easier to do now than with a newborn in the room.', context: 'A few things that take an hour now and save a lot of stress later.', closing: "You're close now. Everything you do in the next few weeks makes the first days easier. — Jack" },
+  1:  { theme: '👶 This month: the 1-month checkup, tummy time, and something worth screening for.', dyk: 'Babies who have tummy time **every day from the first week of life** build neck and shoulder strength 40% faster than those who start later. Gravity is the trainer — and the earlier you start, the easier it gets.', opening: 'The first month is the steepest learning curve of any parent\'s life. Here\'s what actually matters right now.', context: 'Survival mode is real. These three things are worth doing anyway.', closing: 'Month 1 is hard. You\'re doing it. Month 2 gets better. — Jack' },
+  2:  { theme: '😊 This month: the 2-month checkup, the first real smile, and the habit that builds everything.', dyk: 'The social smile — the first **intentional smile in response to your face** — activates the same brain regions as adult social bonding. It\'s not reflex. It\'s the beginning of a relationship.', opening: 'Two months in. The fog is still real, but something is shifting — she\'s starting to respond to you. Here\'s what matters this month.', context: 'The fog is lifting. And she\'s starting to know your face.', closing: 'The social smile changes things. You\'ll feel it when it happens. — Jack' },
+  3:  { theme: '🧠 This month: one milestone closing, a new one emerging, and the bedtime habit to lock in now.', dyk: 'A consistent 3–4 step bedtime routine can produce **measurable sleep improvements within one week** — even in babies as young as 3 months. Same steps, same order, every night.', opening: 'Three months in is when most parents feel like they\'ve finally found their footing. Here\'s what\'s worth your attention right now.', context: 'You made it through the fourth trimester. The development is accelerating.', closing: 'Month 3 is when it starts feeling real. You\'re watching her become someone. — Jack' },
+  4:  { theme: '😴 This month: nobody warns you about the 4-month sleep regression. We\'re warning you.', dyk: 'The 4-month sleep regression isn\'t random — it\'s caused by the brain **permanently reorganising its sleep architecture** from newborn cycles to adult cycles. It doesn\'t go back. But it does get better.', opening: 'Four months. The sleep regression may have arrived — or it\'s coming. Here\'s what it is and what to do.', context: 'The hardest sleep phase of the first year. Understanding it helps.', closing: 'The regression passes. Your response to it shapes the next 6 months of sleep. — Jack' },
+  5:  { theme: '🥄 This month: solids are almost here, iron matters now, and attachment is building.',  dyk: '**Iron deficiency is the most common nutritional deficiency in infants worldwide** — and breastfed babies are most at risk after 4 months. Iron drops are a simple fix while solid foods are being introduced.', opening: 'Five months. Solids are right around the corner — and there\'s a nutrition window closing this month that\'s worth knowing about.', context: 'The solids window is opening. The iron window is closing.', closing: 'The attachment you\'ve been building all along — it\'s real. It shows up at 12 months, and again at 3 years. — Jack' },
+  6:  { theme: '🥄 This month: the 6-month checkup, first solids, and a motor milestone worth celebrating.', dyk: 'When babies sit **independently**, it frees both hands for exploration — and exploration is how the brain builds. Independent sitting isn\'t just a motor milestone. It\'s what unlocks the next 6 months of cognitive development.', opening: 'Six months. Solids are starting, the checkup is due, and she\'s sitting up on her own. Here\'s what matters this month.', context: 'Six months. Solids, sitting, and a whole new level of curiosity.', closing: 'Halfway through the first year. You\'ve done more right than you know. — Jack' },
+  7:  { theme: '🔒 This month: babyproof before she moves, name response, and open the dairy window.', dyk: 'Babies who hear their **own name used consistently and positively** develop name response faster and show stronger early social attention. Use her name — not just nicknames — especially when you want her focus.', opening: 'Seven months. Mobility is coming — and with it, a world that suddenly needs a closer look for hazards.', context: 'Once she\'s mobile, you\'ll wish you\'d done this last week.', closing: 'Seven months is when parents start babyproofing in earnest. This month, not next month. — Jack' },
+  8:  { theme: '🥚 This month: allergen introductions, babbling, and tree nuts.', dyk: 'Babies who are exposed to **varied sounds and babble-back interactions** at 8–10 months have measurably larger productive vocabularies at 18 months. The babbling stage is when the foundation is literally being laid — neuron by neuron.', opening: 'Eight months. Object permanence is kicking in, allergen introductions are the priority, and babbling is starting. Here\'s what to focus on.', context: 'Eight months: the allergen introduction window is open. Don\'t miss it.', closing: 'Eight months is when it all starts accelerating. Stay with it. — Jack' },
+  9:  { theme: '🩺 This month: the first formal developmental screen, the peanut window, and sesame.', dyk: 'The **LEAP study** showed early peanut introduction (4–11 months) reduces peanut allergy risk by up to 80% in high-risk infants. This is one of the most significant findings in pediatric nutrition in decades.', opening: 'Nine months. The 9-month well child visit is the first to use a standardised developmental screening tool. It\'s more than a checkup — here\'s how to come prepared.', context: 'Nine months: the first formal developmental screen. Come prepared.', closing: 'Nine months is one of my favourites. She\'s communicating deliberately, moving on her own, becoming someone with opinions. — Jack' },
+  10: { theme: '🐟 This month: the last allergen, peek-a-boo for the brain, and the milestone that changes your safety checklist.', dyk: 'Peek-a-boo teaches three things simultaneously: **object permanence** (you disappear and still exist), **trust** (you always come back), and **conversational turn-taking**. It\'s one of the most cognitively rich games in early childhood — and it costs nothing.', opening: 'Ten months. She\'s pulling up to stand, and the last major allergen introduction is this month. Here\'s what to focus on.', context: 'Ten months: upright and opinionated. The walking window is getting closer.', closing: 'Ten months goes fast. She\'s a communicator now — not with words yet, but with everything else. — Jack' },
+  11: { theme: '🚶 This month: cruising along furniture, first words getting specific, and the first dental visit.', dyk: 'Babies say \'mama\' and \'dada\' as sounds around 9 months — but using them **specifically** (mama when looking at mum, dada when looking at dad) typically locks in by 12 months. That specificity is the milestone, not the sound.', opening: 'Eleven months. She\'s cruising the furniture — the last step before walking. Here\'s what matters before the first birthday.', context: 'Eleven months: the walk is coming. You can see it in her eyes every time she lets go.', closing: 'One month to the first birthday. It goes fast — and then it really goes fast. — Jack' },
+  12: { theme: '🎂 This month: the 12-month visit, reading aloud every day, and the switch to whole milk.', dyk: 'Children read to every day from birth enter kindergarten with **a vocabulary equivalent to 1,000 additional hours of classroom instruction.** Any book. Every day. That\'s the whole prescription.', opening: 'Twelve months. One year. You did it. Here\'s what the 12-month visit covers and what to focus on now.', context: 'The first year is done. One of the most remarkable developmental years of any human life.', closing: 'Happy first birthday. Year two is different. Faster in some ways, slower in others. We\'ll keep you on track. — Jack' },
+  13: { theme: '👣 This month: first steps, first words, and leaving the bottle behind.', dyk: 'Baby sign language doesn\'t delay speech — it **accelerates** it. Babies who learn signs like \'more,\' \'all done,\' and \'milk\' reduce frustration and build word-concept connections faster. The sign and the word fire in the brain together.', opening: 'Thirteen months. Walking is happening or on the way. Words are starting to land. The toddler years are beginning.', context: 'Thirteen months: a walker, a talker, and an opinion-holder — all at once.', closing: 'The second year is a completely different experience. The pace of change slows — and then the language starts to explode. — Jack' },
+  14: { theme: '👉 This month: pointing and shared attention, walking as locomotion, and body parts.', dyk: 'Pointing to share interest — then looking back to check your reaction — is more important than first words as an early communication milestone. It\'s called **declarative pointing** and it\'s a key marker on the M-CHAT autism screen.', opening: 'Fourteen months. She\'s pointing — and looking back at you after she points. That\'s joint attention, and it matters more than almost any other milestone right now.', context: 'Fourteen months: a walker who points. That\'s a communicator in the making.', closing: 'When she points and looks back at you — respond every time. That\'s the lesson she\'s practising. — Jack' },
+  15: { theme: '🩺 This month: the 15-month checkup, the 10-word milestone, and pretend play beginning.', dyk: 'Once a child hits **50 words**, vocabulary growth often becomes exponential — jumping from 50 to 200+ words in just a few months. The slow build from 1 to 50 words is doing the work. Every word added now accelerates what comes next.', opening: 'Fifteen months. The 15-month visit is the first to formally check word count and walking quality. Here\'s how to come prepared.', context: 'Fifteen months: the first real language checkpoint. Start counting words.', closing: 'The 15-month visit is worth taking seriously. Come with your word count, your walking update, and your questions. — Jack' },
+  16: { theme: '😤 This month: naming big feelings, following simple instructions, and stairs.', dyk: 'Children whose parents **label their emotions** during early childhood show measurably better emotional regulation, fewer behavioural problems, and stronger peer relationships at school age. The investment is invisible in the moment and pays off for years.', opening: 'Sixteen months. The big feelings are arriving — frustration, excitement, fury, joy. Here\'s how to respond in a way that actually helps.', context: 'Sixteen months: enormous emotions, a tiny prefrontal cortex. That mismatch is the whole toddler experience.', closing: 'Labelling feelings feels awkward at first. It gets natural fast. The payoff is a child who can eventually name their own emotions. — Jack' },
+  17: { theme: '🧸 This month: parallel play, the spoon, and why goodbye has to be out loud.', dyk: 'Children allowed to **self-feed with a spoon from 12–15 months** develop fine motor skills faster and have a stronger relationship with varied textures by age 2. The mess is the lesson. A splat mat costs £15.', opening: 'Seventeen months. Separation anxiety may be peaking — the crying at drop-off, the reaching when you try to leave the room. It\'s hard to watch. It\'s also a healthy sign.', context: 'Seventeen months: she wants you near. That\'s not clingy — that\'s securely attached.', closing: 'Seventeen months is peak separation anxiety for many kids. Stay consistent. Stay warm. Keep the goodbye brief. — Jack' },
+  18: { theme: '🩺 This month: the M-CHAT screen, two-word language, and tantrums at their peak.', dyk: 'Two-word combinations — \'more milk,\' \'daddy go,\' \'big dog\' — represent a **qualitative leap** in language, not just more words. The child is now constructing meaning, not just labelling. Once two-word phrases start, three-word sentences usually follow within months.', opening: 'Eighteen months. The 18-month well child visit is the most important developmental checkpoint of the toddler years — it includes the first formal autism screening.', context: 'Eighteen months: the first autism screen, the first two-word combinations, and probably the first spectacular tantrum.', closing: 'The 18-month visit is one of the most important ones. Come prepared. Answer the M-CHAT honestly. — Jack' },
+  19: { theme: '🙌 This month: the independence phase, the 50-word gate, and building the self-regulation foundation.', dyk: 'At around **50 words**, vocabulary growth often goes exponential — some children add 5–10 new words per day. The slow, patient work from 1 word to 50 words is what makes that explosion possible. Every word you name is a seed.', opening: 'Nineteen months. The fierce independence has arrived — \'me do it\' is a phrase you\'re hearing a lot. This is not defiance. This is healthy.', context: 'Nineteen months: the will to do it herself is the whole point. Support it.', closing: '\'Me do it\' is the sound of a child becoming someone. Let her. — Jack' },
+  20: { theme: '❓ This month: the why-question explosion, sorting by shape and color, and naming the body.', dyk: 'Research by Chouinard (2007) found that children in the question-asking phase ask up to **100 questions per hour** — and that the quality of the answers they receive significantly predicts scientific reasoning ability at age 10.', opening: 'Twenty months. The questions are starting — \'What\'s that?\' over and over, about everything. Answer every single one.', context: 'Twenty months: questions are the learning mechanism. The repetition is the point.', closing: 'Answer the questions. All of them. Every answered question is a word, a concept, a connection. — Jack' },
+  21: { theme: '🗣️ This month: speech clarity milestone, empathy beginning, and knowing what things are for.', dyk: 'Toddlers who see adults **modelling empathic behaviour** — comforting others, asking \'are you okay?\', naming concern — develop empathy faster and show stronger prosocial behaviour at ages 4 and 5. She\'s watching everything you do.', opening: 'Twenty-one months. Her speech is getting clearer — and something new is happening: she\'s starting to notice when other people feel something.', context: 'Twenty-one months: words getting clearer, and a little person who notices when you\'re sad.', closing: 'When she notices you\'re sad — that\'s not nothing. That\'s the beginning of everything that makes us human. — Jack' },
+  22: { theme: '📚 This month: the 200-word target, 2-step commands, and the pronoun shift.', dyk: 'Following a **2-step command** requires holding two pieces of information in working memory and executing them in order. It\'s not just language — it\'s executive function. The same mental process underlies planning, problem-solving, and academic learning.', opening: 'Twenty-two months. Two months from the second birthday — and the 24-month language targets are in sight.', context: 'Twenty-two months: two months to the 24-month checkup. Language is the main event.', closing: 'Two months to the second birthday. Keep reading, keep narrating, keep expanding. — Jack' },
+  23: { theme: '🦘 This month: jumping with both feet, pretend play getting complex, and first size concepts.', dyk: 'Complex pretend play — multi-step scenarios with characters and scripts — uses the same cognitive machinery as **narrative comprehension and writing** later in school. Children who engage in rich pretend play at 2–3 years show stronger literacy skills at age 5.', opening: 'Twenty-three months. One month from the second birthday. The motor, language, and cognitive development happening this month is accelerating fast.', context: 'Twenty-three months: the last month before the second birthday checkup.', closing: 'One month to the second birthday. She\'s come so far — and the pace doesn\'t slow down. — Jack' },
+  24: { theme: '🩺 This month: the 24-month checkup + second autism screen, the milk switch, and same vs. different.', dyk: 'The AAP recommends switching to **2% milk at age 2** because after the second birthday, children no longer need the high fat content of whole milk for brain development. The brain\'s fat-intensive growth phase is winding down.', opening: 'Twenty-four months. Two years old. The 24-month checkup includes the second formal autism screening. Here\'s how to come prepared.', context: 'Two years. One of the most comprehensive developmental checkpoints of the first two years.', closing: 'Happy second birthday. Two years of showing up, learning on the job. Year three is different again. — Jack' },
+  25: { theme: '🗣️ This month: 3-word sentences, memory taking shape, and cooperative play beginning.', dyk: 'Asking **\'what happened?\'** after an outing does more for language development than almost any other single prompt. It exercises memory, narrative structure, vocabulary, and sentence construction simultaneously.', opening: 'Twenty-five months. Three-word sentences are arriving — and with them, the beginning of real grammar. Here\'s what to watch for.', context: 'Twenty-five months: telegraphic speech is giving way to early grammar. Each sentence is a step forward.', closing: 'Three-word sentences are the beginning of the language explosion. The more you respond, the faster it comes. — Jack' },
+  26: { theme: '❓ This month: the why-question phase, colors she can name, and counting in sequence.', dyk: 'Color naming is one of the **trickier early language concepts** — colors are not things, they\'re properties of things. \'Red\' describes the cup, the apple, and the fire engine — but \'red\' is none of those things. That abstraction is why color vocabulary arrives later than object vocabulary.', opening: 'Twenty-six months. The \'why\' questions are arriving — or they\'re coming. Here\'s why it matters and how to handle it.', context: 'Twenty-six months: the world is suddenly explicable. She wants to know everything about why.', closing: 'Answer the \'why\' questions. Every single one. That\'s the whole job this month. — Jack' },
+  27: { theme: '🚽 This month: potty readiness signs, catching a ball, and the 3-year speech clarity benchmark.', dyk: 'Starting potty training **before a child shows readiness signs** leads to a longer, more frustrating process with more accidents and more resistance. Waiting for the signs — rather than starting at a fixed age — is the single most reliable predictor of a faster, lower-conflict experience.', opening: 'Twenty-seven months. Parents often ask about potty training around now. The answer isn\'t about age — it\'s about readiness signs.', context: 'Twenty-seven months: potty training readiness varies widely. The signs matter more than the calendar.', closing: 'Potty training: wait for the signs. When they\'re there, go fast and don\'t look back. — Jack' },
+  28: { theme: '😄 This month: first jokes, understanding time, and a specific friend she wants to see.', dyk: 'A **visual daily schedule** — pictures of the sequence of events, not words — reduces toddler anxiety and improves co-operation dramatically. When she knows what comes next, transitions stop being surprise ambushes and become predictable events.', opening: 'Twenty-eight months. She said something wrong on purpose, waited, and then laughed. That\'s not silliness — that\'s the first evidence of social intelligence applied to humour.', context: 'Twenty-eight months: she\'s figured out that she can surprise you. That\'s a cognitive leap.', closing: 'When she tells a joke, laugh. Every single time. You\'re reinforcing the social intelligence that will carry her through life. — Jack' },
+  29: { theme: '🏫 This month: what preschool readiness really means, balance, and counting 1–5 with meaning.', dyk: 'True counting — where each object gets exactly one number — is called **one-to-one correspondence** and is fundamentally different from reciting number sequences. It\'s one of the earliest building blocks of mathematical reasoning.', opening: 'Twenty-nine months. Many families are starting to think about preschool around now. The question isn\'t about colours and counting — it\'s a different set of questions.', context: 'Twenty-nine months: preschool readiness is about separation, communication, and self-help — not academics.', closing: 'Preschool readiness is built over months of practice at home. Separation, communication, self-help. That\'s the curriculum. — Jack' },
+  30: { theme: '🩺 This month: the 30-month checkup, the crib-to-bed transition, and the potty finish line.', dyk: 'Moving from crib to bed **too early** is one of the most common causes of sleep regression in the second and third years. The crib is a boundary. Keeping it until age 3 — unless she\'s climbing out — makes bedtime more predictable for everyone.', opening: 'Thirty months. Two and a half years. The 30-month visit was added to the AAP schedule specifically because the gap between 24 and 36 months was too long.', context: 'Thirty months: the halfway point between the 2-year and 3-year checkups — and one of the most useful.', closing: 'Two and a half. The language has come so far. Come prepared to the 30-month visit. — Jack' },
+  31: { theme: '👗 This month: real peer friendships, understanding what numbers mean, and getting dressed solo.', dyk: 'Children who understand **cardinality** — that \'3\' means exactly 3 things — at age 3 show consistently stronger mathematics outcomes in primary school. The \'give me 2 crackers\' game is one of the most powerful math activities available, anywhere, anytime.', opening: 'Thirty-one months. Friendships are becoming specific, real, and important to her. And the self-help skills are expanding. Here\'s what\'s worth supporting.', context: 'Thirty-one months: independence is expanding on every front — social, cognitive, and physical.', closing: 'The friendships she\'s making now are the first ones she\'ll remember. Take them seriously. — Jack' },
+  32: { theme: '🦷 This month: name and age, hopping on one foot, and the tooth brushing handoff.', dyk: 'Hopping on one foot is a precursor to **skipping** — which is itself a precursor to the lateral co-ordination needed for sports, dance, and smooth stair negotiation. The physical milestones build on each other in a sequence that spans years.', opening: 'Thirty-two months. Knowing and stating her full name and age is both a developmental milestone and a practical safety skill. Here\'s what matters this month.', context: 'Thirty-two months: self-concept, physical confidence, and daily health habits.', closing: 'Teach her her full name and your name this month. It takes one week of practice. It could matter a lot. — Jack' },
+  33: { theme: '🌟 This month: imaginary friends, storytelling, and following complex instructions.', dyk: 'Children who regularly **tell stories** about their own experiences show stronger reading comprehension and writing ability at age 6 and 7. Storytelling builds the narrative scaffolding that books are built on. The dinner table is the classroom.', opening: 'Thirty-three months. She may have an imaginary friend — or be on the verge of inventing one. Research shows this is a very good sign.', context: 'Thirty-three months: imagination is at full power. Harness it.', closing: 'The imaginary friend is practising social skills. Let her. — Jack' },
+  34: { theme: '✏️ This month: copies a circle, gratitude at the table, and the first wheels.', dyk: 'Families with regular **gratitude practices at mealtimes** — even one sentence each — show measurably higher wellbeing, more prosocial behaviour, and stronger relationship quality in children by age 10. The mechanism is habit formation through repetition. It takes about 3 weeks to feel natural.', opening: 'Thirty-four months. She\'s drawing with intention now — not just scribbling. Copying a circle is a standard 3-year motor milestone, and it\'s a direct precursor to writing letters.', context: 'Thirty-four months: fine motor, character, and wheeled independence.', closing: 'Draw circles together. Fine motor practice for her and a moment of stillness for you. — Jack' },
+  35: { theme: '🚗 This month: car seat safety update, counting with real meaning, and why sharing now makes sense.', dyk: 'The **\'give me 3\'** game — asking a child to hand you exactly 3 objects — is one of the most reliable ways to test whether she understands what 3 means, versus just being able to recite \'1, 2, 3.\' Both matter, but understanding cardinality is the deeper skill.', opening: 'Thirty-five months. One month from the 3-year checkup — and the 3-year milestone set is nearly complete. Here\'s what to focus on in this final stretch.', context: 'Thirty-five months: the 3-year checkup is one month away. Come prepared.', closing: 'One month to the third birthday — and the 3-year checkup. Come with your observations, your concerns, and your word count. — Jack' },
+  36: { theme: '🎉 This month: the 3-year checkup, full sentences, and the discipline approach that actually works.', dyk: 'By age 3, the brain has reached **80% of its adult size** — and the connections built in the first three years are the scaffolding for everything that comes after. Every conversation, every book, every patient repair after a meltdown. All of it counted.', opening: 'Three years old. The 36-month well child visit marks the end of the most intensive developmental surveillance period. From here, visits go annual.', context: 'Three years. The intensive developmental surveillance window closes. Annual visits from here.', closing: 'Happy third birthday. Three years of showing up. The work you\'ve done is the most important work of her life. — Jack' },
+}
+
+function getMonthContent(ageMonths: number): MonthContent {
+  return MONTH_CONTENT[ageMonths] ?? MONTH_CONTENT[Math.min(36, Math.max(0, ageMonths))] ?? {
+    theme: '📅 This month\'s windows',
+    dyk: 'Every month of early childhood brings new developmental windows — some open briefly and close. Scout makes sure you don\'t miss the ones that matter.',
+    opening: `Month ${ageMonths}. Every month has something new — here\'s what to know this one.`,
+    context: `${ageMonths} months old. Development is always moving.`,
+    closing: 'Stay curious, stay consistent. We\'ll keep you on track. — Jack',
+  }
+}
+
+// ─── Coming next month list ────────────────────────────────────────────────────
+function comingNextSection(windows: { title: string }[]): string {
+  if (!windows.length) return ''
+  const items = windows.slice(0, 3).map(w =>
+    `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 8px;padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:${C.terraDark}">›</span>${w.title}</p>`
+  ).join('')
+  return `
+  <tr>
+    <td style="padding-bottom:24px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:#F9F8FF;border:1px solid ${C.border};border-radius:12px">
+        <tr>
+          <td style="padding:16px 18px">
+            <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terraDark};text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">A few things coming next month</p>
+            ${items}
           </td>
         </tr>
       </table>
@@ -181,7 +292,9 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     postBirthWindowCount = 192,
   } = opts
 
-  const allCaughtUp = aboveFold.length === 0 && digestType === 'monthly'
+  // Cap at 3 windows
+  const topWindows  = aboveFold.slice(0, 3)
+  const allCaughtUp = topWindows.length === 0 && digestType === 'monthly'
 
   const His = cap(pronoun(childGender, 'possess'))
   const his = pronoun(childGender, 'possess')
@@ -193,16 +306,19 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     month: 'long', day: 'numeric', timeZone: 'UTC'
   })
 
-  // Split windows
-  const closing     = aboveFold.filter(w => w.close_age_weeks - ageWeeks <= 4)
-  const openWindows = aboveFold.filter(w => w.close_age_weeks - ageWeeks > 4)
+  // Split the top 3 into closing vs open
+  const closing     = topWindows.filter(w => w.close_age_weeks - ageWeeks <= 4)
+  const openWindows = topWindows.filter(w => w.close_age_weeks - ageWeeks > 4)
+
+  // Per-month editorial content
+  const mc = getMonthContent(isExpecting ? 0 : ageMonths)
 
   // Greeting
   const greeting = parentName ? `Hi ${parentName},` : 'Hi there,'
 
-  // Opening paragraph varies by digest type / expecting status
+  // Opening paragraph
   const openingParagraph = isExpecting
-    ? `Scout is designed for when your baby is born — covering every developmental milestone through the first three years. The ${postBirthWindowCount} windows we track all start at birth. But we wanted to be helpful before ${childName} arrives too, so below are a few things worth sorting now. It's not an exhaustive list — just the things that are genuinely easier to do before a newborn is in the room.`
+    ? `Scout is designed for when your baby is born — covering every developmental milestone through the first three years. But we wanted to be helpful before ${childName} arrives too, so below are a few things worth sorting now. They're much easier to do before a newborn is in the room.`
     : digestType === 'birth_signup'
     ? `${childName} is here. And there are ${allWindowCount} developmental windows open in the first month. That can feel like a lot — and honestly, it is. But that's exactly why Scout exists. We'll make sure you don't miss any of them. Let's nail the first month together.`
     : digestType === 'conversion'
@@ -211,53 +327,47 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `You already know how Scout works. This is ${childName}'s first digest — the same system, tuned to exactly where ${his} is right now. Every child has their own set of windows. Here's ${childName}'s.`
     : digestType === 'signup'
     ? `This is ${childName}'s first Scout digest. It's the beginning of something that I wish I'd had with my first son — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now.`
-    : `${childName} is ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'} old. This is ${his} Scout digest for the month — a quick look at what's worth your attention right now, written to take about 5 minutes to read.`
+    : mc.opening
 
-  // Milestone context line (warm, not alarming)
+  // Context line
   const contextLine = isExpecting
-    ? `The preparation windows below close at birth. Most of them are quick — and much easier to do now than with a newborn in the room.`
+    ? `The preparation windows below close at birth. Most are quick — and much easier to do now than with a newborn in the room.`
     : digestType === 'birth_signup'
     ? `The first few months are a blur. You're doing better than you think — and now you've got a system.`
     : digestType === 'additional_child'
     ? `${childName}'s windows are live. Here's what's worth your attention this month.`
     : allCaughtUp
-    ? `You've marked everything done this month. That's genuinely rare — and it shows. Here's a look back at what you covered, and a heads-up on what's coming next.`
-    : ageMonths <= 2
-    ? `The first few months are a blur. You're doing better than you think.`
-    : ageMonths <= 6
-    ? `${ageMonths} months in. The fog is starting to lift — and ${his} development is picking up fast.`
-    : ageMonths <= 12
-    ? `${childName} is in one of the most active developmental stretches of the whole first year.`
-    : `Month ${ageMonths}. Every month has something new — here's what to know this one.`
+    ? `You've marked everything done this month. That's genuinely rare — and it shows.`
+    : mc.context
 
-  // Build sections
-  const closingSection = closing.length > 0 ? `
-    <!-- Priority section -->
+  // Jack closing
+  const jackClosing = isExpecting
+    ? `You're close now. Everything you do in the next few weeks makes the first days easier. — Jack`
+    : mc.closing
+
+  // Theme stripe
+  const themeStripe = (!allCaughtUp && topWindows.length > 0) ? `
     <tr>
-      <td style="padding-bottom:8px">
-        <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.amberBg};border:1px solid ${C.amberBorder};border-radius:10px">
-          <tr>
-            <td style="padding:12px 16px">
-              <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.amber};margin:0;line-height:1.6">
-                <strong>Heads up:</strong> ${closing.length === 1 ? 'One window' : `${closing.length} windows`} close${closing.length === 1 ? 's' : ''} this month — meaning the natural developmental timing is ending. These are worth doing first.
-              </p>
-            </td>
-          </tr>
-        </table>
+      <td style="padding-bottom:12px">
+        <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textMid};margin:0;line-height:1.65;font-style:italic">${mc.theme}</p>
       </td>
-    </tr>
-    <tr><td style="padding-bottom:4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.amber};margin:0">This month's priority</p></td></tr>
+    </tr>` : ''
+
+  // Build window sections
+  const closingSection = closing.length > 0 ? `
+    <tr><td style="padding-bottom:4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.amber};margin:0">⏱ Closing this month</p></td></tr>
     ${closing.map(w => windowCard(w, ageMonths, dashboardUrl, true)).join('')}` : ''
 
+  const dykSection = dykCard(mc.dyk)
+
   const openSection = openWindows.length > 0 ? `
-    <tr><td style="padding:${closing.length > 0 ? '8px' : '0'} 0 8px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.textDim};margin:0">Also worth knowing this month</p></td></tr>
+    <tr><td style="padding:${closing.length > 0 ? '8px' : '0'} 0 4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.textDim};margin:0">Also this month</p></td></tr>
     ${openWindows.map(w => windowCard(w, ageMonths, dashboardUrl, false)).join('')}` : ''
 
-  const getReadySection = getReadyWindows.length > 0 ? `
-    <tr><td style="padding:16px 0 8px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.terra};margin:0">Get ready for next month</p></td></tr>
-    ${getReadyWindows.map(w => getReadyItem(w)).join('')}` : ''
+  // Coming next month from getReadyWindows
+  const comingNextHtml = comingNextSection(getReadyWindows)
 
-  const remainingCount = allCaughtUp ? 0 : allWindowCount - aboveFold.length
+  const remainingCount = allCaughtUp ? 0 : allWindowCount - topWindows.length
 
   // "What you did" section — split into closing-this-month vs everything else
   const closingDone  = completedWindows.filter(w => w.close_age_weeks - ageWeeks <= 4)
@@ -424,10 +534,15 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
               <!-- Spacer -->
               <tr><td style="padding-bottom:24px"></td></tr>
 
+              <!-- Theme stripe -->
+              ${themeStripe}
+
               <!-- Windows (or all-caught-up hero) -->
-              ${allCaughtUp ? allCaughtUpSection : closingSection + openSection}
+              ${allCaughtUp ? allCaughtUpSection : closingSection + dykSection + openSection}
               ${completedSection}
-              ${getReadySection}
+
+              <!-- Coming next month -->
+              ${comingNextHtml}
 
               <!-- Overdue in_progress windows -->
               ${overdueSectionHtml}
@@ -526,17 +641,14 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                 </td>
               </tr>
 
-              <!-- Signature -->
+              <!-- Signature / Jack closing -->
               <tr>
-                <td style="border-top:1px solid ${C.border};padding-top:28px;padding-bottom:8px">
-                  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.text};margin:0 0 3px;font-weight:600">Jack Hartley</p>
-                  <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textDim};margin:0 0 16px">Dad of two · Founder, FamilyForce</p>
-                  <table cellpadding="0" cellspacing="0" style="border-left:3px solid ${C.border}">
+                <td style="padding-top:8px;padding-bottom:8px">
+                  <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.indigoDeep};border-radius:14px">
                     <tr>
-                      <td style="padding:6px 0 6px 14px">
-                        <p style="font-family:Georgia,'Times New Roman',serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7;font-style:italic">
-                          "I got it wrong with my first son. Got it right with my second — because I finally knew what to watch for. That's what Scout is."
-                        </p>
+                      <td style="padding:24px 26px">
+                        <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 16px;line-height:1.7">${jackClosing}</p>
+                        <p style="font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.5);margin:0">Jack Hartley · Dad of two · Founder, FamilyForce</p>
                       </td>
                     </tr>
                   </table>
