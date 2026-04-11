@@ -101,56 +101,52 @@ function renderBullets(text: string): string {
   return items.join('')
 }
 
-// ─── Window card (v3 — full bullets) ──────────────────────────────────────────
+// ─── Window card (v4 — matches approved mockup) ───────────────────────────────
 function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, isClosing: boolean): string {
-  const ageWeeks  = ageMonths * 4.33
-  const weeksLeft = Math.max(0, Math.round(w.close_age_weeks - ageWeeks))  // #6: guard ≤0
+  // Win-flag: plain colored text, no pill badge (matches mockup)
+  const flagColor = isClosing ? '#c0392b' : C.terra
+  const flagText  = isClosing ? '⏱ Closing this month' : '⏳ Open window'
 
-  // 2-sentence excerpt for the why
-  const sentences = (w.why_it_matters || '').replace(/([.!?])\s+/g, '$1|||').split('|||')
-  const excerpt   = sentences.slice(0, 2).join(' ').trim()
-
-  const badgeText = isClosing ? (weeksLeft === 0 ? 'Last chance' : `Closing in ${weeksLeft}w`) : 'This month'
-  const badgeColor = isClosing ? C.amber : C.terraDark
-  const badgeBg    = isClosing ? C.amberBg : C.terraTint
+  // Full why_it_matters — no truncation (matches mockup)
+  const whyText = w.why_it_matters || ''
 
   return `
   <tr>
-    <td style="padding-bottom:14px">
-      <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1px solid ${C.border};border-radius:14px;overflow:hidden">
+    <td style="padding-bottom:10px">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1px solid #ece8f0;border-radius:14px;overflow:hidden">
+        <!-- Window inner: flag + title + why -->
         <tr>
-          <td style="padding:20px 22px 18px">
+          <td style="padding:18px 20px 12px">
             <table width="100%" cellpadding="0" cellspacing="0">
-              <!-- Badge -->
+              <!-- Win-flag (plain text, matches mockup) -->
               <tr>
-                <td style="padding-bottom:8px">
-                  <span style="display:inline-block;background:${badgeBg};color:${badgeColor};font-family:Arial,sans-serif;font-size:11px;font-weight:700;padding:2px 10px;border-radius:100px;letter-spacing:.05em">${badgeText}</span>
+                <td style="padding-bottom:6px">
+                  <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:${flagColor};text-transform:uppercase;letter-spacing:.1em;margin:0">${flagText}</p>
                 </td>
               </tr>
-              <!-- Title -->
+              <!-- Title (Arial bold 16px, matches mockup) -->
               <tr>
-                <td style="padding-bottom:10px">
-                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:19px;color:${C.text};margin:0;line-height:1.3;letter-spacing:-.01em">${w.title}</p>
+                <td style="padding-bottom:7px">
+                  <p style="font-family:Arial,sans-serif;font-size:16px;font-weight:700;color:#1a0f3e;margin:0;line-height:1.3">${w.title}</p>
                 </td>
               </tr>
-              <!-- Why excerpt -->
+              <!-- Why it matters (full text, no truncation) -->
               <tr>
-                <td style="padding-bottom:14px">
-                  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${excerpt}</p>
+                <td>
+                  <p style="font-family:Arial,sans-serif;font-size:14px;color:#555;margin:0;line-height:1.65">${whyText}</p>
                 </td>
               </tr>
-              <!-- Full what_to_do bullets -->
-              ${w.what_to_do ? `
-              <tr>
-                <td style="padding-bottom:4px;border-top:1px solid ${C.border};padding-top:14px">
-                  <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">The move</p>
-                  ${renderBullets(w.what_to_do)}
-                </td>
-              </tr>` : ''}
-              <!-- (per-card dashboard link removed — single CTA below serves this) -->
             </table>
           </td>
         </tr>
+        <!-- The move: separate section with #faf7ff background (matches mockup) -->
+        ${w.what_to_do ? `
+        <tr>
+          <td style="background:#faf7ff;border-top:1px solid #ece8f0;padding:14px 20px 16px">
+            <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">The move</p>
+            ${renderBullets(w.what_to_do)}
+          </td>
+        </tr>` : ''}
       </table>
     </td>
   </tr>`
@@ -159,15 +155,16 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
 // ─── DYK card ─────────────────────────────────────────────────────────────────
 function dykCard(fact: string): string {
   // Convert **bold** to <strong>
-  const html = fact.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${C.text}">$1</strong>`)
+  const html = fact.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:#1a3d32">$1</strong>`)
+  // Green gradient styling — matches approved mockup
   return `
   <tr>
     <td style="padding-bottom:14px">
-      <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:12px;border-left:4px solid ${C.terra}">
+      <table width="100%" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#e8f4f0 0%,#d4eee6 100%);border-radius:14px;border:1px solid #b8ddd3">
         <tr>
-          <td style="padding:16px 18px">
-            <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 7px">Did you know?</p>
-            <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${html}</p>
+          <td style="padding:20px 22px">
+            <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:#1a7a5e;text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px">💡 Did you know</p>
+            <p style="font-family:Arial,sans-serif;font-size:14px;color:#1a3d32;margin:0;line-height:1.65">${html}</p>
           </td>
         </tr>
       </table>
@@ -408,31 +405,37 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
       </td>
     </tr>` : ''
 
-  // Build window sections
-  // #6: section headers only when BOTH closing and open windows exist
-  // #4: DYK after first window when all same type (no mix)
+  // Build window sections — matches approved mockup layout:
+  // W1 → DYK → Forward → "Also this month" header → W2+W3
   const dykSection  = dykCard(mc.dyk)
-  const showHeaders = closing.length > 0 && openWindows.length > 0
+  const allWins     = [...closing, ...openWindows]
+  const closingSlugs = new Set(closing.map(w => w.id))
 
-  let windowsLayout = ''  // #5: initialize to avoid strict-mode uninitialized warning
-  if (showHeaders) {
-    // Mix: closing header + first closing window → DYK+forward → remaining closing → open
-    // Matches approved mockup layout: DYK always breaks after window 1
-    const closingHeader = `
-    <tr><td style="padding-bottom:4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.amber};margin:0">⏱ Closing this month</p></td></tr>`
-    const firstClosing  = closingHeader + windowCard(closing[0], ageMonths, dashboardUrl, true)
-    const restClosing   = closing.slice(1).map(w => windowCard(w, ageMonths, dashboardUrl, true)).join('')
-    const openSec = `
-    <tr><td style="padding:8px 0 4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.textDim};margin:0">Also this month</p></td></tr>
-    ${openWindows.map(w => windowCard(w, ageMonths, dashboardUrl, false)).join('')}`
-    windowsLayout = firstClosing + dykSection + forwardPrompt + restClosing + openSec
+  let windowsLayout = ''
+  if (allWins.length === 0) {
+    windowsLayout = ''
   } else {
-    // All same type (all closing or all open): DYK+forward after window 1 for visual break
-    const allWins   = [...closing, ...openWindows]
-    const isClose   = closing.length > 0
-    const firstCard = allWins.length > 0 ? windowCard(allWins[0], ageMonths, dashboardUrl, isClose) : ''
-    const restCards = allWins.slice(1).map(w => windowCard(w, ageMonths, dashboardUrl, isClose)).join('')
-    windowsLayout   = firstCard + dykSection + forwardPrompt + restCards
+    const firstWin    = allWins[0]
+    const firstIsClose = closingSlugs.has(firstWin.id)
+    const firstCard   = windowCard(firstWin, ageMonths, dashboardUrl, firstIsClose)
+    const remaining   = allWins.slice(1)
+
+    if (remaining.length > 0) {
+      // "Also this month" header with window count link — matches mockup section-hdr
+      const alsoHeader = `
+      <tr>
+        <td style="padding:16px 0 8px">
+          <table width="100%" cellpadding="0" cellspacing="0"><tr>
+            <td><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.textDim};text-transform:uppercase;letter-spacing:.1em;margin:0">Also this month</p></td>
+            <td align="right"><a href="${dashboardUrl}" style="font-family:Arial,sans-serif;font-size:11px;color:${C.terra};font-weight:600;text-decoration:none">${allWindowCount} active windows · See all</a></td>
+          </tr></table>
+        </td>
+      </tr>`
+      const restCards = remaining.map(w => windowCard(w, ageMonths, dashboardUrl, closingSlugs.has(w.id))).join('')
+      windowsLayout = firstCard + dykSection + forwardPrompt + alsoHeader + restCards
+    } else {
+      windowsLayout = firstCard + dykSection + forwardPrompt
+    }
   }
 
   // #4: filter coming-next to avoid repeating slugs already in current email
@@ -596,15 +599,19 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     <td align="center" class="email-wrap" style="padding:32px 16px">
       <table width="100%" cellpadding="0" cellspacing="0" role="presentation" class="email-outer" style="max-width:600px;border-radius:20px;overflow:hidden;border:1px solid ${C.border}">
 
-        <!-- ═══ HEADER ═══ -->
+        <!-- ═══ HEADER — matches approved mockup: Scout · Month N · child name · greeting · opening · context ═══ -->
         <tr>
-          <td class="hero-pad" style="background:${C.indigoDeep};padding:32px 36px 36px">
+          <td class="hero-pad" style="background:linear-gradient(160deg,#2d1b69 0%,#1a0f3e 100%);padding:32px 28px 24px">
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td>
-                  <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin:0 0 24px">Scout by FamilyForce</p>
-                  <p style="font-family:Georgia,'Times New Roman',serif;font-size:32px;font-weight:400;color:#fff;margin:0 0 10px;line-height:1.15;letter-spacing:-.02em">${isExpecting ? `Getting ready for ${childName}` : ageMonths === 0 ? `${childName} is here! 🎉` : `${childName} at ${ageMonths} ${ageMonths === 1 ? 'month' : 'months'}${heroBirthdaySuffix}`}</p>
-                  <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.5);margin:0;line-height:1.6">${allCaughtUp ? `All ${allWindowCount} window${allWindowCount === 1 ? '' : 's'} completed this month 🏆` : `${allWindowCount} open developmental window${allWindowCount === 1 ? '' : 's'} &nbsp;·&nbsp; ${closingCount > 0 ? `${closingCount} closing this month` : 'none closing this month'}`}</p>
+                  <p style="font-family:Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.45);margin:0 0 18px">Scout</p>
+                  <p style="font-family:Arial,sans-serif;font-size:34px;font-weight:700;color:#fff;margin:0 0 4px;line-height:1.1">${isExpecting ? `Getting ready for ${childName}` : ageMonths === 0 ? `${childName} is here! 🎉` : `Month ${ageMonths}${heroBirthdaySuffix}`}</p>
+                  <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.55);margin:0 0 22px">${childName} · ${isExpecting ? 'arriving soon' : ageMonths === 0 ? 'newborn' : `${ageMonths} month${ageMonths === 1 ? '' : 's'} old`}</p>
+                  <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.8);line-height:1.7;margin:0 0 10px">${greeting}</p>
+                  <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.65);line-height:1.7;margin:0 0 14px">${openingParagraph}</p>
+                  ${contextLine ? `<p style="font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.4);font-style:italic;margin:0;border-top:1px solid rgba(255,255,255,.1);padding-top:14px">${contextLine}</p>` : ''}
+                  ${birthdayShareBlock ? `<div style="margin-top:16px">${birthdayShareBlock}</div>` : ''}
                 </td>
               </tr>
             </table>
@@ -615,19 +622,6 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
         <tr>
           <td class="email-body" style="background:${C.surface};padding:32px 36px">
             <table width="100%" cellpadding="0" cellspacing="0">
-
-              <!-- Greeting -->
-              <tr>
-                <td style="padding-bottom:24px;border-bottom:1px solid ${C.border}">
-                  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.text};margin:0 0 14px;font-weight:600">${greeting}</p>
-                  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0 0 10px;line-height:1.75">${openingParagraph}</p>
-                  <p style="font-family:Arial,sans-serif;font-size:15px;color:${C.textMid};margin:0;line-height:1.75">${contextLine}</p>
-                  ${birthdayShareBlock}
-                </td>
-              </tr>
-
-              <!-- Spacer -->
-              <tr><td style="padding-bottom:24px"></td></tr>
 
               <!-- Theme stripe -->
               ${themeStripe}
