@@ -56,7 +56,7 @@ The right response is conversation. Coo back. Pause. Let them respond. This turn
 
 With First Son, I talked at him a lot. Narrated what I was doing, explained things. That's useful. But I didn't pause and wait for him to respond. I didn't understand the importance of the back-and-forth specifically. With Second Son, I treated every coo like a question that deserved an answer and a wait.
 
-No cooing by 3 months is a language flag worth raising at the next visit.
+No cooing by 2 months is a clinical red flag worth raising immediately — it may point to hearing concerns or a developmental delay. Don't wait for a scheduled visit.
 
 ---
 
@@ -85,7 +85,7 @@ With First Son, we left that appointment without asking about dosing and spent t
 
 1. Is the social smile where it should be — and what's the flag timeline if it isn't?
 2. How much tummy time should we be doing now, and what if they still resist it?
-3. When should we start thinking about the swaddle transition?
+3. Should we start vitamin D drops? The AAP recommends 400 IU/day for breastfed babies starting shortly after birth — the 2-month visit is the right moment to confirm this is in place.
 
 On the swaddle: rolling signs typically appear between 2–4 months. Once rolling starts, the swaddle has to go. Your pediatrician can tell you what to watch for.
 
@@ -123,7 +123,7 @@ Month one, ideally day three. If you're reading this at 2 months and haven't sta
 
 **When do babies start cooing?**
 
-Around 6–8 weeks, consistent by 2 months. The right move when they coo: coo back, then pause and wait. That back-and-forth turn-taking is the earliest scaffolding for language. No cooing by 3 months is worth raising at the next visit.
+Around 6–8 weeks, consistent by 2 months. The right move when they coo: coo back, then pause and wait. That back-and-forth turn-taking is the earliest scaffolding for language. No cooing by 2 months is a clinical red flag — raise it immediately, don't file it away for the next visit.
 
 ---
 

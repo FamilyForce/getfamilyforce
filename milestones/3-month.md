@@ -23,7 +23,7 @@ This is infrastructure month. The milestones are modest. That's appropriate.
 
 - **Head control developing.** When held upright with torso support, most 3-month-olds hold their head up for several seconds. Some wobble is normal at 3 months. Steady head control — no collapsing — is expected by 4 months.
 - **Pushes up during tummy time.** Lifting the head 45–90 degrees, possibly lifting the chest slightly. Arms starting to bear weight.
-- **Early rolling precursors.** Rocking to one side, getting a shoulder off the mat during tummy time. True front-to-back rolling typically arrives between 3 and 5 months.
+- **Early rolling precursors.** Rocking to one side, getting a shoulder off the mat during tummy time. True tummy-to-back rolling typically arrives between 3 and 5 months; back-to-front follows at 5–6 months.
 - **Opening hands and swiping at objects.** The tight newborn fist is opening. Your baby will begin to swipe at hanging objects and briefly hold a rattle placed in their palm.
 
 ## Tummy Time — Keep Building
@@ -88,7 +88,7 @@ Consistent social smile, cooing back-and-forth, head held up during tummy time, 
 
 **When do babies start rolling over?**
 
-Rolling front to back typically begins between 3 and 5 months. Rolling back to front follows at 5–6 months. Tummy time is the primary driver — babies who get more tummy time roll earlier. Not rolling in either direction by 6 months is worth mentioning at the next visit.
+Rolling tummy to back typically begins between 3 and 5 months — if it hasn't happened by 5 months, mention it at the next visit. Rolling back to front follows at 5–6 months. Tummy time is the primary driver — babies who get more tummy time roll earlier.
 
 **When should I stop swaddling?**
 
@@ -100,4 +100,4 @@ Around 3.5–4.5 months, your baby's sleep permanently matures to adult-style cy
 
 **Is it normal for a 3-month-old to have head wobble?**
 
-Some wobble at 3 months is completely normal. Steady head control — holding the head up for several seconds without collapsing when held upright — is expected by 4 months. If your baby cannot lift their head at all during tummy time at 3 months, mention it at the next visit.
+Some wobble at 3 months is completely normal. Steady head control — holding the head up for several seconds without collapsing when held upright — is expected by 4 months. If your baby cannot lift their head at all during tummy time at 3 months, keep tracking it — the clinical bar is 4 months. If head control is still absent at 4 months, raise it at the 4-month well-child visit.
