@@ -227,9 +227,12 @@ function buildHtmlDescription(
 
 // ─── Build the SUMMARY (event title) ─────────────────────────────────────────
 function buildSummary(childName: string, ageMonths: number): string {
-  if (ageMonths === 0) return `${childName}'s due date \u2014 confirm arrival in Scout`
-  if (ageMonths === 1) return `${childName} turns 1 month \u2014 Scout digest ready`
-  return `${childName} turns ${ageMonths} months \u2014 Scout digest ready`
+  if (ageMonths === 0)  return `${childName}'s due date \u2014 confirm arrival in Scout`
+  if (ageMonths === 36) return `${childName} turns 36 months \uD83C\uDF93 \u2014 Three years of Scout`
+  const BIRTHDAY_EMOJI: Record<number, string> = { 1: ' \uD83C\uDF89', 12: ' \uD83C\uDF82', 24: ' \uD83C\uDF89' }
+  const emoji = BIRTHDAY_EMOJI[ageMonths] ?? ''
+  if (ageMonths === 1) return `${childName} turns 1 month${emoji} \u2014 Scout digest ready`
+  return `${childName} turns ${ageMonths} months${emoji} \u2014 Scout digest ready`
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
