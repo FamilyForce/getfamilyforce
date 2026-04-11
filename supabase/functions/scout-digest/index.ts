@@ -216,13 +216,13 @@ Deno.serve(async (req: Request) => {
       if (months < 36) {
         const { data: editorialNext } = await sb
           .from('scout_editorial_schedule')
-          .select('window_slug')
+          .select('slug')
           .eq('month', months + 1)
-          .order('slot_order', { ascending: true })
+          .order('slot', { ascending: true })
           .limit(3)
 
         if (editorialNext && editorialNext.length > 0) {
-          const nextSlugs = (editorialNext as { window_slug: string }[]).map(r => r.window_slug)
+          const nextSlugs = (editorialNext as { slug: string }[]).map(r => r.slug)
           const { data: readyData } = await sb
             .from('milestone_windows')
             .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip, jack_bridge')
