@@ -66,6 +66,8 @@ If you're breastfeeding, ask your pediatrician about iron supplementation at the
 
 The AAP recommendation is 1 mg/kg/day of liquid iron drops for breastfed infants, continuing until iron-rich solids are well established around 6–7 months. Formula-fed babies don't need this — iron-fortified formula covers it.
 
+**If your baby was born prematurely or with a low birth weight, this guidance does not apply to you.** Premature babies have a different iron protocol — typically a higher dose (2–4 mg/kg/day) starting from 1 month of age. Your pediatrician should have started this already. Follow their specific schedule.
+
 Iron deficiency in the first year affects brain development, cognitive function, and behavior. It's one of the most preventable nutritional problems in infancy, and it's easy to miss because the symptoms don't show up dramatically.
 
 ## What to Bring Up at the 4-Month Well-Child Visit

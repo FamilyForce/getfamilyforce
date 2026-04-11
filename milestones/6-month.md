@@ -43,7 +43,7 @@ The same early-introduction principle applies to eggs, tree nuts, fish, and whea
 
 ## Motor Milestones at 6 Months
 
-- **Sitting with support.** Most babies sit propped or with minimal support at 6 months. Sitting independently — no hands — typically develops between 6 and 8 months.
+- **Sitting with support.** Most babies sit propped or with minimal support at 6 months. Sitting independently — no hands — typically develops between 6 and 8 months. If your baby is not sitting independently by 8 months, mention it at the next well-child visit.
 - **Rolling both ways.** Most babies roll front to back around 4 months, then back to front around 5–6 months. By 6 months, rolling in both directions should be established or emerging.
 - **Hand-to-hand transfer.** Your baby can take an object in one hand and deliberately pass it to the other. This is a significant fine motor and cognitive coordination milestone.
 - **Bearing weight on legs.** When held in standing position, your baby pushes down and bears weight. Normal exploration — building the muscle memory they'll need later.
@@ -58,7 +58,7 @@ As object permanence develops over the next few months, it will drive two things
 
 ### Recognizing Their Name
 
-By 6 months, most babies reliably turn toward the sound of their own name. If your baby isn't responding to their name at all by 6 months, mention it at the well-child visit.
+By 6 months, most babies are beginning to turn toward the sound of their own name. Reliable, consistent name response typically solidifies by 9 months. If your baby isn't responding to their name at all by 9 months, mention it at the next visit — it's a flag for both hearing and social development.
 
 ## Language Milestones at 6 Months
 
