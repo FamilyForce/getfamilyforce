@@ -24,6 +24,7 @@ export interface DigestWindow {
   what_to_do:        string
   playbook_link:     string | null
   prep_tip:          string | null   // shown in "Get ready" section before window opens
+  jack_bridge?:      string | null   // italic one-liner below title, above why_it_matters
 }
 
 export interface DigestEmailOptions {
@@ -130,6 +131,13 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
                   <p style="font-family:Arial,sans-serif;font-size:16px;font-weight:700;color:#1a0f3e;margin:0;line-height:1.3">${w.title}</p>
                 </td>
               </tr>
+              <!-- Jack bridge (italic gray, between title and why — matches mockup) -->
+              ${w.jack_bridge ? `
+              <tr>
+                <td style="padding-bottom:9px">
+                  <p style="font-family:Arial,sans-serif;font-size:13px;color:#888;font-style:italic;margin:0;line-height:1.5">${w.jack_bridge}</p>
+                </td>
+              </tr>` : ''}
               <!-- Why it matters (full text, no truncation) -->
               <tr>
                 <td>
@@ -397,11 +405,17 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     </td>
   </tr>` : ''
 
-  // Theme stripe
+  // Theme stripe — light purple background, dark purple text (matches approved mockup)
   const themeStripe = (!allCaughtUp && topWindows.length > 0) ? `
     <tr>
       <td style="padding-bottom:12px">
-        <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textMid};margin:0;line-height:1.65;font-style:italic">${mc.theme}</p>
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ebff;border-radius:10px">
+          <tr>
+            <td style="padding:14px 16px">
+              <p style="font-family:Arial,sans-serif;font-size:13px;color:#2d1b69;margin:0;line-height:1.5">${mc.theme}</p>
+            </td>
+          </tr>
+        </table>
       </td>
     </tr>` : ''
 
@@ -739,8 +753,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
                   <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.indigoDeep};border-radius:14px">
                     <tr>
                       <td style="padding:24px 26px">
-                        <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0 0 16px;line-height:1.7">${jackClosing}</p>
-                        <p style="font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.5);margin:0">Jack Hartley · Dad of two · Founder, FamilyForce</p>
+                        <p style="font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);margin:0;line-height:1.7">${jackClosing}</p>
                       </td>
                     </tr>
                   </table>

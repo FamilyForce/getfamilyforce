@@ -58,6 +58,7 @@ interface MilestoneWindow {
   missed_window:     string | null
   playbook_link:     string | null
   prep_tip:          string | null
+  jack_bridge:       string | null
 }
 
 // ─── Birthday check ───────────────────────────────────────────────────────────
@@ -201,7 +202,7 @@ Deno.serve(async (req: Request) => {
       // 5. Query open windows for this age
       const { data: windows, error: winErr } = await sb
         .from('milestone_windows')
-        .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
+        .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip, jack_bridge')
         .eq('active', true)
         .eq('window_type', 'milestone')
         .lte('open_age_weeks', weeks)
@@ -210,19 +211,31 @@ Deno.serve(async (req: Request) => {
 
       if (winErr) throw new Error(`Window query failed: ${winErr.message}`)
 
-      // 5b. Query "Get Ready" windows (opening in next 8 weeks)
-      const { data: readyData } = await sb
-        .from('milestone_windows')
-        .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
-        .eq('active', true)
-        .eq('window_type', 'milestone')
-        .gt('open_age_weeks', weeks)
-        .lte('open_age_weeks', weeks + 8)
-        .order('open_age_weeks', { ascending: true })
-        .order('priority', { ascending: true })
-        .limit(3)
+      // 5b. "Coming next month" — editorial schedule for month+1 (not algorithmic)
+      let getReadyWindows: MilestoneWindow[] = []
+      if (months < 36) {
+        const { data: editorialNext } = await sb
+          .from('scout_editorial_schedule')
+          .select('window_slug')
+          .eq('month', months + 1)
+          .order('slot_order', { ascending: true })
+          .limit(3)
 
-      const getReadyWindows = (readyData ?? []) as MilestoneWindow[]
+        if (editorialNext && editorialNext.length > 0) {
+          const nextSlugs = (editorialNext as { window_slug: string }[]).map(r => r.window_slug)
+          const { data: readyData } = await sb
+            .from('milestone_windows')
+            .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip, jack_bridge')
+            .in('slug', nextSlugs)
+          if (readyData) {
+            // Preserve editorial slot order
+            const order = new Map(nextSlugs.map((s, i) => [s, i]))
+            getReadyWindows = (readyData as MilestoneWindow[]).sort((a, b) =>
+              (order.get(a.slug) ?? 99) - (order.get(b.slug) ?? 99)
+            )
+          }
+        }
+      }
 
       // 3I — Active track: fetch all progress for this child (shared across family)
       const { data: progressRows } = await sb
@@ -267,11 +280,39 @@ Deno.serve(async (req: Request) => {
 
       const isActiveTrack = completedWindowIds.size > 0
 
-      // 3I — Exclude completed/skipped from above-fold selection
-      const allWindows  = (windows ?? []) as MilestoneWindow[]
-      const openWindows = allWindows.filter(w => !completedWindowIds.has(w.id))
-      // No fallback — if everything is done, aboveFold is empty and email shows "all caught up"
-      const aboveFold   = selectAboveFold(openWindows, weeks)
+      // 3I — Build above-fold: editorial picks first, algo fill for remaining slots
+      const allWindows = (windows ?? []) as MilestoneWindow[]
+
+      // Fetch editorial schedule for this month (bypasses open/close timing)
+      const { data: editorialSlots } = await sb
+        .from('scout_editorial_schedule')
+        .select('slot, slug')
+        .eq('month', months)
+        .order('slot', { ascending: true })
+
+      let editorialPicks: MilestoneWindow[] = []
+      if (editorialSlots?.length) {
+        const editorialSlugs = (editorialSlots as { slot: number; slug: string }[]).map(s => s.slug)
+        const { data: editorialWindowData } = await sb
+          .from('milestone_windows')
+          .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip, jack_bridge')
+          .in('slug', editorialSlugs)
+          .eq('active', true)
+        const editorialWindowMap = new Map(
+          (editorialWindowData ?? []).map((w: MilestoneWindow) => [w.slug, w])
+        )
+        editorialPicks = (editorialSlots as { slot: number; slug: string }[])
+          .map(s => editorialWindowMap.get(s.slug))
+          .filter((w): w is MilestoneWindow => !!w && !completedWindowIds.has(w.id))
+      }
+
+      // Algo fill: remaining slots after editorial, excluding completed + editorial picks
+      const editorialPickIds = new Set(editorialPicks.map(w => w.id))
+      const openWindows = allWindows.filter(w =>
+        !completedWindowIds.has(w.id) && !editorialPickIds.has(w.id)
+      )
+      const algoFill  = selectAboveFold(openWindows, weeks).slice(0, Math.max(0, 5 - editorialPicks.length))
+      const aboveFold = [...editorialPicks, ...algoFill]
 
       // Count missed clinical windows (closed, urgency=clinical, not completed) — matches dashboard count
       let missedClinicalCount = 0
