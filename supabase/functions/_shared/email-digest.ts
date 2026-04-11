@@ -95,16 +95,12 @@ function renderBullets(text: string): string {
   const items = lines.map(line => {
     // Strip leading markers: *, -, •, 1., 2., etc.
     const clean = line.replace(/^(\*|-|•|\d+\.)\s*/, '').trim()
+    if (!clean) return ''
     // Bold any **text** spans
     const bolded = clean.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${C.text}">$1</strong>`)
-    // Table-based layout: reliable gap between › and text in all email clients
-    return `<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:13px">
-      <tr>
-        <td width="14" valign="top" style="font-family:Arial,sans-serif;font-size:14px;color:${C.terra};line-height:1.65;padding-right:7px">›</td>
-        <td style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};line-height:1.65">${bolded}</td>
-      </tr>
-    </table>`
-  })
+    // Inline › with non-breaking spaces — works reliably in all email clients
+    return `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 13px;line-height:1.65"><span style="color:${C.terra}">›&nbsp;&nbsp;</span>${bolded}</p>`
+  }).filter(Boolean)
   return items.join('')
 }
 
@@ -270,7 +266,7 @@ function applyPronouns(text: string, gender: string | null): string {
 function comingNextSection(windows: { title: string }[]): string {
   if (!windows.length) return ''
   const items = windows.slice(0, 3).map(w =>
-    `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 8px;padding-left:16px;position:relative;line-height:1.6"><span style="position:absolute;left:0;color:${C.terraDark}">›</span>${w.title}</p>`
+    `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 10px;line-height:1.6"><span style="color:${C.terraDark}">›&nbsp;&nbsp;</span>${w.title}</p>`
   ).join('')
   return `
   <tr>
