@@ -787,11 +787,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
               ${opts.recipientType === 'family_member'
                 ? `You're receiving this because you were added to ${childName}'s family circle.`
                 : `You're receiving this because you're a Scout member.`}
-              ${opts.recipientType === 'family_member'
-                ? `&nbsp;<a href="${opts.unsubscribeUrl}" style="color:${C.terra};text-decoration:none">Unsubscribe</a>`
-                : `&nbsp;<a href="${siteUrl}/scout-dashboard/settings" style="color:${C.terra};text-decoration:none">Manage preferences</a>
-                   &nbsp;·&nbsp;
-                   <a href="${siteUrl}/unsubscribe?user=${userId}" style="color:${C.terra};text-decoration:none">Unsubscribe</a>`}
+              &nbsp;<a href="${siteUrl}/sign-in" style="color:${C.terra};text-decoration:none">Manage preferences</a>
             </p>
             <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0;line-height:1.6;opacity:0.8">
               For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.
@@ -967,9 +963,7 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
     </td>
   </tr>`).join('')
 
-  const unsubLine = unsubscribeUrl
-    ? `<a href="${unsubscribeUrl}" style="color:${C.textDim}">Unsubscribe</a>`
-    : `<a href="${siteUrl}/unsubscribe?user=${userId}" style="color:${C.textDim}">Unsubscribe</a>`
+  const unsubLine = `<a href="${siteUrl}/sign-in" style="color:${C.textDim}">Manage preferences</a>`
 
   return `<!DOCTYPE html>
 <html lang="en">
