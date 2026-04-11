@@ -2652,7 +2652,7 @@ html = page(
         ("Turn-taking — sharing is starting to click", "Both"),
     ]),
     next_month_html=farewell_block(),
-    closing_text="Happy third birthday to Olivia — and to you. Three years of showing up. Three years of learning on the job. The work you've done in these first three years is the most important work of her life. From here, the visits go annual. Scout will keep sending these monthly — because development doesn't stop at 3. We'll see you next month. — Jack, Founder @ FamilyForce",
+    closing_text="Happy third birthday to Olivia — and to you. Three years of showing up. Three years of learning on the job. The work you've done in these first three years is the most important work of her life. — Jack, Founder @ FamilyForce",
 )
 with open(f"{OUT}/month36-redesign.html", "w") as f: f.write(html)
 print("Written: month36-redesign.html")
