@@ -96,7 +96,7 @@ function renderBullets(text: string): string {
     const clean = line.replace(/^(\*|-|•|\d+\.)\s*/, '').trim()
     // Bold any **text** spans
     const bolded = clean.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${C.text}">$1</strong>`)
-    return `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 9px;padding-left:16px;line-height:1.65;position:relative"><span style="position:absolute;left:0;color:${C.terra}">·</span>${bolded}</p>`
+    return `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 9px;padding-left:16px;line-height:1.65;position:relative"><span style="position:absolute;left:0;color:${C.terra}">›</span>${bolded}</p>`
   })
   return items.join('')
 }
@@ -143,7 +143,7 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
               ${w.what_to_do ? `
               <tr>
                 <td style="padding-bottom:4px;border-top:1px solid ${C.border};padding-top:14px">
-                  <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">What to do</p>
+                  <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">The move</p>
                   ${renderBullets(w.what_to_do)}
                 </td>
               </tr>` : ''}
@@ -311,58 +311,9 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   const topWindows  = aboveFold.slice(0, 3)
   const allCaughtUp = topWindows.length === 0 && digestType === 'monthly'
 
-  // #3 — Editorial featured-window override: ensure the month's priority window leads.
-  // DB priority sort can be overridden by a closing window we don't want to lead.
-  // Map: month → slug that should always appear first if present in top 3.
-  // Months omitted = no override (DB priority determines order).
-  // Note: months 10, 27, 28, 29, 34 have DB timing issues — see content backlog.
-  const MONTH_FEATURED_SLUGS: Record<number, string> = {
-    1:  'screening-visit-1month',
-    2:  'screening-visit-2months',
-    3:  'motor-head-control',
-    4:  'cognitive-sleep-regression-4month',
-    5:  'nutrition-solids-readiness',
-    6:  'screening-visit-6months',
-    7:  'safety-babyproofing',
-    8:  'nutrition-egg-intro',
-    9:  'screening-visit-9months',
-    10: 'motor-pull-to-stand',
-    11: 'motor-cruising',
-    12: 'screening-visit-12months',
-    13: 'motor-first-steps',
-    14: 'social-joint-attention',
-    15: 'screening-visit-15months',
-    16: 'social-label-big-feelings',
-    17: 'social-parallel-play',
-    18: 'screening-visit-18months-autism',
-    19: 'social-independence-me-do-it',
-    20: 'language-question-asking',
-    21: 'language-speech-clarity-family',
-    22: 'language-vocab-200-words',
-    23: 'motor-jumping-both-feet',
-    24: 'screening-visit-24months-autism',
-    25: 'language-3-word-sentences',
-    26: 'language-names-colors',
-    27: 'motor-catching-ball',
-    29: 'language-counts-objects-5',
-    30: 'screening-visit-30months',
-    31: 'social-peer-friendships',
-    32: 'language-knows-name-age',
-    33: 'social-imaginary-friends',
-    34: 'motor-tricycle-balance-bike',
-    35: 'safety-forward-facing-transition',
-    36: 'screening-visit-36months',
-  }
-  if (!isExpecting) {
-    const featuredSlug = MONTH_FEATURED_SLUGS[ageMonths]
-    if (featuredSlug) {
-      const idx = topWindows.findIndex(w => w.slug === featuredSlug)
-      if (idx > 0) {
-        const [featured] = topWindows.splice(idx, 1)
-        topWindows.unshift(featured)
-      }
-    }
-  }
+  // Editorial ordering is now handled upstream in scout-digest/index.ts via
+  // scout_editorial_schedule table. aboveFold arrives pre-ordered: editorial picks
+  // first (in slot order), algo fill for any remaining slots.
 
   const His = cap(pronoun(childGender, 'possess'))
   const his = pronoun(childGender, 'possess')
@@ -852,29 +803,9 @@ export function buildDigestSubject(
     return mcSubject.replace('{{childName}}', childName)
   }
 
-  // #4: apply same MONTH_FEATURED_SLUGS reorder so subject matches the email lead
-  const SUBJECT_FEATURED_SLUGS: Record<number, string> = {
-    1:'screening-visit-1month', 2:'screening-visit-2months', 3:'motor-head-control',
-    4:'cognitive-sleep-regression-4month', 5:'nutrition-solids-readiness',
-    6:'screening-visit-6months', 7:'safety-babyproofing', 8:'nutrition-egg-intro',
-    9:'screening-visit-9months', 10:'motor-pull-to-stand', 11:'motor-cruising',
-    12:'screening-visit-12months', 13:'motor-first-steps', 14:'social-joint-attention',
-    15:'screening-visit-15months', 16:'social-label-big-feelings', 17:'social-parallel-play',
-    18:'screening-visit-18months-autism', 19:'social-independence-me-do-it',
-    20:'language-question-asking', 21:'language-speech-clarity-family',
-    22:'language-vocab-200-words', 23:'motor-jumping-both-feet',
-    24:'screening-visit-24months-autism', 25:'language-3-word-sentences',
-    26:'language-names-colors', 27:'motor-catching-ball', 29:'language-counts-objects-5',
-    30:'screening-visit-30months', 31:'social-peer-friendships',
-    32:'language-knows-name-age', 33:'social-imaginary-friends',
-    35:'safety-forward-facing-transition', 36:'screening-visit-36months',
-  }
+  // aboveFold is already ordered by editorial schedule (slot 1 first).
+  // Subject line uses this pre-ordered array directly.
   const sortedFold = [...aboveFold.slice(0, 3)]
-  const featSlug = SUBJECT_FEATURED_SLUGS[ageMonths]
-  if (featSlug) {
-    const idx = sortedFold.findIndex(w => w.slug === featSlug)
-    if (idx > 0) { const [f] = sortedFold.splice(idx, 1); sortedFold.unshift(f) }
-  }
   const closing = sortedFold.filter(w => w.close_age_weeks - ageWeeks <= 4)
 
   if (digestType === 'birth_signup') {
