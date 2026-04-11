@@ -97,7 +97,13 @@ function renderBullets(text: string): string {
     const clean = line.replace(/^(\*|-|•|\d+\.)\s*/, '').trim()
     // Bold any **text** spans
     const bolded = clean.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${C.text}">$1</strong>`)
-    return `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 13px;padding-left:18px;line-height:1.65;position:relative"><span style="position:absolute;left:0;color:${C.terra}">›</span>${bolded}</p>`
+    // Table-based layout: reliable gap between › and text in all email clients
+    return `<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:13px">
+      <tr>
+        <td width="14" valign="top" style="font-family:Arial,sans-serif;font-size:14px;color:${C.terra};line-height:1.65;padding-right:7px">›</td>
+        <td style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};line-height:1.65">${bolded}</td>
+      </tr>
+    </table>`
   })
   return items.join('')
 }
