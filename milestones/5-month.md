@@ -35,7 +35,7 @@ Consonant-vowel babbling ("ba," "da," "ma") typically begins around 4–5 months
 
 ### Responds to Their Name
 
-Reliably turning toward their own name — as opposed to any voice or sound — typically peaks around 5 months. This is a clinical milestone. It signals the brain is processing social information specifically: their name is meaningful in a way that other sounds aren't. Test it when they're alert and not looking at you. Call their name from across the room. A consistent response should be developing now. If your baby is not responding to their name at all by 9 months, mention it at the next pediatrician visit — it's a red flag for both hearing issues and autism spectrum disorder.
+Reliably turning toward their own name — as opposed to any voice or sound — typically peaks around 5 months. This is a clinical milestone. It signals the brain is processing social information specifically: their name is meaningful in a way that other sounds aren't. Test it when they're alert and not looking at you. Call their name from across the room. A consistent response should be developing now. If your baby is not responding to their name at all by 7 months, mention it at the next pediatrician visit — it's a red flag for both hearing issues and autism spectrum disorder.
 
 ### Sound Imitation
 

@@ -55,13 +55,17 @@ At 12 months, your baby is ready to transition from formula or breast milk to wh
 
 Use whole milk, not low-fat or skim. Fat is essential for brain development in the second year. About 16–24 oz per day is appropriate — enough for nutrition, not so much it crowds out solid food calories.
 
+**If there is a family history of dairy allergy, consult your pediatrician before making the switch.** The transition is appropriate for most families at 12 months, but a family history warrants a conversation first.
+
 Continue breastfeeding as long as mutually desired — the AAP supports breastfeeding through 2 years and beyond. Formula, however, is no longer necessary after 12 months if your child is eating a varied diet and drinking whole milk.
 
 ## The 12-Month Well-Child Visit
 
 This is one of the most important pediatric visits of the first year. Your doctor will assess walking, first words, pointing, social engagement, and the milk transition. Vaccines at this visit: MMR, varicella, hepatitis A (dose 1), PCV booster (dose 4), Hib (dose 4).
 
-**First dental visit:** The AAP and American Academy of Pediatric Dentistry recommend scheduling the first dental visit when the first tooth appears or by 12 months — whichever comes first. If your baby has teeth and hasn't had a dental visit yet, schedule one this week. This window closes at 12 months. Early dental visits establish the relationship, check for decay, and give parents guidance on cleaning and fluoride.
+**First dental visit:** The AAP and American Academy of Pediatric Dentistry recommend scheduling the first dental visit when the first tooth appears or by 12 months — whichever comes first. If your baby has teeth and hasn't had a dental visit yet, schedule one this week. Early dental visits establish the relationship, check for decay, and give parents guidance on cleaning and fluoride.
+
+From the first tooth: wipe teeth with a soft cloth or infant toothbrush after feeds. Use a rice-grain-sized amount of fluoride toothpaste from 6–24 months (pea-sized from age 2 onward). One important flag: **night bottles of milk or juice after teeth appear are a leading cause of early childhood tooth decay** — the sugar pools around teeth during sleep. Water only in the crib.
 
 **Vision screening:** Your pediatrician will perform a basic vision assessment at the 12-month visit. They're looking for eye alignment, tracking, and early signs of amblyopia or other concerns. If you've noticed anything unusual — consistent eye turn, one eye that seems less focused, or your baby not tracking objects normally — mention it specifically. Don't assume it will be caught without prompting.
 

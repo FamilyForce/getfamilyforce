@@ -58,7 +58,7 @@ As object permanence develops over the next few months, it will drive two things
 
 ### Recognizing Their Name
 
-By 6 months, most babies are beginning to turn toward the sound of their own name. Reliable, consistent name response typically solidifies by 9 months. If your baby isn't responding to their name at all by 9 months, mention it at the next visit — it's a flag for both hearing and social development.
+By 6 months, most babies are beginning to turn toward the sound of their own name. Reliable, consistent name response should be established by 7 months. If your baby isn't responding to their name at all by 7 months, mention it at the next visit — it's a flag for both hearing and social development.
 
 ## Language Milestones at 6 Months
 
