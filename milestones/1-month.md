@@ -36,7 +36,7 @@ We weren't behind by any clinical measure. But I know now what I was delaying: t
 
 With Second Son, I started on day three. Thirty-second bursts on my chest while I reclined on the couch. He hated it. I did it anyway. Discomfort is not harm. You're building muscle, not causing distress.
 
-**The AAP recommends working toward 20 minutes of tummy time per day by 4 months** — spread across the day, not in one session. Start at 1 month, you have three months to build. Start at 3 months, you're already behind.
+Start with whatever they'll tolerate — even 30 seconds counts. But aim for 2–3 minutes per session, 2–3 times a day from the first week home. **The AAP recommends working toward 20 minutes of tummy time per day by 4 months** — spread across the day in 4–5 short sessions, not one block. Start at 1 month, you have three months to build. Start at 3 months, you're already behind.
 
 The chest trick: lay baby face-down on your reclined chest. They can hear your heartbeat. They tolerate it significantly better in the early weeks. It counts as tummy time.
 
@@ -51,7 +51,17 @@ Start now.
 - **Brief eye contact.** A few seconds. Visual focus is still limited to about 8–12 inches — which is exactly the distance from your face during a feed. That's not an accident.
 - **Smiles in month one are reflex, not social.** The social smile — where they respond to your face with a smile — comes around six weeks. If you see smiles before that, enjoy them. Don't count on them as feedback yet.
 
-> ⚠️ **If your newborn doesn't startle to sudden sounds and doesn't calm to your voice:** raise it at the 2-month visit, or call before. The hospital hearing screen should have been completed at discharge. If the result was a "refer," outpatient audiology follow-up within one month is required — not optional. Early hearing intervention before 6 months produces dramatically better language outcomes than intervention after.
+> ⚠️ **If your newborn doesn't startle to sudden sounds and doesn't calm to your voice:** call your pediatrician before the 1-month visit — don't wait for the 2-month checkup. The hospital hearing screen should have been completed at discharge. If the result was a "refer," outpatient audiology follow-up within one month is required — not optional. Early hearing intervention before 6 months produces dramatically better language outcomes than intervention after.
+
+---
+
+## The Visit Most Parents Don't Know to Book
+
+Before your baby's 2-month appointment, there's one that most parents miss entirely: the **1-month well-child visit**. It's on the AAP Periodicity Schedule for a reason, but it doesn't get the same attention as the 2-month vaccine visit, and a lot of pediatricians don't push it proactively.
+
+With First Son, I didn't know it existed. We went straight from the hospital discharge visit to the 2-month checkup. Looking back, we had weeks of feeding uncertainty that a 4-week visit would have caught and fixed early.
+
+Ask for the 4-week appointment before you leave the hospital — or call the pediatrician's office this week. At this visit your doctor will: confirm birth weight has been regained, assess feeding, check in on your mental health (postpartum depression affects 1 in 5 mothers and 1 in 10 fathers), and answer every question you've had for four weeks but weren't sure who to ask.
 
 ---
 
@@ -83,9 +93,10 @@ With First Son, I didn't know that specific benchmark. With Second Son, I tracke
 
 ## What to Do Right Now
 
-1. **Start tummy time today.** Thirty seconds on your chest counts. Do it every feed cycle.
-2. **Confirm all three newborn screenings were completed.** Check the discharge paperwork. If any result was "refer," call Monday.
-3. **Track birth weight recovery.** If you don't have a scale, ask your pediatrician what they weighed at the last visit and when the next check is.
+1. **Book the 1-month well-child visit if you haven't already.** Most parents don't know this visit exists — it's not as publicized as the 2-month one. Ask for the 4-week appointment before you leave the hospital, or call your pediatrician's office this week. Your pediatrician will check weight recovery, feeding, and screen for postpartum depression.
+2. **Start tummy time today.** Thirty seconds on your chest counts. Aim for 2–3 minutes per session, 2–3 sessions a day — spread throughout the day, not all at once.
+3. **Confirm all three newborn screenings were completed.** Check the discharge paperwork. If any result was "refer," call Monday.
+4. **Track birth weight recovery.** If you don't have a scale, ask your pediatrician what they weighed at the last visit and when the next check is.
 
 The first month is hard. It's supposed to be. But knowing what's developing underneath the exhaustion changes how you show up. I was less present with First Son than I could have been — not from lack of love, but from lack of information. This is the information.
 
