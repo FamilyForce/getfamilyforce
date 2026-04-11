@@ -416,14 +416,16 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
 
   let windowsLayout = ''  // #5: initialize to avoid strict-mode uninitialized warning
   if (showHeaders) {
-    // Mix: header+closing → DYK+forward → header+open
-    const closingSec = `
-    <tr><td style="padding-bottom:4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.amber};margin:0">⏱ Closing this month</p></td></tr>
-    ${closing.map(w => windowCard(w, ageMonths, dashboardUrl, true)).join('')}`
+    // Mix: closing header + first closing window → DYK+forward → remaining closing → open
+    // Matches approved mockup layout: DYK always breaks after window 1
+    const closingHeader = `
+    <tr><td style="padding-bottom:4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.amber};margin:0">⏱ Closing this month</p></td></tr>`
+    const firstClosing  = closingHeader + windowCard(closing[0], ageMonths, dashboardUrl, true)
+    const restClosing   = closing.slice(1).map(w => windowCard(w, ageMonths, dashboardUrl, true)).join('')
     const openSec = `
     <tr><td style="padding:8px 0 4px"><p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.textDim};margin:0">Also this month</p></td></tr>
     ${openWindows.map(w => windowCard(w, ageMonths, dashboardUrl, false)).join('')}`
-    windowsLayout = closingSec + dykSection + forwardPrompt + openSec
+    windowsLayout = firstClosing + dykSection + forwardPrompt + restClosing + openSec
   } else {
     // All same type (all closing or all open): DYK+forward after window 1 for visual break
     const allWins   = [...closing, ...openWindows]
