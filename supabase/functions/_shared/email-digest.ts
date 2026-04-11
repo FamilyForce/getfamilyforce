@@ -97,7 +97,7 @@ function renderBullets(text: string): string {
     const clean = line.replace(/^(\*|-|•|\d+\.)\s*/, '').trim()
     // Bold any **text** spans
     const bolded = clean.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${C.text}">$1</strong>`)
-    return `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 9px;padding-left:16px;line-height:1.65;position:relative"><span style="position:absolute;left:0;color:${C.terra}">›</span>${bolded}</p>`
+    return `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 13px;padding-left:18px;line-height:1.65;position:relative"><span style="position:absolute;left:0;color:${C.terra}">›</span>${bolded}</p>`
   })
   return items.join('')
 }
@@ -199,7 +199,7 @@ const MONTH_CONTENT: Record<number, MonthContent> = {
   4:  { theme: '😴 This month: nobody warns you about the 4-month sleep regression. We\'re warning you.', dyk: 'The 4-month sleep regression isn\'t random — it\'s caused by the brain **permanently reorganising its sleep architecture** from newborn cycles to adult cycles. It doesn\'t go back. But it does get better.', opening: 'Four months. The sleep regression may have arrived — or it\'s coming. Here\'s what it is and what to do.', context: 'The hardest sleep phase of the first year. Understanding it helps.', closing: 'The regression passes. Your response to it shapes the next 6 months of sleep. — Jack, Founder @ FamilyForce' },
   5:  { theme: '🥄 This month: solids are almost here, iron matters now, and attachment is building.',  dyk: '**Iron deficiency is the most common nutritional deficiency in infants worldwide** — and breastfed babies are most at risk after 4 months. Iron drops are a simple fix while solid foods are being introduced.', opening: 'Five months. Solids are right around the corner — and there\'s a nutrition window closing this month that\'s worth knowing about.', context: 'The solids window is opening. The iron window is closing.', closing: 'The attachment you\'ve been building all along — it\'s real. It shows up at 12 months, and again at 3 years. — Jack, Founder @ FamilyForce' },
   6:  { theme: '🥄 This month: the 6-month checkup, first solids, and a motor milestone worth celebrating.', dyk: 'When babies sit **independently**, it frees both hands for exploration — and exploration is how the brain builds. Independent sitting isn\'t just a motor milestone. It\'s what unlocks the next 6 months of cognitive development.', opening: 'Six months. Solids are starting, the checkup is due, and she\'s sitting up on her own. Here\'s what matters this month.', context: 'Six months. Solids, sitting, and a whole new level of curiosity.', closing: 'Halfway through the first year. You\'ve done more right than you know. — Jack, Founder @ FamilyForce' },
-  7:  { theme: '🔒 This month: babyproof before she moves, name response, and open the dairy window.', dyk: 'Babies who hear their **own name used consistently and positively** develop name response faster and show stronger early social attention. Use her name — not just nicknames — especially when you want her focus.', opening: 'Seven months. Mobility is coming — and with it, a world that suddenly needs a closer look for hazards.', context: 'Once she\'s mobile, you\'ll wish you\'d done this last week.', closing: 'Seven months is when parents start babyproofing in earnest. This month, not next month. — Jack, Founder @ FamilyForce' },
+  7:  { theme: '🔒 This month: babyproof before she moves, name response, and open the dairy window.', dyk: 'Babies who hear their **own name used consistently and positively** develop name response faster and show stronger early social attention. Use her name — not just nicknames — especially when you want her focus.', opening: '{{childName}} is {{age}} months old. Mobility is coming — crawling, pulling, rolling — and with it comes a world that suddenly needs a closer look for hazards. Here\'s what to focus on.', context: 'Seven months: the world is getting much more interesting. And so are the hazards.', closing: 'Seven months is when parents start babyproofing in earnest. This month, not next month. — Jack, Founder @ FamilyForce' },
   8:  { theme: '🥚 This month: allergen introductions, babbling, and tree nuts.', dyk: 'Babies who are exposed to **varied sounds and babble-back interactions** at 8–10 months have measurably larger productive vocabularies at 18 months. The babbling stage is when the foundation is literally being laid — neuron by neuron.', opening: 'Eight months. Object permanence is kicking in, allergen introductions are the priority, and babbling is starting. Here\'s what to focus on.', context: 'Eight months: the allergen introduction window is open. Don\'t miss it.', closing: 'Eight months is when it all starts accelerating. Stay with it. — Jack, Founder @ FamilyForce' },
   9:  { theme: '🩺 This month: the first formal developmental screen, the peanut window, and sesame.', dyk: 'The **LEAP study** showed early peanut introduction (4–11 months) reduces peanut allergy risk by up to 80% in high-risk infants. This is one of the most significant findings in pediatric nutrition in decades.', opening: 'Nine months. The 9-month well child visit is the first to use a standardised developmental screening tool. It\'s more than a checkup — here\'s how to come prepared.', context: 'Nine months: the first formal developmental screen. Come prepared.', closing: 'Nine months is one of my favourites. She\'s communicating deliberately, moving on her own, becoming someone with opinions. — Jack, Founder @ FamilyForce' },
   10: { theme: '🧗 This month: pulling up to stand, object permanence locking in, and the safety checklist that changes when they\'re upright.', dyk: 'Peek-a-boo teaches three things simultaneously: **object permanence** (you disappear and still exist), **trust** (you always come back), and **conversational turn-taking**. It\'s one of the most cognitively rich games in early childhood — and it costs nothing.', opening: 'Ten months. She\'s pulling up to stand. The whole world just got bigger — and more dangerous. Here\'s what to focus on.', context: 'Ten months: upright and opinionated. The walking window is getting closer.', closing: 'Ten months goes fast. She\'s a communicator now — not with words yet, but with everything else. — Jack, Founder @ FamilyForce' },
@@ -351,7 +351,9 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `You already know how Scout works. This is ${childName}'s first digest — the same system, tuned to exactly where ${his} is right now. Every child has their own set of windows. Here's ${childName}'s.`
     : digestType === 'signup'
     ? `This is ${childName}'s first Scout digest. It's the beginning of something that I wish I'd had with my first son — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now.`
-    : applyPronouns(mc.opening, childGender)  // #3: runtime pronoun substitution
+    : applyPronouns(mc.opening, childGender)
+        .replace(/\{\{childName\}\}/g, childName)
+        .replace(/\{\{age\}\}/g, String(ageMonths))
 
   // Context line
   const contextLine = isExpecting
@@ -362,7 +364,9 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `${childName}'s windows are live. Here's what's worth your attention this month.`
     : allCaughtUp
     ? `You've marked everything done this month. That's genuinely rare — and it shows.`
-    : applyPronouns(mc.context, childGender)  // #3: runtime pronoun substitution
+    : applyPronouns(mc.context, childGender)
+        .replace(/\{\{childName\}\}/g, childName)
+        .replace(/\{\{age\}\}/g, String(ageMonths))
 
   // Jack closing
   const jackClosing = isExpecting
