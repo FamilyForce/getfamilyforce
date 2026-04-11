@@ -25,7 +25,7 @@ The 36-month visit is the most comprehensive developmental assessment since the 
 
 ### Language Flag at the 36-Month Visit
 
-Speech still mostly in 2-word phrases warrants speech language evaluation. Strangers understanding less than 50% of what your 3-year-old says also warrants a referral. Speech therapy at age 3 is highly effective — the window for early intervention is still open, but it closes faster with every month of delay.
+Speech still mostly in 2-word phrases warrants speech language evaluation. Strangers understanding less than 75% of what your 3-year-old says also warrants a referral. Speech therapy at age 3 is highly effective — the window for early intervention is still open, but it closes faster with every month of delay.
 
 ## What Three Years Looks Like
 
