@@ -127,4 +127,4 @@ Around 6–8 weeks, consistent by 2 months. The right move when they coo: coo ba
 
 ---
 
-*Next month: rolling attempts begin, the hands really wake up, and the 4-month sleep regression is coming.*
+*Next month: rolling attempts begin, the hands really wake up, and the swaddle transition becomes urgent.*
