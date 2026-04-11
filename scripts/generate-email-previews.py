@@ -496,7 +496,7 @@ def get_mc(age_months):
 
 # ── Full email renderer ────────────────────────────────────────────────────────
 def render_email(age_months, above_fold, get_ready, total_count, is_prebirth=False):
-    age_weeks = age_months * 4.33
+    age_weeks = age_months * 4.33 + 0.5  # +0.5w buffer matches ageInWeeks(dob,now) calendar accuracy
     mc        = get_mc(0 if is_prebirth else age_months)
 
     closing_wins = [w for w in above_fold if w["close_age_weeks"] - age_weeks <= 4]
@@ -738,7 +738,7 @@ def main():
 
     # Months 1–36
     for mo in range(1, 37):
-        age_w = mo * 4.33
+        age_w = mo * 4.33 + 0.5
         print(f"  Month {mo} ({age_w:.1f}w)...")
         wins = get_windows_at_age(age_w)
         af   = select_above_fold(wins, age_w, age_months=mo)
