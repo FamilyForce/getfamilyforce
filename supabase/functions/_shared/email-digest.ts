@@ -93,10 +93,16 @@ export function renderBullets(text: string): string {
   if (!text) return ''
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
   const items = lines.map(line => {
-    // Strip leading markers: *, -, •, 1., 2., etc.
-    const clean = line.replace(/^(\*|-|•|\d+\.)\s*/, '').trim()
+    // Subheader: line is pure bold (**text**) — render as section subhead, not a bullet.
+    // Must check BEFORE stripping the leading * marker, otherwise **bold** → *bold** after strip.
+    const subheaderMatch = line.match(/^\*?\*\*([^*]+)\*\*:?\s*$/)
+    if (subheaderMatch) {
+      return `<p style="font-family:Arial,sans-serif;font-size:13px;font-weight:700;color:${C.text};margin:10px 0 4px;line-height:1.5">${subheaderMatch[1].replace(/:$/, '')}:</p>`
+    }
+    // Strip leading bullet markers: *, -, •, 1., 2., etc.
+    const clean = line.replace(/^(\*\*?|-|•|\d+\.)\s*/, '').trim()
     if (!clean) return ''
-    // Bold any **text** spans
+    // Bold any inline **text** spans remaining in the line
     const bolded = clean.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${C.text}">$1</strong>`)
     // Inline › with non-breaking spaces — works reliably in all email clients
     return `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 13px;line-height:1.65"><span style="color:${C.terra}">›&nbsp;&nbsp;</span>${bolded}</p>`
