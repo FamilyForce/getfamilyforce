@@ -1034,7 +1034,7 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
         flagColor:  i >= 2 ? '#6E4ED6' : '#c0392b',
         title:      w.title,
         jackBridge: w.jack_bridge ? applyPronouns(w.jack_bridge, childGender) : null,
-        excerpt:    applyPronouns((w.why_it_matters || '').replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim(), childGender),
+        excerpt:     applyPronouns(w.why_it_matters || '', childGender),  // full text — no 2-sentence truncation for pre-birth
         bulletsHtml: renderBullets(applyPronouns(w.what_to_do || '', childGender)),
       }))
     : PREBIRTH_FALLBACK_CARDS.map((c, i) => ({
