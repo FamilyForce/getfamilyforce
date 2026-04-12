@@ -656,7 +656,7 @@ Deno.serve(async (req: Request) => {
         const editorialSlugs = (preBirthEditorialSlots as { slot: number; slug: string }[]).map(s => s.slug)
         const { data: editorialWindowData } = await sb
           .from('milestone_windows')
-          .select('id, slug, title, urgency, why_it_matters, what_to_do, what_not_to_worry, open_age_weeks, close_age_weeks, priority, playbook_link, missed_window')
+          .select('id, slug, title, urgency, why_it_matters, what_to_do, what_not_to_worry, open_age_weeks, close_age_weeks, priority, playbook_link, missed_window, jack_bridge')
           .in('slug', editorialSlugs)
         const editorialWindowMap = new Map(
           (editorialWindowData ?? []).map((w: MilestoneWindow) => [w.slug, w])
@@ -666,6 +666,32 @@ Deno.serve(async (req: Request) => {
           .filter(Boolean) as MilestoneWindow[]
       }
 
+      // Month 1 editorial windows for "coming next month" section
+      const { data: month1Editorial } = await sb
+        .from('scout_editorial_schedule')
+        .select('slot, slug')
+        .eq('month', 1)
+        .order('slot', { ascending: true })
+      let nextMonthWindows: Array<{ title: string }> = []
+      if (month1Editorial?.length) {
+        const m1Slugs = (month1Editorial as { slug: string }[]).map(r => r.slug)
+        const { data: m1Windows } = await sb
+          .from('milestone_windows')
+          .select('slug, title')
+          .in('slug', m1Slugs)
+        if (m1Windows) {
+          const m1Map = new Map((m1Windows as { slug: string; title: string }[]).map(w => [w.slug, w.title]))
+          nextMonthWindows = m1Slugs.map(s => ({ title: m1Map.get(s) ?? '' })).filter(w => w.title)
+        }
+      }
+
+      // Total active prenatal window count — for "X of Y active windows" section header
+      const { count: allWindowCount } = await sb
+        .from('milestone_windows')
+        .select('id', { count: 'exact', head: true })
+        .eq('active', true)
+        .eq('prenatal', true)
+
       const { data: { user } } = await sb.auth.admin.getUserById(child.user_id)
       if (!user?.email) { results.skipped++; continue }
 
@@ -674,15 +700,17 @@ Deno.serve(async (req: Request) => {
         : `Is ${child.name} here? Confirm their arrival to start Scout.`
 
       const html = buildPreBirthEmail({
-        childName:      child.name,
-        childGender:    child.gender ?? null,
-        dueDate:        due,
+        childName:        child.name,
+        childGender:      child.gender ?? null,
+        dueDate:          due,
         daysLeft,
-        windows:        preBirthWindows,
-        dashboardUrl:   dashUrl,
+        windows:          preBirthWindows,
+        nextMonthWindows,
+        allWindowCount:   allWindowCount ?? 0,
+        dashboardUrl:     dashUrl,
         siteUrl,
-        userId:         child.user_id,
-        unsubscribeUrl: `${siteUrl}/unsubscribe?user=${child.user_id}`,
+        userId:           child.user_id,
+        unsubscribeUrl:   `${siteUrl}/unsubscribe?user=${child.user_id}`,
       })
 
       const preheader = daysLeft > 0
