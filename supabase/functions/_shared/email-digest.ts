@@ -256,7 +256,7 @@ function getMonthContent(ageMonths: number): MonthContent {
 // BEFORE the possessive sweep to avoid wrong "Let his" / "Let their" output.
 // DB window content (what_to_do, why_it_matters, jack_bridge) must be written
 // gender-neutral at source and never passed through this function.
-function applyPronouns(text: string, gender: string | null): string {
+export function applyPronouns(text: string, gender: string | null): string {
   if (gender === 'girl') return text  // female is the default — no swap needed
   // null (not set) and 'other' (prefer not to say) both → they/them/their
   const g: 'boy' | 'other' = gender === 'boy' ? 'boy' : 'other'
