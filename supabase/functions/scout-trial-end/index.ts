@@ -173,13 +173,12 @@ Deno.serve(async (req: Request) => {
       //    Filters match scout-digest: active, milestone type, non-prenatal, within age range
       const { data: windows } = await sb
         .from('milestone_windows')
-        .select('id, title, why_it_matters, what_to_do, urgency')
+        .select('id, slug, title, why_it_matters, what_to_do, urgency, priority, close_age_weeks')
         .eq('active', true)
         .eq('window_type', 'milestone')
         .eq('prenatal', false)
         .lte('open_age_weeks', weeks)
         .gte('close_age_weeks', weeks)
-        .order('priority', { ascending: true })
 
       // allWindowCount, topWindows, and allCaughtUp are all finalised after completedProgress
       // is fetched below — do not hoist them above that block.
@@ -217,17 +216,45 @@ Deno.serve(async (req: Request) => {
           return true
         })
 
-      // ── Build topWindows (consolidated here — depends on completedProgress) ──────
-      // Excludes completed windows so the same window never appears in both
-      // "What [child] has already done" and "Still open this month" sections.
+      // ── Build topWindows — same logic as monthly digest ───────────────────────
+      // Priority: 1) editorial picks for this month, 2) algo fill (closing soonest → priority → urgency)
       const completedWindowIds = new Set<string>(
         (completedProgress ?? []).map((p: any) => p.window_id).filter(Boolean)
       )
-      const openWindows   = (windows ?? []).filter((w: any) => !completedWindowIds.has(w.id))
-      const topWindows    = openWindows.slice(0, 3)
+      const openWindows = (windows ?? []).filter((w: any) => !completedWindowIds.has(w.id))
       const allCaughtUp   = openWindows.length === 0
-      // Correct count: total windows minus those already completed
       const allWindowCount = Math.max(0, (windows?.length ?? 0) - completedWindowIds.size)
+
+      // Fetch editorial schedule for this month (same query as scout-digest)
+      const { data: editorialSlots } = await sb
+        .from('scout_editorial_schedule')
+        .select('slot, slug')
+        .eq('month', months)
+        .order('slot', { ascending: true })
+
+      let editorialPicks: typeof openWindows = []
+      if (editorialSlots?.length) {
+        const editorialSlugs = (editorialSlots as { slot: number; slug: string }[]).map(s => s.slug)
+        const editorialWindowMap = new Map(openWindows.map((w: any) => [w.slug, w]))
+        editorialPicks = (editorialSlots as { slot: number; slug: string }[])
+          .map(s => editorialWindowMap.get(s.slug))
+          .filter(Boolean)
+      }
+
+      // Algo fill: closing soonest → priority → urgency (matches selectAboveFold in scout-digest)
+      const urgencyWeight: Record<string, number> = { clinical: 0, screening: 1, advisory: 2 }
+      const editorialPickIds = new Set(editorialPicks.map((w: any) => w.id))
+      const algoPool = openWindows
+        .filter((w: any) => !editorialPickIds.has(w.id))
+        .sort((a: any, b: any) => {
+          const aClosing = a.close_age_weeks - weeks <= 4 ? 0 : 1
+          const bClosing = b.close_age_weeks - weeks <= 4 ? 0 : 1
+          if (aClosing !== bClosing) return aClosing - bClosing
+          if (a.priority !== b.priority) return a.priority - b.priority
+          return (urgencyWeight[a.urgency] ?? 2) - (urgencyWeight[b.urgency] ?? 2)
+        })
+
+      const topWindows = [...editorialPicks, ...algoPool].slice(0, 3)
 
       // 7. Weeks since signup
       const signupDate = new Date(sub.created_at)
