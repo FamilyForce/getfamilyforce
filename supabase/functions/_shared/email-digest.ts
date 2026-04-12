@@ -105,13 +105,15 @@ function renderBullets(text: string): string {
 }
 
 // ─── Window card (v4 — matches approved mockup) ───────────────────────────────
-function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, isClosing: boolean): string {
+function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, isClosing: boolean, childGender: string | null): string {
   // Win-flag: plain colored text, no pill badge (matches mockup)
   const flagColor = isClosing ? '#c0392b' : C.terra
   const flagText  = isClosing ? '⏱ Closing this month' : '⏳ Open window'
 
-  // Full why_it_matters — no truncation (matches mockup)
-  const whyText = w.why_it_matters || ''
+  // Apply pronoun swap to all DB text fields so boy/neutral babies get correct copy
+  const whyText   = applyPronouns(w.why_it_matters || '', childGender)
+  const bridge    = w.jack_bridge ? applyPronouns(w.jack_bridge, childGender) : null
+  const whatToDo  = w.what_to_do  ? applyPronouns(w.what_to_do,  childGender) : null
 
   return `
   <tr>
@@ -134,10 +136,10 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
                 </td>
               </tr>
               <!-- Jack bridge (italic gray, between title and why — matches mockup) -->
-              ${w.jack_bridge ? `
+              ${bridge ? `
               <tr>
                 <td style="padding-bottom:9px">
-                  <p style="font-family:Arial,sans-serif;font-size:13px;color:#888;font-style:italic;margin:0;line-height:1.5">${w.jack_bridge}</p>
+                  <p style="font-family:Arial,sans-serif;font-size:13px;color:#888;font-style:italic;margin:0;line-height:1.5">${bridge}</p>
                 </td>
               </tr>` : ''}
               <!-- Why it matters (full text, no truncation) -->
@@ -150,11 +152,11 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
           </td>
         </tr>
         <!-- The move: separate section with #faf7ff background (matches mockup) -->
-        ${w.what_to_do ? `
+        ${whatToDo ? `
         <tr>
           <td style="background:#faf7ff;border-top:1px solid #ece8f0;padding:14px 20px 16px">
             <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">The move</p>
-            ${renderBullets(w.what_to_do)}
+            ${renderBullets(whatToDo)}
           </td>
         </tr>` : ''}
       </table>
@@ -470,7 +472,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   } else {
     const firstWin    = allWins[0]
     const firstIsClose = closingSlugs.has(firstWin.id)
-    const firstCard   = windowCard(firstWin, ageMonths, dashboardUrl, firstIsClose)
+    const firstCard   = windowCard(firstWin, ageMonths, dashboardUrl, firstIsClose, childGender)
     const remaining   = allWins.slice(1)
 
     if (remaining.length > 0) {
@@ -484,7 +486,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
           </tr></table>
         </td>
       </tr>`
-      const restCards = remaining.map(w => windowCard(w, ageMonths, dashboardUrl, closingSlugs.has(w.id))).join('')
+      const restCards = remaining.map(w => windowCard(w, ageMonths, dashboardUrl, closingSlugs.has(w.id), childGender)).join('')
       windowsLayout = firstCard + dykSection + forwardPrompt + alsoHeader + restCards
     } else {
       windowsLayout = firstCard + dykSection + forwardPrompt
