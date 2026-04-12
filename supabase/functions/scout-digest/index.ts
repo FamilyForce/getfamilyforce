@@ -643,16 +643,28 @@ Deno.serve(async (req: Request) => {
         if ((overdueCount ?? 0) >= 2) { results.skipped++; continue }
       }
 
-      // Load open pre-birth windows for this gestational age
-      const ageWeeks = Math.floor((now.getTime() - due.getTime()) / (7 * 24 * 3600 * 1000)) // negative
-      const { data: preBirthWindows } = await sb
-        .from('milestone_windows')
-        .select('id, slug, title, urgency, why_it_matters, what_to_do, what_not_to_worry, open_age_weeks, close_age_weeks, priority, playbook_link, missed_window')
-        .eq('prenatal', true)
-        .eq('window_type', 'milestone')
-        .lte('open_age_weeks', ageWeeks)
-        .gte('close_age_weeks', ageWeeks)
-        .order('priority', { ascending: true })
+      // Load pre-birth windows via editorial schedule (month 0) — query by slug, no age filter
+      // (prenatal window open/close_age_weeks use a positive convention that never matches negative ageWeeks)
+      const { data: preBirthEditorialSlots } = await sb
+        .from('scout_editorial_schedule')
+        .select('slot, slug')
+        .eq('month', 0)
+        .order('slot', { ascending: true })
+
+      let preBirthWindows: MilestoneWindow[] = []
+      if (preBirthEditorialSlots?.length) {
+        const editorialSlugs = (preBirthEditorialSlots as { slot: number; slug: string }[]).map(s => s.slug)
+        const { data: editorialWindowData } = await sb
+          .from('milestone_windows')
+          .select('id, slug, title, urgency, why_it_matters, what_to_do, what_not_to_worry, open_age_weeks, close_age_weeks, priority, playbook_link, missed_window')
+          .in('slug', editorialSlugs)
+        const editorialWindowMap = new Map(
+          (editorialWindowData ?? []).map((w: MilestoneWindow) => [w.slug, w])
+        )
+        preBirthWindows = (preBirthEditorialSlots as { slot: number; slug: string }[])
+          .map(s => editorialWindowMap.get(s.slug))
+          .filter(Boolean) as MilestoneWindow[]
+      }
 
       const { data: { user } } = await sb.auth.admin.getUserById(child.user_id)
       if (!user?.email) { results.skipped++; continue }
@@ -666,7 +678,7 @@ Deno.serve(async (req: Request) => {
         childGender:    child.gender ?? null,
         dueDate:        due,
         daysLeft,
-        windows:        (preBirthWindows ?? []) as MilestoneWindow[],
+        windows:        preBirthWindows,
         dashboardUrl:   dashUrl,
         siteUrl,
         userId:         child.user_id,
