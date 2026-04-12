@@ -104,6 +104,18 @@ export function renderBullets(text: string): string {
   return items.join('')
 }
 
+// ─── Window selection — exported so scout-signup-delivery can import ─────────
+export function selectAboveFold(windows: DigestWindow[], ageWeeks: number): DigestWindow[] {
+  const urgencyWeight: Record<string, number> = { clinical: 0, screening: 1, advisory: 2 }
+  return [...windows].sort((a, b) => {
+    const aClosing = a.close_age_weeks - ageWeeks <= 4 ? 0 : 1
+    const bClosing = b.close_age_weeks - ageWeeks <= 4 ? 0 : 1
+    if (aClosing !== bClosing) return aClosing - bClosing
+    if (a.priority !== b.priority) return a.priority - b.priority
+    return (urgencyWeight[a.urgency] ?? 2) - (urgencyWeight[b.urgency] ?? 2)
+  }).slice(0, 5)
+}
+
 // ─── Window card (v4 — matches approved mockup) ───────────────────────────────
 function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, isClosing: boolean, childGender: string | null): string {
   // Win-flag: plain colored text, no pill badge (matches mockup)

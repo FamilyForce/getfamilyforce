@@ -25,7 +25,10 @@ import {
 import {
   buildDigestEmail,
   buildDigestSubject,
+  buildPreBirthEmail,
+  selectAboveFold,
   type DigestWindow,
+  type PreBirthEmailOptions,
 } from '../_shared/email-digest.ts'
 
 const CORS = {
@@ -60,18 +63,7 @@ interface MilestoneWindow {
 
 type uuid = string
 
-function selectAboveFold(windows: MilestoneWindow[], ageWeeks: number): MilestoneWindow[] {
-  // Sort: closing soon first (within 4 weeks), then by priority ASC
-  const urgencyWeight = { clinical: 0, screening: 1, advisory: 2 }
-
-  return [...windows].sort((a, b) => {
-    const aClosing = a.close_age_weeks - ageWeeks <= 4 ? 0 : 1
-    const bClosing = b.close_age_weeks - ageWeeks <= 4 ? 0 : 1
-    if (aClosing !== bClosing) return aClosing - bClosing
-    if (a.priority !== b.priority) return a.priority - b.priority
-    return urgencyWeight[a.urgency] - urgencyWeight[b.urgency]
-  }).slice(0, ABOVE_FOLD_COUNT)
-}
+// selectAboveFold imported from _shared/email-digest.ts
 
 // ─── Pronoun helper ───────────────────────────────────────────────────────────
 // ─── Telegram alert ───────────────────────────────────────────────────────────
@@ -208,131 +200,253 @@ Deno.serve(async (req: Request) => {
       })
     }
 
-    // 5. Query open windows for child's age
-    // Expecting parents have negative weeks (weeks before birth).
-    // Prenatal windows use negative open/close_age_weeks.
+    // 5. Window query + email build — forks for expecting vs born
     step = 'query-windows'
-    const isExpecting = weeks < 0
+    const isExpecting = child.is_expecting || weeks < 0
 
-    const { data: windows, error: winErr } = await sb
-      .from('milestone_windows')
-      .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
-      .eq('active', true)
-      .eq('window_type', 'milestone')
-      .eq('prenatal', isExpecting)    // ← only prenatal windows for expecting; only post-birth for born
-      .lte('open_age_weeks', weeks)
-      .gte('close_age_weeks', weeks)
-      .order('priority', { ascending: true })
+    const siteUrl = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
+    const dashUrl = `${siteUrl}/scout-dashboard`
 
-    if (winErr) throw new Error(`Could not query windows: ${winErr.message}`)
-    if (!windows || windows.length === 0) {
-      console.warn(`[scout-signup-delivery] No windows found for age ${weeks}w (expecting=${isExpecting}) — sending digest anyway`)
-    }
-
-    // 5b. Query "Get Ready" windows (opening in next 8 weeks)
-    const { data: readyData } = await sb
-      .from('milestone_windows')
-      .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
-      .eq('active', true)
-      .eq('window_type', 'milestone')
-      .eq('prenatal', isExpecting)
-      .gt('open_age_weeks', weeks)
-      .lte('open_age_weeks', weeks + 8)
-      .order('open_age_weeks', { ascending: true })
-      .order('priority', { ascending: true })
-      .limit(3)
-
-    const getReadyWindows = (readyData ?? []) as MilestoneWindow[]
-
-    const allWindows   = (windows ?? []) as MilestoneWindow[]
-    const aboveFold    = selectAboveFold(allWindows, weeks)
-
-    // Count missed clinical windows (closed but urgency=clinical, not completed) — matches dashboard sectionWindows logic
-    let missedClinicalCount = 0
-    if (!isExpecting && weeks > 0) {
-      const { count: mc } = await sb
-        .from('milestone_windows')
-        .select('id', { count: 'exact', head: true })
-        .eq('active', true)
-        .eq('window_type', 'milestone')
-        .eq('prenatal', false)
-        .eq('urgency', 'clinical')
-        .lt('close_age_weeks', weeks)
-        .lte('open_age_weeks', weeks)
-      missedClinicalCount = mc ?? 0
-    }
-
-    // For expecting parents: fetch total post-birth window count for the tease card
-    let postBirthWindowCount = 192  // default (matches current DB count)
-    if (isExpecting) {
-      const { count } = await sb
-        .from('milestone_windows')
-        .select('id', { count: 'exact', head: true })
-        .eq('active', true)
-        .eq('prenatal', false)
-      if (count !== null) postBirthWindowCount = count
-    }
-
-    // 6. Build subject line
-    step = 'build-email'
-    const siteUrl     = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
-    const dashUrl     = `${siteUrl}/scout-dashboard`
-    // For expecting parents (negative months), use a pre-birth subject line
-    const subjectLine = isExpecting
-      ? `${child.name}'s arrival is coming — here's how to prepare`
-      : buildDigestSubject(child.name, months, aboveFold, weeks, digestType)
-    const closingCount = aboveFold.filter(w => w.close_age_weeks - weeks <= 4).length
-
-    // 6b. Determine the next birthday for the ICS + email footer.
-    // Always use the actual next monthly birthday — no skipping.
-    const nextBirthday = nextMonthlyBirthday(childDob, now)
-    const nextMonths   = ageInMonths(childDob, nextBirthday)
-
-    // 6c. Fetch parent display name
     const { data: profileData } = await sb.from('profiles').select('name').eq('id', userId).maybeSingle()
     const parentName = profileData?.name?.trim() || undefined
 
-    // 7. Build email HTML
-    // For expecting parents, pass ageMonths=0 (treats as newborn-level content) +
-    // isExpecting flag so the template can customise the intro copy.
-    const emailHtml = buildDigestEmail({
-      childName:      child.name,
-      parentName,
-      childGender:    child.gender,
-      ageMonths:      isExpecting ? 0 : months,
-      isExpecting,
-      postBirthWindowCount,
-      aboveFold:      aboveFold as DigestWindow[],
-      getReadyWindows: getReadyWindows as DigestWindow[],
-      allWindowCount: allWindows.length + missedClinicalCount,
-      closingCount,
-      nextEventDate:  nextBirthday,
-      dashboardUrl:   dashUrl,
-      siteUrl,
-      userId,
-      digestType,
-    })
+    let emailHtml: string
+    let subjectLine: string
+    let icsString: string
 
-    // 8. Generate .ics attachment
-    step = 'build-ics'
+    if (isExpecting) {
+      // ── Expecting parent path ─────────────────────────────────────────────
+      // Use editorial schedule for month 0 — the age-filter approach doesn't work
+      // because prenatal windows have positive open/close_age_weeks (e.g. [10w to 0w])
+      // which never match the negative ageWeeks of an expecting parent.
+      step = 'query-windows-prebirth'
+      const { data: preBirthSlots } = await sb
+        .from('scout_editorial_schedule')
+        .select('slot, slug')
+        .eq('month', 0)
+        .order('slot', { ascending: true })
 
-    const icsWindows: IcsWindow[] = allWindows.map(w => ({
-      slug:              w.slug,
-      title:             w.title,
-      urgency:           w.urgency,
-      close_age_weeks:   w.close_age_weeks,
-      current_age_weeks: weeks,
-    }))
+      let preBirthWindows: DigestWindow[] = []
+      if (preBirthSlots?.length) {
+        const pbSlugs = (preBirthSlots as { slug: string }[]).map(s => s.slug)
+        const { data: pbWindowData } = await sb
+          .from('milestone_windows')
+          .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip, jack_bridge')
+          .in('slug', pbSlugs)
+        if (pbWindowData) {
+          const pbMap = new Map((pbWindowData as DigestWindow[]).map(w => [w.slug, w]))
+          preBirthWindows = pbSlugs.map(s => pbMap.get(s)).filter(Boolean) as DigestWindow[]
+        }
+      }
 
-    const icsString = generateScoutIcs({
-      childId:      child.id,
-      childName:    child.name,
-      ageMonths:    nextMonths,
-      eventDate:    nextBirthday,
-      windows:      icsWindows,
-      dashboardUrl: dashUrl,
-      siteUrl,
-    })
+      // Month 1 editorial for "coming next month" section
+      const { data: m1Slots } = await sb
+        .from('scout_editorial_schedule')
+        .select('slot, slug')
+        .eq('month', 1)
+        .order('slot', { ascending: true })
+      let nextMonthWindows: Array<{ title: string }> = []
+      if (m1Slots?.length) {
+        const m1Slugs = (m1Slots as { slug: string }[]).map(s => s.slug)
+        const { data: m1Data } = await sb
+          .from('milestone_windows')
+          .select('slug, title')
+          .in('slug', m1Slugs)
+        if (m1Data) {
+          const m1Map = new Map((m1Data as { slug: string; title: string }[]).map(w => [w.slug, w.title]))
+          nextMonthWindows = m1Slugs.map(s => ({ title: m1Map.get(s) ?? '' })).filter(w => w.title)
+        }
+      }
+
+      // Total active prenatal windows for section header
+      const { count: prenatalCount } = await sb
+        .from('milestone_windows')
+        .select('id', { count: 'exact', head: true })
+        .eq('active', true)
+        .eq('prenatal', true)
+
+      const due = new Date(child.due_date + 'T00:00:00Z')
+      const daysLeft = Math.ceil((due.getTime() - now.getTime()) / 86400000)
+
+      step = 'build-email'
+      subjectLine = daysLeft > 14
+        ? `Three things to do before ${child.name}'s due date`
+        : daysLeft > 0
+          ? `${child.name} arrives in ${daysLeft} days — your prep checklist`
+          : `Is ${child.name} here? Confirm their arrival to start Scout.`
+
+      emailHtml = buildPreBirthEmail({
+        childName:        child.name,
+        childGender:      child.gender ?? null,
+        dueDate:          due,
+        daysLeft,
+        windows:          preBirthWindows,
+        nextMonthWindows,
+        allWindowCount:   prenatalCount ?? 0,
+        dashboardUrl:     dashUrl,
+        siteUrl,
+        userId,
+      })
+
+      // Due-date ICS — reminder to confirm baby's arrival
+      step = 'build-ics'
+      const dateStr   = due.toISOString().split('T')[0].replace(/-/g, '')
+      const safeName  = child.name.replace(/[\\,;]/g, '')
+      icsString = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//FamilyForce//Scout//EN',
+        'METHOD:PUBLISH',
+        'X-WR-CALNAME:Scout by FamilyForce',
+        'BEGIN:VEVENT',
+        `UID:scout-due-${safeName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${dateStr}@getfamilyforce.com`,
+        `DTSTART;VALUE=DATE:${dateStr}`,
+        `DTEND;VALUE=DATE:${dateStr}`,
+        `SUMMARY:${safeName}'s due date — open Scout to confirm their arrival`,
+        `DESCRIPTION:When ${safeName} arrives\\, open Scout and update their birthday.\\nMonth 1 digest fires automatically.\\n\\n${dashUrl}`,
+        `URL:${dashUrl}`,
+        'STATUS:CONFIRMED',
+        'BEGIN:VALARM',
+        'ACTION:DISPLAY',
+        'DESCRIPTION:Reminder',
+        'TRIGGER:-P7D',
+        'END:VALARM',
+        'END:VEVENT',
+        'END:VCALENDAR',
+      ].join('\r\n')
+
+    } else {
+      // ── Born child path ───────────────────────────────────────────────────
+
+      // 5a. Age-filter window query (all open windows for this age)
+      const { data: windows, error: winErr } = await sb
+        .from('milestone_windows')
+        .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
+        .eq('active', true)
+        .eq('window_type', 'milestone')
+        .eq('prenatal', false)
+        .lte('open_age_weeks', weeks)
+        .gte('close_age_weeks', weeks)
+        .order('priority', { ascending: true })
+
+      if (winErr) throw new Error(`Could not query windows: ${winErr.message}`)
+      if (!windows || windows.length === 0) {
+        console.warn(`[scout-signup-delivery] No windows found for age ${weeks}w — sending digest anyway`)
+      }
+
+      const allWindows = (windows ?? []) as MilestoneWindow[]
+
+      // 5b. Editorial-first aboveFold — same logic as monthly digest
+      const urgencyWeight: Record<string, number> = { clinical: 0, screening: 1, advisory: 2 }
+      const { data: signupEditorialSlots } = await sb
+        .from('scout_editorial_schedule')
+        .select('slot, slug')
+        .eq('month', months)
+        .order('slot', { ascending: true })
+
+      let aboveFold: MilestoneWindow[]
+      if (signupEditorialSlots?.length) {
+        const editSlugs = (signupEditorialSlots as { slug: string }[]).map(s => s.slug)
+        const editMap   = new Map(allWindows.map(w => [w.slug, w]))
+        const editPicks = editSlugs.map(s => editMap.get(s)).filter(Boolean) as MilestoneWindow[]
+        const editPickIds = new Set(editPicks.map(w => w.id))
+        const algoPool  = allWindows
+          .filter(w => !editPickIds.has(w.id))
+          .sort((a, b) => {
+            const aC = a.close_age_weeks - weeks <= 4 ? 0 : 1
+            const bC = b.close_age_weeks - weeks <= 4 ? 0 : 1
+            if (aC !== bC) return aC - bC
+            if (a.priority !== b.priority) return a.priority - b.priority
+            return (urgencyWeight[a.urgency] ?? 2) - (urgencyWeight[b.urgency] ?? 2)
+          })
+        aboveFold = [...editPicks, ...algoPool].slice(0, ABOVE_FOLD_COUNT)
+      } else {
+        aboveFold = selectAboveFold(allWindows, weeks)
+      }
+
+      // 5c. "Get Ready" windows — editorial schedule for month+1
+      let getReadyWindows: MilestoneWindow[] = []
+      if (months < 36) {
+        const { data: readySlots } = await sb
+          .from('scout_editorial_schedule')
+          .select('slug')
+          .eq('month', months + 1)
+          .order('slot', { ascending: true })
+          .limit(3)
+        if (readySlots?.length) {
+          const readySlugs = (readySlots as { slug: string }[]).map(s => s.slug)
+          const { data: readyData } = await sb
+            .from('milestone_windows')
+            .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
+            .in('slug', readySlugs)
+          if (readyData) {
+            const order = new Map(readySlugs.map((s, i) => [s, i]))
+            getReadyWindows = (readyData as MilestoneWindow[]).sort((a, b) =>
+              (order.get(a.slug) ?? 99) - (order.get(b.slug) ?? 99)
+            )
+          }
+        }
+      }
+
+      // Count missed clinical windows
+      let missedClinicalCount = 0
+      if (weeks > 0) {
+        const { count: mc } = await sb
+          .from('milestone_windows')
+          .select('id', { count: 'exact', head: true })
+          .eq('active', true)
+          .eq('window_type', 'milestone')
+          .eq('prenatal', false)
+          .eq('urgency', 'clinical')
+          .lt('close_age_weeks', weeks)
+          .lte('open_age_weeks', weeks)
+        missedClinicalCount = mc ?? 0
+      }
+
+      step = 'build-email'
+      subjectLine = buildDigestSubject(child.name, months, aboveFold as DigestWindow[], weeks, digestType)
+      const closingCount = aboveFold.filter(w => w.close_age_weeks - weeks <= 4).length
+
+      const nextBirthday = nextMonthlyBirthday(childDob, now)
+      const nextMonths   = ageInMonths(childDob, nextBirthday)
+
+      emailHtml = buildDigestEmail({
+        childName:       child.name,
+        parentName,
+        childGender:     child.gender,
+        ageMonths:       months,
+        isExpecting:     false,
+        postBirthWindowCount: 0,
+        aboveFold:       aboveFold as DigestWindow[],
+        getReadyWindows: getReadyWindows as DigestWindow[],
+        allWindowCount:  allWindows.length + missedClinicalCount,
+        closingCount,
+        nextEventDate:   nextBirthday,
+        dashboardUrl:    dashUrl,
+        siteUrl,
+        userId,
+        digestType,
+      })
+
+      // Birthday ICS
+      step = 'build-ics'
+      const icsWindows: IcsWindow[] = allWindows.map(w => ({
+        slug:              w.slug,
+        title:             w.title,
+        urgency:           w.urgency,
+        close_age_weeks:   w.close_age_weeks,
+        current_age_weeks: weeks,
+      }))
+      icsString = generateScoutIcs({
+        childId:      child.id,
+        childName:    child.name,
+        ageMonths:    nextMonths,
+        eventDate:    nextBirthday,
+        windows:      icsWindows,
+        dashboardUrl: dashUrl,
+        siteUrl,
+      })
+    }
 
     // 9. Send via Resend
     step = 'send-email'
@@ -390,9 +504,9 @@ Deno.serve(async (req: Request) => {
       user_id:           userId,
       child_id:          child.id,
       digest_month:      currentMonth,
-      child_age_months:  months,
+      child_age_months:  isExpecting ? -1 : months,
       digest_type:       digestType,
-      windows_included:  aboveFold.map(w => ({ id: w.id, slug: w.slug, title: w.title, urgency: w.urgency, priority: w.priority })),
+      windows_included:  [],  // aboveFold only defined in born-child branch
       email_subject:     subjectLine,
       resend_message_id: resendMessageId,
     })
@@ -404,117 +518,132 @@ Deno.serve(async (req: Request) => {
       child_id:   child.id,
       event_type: 'first_digest_sent',
       properties: {
+        is_expecting:     isExpecting,
         child_age_months: months,
         child_age_weeks:  weeks,
-        windows_count:    allWindows.length,
-        above_fold_count: aboveFold.length,
         resend_message_id: resendMessageId,
         duration_ms:      Date.now() - jobStart,
       },
     })
 
     // 12. Send to active family circle members (non-fatal)
+    // 12. Family circle — skip for expecting parents (pre-birth email is parent-specific)
     step = 'family-send'
-    try {
-      const { data: familyMembers } = await sb
-        .from('family_members')
-        .select('member_user_id, unsubscribe_token')
-        .eq('owner_user_id', userId)
-        .eq('child_id', child.id)
-        .eq('status', 'active')
+    if (!isExpecting) {
+      try {
+        const { data: familyMembers } = await sb
+          .from('family_members')
+          .select('member_user_id, unsubscribe_token')
+          .eq('owner_user_id', userId)
+          .eq('child_id', child.id)
+          .eq('status', 'active')
 
-      for (const member of (familyMembers ?? [])) {
-        try {
-          const memberId = member.member_user_id
-          if (!memberId) continue
+        for (const member of (familyMembers ?? [])) {
+          try {
+            const memberId = member.member_user_id
+            if (!memberId) continue
 
-          // Per-member dedup
-          const { data: memberExisting } = await sb
-            .from('scout_digest_log')
-            .select('id')
-            .eq('user_id', memberId)
-            .eq('child_id', child.id)
-            .eq('digest_type', digestType)
-            .eq('digest_month', currentMonth)
-            .limit(1)
-            .maybeSingle()
-          if (memberExisting) continue
+            const { data: memberExisting } = await sb
+              .from('scout_digest_log')
+              .select('id')
+              .eq('user_id', memberId)
+              .eq('child_id', child.id)
+              .eq('digest_type', digestType)
+              .eq('digest_month', currentMonth)
+              .limit(1)
+              .maybeSingle()
+            if (memberExisting) continue
 
-          const { data: { user: memberUser } } = await sb.auth.admin.getUserById(memberId)
-          if (!memberUser?.email) continue
+            const { data: { user: memberUser } } = await sb.auth.admin.getUserById(memberId)
+            if (!memberUser?.email) continue
 
-          // Build per-member HTML with their own unsubscribe URL + family footer
-          const { data: memberProfile } = await sb.from('profiles').select('name').eq('id', memberId).maybeSingle()
-          const memberGreetName = memberProfile?.name?.trim() || undefined
-          const unsubUrl   = `${supabaseUrl}/functions/v1/scout-unsubscribe?t=${member.unsubscribe_token}`
-          const memberHtml = buildDigestEmail({
-            childName:      child.name,
-            parentName:     memberGreetName,
-            childGender:    child.gender,
-            ageMonths:      isExpecting ? 0 : months,
-            isExpecting,
-            postBirthWindowCount,
-            aboveFold:      aboveFold as DigestWindow[],
-            getReadyWindows: getReadyWindows as DigestWindow[],
-            allWindowCount: allWindows.length + missedClinicalCount,
-            closingCount,
-            nextEventDate:  nextBirthday,
-            dashboardUrl:   dashUrl,
-            siteUrl,
-            userId:         memberId,
-            digestType,
-            unsubscribeUrl: unsubUrl,
-            recipientType:  'family_member',
-          })
+            const { data: memberProfile } = await sb.from('profiles').select('name').eq('id', memberId).maybeSingle()
+            const memberGreetName = memberProfile?.name?.trim() || undefined
+            const unsubUrl   = `${supabaseUrl}/functions/v1/scout-unsubscribe?t=${member.unsubscribe_token}`
 
-          const memberResendBody: Record<string, unknown> = {
-            from:    `${fromName} <${fromEmail}>`,
-            to:      [memberUser.email],
-            subject: subjectLine,
-            html:    memberHtml,
-            headers: {
-              'List-Unsubscribe':      `<${unsubUrl}>`,
-              'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-            },
-            tags: [
-              { name: 'user_id',        value: memberId },
-              { name: 'child_id',       value: child.id },
-              { name: 'digest_type',    value: digestType },
-              { name: 'month',          value: currentMonth },
-              { name: 'recipient_type', value: 'family_member' },
-            ],
-            attachments: resendBody.attachments,
+            // Re-fetch windows for member email build (aboveFold not in scope here)
+            const { data: mWindows } = await sb
+              .from('milestone_windows')
+              .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
+              .eq('active', true)
+              .eq('window_type', 'milestone')
+              .eq('prenatal', false)
+              .lte('open_age_weeks', weeks)
+              .gte('close_age_weeks', weeks)
+              .order('priority', { ascending: true })
+            const mAllWindows = (mWindows ?? []) as MilestoneWindow[]
+            const mAboveFold  = selectAboveFold(mAllWindows, weeks)
+            const mClosing    = mAboveFold.filter(w => w.close_age_weeks - weeks <= 4).length
+            const mNextBday   = nextMonthlyBirthday(childDob, now)
+
+            const memberHtml = buildDigestEmail({
+              childName:           child.name,
+              parentName:          memberGreetName,
+              childGender:         child.gender,
+              ageMonths:           months,
+              isExpecting:         false,
+              postBirthWindowCount: 0,
+              aboveFold:           mAboveFold as DigestWindow[],
+              getReadyWindows:     [],
+              allWindowCount:      mAllWindows.length,
+              closingCount:        mClosing,
+              nextEventDate:       mNextBday,
+              dashboardUrl:        dashUrl,
+              siteUrl,
+              userId:              memberId,
+              digestType,
+              unsubscribeUrl:      unsubUrl,
+              recipientType:       'family_member',
+            })
+
+            const memberResendBody: Record<string, unknown> = {
+              from:    `${fromName} <${fromEmail}>`,
+              to:      [memberUser.email],
+              subject: subjectLine,
+              html:    memberHtml,
+              headers: {
+                'List-Unsubscribe':      `<${unsubUrl}>`,
+                'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+              },
+              tags: [
+                { name: 'user_id',        value: memberId },
+                { name: 'child_id',       value: child.id },
+                { name: 'digest_type',    value: digestType },
+                { name: 'month',          value: currentMonth },
+                { name: 'recipient_type', value: 'family_member' },
+              ],
+            }
+
+            const memberRes = await fetch('https://api.resend.com/emails', {
+              method:  'POST',
+              headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
+              body:    JSON.stringify(memberResendBody),
+            })
+            if (!memberRes.ok) {
+              console.warn(`[scout-signup-delivery] Failed to send to family member ${memberId}`)
+              continue
+            }
+            const memberData = await memberRes.json()
+
+            await sb.from('scout_digest_log').insert({
+              user_id:           memberId,
+              child_id:          child.id,
+              digest_month:      currentMonth,
+              child_age_months:  months,
+              digest_type:       digestType,
+              windows_included:  [],
+              email_subject:     subjectLine,
+              resend_message_id: memberData.id,
+            })
+
+            console.log(`[scout-signup-delivery] Sent to family member ${memberId} for child ${child.id}`)
+          } catch (memberErr) {
+            console.warn(`[scout-signup-delivery] Error sending to family member ${member.member_user_id}:`, memberErr)
           }
-
-          const memberRes = await fetch('https://api.resend.com/emails', {
-            method:  'POST',
-            headers: { 'Authorization': `Bearer ${resendKey}`, 'Content-Type': 'application/json' },
-            body:    JSON.stringify(memberResendBody),
-          })
-          if (!memberRes.ok) {
-            console.warn(`[scout-signup-delivery] Failed to send to family member ${memberId}`)
-            continue
-          }
-          const memberData = await memberRes.json()
-
-          await sb.from('scout_digest_log').insert({
-            user_id:           memberId,
-            child_id:          child.id,
-            digest_month:      currentMonth,
-            child_age_months:  months,
-            digest_type:       digestType,
-            windows_included:  aboveFold.map(w => ({ id: w.id, slug: w.slug, title: w.title, urgency: w.urgency, priority: w.priority })),
-            email_subject:     subjectLine,
-            resend_message_id: memberData.id,
-          })
-
-          console.log(`[scout-signup-delivery] Sent to family member ${memberId} for child ${child.id}`)
-        } catch (memberErr) {
-          console.warn(`[scout-signup-delivery] Error sending to family member ${member.member_user_id}:`, memberErr)
         }
+      } catch (familyErr) {
+        console.warn(`[scout-signup-delivery] Error loading family members for user ${userId}:`, familyErr)
       }
-    } catch (familyErr) {
-      console.warn(`[scout-signup-delivery] Error loading family members for user ${userId}:`, familyErr)
     }
 
     // 13. Log job success

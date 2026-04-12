@@ -96,6 +96,37 @@ function selectAboveFold(windows: MilestoneWindow[], ageWeeks: number): Mileston
 
 // ─── Subject line ─────────────────────────────────────────────────────────────
 // ─── Telegram alert ───────────────────────────────────────────────────────────
+// ─── Due-date ICS — pre-birth reminder ────────────────────────────────────────
+// Generates a calendar event for the due date so the parent is reminded to
+// open Scout and confirm the baby's arrival.
+function generateDueDateIcs(childName: string, dueDate: Date, dashboardUrl: string): string {
+  const dateStr = dueDate.toISOString().split('T')[0].replace(/-/g, '')
+  const uid     = `scout-due-${childName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${dateStr}@getfamilyforce.com`
+  const safeName = childName.replace(/[\\,;]/g, '')
+  return [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//FamilyForce//Scout//EN',
+    'METHOD:PUBLISH',
+    'X-WR-CALNAME:Scout by FamilyForce',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTART;VALUE=DATE:${dateStr}`,
+    `DTEND;VALUE=DATE:${dateStr}`,
+    `SUMMARY:${safeName}'s due date — open Scout to confirm their arrival`,
+    `DESCRIPTION:When ${safeName} arrives\\, open Scout and update their birthday.\\nYour Month 1 digest fires automatically.\\n\\n${dashboardUrl}`,
+    `URL:${dashboardUrl}`,
+    'STATUS:CONFIRMED',
+    'BEGIN:VALARM',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:Reminder',
+    'TRIGGER:-P7D',
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n')
+}
+
 async function telegramAlert(message: string): Promise<void> {
   const token  = Deno.env.get('TELEGRAM_BOT_TOKEN')
   const chatId = Deno.env.get('TELEGRAM_CHAT_ID')
@@ -155,6 +186,20 @@ Deno.serve(async (req: Request) => {
   const subs = activeSubs ?? []
   console.log(`[scout-digest] ${subs.length} active subscriptions to check`)
 
+  // Also load trialing subs with a valid trial — used to gate the pre-birth reminder loop.
+  // Active subs = paid (no expiry). Trialing subs = still in trial (trial_end >= now).
+  const { data: trialingSubs } = await sb
+    .from('scout_subscriptions')
+    .select('user_id')
+    .eq('status', 'trialing')
+    .gte('trial_end', now.toISOString())
+
+  // Union of active + valid-trialing users — pre-birth reminders require an active subscription
+  const validUserIds = new Set<string>([
+    ...subs.map(s => s.user_id),
+    ...((trialingSubs ?? []) as { user_id: string }[]).map(s => s.user_id),
+  ])
+
   // ── Step 2: Load expecting users ──────────────────────────────────────────
   const { data: expectingChildren } = await sb
     .from('children')
@@ -176,7 +221,13 @@ Deno.serve(async (req: Request) => {
         .limit(1)
 
       if (!children?.length) { results.skipped++; continue }
-      const child    = children[0]
+      const child = children[0]
+
+      // Skip expecting children — they are handled by the pre-birth loop below.
+      // If an expecting parent somehow has status='active' (paid early), their child still
+      // has is_expecting=true and dob=null; computing age from null would crash.
+      if (child.is_expecting || !child.dob) { results.skipped++; continue }
+
       const childDob = new Date(child.dob + 'T00:00:00Z')
 
       // 3. Birthday check — is today this child's birth day of month?
@@ -609,7 +660,8 @@ Deno.serve(async (req: Request) => {
   }
 
   // ── Step 3 & 4: Pre-birth reminder loop ──────────────────────────────────
-  for (const child of (expectingChildren ?? [])) {
+  // Only send to users with an active or valid-trialing subscription.
+  for (const child of (expectingChildren ?? []).filter(c => validUserIds.has(c.user_id))) {
     try {
       const due     = new Date(child.due_date + 'T00:00:00Z')
       const daysLeft = Math.ceil((due.getTime() - now.getTime()) / 86400000)
@@ -717,6 +769,19 @@ Deno.serve(async (req: Request) => {
         ? `${child.name} arrives in ${daysLeft} days. Here's what to prepare before they arrive.`
         : `Your due date has passed. Let us know ${child.name} is here to start full Scout tracking.`
 
+      // ICS attachment — due date reminder (only when not overdue)
+      const icsAttachments: Array<Record<string, string>> = []
+      if (daysLeft > 0) {
+        const icsString = generateDueDateIcs(child.name, due, dashUrl)
+        const icsBytes  = new TextEncoder().encode(icsString)
+        const icsBase64 = btoa(icsBytes.reduce((s, b) => s + String.fromCharCode(b), ''))
+        icsAttachments.push({
+          filename:     `scout-${child.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}-due-date.ics`,
+          content:      icsBase64,
+          content_type: 'text/calendar',
+        })
+      }
+
       const resendBodyPre: Record<string, unknown> = {
         from:    `${fromName} <${fromEmail}>`,
         to:      [user.email],
@@ -731,6 +796,7 @@ Deno.serve(async (req: Request) => {
       }
       if (bccEmail) resendBodyPre.bcc = [bccEmail]
       resendBodyPre.reply_to = ['support@getfamilyforce.com']
+      if (icsAttachments.length > 0) resendBodyPre.attachments = icsAttachments
 
       const resendResPre  = await fetch('https://api.resend.com/emails', {
         method:  'POST',

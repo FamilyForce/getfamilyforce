@@ -152,16 +152,21 @@ Deno.serve(async (req: Request) => {
       const { data: { user } } = await sb.auth.admin.getUserById(userId)
       if (!user?.email) { results.trialEnd.skipped++; continue }
 
-      // 3. Load child
+      // 3. Load child — most recently added (most relevant for multi-child families)
       const { data: children } = await sb
         .from('children')
-        .select('id, name, dob, gender')
+        .select('id, name, dob, gender, is_expecting')
         .eq('user_id', userId)
-        .order('created_at', { ascending: true })
+        .order('created_at', { ascending: false })
         .limit(1)
 
       if (!children?.length) { results.trialEnd.skipped++; continue }
-      const child    = children[0]
+      const child = children[0]
+
+      // Skip expecting children in trial-end — dob=null would crash age calculation,
+      // and prenatal content doesn't belong in the conversion email.
+      if (child.is_expecting || !child.dob) { results.trialEnd.skipped++; continue }
+
       const childDob = new Date(child.dob + 'T00:00:00Z')
       const weeks    = ageInWeeks(childDob, now)
       const months   = ageInMonths(childDob, now)
@@ -352,30 +357,34 @@ Deno.serve(async (req: Request) => {
     try {
       const userId = sub.user_id
 
-      // Check: never re-engaged before
+      // Check: never re-engaged before — use scout_digest_log (consistent with Job A dedup)
       const { data: priorReengagement } = await sb
-        .from('scout_events')
+        .from('scout_digest_log')
         .select('id')
         .eq('user_id', userId)
-        .eq('event_type', 'reengagement_sent')
+        .eq('digest_type', 'reengagement')
         .limit(1)
         .maybeSingle()
 
       if (priorReengagement) { results.reengagement.skipped++; continue }
 
-      // Load user + child
+      // Load user + child — most recently added (most relevant for multi-child families)
       const { data: { user } } = await sb.auth.admin.getUserById(userId)
       if (!user?.email) { results.reengagement.skipped++; continue }
 
       const { data: children } = await sb
         .from('children')
-        .select('id, name, dob, gender')
+        .select('id, name, dob, gender, is_expecting')
         .eq('user_id', userId)
-        .order('created_at', { ascending: true })
+        .order('created_at', { ascending: false })
         .limit(1)
 
       if (!children?.length) { results.reengagement.skipped++; continue }
-      const child    = children[0]
+      const child = children[0]
+
+      // Skip expecting children — dob=null crashes age calculation
+      if (child.is_expecting || !child.dob) { results.reengagement.skipped++; continue }
+
       const childDob = new Date(child.dob + 'T00:00:00Z')
       const months   = ageInMonths(childDob, now)
       const weeks    = ageInWeeks(childDob, now)
@@ -383,17 +392,42 @@ Deno.serve(async (req: Request) => {
       // Suppress if child is past 36 months
       if (months > 36) { results.reengagement.skipped++; continue }
 
-      // Get single most urgent open window
-      const { data: windows } = await sb
+      // Get top window — editorial schedule first, then highest priority
+      const { data: allReWindows } = await sb
         .from('milestone_windows')
-        .select('title, why_it_matters, what_to_do, urgency')
+        .select('id, slug, title, why_it_matters, what_to_do, urgency, priority')
         .eq('active', true)
+        .eq('window_type', 'milestone')
+        .eq('prenatal', false)
         .lte('open_age_weeks', weeks)
         .gte('close_age_weeks', weeks)
-        .order('priority', { ascending: true })
-        .limit(1)
 
-      const topWindow = windows?.[0] ?? null
+      // Try editorial schedule slot 1 for the child's month
+      let topWindow: { title: string; why_it_matters: string; what_to_do: string; urgency: string } | null = null
+      if (allReWindows?.length) {
+        const { data: reEditorialSlots } = await sb
+          .from('scout_editorial_schedule')
+          .select('slug')
+          .eq('month', months)
+          .order('slot', { ascending: true })
+          .limit(1)
+
+        if (reEditorialSlots?.length) {
+          const editorialSlug = (reEditorialSlots[0] as { slug: string }).slug
+          const editorialPick = (allReWindows as any[]).find(w => w.slug === editorialSlug)
+          if (editorialPick) topWindow = editorialPick
+        }
+
+        // Fallback: highest priority open window
+        if (!topWindow) {
+          const urgencyWeight: Record<string, number> = { clinical: 0, screening: 1, advisory: 2 }
+          const sorted = [...(allReWindows as any[])].sort((a, b) => {
+            if (a.priority !== b.priority) return a.priority - b.priority
+            return (urgencyWeight[a.urgency] ?? 2) - (urgencyWeight[b.urgency] ?? 2)
+          })
+          topWindow = sorted[0] ?? null
+        }
+      }
 
       const { data: reProfileData } = await sb.from('profiles').select('name').eq('id', userId).maybeSingle()
       const parentName = reProfileData?.name?.trim() || undefined
@@ -427,7 +461,20 @@ Deno.serve(async (req: Request) => {
         bccEmail,
       })
 
-      // Log — one-time guard
+      // Log to scout_digest_log — primary dedup guard (consistent with Job A)
+      const reCurrentMonth = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`
+      await sb.from('scout_digest_log').insert({
+        user_id:           userId,
+        child_id:          child.id,
+        digest_month:      reCurrentMonth,
+        child_age_months:  months,
+        digest_type:       'reengagement',
+        windows_included:  topWindow ? [{ title: topWindow.title, urgency: topWindow.urgency }] : [],
+        email_subject:     `${child.name} is ${months} months — one window before you go`,
+        resend_message_id: messageId,
+      })
+
+      // Also log to scout_events for analytics
       await sb.from('scout_events').insert({
         user_id:    userId,
         child_id:   child.id,
