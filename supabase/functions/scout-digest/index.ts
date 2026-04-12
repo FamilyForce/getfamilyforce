@@ -221,7 +221,7 @@ Deno.serve(async (req: Request) => {
       if (subChildId) {
         childQuery = childQuery.eq('id', subChildId).limit(1)
       } else {
-        childQuery = childQuery.order('created_at', { ascending: true }).limit(1)
+        childQuery = childQuery.order('created_at', { ascending: false }).limit(1)
       }
       const { data: children } = await childQuery
 
