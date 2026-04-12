@@ -89,7 +89,7 @@ function urgencyConfig(u: 'clinical' | 'screening' | 'advisory') {
 }
 
 // ─── Parse what_to_do bullets into HTML list items ────────────────────────────
-function renderBullets(text: string): string {
+export function renderBullets(text: string): string {
   if (!text) return ''
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
   const items = lines.map(line => {

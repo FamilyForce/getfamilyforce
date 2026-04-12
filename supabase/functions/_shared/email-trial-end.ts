@@ -15,6 +15,8 @@
 //   - Preheader text, light-mode forced
 // ═══════════════════════════════════════════════════════════════
 
+import { renderBullets, applyPronouns } from './email-digest.ts'
+
 export type TrialEndWindow = { title: string; why_it_matters: string; urgency: string }
 export type ReengagementWindow = { title: string; why_it_matters: string; what_to_do: string }
 
@@ -142,28 +144,24 @@ export function buildTrialEndEmail(opts: {
 </td></tr>`
   })()
 
+  const { childGender } = opts
   const windowCards = topWindows.map(w => {
-    const bodyText = w.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim()
-    const move     = w.what_to_do
-      ? w.what_to_do.split('\n')[0].replace(/^[-•·]\s*/, '').trim()
-      : ''
+    const bodyText  = applyPronouns(w.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim(), childGender)
+    const bulletsHtml = w.what_to_do ? renderBullets(applyPronouns(w.what_to_do, childGender)) : ''
     return `
     <tr><td style="padding-bottom:16px">
       <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1px solid ${C.border};border-radius:14px">
-        <tr><td style="padding:20px 22px">
+        <tr><td style="padding:20px 22px 12px">
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr><td style="padding-bottom:8px"><p style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:${C.text};margin:0;line-height:1.3">${w.title}</p></td></tr>
-            <tr><td style="padding-bottom:14px"><p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${bodyText}</p></td></tr>
-            ${move ? `<tr><td>
-              <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:10px">
-                <tr><td style="padding:12px 16px">
-                  <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p>
-                  <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.6">${move}</p>
-                </td></tr>
-              </table>
-            </td></tr>` : ''}
+            <tr><td><p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${bodyText}</p></td></tr>
           </table>
         </td></tr>
+        ${bulletsHtml ? `
+        <tr><td style="background:#faf7ff;border-top:1px solid ${C.border};padding:14px 20px 16px">
+          <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">The move</p>
+          ${bulletsHtml}
+        </td></tr>` : ''}
       </table>
     </td></tr>`
   }).join('')
@@ -347,27 +345,24 @@ export function buildReengagementEmail(opts: {
     ? topWindow.why_it_matters.replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim()
     : `There are still open windows for ${childName} at ${ageMonths} months.`
 
-  const move = topWindow?.what_to_do
-    ? topWindow.what_to_do.split('\n')[0].replace(/^[-•·]\s*/, '').trim()
-    : `Open Scout to see ${childName}'s open windows for this month.`
+  const bulletsHtml = topWindow?.what_to_do
+    ? renderBullets(topWindow.what_to_do)
+    : ''
 
   const windowCard = topWindow ? `
   <tr><td style="padding-bottom:28px">
     <table width="100%" cellpadding="0" cellspacing="0" style="background:${C_RE.surface};border:1px solid ${C_RE.border};border-radius:14px">
-      <tr><td style="padding:20px 22px">
+      <tr><td style="padding:20px 22px 12px">
         <table width="100%" cellpadding="0" cellspacing="0">
           <tr><td style="padding-bottom:8px"><p style="font-family:Georgia,'Times New Roman',serif;font-size:18px;color:${C_RE.text};margin:0;line-height:1.3">${topWindow.title}</p></td></tr>
-          <tr><td style="padding-bottom:14px"><p style="font-family:Arial,sans-serif;font-size:14px;color:${C_RE.textMid};margin:0;line-height:1.7">${bodyText}</p></td></tr>
-          <tr><td>
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:${C_RE.terraTint};border-radius:10px">
-              <tr><td style="padding:12px 16px">
-                <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C_RE.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p>
-                <p style="font-family:Arial,sans-serif;font-size:14px;color:${C_RE.text};margin:0;line-height:1.6">${move}</p>
-              </td></tr>
-            </table>
-          </td></tr>
+          <tr><td><p style="font-family:Arial,sans-serif;font-size:14px;color:${C_RE.textMid};margin:0;line-height:1.7">${bodyText}</p></td></tr>
         </table>
       </td></tr>
+      ${bulletsHtml ? `
+      <tr><td style="background:#faf7ff;border-top:1px solid ${C_RE.border};padding:14px 20px 16px">
+        <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:${C_RE.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">The move</p>
+        ${bulletsHtml}
+      </td></tr>` : ''}
     </table>
   </td></tr>` : ''
 
