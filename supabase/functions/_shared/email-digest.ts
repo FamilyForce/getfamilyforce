@@ -954,16 +954,18 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
     ? windows.map(w => ({
         title:      w.title,
         excerpt:    applyPronouns((w.why_it_matters || '').replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim(), childGender),
-        actionLine: applyPronouns((w.what_to_do || '').split('\n')[0].replace(/^[-•·]\s*/, '').trim(), childGender),
+        bulletsHtml: renderBullets(applyPronouns(w.what_to_do || '', childGender)),
       }))
     : PREBIRTH_FALLBACK_CARDS
 
-  const windowCards = cardsToRender.map(card => `
+  const windowCards = cardsToRender.map((card: any) => {
+    const bulletsHtml = card.bulletsHtml || (card.actionLine ? renderBullets(card.actionLine) : '')
+    return `
   <tr>
     <td style="padding-bottom:16px">
       <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1px solid ${C.border};border-radius:14px;overflow:hidden">
         <tr>
-          <td style="padding:20px 22px">
+          <td style="padding:20px 22px 12px">
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td style="padding-bottom:8px">
@@ -971,29 +973,24 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
                 </td>
               </tr>
               <tr>
-                <td style="padding-bottom:14px">
+                <td>
                   <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0;line-height:1.7">${card.excerpt}</p>
                 </td>
               </tr>
-              ${card.actionLine ? `
-              <tr>
-                <td>
-                  <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.terraTint};border-radius:10px">
-                    <tr>
-                      <td style="padding:12px 16px">
-                        <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 5px">The move</p>
-                        <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0;line-height:1.6">${card.actionLine}</p>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>` : ''}
             </table>
           </td>
         </tr>
+        ${bulletsHtml ? `
+        <tr>
+          <td style="background:#faf7ff;border-top:1px solid ${C.border};padding:14px 20px 16px">
+            <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">The move</p>
+            ${bulletsHtml}
+          </td>
+        </tr>` : ''}
       </table>
     </td>
-  </tr>`).join('')
+  </tr>`
+  }).join('')
 
   const unsubLine = `<a href="${dashboardUrl}" style="color:${C.textDim}">Manage preferences</a>`
 
