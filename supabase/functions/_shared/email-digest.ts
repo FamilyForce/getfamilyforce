@@ -1017,9 +1017,11 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
     <a href="${dashboardUrl}" style="display:inline-block;background:#6E4ED6;color:#fff;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:14px 36px;border-radius:100px;text-decoration:none">Confirm arrival in Scout →</a>
   </td></tr></table>
 </td></tr>
-<tr><td style="padding-top:24px;text-align:center">
-  <p style="font-family:Arial,sans-serif;font-size:11px;color:#8A879A;margin:0 0 4px"><em>For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</em></p>
-  <p style="font-family:Arial,sans-serif;font-size:11px;color:#8A879A;margin:0">${unsubLine} · FamilyForce</p>
+<tr><td style="padding-top:20px;border-top:1px solid rgba(255,255,255,.1)">
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:#8A879A;margin:0 0 6px;line-height:1.6">FamilyForce · <a href="${siteUrl}" style="color:#8A879A;text-decoration:none">getfamilyforce.com</a></p>
+  <p style="font-family:Arial,sans-serif;font-size:11px;color:#8A879A;margin:0 0 6px;line-height:1.6">FamilyForce, 6th Floor, 12P Smithfield, Kennedy Town, Hong Kong</p>
+  <p style="font-family:Arial,sans-serif;font-size:12px;color:#8A879A;margin:0 0 6px;line-height:1.6">You're receiving this because you're a Scout member. &nbsp;<a href="${dashboardUrl}" style="color:#6E4ED6;text-decoration:none">Manage preferences</a></p>
+  <p style="font-family:Arial,sans-serif;font-size:11px;color:#8A879A;margin:0;line-height:1.6;opacity:0.8"><em>For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</em></p>
 </td></tr>
 </table></td></tr></table>
 </body></html>`
@@ -1121,10 +1123,6 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
   </tr></table>
 </td></tr>` : ''
 
-  const unsubLine = unsubscribeUrl
-    ? `<a href="${unsubscribeUrl}" style="color:#aaa;text-decoration:none">Unsubscribe</a>`
-    : `<a href="${siteUrl}/unsubscribe?user=${userId}" style="color:#aaa;text-decoration:none">Unsubscribe</a>`
-
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1205,9 +1203,11 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
       </td></tr>
 
       <!-- FOOTER -->
-      <tr><td style="text-align:center;padding-bottom:32px">
-        <p style="font-family:Arial,sans-serif;font-size:11px;color:#aaa;margin:0 0 4px;line-height:1.7"><em>For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</em></p>
-        <p style="font-family:Arial,sans-serif;font-size:11px;color:#aaa;margin:0">${unsubLine} · FamilyForce</p>
+      <tr><td style="padding-top:20px;padding-bottom:32px;border-top:1px solid #ece8f0">
+        <p style="font-family:Arial,sans-serif;font-size:12px;color:#8A879A;margin:0 0 8px;line-height:1.6">FamilyForce · <a href="${siteUrl}" style="color:#8A879A;text-decoration:none">getfamilyforce.com</a></p>
+        <p style="font-family:Arial,sans-serif;font-size:11px;color:#8A879A;margin:0 0 6px;line-height:1.6">FamilyForce, 6th Floor, 12P Smithfield, Kennedy Town, Hong Kong</p>
+        <p style="font-family:Arial,sans-serif;font-size:12px;color:#8A879A;margin:0 0 6px;line-height:1.6">You're receiving this because you're a Scout member. &nbsp;<a href="${dashboardUrl}" style="color:#6E4ED6;text-decoration:none">Manage preferences</a></p>
+        <p style="font-family:Arial,sans-serif;font-size:11px;color:#8A879A;margin:0;line-height:1.6;opacity:0.8"><em>For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</em></p>
       </td></tr>
 
     </table>
