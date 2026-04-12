@@ -195,9 +195,9 @@ interface MonthContent {
 // Month 0 = pre-birth; months 1-36 = baby's age
 const MONTH_CONTENT: Record<number, MonthContent> = {
   0:  { theme: '📋 This month: three things to sort before the due date.', dyk: 'In the first hour after birth, your baby is in what neuroscientists call the **quiet alert state** — the most receptive window for bonding. Skin-to-skin in that first hour shapes the attachment system for years.', opening: 'The due date is close. Most of the preparation below is far easier to do now than with a newborn in the room.', context: 'A few things that take an hour now and save a lot of stress later.', closing: "You're close now. Everything you do in the next few weeks makes the first days easier. — Jack, Founder @ FamilyForce" },
-  1:  { theme: '👶 This month: the 1-month checkup, tummy time, and something worth screening for.', dyk: 'In the first month of life, a baby\'s brain creates more than **1 million new neural connections per second** — a rate that will never be matched again. Every time you hold your baby, respond to her cries, and engage with her, you\'re building the architecture of her brain.', opening: 'The steepest learning curve of any parent\'s life happens in the next 30 days.', context: 'Survival mode is real. These three things are worth doing anyway.', closing: 'Month 1 is hard. You\'re doing it. Month 2 gets better. — Jack, Founder @ FamilyForce' },
+  1:  { theme: '👶 This month: the 1-month checkup, tummy time, and something worth screening for.', dyk: 'In the first month of life, a baby\'s brain creates more than **1 million new neural connections per second** — a rate that will never be matched again. Every time you hold your baby, respond to her cries, and engage with your baby, you\'re building the architecture of her brain.', opening: 'The steepest learning curve of any parent\'s life happens in the next 30 days.', context: 'Survival mode is real. These three things are worth doing anyway.', closing: 'Month 1 is hard. You\'re doing it. Month 2 gets better. — Jack, Founder @ FamilyForce' },
   2:  { theme: '😊 This month: the 2-month checkup, the first real smile, and the habit that builds everything.', dyk: 'The social smile — the first **intentional smile in response to your face** — activates the same brain regions as adult social bonding. It\'s not reflex. It\'s the beginning of a relationship.', opening: 'Something is shifting — she\'s starting to respond to you. The one-sided relationship is ending.', context: 'The fog is lifting. And she\'s starting to know your face.', closing: 'The social smile changes things. You\'ll feel it when it happens. — Jack, Founder @ FamilyForce' },
-  3:  { theme: '🧠 This month: one milestone closing, a new one emerging, and the bedtime habit to lock in now.', dyk: 'A consistent 3–4 step bedtime routine can produce **measurable sleep improvements within one week** — even in babies as young as 3 months. Same steps, same order, every night.', opening: 'Three months in, and the fourth trimester is over. The development is about to accelerate.', context: 'You made it through the fourth trimester. The development is accelerating.', closing: 'Month 3 is when it starts feeling real. You\'re watching her become someone. — Jack, Founder @ FamilyForce' },
+  3:  { theme: '🧠 This month: one milestone closing, a new one emerging, and the bedtime habit to lock in now.', dyk: 'A consistent 3–4 step bedtime routine can produce **measurable sleep improvements within one week** — even in babies as young as 3 months. Same steps, same order, every night.', opening: 'Three months in, and the fourth trimester is over. The development is about to accelerate.', context: 'You made it through the fourth trimester. The development is accelerating.', closing: 'Month 3 is when it starts feeling real. You\'re watching your baby become someone. — Jack, Founder @ FamilyForce' },
   4:  { theme: '😴 This month: nobody warns you about the 4-month sleep regression. We\'re warning you.', dyk: 'The 4-month sleep regression isn\'t random — it\'s caused by the brain **permanently reorganising its sleep architecture** from newborn cycles to adult cycles. It doesn\'t go back. But it does get better.', opening: 'The 4-month sleep regression may have arrived — or it\'s coming. Here\'s what it is and what to do.', context: 'The hardest sleep phase of the first year. Understanding it helps.', closing: 'The regression passes. Your response to it shapes the next 6 months of sleep. — Jack, Founder @ FamilyForce' },
   5:  { theme: '🥄 This month: solids are almost here, iron matters now, and attachment is building.',  dyk: '**Iron deficiency is the most common nutritional deficiency in infants worldwide** — and breastfed babies are most at risk after 4 months. Iron drops are a simple fix while solid foods are being introduced.', opening: 'Solids are right around the corner — and there\'s a nutrition window closing this month that most parents miss.', context: 'The solids window is opening. The iron window is closing.', closing: 'The attachment you\'ve been building all along — it\'s real. It shows up at 12 months, and again at 3 years. — Jack, Founder @ FamilyForce' },
   6:  { theme: '🥄 This month: the 6-month checkup, first solids, and a motor milestone worth celebrating.', dyk: 'When babies sit **independently**, it frees both hands for exploration — and exploration is how the brain builds. Independent sitting isn\'t just a motor milestone. It\'s what unlocks the next 6 months of cognitive development.', opening: 'Solids are starting, the 6-month checkup is due, and she\'s sitting up on her own. A lot is happening at once.', context: 'Six months. Solids, sitting, and a whole new level of curiosity.', closing: 'Halfway through the first year. You\'ve done more right than you know. — Jack, Founder @ FamilyForce' },
@@ -244,22 +244,51 @@ function getMonthContent(ageMonths: number): MonthContent {
 }
 
 // ─── Apply gender pronouns to MONTH_CONTENT editorial copy ───────────────────
-// MONTH_CONTENT strings are static and default to female pronouns.
-// This function does a safe runtime swap so boy/neutral babies get correct copy.
+// MONTH_CONTENT strings default to female pronouns.
+// Rules:
+//   'girl'          → return unchanged (female is the source default)
+//   'boy'           → swap she→he, her→his, him→him, herself→himself
+//   null or 'other' → swap she→they, her→their, him→them, herself→themselves
+//                     (null = gender not set; 'other' = prefer not to say — both → neutral)
+// Object-pronoun 'her' (e.g. "Let her", "Teach her") is handled explicitly
+// BEFORE the possessive sweep to avoid wrong "Let his" / "Let their" output.
+// DB window content (what_to_do, why_it_matters, jack_bridge) must be written
+// gender-neutral at source and never passed through this function.
 function applyPronouns(text: string, gender: string | null): string {
-  if (!gender || gender === 'girl') return text  // default is already female
-  const she = pronoun(gender, 'subject')   // he / they
-  const her = pronoun(gender, 'possess')   // his / their
-  const She = cap(she), Her = cap(her)
+  if (gender === 'girl') return text  // female is the default — no swap needed
+  // null (not set) and 'other' (prefer not to say) both → they/them/their
+  const g: 'boy' | 'other' = gender === 'boy' ? 'boy' : 'other'
+  const she  = pronoun(g, 'subject')   // he  / they
+  const her  = pronoun(g, 'possess')   // his / their
+  const obj  = pronoun(g, 'object')    // him / them
+  const She  = cap(she),  Her  = cap(her)
+  const self = g === 'boy' ? 'himself' : 'themselves'
+  const Self = cap(self)
+  // Contractions: she's → he's (boy) | they're (neutral) — NOT they's
+  const shes = g === 'other' ? "they're" : `${she}'s`
+  const Shes = g === 'other' ? "They're" : `${She}'s`
+  // Helper: capitalise replacement when source match has capital H in 'Her/Him'
+  const objFor  = (m: string) => m[m.length - 3] === 'H' ? cap(obj)  : obj
   return text
-    .replace(/\bShe's\b/g, `${She}'s`)
-    .replace(/\bshe's\b/g, `${she}'s`)
-    .replace(/\bShe\b/g, She)
-    .replace(/\bshe\b/g, she)
-    .replace(/\bHer\b/g, Her)
-    .replace(/\bher\b/g, her)
-    .replace(/\bHim\b/g, cap(pronoun(gender, 'object')))
-    .replace(/\bhim\b/g, pronoun(gender, 'object'))
+    // ── Object-pronoun 'her' patterns — MUST come before possessive sweep ──
+    .replace(/\bLet [Hh]er\b/g,      m => `Let ${objFor(m)}`)
+    .replace(/\bTeach [Hh]er\b/g,    m => `Teach ${objFor(m)}`)
+    .replace(/\bwatching [Hh]er\b/g, m => `watching ${objFor(m)}`)
+    .replace(/\bengage with [Hh]er\b/g, m => `engage with ${objFor(m)}`)
+    // ── Reflexive ──────────────────────────────────────────────────────────
+    .replace(/\bHerself\b/g, Self)
+    .replace(/\bherself\b/g, self)
+    // ── Subject + contractions ─────────────────────────────────────────────
+    .replace(/\bShe's\b/g, Shes)
+    .replace(/\bshe's\b/g, shes)
+    .replace(/\bShe\b/g,   She)
+    .replace(/\bshe\b/g,   she)
+    // ── Possessive her (remaining — object patterns already handled above) ─
+    .replace(/\bHer\b/g,   Her)
+    .replace(/\bher\b/g,   her)
+    // ── Object him ─────────────────────────────────────────────────────────
+    .replace(/\bHim\b/g,   cap(obj))
+    .replace(/\bhim\b/g,   obj)
 }
 
 // ─── Coming next month list ────────────────────────────────────────────────────
