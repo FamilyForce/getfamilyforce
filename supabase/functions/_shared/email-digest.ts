@@ -195,7 +195,7 @@ interface MonthContent {
 // Month 0 = pre-birth; months 1-36 = baby's age
 const MONTH_CONTENT: Record<number, MonthContent> = {
   0:  { theme: '📋 This month: three things to sort before the due date.', dyk: 'In the first hour after birth, your baby is in what neuroscientists call the **quiet alert state** — the most receptive window for bonding. Skin-to-skin in that first hour shapes the attachment system for years.', opening: 'The due date is close. Most of the preparation below is far easier to do now than with a newborn in the room.', context: 'A few things that take an hour now and save a lot of stress later.', closing: "You're close now. Everything you do in the next few weeks makes the first days easier. — Jack, Founder @ FamilyForce" },
-  1:  { theme: '👶 This month: the 1-month checkup, tummy time, and something worth screening for.', dyk: 'In the first month of life, a baby\'s brain creates more than **1 million new neural connections per second** — a rate that will never be matched again. Every time you talk to her, hold her, and respond to her cries, you\'re building the architecture of her brain.', opening: 'The steepest learning curve of any parent\'s life happens in the next 30 days.', context: 'Survival mode is real. These three things are worth doing anyway.', closing: 'Month 1 is hard. You\'re doing it. Month 2 gets better. — Jack, Founder @ FamilyForce' },
+  1:  { theme: '👶 This month: the 1-month checkup, tummy time, and something worth screening for.', dyk: 'In the first month of life, a baby\'s brain creates more than **1 million new neural connections per second** — a rate that will never be matched again. Every time you hold your baby, respond to her cries, and engage with her, you\'re building the architecture of her brain.', opening: 'The steepest learning curve of any parent\'s life happens in the next 30 days.', context: 'Survival mode is real. These three things are worth doing anyway.', closing: 'Month 1 is hard. You\'re doing it. Month 2 gets better. — Jack, Founder @ FamilyForce' },
   2:  { theme: '😊 This month: the 2-month checkup, the first real smile, and the habit that builds everything.', dyk: 'The social smile — the first **intentional smile in response to your face** — activates the same brain regions as adult social bonding. It\'s not reflex. It\'s the beginning of a relationship.', opening: 'Something is shifting — she\'s starting to respond to you. The one-sided relationship is ending.', context: 'The fog is lifting. And she\'s starting to know your face.', closing: 'The social smile changes things. You\'ll feel it when it happens. — Jack, Founder @ FamilyForce' },
   3:  { theme: '🧠 This month: one milestone closing, a new one emerging, and the bedtime habit to lock in now.', dyk: 'A consistent 3–4 step bedtime routine can produce **measurable sleep improvements within one week** — even in babies as young as 3 months. Same steps, same order, every night.', opening: 'Three months in, and the fourth trimester is over. The development is about to accelerate.', context: 'You made it through the fourth trimester. The development is accelerating.', closing: 'Month 3 is when it starts feeling real. You\'re watching her become someone. — Jack, Founder @ FamilyForce' },
   4:  { theme: '😴 This month: nobody warns you about the 4-month sleep regression. We\'re warning you.', dyk: 'The 4-month sleep regression isn\'t random — it\'s caused by the brain **permanently reorganising its sleep architecture** from newborn cycles to adult cycles. It doesn\'t go back. But it does get better.', opening: 'The 4-month sleep regression may have arrived — or it\'s coming. Here\'s what it is and what to do.', context: 'The hardest sleep phase of the first year. Understanding it helps.', closing: 'The regression passes. Your response to it shapes the next 6 months of sleep. — Jack, Founder @ FamilyForce' },
@@ -422,7 +422,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
         <table width="100%" cellpadding="0" cellspacing="0" style="background:#f0ebff;border-radius:10px">
           <tr>
             <td style="padding:14px 16px">
-              <p style="font-family:Arial,sans-serif;font-size:13px;color:#2d1b69;margin:0;line-height:1.5">${mc.theme}</p>
+              <p style="font-family:Arial,sans-serif;font-size:13px;color:#2d1b69;margin:0;line-height:1.5">${applyPronouns(mc.theme, childGender)}</p>
             </td>
           </tr>
         </table>
@@ -431,7 +431,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
 
   // Build window sections — matches approved mockup layout:
   // W1 → DYK → Forward → "Also this month" header → W2+W3
-  const dykSection  = dykCard(mc.dyk)
+  const dykSection  = dykCard(applyPronouns(mc.dyk, childGender))
   const allWins     = [...closing, ...openWindows]
   const closingSlugs = new Set(closing.map(w => w.id))
 
