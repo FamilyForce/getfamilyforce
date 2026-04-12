@@ -563,20 +563,9 @@ Deno.serve(async (req: Request) => {
             const memberGreetName = memberProfile?.name?.trim() || undefined
             const unsubUrl   = `${supabaseUrl}/functions/v1/scout-unsubscribe?t=${member.unsubscribe_token}`
 
-            // Re-fetch windows for member email build (aboveFold not in scope here)
-            const { data: mWindows } = await sb
-              .from('milestone_windows')
-              .select('id, slug, title, category, urgency, open_age_weeks, peak_age_weeks, close_age_weeks, priority, why_it_matters, what_to_do, what_not_to_worry, missed_window, playbook_link, prep_tip')
-              .eq('active', true)
-              .eq('window_type', 'milestone')
-              .eq('prenatal', false)
-              .lte('open_age_weeks', weeks)
-              .gte('close_age_weeks', weeks)
-              .order('priority', { ascending: true })
-            const mAllWindows = (mWindows ?? []) as MilestoneWindow[]
-            const mAboveFold  = selectAboveFold(mAllWindows, weeks)
-            const mClosing    = mAboveFold.filter(w => w.close_age_weeks - weeks <= 4).length
-            const mNextBday   = nextMonthlyBirthday(childDob, now)
+            // Reuse parent's editorial-first aboveFold + getReadyWindows — all recipients see identical content
+            const mClosing  = aboveFold.filter(w => w.close_age_weeks - weeks <= 4).length
+            const mNextBday = nextMonthlyBirthday(childDob, now)
 
             const memberHtml = buildDigestEmail({
               childName:           child.name,
@@ -585,9 +574,9 @@ Deno.serve(async (req: Request) => {
               ageMonths:           months,
               isExpecting:         false,
               postBirthWindowCount: 0,
-              aboveFold:           mAboveFold as DigestWindow[],
-              getReadyWindows:     [],
-              allWindowCount:      mAllWindows.length,
+              aboveFold:           aboveFold as DigestWindow[],
+              getReadyWindows:     getReadyWindows as DigestWindow[],
+              allWindowCount:      allWindows.length,
               closingCount:        mClosing,
               nextEventDate:       mNextBday,
               dashboardUrl:        dashUrl,
