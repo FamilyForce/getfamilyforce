@@ -97,7 +97,7 @@ export function renderBullets(text: string): string {
     // Must check BEFORE stripping the leading * marker, otherwise **bold** → *bold** after strip.
     const subheaderMatch = line.match(/^\*?\*\*([^*]+)\*\*:?\s*$/)
     if (subheaderMatch) {
-      return `<p style="font-family:Arial,sans-serif;font-size:13px;font-weight:700;color:${C.text};margin:10px 0 4px;line-height:1.5">${subheaderMatch[1].replace(/:$/, '')}:</p>`
+      return `<p style="font-family:Arial,sans-serif;font-size:14px;font-weight:700;color:${C.text};margin:10px 0 4px;line-height:1.5">${subheaderMatch[1].replace(/:$/, '')}:</p>`
     }
     // Strip leading bullet markers: *, -, •, 1., 2., etc.
     const clean = line.replace(/^(\*\*?|-|•|\d+\.)\s*/, '').trim()
