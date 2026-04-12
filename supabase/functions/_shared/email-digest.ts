@@ -787,7 +787,7 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
               ${opts.recipientType === 'family_member'
                 ? `You're receiving this because you were added to ${childName}'s family circle.`
                 : `You're receiving this because you're a Scout member.`}
-              &nbsp;<a href="${siteUrl}/sign-in" style="color:${C.terra};text-decoration:none">Manage preferences</a>
+              &nbsp;<a href="${dashboardUrl}" style="color:${C.terra};text-decoration:none">Manage preferences</a>
             </p>
             <p style="font-family:Arial,sans-serif;font-size:11px;color:${C.textDim};margin:0;line-height:1.6;opacity:0.8">
               For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.
@@ -963,7 +963,7 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
     </td>
   </tr>`).join('')
 
-  const unsubLine = `<a href="${siteUrl}/sign-in" style="color:${C.textDim}">Manage preferences</a>`
+  const unsubLine = `<a href="${dashboardUrl}" style="color:${C.textDim}">Manage preferences</a>`
 
   return `<!DOCTYPE html>
 <html lang="en">
