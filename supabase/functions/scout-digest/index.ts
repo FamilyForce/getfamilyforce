@@ -172,10 +172,10 @@ Deno.serve(async (req: Request) => {
 
   console.log(`[scout-digest] Starting — ${now.toISOString()}`)
 
-  // 1. Load all active subscriptions
+  // 1. Load all active subscriptions — include child_id so multi-child families get the right digest
   const { data: activeSubs, error: subErr } = await sb
     .from('scout_subscriptions')
-    .select('user_id, created_at')
+    .select('user_id, child_id, created_at')
     .eq('status', 'active')
 
   if (subErr) {
@@ -212,13 +212,18 @@ Deno.serve(async (req: Request) => {
     try {
       const userId = sub.user_id
 
-      // 2. Load child
-      const { data: children } = await sb
+      // 2. Load child — use sub.child_id if set (multi-child families each have their own subscription)
+      const subChildId = (sub as { user_id: string; child_id?: string | null }).child_id ?? null
+      let childQuery = sb
         .from('children')
         .select('id, name, dob, due_date, is_expecting, gender')
         .eq('user_id', userId)
-        .order('created_at', { ascending: true })
-        .limit(1)
+      if (subChildId) {
+        childQuery = childQuery.eq('id', subChildId).limit(1)
+      } else {
+        childQuery = childQuery.order('created_at', { ascending: true }).limit(1)
+      }
+      const { data: children } = await childQuery
 
       if (!children?.length) { results.skipped++; continue }
       const child = children[0]
@@ -391,6 +396,13 @@ Deno.serve(async (req: Request) => {
 
       if (allWindows.length === 0) {
         console.log(`[scout-digest] No windows for child ${child.id} at ${weeks}w — skipping`)
+        results.skipped++
+        continue
+      }
+
+      // If every open window is completed, aboveFold will be empty — don't send a blank email
+      if (aboveFold.length === 0) {
+        console.log(`[scout-digest] All open windows completed for child ${child.id} — skipping digest`)
         results.skipped++
         continue
       }

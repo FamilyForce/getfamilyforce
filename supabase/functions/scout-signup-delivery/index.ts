@@ -473,7 +473,9 @@ Deno.serve(async (req: Request) => {
         { name: 'month',       value: currentMonth },
       ],
       attachments: [{
-        filename:    `scout-${child.name.toLowerCase().replace(/\s+/g, '-')}-month${months}.ics`,
+        filename:    isExpecting
+          ? `scout-${child.name.toLowerCase().replace(/\s+/g, '-')}-due-date.ics`
+          : `scout-${child.name.toLowerCase().replace(/\s+/g, '-')}-month${months}.ics`,
         content:     icsBase64,
         content_type: 'text/calendar',
       }],
