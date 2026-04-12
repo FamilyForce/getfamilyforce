@@ -117,6 +117,13 @@ Deno.serve(async (req: Request) => {
   const jobStart = Date.now()
   const now      = new Date()
 
+  // Optional test params: { childId, force } — bypasses birthday gate for a specific child
+  let forceChildId: string | null = null
+  try {
+    const body = await req.json().catch(() => ({}))
+    if (body?.force && body?.childId) forceChildId = body.childId
+  } catch { /* no body */ }
+
   const sb = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
@@ -173,7 +180,8 @@ Deno.serve(async (req: Request) => {
       const childDob = new Date(child.dob + 'T00:00:00Z')
 
       // 3. Birthday check — is today this child's birth day of month?
-      if (!isBirthdayToday(childDob, now)) { results.not_birthday++; continue }
+      // Bypass if force-sending a specific child for testing
+      if (!isBirthdayToday(childDob, now) && child.id !== forceChildId) { results.not_birthday++; continue }
 
       const weeks  = ageInWeeks(childDob, now)
       const months = ageInMonths(childDob, now)
