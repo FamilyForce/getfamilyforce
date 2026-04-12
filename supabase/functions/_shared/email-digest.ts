@@ -219,7 +219,7 @@ const MONTH_CONTENT: Record<number, MonthContent> = {
   20: { theme: '❓ This month: the why-question explosion, sorting by shape and color, and naming the body.', dyk: 'Research by Chouinard (2007) found that children in the question-asking phase ask up to **100 questions per hour** — and that the quality of the answers they receive significantly predicts scientific reasoning ability at age 10.', opening: 'The questions are starting. \'What\'s that?\' over and over, about everything. Answer every single one.', context: 'Twenty months: questions are the learning mechanism. The repetition is the point.', closing: 'Answer the questions. All of them. Every answered question is a word, a concept, a connection. — Jack, Founder @ FamilyForce' },
   21: { theme: '🗣️ This month: speech clarity milestone, empathy beginning, and knowing what things are for.', dyk: 'Toddlers who see adults **modelling empathic behaviour** — comforting others, asking \'are you okay?\', naming concern — develop empathy faster and show stronger prosocial behaviour at ages 4 and 5. She\'s watching everything you do.', opening: 'Speech is getting clearer — and something new is happening: she\'s starting to notice when other people feel something.', context: 'Twenty-one months: words getting clearer, and a little person who notices when you\'re sad.', closing: 'When she notices you\'re sad — that\'s not nothing. That\'s the beginning of everything that makes us human. — Jack, Founder @ FamilyForce' },
   22: { theme: '📚 This month: the 200-word target, 2-step commands, and the pronoun shift.', dyk: 'Following a **2-step command** requires holding two pieces of information in working memory and executing them in order. It\'s not just language — it\'s executive function. The same mental process underlies planning, problem-solving, and academic learning.', opening: 'Two months from the second birthday — and the 24-month language targets are in sight.', context: 'Twenty-two months: two months to the 24-month checkup. Language is the main event.', closing: 'Two months to the second birthday. Keep reading, keep narrating, keep expanding. — Jack, Founder @ FamilyForce' },
-  23: { theme: '🦘 This month: jumping with both feet, pretend play getting complex, and first size concepts.', dyk: 'Complex pretend play — multi-step scenarios with characters and scripts — uses the same cognitive machinery as **narrative comprehension and writing** later in school. Children who engage in rich pretend play at 2–3 years show stronger literacy skills at age 5.', opening: 'One month from the second birthday. The motor, language, and cognitive development happening right now is accelerating fast.', context: 'Twenty-three months: the last month before the second birthday checkup.', closing: 'One month to the second birthday. She\'s come so far — and the pace doesn\'t slow down. — Jack, Founder @ FamilyForce' },
+  23: { theme: '🦘 This month: jumping with both feet, pretend play getting complex, and first size concepts.', dyk: 'Complex pretend play — multi-step scenarios with characters and scripts — uses the same cognitive machinery as **narrative comprehension and writing** later in school. Children who engage in rich pretend play at 2–3 years show stronger literacy skills at age 5.', opening: 'One month from the second birthday. The motor, language, and cognitive development happening right now is accelerating fast.', context: 'Twenty-three months: the last month before the second birthday checkup.', closing: 'One month to the second birthday. The progress has been remarkable — and the pace doesn\'t slow down. — Jack, Founder @ FamilyForce' },
   24: { subject: '{{childName}} at 24 months — the second birthday checkup covers a lot. Here\'s how to prepare.', theme: '🩺 This month: the 24-month checkup + second autism screen, the milk switch, and same vs. different.', dyk: 'The AAP recommends switching to **2% milk at age 2** because after the second birthday, children no longer need the high fat content of whole milk for brain development. The brain\'s fat-intensive growth phase is winding down.', opening: 'The 24-month checkup includes the second formal autism screening. Here\'s how to come prepared.', context: 'Two years. One of the most comprehensive developmental checkpoints of the first two years.', closing: 'Happy second birthday. Two years of showing up, learning on the job. Year three is different again. — Jack, Founder @ FamilyForce' },
   25: { theme: '🗣️ This month: 3-word sentences, memory taking shape, and cooperative play beginning.', dyk: 'Asking **\'what happened?\'** after an outing does more for language development than almost any other single prompt. It exercises memory, narrative structure, vocabulary, and sentence construction simultaneously.', opening: 'Three-word sentences are arriving — and with them, the beginning of real grammar.', context: 'Twenty-five months: telegraphic speech is giving way to early grammar. Each sentence is a step forward.', closing: 'Three-word sentences are the beginning of the language explosion. The more you respond, the faster it comes. — Jack, Founder @ FamilyForce' },
   26: { theme: '❓ This month: the why-question phase, colors she can name, and counting in sequence.', dyk: 'Color naming is one of the **trickier early language concepts** — colors are not things, they\'re properties of things. \'Red\' describes the cup, the apple, and the fire engine — but \'red\' is none of those things. That abstraction is why color vocabulary arrives later than object vocabulary.', opening: 'The \'why\' questions are arriving — or they\'re coming. Up to 300 a day. Answer them seriously.', context: 'Twenty-six months: the world is suddenly explicable. She wants to know everything about why.', closing: 'Answer the \'why\' questions. Every single one. That\'s the whole job this month. — Jack, Founder @ FamilyForce' },
@@ -896,13 +896,14 @@ export function buildDigestSubject(
 // ─── Pre-birth email ──────────────────────────────────────────────────────────
 export interface PreBirthEmailOptions {
   childName:      string
+  childGender:    string | null   // girl / boy / other / null — pronoun swap applied to DB window content
   dueDate:        Date
-  daysLeft:       number      // negative = overdue
+  daysLeft:       number          // negative = overdue
   windows:        DigestWindow[]
   dashboardUrl:   string
   siteUrl:        string
   userId:         string
-  unsubscribeUrl?: string     // one-click unsubscribe
+  unsubscribeUrl?: string         // one-click unsubscribe
 }
 
 // Evergreen fallback cards shown when no prenatal windows match gestational age
@@ -925,7 +926,7 @@ const PREBIRTH_FALLBACK_CARDS = [
 ]
 
 export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
-  const { childName, dueDate, daysLeft, windows, dashboardUrl, siteUrl, userId, unsubscribeUrl } = opts
+  const { childName, childGender, dueDate, daysLeft, windows, dashboardUrl, siteUrl, userId, unsubscribeUrl } = opts
 
   const dueDateStr  = dueDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
   const isOverdue   = daysLeft <= 0
@@ -952,8 +953,8 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
   const cardsToRender = windows.length > 0
     ? windows.map(w => ({
         title:      w.title,
-        excerpt:    (w.why_it_matters || '').replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim(),
-        actionLine: (w.what_to_do || '').split('\n')[0].replace(/^[-•·]\s*/, '').trim(),
+        excerpt:    applyPronouns((w.why_it_matters || '').replace(/([.!?])\s+/g, '$1|||').split('|||').slice(0, 2).join(' ').trim(), childGender),
+        actionLine: applyPronouns((w.what_to_do || '').split('\n')[0].replace(/^[-•·]\s*/, '').trim(), childGender),
       }))
     : PREBIRTH_FALLBACK_CARDS
 

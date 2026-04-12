@@ -663,6 +663,7 @@ Deno.serve(async (req: Request) => {
 
       const html = buildPreBirthEmail({
         childName:      child.name,
+        childGender:    child.gender ?? null,
         dueDate:        due,
         daysLeft,
         windows:        (preBirthWindows ?? []) as MilestoneWindow[],
