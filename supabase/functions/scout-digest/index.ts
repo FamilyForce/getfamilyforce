@@ -727,11 +727,12 @@ Deno.serve(async (req: Request) => {
           .filter(Boolean) as MilestoneWindow[]
       }
 
-      // Month 1 editorial windows for "coming next month" section
+      // Month 0 editorial for "What you'll get right after birth" section.
+      // Matches scout-signup-delivery — shows newborn windows (3-5 day visit, skin-to-skin, bilirubin).
       const { data: month1Editorial } = await sb
         .from('scout_editorial_schedule')
         .select('slot, slug')
-        .eq('month', 1)
+        .eq('month', 0)
         .order('slot', { ascending: true })
       let nextMonthWindows: Array<{ title: string }> = []
       if (month1Editorial?.length) {
