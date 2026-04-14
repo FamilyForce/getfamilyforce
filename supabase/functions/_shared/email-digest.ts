@@ -931,7 +931,7 @@ export interface PreBirthEmailOptions {
   siteUrl:          string
   userId:           string
   unsubscribeUrl?:  string
-  nextMonthWindows?: Array<{ title: string }>   // month 1 editorial windows for "coming next month"
+  nextMonthWindows?: Array<{ title: string }>   // month 0 editorial windows for "What you'll get right after birth"
   allWindowCount?:  number                      // total active prenatal windows (for section header)
 }
 
