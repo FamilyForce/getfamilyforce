@@ -110,13 +110,36 @@
 
         ScoutDash._initNav(pageName)
 
+        // Seed profile name from cache immediately so attribution renders correctly
+        // even before the background DB query resolves.
+        ScoutDash._profileName = localStorage.getItem('ff_user_name') || ''
+
         // Refresh profile name in background (non-blocking) — don't gate _loadChild on this.
         // Running in parallel means the child pill updates immediately instead of waiting
         // for a serial profiles round-trip first.
         var sb2 = window._supabaseClient
         sb2.from('profiles').select('name').eq('id', _user.id).maybeSingle().then(function (pRes) {
           var profileName = pRes.data && pRes.data.name && pRes.data.name.trim()
-          if (profileName) localStorage.setItem('ff_user_name', profileName)
+          if (profileName) {
+            localStorage.setItem('ff_user_name', profileName)
+            ScoutDash._profileName = profileName
+            try { localStorage.removeItem('ff_pending_parent_name'); } catch (_) {}
+          } else {
+            // Name not in DB yet — retry from safety-net key left by a failed onboarding
+            var pendingName = localStorage.getItem('ff_pending_parent_name')
+            if (pendingName) {
+              sb2.from('profiles').upsert(
+                { id: _user.id, name: pendingName },
+                { onConflict: 'id', ignoreDuplicates: false }
+              ).then(function (res) {
+                if (!res.error) {
+                  localStorage.setItem('ff_user_name', pendingName)
+                  ScoutDash._profileName = pendingName
+                  localStorage.removeItem('ff_pending_parent_name')
+                }
+              })
+            }
+          }
         }).catch(function () {})
 
         // Load child + subscription immediately — no longer waiting for profiles query
@@ -673,7 +696,7 @@
       if (!isPreview && w._progress && w._status !== 'open') {
         var isMe = w._progress.updated_by_user_id && _user && w._progress.updated_by_user_id === _user.id
         var rawName = isMe
-          ? (localStorage.getItem('ff_user_name') || w._progress.updated_by_name || '')
+          ? (ScoutDash._profileName || localStorage.getItem('ff_user_name') || w._progress.updated_by_name || '')
           : (w._progress.updated_by_name || '')
         // If name exactly matches the email prefix fallback (e.g. "jh.scholar1+209"),
         // or contains @, show "You" for own actions — avoids leaking raw email addresses

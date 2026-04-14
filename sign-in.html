@@ -2519,24 +2519,37 @@ button { font: inherit; cursor: pointer; }
   window.generateAndSaveReferralCode = function(userId, email) {
     var sb = window._supabaseClient;
     if (!sb || !userId) return;
-    // Derive name prefix from email: take letters only before @, up to 6 chars
-    var prefix = (email || '').split('@')[0].replace(/[^a-zA-Z]/g, '').slice(0, 6).toUpperCase() || 'FF';
-    // 4 random alphanumeric chars (no confusable chars)
-    var chars  = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
-    var suffix = Array.from({length: 4}, function() {
-      return chars[Math.floor(Math.random() * chars.length)];
-    }).join('');
-    var code = prefix + '-' + suffix;
-    // Save referral code to profiles only — name is saved separately after scout-trial-start succeeds
-    sb.from('profiles').upsert({ id: userId, referral_code: code }, { onConflict: 'id', ignoreDuplicates: false })
-      .then(function(res) {
-        if (!res.error) {
-          localStorage.setItem('ff_own_referral', code);
-          localStorage.setItem('ff_advisor_referral', code); // keep legacy key in sync
-        } else {
-          console.error('[generateAndSaveReferralCode] upsert failed:', res.error);
+    // Fast-path: if we already have a code cached locally, don't overwrite it.
+    // Without this guard, every SIGNED_IN event would regenerate and overwrite the code.
+    if (localStorage.getItem('ff_own_referral')) return;
+    // Check DB first — user may have a code from another device or a previous session
+    sb.from('profiles').select('referral_code').eq('id', userId).maybeSingle()
+      .then(function(checkRes) {
+        var existing = checkRes.data && checkRes.data.referral_code;
+        if (existing) {
+          // Already has a code — just sync it locally
+          localStorage.setItem('ff_own_referral', existing);
+          localStorage.setItem('ff_advisor_referral', existing);
+          return;
         }
-      });
+        // No code yet — generate one
+        var prefix = (email || '').split('@')[0].replace(/[^a-zA-Z]/g, '').slice(0, 6).toUpperCase() || 'FF';
+        var chars  = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+        var suffix = Array.from({length: 4}, function() {
+          return chars[Math.floor(Math.random() * chars.length)];
+        }).join('');
+        var code = prefix + '-' + suffix;
+        sb.from('profiles').upsert({ id: userId, referral_code: code }, { onConflict: 'id', ignoreDuplicates: false })
+          .then(function(res) {
+            if (!res.error) {
+              localStorage.setItem('ff_own_referral', code);
+              localStorage.setItem('ff_advisor_referral', code);
+            } else {
+              console.error('[generateAndSaveReferralCode] upsert failed:', res.error);
+            }
+          });
+      })
+      .catch(function(e) { console.error('[generateAndSaveReferralCode] check failed:', e); });
   };
 
   window.routeAfterSignup = function() {
@@ -2688,6 +2701,12 @@ button { font: inherit; cursor: pointer; }
       return;
     }
 
+    // Safety net: persist parent name before the async fetch so it survives
+    // a network error or edge-function failure. Cleared on successful DB save.
+    if (parentName) {
+      try { localStorage.setItem('ff_pending_parent_name', parentName); } catch(_) {}
+    }
+
     sb.auth.getSession().then(function(res) {
       var session = res.data && res.data.session;
       if (!session) {
@@ -2741,6 +2760,7 @@ button { font: inherit; cursor: pointer; }
           ).then(function(res) {
             if (res.error) { console.error('[startFreeTrial] profile name upsert failed:', res.error); return; }
             try { localStorage.setItem('ff_user_name', parentName); } catch(_) {}
+            try { localStorage.removeItem('ff_pending_parent_name'); } catch(_) {} // clear safety net
           });
         }
         // Cache child ID for dashboard
@@ -3161,6 +3181,9 @@ button { font: inherit; cursor: pointer; }
     clearChildError();
     // Update the trial-start flow to use scout-child-trial-start (add-child endpoint)
     sessionStorage.setItem('ff_adding_child', '1');
+    // Hide parent name field — returning users already have their name set
+    var parentNameGroup = document.getElementById('parent-name') && document.getElementById('parent-name').closest('.step-form-group');
+    if (parentNameGroup) parentNameGroup.style.display = 'none';
     showStep('child');
   };
 
