@@ -2734,6 +2734,18 @@ button { font: inherit; cursor: pointer; }
           showChildError(msg);
           return;
         }
+        // Save parent name to profiles if provided (fire-and-forget)
+        if (parentName) {
+          try {
+            sb.from('profiles').upsert(
+              { id: session.user.id, name: parentName },
+              { onConflict: 'id', ignoreDuplicates: false }
+            ).then(function() {
+              try { localStorage.setItem('ff_user_name', parentName); } catch(_) {}
+              try { localStorage.setItem('ff_last_child_name', sessionStorage.getItem('ff_child_name') || ''); } catch(_) {}
+            });
+          } catch(_) {}
+        }
         // Cache child ID for dashboard
         try {
           sessionStorage.setItem('ff_child_id',    data.childId  || '');
