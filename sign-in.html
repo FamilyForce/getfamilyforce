@@ -2269,8 +2269,14 @@ button { font: inherit; cursor: pointer; }
             return;
           }
 
-          // Keep overlay up during async children check — dismiss only when routing is decided
-          sb.from('children').select('id').eq('user_id', user.id).limit(1)
+          // Keep overlay up during async children check — dismiss only when routing is decided.
+          // Promise.race with a 5s timeout guards against the query hanging indefinitely
+          // (common in iOS Mail's in-app browser where the session may not fully propagate).
+          var _childrenQuery   = sb.from('children').select('id').eq('user_id', user.id).limit(1);
+          var _childrenTimeout = new Promise(function(_, reject) {
+            setTimeout(function() { reject(new Error('children-check-timeout')); }, 5000);
+          });
+          Promise.race([_childrenQuery, _childrenTimeout])
             .then(function(childRes) {
               _dismissVerifyOverlay();
               var hasChildren = childRes.data && childRes.data.length > 0;
@@ -2281,7 +2287,7 @@ button { font: inherit; cursor: pointer; }
               }
             })
             .catch(function() {
-              // DB error — dismiss and send to dashboard anyway
+              // DB error or timeout — dismiss and send to dashboard anyway
               _dismissVerifyOverlay();
               window.location.href = 'scout-dashboard.html';
             });
