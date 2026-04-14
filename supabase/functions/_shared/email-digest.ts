@@ -172,7 +172,7 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
         <!-- The move: separate section with #faf7ff background (matches mockup) -->
         ${whatToDo ? `
         <tr>
-          <td style="background:#faf7ff;border-top:1px solid #ece8f0;padding:14px 20px 16px">
+          <td style="background:#ede8ff;border-top:1px solid #d4c8f0;border-left:3px solid ${C.terra};padding:14px 20px 16px">
             <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">The move</p>
             ${renderBullets(whatToDo)}
           </td>
@@ -1068,7 +1068,7 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
       <p style="font-family:Arial,sans-serif;font-size:14px;color:#555;margin:0;line-height:1.65">${card.excerpt}</p>
     </td></tr>
     ${card.bulletsHtml ? `
-    <tr><td style="background:#faf7ff;border-top:1px solid #ece8f0;padding:14px 20px 16px">
+    <tr><td style="background:#ede8ff;border-top:1px solid #d4c8f0;border-left:3px solid #6E4ED6;padding:14px 20px 16px">
       <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:#6E4ED6;text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">The move</p>
       ${card.bulletsHtml}
     </td></tr>` : ''}
