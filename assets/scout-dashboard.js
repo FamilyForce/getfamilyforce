@@ -110,24 +110,20 @@
 
         ScoutDash._initNav(pageName)
 
-        // Load profile name and always refresh ff_user_name from DB so changes
-        // made on other devices stay in sync. Settings also writes locally.
+        // Refresh profile name in background (non-blocking) — don't gate _loadChild on this.
+        // Running in parallel means the child pill updates immediately instead of waiting
+        // for a serial profiles round-trip first.
         var sb2 = window._supabaseClient
         sb2.from('profiles').select('name').eq('id', _user.id).maybeSingle().then(function (pRes) {
           var profileName = pRes.data && pRes.data.name && pRes.data.name.trim()
           if (profileName) localStorage.setItem('ff_user_name', profileName)
-          ScoutDash._loadChild(function () {
-            ScoutDash._loadSubscription(function () {
-              ScoutDash._renderTrialBanner()
-              fireReady()
-            })
-          })
-        }).catch(function () {
-          ScoutDash._loadChild(function () {
-            ScoutDash._loadSubscription(function () {
-              ScoutDash._renderTrialBanner()
-              fireReady()
-            })
+        }).catch(function () {})
+
+        // Load child + subscription immediately — no longer waiting for profiles query
+        ScoutDash._loadChild(function () {
+          ScoutDash._loadSubscription(function () {
+            ScoutDash._renderTrialBanner()
+            fireReady()
           })
         })
       }, function (err) {
