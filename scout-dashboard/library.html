@@ -440,6 +440,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script src="/assets/scout-dashboard.js?v=20260414e"></script>
+<script src="/assets/js/ff-sync.js"></script>
 <script>
 var BADGES = [
   { key: 'screen-time',    label: 'Digital Guardian', emoji: '📱', bg: 'linear-gradient(135deg,#9B80FF,#6E4ED6)' },
@@ -451,7 +452,22 @@ var BADGES = [
 
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('library', function () {
-    renderBadges()
+    // Sync badges from server before rendering — ensures badges survive
+    // device switches and localStorage clears. Falls back to localStorage
+    // if user is unauthenticated (guest mode) or if Supabase is unreachable.
+    var user = ScoutDash.getUser && ScoutDash.getUser()
+    if (user && window.ffSync) {
+      window.ffSync.loadProgress(user.id).then(function (remoteRows) {
+        if (remoteRows && remoteRows.length) {
+          window.ffSync.mergeProgressIntoLocal(remoteRows)
+        }
+        renderBadges()
+      }).catch(function () {
+        renderBadges() // fallback to localStorage on error
+      })
+    } else {
+      renderBadges() // guest or ffSync not loaded yet
+    }
     // Show nudge if user has no child set up yet
     if (!ScoutDash.getChild()) {
       var nudge = document.getElementById('noChildNudge')
