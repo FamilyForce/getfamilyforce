@@ -235,7 +235,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/scout-dashboard.js?v=20260414e"></script>
+<script src="/assets/scout-dashboard.js?v=20260414f"></script>
 <script>
 var _stripe     = null
 var _stripeCard = null
@@ -712,17 +712,17 @@ function loadReferralCode() {
     .then(function (res) {
       var code = res.data && res.data.referral_code
 
-      var isValidFormat = code && /^FRIEND-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)
-
-      if (!code || !isValidFormat) {
-        // Generate a new FRIEND-XXXX-XXXX code (migrates old format codes too)
+      if (!code) {
+        // No code at all — generate one (first visit for very old accounts)
         code = _genReferralCode()
+        var _retried = false
         ScoutDash.getSb()
           .from('profiles')
           .upsert({ id: user.id, referral_code: code }, { onConflict: 'id' })
           .then(function (r) {
             if (r.error) {
-              loadReferralCode()
+              // Retry once; avoid infinite recursion on persistent DB errors
+              if (!_retried) { _retried = true; loadReferralCode() }
               return
             }
             _showReferralCode(code)

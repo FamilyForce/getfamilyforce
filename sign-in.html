@@ -3121,7 +3121,9 @@ button { font: inherit; cursor: pointer; }
         var session = res.data && res.data.session;
         if (!session) return;
         if (window.rewardful) {
-          rewardful('convert', { email: session.user.email });
+          // Wrap in ready() so the async Rewardful script is guaranteed to
+          // be initialised before convert() fires (prevents missed attribution)
+          rewardful('ready', function() { rewardful('convert', { email: session.user.email }); });
         }
         sessionStorage.setItem('ff_just_subscribed', '1'); // Flag for post-sub modal
       });

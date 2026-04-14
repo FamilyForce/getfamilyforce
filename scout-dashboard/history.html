@@ -81,7 +81,7 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/scout-dashboard.js?v=20260414e"></script>
+<script src="/assets/scout-dashboard.js?v=20260414f"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('history', function (user, child, sub) {
@@ -96,7 +96,7 @@ function loadHistory(child) {
   // Load all window_progress for this child + the window details
   Promise.all([
     sb.from('window_progress').select('*').eq('child_id', child.id).order('updated_at', { ascending: false }),
-    sb.from('milestone_windows').select('id, title, category, urgency, open_age_weeks, close_age_weeks'),
+    sb.from('milestone_windows').select('id, title, category, urgency, open_age_weeks, close_age_weeks').eq('active', true),
     sb.from('scout_digest_log').select('sent_at, age_months').eq('user_id', user_id()).eq('child_id', child.id).order('sent_at', { ascending: false }),
   ]).then(function (results) {
     var progress = results[0].data || []

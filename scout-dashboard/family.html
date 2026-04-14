@@ -124,7 +124,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/scout-dashboard.js?v=20260414e"></script>
+<script src="/assets/scout-dashboard.js?v=20260414f"></script>
 <script>
 var _isPrimary = false
 var _familyMemberId = null
@@ -264,7 +264,7 @@ function sendInvite() {
   errEl.style.display = 'none'
 
   if (_memberCount >= FAMILY_CIRCLE_MAX) {
-    errEl.innerHTML = 'Your Family Circle is full (maximum ' + FAMILY_CIRCLE_MAX + ' members). To add more people, please contact <a href="mailto:support@getfamilyforce.com" style="color:inherit;font-weight:700">support@getfamilyforce.com</a>.'
+    errEl.textContent = 'Your Family Circle is full (' + FAMILY_CIRCLE_MAX + ' members). Remove an existing member to invite someone new.'
     errEl.style.display = 'block'
     return
   }
