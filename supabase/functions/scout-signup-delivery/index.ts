@@ -216,15 +216,17 @@ Deno.serve(async (req: Request) => {
 
     if (isExpecting) {
       // ── Expecting parent path ─────────────────────────────────────────────
-      // Use editorial schedule for month 0 — the age-filter approach doesn't work
-      // because prenatal windows have positive open/close_age_weeks (e.g. [10w to 0w])
-      // which never match the negative ageWeeks of an expecting parent.
+      // Pre-birth slugs are hardcoded here (not queried from editorial schedule).
+      // Month 0 in scout_editorial_schedule is reserved for born newborns.
+      // The check constraint on that table prevents month values outside 0–36,
+      // so pre-birth editorial cannot use a separate month slot.
       step = 'query-windows-prebirth'
-      const { data: preBirthSlots } = await sb
-        .from('scout_editorial_schedule')
-        .select('slot, slug')
-        .eq('month', 0)
-        .order('slot', { ascending: true })
+      const PREBIRTH_SLUGS = [
+        'prebirth-pediatrician-selection',
+        'prebirth-hospital-bag',
+        'prebirth-newborn-screening',
+      ]
+      const preBirthSlots = PREBIRTH_SLUGS.map((slug, i) => ({ slot: i + 1, slug }))
 
       let preBirthWindows: DigestWindow[] = []
       if (preBirthSlots?.length) {
