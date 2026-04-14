@@ -997,7 +997,7 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
   )
   const dykHtml = dykRaw.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:#1a3d32">$1</strong>`)
 
-  const closingText = `You're close now. Everything you do in the next few weeks makes the first days easier. We'll be with you from day one — your first monthly digest arrives when ${childName} turns 1 month old. Until then: you're ready. — Jack, Founder @ FamilyForce`
+  const closingText = `You're close now. Everything you do in the next few weeks makes the first days easier. When ${childName} arrives, confirm the birth in Scout — your newborn digest fires instantly, then monthly from there. Until then: you're ready. — Jack, Founder @ FamilyForce`
 
   // ── Overdue state ────────────────────────────────────────────────────────
   if (isOverdue) {
@@ -1018,10 +1018,10 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
   <p style="font-family:Arial,sans-serif;font-size:28px;font-weight:700;color:#fff;margin:0 0 6px">Is ${childName} here?</p>
   <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.55);margin:0 0 24px">${childName} · Due date: ${dueDateStr}</p>
   <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.8);margin:0 0 14px;line-height:1.7">Hi there,</p>
-  <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.65);margin:0;line-height:1.7">Your due date has passed. When your baby arrives, open Scout and confirm their birthday — your Month 1 digest fires automatically on their 4-week birthday.</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.65);margin:0;line-height:1.7">Your due date has passed. When your baby arrives, open Scout and confirm their birthday — your newborn digest fires immediately, then monthly from the 4-week birthday.</p>
 </td></tr>
 <tr><td style="background:#fff;border-radius:14px;padding:28px;margin-top:10px">
-  <p style="font-family:Arial,sans-serif;font-size:15px;color:#1D1D1F;margin:0 0 20px;line-height:1.7">Once you confirm the birth, Scout will send your first monthly digest on the 4-week birthday. Everything resets to day one — no action needed beyond confirming the arrival.</p>
+  <p style="font-family:Arial,sans-serif;font-size:15px;color:#1D1D1F;margin:0 0 20px;line-height:1.7">Once you confirm the birth, Scout sends your newborn digest immediately — then resets the monthly clock to the 4-week birthday. No action needed beyond confirming the arrival.</p>
   <table width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
     <a href="${dashboardUrl}" style="display:inline-block;background:#6E4ED6;color:#fff;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:14px 36px;border-radius:100px;text-decoration:none">Confirm arrival in Scout →</a>
   </td></tr></table>
@@ -1116,7 +1116,7 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#ebe4ff;border:1px solid #c8b8f0;border-radius:14px">
     <tr><td style="padding:20px 22px">
       <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:#5B3CC4;text-transform:uppercase;letter-spacing:.1em;margin:0 0 8px">📅 When ${childName} arrives</p>
-      <p style="font-family:Arial,sans-serif;font-size:14px;color:#2d1b69;margin:0 0 12px;line-height:1.65">Open Scout and update ${applyPronouns('her', childGender)} birthday — your <strong>Month 1 digest fires automatically</strong> on ${applyPronouns('her', childGender)} 4-week birthday. You won't need to do anything else.</p>
+      <p style="font-family:Arial,sans-serif;font-size:14px;color:#2d1b69;margin:0 0 12px;line-height:1.65">Open Scout and confirm ${applyPronouns('her', childGender)} arrival — your <strong>newborn digest fires immediately</strong>, then monthly from the 4-week birthday. You won't need to do anything else.</p>
       <a href="${dashboardUrl}" style="font-family:Arial,sans-serif;font-size:14px;color:#6E4ED6;font-weight:700;text-decoration:none">Update in Scout →</a>
     </td></tr>
   </table>
