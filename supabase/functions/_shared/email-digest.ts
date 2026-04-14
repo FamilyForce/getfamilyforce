@@ -453,13 +453,11 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     </td>
   </tr>` : ''
 
-  // #7: DYK forward prompt — light share nudge after Did You Know
-  const forwardSubject = encodeURIComponent(`Scout: ${childName} at ${ageMonths} month${ageMonths === 1 ? '' : 's'}`)
-  const forwardBody    = encodeURIComponent(`Thought you'd want to see what Scout sent this month — ${dashboardUrl}`)
+  // #7: DYK forward prompt — plain text nudge (no mailto: link — iOS Mail ignores them when reading)
   const forwardPrompt  = !isExpecting ? `
   <tr>
     <td style="padding-bottom:16px;text-align:center">
-      <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textDim};margin:0">📩 Worth sharing with your partner? <a href="mailto:?subject=${forwardSubject}&body=${forwardBody}" style="color:${C.terra};font-weight:600;text-decoration:none">Forward this email →</a></p>
+      <p style="font-family:Arial,sans-serif;font-size:13px;color:${C.textDim};margin:0">📩 Worth sharing with your partner? Hit forward in your mail app.</p>
     </td>
   </tr>` : ''
 
