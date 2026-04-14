@@ -2527,15 +2527,14 @@ button { font: inherit; cursor: pointer; }
       return chars[Math.floor(Math.random() * chars.length)];
     }).join('');
     var code = prefix + '-' + suffix;
-    // Save to profiles — if collision, Supabase will return an error and we skip silently
-    var parentNameStored = parentName || (typeof window._ff_parent_name !== 'undefined' ? window._ff_parent_name : '');
-    var profilePayload = { id: userId, referral_code: code };
-    if (parentNameStored) profilePayload.name = parentNameStored;
-    sb.from('profiles').upsert(profilePayload, { onConflict: 'id', ignoreDuplicates: false })
+    // Save referral code to profiles only — name is saved separately after scout-trial-start succeeds
+    sb.from('profiles').upsert({ id: userId, referral_code: code }, { onConflict: 'id', ignoreDuplicates: false })
       .then(function(res) {
         if (!res.error) {
           localStorage.setItem('ff_own_referral', code);
           localStorage.setItem('ff_advisor_referral', code); // keep legacy key in sync
+        } else {
+          console.error('[generateAndSaveReferralCode] upsert failed:', res.error);
         }
       });
   };
@@ -2736,15 +2735,13 @@ button { font: inherit; cursor: pointer; }
         }
         // Save parent name to profiles if provided (fire-and-forget)
         if (parentName) {
-          try {
-            sb.from('profiles').upsert(
-              { id: session.user.id, name: parentName },
-              { onConflict: 'id', ignoreDuplicates: false }
-            ).then(function() {
-              try { localStorage.setItem('ff_user_name', parentName); } catch(_) {}
-              try { localStorage.setItem('ff_last_child_name', sessionStorage.getItem('ff_child_name') || ''); } catch(_) {}
-            });
-          } catch(_) {}
+          sb.from('profiles').upsert(
+            { id: session.user.id, name: parentName },
+            { onConflict: 'id', ignoreDuplicates: false }
+          ).then(function(res) {
+            if (res.error) { console.error('[startFreeTrial] profile name upsert failed:', res.error); return; }
+            try { localStorage.setItem('ff_user_name', parentName); } catch(_) {}
+          });
         }
         // Cache child ID for dashboard
         try {
@@ -2763,57 +2760,7 @@ button { font: inherit; cursor: pointer; }
     });
   };
 
-  /* ── Go from child setup to payment ── */
-  window.goToPayment = function() {
-    var nameEl   = document.getElementById('child-name');
-    var dobEl    = document.getElementById('child-dob');
-    var genderEl = document.getElementById('child-gender');
-    var name     = nameEl.value.trim();
-    var dob      = dobEl.value;
-    var gender   = genderEl.value || null;
-
-    // Reset field borders
-    nameEl.style.borderColor = '';
-    dobEl.style.borderColor  = '';
-
-    // Validate
-    if (!name) {
-      nameEl.focus();
-      nameEl.style.borderColor = '#EF4444';
-      return;
-    }
-    if (!dob) {
-      dobEl.focus();
-      dobEl.style.borderColor = '#EF4444';
-      return;
-    }
-
-    // Cache locally
-    try {
-      sessionStorage.setItem('ff_child_name',   name);
-      sessionStorage.setItem('ff_child_dob',    dob);
-      sessionStorage.setItem('ff_child_gender', gender || '');
-    } catch(_) {}
-
-    // Persist parent name for later profile upsert (referral code step runs async)
-    if (parentName) window._ff_parent_name = parentName;
-
-    // Persist to Supabase (non-blocking — show payment step immediately)
-    saveChildToSupabase(name, dob, gender);
-
-    // Save parent name to profiles immediately if session already exists
-    if (parentName) {
-      var sbp = window._supabaseClient;
-      if (sbp) {
-        sbp.auth.getSession().then(function(r) {
-          var s = r.data && r.data.session;
-          if (s) sbp.from('profiles').upsert({ id: s.user.id, name: parentName }, { onConflict: 'id', ignoreDuplicates: false });
-        });
-      }
-    }
-
-    showStep('payment');
-  };
+  /* ── goToPayment removed — dead code (never called); replaced by startFreeTrial ── */
 
   /* ── Save child data to Supabase children table ── */
   window.saveChildToSupabase = function(name, dob, gender) {

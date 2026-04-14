@@ -266,7 +266,6 @@ function renderSettings(user, child, sub) {
   // Load existing display name
   ScoutDash.getSb().from('profiles').select('name').eq('id', user.id).maybeSingle().then(function (res) {
     var nameInput = document.getElementById('displayNameInput')
-    var nameInput = document.getElementById('displayNameInput')
     if (nameInput) {
       // Prefer Supabase value; fall back to certificate name set on dashboard.html
       var stored = (res.data && res.data.name) || localStorage.getItem('ff_user_name') || ''
