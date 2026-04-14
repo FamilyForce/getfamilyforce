@@ -98,6 +98,8 @@
           var _prevUid = localStorage.getItem('ff_user_id')
           if (_prevUid && _prevUid !== _user.id) {
             ['ff_progress','ff_user_name','ff_onboarded',
+             'ff_last_child_name',          // clear cached child name — privacy on shared devices
+             'scout_active_child_id',        // clear active child — belongs to previous user
              'ff_course_screentime_v1','ff_course_sleep_v1','ff_course_tantrum_v1',
              'ff_course_feeding_v1','ff_course_potty_v1'].forEach(function (k) {
               localStorage.removeItem(k)

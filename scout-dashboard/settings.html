@@ -234,7 +234,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/scout-dashboard.js?v=20260414a"></script>
+<script src="/assets/scout-dashboard.js?v=20260414b"></script>
 <script>
 var _stripe     = null
 var _stripeCard = null
@@ -778,6 +778,13 @@ function shareReferralLink() {
 
 // ── Sign out ──────────────────────────────────────────────────────────────────
 function signOut() {
+  // Clear user-specific cache before redirecting — prevents stale child name
+  // showing briefly if another user signs in on the same device.
+  try {
+    ['ff_last_child_name','ff_user_name','ff_user_id',
+     'scout_active_child_id','ff_own_referral','ff_progress',
+     'ff_onboarded'].forEach(function (k) { localStorage.removeItem(k) })
+  } catch (_) {}
   try {
     var sb = ScoutDash.getSb()
     if (sb) {
