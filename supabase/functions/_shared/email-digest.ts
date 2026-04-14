@@ -169,7 +169,7 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
             </table>
           </td>
         </tr>
-        <!-- The move: separate section with #faf7ff background (matches mockup) -->
+        <!-- The move: separate section with deeper purple background + left border for Gmail contrast -->
         ${whatToDo ? `
         <tr>
           <td style="background:#ede8ff;border-top:1px solid #d4c8f0;border-left:3px solid ${C.terra};padding:14px 20px 16px">
