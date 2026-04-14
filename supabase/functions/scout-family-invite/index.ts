@@ -48,7 +48,15 @@ Deno.serve(async (req: Request) => {
     const { data: child } = await sb.from('children').select('user_id').eq('id', childId).single()
     if (!child || child.user_id !== userId) return err(403, 'Permission denied')
 
-    // 2. Check for duplicate invite (same email + child)
+    // 2a. Enforce 5-member limit (counts all pending + active members)
+    const { count: memberCount } = await sb.from('family_members')
+      .select('id', { count: 'exact', head: true })
+      .eq('child_id', childId)
+    if ((memberCount ?? 0) >= 5) {
+      return err(403, 'Your Family Circle has reached the maximum of 5 members. Remove an existing member to invite someone new.')
+    }
+
+    // 2b. Check for duplicate invite (same email + child)
     const { data: existing } = await sb.from('family_members')
       .select('id, status')
       .eq('child_id', childId)

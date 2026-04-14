@@ -77,11 +77,12 @@ Deno.serve(async (req: Request) => {
 
   // 4. DOB change protection
   if (dobChanging) {
-    // 4a. Check if trial has started for this child
+    // 4a. Check if trial has started for this user.
+    // Subscriptions are user-level (child_id is null), so query by user_id, not child_id.
     const { data: sub } = await sb
       .from('scout_subscriptions')
       .select('id, status, created_at')
-      .eq('child_id', childId)
+      .eq('user_id', user.id)
       .limit(1)
       .maybeSingle()
 
