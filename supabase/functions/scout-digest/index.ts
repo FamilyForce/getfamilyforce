@@ -707,17 +707,18 @@ Deno.serve(async (req: Request) => {
         if ((overdueCount ?? 0) >= 2) { results.skipped++; continue }
       }
 
-      // Load pre-birth windows via editorial schedule (month 0) — query by slug, no age filter
-      // (prenatal window open/close_age_weeks use a positive convention that never matches negative ageWeeks)
-      const { data: preBirthEditorialSlots } = await sb
-        .from('scout_editorial_schedule')
-        .select('slot, slug')
-        .eq('month', 0)
-        .order('slot', { ascending: true })
+      // Load pre-birth windows via hardcoded slugs — month 0 in scout_editorial_schedule
+      // is now reserved for born newborns (check constraint prevents negative month values).
+      const PREBIRTH_SLUGS = [
+        'prebirth-pediatrician-selection',
+        'prebirth-hospital-bag',
+        'prebirth-newborn-screening',
+      ]
+      const preBirthEditorialSlots = PREBIRTH_SLUGS.map((slug, i) => ({ slot: i + 1, slug }))
 
       let preBirthWindows: MilestoneWindow[] = []
       if (preBirthEditorialSlots?.length) {
-        const editorialSlugs = (preBirthEditorialSlots as { slot: number; slug: string }[]).map(s => s.slug)
+        const editorialSlugs = preBirthEditorialSlots.map(s => s.slug)
         const { data: editorialWindowData } = await sb
           .from('milestone_windows')
           .select('id, slug, title, urgency, why_it_matters, what_to_do, what_not_to_worry, open_age_weeks, close_age_weeks, priority, playbook_link, missed_window, jack_bridge')
