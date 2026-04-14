@@ -386,7 +386,8 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   const openWindows = topWindows.filter(w => w.close_age_weeks - ageWeeks > 4)
 
   // Per-month editorial content
-  const mc = getMonthContent(isExpecting ? 0 : ageMonths)
+  // Born children at 0 months use month 1 content (month 0 is pre-birth only).
+  const mc = getMonthContent(isExpecting ? 0 : Math.max(1, ageMonths))
 
   const ageFull      = `${ageMonths} month${ageMonths === 1 ? '' : 's'}` // New: ageFull definition
 
@@ -402,6 +403,8 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
     ? `Thanks for continuing. This is ${childName}'s Scout digest for month ${ageMonths} — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now. I wish I'd had this with my first son.`
     : digestType === 'additional_child'
     ? `You already know how Scout works. This is ${childName}'s first digest — the same system, tuned to exactly where ${his} is right now. Every child has their own set of windows. Here's ${childName}'s.`
+    : digestType === 'signup' && ageMonths === 0
+    ? `${childName} is here. The first month is one of the most intensive developmental periods of any human life — and it moves fast. Scout is here to make sure you don't miss the windows that matter. Here's what to focus on right now.`
     : digestType === 'signup'
     ? `This is ${childName}'s first Scout digest. It's the beginning of something that I wish I'd had with my first son — a monthly heads-up on exactly what's worth your attention, based on ${his} age right now.`
     : applyPronouns(mc.opening, childGender)
