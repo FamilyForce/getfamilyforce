@@ -604,19 +604,9 @@
       </div>
     </div>
 
-    <!-- Payout setup prompt (shown in zero state when no method connected) -->
-    <div id="payoutSetupWrap" style="margin-bottom:10px">
-      <div class="earn-payout-row">
-        <div>
-          <div class="earn-payout-label">Payout method</div>
-          <div class="earn-payout-date" style="font-size:13px;font-weight:600;color:var(--text-mid)">Managed manually</div>
-        </div>
-        <div class="earn-payout-badge">Manual</div>
-      </div>
-      <p style="font-size:11px;color:var(--text-dim);padding:0 2px;margin-top:4px;line-height:1.6">
-        You will receive an email on the 15th of the month if your balance is ≥ $25, with instructions on how to receive your payout. Check your <a href="#" onclick="window.open(REWARDFUL_PORTAL,'_blank')" style="color:var(--terra-dark);font-weight:600">Rewardful dashboard</a> for details.
-      </p>
-    </div>
+    <!-- Payout method block intentionally hidden — users don't need to see payment infrastructure.
+         Payouts are handled automatically when balance hits $25. -->
+
 
     <!-- ── EARN KIT ── -->
     <p class="earn-section-label">Your earn kit</p>
