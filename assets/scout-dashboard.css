@@ -1043,3 +1043,17 @@ input, textarea, select { font-family: var(--sans); }
 /* ─── MOBILE CHILD DROPDOWN ──────────────────────────────────────────────── */
 #mobileChildDropdown { min-width: 200px; }
 
+
+/* ─── EARN TOAST (copy link / copied feedback) ──────────────────────────── */
+.earn-toast {
+  position: fixed; bottom: max(24px, env(safe-area-inset-bottom, 24px));
+  left: 50%; transform: translateX(-50%) translateY(60px);
+  background: #1D1D1F; color: #fff; padding: 10px 20px;
+  border-radius: 24px; font-size: 13px; font-weight: 600;
+  transition: transform .25s ease; white-space: nowrap;
+  pointer-events: none; z-index: 9999;
+}
+.earn-toast.show { transform: translateX(-50%) translateY(0); }
+@media (max-width: 768px) {
+  .earn-toast { bottom: calc(var(--nav-bottom-h, 60px) + env(safe-area-inset-bottom, 0px) + 12px); }
+}

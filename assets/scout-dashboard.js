@@ -87,6 +87,12 @@
       sb.auth.getSession().then(function (res) {
         var session = res.data && res.data.session
         if (!session) {
+          // Library is publicly accessible — let unauthenticated users browse
+          if (pageName === 'library') {
+            ScoutDash._initNav(pageName)
+            if (typeof onReady === 'function') onReady(null, null, null)
+            return
+          }
           window.location.href = '/sign-in.html?redirect=' + encodeURIComponent(window.location.pathname)
           return
         }
@@ -390,7 +396,16 @@
       if (textEl) textEl.textContent = isGift
         ? 'Gift ends ' + dateStr + ' (' + daysStr + ')'
         : 'Free trial ends ' + dateStr + ' (' + daysStr + ')'
-      if (subLink) subLink.style.display = isGift ? 'none' : ''
+      if (subLink) {
+        subLink.style.display = isGift ? 'none' : ''
+        // Carry ?testmode=1 if active — same pattern as settingsUrl() on the dashboard
+        if (new URLSearchParams(window.location.search).get('testmode') === '1') {
+          var href = subLink.getAttribute('href') || ''
+          if (href && href.indexOf('testmode') === -1) {
+            subLink.href = href + (href.indexOf('?') !== -1 ? '&' : '?') + 'testmode=1'
+          }
+        }
+      }
       banner.style.display = 'flex'
       var closeBtn = banner.querySelector('.trial-banner-close')
       if (closeBtn) closeBtn.addEventListener('click', function () {
@@ -1368,8 +1383,11 @@
 
     var referralCode = localStorage.getItem('ff_own_referral');
 
+    // Always try to populate the earn nudge card — it's hidden by default on first load
+    if (referralCode) _populateEarnNudge(referralCode);
+
     if (referralCode) {
-      _displayPostSubModal(referralCode);
+      if (justSubscribed) _displayPostSubModal(referralCode);
     } else {
       // Race condition: fetch referral code from DB
       var client = sb || (window._supabaseClient);
@@ -1393,7 +1411,18 @@
     }
   }
 
+  // Populate the earn nudge card on the main dashboard when code is available.
+  // The card is hidden via inline script on page load if code isn't cached yet.
+  function _populateEarnNudge(code) {
+    var card = document.getElementById('earnNudgeCard')
+    var el   = document.getElementById('nudgeCodeDisplay')
+    if (!card || !el) return
+    el.textContent    = code
+    card.style.display = ''
+  }
+
   function _displayPostSubModal(referralCode) {
+    _populateEarnNudge(referralCode)
     var linkEl = document.getElementById('modalReferralLink');
     if (!linkEl) return; // Not on a page with the modal — retry on next load
 

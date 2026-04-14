@@ -7,6 +7,7 @@
      Stack: Vanilla HTML/CSS/JS · zero dependencies
      ═══════════════════════════════════════════════════════════ -->
 <meta charset="UTF-8">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>Scout Dashboard — FamilyForce</title>
@@ -14,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260319b">
+<link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260319c">
 <style>
 /* ── Pre-birth mode ──────────────────────────────────────── */
 .prebirth-countdown {
@@ -187,9 +188,13 @@
     <script>
     (function(){
       var code = localStorage.getItem('ff_own_referral');
+      var card = document.getElementById('earnNudgeCard');
       if (code) {
         var el = document.getElementById('nudgeCodeDisplay');
         if (el) el.textContent = code;
+      } else if (card) {
+        // Hide until referral code is available — avoids showing a blank code
+        card.style.display = 'none';
       }
     })();
     </script>
@@ -334,7 +339,7 @@
   });
 })();
 </script>
-<script src="/assets/scout-dashboard.js?v=20260414d"></script>
+<script src="/assets/scout-dashboard.js?v=20260414e"></script>
 <script>
 // Fix #8: Modal keyboard handling — adjust modal height when iOS keyboard opens
 ;(function() {
@@ -640,7 +645,7 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
   html += collapsibleSection('closing',
     '<span class="section-label section-label-closing">Heads up</span><span class="section-count">(' + _sectionCountLabel + ')</span>',
     closingContent,
-    false)  // default collapsed
+    sections.closing.length > 0)  // open when there are closing windows; collapsed when empty
 
   // This month
   var thisMonthContent
@@ -658,7 +663,7 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
   html += collapsibleSection('month',
     '<span class="section-label section-label-month">This month</span><span class="section-count">(' + sections.thisMonth.length + ')</span>',
     thisMonthContent,
-    false)  // default collapsed
+    true)  // default open — primary content
 
   // Coming up
   // No access: expired trial, lapsed active sub, past_due, or no sub.
