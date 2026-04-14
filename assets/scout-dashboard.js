@@ -60,10 +60,21 @@
         if (typeof onReady === 'function') onReady(_user, _child, _sub)
       }
 
-      // Safety net: if the Supabase chain hangs for >10s, fire onReady anyway
+      // Safety net: if the Supabase chain hangs for >10s, fire onReady anyway.
+      // Also clears "Loading..." from the child name pill — if _loadChild never
+      // resolved, mobileChildName would stay "Loading..." forever.
       setTimeout(function () {
         if (!_readyFired) {
           console.warn('[ScoutDash] init timed out — firing onReady with partial data')
+          // Update name pill with whatever we have — cached name, partial _child, or blank.
+          var _pill = document.getElementById('mobileChildName')
+          var _btn  = document.getElementById('childSelectorBtn')
+          var _cachedName = localStorage.getItem('ff_last_child_name')
+          var _displayName = (_child && _child.name) ? (_child.name + ' ▾')
+                           : _cachedName             ? (_cachedName + ' ▾')
+                           : ''
+          if (_pill) _pill.textContent = _displayName
+          if (_btn)  _btn.textContent  = _displayName || 'My child'
           fireReady()
         }
       }, 10000)
@@ -129,9 +140,15 @@
       document.querySelectorAll('[data-nav]').forEach(function (el) {
         if (el.dataset.nav === pageName) el.classList.add('active')
       })
-      // Mobile child header child name
-      var mobileChildName = document.getElementById('mobileChildName')
-      // Will be populated after child loads
+      // Fast-path: pre-fill child name from cache so pill never shows "Loading..."
+      // Will be overwritten with fresh data once _loadChild resolves.
+      var _cachedName = localStorage.getItem('ff_last_child_name')
+      if (_cachedName) {
+        var _pill = document.getElementById('mobileChildName')
+        var _btn  = document.getElementById('childSelectorBtn')
+        if (_pill) _pill.textContent = _cachedName + ' ▾'
+        if (_btn)  _btn.textContent  = _cachedName + ' ▾'
+      }
     },
 
     /* ── Child loading ───────────────────────────────────────── */
@@ -165,6 +182,8 @@
         var found = children.find(function (c) { return c.id === savedId })
         _child = found || children[0]
         localStorage.setItem('scout_active_child_id', _child.id)
+        // Cache name for fast-path pre-fill and safety net fallback
+        if (_child.name) localStorage.setItem('ff_last_child_name', _child.name)
         ScoutDash._renderChildSelector(children)
         if (typeof cb === 'function') cb()
       }
