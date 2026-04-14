@@ -1100,7 +1100,7 @@ export function buildPreBirthEmail(opts: PreBirthEmailOptions): string {
 <tr><td style="padding-bottom:10px">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#fff;border:1px solid #dde4f5;border-radius:14px">
     <tr><td style="padding:18px 20px">
-      <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:#2d5bb5;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">🔜 A few things coming next month</p>
+      <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:#2d5bb5;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px">👶 What you'll get right after birth</p>
       ${nextMonthWindows.map(w => `
       <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:10px"><tr>
         <td style="width:16px;vertical-align:top;padding-top:2px"><span style="color:#6E4ED6;font-weight:700;font-size:14px">›</span></td>

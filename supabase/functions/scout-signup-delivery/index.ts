@@ -237,11 +237,16 @@ Deno.serve(async (req: Request) => {
         }
       }
 
-      // Month 1 editorial for "coming next month" section
+      // Month 0 editorial for "What you'll get right after birth" section.
+      // Shows newborn windows (3-5 day visit, skin-to-skin, bilirubin) — the birth_signup
+      // digest fires at month 0 the moment the parent confirms arrival.
+      // Note: if parent confirms birth late (baby 5+ weeks old), birth_signup uses month 1
+      // content anyway (age-filtered), but the pre-birth email is always sent pre-birth so
+      // month 0 preview is correct for the overwhelming majority of readers.
       const { data: m1Slots } = await sb
         .from('scout_editorial_schedule')
         .select('slot, slug')
-        .eq('month', 1)
+        .eq('month', 0)
         .order('slot', { ascending: true })
       let nextMonthWindows: Array<{ title: string }> = []
       if (m1Slots?.length) {
