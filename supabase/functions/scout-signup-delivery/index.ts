@@ -30,6 +30,7 @@ import {
   type DigestWindow,
   type PreBirthEmailOptions,
 } from '../_shared/email-digest.ts'
+import { PREBIRTH_SLUGS } from '../_shared/constants.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -221,11 +222,6 @@ Deno.serve(async (req: Request) => {
       // The check constraint on that table prevents month values outside 0–36,
       // so pre-birth editorial cannot use a separate month slot.
       step = 'query-windows-prebirth'
-      const PREBIRTH_SLUGS = [
-        'prebirth-pediatrician-selection',
-        'prebirth-hospital-bag',
-        'prebirth-newborn-screening',
-      ]
       const preBirthSlots = PREBIRTH_SLUGS.map((slug, i) => ({ slot: i + 1, slug }))
 
       let preBirthWindows: DigestWindow[] = []

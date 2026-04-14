@@ -212,9 +212,11 @@ interface MonthContent {
   subject?: string  // optional subject line override — use {{childName}} placeholder
 }
 
-// Month 0 = pre-birth; months 1-36 = baby's age
+// Month 0 = born newborn (first ~4 weeks of life)
+// Note: expecting parents use buildPreBirthEmail(), not buildDigestEmail(),
+// so MONTH_CONTENT[0] is exclusively for born children at age 0 months.
 const MONTH_CONTENT: Record<number, MonthContent> = {
-  0:  { theme: '📋 This month: three things to sort before the due date.', dyk: 'In the first hour after birth, your baby is in what neuroscientists call the **quiet alert state** — the most receptive window for bonding. Skin-to-skin in that first hour shapes the attachment system for years.', opening: 'The due date is close. Most of the preparation below is far easier to do now than with a newborn in the room.', context: 'A few things that take an hour now and save a lot of stress later.', closing: "You're close now. Everything you do in the next few weeks makes the first days easier. — Jack, Founder @ FamilyForce" },
+  0:  { theme: '🏥 This month: the 3–5 day visit, checking for jaundice, and skin-to-skin bonding.', dyk: 'In the first hour after birth, babies enter what researchers call the **quiet alert state** — the most receptive bonding window of their lives. Skin-to-skin in that first hour regulates heart rate, temperature, and blood sugar, and activates the neural pathways behind secure attachment. It doesn\'t have to happen in the delivery room — it counts whenever it starts.', opening: 'The first few days move fast. These three things are worth getting right.', context: 'Week one to two. Small windows, big impact — especially the 3–5 day checkup.', closing: 'The first days are intense. You\'re doing better than you think. Month 1 digest arrives on the four-week birthday. — Jack, Founder @ FamilyForce' },
   1:  { theme: '👶 This month: the 1-month checkup, tummy time, and something worth screening for.', dyk: 'In the first month of life, a baby\'s brain creates more than **1 million new neural connections per second** — a rate that will never be matched again. Every time you hold your baby, respond to her cries, and engage with your baby, you\'re building the architecture of her brain.', opening: 'The steepest learning curve of any parent\'s life happens in the next 30 days.', context: 'Survival mode is real. These three things are worth doing anyway.', closing: 'Month 1 is hard. You\'re doing it. Month 2 gets better. — Jack, Founder @ FamilyForce' },
   2:  { theme: '😊 This month: the 2-month checkup, the first real smile, and the habit that builds everything.', dyk: 'The social smile — the first **intentional smile in response to your face** — activates the same brain regions as adult social bonding. It\'s not reflex. It\'s the beginning of a relationship.', opening: 'Something is shifting — she\'s starting to respond to you. The one-sided relationship is ending.', context: 'The fog is lifting. And she\'s starting to know your face.', closing: 'The social smile changes things. You\'ll feel it when it happens. — Jack, Founder @ FamilyForce' },
   3:  { theme: '🧠 This month: one milestone closing, a new one emerging, and the bedtime habit to lock in now.', dyk: 'A consistent 3–4 step bedtime routine can produce **measurable sleep improvements within one week** — even in babies as young as 3 months. Same steps, same order, every night.', opening: 'Three months in, and the fourth trimester is over. The development is about to accelerate.', context: 'You made it through the fourth trimester. The development is accelerating.', closing: 'Month 3 is when it starts feeling real. You\'re watching your baby become someone. — Jack, Founder @ FamilyForce' },
@@ -385,9 +387,11 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   const closing     = topWindows.filter(w => w.close_age_weeks - ageWeeks <= 4)
   const openWindows = topWindows.filter(w => w.close_age_weeks - ageWeeks > 4)
 
-  // Per-month editorial content
-  // Born children at 0 months use month 1 content (month 0 is pre-birth only).
-  const mc = getMonthContent(isExpecting ? 0 : Math.max(1, ageMonths))
+  // Per-month editorial content.
+  // MONTH_CONTENT[0] = born newborn content (not pre-birth — expecting parents use buildPreBirthEmail).
+  // buildDigestEmail is never called with isExpecting=true from live callers;
+  // the isExpecting flag controls in-email conditional blocks only.
+  const mc = getMonthContent(isExpecting ? 0 : ageMonths)
 
   const ageFull      = `${ageMonths} month${ageMonths === 1 ? '' : 's'}` // New: ageFull definition
 
@@ -885,6 +889,10 @@ export function buildDigestSubject(
 
   if (digestType === 'additional_child') {
     return `${childName}'s Scout tracking has started 🎉`
+  }
+
+  if (digestType === 'signup' && ageMonths === 0) {
+    return `${childName} is here — let's make the first month count 🎉`
   }
 
   if (digestType === 'signup') {

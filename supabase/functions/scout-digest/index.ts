@@ -34,6 +34,7 @@ import {
   buildPreBirthEmail,
   type DigestWindow,
 } from '../_shared/email-digest.ts'
+import { PREBIRTH_SLUGS } from '../_shared/constants.ts'
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -707,13 +708,8 @@ Deno.serve(async (req: Request) => {
         if ((overdueCount ?? 0) >= 2) { results.skipped++; continue }
       }
 
-      // Load pre-birth windows via hardcoded slugs — month 0 in scout_editorial_schedule
-      // is now reserved for born newborns (check constraint prevents negative month values).
-      const PREBIRTH_SLUGS = [
-        'prebirth-pediatrician-selection',
-        'prebirth-hospital-bag',
-        'prebirth-newborn-screening',
-      ]
+      // Load pre-birth windows via shared PREBIRTH_SLUGS constant.
+      // Month 0 in scout_editorial_schedule is reserved for born newborns.
       const preBirthEditorialSlots = PREBIRTH_SLUGS.map((slug, i) => ({ slot: i + 1, slug }))
 
       let preBirthWindows: MilestoneWindow[] = []
