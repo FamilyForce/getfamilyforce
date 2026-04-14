@@ -1281,6 +1281,24 @@ button { font: inherit; cursor: pointer; }
   // so user never sees the sign-in form flash.
   if (window.location.hash && window.location.hash.indexOf('access_token') !== -1) {
     document.getElementById('verifying-overlay').style.display = 'flex';
+
+    // ── Absolute safety net ────────────────────────────────────────────────
+    // Fires after 12s regardless of all state flags.
+    // Covers: Supabase CDN failure (sb never set → no handlers registered),
+    //         any unhandled exception that left the overlay visible,
+    //         any future code path that forgets to dismiss.
+    // If the overlay is already gone by then, this is a no-op.
+    setTimeout(function() {
+      var o = document.getElementById('verifying-overlay');
+      if (o && o.style.display !== 'none') {
+        o.style.display = 'none';
+        // If we're still on sign-in, show a recoverable banner.
+        // If routing already started (user is on dashboard), this won't run.
+        if (typeof showBanner === 'function') {
+          showBanner('Verification is taking longer than expected. Please try signing in below or <a href="/sign-in.html">refresh the page</a>.');
+        }
+      }
+    }, 12000);
   }
   // localStorage key migration — renamed Apr 2026
   ;(function() {
@@ -2235,62 +2253,83 @@ button { font: inherit; cursor: pointer; }
 
           // Unsubscribe auth listener — prevents re-triggering on future SIGNED_IN events
           if (_authListener && _authListener.data && _authListener.data.subscription) {
-            _authListener.data.subscription.unsubscribe();
+            try { _authListener.data.subscription.unsubscribe(); } catch(_) {}
           }
 
-          history.replaceState(null, '', window.location.pathname + window.location.search);
-          // NOTE: overlay stays visible until the children check resolves —
-          // avoids a blank-page flash during the async DB call.
-          var user = session.user;
-          generateAndSaveReferralCode(user.id, user.email);
+          // Wrap entire routing body in try/catch — if anything throws after _verifyHandled=true,
+          // the 6s rescue timeout would bail early (sees _verifyHandled=true) leaving overlay stuck.
+          try {
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+            // NOTE: overlay stays visible until the children check resolves —
+            // avoids a blank-page flash during the async DB call.
+            var user = session && session.user ? session.user : null;
+            if (!user) throw new Error('session.user is null');
 
-          var giftCode = localStorage.getItem('ff_gift_code');
-          if (giftCode) {
-            localStorage.removeItem('ff_gift_code');
-            _dismissVerifyOverlay();
-            window.location.href = 'scout-gift-checkout.html?redeem=' + encodeURIComponent(giftCode);
-            return;
-          }
+            try { generateAndSaveReferralCode(user.id, user.email); } catch(_) {}
 
-          var inviteChild = localStorage.getItem('ff_invite_child');
-          var inviteEmail = localStorage.getItem('ff_invite_email');
-          if (inviteChild && inviteEmail) {
-            var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
-            localStorage.removeItem('ff_invite_child');
-            localStorage.removeItem('ff_invite_email');
-            fetch(FUNCTIONS_URL + '/scout-family-accept', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
-              body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
-            }).then(function() {
-              localStorage.setItem('scout_active_child_id', inviteChild);
-              _dismissVerifyOverlay(); window.location.href = 'scout-dashboard.html';
-            }).catch(function() { _dismissVerifyOverlay(); window.location.href = 'scout-dashboard.html'; });
-            return;
-          }
-
-          // Keep overlay up during async children check — dismiss only when routing is decided.
-          // Promise.race with a 5s timeout guards against the query hanging indefinitely
-          // (common in iOS Mail's in-app browser where the session may not fully propagate).
-          var _childrenQuery   = sb.from('children').select('id').eq('user_id', user.id).limit(1);
-          var _childrenTimeout = new Promise(function(_, reject) {
-            setTimeout(function() { reject(new Error('children-check-timeout')); }, 5000);
-          });
-          Promise.race([_childrenQuery, _childrenTimeout])
-            .then(function(childRes) {
+            var giftCode = null;
+            try { giftCode = localStorage.getItem('ff_gift_code'); } catch(_) {}
+            if (giftCode) {
+              try { localStorage.removeItem('ff_gift_code'); } catch(_) {}
               _dismissVerifyOverlay();
-              var hasChildren = childRes.data && childRes.data.length > 0;
-              if (!hasChildren) {
-                routeAfterSignup();
-              } else {
-                window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
-              }
-            })
-            .catch(function() {
-              // DB error or timeout — dismiss and send to dashboard anyway
-              _dismissVerifyOverlay();
-              window.location.href = 'scout-dashboard.html';
+              window.location.href = 'scout-gift-checkout.html?redeem=' + encodeURIComponent(giftCode);
+              return;
+            }
+
+            var inviteChild = null, inviteEmail = null;
+            try { inviteChild = localStorage.getItem('ff_invite_child'); inviteEmail = localStorage.getItem('ff_invite_email'); } catch(_) {}
+            if (inviteChild && inviteEmail) {
+              var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
+              try { localStorage.removeItem('ff_invite_child'); localStorage.removeItem('ff_invite_email'); } catch(_) {}
+              // AbortController timeout — edge function hangs won't hold the overlay open
+              var _inviteAbort = new AbortController();
+              var _inviteTimer = setTimeout(function() { _inviteAbort.abort(); }, 8000);
+              fetch(FUNCTIONS_URL + '/scout-family-accept', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+                body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
+                signal: _inviteAbort.signal,
+              }).then(function() {
+                clearTimeout(_inviteTimer);
+                try { localStorage.setItem('scout_active_child_id', inviteChild); } catch(_) {}
+                _dismissVerifyOverlay(); window.location.href = 'scout-dashboard.html';
+              }).catch(function() {
+                clearTimeout(_inviteTimer);
+                _dismissVerifyOverlay(); window.location.href = 'scout-dashboard.html';
+              });
+              return;
+            }
+
+            // Keep overlay up during async children check — dismiss only when routing is decided.
+            // Promise.race with a 5s timeout guards against the query hanging indefinitely
+            // (common in iOS Mail's in-app browser where the session may not fully propagate).
+            var _childrenQuery   = sb.from('children').select('id').eq('user_id', user.id).limit(1);
+            var _childrenTimeout = new Promise(function(_, reject) {
+              setTimeout(function() { reject(new Error('children-check-timeout')); }, 5000);
             });
+            Promise.race([_childrenQuery, _childrenTimeout])
+              .then(function(childRes) {
+                _dismissVerifyOverlay();
+                var hasChildren = childRes.data && childRes.data.length > 0;
+                if (!hasChildren) {
+                  routeAfterSignup();
+                } else {
+                  window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
+                }
+              })
+              .catch(function() {
+                // DB error or timeout — dismiss and send to dashboard anyway
+                _dismissVerifyOverlay();
+                window.location.href = 'scout-dashboard.html';
+              });
+
+          } catch(err) {
+            // Catch-all — any synchronous throw above lands here.
+            // Dismiss overlay and send to dashboard rather than leaving user stuck.
+            console.error('[ff] _routeVerifiedSession error:', err);
+            _dismissVerifyOverlay();
+            window.location.href = 'scout-dashboard.html';
+          }
         }
 
         // PRIMARY: event-driven — fires as soon as Supabase processes the hash token
@@ -2397,7 +2436,11 @@ button { font: inherit; cursor: pointer; }
           return;
         }
 
-        sb.from('children').select('id').eq('user_id', user.id).limit(1)
+        var _csarQuery   = sb.from('children').select('id').eq('user_id', user.id).limit(1);
+        var _csarTimeout = new Promise(function(_, reject) {
+          setTimeout(function() { reject(new Error('csar-timeout')); }, 5000);
+        });
+        Promise.race([_csarQuery, _csarTimeout])
           .then(function(childRes) {
             var hasChildren = childRes.data && childRes.data.length > 0;
             if (!hasChildren) {
@@ -2405,6 +2448,10 @@ button { font: inherit; cursor: pointer; }
             } else {
               window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
             }
+          })
+          .catch(function() {
+            // DB error or timeout — send to dashboard anyway
+            window.location.href = 'scout-dashboard.html';
           });
       } else {
         alert('No confirmed session found yet. Please click the link in your email first.');
