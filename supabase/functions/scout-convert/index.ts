@@ -195,9 +195,9 @@ function buildSubscriptionConfirmEmail(opts: {
 }
 
 function buildScout1TimeEmail(opts: {
-  activeThrough: string; nextDigestDate?: string; siteUrl: string
+  activeThrough: string; nextDigestDate?: string; siteUrl: string; promoCode?: string
 }): string {
-  const { activeThrough, nextDigestDate, siteUrl } = opts
+  const { activeThrough, nextDigestDate, siteUrl, promoCode = 'SCOUT1TIME' } = opts
   const previewText = nextDigestDate
     ? `One year of Scout, on us. Your first digest arrives ${nextDigestDate}.`
     : `One year of Scout, on us.`
@@ -230,7 +230,7 @@ function buildScout1TimeEmail(opts: {
   </td></tr>
   <tr>
     <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;padding:0 0 6px">Plan</td>
-    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:700;color:#1D1D1F;padding:0 0 6px">1-Year Free (SCOUT1TIME)</td>
+    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:700;color:#1D1D1F;padding:0 0 6px">1-Year Free (${promoCode})</td>
   </tr>
   <tr>
     <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;padding:0 0 6px">Active through</td>
@@ -387,6 +387,14 @@ Deno.serve(async (req: Request) => {
         return err(400, 'Promo codes are only valid for the 3-year or 1-year plan', step)
       }
       const cleanPromo = promoCode.trim().toUpperCase()
+      // Enforce per-code plan: SCOUT1TIME → annual only, SCOUT3FREE → triennial only
+      const PROMO_PLAN_MAP: Record<string, string> = {
+        'SCOUT1TIME': 'annual',
+        'SCOUT3FREE': 'triennial',
+      }
+      if (PROMO_PLAN_MAP[cleanPromo] && PROMO_PLAN_MAP[cleanPromo] !== plan) {
+        return err(400, `Promo code ${cleanPromo} is only valid for the ${PROMO_PLAN_MAP[cleanPromo]} plan`, step)
+      }
       try {
         const promoResult = await stripeReq(stripeKey, 'GET',
           `/promotion_codes?code=${encodeURIComponent(cleanPromo)}&active=true&limit=1`)
@@ -836,7 +844,7 @@ Deno.serve(async (req: Request) => {
           resendKey1,
           user.email,
           'Your free year of Scout starts now',
-          buildScout1TimeEmail({ activeThrough: activeThrough1, nextDigestDate: nextDigest1, siteUrl: siteUrl1 })
+          buildScout1TimeEmail({ activeThrough: activeThrough1, nextDigestDate: nextDigest1, siteUrl: siteUrl1, promoCode: appliedPromoCode ?? undefined })
         ).catch(e => console.error('[scout-convert] SCOUT1TIME email failed (non-fatal):', e))
       }
 

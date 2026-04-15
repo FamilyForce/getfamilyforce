@@ -65,16 +65,17 @@ function formatDate(d: Date): string {
 
 // ─── Email builders ───────────────────────────────────────────────────────────
 
-function build30DayEmail(opts: { expiryDate: string; siteUrl: string }): string {
-  const { expiryDate, siteUrl } = opts
+function build30DayEmail(opts: { expiryDate: string; siteUrl: string; plan?: string }): string {
+  const { expiryDate, siteUrl, plan } = opts
+  const periodLabel = plan === 'triennial' ? '3-year free subscription' : 'free subscription'
   return `<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Your free year of Scout ends in 30 days</title>
+<title>Your Scout subscription ends in 30 days</title>
 <style>body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}body{margin:0;padding:0;background:#F5F3FF;font-family:'Outfit',Arial,sans-serif}</style>
 </head>
 <body style="margin:0;padding:0;background:#F5F3FF">
-<div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;overflow:hidden">Your free year of Scout ends on ${expiryDate}. Here's what to do next.&nbsp;&#8204;&nbsp;&#8204;</div>
+<div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;overflow:hidden">Your ${periodLabel} ends on ${expiryDate}. Here's what to do next.&nbsp;&#8204;&nbsp;&#8204;</div>
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F3FF">
 <tr><td align="center" style="padding:24px 12px 40px">
 <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">
@@ -84,7 +85,7 @@ function build30DayEmail(opts: { expiryDate: string; siteUrl: string }): string 
 </td></tr>
 
 <tr><td style="background:#FFFFFF;border-radius:16px;padding:28px">
-  <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;color:#1D1D1F;margin:0 0 14px;line-height:1.3">Your free year ends in 30 days.</h1>
+  <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;color:#1D1D1F;margin:0 0 14px;line-height:1.3">Your ${periodLabel} ends in 30 days.</h1>
   <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 14px;line-height:1.6">On <strong>${expiryDate}</strong>, your Scout access expires. After that, the monthly digests stop and you'll need to subscribe to keep up with your child's milestones.</p>
   <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 24px;line-height:1.6">No rush — you've got a month. But when you're ready, it takes about 60 seconds.</p>
 
@@ -111,12 +112,13 @@ function build30DayEmail(opts: { expiryDate: string; siteUrl: string }): string 
 </body></html>`
 }
 
-function build7DayEmail(opts: { expiryDate: string; siteUrl: string }): string {
-  const { expiryDate, siteUrl } = opts
+function build7DayEmail(opts: { expiryDate: string; siteUrl: string; plan?: string }): string {
+  const { expiryDate, siteUrl, plan } = opts
+  const periodLabel = plan === 'triennial' ? '3-year free subscription' : 'free subscription'
   return `<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>One week left on your free year of Scout</title>
+<title>One week left on your Scout subscription</title>
 <style>body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}body{margin:0;padding:0;background:#F5F3FF;font-family:'Outfit',Arial,sans-serif}</style>
 </head>
 <body style="margin:0;padding:0;background:#F5F3FF">
@@ -131,7 +133,7 @@ function build7DayEmail(opts: { expiryDate: string; siteUrl: string }): string {
 
 <tr><td style="background:#FFFFFF;border-radius:16px;padding:28px">
   <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:400;color:#1D1D1F;margin:0 0 14px;line-height:1.3">One week left.</h1>
-  <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 14px;line-height:1.6">Your free year of Scout ends on <strong>${expiryDate}</strong>. After that, the monthly digests stop.</p>
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 14px;line-height:1.6">Your ${periodLabel} ends on <strong>${expiryDate}</strong>. After that, the monthly digests stop.</p>
   <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 24px;line-height:1.6">If Scout has been useful — and we hope it has — now's a good time to subscribe. Takes about 60 seconds, and your progress stays exactly where it is.</p>
 
   <a href="${siteUrl}/scout-dashboard.html" style="display:inline-block;background:#6E4ED6;color:#fff;font-family:'Outfit',Arial,sans-serif;font-size:14px;font-weight:700;padding:12px 24px;border-radius:100px;text-decoration:none;margin-bottom:20px">Subscribe to Scout →</a>
@@ -232,12 +234,13 @@ Deno.serve(async (req: Request) => {
 
         // Send email
         if (resendKey) {
+          const plan30Label = sub.plan === 'triennial' ? '3-year subscription' : 'free subscription'
           const subject = is30Day
-            ? 'Your free year of Scout ends in 30 days'
-            : 'One week left on your free year of Scout'
+            ? `Your Scout ${plan30Label} ends in 30 days`
+            : `One week left on your Scout ${plan30Label}`
           const html = is30Day
-            ? build30DayEmail({ expiryDate, siteUrl })
-            : build7DayEmail({ expiryDate, siteUrl })
+            ? build30DayEmail({ expiryDate, siteUrl, plan: sub.plan })
+            : build7DayEmail({ expiryDate, siteUrl, plan: sub.plan })
           await sendEmail(resendKey, email, subject, html)
         }
 

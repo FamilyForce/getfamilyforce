@@ -104,8 +104,8 @@
 
         <!-- Referral code banner (shown if code present in localStorage) -->
         <div id="referralAppliedBanner" style="display:none;background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
-          <span style="font-size:13px;color:#15803D">🎉 Referral code <strong id="referralAppliedCode"></strong> applied — 25% off your first payment</span>
-          <button onclick="removeReferralCode()" style="background:none;border:none;font-size:12px;color:var(--text-dim);cursor:pointer;white-space:nowrap;padding:0">Remove</button>
+          <span id="referralBannerMsg" style="font-size:13px;color:#15803D">🎉 Referral code <strong id="referralAppliedCode"></strong> applied — 25% off your first payment</span>
+          <button id="referralBannerRemove" onclick="removeReferralCode()" style="background:none;border:none;font-size:12px;color:var(--text-dim);cursor:pointer;white-space:nowrap;padding:0">Remove</button>
         </div>
 
         <div class="form-field">
@@ -469,6 +469,12 @@ function openStripeForm(plan) {
   var child = ScoutDash.getChild()
   var user  = ScoutDash.getUser()
   if (child && child.user_id && user && user.id !== child.user_id) return // family member guard
+  // Reset any lingering promo state from a previous form session
+  _freePromoCode = null
+  var cardEl = document.getElementById('stripeCardEl')
+  if (cardEl) cardEl.style.display = 'block'
+  var btn = document.getElementById('stripeSubmitBtn')
+  if (btn) { btn.disabled = false; btn.textContent = 'Subscribe →' }
   _checkoutPlan = plan
   document.getElementById('stripeFormWrap').style.display = 'block'
   updateFormTitle()
@@ -496,6 +502,32 @@ function openStripeForm(plan) {
 
 function cancelStripeForm() {
   document.getElementById('stripeFormWrap').style.display = 'none'
+  // If a free promo was applied, fully reset promo state so next form open is clean
+  if (_freePromoCode) {
+    _freePromoCode = null
+    var cardEl = document.getElementById('stripeCardEl')
+    if (cardEl) cardEl.style.display = 'block'
+    var btn = document.getElementById('stripeSubmitBtn')
+    if (btn) { btn.disabled = false; btn.textContent = 'Subscribe →' }
+    var input = document.getElementById('referralCodeInput')
+    if (input) { input.disabled = false; input.style.borderColor = ''; input.value = '' }
+    var applyBtn = document.querySelector('[onclick="applyReferralCode()"]')
+    if (applyBtn) { applyBtn.disabled = false; applyBtn.textContent = 'Apply' }
+    var toggle = document.getElementById('referralEntryToggle')
+    if (toggle) { toggle.style.display = ''; toggle.textContent = 'Have a referral code?' }
+    var wrap = document.getElementById('referralEntryWrap')
+    if (wrap) wrap.style.display = 'none'
+    var banner = document.getElementById('referralAppliedBanner')
+    if (banner) banner.style.display = 'none'
+    // Reset banner message for next use
+    var bannerMsg = document.getElementById('referralBannerMsg')
+    if (bannerMsg) bannerMsg.innerHTML = '🎉 Referral code <strong id="referralAppliedCode"></strong> applied — 25% off your first payment'
+  }
+}
+
+function removePromoCode() {
+  cancelStripeForm()
+  document.getElementById('stripeFormWrap').style.display = 'block'
 }
 
 function submitSubscribe() {
@@ -669,8 +701,11 @@ function applyReferralCode() {
     if (applyBtn) { applyBtn.disabled = true; applyBtn.textContent = '✓' }
     if (errEl) errEl.style.display = 'none'
     var banner = document.getElementById('referralAppliedBanner')
-    var codeEl = document.getElementById('referralAppliedCode')
-    if (codeEl) codeEl.textContent = code
+    var bannerMsg = document.getElementById('referralBannerMsg')
+    var bannerRemove = document.getElementById('referralBannerRemove')
+    var freeDesc = (code === 'SCOUT3FREE') ? '3 years free — no charge today' : '1 year free — no charge today'
+    if (bannerMsg) bannerMsg.innerHTML = '🎉 Promo code <strong>' + code + '</strong> applied — ' + freeDesc
+    if (bannerRemove) { bannerRemove.textContent = 'Remove'; bannerRemove.setAttribute('onclick', 'removePromoCode()') }
     if (banner) { banner.style.display = 'flex' }
     var wrap = document.getElementById('referralEntryWrap')
     if (wrap) wrap.style.display = 'none'
