@@ -567,11 +567,12 @@ function submitSubscribe() {
       window.location.reload()
     }).catch(function () {
       errEl.style.display = 'block'; errEl.textContent = 'Network error. Please try again.'
-      btn.disabled = false; btn.textContent = _freePromoCode ? 'Activate 1-Year Access — Free →' : 'Subscribe →'
+      var catchFreeLabel = _freePromoCode === 'SCOUT3FREE' ? 'Activate 3-Year Access — Free →' : 'Activate 1-Year Access — Free →'
+      btn.disabled = false; btn.textContent = _freePromoCode ? catchFreeLabel : 'Subscribe →'
     })
   }
 
-  // ── Free promo path (SCOUT1TIME): skip card entirely ─────────────────────
+  // ── Free promo path (SCOUT1TIME / SCOUT3FREE): skip card entirely ─────────────────────
   if (_freePromoCode) {
     ScoutDash.getSb().auth.getSession().then(function (res) {
       var tok = res.data && res.data.session && res.data.session.access_token

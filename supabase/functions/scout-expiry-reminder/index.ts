@@ -67,7 +67,7 @@ function formatDate(d: Date): string {
 
 function build30DayEmail(opts: { expiryDate: string; siteUrl: string; plan?: string }): string {
   const { expiryDate, siteUrl, plan } = opts
-  const periodLabel = plan === 'triennial' ? '3-year free subscription' : 'free subscription'
+  const periodLabel = plan === 'triennial' ? '3-year free subscription' : 'free year'
   return `<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -114,7 +114,7 @@ function build30DayEmail(opts: { expiryDate: string; siteUrl: string; plan?: str
 
 function build7DayEmail(opts: { expiryDate: string; siteUrl: string; plan?: string }): string {
   const { expiryDate, siteUrl, plan } = opts
-  const periodLabel = plan === 'triennial' ? '3-year free subscription' : 'free subscription'
+  const periodLabel = plan === 'triennial' ? '3-year free subscription' : 'free year'
   return `<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -234,10 +234,12 @@ Deno.serve(async (req: Request) => {
 
         // Send email
         if (resendKey) {
-          const plan30Label = sub.plan === 'triennial' ? '3-year subscription' : 'free subscription'
+          const planSubjectLabel = sub.plan === 'triennial'
+            ? '3-year Scout subscription'
+            : 'free year of Scout'
           const subject = is30Day
-            ? `Your Scout ${plan30Label} ends in 30 days`
-            : `One week left on your Scout ${plan30Label}`
+            ? `Your ${planSubjectLabel} ends in 30 days`
+            : `One week left on your ${planSubjectLabel}`
           const html = is30Day
             ? build30DayEmail({ expiryDate, siteUrl, plan: sub.plan })
             : build7DayEmail({ expiryDate, siteUrl, plan: sub.plan })

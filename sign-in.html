@@ -2156,10 +2156,11 @@ button { font: inherit; cursor: pointer; }
    ───────────────────────────────────────────────────────────────── */
 (function() {
 
-  var currentIntent  = null;  // 'library' | 'trial'
-  var appliedPromo   = null;  // { code, discount, newPrice } once validated
-  var stripeInstance = null;  // Stripe.js instance
-  var stripeCard     = null;  // Stripe Card Element
+  var currentIntent      = null;  // 'library' | 'trial'
+  var appliedPromo       = null;  // { code, discount, newPrice } once validated
+  var stripeInstance     = null;  // Stripe.js instance
+  var stripeCard         = null;  // Stripe Card Element
+  var _signInTestMode    = new URLSearchParams(window.location.search).get('testmode') === '1';
 
   /* ── Show a step, hide all others ── */
   window.showStep = function(stepId) {
@@ -3011,6 +3012,7 @@ button { font: inherit; cursor: pointer; }
             plan:            'triennial',
             promoCode:       'SCOUT3FREE',
             childId:         sessionStorage.getItem('ff_child_id') || null,
+            testMode:        _signInTestMode || undefined,
           }),
         })
         .then(function(r) { return r.json(); })
@@ -3050,6 +3052,7 @@ button { font: inherit; cursor: pointer; }
             plan:            'annual',
             promoCode:       'SCOUT1TIME',
             childId:         sessionStorage.getItem('ff_child_id') || null,
+            testMode:        _signInTestMode || undefined,
           }),
         })
         .then(function(r) { return r.json(); })
