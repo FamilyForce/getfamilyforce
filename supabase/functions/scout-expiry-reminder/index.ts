@@ -96,12 +96,8 @@ function build30DayEmail(opts: { expiryDate: string; siteUrl: string }): string 
     <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:700;color:#1D1D1F;padding:0 0 6px">$49.99 / year</td>
   </tr>
   <tr>
-    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;padding:0 0 6px">Monthly</td>
-    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0 0 6px">$9.99 / month</td>
-  </tr>
-  <tr>
-    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;padding:0">3-year</td>
-    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0">$99.99 one-time</td>
+    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;padding:0">Monthly</td>
+    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0">$9.99 / month</td>
   </tr>
   </table>
 </td></tr>
@@ -146,12 +142,8 @@ function build7DayEmail(opts: { expiryDate: string; siteUrl: string }): string {
     <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:700;color:#1D1D1F;padding:0 0 6px">$49.99 / year</td>
   </tr>
   <tr>
-    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;padding:0 0 6px">Monthly</td>
-    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0 0 6px">$9.99 / month</td>
-  </tr>
-  <tr>
-    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;padding:0">3-year</td>
-    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0">$99.99 one-time</td>
+    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;padding:0">Monthly</td>
+    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0">$9.99 / month</td>
   </tr>
   </table>
 </td></tr>
