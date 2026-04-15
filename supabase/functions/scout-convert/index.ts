@@ -55,6 +55,7 @@ const CORS = {
 const DEFAULT_PRICE_ANNUAL        = 'price_1TAQWtRF5ve13fCKONaDJ7Ji'
 const DEFAULT_PRICE_MONTHLY       = ''    // set STRIPE_PRICE_MONTHLY in secrets
 const DEFAULT_TRIENNIAL_CENTS     = 9999  // $99.99 — triennial uses PaymentIntent, not a subscription price
+const DEFAULT_ANNUAL_CENTS        = 4999  // $49.99 — used for free-annual promo discount calculation
 
 function err(status: number, msg: string, step = '') {
   return new Response(JSON.stringify({ ok: false, error: msg, step }), {
@@ -193,6 +194,66 @@ function buildSubscriptionConfirmEmail(opts: {
 </body></html>`
 }
 
+function buildScout1TimeEmail(opts: {
+  activeThrough: string; nextDigestDate?: string; siteUrl: string
+}): string {
+  const { activeThrough, nextDigestDate, siteUrl } = opts
+  const previewText = nextDigestDate
+    ? `One year of Scout, on us. Your first digest arrives ${nextDigestDate}.`
+    : `One year of Scout, on us.`
+  return `<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your free year of Scout starts now</title>
+<style>body,table,td,a{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}body{margin:0;padding:0;background:#F5F3FF;font-family:'Outfit',Arial,sans-serif}</style>
+</head>
+<body style="margin:0;padding:0;background:#F5F3FF">
+<div style="display:none;font-size:1px;color:#F5F3FF;line-height:1px;max-height:0;overflow:hidden">${previewText}&nbsp;&#8204;&nbsp;&#8204;&nbsp;&#8204;</div>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F5F3FF">
+<tr><td align="center" style="padding:24px 12px 40px">
+<table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%">
+
+<tr><td style="padding:0 0 16px">
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:12px;font-weight:700;color:#6E4ED6;letter-spacing:.12em;text-transform:uppercase;margin:0">FamilyForce Scout</p>
+</td></tr>
+
+<tr><td style="background:#FFFFFF;border-radius:16px;padding:28px">
+  <h1 style="font-family:Georgia,'Times New Roman',serif;font-size:24px;font-weight:400;color:#1D1D1F;margin:0 0 16px;line-height:1.3">You're in.</h1>
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:700;color:#1D1D1F;margin:0 0 8px;line-height:1.5">No charge. No card. Just one year of Scout, on us.</p>
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 14px;line-height:1.6">Every month, on your child's monthly birthday, you'll get a digest built around exactly where they are right now — the milestones opening up, the ones closing, and the small things worth paying attention to before the window passes.</p>
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 14px;line-height:1.6">Most parents find out about these windows after the fact. You won't.</p>
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:14px;color:#5C5960;margin:0 0 24px;line-height:1.6">This is what staying ahead looks like: not a firehose of parenting content, not generic advice — one email a month, timed to your child, grounded in the research. We hope it helps.</p>
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#F9F8FF;border:1.5px solid #E5E2EC;border-radius:12px;padding:16px 20px;margin-bottom:24px">
+  <tr><td colspan="2" style="padding:0 0 10px">
+    <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;font-weight:700;color:#8A879A;text-transform:uppercase;letter-spacing:.1em;margin:0">Your Scout access</p>
+  </td></tr>
+  <tr>
+    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;padding:0 0 6px">Plan</td>
+    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;font-weight:700;color:#1D1D1F;padding:0 0 6px">1-Year Free (SCOUT1TIME)</td>
+  </tr>
+  <tr>
+    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;padding:0 0 6px">Active through</td>
+    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0 0 6px">${activeThrough}</td>
+  </tr>
+  ${nextDigestDate ? `<tr>
+    <td style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#8A879A;padding:0">Next digest</td>
+    <td align="right" style="font-family:'Outfit',Arial,sans-serif;font-size:13px;color:#1D1D1F;padding:0">${nextDigestDate}</td>
+  </tr>` : ''}
+  </table>
+
+  <a href="${siteUrl}/scout-dashboard.html" style="display:inline-block;background:#6E4ED6;color:#fff;font-family:'Outfit',Arial,sans-serif;font-size:14px;font-weight:700;padding:12px 24px;border-radius:100px;text-decoration:none">Open your Scout dashboard →</a>
+</td></tr>
+<tr><td style="height:32px"></td></tr>
+
+<tr><td style="border-top:1px solid #E5E2EC;padding-top:20px">
+  <p style="font-family:'Outfit',Arial,sans-serif;font-size:11px;color:#8A879A;margin:0">FamilyForce Scout · <a href="${siteUrl}" style="color:#8A879A;text-decoration:none">${siteUrl.replace('https://', '')}</a> · <a href="mailto:support@getfamilyforce.com" style="color:#8A879A;text-decoration:none">support@getfamilyforce.com</a></p>
+</td></tr>
+
+</table></td></tr></table>
+</body></html>`
+}
+
 async function telegramAlert(message: string): Promise<void> {
   const token  = Deno.env.get('TELEGRAM_BOT_TOKEN')
   const chatId = Deno.env.get('TELEGRAM_CHAT_ID')
@@ -320,9 +381,10 @@ Deno.serve(async (req: Request) => {
     let appliedPromoCode: string | null = null
     let promoObjId: string | null = null
     let promoTriennialCents: number | null = null
+    let promoAnnualCents: number | null = null
     if (promoCode && typeof promoCode === 'string') {
-      if (plan !== 'triennial') {
-        return err(400, 'Promo codes are only valid for the 3-year plan', step)
+      if (!['triennial', 'annual'].includes(plan)) {
+        return err(400, 'Promo codes are only valid for the 3-year or 1-year plan', step)
       }
       const cleanPromo = promoCode.trim().toUpperCase()
       try {
@@ -336,15 +398,23 @@ Deno.serve(async (req: Request) => {
         const coupon = typeof couponRef === 'string'
           ? await stripeReq(stripeKey, 'GET', `/coupons/${couponRef}`)
           : couponRef
-        let discounted = triennialCents
-        if (coupon.percent_off)    discounted = Math.round(triennialCents * (1 - coupon.percent_off / 100))
-        else if (coupon.amount_off) discounted = Math.max(0, triennialCents - coupon.amount_off)
-        appliedPromoCode    = cleanPromo
-        promoObjId          = promoObj.id   // e.g. promo_1TFLyJIbsOmqAIBV
-        promoTriennialCents = discounted
-        appliedCoupon       = null  // promo takes priority over referral
-        referrerUserId      = null
-        console.log(`[scout-convert] Promo ${cleanPromo} (${promoObjId}) valid — ${triennialCents} → ${discounted} cents`)
+        appliedPromoCode = cleanPromo
+        promoObjId       = promoObj.id   // e.g. promo_1TFLyJIbsOmqAIBV
+        appliedCoupon    = null  // promo takes priority over referral
+        referrerUserId   = null
+        if (plan === 'triennial') {
+          let discounted = triennialCents
+          if (coupon.percent_off)    discounted = Math.round(triennialCents * (1 - coupon.percent_off / 100))
+          else if (coupon.amount_off) discounted = Math.max(0, triennialCents - coupon.amount_off)
+          promoTriennialCents = discounted
+          console.log(`[scout-convert] Promo ${cleanPromo} valid — triennial: ${triennialCents} → ${discounted} cents`)
+        } else if (plan === 'annual') {
+          let discounted = DEFAULT_ANNUAL_CENTS
+          if (coupon.percent_off)    discounted = Math.round(DEFAULT_ANNUAL_CENTS * (1 - coupon.percent_off / 100))
+          else if (coupon.amount_off) discounted = Math.max(0, DEFAULT_ANNUAL_CENTS - coupon.amount_off)
+          promoAnnualCents = discounted
+          console.log(`[scout-convert] Promo ${cleanPromo} valid — annual: ${DEFAULT_ANNUAL_CENTS} → ${discounted} cents`)
+        }
       } catch (e) {
         console.error('[scout-convert] Promo code lookup failed:', e)
         return err(400, 'Could not validate promo code', step)
@@ -372,6 +442,7 @@ Deno.serve(async (req: Request) => {
       }
     }
     const isFreeTriennial = plan === 'triennial' && finalTriennialCents === 0
+    const isFreeAnnual    = plan === 'annual'    && promoAnnualCents === 0
 
     // ══════════════════════════════════════════════════════════════════════════
     // PATH A — Additional child subscription (child #2+)
@@ -643,7 +714,7 @@ Deno.serve(async (req: Request) => {
     // PATH B — Trial conversion (child #1)
     // ══════════════════════════════════════════════════════════════════════════
 
-    if (!isFreeTriennial && !paymentMethodId) return err(400, 'paymentMethodId is required', 'parse')
+    if (!isFreeTriennial && !isFreeAnnual && !paymentMethodId) return err(400, 'paymentMethodId is required', 'parse')
 
     // Verify user has a trialing subscription
     step = 'verify-trial'
@@ -687,7 +758,7 @@ Deno.serve(async (req: Request) => {
     }
 
     // Attach PM
-    if (!isFreeTriennial) {
+    if (!isFreeTriennial && !isFreeAnnual) {
       step = 'pm-attach'
       await stripeReq(stripeKey, 'POST', `/payment_methods/${paymentMethodId}/attach`, {
         customer: customerId,
@@ -696,6 +767,83 @@ Deno.serve(async (req: Request) => {
       await stripeReq(stripeKey, 'POST', `/customers/${customerId!}`, {
         'invoice_settings[default_payment_method]': paymentMethodId,
       })
+    }
+
+    // ── Free Annual (SCOUT1TIME): DB-only activation, no Stripe subscription ─
+    if (isFreeAnnual) {
+      step = 'db-update'
+      const annualPeriodEnd = new Date(Date.now() + 365.25 * 24 * 60 * 60 * 1000).toISOString()
+
+      let eventChildIdA = subToConvert.child_id as string | null
+      if (!eventChildIdA) {
+        const { data: fc } = await sb.from('children').select('id').eq('user_id', user.id)
+          .order('created_at', { ascending: true }).limit(1).maybeSingle()
+        eventChildIdA = fc?.id ?? null
+      }
+
+      await sb.from('scout_subscriptions').update({
+        status:             'active',
+        stripe_customer_id: customerId,
+        period_end:         annualPeriodEnd,
+        plan:               'annual',
+        ...(eventChildIdA ? { child_id: eventChildIdA } : {}),
+      }).eq('id', subToConvert.id)
+
+      step = 'log-event'
+      await sb.from('scout_events').insert({
+        user_id:    user.id,
+        child_id:   eventChildIdA,
+        event_type: 'trial_converted',
+        properties: { plan: 'annual', amount_cents: 0, period_end: annualPeriodEnd, promo_code: appliedPromoCode },
+      })
+
+      await telegramAlert(`🎉 Free annual activated (SCOUT1TIME): user=${user.email}`)
+
+      // Track promo redemption in Stripe via $0 invoice (non-blocking)
+      if (promoObjId && customerId) {
+        ;(async () => {
+          try {
+            await stripeReq(stripeKey, 'POST', '/invoiceitems', {
+              customer:    customerId!, currency: 'usd',
+              unit_amount: DEFAULT_ANNUAL_CENTS, description: '1-Year Scout Subscription (promo)',
+            })
+            const inv = await stripeReq(stripeKey, 'POST', '/invoices', {
+              customer:                       customerId!,
+              'discounts[0][promotion_code]': promoObjId,
+              auto_advance:                   'true',
+            })
+            await stripeReq(stripeKey, 'POST', `/invoices/${inv.id}/finalize`, {})
+            console.log(`[scout-convert] SCOUT1TIME promo tracked — invoice ${inv.id}`)
+          } catch (e) { console.error('[scout-convert] SCOUT1TIME invoice tracking failed (non-fatal):', e) }
+        })()
+      }
+
+      step = 'email-confirm'
+      const resendKey1 = Deno.env.get('RESEND_API_KEY')
+      const siteUrl1   = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
+      if (resendKey1) {
+        let nextDigest1: string | undefined
+        if (eventChildIdA) {
+          const { data: child1 } = await sb.from('children').select('dob').eq('id', eventChildIdA).maybeSingle()
+          if (child1?.dob) {
+            nextDigest1 = nextMonthlyBirthday(new Date(child1.dob + 'T00:00:00Z'), new Date())
+              .toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+          }
+        }
+        const activeThrough1 = new Date(annualPeriodEnd)
+          .toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+        await sendEmail(
+          resendKey1,
+          user.email,
+          'Your free year of Scout starts now',
+          buildScout1TimeEmail({ activeThrough: activeThrough1, nextDigestDate: nextDigest1, siteUrl: siteUrl1 })
+        ).catch(e => console.error('[scout-convert] SCOUT1TIME email failed (non-fatal):', e))
+      }
+
+      return new Response(JSON.stringify({
+        ok: true, mode: 'trial_converted', plan: 'annual',
+        periodEnd: annualPeriodEnd, free: true,
+      }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
     }
 
     // ── Triennial: PaymentIntent (one-time charge), no Stripe subscription ──

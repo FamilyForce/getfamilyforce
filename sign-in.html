@@ -2867,6 +2867,32 @@ button { font: inherit; cursor: pointer; }
       return;
     }
 
+    // ── SCOUT1TIME: 100% off annual, no card needed ──────────────
+    if (code === 'SCOUT1TIME') {
+      appliedPromo = { code: code, discount: 1.0, newPrice: 0, freeAnnual: true };
+      input.style.borderColor = '#16A34A';
+      feedback.style.color    = '#166534';
+      feedback.innerHTML      = '🎉 SCOUT1TIME applied — 1 year completely free! No card needed. <a href="#" onclick="event.preventDefault();resetPromoCode()" style="color:#166534;text-decoration:underline">Change</a>';
+      var priceEl   = document.getElementById('payment-price');
+      var discRow   = document.getElementById('payment-discount-row');
+      var discLabel = document.getElementById('payment-discount-label');
+      var discVal   = document.getElementById('payment-discount-value');
+      if (priceEl)   priceEl.innerHTML = '<span style="text-decoration:line-through;opacity:.45;font-weight:400">$49.99</span> <span style="color:#16A34A;font-weight:800">FREE</span>';
+      if (discRow)   discRow.style.display = '';
+      if (discLabel) discLabel.textContent = 'Promo code SCOUT1TIME';
+      if (discVal)   discVal.textContent   = '1 year free ✓';
+      var cardWrap = document.getElementById('stripe-card-wrap');
+      var nameWrap = document.getElementById('pay-name-wrap');
+      if (cardWrap) cardWrap.style.display = 'none';
+      if (nameWrap) nameWrap.style.display = 'none';
+      var submitBtn = document.getElementById('pay-submit-btn');
+      if (submitBtn) submitBtn.textContent = 'Activate 1-Year Access — Free →';
+      input.disabled = true;
+      document.getElementById('promo-apply-btn').disabled = true;
+      document.getElementById('promo-apply-btn').textContent = '✓';
+      return;
+    }
+
     // ── Standard referral / promo codes: 25% off ────────────────
     var isValid   = code.indexOf('FRIEND') !== -1 || code.match(/^[A-Z]{2,8}-[A-Z0-9]{4}$/);
     var discount  = 0.25;
@@ -3006,6 +3032,45 @@ button { font: inherit; cursor: pointer; }
       return;
     }
 
+    // ── SCOUT1TIME free annual path: skip card entirely ───────────
+    if (appliedPromo && appliedPromo.freeAnnual) {
+      if (btn) { btn.disabled = true; btn.textContent = 'Activating...'; }
+      var sb = window._supabaseClient;
+      sb.auth.getSession().then(function(res) {
+        var session = res.data && res.data.session;
+        if (!session) {
+          if (btn) { btn.disabled = false; btn.textContent = 'Activate 1-Year Access — Free →'; }
+          return;
+        }
+        fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-convert', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+          body: JSON.stringify({
+            paymentMethodId: null,
+            plan:            'annual',
+            promoCode:       'SCOUT1TIME',
+            childId:         sessionStorage.getItem('ff_child_id') || null,
+          }),
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (!data.ok) {
+            var errEl = document.getElementById('stripe-card-errors');
+            if (errEl) { errEl.textContent = data.error || 'Something went wrong. Please try again.'; errEl.style.display = 'block'; }
+            if (btn) { btn.disabled = false; btn.textContent = 'Activate 1-Year Access — Free →'; }
+            return;
+          }
+          onPaymentSuccess();
+        })
+        .catch(function(e) {
+          var errEl = document.getElementById('stripe-card-errors');
+          if (errEl) { errEl.textContent = 'Network error. Please try again.'; errEl.style.display = 'block'; }
+          if (btn) { btn.disabled = false; btn.textContent = 'Activate 1-Year Access — Free →'; }
+        });
+      });
+      return;
+    }
+
     if (!stripeInstance || !stripeCard) {
       alert('Payment form not ready. Please refresh and try again.');
       return;
@@ -3019,7 +3084,7 @@ button { font: inherit; cursor: pointer; }
     function showErr(msg) {
       if (errEl) { errEl.textContent = msg; errEl.style.display = 'block'; }
       btn.disabled    = false;
-      btn.textContent = appliedPromo && appliedPromo.freeTriennial ? 'Activate 3-Year Access — Free →' : 'Start free trial →';
+      btn.textContent = appliedPromo && appliedPromo.freeTriennial ? 'Activate 3-Year Access — Free →' : appliedPromo && appliedPromo.freeAnnual ? 'Activate 1-Year Access — Free →' : 'Start free trial →';
     }
 
     function callEdgeFunction(session, paymentMethodId) {
@@ -3027,7 +3092,7 @@ button { font: inherit; cursor: pointer; }
       var planIntent    = sessionStorage.getItem('ff_plan_intent') || 'monthly';
       var promoCodeVal  = null;
       var referralCodeVal = null;
-      if (appliedPromo && appliedPromo.code && !appliedPromo.freeTriennial) {
+      if (appliedPromo && appliedPromo.code && !appliedPromo.freeTriennial && !appliedPromo.freeAnnual) {
         // FRIEND-XXXX-XXXX → referral code; anything else → promo code
         if (/^[A-Z]+-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(appliedPromo.code)) {
           referralCodeVal = appliedPromo.code;

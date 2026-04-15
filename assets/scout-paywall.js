@@ -392,6 +392,31 @@ window.ScoutPaywall = (function () {
         if (cardSection) cardSection.style.display = 'none'
         if (submitBtn)   submitBtn.textContent     = 'Activate 3-Year Access — Free →'
         if (termsText)   termsText.textContent     = 'No card required. 3 years of Scout, on us.'
+      } else if (code === 'SCOUT1TIME') {
+        _appliedPromo = { code: code, free: true }
+        _selectedPlan = 'annual'
+
+        // Update promo UI
+        if (input) { input.disabled = true; input.style.borderColor = '#16A34A' }
+        var applyBtn = document.getElementById('paywall-promo-apply-btn')
+        if (applyBtn) { applyBtn.disabled = true; applyBtn.textContent = '✓' }
+        if (feedback) {
+          feedback.style.display = 'block'
+          feedback.style.color   = '#166534'
+          feedback.textContent   = '🎉 SCOUT1TIME applied — 1 year completely free!'
+        }
+
+        // Switch to the payment form, hide card (no charge needed)
+        var planSelect  = document.getElementById('paywall-plan-select')
+        var payForm     = document.getElementById('paywall-payment-form')
+        var cardSection = document.getElementById('paywall-card-section')
+        var submitBtn   = document.getElementById('paywall-submit-btn')
+        var termsText   = document.getElementById('paywall-terms-text')
+        if (planSelect)  planSelect.style.display  = 'none'
+        if (payForm)     payForm.style.display     = 'block'
+        if (cardSection) cardSection.style.display = 'none'
+        if (submitBtn)   submitBtn.textContent     = 'Activate 1-Year Access — Free →'
+        if (termsText)   termsText.textContent     = 'No card required. 1 year of Scout, on us.'
       } else {
         _appliedPromo = null
         if (input) input.style.borderColor = '#EF4444'
@@ -442,17 +467,20 @@ window.ScoutPaywall = (function () {
       var btn    = document.getElementById('paywall-submit-btn')
       var errEl  = document.getElementById('paywall-card-error')
       var nameEl = document.getElementById('paywall-card-name')
-      var isFree = _appliedPromo && _appliedPromo.free
+      var isFree     = _appliedPromo && _appliedPromo.free
+      var freeLabel  = (_appliedPromo && _appliedPromo.code === 'SCOUT1TIME')
+        ? 'Activate 1-Year Access — Free →'
+        : 'Activate 3-Year Access — Free →'
 
       if (btn) { btn.disabled = true; btn.textContent = 'Processing…' }
       if (errEl) errEl.style.display = 'none'
 
       var sb = window._supabaseClient
-      if (!sb) { if (btn) { btn.disabled = false; btn.textContent = isFree ? 'Activate 3-Year Access — Free →' : 'Subscribe now →' } return }
+      if (!sb) { if (btn) { btn.disabled = false; btn.textContent = isFree ? freeLabel : 'Subscribe now →' } return }
 
       sb.auth.getSession().then(function (res) {
         var session = res.data && res.data.session
-        if (!session) { if (btn) { btn.disabled = false; btn.textContent = isFree ? 'Activate 3-Year Access — Free →' : 'Subscribe now →' } return }
+        if (!session) { if (btn) { btn.disabled = false; btn.textContent = isFree ? freeLabel : 'Subscribe now →' } return }
 
         function callConvert(paymentMethodId) {
           fetch(CONVERT_URL, {
@@ -471,7 +499,7 @@ window.ScoutPaywall = (function () {
           .then(function (data) {
             if (!data.ok) {
               if (errEl) { errEl.style.display = 'block'; errEl.textContent = data.error || 'Something went wrong. Please try again.' }
-              if (btn)   { btn.disabled = false; btn.textContent = isFree ? 'Activate 3-Year Access — Free →' : 'Subscribe now →' }
+              if (btn)   { btn.disabled = false; btn.textContent = isFree ? freeLabel : 'Subscribe now →' }
               return
             }
             var paywallCard = document.getElementById('scout-paywall-card')
@@ -479,12 +507,17 @@ window.ScoutPaywall = (function () {
             if (paywallCard) paywallCard.remove()
             if (banner)      banner.remove()
 
-            showToast(isFree ? '🎉 3 years of Scout activated. Welcome aboard!' : '🎉 You\'re subscribed. Your next digest is on its way.')
+            var toastMsg = (_appliedPromo && _appliedPromo.code === 'SCOUT1TIME')
+              ? '🎉 1 year of Scout activated. Welcome aboard!'
+              : isFree
+                ? '🎉 3 years of Scout activated. Welcome aboard!'
+                : '🎉 You\'re subscribed. Your next digest is on its way.'
+            showToast(toastMsg)
             setTimeout(function () { window.location.reload() }, 3000)
           })
           .catch(function (e) {
             if (errEl) { errEl.style.display = 'block'; errEl.textContent = 'Network error. Please try again.' }
-            if (btn)   { btn.disabled = false; btn.textContent = isFree ? 'Activate 3-Year Access — Free →' : 'Subscribe now →' }
+            if (btn)   { btn.disabled = false; btn.textContent = isFree ? freeLabel : 'Subscribe now →' }
             console.error('[ScoutPaywall] Network error:', e)
           })
         }
