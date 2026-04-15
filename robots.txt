@@ -8,6 +8,14 @@ Disallow: /sign-in-sent
 Disallow: /sign-in-sent.html
 Disallow: /scout-dashboard
 Disallow: /scout-dashboard.html
+Disallow: /scout-dashboard/
+Disallow: /scout-dashboard/child.html
+Disallow: /scout-dashboard/earn.html
+Disallow: /scout-dashboard/family.html
+Disallow: /scout-dashboard/history.html
+Disallow: /scout-dashboard/library.html
+Disallow: /scout-dashboard/settings.html
+Disallow: /scout-gift-checkout.html
 Disallow: /scout-admin
 Disallow: /scout-admin.html
 Disallow: /onboarding
