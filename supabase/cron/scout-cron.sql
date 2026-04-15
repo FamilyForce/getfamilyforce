@@ -19,10 +19,11 @@
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
 -- ─── Remove existing Scout jobs (safe to re-run) ─────────────────────────────
-SELECT cron.unschedule('scout-trial-end')       WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-trial-end');
-SELECT cron.unschedule('scout-digest')          WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-digest');
-SELECT cron.unschedule('scout-monitor')         WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-monitor');
-SELECT cron.unschedule('scout-prebirth-nudge')  WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-prebirth-nudge');
+SELECT cron.unschedule('scout-trial-end')         WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-trial-end');
+SELECT cron.unschedule('scout-digest')            WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-digest');
+SELECT cron.unschedule('scout-monitor')           WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-monitor');
+SELECT cron.unschedule('scout-prebirth-nudge')    WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-prebirth-nudge');
+SELECT cron.unschedule('scout-expiry-reminder')   WHERE EXISTS (SELECT 1 FROM cron.job WHERE jobname = 'scout-expiry-reminder');
 
 -- ─── Job 1: Trial-end emails + re-engagement (daily 08:00 UTC) ───────────────
 -- Sends trial-end email on the day trial_end is reached.
@@ -81,7 +82,26 @@ SELECT cron.schedule(
   $$
 );
 
--- ─── Job 4: Daily monitoring + sanity check (daily 09:00 UTC) ────────────────
+-- ─── Job 4: Subscription expiry reminders (daily 08:00 UTC) ─────────────────
+-- Sends 30-day and 7-day warning emails to users on DB-only free subs
+-- (SCOUT1TIME, SCOUT3FREE) whose period_end is approaching.
+-- Deduped via scout_events — safe to run daily.
+SELECT cron.schedule(
+  'scout-expiry-reminder',
+  '0 8 * * *',
+  $$
+  SELECT net.http_post(
+    url     := 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-expiry-reminder',
+    headers := jsonb_build_object(
+      'Content-Type',  'application/json',
+      'Authorization', 'Bearer ' || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzA0NTIwMywiZXhwIjoyMDg4NjIxMjAzfQ.oOJrcEBdhzRjhkhGNOS4nLcPmhj7lWXUpr21K2aGNUw'
+    ),
+    body    := '{}'::jsonb
+  );
+  $$
+);
+
+-- ─── Job 5: Daily monitoring + sanity check (daily 09:00 UTC) ────────────────
 -- Runs 1 hour after the main jobs (08:00 UTC) to verify they all fired.
 -- Sends a daily Telegram report: subscriber counts, digests sent, bounce rate.
 -- Alerts immediately on: job failures, zero digests, bounce rate > 2%.
@@ -107,7 +127,7 @@ SELECT cron.schedule(
 
 SELECT jobname, schedule, active, command
 FROM cron.job
-WHERE jobname IN ('scout-trial-end', 'scout-digest', 'scout-monitor', 'scout-prebirth-nudge')
+WHERE jobname IN ('scout-trial-end', 'scout-digest', 'scout-monitor', 'scout-prebirth-nudge', 'scout-expiry-reminder')
 ORDER BY jobname;
 
 -- ─── Notes ───────────────────────────────────────────────────────────────────
