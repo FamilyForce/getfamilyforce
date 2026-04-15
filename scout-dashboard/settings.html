@@ -521,14 +521,16 @@ function submitSubscribe() {
     }).then(function (r) { return r.json() }).then(function (data) {
       if (!data.ok) {
         errEl.style.display = 'block'; errEl.textContent = data.error || 'Payment failed.'
-        btn.disabled = false; btn.textContent = _freePromoCode ? 'Activate 1-Year Access — Free →' : 'Subscribe →'
+        var freeLabel = _freePromoCode === 'SCOUT3FREE' ? 'Activate 3-Year Access — Free →' : 'Activate 1-Year Access — Free →'
+        btn.disabled = false; btn.textContent = _freePromoCode ? freeLabel : 'Subscribe →'
         return
       }
       if (window.rewardful) {
         rewardful('ready', function() { rewardful('convert', { email: user.email }); });
       }
       sessionStorage.setItem('ff_just_subscribed', '1')
-      ScoutDash.toast(_freePromoCode ? '🎉 1 year of Scout activated. Welcome aboard!' : 'You\'re subscribed. Welcome to Scout.', 'success')
+      var successMsg = _freePromoCode === 'SCOUT3FREE' ? '🎉 3 years of Scout activated. Welcome aboard!' : _freePromoCode ? '🎉 1 year of Scout activated. Welcome aboard!' : 'You\'re subscribed. Welcome to Scout.'
+      ScoutDash.toast(successMsg, 'success')
       cancelStripeForm()
       window.location.reload()
     }).catch(function () {
@@ -650,23 +652,25 @@ function applyReferralCode() {
     if (errEl) { errEl.textContent = 'Please enter a referral code.'; errEl.style.display = 'block' }
     return
   }
-  // ── SCOUT1TIME: 100% off annual, no card needed ────────────────────────────
-  if (code === 'SCOUT1TIME') {
-    _freePromoCode = 'SCOUT1TIME'
-    _checkoutPlan  = 'annual'
+  // ── Free promo codes: 100% off, no card needed ────────────────────────────
+  //   SCOUT1TIME → 1 free year (annual plan)
+  //   SCOUT3FREE → 3 free years (triennial plan)
+  if (code === 'SCOUT1TIME' || code === 'SCOUT3FREE') {
+    _freePromoCode = code
+    _checkoutPlan  = (code === 'SCOUT3FREE') ? 'triennial' : 'annual'
     var cardWrap = document.getElementById('stripeCardWrap') || document.getElementById('stripeCardEl')?.parentElement
     var cardEl   = document.getElementById('stripeCardEl')
     if (cardWrap) cardWrap.style.display = 'none'
     else if (cardEl) cardEl.style.display = 'none'
     var btn = document.getElementById('stripeSubmitBtn')
-    if (btn) btn.textContent = 'Activate 1-Year Access — Free →'
+    if (btn) btn.textContent = (code === 'SCOUT3FREE') ? 'Activate 3-Year Access — Free →' : 'Activate 1-Year Access — Free →'
     if (input) { input.disabled = true; input.style.borderColor = '#16A34A' }
     var applyBtn = document.getElementById('referralApplyBtn') || document.querySelector('[onclick="applyReferralCode()"]')
     if (applyBtn) { applyBtn.disabled = true; applyBtn.textContent = '✓' }
     if (errEl) errEl.style.display = 'none'
     var banner = document.getElementById('referralAppliedBanner')
     var codeEl = document.getElementById('referralAppliedCode')
-    if (codeEl) codeEl.textContent = 'SCOUT1TIME'
+    if (codeEl) codeEl.textContent = code
     if (banner) { banner.style.display = 'flex' }
     var wrap = document.getElementById('referralEntryWrap')
     if (wrap) wrap.style.display = 'none'
