@@ -847,7 +847,7 @@ button { font: inherit; cursor: pointer; }
 .wechat-notice strong { display: block; margin-bottom: 3px; font-size: 14px; }
 /* Hide Google button by default — shown only after JS confirms normal browser.
    Eliminates flash of button before in-app browser detection runs. */
-#signin-google-wrap { display: none; }
+#signin-google-wrap { display: block; }
 .signin-banner-success {
   background: #F0FFF4; color: #276749;
   border-color: #C6F6D5;
@@ -1184,9 +1184,8 @@ button { font: inherit; cursor: pointer; }
           });
         }
       } else {
-        // Normal browser — show Google button
-        var googleWrap = document.getElementById('signin-google-wrap');
-        if (googleWrap) googleWrap.style.display = 'block';
+        // Normal browser — Google button already visible by default (CSS)
+        // No action needed
       }
     })();
 
@@ -1927,7 +1926,7 @@ button { font: inherit; cursor: pointer; }
     var googleWrap = document.getElementById('signin-google-wrap');
     var ua = navigator.userAgent || '';
     var isInApp = /MicroMessenger|FBAN|FBAV|Instagram|LinkedInApp|Line\/|Snapchat|Twitter|TikTok/i.test(ua);
-    if (googleWrap && !isInApp) googleWrap.style.display = mode === 'forgot' ? 'none' : 'block';
+    if (googleWrap) googleWrap.style.display = (isInApp || mode === 'forgot') ? 'none' : 'block';
   };
 
   /* ── Google OAuth ── */
