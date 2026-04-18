@@ -848,6 +848,8 @@ button { font: inherit; cursor: pointer; }
 /* Hide Google button by default — shown only after JS confirms normal browser.
    Eliminates flash of button before in-app browser detection runs. */
 #signin-google-wrap { display: block; }
+/* In-app browser flag set early in <head> before DOM renders */
+.ff-inapp #signin-google-wrap { display: none; }
 .signin-banner-success {
   background: #F0FFF4; color: #276749;
   border-color: #C6F6D5;
@@ -1172,10 +1174,13 @@ button { font: inherit; cursor: pointer; }
       var isInApp = /MicroMessenger|FBAN|FBAV|Instagram|LinkedInApp|Line\/|Snapchat|Twitter|TikTok/i.test(ua);
 
       if (isInApp) {
-        // Show open-in-browser notice
-        var notice = document.getElementById('wechat-notice');
-        if (notice) notice.style.display = 'block';
-        // Google button stays hidden (CSS default) — do nothing
+        // Set class on <html> immediately — hides Google button via CSS before DOM renders
+        document.documentElement.classList.add('ff-inapp');
+        // Show open-in-browser notice once DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+          var notice = document.getElementById('wechat-notice');
+          if (notice) notice.style.display = 'block';
+        });
         // Fire GA event so we can track volume
         if (typeof gtag === 'function') {
           gtag('event', 'in_app_browser_blocked', {
@@ -1183,10 +1188,8 @@ button { font: inherit; cursor: pointer; }
             event_label: ua.match(/MicroMessenger|FBAN|FBAV|Instagram|LinkedInApp|Line\/|Snapchat|Twitter|TikTok/i)?.[0] || 'unknown'
           });
         }
-      } else {
-        // Normal browser — Google button already visible by default (CSS)
-        // No action needed
       }
+      // Normal browser: Google button already visible by default (CSS), no action needed
     })();
 
     window._supabaseClient = supabase.createClient(
@@ -1926,7 +1929,8 @@ button { font: inherit; cursor: pointer; }
     var googleWrap = document.getElementById('signin-google-wrap');
     var ua = navigator.userAgent || '';
     var isInApp = /MicroMessenger|FBAN|FBAV|Instagram|LinkedInApp|Line\/|Snapchat|Twitter|TikTok/i.test(ua);
-    if (googleWrap) googleWrap.style.display = (isInApp || mode === 'forgot') ? 'none' : 'block';
+    var _inApp = document.documentElement.classList.contains('ff-inapp');
+    if (googleWrap) googleWrap.style.display = (_inApp || mode === 'forgot') ? 'none' : 'block';
   };
 
   /* ── Google OAuth ── */
