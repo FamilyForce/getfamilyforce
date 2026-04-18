@@ -1,15 +1,15 @@
 // ═══════════════════════════════════════════════════════════════
 // FamilyForce Scout — Family Circle Accept Edge Function
-// Called from auth/callback.html after the invitee signs in.
+// Called from sign-in.html / auth/callback.html after the invitee signs in.
 //
 // POST body: { childId, inviteEmail }
 // Auth: Bearer session token (the newly signed-in invitee)
 //
-// Flow:
-//   1. Verify session
-//   2. Find pending family_members row for (child_id + invited_email)
-//   3. Update row: set member_user_id = user.id, status = 'active'
-//   4. Ensure user has access to the child's subscription (read-only via family_members)
+// Security:
+//   - Authenticated user's email must match inviteEmail (prevents cross-user
+//     accept on shared devices via localStorage hijack)
+//   - Invites expire after 30 days from invited_at
+//   - Idempotent: already-active invites return ok without re-writing
 // ═══════════════════════════════════════════════════════════════
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.99.3'
@@ -19,6 +19,8 @@ const CORS = {
   'Access-Control-Allow-Headers': 'authorization, content-type, x-client-info, apikey',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
+
+const INVITE_EXPIRY_DAYS = 30
 
 function err(status: number, msg: string) {
   return new Response(JSON.stringify({ ok: false, error: msg }), {
@@ -37,36 +39,55 @@ Deno.serve(async (req: Request) => {
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
     const SERVICE_ROLE = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
+    // 1. Verify session and get authenticated user
     const authRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
       headers: { 'Authorization': authHeader, 'apikey': SERVICE_ROLE },
     })
     if (!authRes.ok) return err(401, 'Invalid or expired session')
     const authData = await authRes.json()
-    const userId = authData.id as string
+    const userId    = authData.id as string
+    const userEmail = (authData.email as string || '').toLowerCase().trim()
 
     const sb = createClient(SUPABASE_URL, SERVICE_ROLE)
 
     const { childId, inviteEmail } = await req.json()
     if (!childId || !inviteEmail) return err(400, 'Missing childId or inviteEmail')
 
-    // Find pending invite row
+    const normalizedInviteEmail = (inviteEmail as string).toLowerCase().trim()
+
+    // 2. Email must match — prevents cross-user accept on shared devices
+    if (userEmail !== normalizedInviteEmail) {
+      return err(403, `This invite was sent to ${normalizedInviteEmail}. Please sign in with that account to accept it.`)
+    }
+
+    // 3. Find invite row
     const { data: invite, error: findErr } = await sb
       .from('family_members')
-      .select('id, status')
+      .select('id, status, invited_at')
       .eq('child_id', childId)
-      .eq('invited_email', inviteEmail.toLowerCase().trim())
+      .eq('invited_email', normalizedInviteEmail)
       .maybeSingle()
 
     if (findErr) return err(500, findErr.message)
-    if (!invite) return err(404, 'Invite not found. Please ask the owner to re-send the invite.')
+    if (!invite)  return err(404, 'Invite not found. Please ask the owner to re-send the invite.')
+
+    // 4. Idempotent: already active
     if (invite.status === 'active') {
-      // Already accepted — just return ok (idempotent)
       return new Response(JSON.stringify({ ok: true, alreadyAccepted: true }), {
         status: 200, headers: { ...CORS, 'Content-Type': 'application/json' }
       })
     }
 
-    // Activate: link user_id and mark active
+    // 5. Check expiry (30 days from invited_at)
+    if (invite.invited_at) {
+      const invitedAt  = new Date(invite.invited_at).getTime()
+      const expiresAt  = invitedAt + INVITE_EXPIRY_DAYS * 24 * 60 * 60 * 1000
+      if (Date.now() > expiresAt) {
+        return err(410, 'This invite has expired. Please ask the owner to send a new one.')
+      }
+    }
+
+    // 6. Activate: link user_id and mark active
     const { error: updateErr } = await sb
       .from('family_members')
       .update({

@@ -133,8 +133,23 @@
                 },
                 body: JSON.stringify({ childId: inviteChild, inviteEmail: inviteEmail }),
               });
-              // Only set active child if accept succeeded
-              if (acceptRes.ok) localStorage.setItem('scout_active_child_id', inviteChild);
+              if (acceptRes.ok) {
+                localStorage.setItem('scout_active_child_id', inviteChild);
+              } else {
+                // Accept failed — surface the error instead of silently continuing
+                let errMsg = 'Could not join the Family Circle. Please ask the owner to re-send the invite.';
+                try { const body = await acceptRes.json(); if (body && body.error) errMsg = body.error; } catch(_) {}
+                document.getElementById('spinner') && (document.getElementById('spinner').style.display = 'none');
+                document.getElementById('spinnerView') && (document.getElementById('spinnerView').style.display = 'none');
+                const errEl = document.getElementById('errorView') || document.getElementById('spinnerView');
+                if (errEl) {
+                  errEl.style.display = 'flex';
+                  errEl.innerHTML = '<p style="font-family:Arial,sans-serif;font-size:14px;color:#6B7280;text-align:center;padding:20px">' + errMsg + '<br><br><a href="/scout-dashboard" style="color:#6E4ED6;font-weight:600">Go to my dashboard →</a></p>';
+                } else {
+                  window.location.href = '../scout-dashboard.html';
+                }
+                return;
+              }
             } catch (e) { console.warn('[invite] accept failed:', e); }
             // Skip child setup — go straight to dashboard
             window.location.href = '../scout-dashboard.html';
