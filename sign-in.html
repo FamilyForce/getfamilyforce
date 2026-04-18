@@ -1871,6 +1871,10 @@ button { font: inherit; cursor: pointer; }
     ['signin-email-error','signin-pw-error','signin-confirm-error'].forEach(function(id){fieldError(id,'');});
     bannerEl.style.display = 'none';
     successBanner.style.display = 'none';
+    // Restore form fields hidden after reset success
+    var emailGrp = document.querySelector('#signin-email')?.closest('.signin-form-group');
+    if (emailGrp) emailGrp.style.display = '';
+    if (submitBtn) submitBtn.style.display = '';
   }
   function showBanner(msg) {
     bannerEl.textContent = msg;
@@ -1878,7 +1882,7 @@ button { font: inherit; cursor: pointer; }
     successBanner.style.display = 'none';
   }
   function showSuccess(msg) {
-    successBanner.textContent = msg;
+    successBanner.innerHTML = msg;
     successBanner.style.display = 'block';
     bannerEl.style.display = 'none';
   }
@@ -2018,7 +2022,11 @@ button { font: inherit; cursor: pointer; }
       }).then(function(res) {
         clearLoading('Send reset link →');
         if (res.error) { showBanner('Something went wrong. Please try again.'); return; }
-        showSuccess('Reset link sent! Check your inbox (and spam folder).<br><span style="font-size:13px;font-weight:400">Originally signed up with Google? <a href="#" onclick="signinSwitchMode(\"sign-in\");return false" style="color:var(--terra)">Use Sign in with Google instead →</a></span>');
+        // Collapse the form — makes it clear the action completed
+        var emailGroup = document.getElementById('signin-email')?.closest('.signin-form-group');
+        if (emailGroup) emailGroup.style.display = 'none';
+        submitBtn.style.display = 'none';
+        showSuccess('Reset link sent to <strong>' + email + '</strong>. Check your inbox (and spam folder).<br><br><span style="font-size:13px;font-weight:400;display:block;margin-top:4px">Originally signed up with Google? <a href="#" onclick="signinSwitchMode('sign-in');return false" style="color:var(--terra);font-weight:600">Sign in with Google instead →</a></span>');
       });
       return;
     }
