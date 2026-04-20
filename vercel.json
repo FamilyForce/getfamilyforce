@@ -81,6 +81,16 @@
   ],
   "redirects": [
     {
+      "source": "/baby-shower-gifts/(.*)",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/baby-shower-gifts",
+      "destination": "/",
+      "permanent": false
+    },
+    {
       "source": "/scout-dashboard/earn/(.*)",
       "destination": "/scout-dashboard",
       "permanent": false
