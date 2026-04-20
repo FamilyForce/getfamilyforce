@@ -2962,7 +2962,7 @@ button { font: inherit; cursor: pointer; }
     }
   };
 
-  /* ── Reset promo / referral code (allows user to switch codes) ── */
+  // ── Reset promo / referral code (allows user to switch codes) ──
   window.resetPromoCode = function() {
     appliedPromo = null;
     var input     = document.getElementById('promo-code');
@@ -2983,7 +2983,7 @@ button { font: inherit; cursor: pointer; }
     if (submitBtn) submitBtn.textContent = 'Start free trial →';
   };
 
-  /* ── Mount Stripe Card Element ── */
+  // ── Mount Stripe Card Element ──
   window.mountStripeElement = function() {
     if (stripeCard) return; // Already mounted
     if (typeof Stripe === 'undefined') {
@@ -3031,7 +3031,7 @@ button { font: inherit; cursor: pointer; }
   window.submitPayment  = function() {}  // stub — no paid features
 
   /* PAID_FEATURE: submitPayment + onPaymentSuccess — restore when re-enabling paid plans
-  /* ── Submit payment via Stripe + Edge Function ── */
+  // ── Submit payment via Stripe + Edge Function ──
   window.submitPayment = function() {
     var btn = document.getElementById('pay-submit-btn');
 
@@ -3195,7 +3195,7 @@ button { font: inherit; cursor: pointer; }
     });
   };
 
-  /* ── Called after Edge Function confirms subscription created ── */
+  // ── Called after Edge Function confirms subscription created ──
   window.onPaymentSuccess = function() {
     var childName  = sessionStorage.getItem('ff_child_name') || 'your child';
     var trialEnd   = sessionStorage.getItem('ff_trial_end');
