@@ -1636,15 +1636,12 @@ button { font: inherit; cursor: pointer; }
       </div>
     </div>
 
-    <!-- PAID_FEATURE: payment step — restore when re-enabling paid plans (remove display:none wrapper to re-enable) -->
-    <div data-paid-feature="payment-step" style="display:none">
+    <!-- PAID_FEATURE: payment step — restore when re-enabling paid plans
     <div class="signup-step" id="step-payment" role="region" aria-label="Payment">
       <div class="step-card">
         <button class="step-back" onclick="showStep('child')" aria-label="Back">← Back</button>
         <h2 class="step-h" id="payment-heading">Start your Scout subscription</h2>
         <p class="step-sub" id="payment-sub">Your trial has ended. Choose a plan to keep your windows coming every month.</p>
-
-        <!-- Order summary -->
         <div class="payment-summary" role="region" aria-label="Order summary">
           <div class="payment-summary-row">
             <span>FamilyForce Scout</span>
@@ -1663,8 +1660,6 @@ button { font: inherit; cursor: pointer; }
             <strong style="color:#16A34A">✓</strong>
           </div>
         </div>
-
-        <!-- Referral / promo code -->
         <div class="step-form-group">
           <label class="step-label" for="promo-code">Referral or promo code <span style="font-weight:400;color:var(--text-ghost)">(optional)</span></label>
           <div style="display:flex;gap:8px">
@@ -1673,14 +1668,10 @@ button { font: inherit; cursor: pointer; }
           </div>
           <p id="promo-feedback" style="font-size:11px;margin-top:6px;display:none"></p>
         </div>
-
-        <!-- Name on card -->
         <div class="step-form-group" id="pay-name-wrap">
           <label class="step-label" for="pay-name">Name on card</label>
           <input class="step-input" id="pay-name" type="text" placeholder="Full name" autocomplete="cc-name">
         </div>
-
-        <!-- Stripe Card Element (number, expiry, CVV in one secure iframe) -->
         <div class="step-form-group" id="stripe-card-wrap">
           <label class="step-label">Card details</label>
           <div id="stripe-card-element" style="border:1.5px solid var(--border);border-radius:10px;padding:13px 16px;background:var(--surface);transition:border-color .15s" aria-label="Card details — powered by Stripe"></div>
@@ -1699,7 +1690,8 @@ button { font: inherit; cursor: pointer; }
       </div>
     </div>
 
-    </div><!-- /PAID_FEATURE: payment step -->
+    PAID_FEATURE end -->
+
     <!-- ═══ STEP: SUCCESS ═══ -->
     <div class="signup-step" id="step-success" role="region" aria-label="You're all set">
       <div class="step-card" style="text-align:center">
@@ -2155,8 +2147,8 @@ button { font: inherit; cursor: pointer; }
             routeAfterSignup();
           } else {
             var intent = sessionStorage.getItem('ff_intent');
+            /* PAID_FEATURE: intent=subscribe payment routing — restore when re-enabling paid plans
             if (intent === 'subscribe') {
-              // Trial-end CTA — skip auth card, go straight to payment
               var authCard = document.querySelector('.auth-card');
               if (authCard) authCard.style.display = 'none';
               var planIntent = sessionStorage.getItem('ff_plan_intent');
@@ -2167,7 +2159,9 @@ button { font: inherit; cursor: pointer; }
                 ? 'Annual plan — $49.99/year. That\'s $4.17/month. One payment, no monthly reminders.'
                 : 'Monthly plan — $9.99/month. Cancel any time.';
               showStep('payment');
-            } else {
+            } else
+            PAID_FEATURE end */
+            {
               window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
             }
           }
@@ -2650,7 +2644,7 @@ button { font: inherit; cursor: pointer; }
     document.getElementById('child-step-error').style.display = 'none';
   }
 
-  /* ── Start free trial (no credit card) — Stream 3B ── */
+  // Start trial (no credit card) — Stream 3B
   window.startFreeTrial = function() {
     clearChildError();
     var nameEl       = document.getElementById('child-name');
@@ -3036,6 +3030,7 @@ button { font: inherit; cursor: pointer; }
   window.applyPromoCode = function() {}  // stub — no paid features
   window.submitPayment  = function() {}  // stub — no paid features
 
+  /* PAID_FEATURE: submitPayment + onPaymentSuccess — restore when re-enabling paid plans
   /* ── Submit payment via Stripe + Edge Function ── */
   window.submitPayment = function() {
     var btn = document.getElementById('pay-submit-btn');
@@ -3264,6 +3259,7 @@ button { font: inherit; cursor: pointer; }
         }).then(function() {});
       });
     })();
+  PAID_FEATURE end */
   };
 
   /* ── Success redirect ── */
