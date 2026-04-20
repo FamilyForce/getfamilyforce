@@ -584,6 +584,29 @@ textarea.mf-input { resize: vertical; min-height: 64px; line-height: 1.55; }
   <script async src="https://r.wdfl.co/rw.js" data-rewardful="265990"></script>
 </head>
 <body>
+<!-- PAID_FEATURE: gift purchase coming soon banner -->
+<div id="giftComingSoonBanner" style="
+  position:sticky;top:0;z-index:9999;
+  background:#6E4ED6;color:#fff;
+  padding:14px 24px;text-align:center;
+  font-family:'Outfit',Arial,sans-serif;font-size:15px;font-weight:600;
+  line-height:1.5;">
+  🎁 Gift purchases are coming soon — Scout is <strong>free for everyone right now!</strong>
+  <a href="/sign-in.html" style="color:#fff;text-decoration:underline;margin-left:12px;font-weight:700">Sign up free →</a>
+</div>
+<script>
+// PAID_FEATURE: disable all gift purchase buttons
+document.addEventListener('DOMContentLoaded', function() {
+  var btns = document.querySelectorAll('.btn-gift, .btn-primary, .btn-final, .btn-nav, .btn-modal-submit');
+  btns.forEach(function(btn) {
+    btn.setAttribute('onclick', 'void(0)');
+    btn.style.opacity = '0.4';
+    btn.style.cursor  = 'not-allowed';
+    btn.style.pointerEvents = 'none';
+  });
+});
+</script>
+
 
 <!-- ══════════════════════════════════════════
      MAIN SITE (hidden during redeem)

@@ -2736,7 +2736,7 @@ button { font: inherit; cursor: pointer; }
     } catch(_) {}
 
     // Disable button
-    if (btn) { btn.disabled = true; btn.textContent = 'Setting up your trial…'; }
+    if (btn) { btn.disabled = true; btn.textContent = 'Getting started…'; }
 
     var sb = window._supabaseClient;
     if (!sb) {
@@ -3218,7 +3218,7 @@ button { font: inherit; cursor: pointer; }
       if (icon)    icon.textContent    = '🌱';
       if (heading) heading.textContent = 'Your first Scout digest is on its way.';
       if (sub)     sub.textContent     = 'We\'ve sent ' + childName + '\'s first window digest to your inbox.'
-        + (trialDate ? ' Your free trial runs until ' + trialDate + '.' : ' Your free trial runs until their next birthday.');
+        // PAID_FEATURE: trial date copy removed — free plan has no trial end
     }
 
     // Show "Add another child" button
@@ -3227,7 +3227,7 @@ button { font: inherit; cursor: pointer; }
 
     showStep('success');
 
-    // Rewardful conversion tracking
+    /* PAID_FEATURE: Rewardful conversion tracking + post-sub modal flag — restore when re-enabling paid plans
     (function() {
       var sb = window._supabaseClient;
       if (!sb) return;
@@ -3235,13 +3235,12 @@ button { font: inherit; cursor: pointer; }
         var session = res.data && res.data.session;
         if (!session) return;
         if (window.rewardful) {
-          // Wrap in ready() so the async Rewardful script is guaranteed to
-          // be initialised before convert() fires (prevents missed attribution)
           rewardful('ready', function() { rewardful('convert', { email: session.user.email }); });
         }
-        sessionStorage.setItem('ff_just_subscribed', '1'); // Flag for post-sub modal
+        sessionStorage.setItem('ff_just_subscribed', '1');
       });
     })();
+    PAID_FEATURE end */
 
     // Log signup_completed event
     (function() {
