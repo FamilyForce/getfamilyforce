@@ -3367,6 +3367,26 @@ button { font: inherit; cursor: pointer; }
   })();
   PAID_FEATURE end */
 
+  // Free plan fallback: ?intent=subscribe now just redirects logged-in users to dashboard,
+  // or lets new users proceed through normal free signup flow.
+  (function handleUrlIntent() {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('intent') !== 'subscribe') return;
+    // If already logged in, send straight to dashboard — no payment needed
+    var attempts = 0;
+    var check = setInterval(function() {
+      attempts++;
+      var sb = window._supabaseClient;
+      if (!sb) { if (attempts > 20) clearInterval(check); return; }
+      clearInterval(check);
+      sb.auth.getSession().then(function(res) {
+        var session = res.data && res.data.session;
+        if (session) window.location.href = '/scout-dashboard';
+        // Not logged in: normal sign-in flow proceeds — they'll sign up for free
+      });
+    }, 500);
+  })();
+
 })();
 </script>
 
