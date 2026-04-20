@@ -23,8 +23,16 @@ function err(status: number, msg: string, step = '') {
     { status, headers: { ...CORS, 'Content-Type': 'application/json' } })
 }
 
+// PAID_FEATURE: kill switch — set to true to re-enable subscription reactivation
+const PAID_FEATURES_ENABLED = false
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
+  // PAID_FEATURE: kill switch
+  if (!PAID_FEATURES_ENABLED) return new Response(
+    JSON.stringify({ ok: false, disabled: true, error: 'Paid features are temporarily unavailable.' }),
+    { status: 503, headers: { ...CORS, 'Content-Type': 'application/json' } }
+  )
 
   let step = 'init'
   try {

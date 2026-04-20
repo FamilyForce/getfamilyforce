@@ -152,59 +152,45 @@ Deno.serve(async (req: Request) => {
       .neq('child_id', childId)
     const isAdditionalChild = (existingSubCount ?? 0) > 0
 
-    // 4. Calculate trial_end
+    // 4. Free plan — activate immediately, no trial expiry
     step = 'trial-end'
     const today  = new Date()
     const dob    = new Date(child.dob + 'T00:00:00Z')
+
+    /* PAID_FEATURE: trial_end logic — restore when re-enabling paid plans
     let trialEnd = nextMonthlyBirthday(dob, today)
     const daysUntil = Math.ceil((trialEnd.getTime() - today.getTime()) / 86400000)
     const bonusEligible = daysUntil <= 7
     if (bonusEligible) trialEnd = oneMonthForward(trialEnd)
+    PAID_FEATURE end */
 
     // 5. Insert subscription row
     step = 'db-insert'
     await sb.from('scout_subscriptions').insert({
       user_id:   user.id,
       child_id:  childId,
-      status:    'trialing',
-      trial_end: trialEnd.toISOString(),
+      status:    'active',
+      plan:      'free',
+      trial_end: null,
     })
 
-    // 6. Log events (non-fatal — scout_events table may not exist in all environments)
+    // 6. Log events (non-fatal)
     step = 'log-events'
     try {
       await sb.from('scout_events').insert({
         user_id:    user.id,
         child_id:   childId,
-        event_type: 'trial_start',
+        event_type: 'signup',
         properties: {
-          trial_end:           trialEnd.toISOString(),
-          days_until_birthday: daysUntil,
-          bonus_eligible:      bonusEligible,
-          additional_child:    true,
+          plan:             'free',
+          additional_child: true,
         },
       })
     } catch (logErr) {
       console.warn('[scout-child-trial-start] scout_events insert failed (table may not exist):', logErr)
     }
 
-    if (bonusEligible) {
-      try {
-        await sb.from('scout_events').insert({
-          user_id:    user.id,
-          child_id:   childId,
-          event_type: 'trial_bonus_eligible',
-          properties: {
-            bonus_birthday:      trialEnd.toISOString().split('T')[0],
-            days_until_birthday: daysUntil,
-          },
-        })
-      } catch (logErr) {
-        console.warn('[scout-child-trial-start] trial_bonus_eligible insert failed:', logErr)
-      }
-    }
-
-    console.log(`[scout-child-trial-start] Trial started: user=${user.id}, child=${childId}, trialEnd=${trialEnd.toISOString()}, bonus=${bonusEligible}`)
+    console.log(`[scout-child-trial-start] Free signup: user=${user.id}, child=${childId}`)
 
     // 7. Fire scout-signup-delivery (async — do not await)
     // Sends the first digest email + .ics calendar invite to the parent.
@@ -227,10 +213,13 @@ Deno.serve(async (req: Request) => {
     })
 
     return new Response(JSON.stringify({
-      ok:             true,
-      trialEnd:       trialEnd.toISOString(),
-      bonusEligible,
-      daysUntilBirthday: daysUntil,
+      ok:   true,
+      plan: 'free',
+      /* PAID_FEATURE: restore when re-enabling paid plans
+      trialEnd:          null,
+      bonusEligible:     false,
+      daysUntilBirthday: null,
+      PAID_FEATURE end */
     }), { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } })
 
   } catch (e) {

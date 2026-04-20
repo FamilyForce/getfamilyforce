@@ -84,8 +84,16 @@ async function sendEmail(opts: {
 }
 
 // ─── Main handler ─────────────────────────────────────────────────────────────
+// PAID_FEATURE: kill switch — set to true to re-enable trial-end emails
+const PAID_FEATURES_ENABLED = false
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
+  // PAID_FEATURE: kill switch
+  if (!PAID_FEATURES_ENABLED) return new Response(
+    JSON.stringify({ ok: false, disabled: true }),
+    { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } }
+  )
   if (req.method !== 'POST')    return new Response('Method not allowed', { status: 405 })
 
   const jobStart  = Date.now()

@@ -161,8 +161,16 @@ function build7DayEmail(opts: { expiryDate: string; siteUrl: string; plan?: stri
 
 // ─── Main handler ─────────────────────────────────────────────────────────────
 
+// PAID_FEATURE: kill switch — set to true to re-enable expiry reminder emails
+const PAID_FEATURES_ENABLED = false
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
+  // PAID_FEATURE: kill switch
+  if (!PAID_FEATURES_ENABLED) return new Response(
+    JSON.stringify({ ok: false, disabled: true }),
+    { status: 200, headers: { ...CORS, 'Content-Type': 'application/json' } }
+  )
 
   const sb = createClient(
     Deno.env.get('SUPABASE_URL')!,

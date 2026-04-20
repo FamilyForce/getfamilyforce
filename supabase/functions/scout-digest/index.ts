@@ -187,6 +187,7 @@ Deno.serve(async (req: Request) => {
   const subs = activeSubs ?? []
   console.log(`[scout-digest] ${subs.length} active subscriptions to check`)
 
+  /* PAID_FEATURE: trialing union — restore when re-enabling paid plans
   // Also load trialing subs with a valid trial — used to gate the pre-birth reminder loop.
   // Active subs = paid (no expiry). Trialing subs = still in trial (trial_end >= now).
   const { data: trialingSubs } = await sb
@@ -194,12 +195,15 @@ Deno.serve(async (req: Request) => {
     .select('user_id')
     .eq('status', 'trialing')
     .gte('trial_end', now.toISOString())
-
   // Union of active + valid-trialing users — pre-birth reminders require an active subscription
   const validUserIds = new Set<string>([
     ...subs.map(s => s.user_id),
     ...((trialingSubs ?? []) as { user_id: string }[]).map(s => s.user_id),
   ])
+  PAID_FEATURE end */
+
+  // Free plan: all active subscribers are valid for pre-birth reminders
+  const validUserIds = new Set<string>(subs.map(s => s.user_id))
 
   // ── Step 2: Load expecting users ──────────────────────────────────────────
   const { data: expectingChildren } = await sb

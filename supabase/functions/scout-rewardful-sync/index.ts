@@ -2,7 +2,15 @@ import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
 
 console.log('scout-rewardful-sync function started')
 
+// PAID_FEATURE: kill switch — set to true to re-enable Rewardful affiliate sync
+const PAID_FEATURES_ENABLED = false
+
 serve(async (req) => {
+  // PAID_FEATURE: kill switch
+  if (!PAID_FEATURES_ENABLED) return new Response(
+    JSON.stringify({ ok: false, disabled: true }),
+    { status: 503, headers: { 'Content-Type': 'application/json' } }
+  )
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
       status: 405, headers: { 'Content-Type': 'application/json' }

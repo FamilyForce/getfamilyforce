@@ -71,9 +71,10 @@
 }
 .subscribe-note { font-size: 12px; color: var(--text-dim); margin-top: 14px; line-height: 1.6; }
 </style>
-  <!-- Rewardful affiliate tracking -->
+  <!-- PAID_FEATURE: Rewardful — restore when re-enabling paid plans
   <script>(function(w,r){w._rwq=r;w[r]=w[r]||function(){(w[r].q=w[r].q||[]).push(arguments)}}(window,"rewardful"));</script>
   <script async src="https://r.wdfl.co/rw.js" data-rewardful="265990"></script>
+  PAID_FEATURE end -->
 </head>
 <body>
 
@@ -98,7 +99,9 @@
       <a href="/scout-dashboard"          class="sidebar-nav-item" data-nav="home"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Scout</a>
       <a href="/scout-dashboard/library"  class="sidebar-nav-item" data-nav="library"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></span> Free Library</a>
       <div class="sidebar-divider"></div>
+      <!-- PAID_FEATURE: Earn nav — restore when re-enabling paid plans
       <a href="/scout-dashboard/earn"     class="sidebar-nav-item" data-nav="earn"><span class="nav-icon">💸</span> Earn</a>
+      PAID_FEATURE end -->
       <a href="/scout-dashboard/family"   class="sidebar-nav-item" data-nav="family"><span class="nav-icon">👨‍👩‍👧</span> Family Circle</a>
       <a href="/scout-dashboard/history"  class="sidebar-nav-item" data-nav="history"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> History</a>
       <a href="/scout-dashboard/settings" class="sidebar-nav-item" data-nav="settings"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2.5" fill="var(--bg)"/><circle cx="15" cy="12" r="2.5" fill="var(--bg)"/><circle cx="9" cy="18" r="2.5" fill="var(--bg)"/></svg></span> Settings</a>
@@ -154,80 +157,11 @@
 
     </div>
 
-    <!-- Step 2: Subscribe (shown for child #2+ only) -->
+    <!-- PAID_FEATURE: subscribe-gate (additional child payment gate) — restore when re-enabling paid plans
     <div class="subscribe-gate" id="subscribeGate">
-      <div class="subscribe-gate-icon">🔭</div>
-      <h2 class="subscribe-gate-title" id="subscribeGateTitle">One more step</h2>
-      <p class="subscribe-gate-sub" id="subscribeGateSub">Scout tracks one child per subscription. To start tracking <strong id="subscribeChildName"></strong>, choose a plan below.</p>
-      <span class="subscribe-gate-catchup" id="catchupLabel">📅 Catch-up period is free until first monthly birthday</span>
-
-      <!-- Primary CTA: free trial -->
-      <p class="form-error" id="subscribeError"></p>
-
-      <button class="btn btn-primary btn-full" id="trialBtn" onclick="startTrialForChild()">
-        Start free trial for <span id="trialBtnName"></span> →
-      </button>
-      <p class="subscribe-note">No card needed. Free until the catch-up period ends, then choose a plan.</p>
-
-      <!-- Secondary: subscribe now (collapsed by default) -->
-      <div style="text-align:center;margin-top:16px;margin-bottom:4px">
-        <button onclick="toggleSubscribeNow()"
-          id="subscribeNowToggle"
-          style="background:none;border:none;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--text-dim);cursor:pointer;transition:color .15s"
-          onmouseover="this.style.color='var(--terra)'" onmouseout="this.style.color='var(--text-dim)'">
-          Or subscribe now with a card ›
-        </button>
-      </div>
-
-      <div id="subscribeNowPanel" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
-        <!-- Plan toggle -->
-        <div class="plan-toggle">
-          <div class="plan-option selected" id="planAnnual" onclick="selectPlan('annual')">
-            <div class="plan-option-label">Annual <span class="plan-option-badge">Best value</span></div>
-            <div class="plan-option-price">$49.99</div>
-            <div class="plan-option-per">per year · $4.17/month</div>
-          </div>
-          <div class="plan-option" id="planTriennial" onclick="selectPlan('triennial')">
-            <div class="plan-option-label">Full Journey (3 yr)</div>
-            <div class="plan-option-price">$99.99</div>
-            <div class="plan-option-per">3 years · $2.78/month</div>
-          </div>
-          <div class="plan-option" id="planMonthly" onclick="selectPlan('monthly')">
-            <div class="plan-option-label">Monthly</div>
-            <div class="plan-option-price">$9.99</div>
-            <div class="plan-option-per">per month</div>
-          </div>
-        </div>
-
-        <!-- Card entry -->
-        <div id="cardEntryWrap">
-          <div class="card-field-wrap">
-            <div class="card-field-label">Card details</div>
-            <div id="cardElement"></div>
-          </div>
-        </div>
-        <div id="existingCardWrap" style="display:none">
-          <div class="card-use-existing" id="existingCardLabel">
-            💳 Using your card on file
-          </div>
-        </div>
-
-        <p class="form-error" id="paySubscribeError"></p>
-
-        <button class="btn btn-primary btn-full" id="subscribeBtn" onclick="subscribeForChild()">
-          Subscribe for <span id="subscribeBtnName"></span> →
-        </button>
-        <p class="subscribe-note">Billed after the catch-up period ends. Cancel any time from Settings.</p>
-      </div>
-
-      <div style="text-align:center;margin-top:20px">
-        <a href="/scout-dashboard"
-          style="font-size:13px;font-weight:500;color:var(--text-dim);text-decoration:none;display:inline-flex;align-items:center;gap:4px;transition:color .15s"
-          onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">
-          ← Do this later from Settings
-        </a>
-      </div>
+      PAID_FEATURE subscribe gate content preserved in git history
     </div>
+    PAID_FEATURE end -->
 
   </main>
 </div>
@@ -235,7 +169,9 @@
 <nav class="scout-bottom-nav">
       <div class="bottom-nav-inner">
     <a href="/scout-dashboard"          class="bottom-nav-item" data-nav="home"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Scout</a>
+    <!-- PAID_FEATURE: Earn bottom nav — restore when re-enabling paid plans
     <a href="/scout-dashboard/earn"  class="bottom-nav-item" data-nav="earn"><span class="bottom-nav-icon">💸</span>Earn</a>
+    PAID_FEATURE end -->
     <a href="/scout-dashboard/library"  class="bottom-nav-item" data-nav="library"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></span>Library</a>
     <a href="/scout-dashboard/history"  class="bottom-nav-item" data-nav="history"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>History</a>
     <a href="/scout-dashboard/family"   class="bottom-nav-item" data-nav="family"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Family</a>
@@ -246,7 +182,9 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- PAID_FEATURE: Stripe.js — restore when re-enabling paid plans
 <script src="https://js.stripe.com/v3/"></script>
+PAID_FEATURE end -->
 <script src="/assets/scout-dashboard.js?v=20260414f"></script>
 <script>
 var _editChildId     = null
@@ -591,6 +529,8 @@ function showSaveErr(msg, btn) {
 }
 
 // ── Subscribe gate helpers ────────────────────────────────────────────────────
+// PAID_FEATURE: all subscribe gate functions below — restore when re-enabling paid plans
+/*
 
 function toggleSubscribeNow() {
   var panel  = document.getElementById('subscribeNowPanel')
@@ -783,6 +723,32 @@ function callConvert(token, paymentMethodId, btn, errEl) {
     errEl.classList.add('show')
     btn.disabled    = false
     btn.textContent = 'Subscribe for ' + document.getElementById('subscribeBtnName').textContent + ' →'
+  })
+}
+
+PAID_FEATURE end */
+
+// Free plan: additional children activate immediately via scout-child-trial-start
+function showSubscribeGate(childName, dobVal, userId) {
+  // Free plan: skip the gate entirely, activate child directly
+  var sb = window._supabaseClient
+  sb.auth.getSession().then(function (res) {
+    var session = res.data && res.data.session
+    if (!session) { window.location.href = '/sign-in.html'; return }
+    fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-child-trial-start', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+      body:    JSON.stringify({ childId: _newChildId }),
+    })
+    .then(function (r) { return r.json() })
+    .then(function (data) {
+      if (data.ok) {
+        window.location.href = '/scout-dashboard.html'
+      } else {
+        alert('Could not activate child. Please try again.')
+      }
+    })
+    .catch(function () { alert('Network error. Please try again.') })
   })
 }
 </script>

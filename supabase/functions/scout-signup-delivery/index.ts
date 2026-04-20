@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
 // FamilyForce Scout — Signup Delivery Edge Function
-// Fires on new scout_subscriptions row (status = 'trialing').
+// Fires on new scout_subscriptions row (status = 'active', plan = 'free').
 // Sends: first digest email + .ics calendar event for next birthday.
 //
 // Deploy: supabase functions deploy scout-signup-delivery
@@ -116,7 +116,7 @@ Deno.serve(async (req: Request) => {
         is_conversion:    payload.is_conversion    ?? false,
         birth_signup:     payload.birth_signup     ?? false,
         additional_child: payload.additional_child ?? false,
-        status:           'trialing',  // bypass status guard below
+        status:           'active',  // bypass status guard below
       }
     } else {
       throw new Error('No record in payload')
@@ -125,9 +125,9 @@ Deno.serve(async (req: Request) => {
     userId = record.user_id as string
     if (!userId) throw new Error('No user_id in record')
 
-    // Only process trialing subscriptions (DB webhook path only — direct calls always proceed)
-    if (!directCall && record.status !== 'trialing') {
-      return new Response(JSON.stringify({ ok: true, skipped: 'not trialing' }), {
+    // Only process active subscriptions (DB webhook path only — direct calls always proceed)
+    if (!directCall && record.status !== 'active') {
+      return new Response(JSON.stringify({ ok: true, skipped: 'not active' }), {
         status: 200, headers: { ...CORS, 'Content-Type': 'application/json' }
       })
     }

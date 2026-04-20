@@ -114,7 +114,15 @@ function trialEndingSoonEmail(email: string, daysLeft: number): string {
   </table>`
 }
 
+// PAID_FEATURE: kill switch — set to true to re-enable Stripe webhook processing
+const PAID_FEATURES_ENABLED = false
+
 Deno.serve(async (req: Request) => {
+  // PAID_FEATURE: returns 200 so Stripe doesn't retry or disable the endpoint
+  if (!PAID_FEATURES_ENABLED) return new Response(
+    JSON.stringify({ ok: false, disabled: true }),
+    { status: 200, headers: { 'Content-Type': 'application/json' } }
+  )
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 })
 
   const stripeKey = Deno.env.get('STRIPE_SECRET_KEY')

@@ -195,16 +195,20 @@ Deno.serve(async (req: Request) => {
     step = 'calculate-trial-end'
     const now = new Date()
 
+    /* PAID_FEATURE: trial_end logic — restore when re-enabling paid plans
     // For expecting parents: trial hasn't started yet — it begins when birth is confirmed
     // via scout-confirm-arrival (Option A). Set trial_end = null so the dashboard
     // knows not to show a countdown banner.
     // For born children: trial_end = child's next monthly birthday (one free digest).
     let trialEnd: Date | null = null
-
     if (!isExpecting) {
       const dobDate = new Date(dob + 'T00:00:00Z')
       trialEnd      = nextMonthlyBirthday(dobDate, now)
     }
+    PAID_FEATURE end */
+
+    // Free plan: all users get active status immediately, no trial expiry
+    const trialEnd: Date | null = null
 
     // 5. Upsert scout_subscriptions
     step = 'upsert-subscription'
@@ -212,8 +216,9 @@ Deno.serve(async (req: Request) => {
       .from('scout_subscriptions')
       .upsert({
         user_id:   user.id,
-        status:    'trialing',
-        trial_end: trialEnd ? trialEnd.toISOString() : null,
+        status:    'active',
+        plan:      'free',
+        trial_end: null,
       }, { onConflict: 'user_id' })
 
     if (subErr) throw new Error(`Failed to create subscription: ${subErr.message}`)
@@ -224,13 +229,13 @@ Deno.serve(async (req: Request) => {
       await sb.from('scout_events').insert({
         user_id:    user.id,
         child_id:   childId,
-        event_type: 'trial_started',
+        event_type: 'signup',
         properties: {
           child_name:   name,
           child_dob:    dob,
           child_gender: gender,
           is_expecting: isExpecting,
-          trial_end:    trialEnd ? trialEnd.toISOString() : null,
+          plan:         'free',
           duration_ms:  Date.now() - jobStart,
         },
       })
@@ -278,8 +283,9 @@ Deno.serve(async (req: Request) => {
       table:  'scout_subscriptions',
       record: {
         user_id:   user.id,
-        status:    'trialing',
-        trial_end: trialEnd ? trialEnd.toISOString() : null,
+        status:    'active',
+        plan:      'free',
+        trial_end: null,
       },
     }
 
@@ -299,10 +305,11 @@ Deno.serve(async (req: Request) => {
       ok:         true,
       childId,
       isExpecting,
-      trialEnd:          trialEnd ? trialEnd.toISOString() : null,
-      trialEndFormatted: trialEnd ? trialEnd.toLocaleDateString('en-US', {
-        month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC'
-      }) : null,
+      plan:       'free',
+      /* PAID_FEATURE: restore trialEnd fields when re-enabling paid plans
+      trialEnd:          null,
+      trialEndFormatted: null,
+      PAID_FEATURE end */
     }), {
       status:  200,
       headers: { ...CORS, 'Content-Type': 'application/json' },

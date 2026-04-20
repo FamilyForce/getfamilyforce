@@ -1160,8 +1160,9 @@ button { font: inherit; cursor: pointer; }
   <!-- Supabase -->
   <!-- Supabase: self-hosted to avoid CDN blocks in WeChat / China -->
   <script src="/assets/supabase.min.js"></script>
-  <!-- Stripe: async so a block doesn't prevent page load -->
+  <!-- PAID_FEATURE: Stripe.js — restore when re-enabling paid plans
   <script src="https://js.stripe.com/v3/" async></script>
+  PAID_FEATURE end -->
   <script>
     // ── In-app browser detection ──────────────────────────────
     // Google OAuth silently fails in WeChat, Facebook, Instagram,
@@ -1255,9 +1256,10 @@ button { font: inherit; cursor: pointer; }
     })();
   </script>
 <script src="https://analytics.ahrefs.com/analytics.js" data-key="cEHq0DEXgToTIGshQyikjQ" async></script>
-  <!-- Rewardful affiliate tracking -->
+  <!-- PAID_FEATURE: Rewardful affiliate tracking — restore when re-enabling paid plans
   <script>(function(w,r){w._rwq=r;w[r]=w[r]||function(){(w[r].q=w[r].q||[]).push(arguments)}}(window,"rewardful"));</script>
   <script async src="https://r.wdfl.co/rw.js" data-rewardful="265990"></script>
+  PAID_FEATURE end -->
 </head>
 
 <body>
@@ -1625,15 +1627,16 @@ button { font: inherit; cursor: pointer; }
 
         <!-- Pre-birth info banner -->
         <div id="prebirth-info" style="display:none;background:#F5F3FF;border:1.5px solid #DDD6FE;border-radius:10px;padding:12px 14px;margin-bottom:20px;font-size:13px;color:#5B3CC4;line-height:1.6">
-          🌱 <strong>Pre-birth mode:</strong> You'll get prep windows now — things to do before baby arrives. Your full trial starts when you confirm baby is here.
+          🌱 <strong>Pre-birth mode:</strong> You'll get prep windows now — things to do before baby arrives. Your Scout digest starts when your baby arrives.
         </div>
 
-        <button class="step-btn-primary" id="start-trial-btn" onclick="startFreeTrial()">Start my free trial →</button>
+        <button class="step-btn-primary" id="start-trial-btn" onclick="startFreeTrial()">Get started free →</button>
         <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px">Not ready? <a href="/scout-dashboard/library" style="color:var(--terra)">Browse the free library instead →</a></p>
         <p style="font-size:11px;color:var(--text-ghost);text-align:center;margin-top:6px">No credit card. You can add more children later.</p>
       </div>
     </div>
 
+    <!-- PAID_FEATURE: payment step — restore when re-enabling paid plans
     <!-- ═══ STEP: PAYMENT ═══ -->
     <div class="signup-step" id="step-payment" role="region" aria-label="Payment">
       <div class="step-card">
@@ -1696,6 +1699,7 @@ button { font: inherit; cursor: pointer; }
       </div>
     </div>
 
+    PAID_FEATURE end -->
     <!-- ═══ STEP: SUCCESS ═══ -->
     <div class="signup-step" id="step-success" role="region" aria-label="You're all set">
       <div class="step-card" style="text-align:center">
@@ -1732,7 +1736,9 @@ button { font: inherit; cursor: pointer; }
       <a href="https://www.getfamilyforce.com/privacy" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Privacy</a>
       <a href="https://www.getfamilyforce.com/terms"   style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Terms</a>
       <a href="https://www.getfamilyforce.com/contact" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)''>Support</a>
+      <!-- PAID_FEATURE: Earn footer link
       <a href="/earn" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Earn</a>
+      PAID_FEATURE end -->
     </nav>
     <span style="font-size:12px;color:rgba(255,255,255,.25)">© 2026 FamilyForce. All rights reserved.</span>
   </div>
@@ -1975,11 +1981,13 @@ button { font: inherit; cursor: pointer; }
   if (next) sessionStorage.setItem('ff_signin_next', next);
 
   /* ── Capture inbound referral / promo code (from share links or gift emails) ── */
+  /* PAID_FEATURE: inbound referral capture (?via= ?ref= ?promo=) — restore when re-enabling paid plans
   // ?via= is Rewardful's tracking parameter; ?ref= is our legacy parameter (both supported)
   var inboundRef = params.get('via') || params.get('ref') || params.get('promo');
   if (inboundRef && /^[A-Za-z]+-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/.test(inboundRef)) {
     localStorage.setItem('ff_inbound_referral', inboundRef.toUpperCase());
   }
+  PAID_FEATURE end */
 
   /* ── Detect returning user mode from ?mode= param ── */
   var modeParam = params.get('mode');
@@ -2732,7 +2740,7 @@ button { font: inherit; cursor: pointer; }
 
     var sb = window._supabaseClient;
     if (!sb) {
-      if (btn) { btn.disabled = false; btn.textContent = 'Start my free trial →'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Get started free →'; }
       return;
     }
 
@@ -2745,7 +2753,7 @@ button { font: inherit; cursor: pointer; }
     sb.auth.getSession().then(function(res) {
       var session = res.data && res.data.session;
       if (!session) {
-        if (btn) { btn.disabled = false; btn.textContent = 'Start my free trial →'; }
+        if (btn) { btn.disabled = false; btn.textContent = 'Get started free →'; }
         return;
       }
 
@@ -2772,7 +2780,7 @@ button { font: inherit; cursor: pointer; }
       .then(function(data) {
         if (!data.ok) {
           console.error('[startFreeTrial] Edge function error:', data.error);
-          if (btn) { btn.disabled = false; btn.textContent = 'Start my free trial →'; }
+          if (btn) { btn.disabled = false; btn.textContent = 'Get started free →'; }
           // Show user-facing error
           var msg = data.error || 'Something went wrong. Please try again.';
           if (msg.includes('4 years') || msg.includes('not more than 4')) {
@@ -2809,7 +2817,7 @@ button { font: inherit; cursor: pointer; }
       })
       .catch(function(e) {
         console.error('[startFreeTrial] Network error:', e);
-        if (btn) { btn.disabled = false; btn.textContent = 'Start my free trial →'; }
+        if (btn) { btn.disabled = false; btn.textContent = 'Get started free →'; }
         showChildError('Network error — please check your connection and try again.');
       });
     });
@@ -2868,6 +2876,7 @@ button { font: inherit; cursor: pointer; }
   };
 
   /* ── Apply promo / referral code ── */
+  /* PAID_FEATURE: applyPromoCode + submitPayment — restore when re-enabling paid plans
   window.applyPromoCode = function() {
     var input    = document.getElementById('promo-code');
     var feedback = document.getElementById('promo-feedback');
@@ -3023,6 +3032,9 @@ button { font: inherit; cursor: pointer; }
       }
     });
   };
+  PAID_FEATURE end */
+  window.applyPromoCode = function() {}  // stub — no paid features
+  window.submitPayment  = function() {}  // stub — no paid features
 
   /* ── Submit payment via Stripe + Edge Function ── */
   window.submitPayment = function() {
@@ -3304,6 +3316,7 @@ button { font: inherit; cursor: pointer; }
     routeAfterSignup();
   });
 
+  /* PAID_FEATURE: intent=subscribe URL handler — restore when re-enabling paid plans
   // ─── URL parameter routing (trial-end email CTAs) ────────────────────────
   // Handles: sign-in.html?intent=subscribe&plan=annual|monthly
   // When a logged-in user arrives via trial-end email CTA, skip straight to payment.
@@ -3352,6 +3365,7 @@ button { font: inherit; cursor: pointer; }
       });
     }, 500);
   })();
+  PAID_FEATURE end */
 
 })();
 </script>

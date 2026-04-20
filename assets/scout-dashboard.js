@@ -36,7 +36,7 @@
   var sb      = null   // supabase client
   var _user   = null   // current auth user
   var _child  = null   // active child object
-  var _sub    = null   // scout_subscriptions row
+  var _sub    = null   // scout_subscriptions row (kept for future paid plan re-enable)
   var _toast  = null   // toast container element
   var _token  = null   // cached access token — kept fresh by onAuthStateChange
 
@@ -341,18 +341,11 @@
     },
 
     /* ── Subscription ────────────────────────────────────────── */
+    /* PAID_FEATURE: _loadSubscription — restore subscription fetch when re-enabling paid plans
     _loadSubscription: function (cb) {
-      // Fetch all subscription rows for the subscription owner.
-      // For family members, the subscription belongs to the child's owner (child.user_id),
-      // not the logged-in user. Fall back to _user.id if child owner is unavailable.
       var subOwnerId = (_child && _child.user_id) ? _child.user_id : _user.id
       sb.from('scout_subscriptions').select('*').eq('user_id', subOwnerId).then(function (res) {
         var rows = res.data || []
-        // Prefer exact child_id match; fall back to null child_id (legacy/first-child rows)
-        // Guard: _child may be null on library/settings pages with no child set up
-        // Prefer exact child_id match first.
-        // Null child_id fallback is only used for trialing rows (pre-birth / first child before
-        // child_id tracking). Active/paid subscriptions are always scoped to a specific child_id.
         var exactMatch = _child ? rows.find(function (r) { return r.child_id === _child.id }) : null
         var nullTrialingMatch = rows.find(function (r) { return !r.child_id && r.status === 'trialing' })
         var match = exactMatch || nullTrialingMatch || null
@@ -363,33 +356,28 @@
         if (typeof cb === 'function') cb()
       })
     },
+    PAID_FEATURE end */
+    _loadSubscription: function (cb) {
+      // Free plan: all authenticated users have full access — no subscription check needed
+      _sub = { status: 'active', plan: 'free' }
+      if (typeof cb === 'function') cb()
+    },
 
+    /* PAID_FEATURE: _renderTrialBanner — restore when re-enabling paid plans
     _renderTrialBanner: function () {
       var banner = document.getElementById('trialBanner')
       if (!banner || !_sub) return
       if (_sub.status !== 'trialing') { banner.style.display = 'none'; return }
-
-      // Expecting parents: trial hasn't started yet (trial_end is null until birth confirmed).
-      // Hide the banner entirely — it's irrelevant until the baby arrives.
       if (!_sub.trial_end || (_child && _child.is_expecting)) { banner.style.display = 'none'; return }
-
       var end     = new Date(_sub.trial_end)
       var now     = new Date()
       var days    = Math.ceil((end - now) / 86400000)
-
-      // Trial already ended — hide the banner. The paywall handles the expired-trial state.
-      // Also catches "ended earlier today": days===0 but end < now (Math.ceil rounds same-day expiry to 0).
       if (days < 0 || (days === 0 && end < now)) { banner.style.display = 'none'; return }
-
       var dateStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
       var daysStr = days === 0 ? 'today' : days + ' day' + (days === 1 ? '' : 's')
-
-      // Check if user dismissed within last 24h
       var dismissKey = 'scout_trial_banner_dismissed'
       var dismissed  = localStorage.getItem(dismissKey)
       if (dismissed && (Date.now() - parseInt(dismissed)) < 86400000) return
-
-      // Use is_gift flag — no DB query needed
       var isGift  = !!(_sub && _sub.is_gift)
       var textEl  = banner.querySelector('.trial-banner-text')
       var subLink = banner.querySelector('.trial-banner-link')
@@ -398,7 +386,6 @@
         : 'Free trial ends ' + dateStr + ' (' + daysStr + ')'
       if (subLink) {
         subLink.style.display = isGift ? 'none' : ''
-        // Carry ?testmode=1 if active — same pattern as settingsUrl() on the dashboard
         if (new URLSearchParams(window.location.search).get('testmode') === '1') {
           var href = subLink.getAttribute('href') || ''
           if (href && href.indexOf('testmode') === -1) {
@@ -412,6 +399,12 @@
         banner.style.display = 'none'
         localStorage.setItem(dismissKey, Date.now().toString())
       })
+    },
+    PAID_FEATURE end */
+    _renderTrialBanner: function () {
+      // Free plan: no trial banner — hide it if element exists
+      var banner = document.getElementById('trialBanner')
+      if (banner) banner.style.display = 'none'
     },
 
     /* ── Age helpers ─────────────────────────────────────────── */
@@ -1263,7 +1256,10 @@
     document.body.removeChild(ta);
   }
 
-  /* ── Post-subscription modal actions ──────────────────────── */
+  /* PAID_FEATURE: post-subscription modal + earn nudge — restore when re-enabling paid plans
+     Everything from here to "PAID_FEATURE end" is commented out.
+     Re-enable by removing these comment wrappers and restoring the initPostSubModal() call. */
+  /*
 
   // Generate a referral code for a user who doesn't have one yet.
   // Derives a prefix from the email, appends 4 random chars, saves to DB + localStorage.
@@ -1367,6 +1363,11 @@
     _logModalEvent('postsub_modal_skip');
   };
 
+  PAID_FEATURE end */
+  // Stub: no-op while paid features are disabled
+  window.resetPostSubModal = function() {}
+  window.skipPostSubModal  = function() {}
+
   /* ── Post-sub modal init ─────────────────────────────────────── */
   // Called from ScoutDash._init after all other init is done.
   // If ff_own_referral isn't in localStorage yet (race condition at signup),
@@ -1375,44 +1376,30 @@
   // Fix #1: session flag is cleared only AFTER the modal successfully displays,
   // not upfront. If the DB fetch fails, ff_just_subscribed is preserved so the
   // next page load can retry — until ff_postsub_modal_shown is set.
+  /* PAID_FEATURE: _initPostSubModal + _populateEarnNudge — restore when re-enabling paid plans
   function _initPostSubModal() {
     var justSubscribed = sessionStorage.getItem('ff_just_subscribed') === '1';
     var modalShown     = localStorage.getItem('ff_postsub_modal_shown') === '1';
-
     if (!justSubscribed || modalShown) return;
-
     var referralCode = localStorage.getItem('ff_own_referral');
-
-    // Always try to populate the earn nudge card — it's hidden by default on first load
     if (referralCode) _populateEarnNudge(referralCode);
-
     if (referralCode) {
       if (justSubscribed) _displayPostSubModal(referralCode);
     } else {
-      // Race condition: fetch referral code from DB
       var client = sb || (window._supabaseClient);
       if (!client) return;
       client.auth.getUser().then(function(res) {
         if (res.error || !res.data || !res.data.user) return;
-        client
-          .from('profiles')
-          .select('referral_code')
-          .eq('id', res.data.user.id)
-          .single()
+        client.from('profiles').select('referral_code').eq('id', res.data.user.id).single()
           .then(function(result) {
             if (result.error || !result.data || !result.data.referral_code) return;
             var code = result.data.referral_code;
             localStorage.setItem('ff_own_referral', code);
             _displayPostSubModal(code);
           });
-          // No .catch() needed — if fetch fails, ff_just_subscribed stays set
-          // and the next dashboard load will retry automatically.
       });
     }
   }
-
-  // Populate the earn nudge card on the main dashboard when code is available.
-  // The card is hidden via inline script on page load if code isn't cached yet.
   function _populateEarnNudge(code) {
     var card = document.getElementById('earnNudgeCard')
     var el   = document.getElementById('nudgeCodeDisplay')
@@ -1420,6 +1407,9 @@
     el.textContent    = code
     card.style.display = ''
   }
+  PAID_FEATURE end */
+  function _initPostSubModal() { /* no-op: paid features disabled */ }
+  function _populateEarnNudge(code) { /* no-op: earn feature disabled */ }
 
   function _displayPostSubModal(referralCode) {
     _populateEarnNudge(referralCode)

@@ -91,9 +91,10 @@
 .arrival-modal-actions { display: flex; gap: 10px; }
 </style>
 <script src="https://analytics.ahrefs.com/analytics.js" data-key="cEHq0DEXgToTIGshQyikjQ" async></script>
-  <!-- Rewardful affiliate tracking -->
+  <!-- PAID_FEATURE: Rewardful affiliate tracking — restore when re-enabling paid plans
   <script>(function(w,r){w._rwq=r;w[r]=w[r]||function(){(w[r].q=w[r].q||[]).push(arguments)}}(window,"rewardful"));</script>
   <script async src="https://r.wdfl.co/rw.js" data-rewardful="265990"></script>
+  PAID_FEATURE end -->
 </head>
 <body>
 
@@ -126,7 +127,9 @@
       <a href="/scout-dashboard"          class="sidebar-nav-item" data-nav="home"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Scout</a>
       <a href="/scout-dashboard/library"  class="sidebar-nav-item" data-nav="library"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></span> Free Library</a>
       <div class="sidebar-divider"></div>
+      <!-- PAID_FEATURE: Earn nav — restore when re-enabling paid plans
       <a href="/scout-dashboard/earn"     class="sidebar-nav-item" data-nav="earn"><span class="nav-icon">💸</span> Earn</a>
+      PAID_FEATURE end -->
       <a href="/scout-dashboard/family"   class="sidebar-nav-item" data-nav="family"><span class="nav-icon">👨‍👩‍👧</span> Family Circle</a>
       <a href="/scout-dashboard/history"  class="sidebar-nav-item" data-nav="history"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> History</a>
       <a href="/scout-dashboard/settings" class="sidebar-nav-item" data-nav="settings"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2.5" fill="var(--bg)"/><circle cx="15" cy="12" r="2.5" fill="var(--bg)"/><circle cx="9" cy="18" r="2.5" fill="var(--bg)"/></svg></span> Settings</a>
@@ -138,12 +141,13 @@
   <!-- Main content -->
   <main class="scout-main" id="scoutMain">
 
-    <!-- Trial banner -->
+    <!-- PAID_FEATURE: trial banner — restore when re-enabling paid plans
     <div class="trial-banner" id="trialBanner" style="display:none">
       <span class="trial-banner-text"></span>
       <a href="/scout-dashboard/settings" class="trial-banner-link">Subscribe →</a>
       <button class="trial-banner-close" aria-label="Dismiss">✕</button>
     </div>
+    PAID_FEATURE end -->
 
     <!-- First-visit onboarding banner -->
     <div class="onboarding-banner" id="onboardingBanner" style="display:none" role="note">
@@ -177,34 +181,11 @@
       </a>
     </div>
 
-    <!-- Earn nudge card — ambient, persistent, all users -->
-    <a href="/scout-dashboard/earn" id="earnNudgeCard"
-      style="display:flex;align-items:center;justify-content:space-between;gap:12px;
-        margin-top:20px;padding:12px 16px;
-        background:rgba(110,78,214,.05);border:1.5px solid rgba(110,78,214,.15);
-        border-radius:12px;text-decoration:none;
-        transition:background .15s,border-color .15s"
-      onmouseover="this.style.background='rgba(110,78,214,.09)';this.style.borderColor='rgba(110,78,214,.28)'"
-      onmouseout="this.style.background='rgba(110,78,214,.05)';this.style.borderColor='rgba(110,78,214,.15)'">
-      <p style="font-size:13px;color:var(--text-mid);margin:0;line-height:1.5">
-        💸 <strong style="color:var(--terra-dark)">Know another parent?</strong>
-        Share your code <strong id="nudgeCodeDisplay" style="color:var(--terra-dark);font-family:'SF Mono','Fira Code',monospace;font-size:12px"></strong> and earn 25% every time they pay.
-      </p>
-      <span style="font-size:12px;font-weight:700;color:var(--terra-dark);white-space:nowrap;flex-shrink:0">Earn →</span>
+    <!-- PAID_FEATURE: earn nudge card — restore when re-enabling paid plans
+    <a href="/scout-dashboard/earn" id="earnNudgeCard" style="display:none">
+      earn nudge placeholder
     </a>
-    <script>
-    (function(){
-      var code = localStorage.getItem('ff_own_referral');
-      var card = document.getElementById('earnNudgeCard');
-      if (code) {
-        var el = document.getElementById('nudgeCodeDisplay');
-        if (el) el.textContent = code;
-      } else if (card) {
-        // Hide until referral code is available — avoids showing a blank code
-        card.style.display = 'none';
-      }
-    })();
-    </script>
+    PAID_FEATURE end -->
 
   </main>
 </div>
@@ -219,7 +200,9 @@
 <nav class="scout-bottom-nav">
       <div class="bottom-nav-inner">
     <a href="/scout-dashboard"          class="bottom-nav-item" data-nav="home"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Scout</a>
+    <!-- PAID_FEATURE: Earn bottom nav — restore when re-enabling paid plans
     <a href="/scout-dashboard/earn"  class="bottom-nav-item" data-nav="earn"><span class="bottom-nav-icon">💸</span>Earn</a>
+    PAID_FEATURE end -->
     <a href="/scout-dashboard/library"  class="bottom-nav-item" data-nav="library"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></span>Library</a>
     <a href="/scout-dashboard/history"  class="bottom-nav-item" data-nav="history"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>History</a>
     <a href="/scout-dashboard/family"   class="bottom-nav-item" data-nav="family"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Family</a>
@@ -415,14 +398,10 @@ function renderHome(child, sub) {
     '<div class="progress-seg-track"><div class="progress-seg-green" id="segGreen" style="width:0%"></div><div class="progress-seg-amber" id="segAmber" style="width:0%"></div></div>' +
     '<div class="progress-legend" id="progressLegend"></div>' +
     '</div>' +
-    (sub && sub.is_gift && sub.trial_end && new Date(sub.trial_end) >= new Date()
-      ? '<p class="page-header-meta" style="margin-top:10px">Next digest: <a href="/scout-dashboard/history" id="nextDigestLink"></a></p>'
-      : sub && sub.status === 'trialing'
-        ? '<p class="page-header-meta" style="margin-top:10px">Monthly digests unlock when you <a href="' + settingsUrl() + '">subscribe</a></p>'
-        : '<p class="page-header-meta" style="margin-top:10px">Next digest: <a href="/scout-dashboard/history" id="nextDigestLink"></a></p>')
+    '<p class="page-header-meta" style="margin-top:10px">Next digest: <a href="/scout-dashboard/history" id="nextDigestLink"></a></p>'
 
-  // Next digest date — paid subscribers and active gift recipients
-  var showNextDigest = sub && (sub.status !== 'trialing' || (sub.is_gift && sub.trial_end && new Date(sub.trial_end) >= new Date()))
+  // Next digest date — all free users get digests
+  var showNextDigest = true
   if (showNextDigest) {
     var nextBday = nextMonthlyBirthday(dob)
     var nextStr  = nextBday.toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
@@ -673,9 +652,7 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
     true)  // default open — primary content
 
   // Coming up
-  // No access: expired trial, lapsed active sub, past_due, or no sub.
-  // Expecting parents always have access — trial_end is null until birth confirmed (Option A).
-  // Gift subscriptions (is_gift = true) with a future trial_end are always active — never show paywall.
+  /* PAID_FEATURE: access gating + paywall — restore when re-enabling paid plans
   var isActiveGift = sub && sub.is_gift && sub.trial_end && new Date(sub.trial_end) >= new Date()
   var noAccess = !isActiveGift && (
     !sub
@@ -686,7 +663,6 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
   )
   if (noAccess) {
     html += renderPaywall(name, ageM)
-    // 5B: log paywall_shown
     ;(function() {
       var sb = ScoutDash.getSb(); var user = ScoutDash.getUser(); var child = ScoutDash.getChild()
       if (sb && user) {
@@ -698,7 +674,9 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
         }).then(function(){}, function(){})
       }
     })()
-  } else if (sections.comingUp.length > 0) {
+  } else
+  PAID_FEATURE end */
+  if (sections.comingUp.length > 0) {
     var comingCards = '<div class="window-grid">'
     sections.comingUp.forEach(function (w) { comingCards += ScoutDash.renderCard(w, { preview: true }) })
     comingCards += '</div>'
@@ -757,6 +735,7 @@ function renderReminders(reminders) {
   wrap.style.display = ''
 }
 
+/* PAID_FEATURE: renderPaywall — restore when re-enabling paid plans
 function renderPaywall(name, ageM) {
   var nextM = ageM + 1
   return '<div class="paywall-card">' +
@@ -780,6 +759,8 @@ function renderPaywall(name, ageM) {
     '<p class="paywall-note">No card was required to start. The windows already in your dashboard are yours to keep.</p>' +
     '</div>'
 }
+PAID_FEATURE end */
+function renderPaywall(name, ageM) { return '' } // no-op: paid features disabled
 
 // ── Pre-birth mode ─────────────────────────────────────────────────────────
 
@@ -992,71 +973,44 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') closeArrivalModal()
 })
 
+/* PAID_FEATURE: renderSidebarTrial — restore when re-enabling paid plans
 function renderSidebarTrial(sub) {
   var wrap = document.getElementById('sidebarTrialWrap')
   if (!wrap || !sub) return
-
-  // ── Cancelling ───────────────────────────────────────────────
   if (sub.status === 'cancelling') {
     var endLine = ''
     if (sub.period_end) {
       var endDate = new Date(sub.period_end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
       endLine = '<p class="sidebar-trial-text">Access until ' + endDate + '.</p>'
     }
-    wrap.innerHTML =
-      '<div class="sidebar-trial">' +
-      '<p class="sidebar-trial-label">⚠️ Subscription cancelled</p>' +
-      endLine +
-      '<a class="sidebar-trial-link" href="' + settingsUrl() + '">Reactivate →</a>' +
-      '</div>'
+    wrap.innerHTML = '<div class="sidebar-trial"><p class="sidebar-trial-label">⚠️ Subscription cancelled</p>' + endLine + '<a class="sidebar-trial-link" href="' + settingsUrl() + '">Reactivate →</a></div>'
     return
   }
-
-  // ── Active paid subscriber ────────────────────────────────────
   if (sub.status === 'active' && !sub.is_gift) {
-    var planLabel = sub.plan === 'triennial' ? 'Full Journey · 3 Years'
-                  : sub.plan === 'annual'    ? 'Annual plan'
-                  : sub.plan === 'monthly'   ? 'Monthly plan'
-                  : 'Scout subscriber'
+    var planLabel = sub.plan === 'triennial' ? 'Full Journey · 3 Years' : sub.plan === 'annual' ? 'Annual plan' : sub.plan === 'monthly' ? 'Monthly plan' : 'Scout subscriber'
     var endLine = ''
     if (sub.period_end) {
-      var isTri   = sub.plan === 'triennial'
-      var fmtOpts = isTri
-        ? { month: 'long', year: 'numeric', timeZone: 'UTC' }
-        : { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }
+      var isTri = sub.plan === 'triennial'
+      var fmtOpts = isTri ? { month: 'long', year: 'numeric', timeZone: 'UTC' } : { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }
       var endDate = new Date(sub.period_end).toLocaleDateString('en-US', fmtOpts)
       endLine = '<p class="sidebar-trial-text">Active until ' + endDate + '.</p>'
     }
-    wrap.innerHTML =
-      '<div class="sidebar-trial">' +
-      '<p class="sidebar-trial-label">✅ ' + planLabel + '</p>' +
-      endLine +
-      '</div>'
+    wrap.innerHTML = '<div class="sidebar-trial"><p class="sidebar-trial-label">✅ ' + planLabel + '</p>' + endLine + '</div>'
     return
   }
-
-  // ── Trialing ──────────────────────────────────────────────────
   if (sub.status !== 'trialing') return
-  var end  = new Date(sub.trial_end)
+  var end = new Date(sub.trial_end)
   var days = Math.ceil((end - new Date()) / 86400000)
   if (days < 0) return
-
   if (sub.is_gift) {
     var endFmt = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
-    wrap.innerHTML =
-      '<div class="sidebar-trial">' +
-      '<p class="sidebar-trial-label">🎁 Gift subscription</p>' +
-      '<p class="sidebar-trial-text">Active until ' + endFmt + '.</p>' +
-      '</div>'
+    wrap.innerHTML = '<div class="sidebar-trial"><p class="sidebar-trial-label">🎁 Gift subscription</p><p class="sidebar-trial-text">Active until ' + endFmt + '.</p></div>'
   } else {
-    wrap.innerHTML =
-      '<div class="sidebar-trial">' +
-      '<p class="sidebar-trial-label">Free trial</p>' +
-      '<p class="sidebar-trial-text">Ends in ' + days + ' day' + (days === 1 ? '' : 's') + '.</p>' +
-      '<a class="sidebar-trial-link" href="' + settingsUrl() + '">Subscribe →</a>' +
-      '</div>'
+    wrap.innerHTML = '<div class="sidebar-trial"><p class="sidebar-trial-label">Free trial</p><p class="sidebar-trial-text">Ends in ' + days + ' day' + (days === 1 ? '' : 's') + '.</p><a class="sidebar-trial-link" href="' + settingsUrl() + '">Subscribe →</a></div>'
   }
 }
+PAID_FEATURE end */
+function renderSidebarTrial(sub) { /* no-op: free plan, no sidebar trial status needed */ }
 
 function nextMonthlyBirthday(dob) {
   var dobDate  = new Date(dob + 'T00:00:00Z')

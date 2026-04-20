@@ -287,8 +287,16 @@ function oneMonthForward(d: Date): Date {
   return r
 }
 
+// PAID_FEATURE: kill switch — set to true to re-enable paid subscriptions
+const PAID_FEATURES_ENABLED = false
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS })
+  // PAID_FEATURE: kill switch
+  if (!PAID_FEATURES_ENABLED) return new Response(
+    JSON.stringify({ ok: false, disabled: true, error: 'Paid features are temporarily unavailable.' }),
+    { status: 503, headers: { ...CORS, 'Content-Type': 'application/json' } }
+  )
   if (req.method !== 'POST')    return err(405, 'Method not allowed')
 
   let step = 'init'

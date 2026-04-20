@@ -18,10 +18,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="/assets/scout-dashboard.css?v=20260319c">
+<!-- PAID_FEATURE: Stripe.js — restore when re-enabling paid plans
 <script src="https://js.stripe.com/v3/"></script>
-  <!-- Rewardful affiliate tracking -->
+PAID_FEATURE end -->
+  <!-- PAID_FEATURE: Rewardful affiliate tracking — restore when re-enabling paid plans
   <script>(function(w,r){w._rwq=r;w[r]=w[r]||function(){(w[r].q=w[r].q||[]).push(arguments)}}(window,"rewardful"));</script>
   <script async src="https://r.wdfl.co/rw.js" data-rewardful="265990"></script>
+  PAID_FEATURE end -->
 </head>
 <body>
 
@@ -46,7 +49,9 @@
       <a href="/scout-dashboard"          class="sidebar-nav-item" data-nav="home"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span> Scout</a>
       <a href="/scout-dashboard/library"  class="sidebar-nav-item" data-nav="library"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></span> Free Library</a>
       <div class="sidebar-divider"></div>
+      <!-- PAID_FEATURE: Earn nav — restore when re-enabling paid plans
       <a href="/scout-dashboard/earn"     class="sidebar-nav-item" data-nav="earn"><span class="nav-icon">💸</span> Earn</a>
+      PAID_FEATURE end -->
       <a href="/scout-dashboard/family"   class="sidebar-nav-item" data-nav="family"><span class="nav-icon">👨‍👩‍👧</span> Family Circle</a>
       <a href="/scout-dashboard/history"  class="sidebar-nav-item" data-nav="history"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> History</a>
       <a href="/scout-dashboard/settings" class="sidebar-nav-item" data-nav="settings"><span class="nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="6" r="2.5" fill="var(--bg)"/><circle cx="15" cy="12" r="2.5" fill="var(--bg)"/><circle cx="9" cy="18" r="2.5" fill="var(--bg)"/></svg></span> Settings</a>
@@ -56,11 +61,13 @@
 
   <main class="scout-main">
 
+    <!-- PAID_FEATURE: trial banner — restore when re-enabling paid plans
     <div class="trial-banner" id="trialBanner" style="display:none">
       <span class="trial-banner-text"></span>
       <a href="#subscription" class="trial-banner-link">Subscribe →</a>
       <button class="trial-banner-close">✕</button>
     </div>
+    PAID_FEATURE end -->
 
     <h1 class="page-title">Settings</h1>
 
@@ -104,7 +111,7 @@
       </div>
     </div>
 
-    <!-- Stripe card form (shown when subscribing) -->
+    <!-- PAID_FEATURE: Stripe card form + Earn section — restore when re-enabling paid plans
     <div id="stripeFormWrap" style="display:none;margin-bottom:24px">
       <div class="settings-card" style="padding:24px">
         <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px" id="stripeFormTitle">Subscribe to Scout</p>
@@ -161,6 +168,8 @@
       </div>
     </div>
 
+    PAID_FEATURE end -->
+
     <!-- 11.3 Account -->
     <div class="settings-section">
       <p class="settings-section-title">Account</p>
@@ -207,7 +216,9 @@
 <nav class="scout-bottom-nav">
       <div class="bottom-nav-inner">
     <a href="/scout-dashboard"          class="bottom-nav-item" data-nav="home"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Scout</a>
+    <!-- PAID_FEATURE: Earn bottom nav — restore when re-enabling paid plans
     <a href="/scout-dashboard/earn"  class="bottom-nav-item" data-nav="earn"><span class="bottom-nav-icon">💸</span>Earn</a>
+    PAID_FEATURE end -->
     <a href="/scout-dashboard/library"  class="bottom-nav-item" data-nav="library"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg></span>Library</a>
     <a href="/scout-dashboard/history"  class="bottom-nav-item" data-nav="history"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>History</a>
     <a href="/scout-dashboard/family"   class="bottom-nav-item" data-nav="family"><span class="bottom-nav-icon"><svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>Family</a>
@@ -230,6 +241,7 @@
 </div>
 
 <!-- Cancel subscription confirm modal -->
+<!-- PAID_FEATURE: cancel subscription modal — restore when re-enabling paid plans
 <div class="confirm-modal" id="cancelSubModal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="cancelSubTitle">
   <div class="confirm-modal-card">
     <h3 class="confirm-modal-title" id="cancelSubTitle">Cancel subscription?</h3>
@@ -240,28 +252,34 @@
     </div>
   </div>
 </div>
+PAID_FEATURE end -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/assets/scout-dashboard.js?v=20260414f"></script>
 <script>
+/* PAID_FEATURE: Stripe vars — restore when re-enabling paid plans
 var _stripe     = null
 var _stripeCard = null
 var _checkoutPlan  = null
-var _freePromoCode = null  // set when a 100%-off promo (e.g. SCOUT1TIME) is applied
+var _freePromoCode = null
 var STRIPE_PK_LIVE = 'pk_live_51TAQTQIbsOmqAIBV8VA8gQdscdslvnT5xLC7sRvPaoy0W4dMhat9OnPaBJZFKn7iq4MorTbvjcPoTIYoxbn1ACnx00HJEpmwFH'
 var STRIPE_PK_TEST = 'pk_test_51TAQTZRF5ve13fCKDmbO62d5eyQD1P5elKFxqb10rtEr7kMJ3myKneIpZs26oxTYafC2s1Q796gUnHxa0LuuDkX600u23YbO8I'
 var _testMode      = new URLSearchParams(window.location.search).get('testmode') === '1'
 var STRIPE_PK      = _testMode ? STRIPE_PK_TEST : STRIPE_PK_LIVE
+PAID_FEATURE end */
+var _testMode = new URLSearchParams(window.location.search).get('testmode') === '1'
 var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1'
 
 document.addEventListener('DOMContentLoaded', function () {
   ScoutDash.init('settings', function (user, child, sub) {
     renderSettings(user, child, sub)
 
+    /* PAID_FEATURE: checkout param → Stripe form — restore when re-enabling paid plans
     // Check if arriving from paywall (?checkout=annual or ?checkout=monthly)
     var params = new URLSearchParams(window.location.search)
     var plan   = params.get('checkout')
     if (plan === 'annual' || plan === 'monthly' || plan === 'triennial') openStripeForm(plan)
+    PAID_FEATURE end */
   })
 })
 
@@ -327,6 +345,7 @@ function ordinal(n) {
   return n + (s[(v-20)%10] || s[v] || s[0])
 }
 
+/* PAID_FEATURE: renderSubCard (subscription status) — restore when re-enabling paid plans
 function renderSubCard(sub, child, isFamilyMember) {
   var card = document.getElementById('subCard')
   if (!card) return
@@ -439,6 +458,16 @@ function renderSubCard(sub, child, isFamilyMember) {
   }
 }
 
+PAID_FEATURE end */
+
+// Free plan: simple subscription card
+function renderSubCard(sub, child, isFamilyMember) {
+  var card = document.getElementById('subCard')
+  if (!card) return
+  card.innerHTML = '<div class="settings-row"><p class="settings-row-label">Plan</p><span class="settings-row-value">Free</span></div>' +
+    '<div class="settings-row"><p class="settings-row-label">Status</p><span class="settings-row-value">Active</span></div>'
+}
+
 function subRow(label, value, dataRow) {
   var attr = dataRow ? ' data-row="' + dataRow + '"' : ''
   return '<div class="settings-row"' + attr + '><p class="settings-row-label">' + label + '</p><span class="settings-row-value">' + value + '</span></div>'
@@ -471,6 +500,8 @@ function updateFormTitle() {
   }
 }
 
+/* PAID_FEATURE: Stripe + Referral + Cancel + Reactivate functions
+   Restore entire block when re-enabling paid plans
 // ── Stripe subscribe ──────────────────────────────────────────────────────────
 function openStripeForm(plan) {
   var child = ScoutDash.getChild()
@@ -883,6 +914,21 @@ function shareReferralLink() {
     })
   }
 }
+
+PAID_FEATURE end */
+
+// Stubs — no-op while paid features are disabled
+function openStripeForm(plan) {}
+function cancelStripeForm() {}
+function submitSubscribe() {}
+function openCancelConfirm(e) { if (e) e.preventDefault(); }
+function closeCancelConfirm() {}
+function confirmCancelSub() {}
+function reactivateSub() {}
+function loadReferralCode() {}
+function toggleReferralEntry() {}
+function applyReferralCode() {}
+function removeReferralCode() {}
 
 // ── Sign out ──────────────────────────────────────────────────────────────────
 function signOut() {
