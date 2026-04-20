@@ -80,14 +80,60 @@
     }
   ],
   "redirects": [
-    { "source": "/scout",          "destination": "/",                     "permanent": false },
-    { "source": "/course",         "destination": "/sign-in",              "permanent": false },
-    { "source": "/dashboard",      "destination": "/scout-dashboard",      "permanent": true  },
-    { "source": "/dashboard.html", "destination": "/scout-dashboard",      "permanent": true  },
-    { "source": "/profile",        "destination": "/scout-dashboard/settings", "permanent": true  },
-    { "source": "/profile.html",   "destination": "/scout-dashboard/settings", "permanent": true  },
-    { "source": "/blog.html",      "destination": "/blog",                 "permanent": true   },
-    { "source": "/earn",           "destination": "/scout-dashboard",      "permanent": false  },
-    { "source": "/earn/(.*)",      "destination": "/scout-dashboard",      "permanent": false  }
+    {
+      "source": "/scout-dashboard/earn/(.*)",
+      "destination": "/scout-dashboard",
+      "permanent": false
+    },
+    {
+      "source": "/scout-dashboard/earn",
+      "destination": "/scout-dashboard",
+      "permanent": false
+    },
+    {
+      "source": "/scout",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/course",
+      "destination": "/sign-in",
+      "permanent": false
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/scout-dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/dashboard.html",
+      "destination": "/scout-dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/profile",
+      "destination": "/scout-dashboard/settings",
+      "permanent": true
+    },
+    {
+      "source": "/profile.html",
+      "destination": "/scout-dashboard/settings",
+      "permanent": true
+    },
+    {
+      "source": "/blog.html",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/earn",
+      "destination": "/scout-dashboard",
+      "permanent": false
+    },
+    {
+      "source": "/earn/(.*)",
+      "destination": "/scout-dashboard",
+      "permanent": false
+    }
   ]
 }
