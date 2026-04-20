@@ -1636,8 +1636,8 @@ button { font: inherit; cursor: pointer; }
       </div>
     </div>
 
-    <!-- PAID_FEATURE: payment step — restore when re-enabling paid plans
-    <!-- ═══ STEP: PAYMENT ═══ -->
+    <!-- PAID_FEATURE: payment step — restore when re-enabling paid plans (remove display:none wrapper to re-enable) -->
+    <div data-paid-feature="payment-step" style="display:none">
     <div class="signup-step" id="step-payment" role="region" aria-label="Payment">
       <div class="step-card">
         <button class="step-back" onclick="showStep('child')" aria-label="Back">← Back</button>
@@ -1699,7 +1699,7 @@ button { font: inherit; cursor: pointer; }
       </div>
     </div>
 
-    PAID_FEATURE end -->
+    </div><!-- /PAID_FEATURE: payment step -->
     <!-- ═══ STEP: SUCCESS ═══ -->
     <div class="signup-step" id="step-success" role="region" aria-label="You're all set">
       <div class="step-card" style="text-align:center">
