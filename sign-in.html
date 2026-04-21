@@ -3214,7 +3214,9 @@ button { font: inherit; cursor: pointer; }
     });
   };
 
-  // ── Called after Edge Function confirms subscription created ──
+  PAID_FEATURE end */
+
+  // ── Called after signup/child setup completes ──
   window.onPaymentSuccess = function() {
     var childName  = sessionStorage.getItem('ff_child_name') || 'your child';
     var trialEnd   = sessionStorage.getItem('ff_trial_end');
@@ -3278,7 +3280,6 @@ button { font: inherit; cursor: pointer; }
         }).then(function() {});
       });
     })();
-  PAID_FEATURE end */
   };
 
   /* ── Success redirect ── */
