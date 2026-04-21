@@ -103,22 +103,24 @@ PAID_FEATURE end -->
       </div>
     </div>
 
-    <!-- 11.2 Subscription -->
+    <!-- PAID_FEATURE: Subscription section + Stripe card form + Earn — restore when re-enabling paid plans
+
+    11.2 Subscription
     <div class="settings-section" id="subscription">
       <p class="settings-section-title">Subscription</p>
       <div class="settings-card" id="subCard">
-        <div class="loading-state" style="padding:20px">Loading…</div>
+        <div class="loading-state" style="padding:20px">Loading...</div>
       </div>
     </div>
 
-    <!-- PAID_FEATURE: Stripe card form + Earn section — restore when re-enabling paid plans
+    Stripe card form
     <div id="stripeFormWrap" style="display:none;margin-bottom:24px">
       <div class="settings-card" style="padding:24px">
         <p style="font-size:15px;font-weight:600;color:var(--text);margin-bottom:16px" id="stripeFormTitle">Subscribe to Scout</p>
 
-        <!-- Referral code banner (shown if code present in localStorage) -->
+        Referral code banner (shown if code present in localStorage)
         <div id="referralAppliedBanner" style="display:none;background:#F0FDF4;border:1.5px solid #BBF7D0;border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
-          <span id="referralBannerMsg" style="font-size:13px;color:#15803D">🎉 Referral code <strong id="referralAppliedCode"></strong> applied — 25% off your first payment</span>
+          <span id="referralBannerMsg" style="font-size:13px;color:#15803D">Referral code applied — 25% off your first payment</span>
           <button id="referralBannerRemove" onclick="removeReferralCode()" style="background:none;border:none;font-size:12px;color:var(--text-dim);cursor:pointer;white-space:nowrap;padding:0">Remove</button>
         </div>
 
@@ -128,7 +130,7 @@ PAID_FEATURE end -->
           <p style="font-size:12px;color:var(--red);margin-top:6px;display:none" id="stripeCardErr"></p>
         </div>
 
-        <!-- Manual referral code entry (collapsed by default) -->
+        Manual referral code entry (collapsed by default)
         <div style="margin-bottom:16px">
           <button onclick="toggleReferralEntry()" style="background:none;border:none;font-size:13px;color:var(--terra);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px" id="referralEntryToggle">Have a referral code?</button>
           <div id="referralEntryWrap" style="display:none;margin-top:10px;display:flex;gap:8px;align-items:flex-start">
@@ -140,21 +142,21 @@ PAID_FEATURE end -->
         </div>
 
         <div style="display:flex;gap:10px;flex-wrap:wrap">
-          <button class="btn btn-primary" id="stripeSubmitBtn" onclick="submitSubscribe()">Subscribe →</button>
+          <button class="btn btn-primary" id="stripeSubmitBtn" onclick="submitSubscribe()">Subscribe</button>
           <button class="btn btn-secondary" onclick="cancelStripeForm()">Cancel</button>
         </div>
-        <p style="font-size:12px;color:var(--text-dim);margin-top:10px">🔒 Secured by Stripe. Cancel any time from this page.</p>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:10px">Secured by Stripe. Cancel any time from this page.</p>
       </div>
     </div>
 
-    <!-- 11.25 Earn -->
+    11.25 Earn
     <div class="settings-section">
-      <p class="settings-section-title">Share &amp; Earn</p>
+      <p class="settings-section-title">Share and Earn</p>
       <div class="settings-card">
         <div class="settings-row" style="align-items:center;justify-content:space-between">
           <div>
             <p class="settings-row-label">Your referral link is ready</p>
-            <p class="settings-row-sub">Earn 25% on every subscription you refer — for life.</p>
+            <p class="settings-row-sub">Earn 25% on every subscription you refer, for life.</p>
           </div>
           <a href="/scout-dashboard/earn"
             style="flex-shrink:0;padding:9px 16px;background:var(--terra);color:#fff;border-radius:10px;
@@ -162,7 +164,7 @@ PAID_FEATURE end -->
               white-space:nowrap;transition:background .15s"
             onmouseover="this.style.background='var(--terra-dark)'"
             onmouseout="this.style.background='var(--terra)'">
-            Go to Earn →
+            Go to Earn
           </a>
         </div>
       </div>
@@ -323,8 +325,8 @@ function renderSettings(user, child, sub) {
     if (el) el.textContent = 'Delivered on the ' + ordinal(day) + ' of each month (' + child.name + '\'s birthday)'
   }
 
-  // Subscription card
-  renderSubCard(sub, child, isFamilyMember)
+  // PAID_FEATURE: Subscription card — restore when re-enabling paid plans
+  // renderSubCard(sub, child, isFamilyMember)
 
   // Hide owner-only destructive actions for family members
   // A family member is anyone whose user.id doesn't match the child's owner user_id
