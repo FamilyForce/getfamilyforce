@@ -1897,6 +1897,7 @@ button { font: inherit; cursor: pointer; }
 
   /* ── Mode switching ── */
   window.signinSwitchMode = function(newMode) {
+    try {
     clearAll();
     mode = newMode;
     if (mode === 'sign-in') {
@@ -1933,6 +1934,24 @@ button { font: inherit; cursor: pointer; }
     var isInApp = /MicroMessenger|FBAN|FBAV|Instagram|LinkedInApp|Line\/|Snapchat|Twitter|TikTok/i.test(ua);
     var _inApp = document.documentElement.classList.contains('ff-inapp');
     if (googleWrap) googleWrap.style.display = (_inApp || mode === 'forgot') ? 'none' : 'block';
+    } catch(e) {
+      // Mode switch failed — force-show the create account form directly
+      console.error('[signinSwitchMode] error:', e);
+      if (newMode === 'create') {
+        var h = document.getElementById('signin-heading');
+        var s = document.getElementById('signin-subtext');
+        var cg = document.getElementById('signin-confirm-group');
+        var fb = document.getElementById('signin-forgot-btn');
+        var sb2 = document.getElementById('signin-submit-btn');
+        var mt = document.getElementById('signin-mode-toggle');
+        if (h)  h.textContent  = 'Create your free account';
+        if (s)  s.textContent  = 'Join thousands of parents getting ahead.';
+        if (cg) cg.style.display = 'block';
+        if (fb) fb.style.display = 'none';
+        if (sb2) sb2.textContent = 'Create account \u2192';
+        if (mt) mt.innerHTML = 'Already have an account?&nbsp;<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">Sign in \u2192</a>';
+      }
+    }
   };
 
   /* ── Google OAuth ── */
