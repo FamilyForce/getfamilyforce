@@ -419,6 +419,787 @@
   </div>
 </section>
 
+<!-- ══ HOW DOES SCOUT WORK ══ -->
+<section class="demo-section">
+  <div class="demo-inner">
+
+    <span class="demo-eyebrow">Try It Now</span>
+    <h2 class="demo-h2">See what Scout<br><em>sends you.</em></h2>
+    <p class="demo-sub">Enter your child's birthday for a live preview of their next monthly digest.</p>
+
+    <div class="demo-widget">
+
+      <!-- INPUT AREA -->
+      <div class="demo-input-area" id="demoInputArea">
+        <p class="demo-input-label">When was your baby born?</p>
+        <div class="demo-date-row">
+          <div class="demo-select-wrap">
+            <select id="demoDay" class="demo-select">
+              <option value="">Day</option>
+            </select>
+          </div>
+          <div class="demo-select-wrap">
+            <select id="demoMonth" class="demo-select">
+              <option value="">Month</option>
+              <option value="1">January</option><option value="2">February</option>
+              <option value="3">March</option><option value="4">April</option>
+              <option value="5">May</option><option value="6">June</option>
+              <option value="7">July</option><option value="8">August</option>
+              <option value="9">September</option><option value="10">October</option>
+              <option value="11">November</option><option value="12">December</option>
+            </select>
+          </div>
+          <div class="demo-select-wrap">
+            <select id="demoYear" class="demo-select">
+              <option value="">Year</option>
+            </select>
+          </div>
+        </div>
+
+        <label class="demo-expecting-label" id="expectingToggle">
+          <input type="checkbox" id="demoExpecting" class="demo-checkbox">
+          <span class="demo-expecting-check">
+            <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="demo-expecting-text">My baby hasn't arrived yet</span>
+        </label>
+      </div>
+
+      <!-- RESULTS AREA (hidden until input) -->
+      <div class="demo-results" id="demoResults" style="display:none;">
+
+        <!-- Age Summary -->
+        <div class="demo-age-summary" id="demoAgeSummary"></div>
+
+        <!-- Milestone cards -->
+        <div class="demo-preview-label" id="demoPreviewLabel"></div>
+        <div class="demo-milestone-grid" id="demoMilestoneGrid"></div>
+
+        <!-- Open windows count -->
+        <div class="demo-open-windows" id="demoOpenWindows"></div>
+
+        <!-- CTA Block -->
+        <div class="demo-cta-block">
+          <div class="demo-cta-promise">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0;margin-top:1px">
+              <path d="M9 2 L4 5 L4 10 C4 13.3 6.4 16.3 9 17 C11.6 16.3 14 13.3 14 10 L14 5 Z" fill="rgba(110,78,214,0.1)" stroke="#6E4ED6" stroke-width="1.4" stroke-linejoin="round"/>
+              <path d="M6.5 9.5L8 11L11.5 7.5" stroke="#6E4ED6" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p>Your email and calendar are sacred. Scout sends <strong>one email per month</strong> — with a calendar invite — covering everything important for your child's development. No spam. Only the stuff you need to know. <strong>We promise.</strong></p>
+          </div>
+          <a href="/sign-in.html" class="demo-cta-btn">Track with Scout — it's free <span>→</span></a>
+        </div>
+
+      </div><!-- /demo-results -->
+
+      <!-- ERROR STATE (over 3 years) -->
+      <div class="demo-error" id="demoError" style="display:none;">
+        <div class="demo-error-icon">🎉</div>
+        <h3 class="demo-error-title">Sounds like they're growing up fast!</h3>
+        <p class="demo-error-desc">Scout tracks developmental windows from birth to 36 months. Your child has graduated beyond our coverage — which means you've made it through the most milestone-dense years. Well done.</p>
+      </div>
+
+    </div><!-- /demo-widget -->
+  </div>
+</section>
+
+<style>
+  /* ══ HOW DOES SCOUT WORK — SECTION ══ */
+  .demo-section {
+    background: #F7F5FF;
+    padding: 96px 24px 112px;
+    border-top: 1px solid rgba(110,78,214,0.08);
+  }
+  .demo-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .demo-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #6E4ED6;
+    display: block;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .demo-h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(36px, 5vw, 54px);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: #1E1248;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .demo-h2 em { font-style: italic; color: #6E4ED6; }
+  .demo-sub {
+    font-size: 17px;
+    color: #6B7280;
+    text-align: center;
+    max-width: 420px;
+    margin: 0 auto 48px;
+    line-height: 1.6;
+  }
+
+  /* Widget container */
+  .demo-widget {
+    background: #fff;
+    border-radius: 24px;
+    box-shadow: 0 4px 40px rgba(30,18,72,0.1), 0 1px 3px rgba(30,18,72,0.06);
+    overflow: hidden;
+  }
+
+  /* Input area */
+  .demo-input-area {
+    padding: 36px 36px 32px;
+    border-bottom: 1px solid rgba(110,78,214,0.08);
+    background: rgba(110,78,214,0.02);
+  }
+  .demo-input-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1E1248;
+    margin-bottom: 16px;
+  }
+  .demo-date-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .demo-select-wrap {
+    position: relative;
+    flex: 1;
+  }
+  .demo-select-wrap::after {
+    content: '';
+    position: absolute;
+    right: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0; height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #6E4ED6;
+    pointer-events: none;
+  }
+  .demo-select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    background: #fff;
+    border: 1.5px solid rgba(110,78,214,0.25);
+    border-radius: 10px;
+    padding: 12px 36px 12px 14px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #1E1248;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+  }
+  .demo-select:focus {
+    border-color: #6E4ED6;
+    box-shadow: 0 0 0 3px rgba(110,78,214,0.12);
+  }
+  .demo-select option[value=""] { color: #9CA3AF; }
+
+  /* Expecting checkbox */
+  .demo-expecting-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .demo-checkbox { display: none; }
+  .demo-expecting-check {
+    width: 20px; height: 20px;
+    border: 1.5px solid rgba(110,78,214,0.3);
+    border-radius: 6px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .demo-expecting-check svg { opacity: 0; transition: opacity 0.15s; }
+  .demo-checkbox:checked + .demo-expecting-check {
+    background: #6E4ED6;
+    border-color: #6E4ED6;
+  }
+  .demo-checkbox:checked + .demo-expecting-check svg { opacity: 1; }
+  .demo-expecting-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6B7280;
+    transition: color 0.15s;
+  }
+  .demo-expecting-label:has(.demo-checkbox:checked) .demo-expecting-text { color: #6E4ED6; }
+
+  /* Results area */
+  .demo-results {
+    padding: 36px 36px 40px;
+    animation: demoFadeIn 0.4s ease;
+  }
+  @keyframes demoFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Age summary */
+  .demo-age-summary {
+    background: linear-gradient(135deg, rgba(110,78,214,0.06) 0%, rgba(110,78,214,0.02) 100%);
+    border: 1px solid rgba(110,78,214,0.12);
+    border-radius: 14px;
+    padding: 20px 22px;
+    margin-bottom: 28px;
+  }
+  .demo-age-main {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1E1248;
+    line-height: 1.35;
+    margin-bottom: 4px;
+  }
+  .demo-age-main em { font-style: normal; color: #6E4ED6; }
+  .demo-age-next {
+    font-size: 14px;
+    color: #6B7280;
+    font-weight: 500;
+  }
+  .demo-age-next strong { color: #1E1248; }
+
+  /* Preview label */
+  .demo-preview-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #6E4ED6;
+    margin-bottom: 14px;
+  }
+
+  /* Milestone cards */
+  .demo-milestone-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .demo-milestone-card {
+    background: #FAFAF8;
+    border-radius: 12px;
+    padding: 16px 18px;
+    border: 1px solid rgba(30,18,72,0.07);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .demo-milestone-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(30,18,72,0.08);
+  }
+  .demo-milestone-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .demo-milestone-body { flex: 1; min-width: 0; }
+  .demo-milestone-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #1E1248;
+    margin-bottom: 4px;
+    line-height: 1.35;
+  }
+  .demo-milestone-desc {
+    font-size: 13px;
+    color: #6B7280;
+    line-height: 1.55;
+  }
+
+  /* Open windows */
+  .demo-open-windows {
+    background: rgba(110,78,214,0.04);
+    border: 1px solid rgba(110,78,214,0.1);
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #4B5563;
+    line-height: 1.55;
+    margin-bottom: 28px;
+  }
+  .demo-open-windows strong { color: #1E1248; }
+
+  /* CTA block */
+  .demo-cta-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .demo-cta-promise {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: rgba(110,78,214,0.04);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #6B7280;
+    line-height: 1.6;
+  }
+  .demo-cta-promise strong { color: #1E1248; }
+  .demo-cta-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #6E4ED6;
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 15px 32px;
+    border-radius: 50px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(110,78,214,0.4);
+    transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+    letter-spacing: 0.01em;
+    width: 100%;
+  }
+  .demo-cta-btn:hover {
+    background: #5B3CC4;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(110,78,214,0.5);
+  }
+
+  /* Error state */
+  .demo-error {
+    padding: 48px 36px;
+    text-align: center;
+    animation: demoFadeIn 0.4s ease;
+  }
+  .demo-error-icon { font-size: 48px; margin-bottom: 16px; }
+  .demo-error-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: 26px;
+    color: #1E1248;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .demo-error-desc {
+    font-size: 15px;
+    color: #6B7280;
+    line-height: 1.65;
+    max-width: 420px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 540px) {
+    .demo-input-area, .demo-results, .demo-error { padding-left: 22px; padding-right: 22px; }
+    .demo-date-row { flex-wrap: wrap; }
+    .demo-select-wrap { flex: none; width: calc(50% - 5px); }
+    .demo-select-wrap:first-child { width: 100%; }
+  }
+</style>
+
+<script>
+(function() {
+
+  /* ─── MILESTONE DATA ─────────────────────────────── */
+  const M = {
+    // PRE-BIRTH
+    'safety-safe-sleep-setup':       { title: 'Safe sleep setup — before baby arrives', desc: 'Your baby\'s sleep space should be ready before you leave the hospital: firm mattress, no soft objects, same room as parents for the first 6 months.', cat: 'safety' },
+    'safety-car-seat-install-check': { title: 'Car seat installation check', desc: 'Get your rear-facing car seat checked by a certified technician before your due date. Most are installed incorrectly.', cat: 'safety' },
+    'safety-infant-cpr':             { title: 'Parent infant CPR training', desc: 'Infant CPR is different from adult CPR. Take a certified class before your baby arrives — most hospitals offer them free.', cat: 'safety' },
+
+    // MONTH 1
+    'screening-visit-1month':            { title: '1-month well-child visit', desc: 'The first check-up after the newborn visit — covers feeding, weight gain, and a postpartum depression screen for the primary caregiver.', cat: 'screening' },
+    'motor-tummy-time-build':            { title: 'Tummy time — build to 15–30 min/day', desc: 'Daily tummy time strengthens the neck and shoulder muscles your baby needs to roll, sit, and eventually crawl.', cat: 'motor' },
+    'social-parent-depression-screening':{ title: 'Screen for postpartum depression', desc: 'Postpartum depression peaks in the first 2 months. Ask your doctor, answer honestly — it\'s treatable and common.', cat: 'social' },
+
+    // MONTH 2
+    'screening-visit-2months':     { title: '2-month well-child visit', desc: 'The most vaccine-heavy visit of the first year — six immunizations in one appointment, plus full developmental assessment.', cat: 'screening' },
+    'social-social-smile-appears': { title: 'Social smile — first intentional interaction', desc: 'Around 6–8 weeks, your baby\'s smile becomes a genuine response to you. The beginning of real back-and-forth communication.', cat: 'social' },
+    'language-serve-return':       { title: 'Serve and return — the foundation of language', desc: 'Every time you respond to your baby\'s coo or gesture, you\'re wiring the neural pathways that build language and trust.', cat: 'language' },
+
+    // MONTH 3
+    'motor-head-control':              { title: 'Head control — holds head steady upright', desc: 'Steady head control is the foundation for rolling, sitting, and every major motor milestone that follows.', cat: 'motor' },
+    'language-laughing':               { title: 'First real laughs', desc: 'The first genuine laugh — usually around 3–4 months — is your baby\'s first social milestone beyond the smile.', cat: 'language' },
+    'social-bedtime-routine-security': { title: 'Start a bedtime routine now', desc: 'A consistent, short bedtime routine at 3 months lays the groundwork for better sleep through the entire first year.', cat: 'social' },
+    // month 3 aliases (slugs used in editorial schedule)
+    'language-serve-return-m3':        { title: 'Serve and return — keep the conversation going', desc: 'Every time you respond to your baby\'s sounds and gestures, you\'re wiring the neural pathways that build language and trust.', cat: 'language' },
+
+    // MONTH 4
+    'cognitive-sleep-regression-4month': { title: 'The 4-month sleep regression', desc: 'Most babies who slept well suddenly start waking more — the brain is permanently restructuring its sleep architecture. This is progress, not regression.', cat: 'cognitive' },
+    'screening-visit-4months':           { title: '4-month well-child visit', desc: 'Motor, social, and vision development are assessed at this visit — plus the second round of vaccines.', cat: 'screening' },
+    'motor-roll-tummy-to-back':          { title: 'Rolling: tummy to back', desc: 'Most babies roll tummy-to-back between 3–5 months. Once rolling begins, swaddling must stop immediately.', cat: 'motor' },
+
+    // MONTH 5
+    'nutrition-solids-readiness':          { title: 'Watch for solid food readiness signs', desc: 'Readiness appears between 4–6 months — look for head control, interest in food, and loss of the tongue-thrust reflex.', cat: 'nutrition' },
+    'nutrition-iron-supplement-breastfed': { title: 'Iron supplement for breastfed babies', desc: 'Breast milk is low in iron. The AAP recommends 1mg/kg/day of iron drops from 4 months until iron-rich solids are established.', cat: 'nutrition' },
+    'social-primary-attachment':           { title: 'Primary attachment formation', desc: 'Your baby is forming a deep bond with their primary caregivers. Responsiveness now shapes lifelong emotional security.', cat: 'social' },
+
+    // MONTH 6
+    'screening-visit-6months': { title: '6-month well-child visit', desc: 'Iron levels, fluoride, and developmental milestones are assessed — plus the third round of vaccines and flu shot season.', cat: 'screening' },
+    'nutrition-first-purees':  { title: 'First solids — single-ingredient purees', desc: 'Start with single-ingredient purees, waiting 3–5 days between new foods so you can identify any reactions.', cat: 'nutrition' },
+    'motor-sitting-unsupported':{ title: 'Sits without support', desc: 'Most babies sit unsupported around 6–8 months. Reducing bouncer time and maximizing floor time helps them build the core strength to get there.', cat: 'motor' },
+
+    // MONTH 7
+    'safety-babyproofing':       { title: 'Babyproof before crawling begins', desc: 'The window to babyproof is before your baby starts moving. Cabinet locks, outlet covers, and gates should be in place now.', cat: 'safety' },
+    'language-responds-to-name': { title: 'Responds to their own name', desc: 'Consistent response to name by 7 months is an important social-communication milestone. Absent response should be flagged at the 9-month visit.', cat: 'language' },
+    'nutrition-dairy-intro':     { title: 'Introduce dairy products', desc: 'Yogurt and cheese can be introduced around 6–8 months as finger foods. Whole cow\'s milk as a drink waits until 12 months.', cat: 'nutrition' },
+
+    // MONTH 8
+    'nutrition-egg-intro':       { title: '⚠️ Introduce eggs — early allergen', desc: 'Eggs are a top allergen. Early introduction between 6–11 months significantly reduces lifelong allergy risk.', cat: 'nutrition' },
+    'language-babbling':         { title: 'Babbling — consonant sounds (ba, da, ma)', desc: 'Varied babbling mixing consonants and vowels is a strong predictor of vocabulary development in the second year.', cat: 'language' },
+    'nutrition-tree-nut-intro':  { title: '⚠️ Introduce tree nuts — early allergen', desc: 'Tree nut butters thinned to a safe consistency can be introduced around 6–11 months to meaningfully reduce allergy risk.', cat: 'nutrition' },
+
+    // MONTH 9
+    'screening-visit-9months': { title: '9-month well-child visit', desc: 'The 9-month visit includes a formal developmental screen and first autism flags. No vaccines at this one.', cat: 'screening' },
+    'nutrition-peanut-intro':  { title: '⚠️ Peanut introduction window', desc: 'Early peanut introduction between 4–11 months reduces lifelong peanut allergy risk by up to 80%. This window matters.', cat: 'nutrition' },
+    'nutrition-sesame-intro':  { title: '⚠️ Introduce sesame — early allergen', desc: 'Sesame is now a top-9 allergen. Early introduction in the first year is recommended to reduce lifelong allergy risk.', cat: 'nutrition' },
+
+    // MONTH 10
+    'nutrition-fish-intro':   { title: '⚠️ Introduce fish — early allergen', desc: 'Fish is a top allergen and key source of DHA for brain development. The window to introduce safely is before 12 months.', cat: 'nutrition' },
+    'social-peek-a-boo':      { title: 'Peek-a-boo — object permanence arrives', desc: 'Your baby\'s delight in peek-a-boo signals they\'ve grasped that things exist even when they can\'t be seen. A major cognitive leap.', cat: 'social' },
+    'motor-pull-to-stand':    { title: 'Pulls to standing', desc: 'Pulling to stand — usually 8–12 months — is the precursor to cruising and first independent steps.', cat: 'motor' },
+
+    // MONTH 11
+    'motor-cruising':               { title: 'Cruising along furniture', desc: 'Stepping sideways while holding furniture typically appears 1–3 months before independent walking begins.', cat: 'motor' },
+    'language-mama-dada-specific':  { title: 'Uses "mama" and "dada" specifically', desc: 'Using mama and dada for the right parent — not randomly — is a language milestone that arrives around 9–12 months.', cat: 'language' },
+    'screening-dental-first-visit': { title: 'First dental visit by age 1', desc: 'The AAP recommends the first dental visit within 6 months of the first tooth, or by the first birthday — whichever comes first.', cat: 'screening' },
+
+    // MONTH 12
+    'screening-visit-12months': { title: '12-month well-child visit', desc: 'Lead and anemia screening, full developmental assessment, and MMR and chickenpox vaccines are all given at the 1-year visit.', cat: 'screening' },
+    'language-read-aloud-daily': { title: 'Read aloud every day — build the habit', desc: 'Daily reading from birth to age 5 is one of the strongest predictors of school-age literacy and vocabulary. Start the habit now.', cat: 'language' },
+    'nutrition-cows-milk-switch':{ title: 'Switch to whole cow\'s milk', desc: 'At 12 months, whole cow\'s milk replaces formula or breast milk as the main drink. The target is 16–24 oz per day.', cat: 'nutrition' },
+
+    // MONTH 13
+    'motor-first-steps':        { title: 'First steps', desc: 'Most babies take first independent steps between 9–12 months, with a normal range up to 15 months. Wide variation is expected.', cat: 'motor' },
+    'language-first-words':     { title: 'First words beyond mama and dada', desc: 'Intentional words beyond mama and dada typically emerge between 10–14 months — the beginning of real vocabulary.', cat: 'language' },
+    'nutrition-bottle-weaning': { title: 'Wean off the bottle', desc: 'Bottle weaning should be complete by 15–18 months. Prolonged bottle use raises ear infection and early dental cavity risk.', cat: 'nutrition' },
+
+    // MONTH 14
+    'language-joint-attention-pointing':{ title: 'Pointing — joint attention', desc: 'Pointing to share interest (not just to request) is one of the strongest early predictors of language development.', cat: 'language' },
+    'motor-walking-independent':        { title: 'Walking independently', desc: 'Most children walk independently by 15 months. Consistent falling to one side or persistent toe-walking is worth mentioning to your pediatrician.', cat: 'motor' },
+    'cognitive-identifies-body-parts':  { title: 'Identifies body parts when named', desc: 'Pointing to nose, eyes, and mouth when asked typically emerges between 12–18 months — a fun milestone to test at home.', cat: 'cognitive' },
+
+    // MONTH 15
+    'screening-visit-15months':    { title: '15-month well-child visit', desc: 'Autism screening, developmental assessment, and three vaccines — including DTaP and Hib — are all part of the 15-month visit.', cat: 'screening' },
+    'language-vocab-10-words':     { title: 'Vocabulary: 10 words', desc: 'Having 10 words by 15 months is the clinical benchmark. Fewer than 5 words should be discussed with your pediatrician.', cat: 'language' },
+    'cognitive-pretend-play-emerging':{ title: 'Pretend play beginning to emerge', desc: 'Early pretend play — feeding a doll, talking on a toy phone — is one of the most important cognitive milestones of the second year.', cat: 'cognitive' },
+
+    // MONTH 16
+    'social-label-big-feelings': { title: 'Name and label your toddler\'s emotions', desc: 'Labeling emotions ("you\'re frustrated") builds emotional regulation. It\'s one of the most evidence-backed parenting strategies there is.', cat: 'social' },
+    'language-1step-commands':   { title: 'Follows one-step commands', desc: 'Following a simple one-step instruction without a gesture ("come here") should be consistent by 15–18 months.', cat: 'language' },
+    'motor-stair-climbing':      { title: 'Climbing stairs', desc: 'Most toddlers attempt stairs around 15–18 months. Two hands on the rail, close supervision, until at least age 3.', cat: 'motor' },
+
+    // MONTH 17
+    'social-separation-anxiety': { title: 'Separation anxiety — peak and strategy', desc: 'Separation anxiety peaks between 10–18 months. Predictable, consistent goodbyes — never sneaking away — is the evidence-backed approach.', cat: 'social' },
+    'nutrition-spoon-self-feeding':{ title: 'Self-feeding with a spoon', desc: 'Encouraging self-feeding with a spoon from 12–18 months builds motor skills and a healthy, positive relationship with food.', cat: 'nutrition' },
+    'social-parallel-play':       { title: 'Parallel play — near but not yet with', desc: 'Toddlers play alongside peers before they play with them. Parallel play is developmentally right on time and should be encouraged.', cat: 'social' },
+
+    // MONTH 18
+    'screening-visit-18months-autism':{ title: '18-month well-child visit + autism screen', desc: 'The M-CHAT autism screening tool is administered at 18 months. Answer it carefully and honestly — not optimistically.', cat: 'screening' },
+    'language-2-word-combinations':   { title: 'Two-word combinations', desc: 'Putting two words together ("more milk", "daddy go") by 18–24 months is a key language benchmark to watch for.', cat: 'language' },
+    'social-tantrums-peak':           { title: 'Tantrum peak — response strategy matters', desc: 'Tantrums peak between 18 months and 3 years. How you respond consistently now shapes the trajectory significantly.', cat: 'social' },
+
+    // MONTH 19
+    'social-independence-me-do-it': { title: 'The "me do it" phase — foster it', desc: 'The drive for independence at 18–24 months is cognitive development in action. Offer choices, not battles.', cat: 'social' },
+    'language-vocab-50-words':      { title: 'Vocabulary: 50 words — the 50-word gate', desc: '50 words by 24 months is the developmental benchmark. Reaching this gate predicts strong vocabulary growth in the years ahead.', cat: 'language' },
+    'social-self-regulation':       { title: 'Self-regulation — the foundation of behaviour', desc: 'The ability to manage impulses and emotions starts forming in toddlerhood and predicts school readiness more reliably than IQ.', cat: 'social' },
+
+    // MONTH 20
+    'language-question-asking':      { title: 'The "what\'s that?" phase — answer every time', desc: 'The question-asking phase signals growing curiosity and vocabulary. Answer every question — it builds language faster than almost anything else.', cat: 'language' },
+    'cognitive-matches-shapes-colors':{ title: 'Matches shapes and colors', desc: 'Sorting and matching shapes and colors by 18–24 months shows emerging categorization and cognitive organisation.', cat: 'cognitive' },
+    'language-body-parts-5':         { title: 'Names at least 5 body parts', desc: 'Naming body parts when asked (not just pointing) shows vocabulary is advancing from recognition to production.', cat: 'language' },
+
+    // MONTH 21
+    'language-speech-clarity-family':{ title: 'Speech clarity — understood by family', desc: 'By 24 months, familiar caregivers should understand about 50% of speech. Less than that is worth flagging at the next visit.', cat: 'language' },
+    'social-empathy-emerging':       { title: 'Empathy beginning to emerge', desc: 'True empathy — responding to others\' distress — begins to appear around 18–24 months. It\'s a significant cognitive and social leap.', cat: 'social' },
+    'cognitive-function-of-objects': { title: 'Understands function of everyday objects', desc: 'Using objects correctly (brush on hair, phone to ear) shows symbolic understanding that underlies language and pretend play.', cat: 'cognitive' },
+
+    // MONTH 22
+    'language-vocab-200-words': { title: 'Vocabulary: 200+ words', desc: 'The vocabulary explosion typically hits between 18–24 months. Reaching 200+ words by 24 months is the upper benchmark.', cat: 'language' },
+    'language-2step-commands':  { title: 'Follows two-step commands', desc: 'Following two-step instructions without gestures ("get your shoes and bring them here") typically develops by 24 months.', cat: 'language' },
+    'language-pronouns':        { title: 'First pronouns — me, mine, I', desc: '"Mine" at 18–24 months isn\'t selfishness — it\'s the first sign your child understands themselves as distinct from others.', cat: 'language' },
+
+    // MONTH 23
+    'motor-jumping-both-feet':      { title: 'Jumps with both feet leaving the ground', desc: 'Jumping with both feet simultaneously appears around 22–26 months — a key gross motor milestone that requires real strength and coordination.', cat: 'motor' },
+    'cognitive-pretend-play-complex':{ title: 'Complex pretend play', desc: 'Multi-step pretend play (cooking dinner, going to the doctor) shows narrative thinking that\'s closely linked to language development.', cat: 'cognitive' },
+    'cognitive-big-little':         { title: 'Understands "big" and "little"', desc: 'Grasping size concepts like big and little by 24 months shows early abstract thinking and vocabulary moving beyond nouns.', cat: 'cognitive' },
+
+    // MONTH 24
+    'screening-visit-24months-autism':{ title: '24-month well-child visit + autism screen', desc: 'The second formal autism screen at 24 months is the most important developmental assessment of the toddler years. Take it seriously.', cat: 'screening' },
+    'nutrition-2pct-milk-switch':     { title: 'Switch from whole milk to 2% milk', desc: 'At 24 months, the AAP recommends switching to reduced-fat milk for children who are growing normally.', cat: 'nutrition' },
+    'cognitive-same-different':       { title: 'Understands "same" and "different"', desc: 'Grasping same vs. different is foundational for sorting, categorisation, and eventually reading and early math.', cat: 'cognitive' },
+
+    // MONTH 25
+    'language-3-word-sentences':    { title: 'Three-word sentences', desc: 'Three-word sentences by 24–30 months show grammar is beginning to develop alongside a growing vocabulary.', cat: 'language' },
+    'cognitive-memory-recalls-events':{ title: 'Recalls past events', desc: 'Talking about things that happened earlier in the day shows episodic memory forming — the cognitive basis of storytelling.', cat: 'cognitive' },
+    'social-cooperative-play':       { title: 'Cooperative play — playing with others', desc: 'Playing with rather than alongside peers emerges around 24–36 months — a meaningful shift in social development.', cat: 'social' },
+
+    // MONTH 26
+    'language-stranger-understands-50pct':{ title: 'Strangers understand 50% of speech', desc: 'By 24 months, at least 50% of your child\'s speech should be understandable to an unfamiliar listener. Less than that is worth flagging.', cat: 'language' },
+    'language-names-colors':              { title: 'Names basic colors', desc: 'Naming colors (not just matching them) typically appears between 24–30 months as vocabulary expands into adjectives.', cat: 'language' },
+    'cognitive-counts-to-10':             { title: 'Beginning to count', desc: 'Reciting the count sequence emerges around 24–36 months — note that "counting" words precedes true quantity understanding by many months.', cat: 'cognitive' },
+
+    // MONTH 27
+    'self-help-potty-readiness':           { title: 'Potty readiness signs to watch for', desc: 'Staying dry for 2+ hours, interest in the toilet, and communicating the need to go are the readiness signs — not age alone.', cat: 'motor' },
+    'motor-catching-ball':                 { title: 'Catches a large ball with arms', desc: 'Catching a large ball by 24–30 months shows developing hand-eye coordination and spatial awareness.', cat: 'motor' },
+    'language-stranger-understands-75pct': { title: 'Strangers understand 75% of speech', desc: 'By 36 months, 75% of your child\'s speech should be understandable to someone who doesn\'t know them — the clinical benchmark.', cat: 'language' },
+
+    // MONTH 28
+    'cognitive-humor-jokes':   { title: 'Early humour — intentional jokes', desc: 'Around 24–30 months, children start making intentional jokes — a sign of theory of mind and social awareness developing.', cat: 'cognitive' },
+    'cognitive-time-concepts': { title: 'Time concepts: today, yesterday, later', desc: 'Basic time language begins to appear around 24–36 months as memory and narrative thinking develop.', cat: 'cognitive' },
+    'social-named-friendships':{ title: 'Named friendships emerging', desc: 'Referring to specific children as friends and showing preference for them marks a new level of social and emotional development.', cat: 'social' },
+
+    // MONTH 29
+    'cognitive-preschool-readiness':{ title: 'Preschool readiness', desc: 'Separation, following group instructions, and basic self-care matter more for preschool readiness than any academic skill.', cat: 'cognitive' },
+    'motor-balance-one-foot':       { title: 'Balance on one foot briefly', desc: 'Balancing on one foot for 1–2 seconds typically appears around 28–36 months — a key precursor for jumping, running, and sport.', cat: 'motor' },
+    'language-counts-objects-5':    { title: 'Counts 5 objects correctly', desc: 'One-to-one correspondence — each number word refers to exactly one object — typically appears by 30–36 months.', cat: 'language' },
+
+    // MONTH 30
+    'screening-visit-30months':     { title: '30-month well-child visit', desc: 'Developmental screening, preschool readiness assessment, and a review of speech clarity — no vaccines at this visit.', cat: 'screening' },
+    'safety-crib-to-bed-transition':{ title: 'Crib to bed transition', desc: 'When your child can climb out of the crib, it\'s time. Most transition between 18 months and 3 years — safety rail recommended.', cat: 'safety' },
+    'self-help-daytime-dryness':    { title: 'Daytime dryness — the potty training finish line', desc: 'Reliable daytime dryness — the actual goal of potty training — typically arrives between 30–36 months. Median: 32.5 months for girls, 35 for boys.', cat: 'motor' },
+
+    // MONTH 31
+    'social-peer-friendships':        { title: 'Real friendships forming', desc: 'By 30–36 months, children develop genuine preference for specific peers — the beginning of true, reciprocal friendship.', cat: 'social' },
+    'cognitive-number-quantity':      { title: 'Number and quantity concepts', desc: 'Understanding that "three" means three things — not just reciting numbers — typically solidifies between 30–36 months.', cat: 'cognitive' },
+    'self-help-dressing-simple-clothes':{ title: 'Dresses in simple clothing independently', desc: 'Putting on and removing simple clothing by 30–36 months builds independence and fine motor skills simultaneously.', cat: 'motor' },
+
+    // MONTH 32
+    'language-knows-name-age':    { title: 'States full name and age when asked', desc: 'Saying their full name and age is a milestone that typically arrives between 30–36 months — worth testing at home.', cat: 'language' },
+    'motor-hopping-one-foot':     { title: 'Hops on one foot', desc: 'Hopping — distinct from balancing — typically appears around 30–36 months and requires real balance, coordination, and strength.', cat: 'motor' },
+    'self-help-tooth-brushing':   { title: 'Tooth brushing compliance', desc: 'Twice-daily brushing, with parental help until age 6–7, should be an established routine by age 3.', cat: 'motor' },
+
+    // MONTH 33
+    'social-imaginary-friends':    { title: 'Imaginary friends — normal and healthy', desc: 'Imaginary companions in 2–5 year olds are associated with creativity and social development. They\'re a feature, not a bug.', cat: 'social' },
+    'language-tells-stories':      { title: 'Tells simple stories about their day', desc: 'Narrating past events in sequence is an early literacy skill that directly predicts reading comprehension in school.', cat: 'language' },
+    'language-complex-instructions':{ title: 'Follows 3-step instructions', desc: 'Following three-part instructions without reminders shows working memory and attention developing on track.', cat: 'language' },
+
+    // MONTH 34
+    'motor-drawing-circle':            { title: 'Draws a recognisable circle', desc: 'Drawing a circle — distinct from scribbling — typically appears around 30–36 months and is a meaningful fine motor milestone.', cat: 'motor' },
+    'social-gratitude-empathy-practice':{ title: 'Practice gratitude and empathy daily', desc: 'Modelling thank-you, noticing others\' feelings, and naming acts of kindness in daily life builds the lifelong habit of empathy.', cat: 'social' },
+    'motor-tricycle-balance-bike':     { title: 'Rides a tricycle or balance bike', desc: 'Pedaling a tricycle or scooting a balance bike by age 3 builds coordination, confidence, and gross motor independence.', cat: 'motor' },
+
+    // MONTH 35
+    'safety-forward-facing-transition':{ title: 'Car seat: forward-facing transition', desc: 'Children can move forward-facing when they\'ve outgrown their rear-facing seat. Keep rear-facing as long as the seat allows.', cat: 'safety' },
+    'language-counts-to-3':           { title: 'Counts 3 objects correctly', desc: 'True one-to-one counting — understanding that each number name refers to one object — typically solidifies by 30–36 months.', cat: 'language' },
+    'social-sharing-scaffolding':     { title: 'Sharing — gentle scaffolding now works', desc: 'Genuine voluntary sharing doesn\'t emerge until 3–3.5 years. This is the right time to scaffold it naturally, without forcing it.', cat: 'social' },
+
+    // MONTH 36
+    'screening-visit-36months':    { title: '3-year well-child visit', desc: 'Vision screening, full developmental assessment, and often the last vaccines before school entry are all part of the 3-year visit.', cat: 'screening' },
+    'language-full-sentences':     { title: 'Full sentences of 4+ words', desc: 'Sentences of 4 or more words, using grammar correctly, should be consistent and clear by 36 months.', cat: 'language' },
+    'social-consistent-discipline':{ title: 'Consistent discipline — the approach matters', desc: 'Consistent, predictable responses to behaviour — same rules, same consequences — matter more than any specific technique.', cat: 'social' }
+  };
+
+  /* ─── EDITORIAL SCHEDULE (all 36 months + pre-birth) ─── */
+  const ED = {
+    0:  ['safety-safe-sleep-setup','safety-car-seat-install-check','safety-infant-cpr'],
+    1:  ['screening-visit-1month','motor-tummy-time-build','social-parent-depression-screening'],
+    2:  ['screening-visit-2months','social-social-smile-appears','language-serve-return'],
+    3:  ['motor-head-control','language-laughing','social-bedtime-routine-security'],
+    4:  ['cognitive-sleep-regression-4month','screening-visit-4months','motor-roll-tummy-to-back'],
+    5:  ['nutrition-solids-readiness','nutrition-iron-supplement-breastfed','social-primary-attachment'],
+    6:  ['screening-visit-6months','nutrition-first-purees','motor-sitting-unsupported'],
+    7:  ['safety-babyproofing','language-responds-to-name','nutrition-dairy-intro'],
+    8:  ['nutrition-egg-intro','language-babbling','nutrition-tree-nut-intro'],
+    9:  ['screening-visit-9months','nutrition-peanut-intro','nutrition-sesame-intro'],
+    10: ['nutrition-fish-intro','social-peek-a-boo','motor-pull-to-stand'],
+    11: ['motor-cruising','language-mama-dada-specific','screening-dental-first-visit'],
+    12: ['screening-visit-12months','language-read-aloud-daily','nutrition-cows-milk-switch'],
+    13: ['motor-first-steps','language-first-words','nutrition-bottle-weaning'],
+    14: ['language-joint-attention-pointing','motor-walking-independent','cognitive-identifies-body-parts'],
+    15: ['screening-visit-15months','language-vocab-10-words','cognitive-pretend-play-emerging'],
+    16: ['social-label-big-feelings','language-1step-commands','motor-stair-climbing'],
+    17: ['social-separation-anxiety','nutrition-spoon-self-feeding','social-parallel-play'],
+    18: ['screening-visit-18months-autism','language-2-word-combinations','social-tantrums-peak'],
+    19: ['social-independence-me-do-it','language-vocab-50-words','social-self-regulation'],
+    20: ['language-question-asking','cognitive-matches-shapes-colors','language-body-parts-5'],
+    21: ['language-speech-clarity-family','social-empathy-emerging','cognitive-function-of-objects'],
+    22: ['language-vocab-200-words','language-2step-commands','language-pronouns'],
+    23: ['motor-jumping-both-feet','cognitive-pretend-play-complex','cognitive-big-little'],
+    24: ['screening-visit-24months-autism','nutrition-2pct-milk-switch','cognitive-same-different'],
+    25: ['language-3-word-sentences','cognitive-memory-recalls-events','social-cooperative-play'],
+    26: ['language-stranger-understands-50pct','language-names-colors','cognitive-counts-to-10'],
+    27: ['self-help-potty-readiness','motor-catching-ball','language-stranger-understands-75pct'],
+    28: ['cognitive-humor-jokes','cognitive-time-concepts','social-named-friendships'],
+    29: ['cognitive-preschool-readiness','motor-balance-one-foot','language-counts-objects-5'],
+    30: ['screening-visit-30months','safety-crib-to-bed-transition','self-help-daytime-dryness'],
+    31: ['social-peer-friendships','cognitive-number-quantity','self-help-dressing-simple-clothes'],
+    32: ['language-knows-name-age','motor-hopping-one-foot','self-help-tooth-brushing'],
+    33: ['social-imaginary-friends','language-tells-stories','language-complex-instructions'],
+    34: ['motor-drawing-circle','social-gratitude-empathy-practice','motor-tricycle-balance-bike'],
+    35: ['safety-forward-facing-transition','language-counts-to-3','social-sharing-scaffolding'],
+    36: ['screening-visit-36months','language-full-sentences','social-consistent-discipline']
+  };
+
+  /* ─── OPEN WINDOWS COUNT PER MONTH ─── */
+  const OW = {
+    0:16, 1:18, 2:20, 3:22, 4:25, 5:27, 6:28, 7:26, 8:28, 9:30,
+    10:28, 11:25, 12:22, 13:20, 14:20, 15:18, 16:18, 17:17, 18:20,
+    19:18, 20:17, 21:16, 22:15, 23:15, 24:18, 25:15, 26:14, 27:15,
+    28:13, 29:12, 30:14, 31:12, 32:11, 33:10, 34:10, 35:9, 36:8
+  };
+
+  /* ─── CATEGORY STYLES ─── */
+  const CAT = {
+    screening:{ label:'Screening', bg:'rgba(8,145,178,0.1)',   color:'#0891B2' },
+    nutrition: { label:'Nutrition',  bg:'rgba(5,150,105,0.1)',   color:'#059669' },
+    motor:     { label:'Motor',      bg:'rgba(217,119,6,0.1)',   color:'#D97706' },
+    language:  { label:'Language',   bg:'rgba(110,78,214,0.1)',  color:'#6E4ED6' },
+    social:    { label:'Social',     bg:'rgba(219,39,119,0.1)',  color:'#DB2777' },
+    cognitive: { label:'Cognitive',  bg:'rgba(79,70,229,0.1)',   color:'#4F46E5' },
+    safety:    { label:'Safety',     bg:'rgba(234,88,12,0.1)',   color:'#EA580C' }
+  };
+
+  /* ─── HELPERS ─── */
+  const TODAY = new Date(2026, 3, 21); // Apr 21 2026
+
+  function calcAge(d, m, y) {
+    const birth = new Date(y, m - 1, d);
+    let months = (TODAY.getFullYear() - birth.getFullYear()) * 12 + (TODAY.getMonth() - birth.getMonth());
+    let days = TODAY.getDate() - birth.getDate();
+    if (days < 0) { months--; const prev = new Date(TODAY.getFullYear(), TODAY.getMonth(), 0); days += prev.getDate(); }
+    return { months, days };
+  }
+
+  function weeksUntil(m, y) {
+    const due = new Date(y, m - 1, 15);
+    const diff = due - TODAY;
+    return Math.max(0, Math.round(diff / (7 * 86400000)));
+  }
+
+  function ordinal(n) {
+    return n + (['st','nd','rd'][((n+90)%100-10)%10-1]||'th');
+  }
+
+  function renderMilestones(monthKey, isExpecting) {
+    const slugs = ED[monthKey] || ED[1];
+    return slugs.map((slug, i) => {
+      const ms = M[slug];
+      if (!ms) return '';
+      const cat = CAT[ms.cat] || CAT.cognitive;
+      return `
+        <div class="demo-milestone-card">
+          <span class="demo-milestone-badge" style="background:${cat.bg};color:${cat.color};">${cat.label}</span>
+          <div class="demo-milestone-body">
+            <div class="demo-milestone-title">${ms.title}</div>
+            <div class="demo-milestone-desc">${ms.desc}</div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function update() {
+    const d = parseInt(document.getElementById('demoDay').value);
+    const m = parseInt(document.getElementById('demoMonth').value);
+    const y = parseInt(document.getElementById('demoYear').value);
+    const expecting = document.getElementById('demoExpecting').checked;
+    const results = document.getElementById('demoResults');
+    const error   = document.getElementById('demoError');
+
+    results.style.display = 'none';
+    error.style.display   = 'none';
+
+    if (expecting) {
+      if (!m || !y) return;
+      const weeks = weeksUntil(m, y);
+      document.getElementById('demoAgeSummary').innerHTML = `
+        <div class="demo-age-main">Your baby arrives in approximately <em>${weeks} week${weeks !== 1 ? 's' : ''}</em>.</div>
+        <div class="demo-age-next">When they arrive, Scout will start tracking from birth — month by month.</div>`;
+      document.getElementById('demoPreviewLabel').textContent = "Here's a preview of your pre-birth digest 👇";
+      document.getElementById('demoMilestoneGrid').innerHTML = renderMilestones(0, true);
+      document.getElementById('demoOpenWindows').innerHTML =
+        `<strong>${OW[0]} pre-birth windows</strong> are open right now — safety prep, planning, and things to get in place before your baby arrives. Scout will send you everything in one clear email.`;
+      results.style.display = 'block';
+      return;
+    }
+
+    if (!d || !m || !y) return;
+
+    const { months, days } = calcAge(d, m, y);
+
+    if (months < 0) return;
+
+    if (months >= 36) {
+      error.style.display = 'block';
+      return;
+    }
+
+    const nextDigest = Math.min(months + 1, 36);
+    const monthNames = ['','January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    document.getElementById('demoAgeSummary').innerHTML = `
+      <div class="demo-age-main">Your child is <em>${months} month${months !== 1 ? 's' : ''} and ${days} day${days !== 1 ? 's' : ''} old.</em></div>
+      <div class="demo-age-next">Their next Scout digest arrives at <strong>${nextDigest} months.</strong></div>`;
+    document.getElementById('demoPreviewLabel').textContent = `Here's a preview of their ${ordinal(nextDigest)}-month digest 👇`;
+    document.getElementById('demoMilestoneGrid').innerHTML = renderMilestones(nextDigest, false);
+    const openCount = OW[months] || 15;
+    document.getElementById('demoOpenWindows').innerHTML =
+      `There are also <strong>${openCount} other open windows</strong> to be aware of at this age — milestones currently active across language, motor, nutrition, and more. You can track them yourself, or let Scout do it for you.`;
+    results.style.display = 'block';
+  }
+
+  /* ─── INIT SELECTS ─── */
+  window.addEventListener('DOMContentLoaded', function() {
+    // Populate day
+    const dayEl = document.getElementById('demoDay');
+    for (let i = 1; i <= 31; i++) { const o = document.createElement('option'); o.value = i; o.textContent = i; dayEl.appendChild(o); }
+
+    // Populate year (birth: 3 years back to current; due: current + 1)
+    function populateYears(expecting) {
+      const yearEl = document.getElementById('demoYear');
+      const prev = yearEl.value;
+      yearEl.innerHTML = '<option value="">Year</option>';
+      const cur = TODAY.getFullYear();
+      if (expecting) {
+        for (let y = cur; y <= cur + 1; y++) { const o = document.createElement('option'); o.value = y; o.textContent = y; yearEl.appendChild(o); }
+      } else {
+        for (let y = cur; y >= cur - 3; y--) { const o = document.createElement('option'); o.value = y; o.textContent = y; yearEl.appendChild(o); }
+      }
+      if (prev) yearEl.value = prev;
+    }
+    populateYears(false);
+
+    const inputs = ['demoDay','demoMonth','demoYear'];
+    inputs.forEach(id => document.getElementById(id).addEventListener('change', update));
+
+    document.getElementById('demoExpecting').addEventListener('change', function() {
+      const exp = this.checked;
+      const dayWrap = document.getElementById('demoDay').closest('.demo-select-wrap');
+      dayWrap.style.display = exp ? 'none' : '';
+      document.getElementById('demoInputArea').querySelector('.demo-input-label').textContent =
+        exp ? 'When is your baby due?' : 'When was your baby born?';
+      populateYears(exp);
+      document.getElementById('demoResults').style.display = 'none';
+      document.getElementById('demoError').style.display = 'none';
+      update();
+    });
+  });
+
+})();
+</script>
+
 <!-- ══ WHY SCOUT ══ -->
 <section class="why-section">
   <div class="why-inner">
