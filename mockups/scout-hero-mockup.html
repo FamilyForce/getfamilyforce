@@ -1464,6 +1464,99 @@
   }
 </style>
 
+<!-- ══ TESTIMONIALS ══ -->
+<section class="testi-section">
+  <div class="testi-inner">
+
+    <span class="testi-eyebrow">What parents are saying</span>
+    <h2 class="testi-h2">You're in good company.</h2>
+
+    <div class="testi-grid">
+
+      <div class="testi-card">
+        <div class="testi-quote-mark">"</div>
+        <p class="testi-quote">An incredible resource for first-time parents. It brings some order to the beautiful chaos of having a newborn — and the monthly milestone guidance is genuinely eye-opening. I had no idea how much was happening developmentally in those early months.</p>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-quote-mark">"</div>
+        <p class="testi-quote">Scout has taken so much off my plate. I used to stress constantly about whether I was missing something important. Now it lands in my inbox every month and tells me exactly what to know. I'd recommend it to any parent who wants to feel on top of things without the overwhelm.</p>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-quote-mark">"</div>
+        <p class="testi-quote">This has helped my husband and me stay on the same page about where our daughter is developmentally. We actually feel prepared going into each new month instead of scrambling to catch up. Parenting feels a lot less reactive now.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ══ TESTIMONIALS ══ */
+  .testi-section {
+    background: var(--indigo-deep);
+    padding: 96px 24px 112px;
+  }
+  .testi-inner {
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+  .testi-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #A78BFF;
+    display: block;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .testi-h2 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(32px, 4.5vw, 50px);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .testi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 860px) {
+    .testi-grid { grid-template-columns: 1fr; }
+  }
+  .testi-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 32px 30px 36px;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .testi-card:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateY(-3px);
+  }
+  .testi-quote-mark {
+    font-family: 'Instrument Serif', serif;
+    font-size: 72px;
+    line-height: 0.7;
+    color: #6E4ED6;
+    margin-bottom: 20px;
+    display: block;
+    opacity: 0.9;
+  }
+  .testi-quote {
+    font-size: 15.5px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.7;
+  }
+</style>
+
 <!-- ══ FOOTER ══ -->
 <footer style="background:var(--indigo-deep);border-top:1px solid rgba(255,255,255,.08);padding:20px var(--rx);padding-bottom:max(20px,env(safe-area-inset-bottom,0px))">
   <div style="max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px">
