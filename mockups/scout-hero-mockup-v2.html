@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Scout — Baby Milestones, Delivered | FamilyForce</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:        #6E4ED6;
+      --purple-dark:   #5B3CC4;
+      --purple-light:  #A78BFF;
+      --purple-pale:   #F0EBFF;
+      --amber:         #F59E0B;
+      --amber-bg:      rgba(245,158,11,.1);
+      --indigo-deep:   #1E1248;
+      --indigo-mid:    #2A1760;
+      --white:         #fff;
+      --off-white:     #FAFAF8;
+      --gray-light:    #F7F5FF;
+      --gray:          #6B7280;
+      --text:          #1E1248;
+      --border:        rgba(110,78,214,.12);
+      --sans:          'Outfit', system-ui, sans-serif;
+      --serif:         'Instrument Serif', serif;
+      --rx:            clamp(20px, 5vw, 64px);
+      --max:           1100px;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--indigo-deep);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ══ SCROLL ANIMATIONS ══ */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .65s ease, transform .65s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up.d1 { transition-delay: .1s; }
+    .fade-up.d2 { transition-delay: .2s; }
+    .fade-up.d3 { transition-delay: .3s; }
+    .fade-up.d4 { transition-delay: .4s; }
+
+    /* ══ NAV ══ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(250,250,250,.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid #EDEBF2;
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--rx);
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 17px;
+      font-weight: 700;
+      text-decoration: none;
+      color: var(--text);
+      letter-spacing: -.01em;
+    }
+    .logo-s { color: var(--purple); }
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { font-size: 14px; font-weight: 500; color: var(--gray); text-decoration: none; transition: color .2s; }
+    @media (hover:hover) { .nav-links a:hover { color: var(--purple); } }
+    .btn-nav {
+      background: var(--purple); color: #fff; font-family: var(--sans);
+      font-size: 13px; font-weight: 700; padding: 10px 20px; border-radius: 100px;
+      border: none; cursor: pointer; text-decoration: none; display: inline-flex;
+      align-items: center; transition: background .2s, transform .2s; white-space: nowrap;
+    }
+    @media (hover:hover) { .btn-nav:hover { background: var(--purple-dark); transform: translateY(-1px); } }
+    @media (max-width: 900px) { .nav-links, .btn-nav { display: none; } }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px; background: none;
+      border: none; padding: 10px; cursor: pointer;
+    }
+    .hamburger span { display: block; height: 1.5px; background: var(--text); border-radius: 1px; }
+    .hamburger span:nth-child(1) { width: 20px; }
+    .hamburger span:nth-child(2) { width: 14px; }
+    @media (max-width: 900px) { .hamburger { display: flex; } }
+
+    /* ══ HERO ══ */
+    .hero {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 900px 600px at 28% 45%, rgba(110,78,214,.38) 0%, transparent 65%),
+        radial-gradient(ellipse 500px 350px at 82% 18%, rgba(167,139,255,.18) 0%, transparent 60%),
+        radial-gradient(ellipse 400px 400px at 65% 80%, rgba(79,70,229,.12) 0%, transparent 60%),
+        linear-gradient(155deg, #0D0827 0%, #1A0F42 35%, #27195C 60%, #0D0827 100%);
+      display: flex;
+      align-items: center;
+      padding: 120px var(--rx) 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1.2px 1.2px at 7% 14%,  rgba(255,255,255,.55) 0%, transparent 100%),
+        radial-gradient(1px   1px   at 24% 7%,   rgba(255,255,255,.35) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 61% 9%,   rgba(255,255,255,.4)  0%, transparent 100%),
+        radial-gradient(1px   1px   at 77% 24%,  rgba(255,255,255,.3)  0%, transparent 100%),
+        radial-gradient(1.2px 1.2px at 17% 68%,  rgba(255,255,255,.25) 0%, transparent 100%),
+        radial-gradient(1px   1px   at 87% 59%,  rgba(255,255,255,.35) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 44% 84%,  rgba(255,255,255,.2)  0%, transparent 100%),
+        radial-gradient(1px   1px   at 69% 87%,  rgba(255,255,255,.3)  0%, transparent 100%),
+        radial-gradient(1.3px 1.3px at 91% 38%,  rgba(255,255,255,.2)  0%, transparent 100%),
+        radial-gradient(1px   1px   at 54% 28%,  rgba(255,255,255,.15) 0%, transparent 100%),
+        radial-gradient(1.2px 1.2px at 38% 52%,  rgba(255,255,255,.1)  0%, transparent 100%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    @media (max-width: 860px) {
+      .hero { padding-top: 100px; padding-bottom: 64px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 52px; text-align: center; }
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--purple-light);
+      background: rgba(167,139,255,.1);
+      border: 1px solid rgba(167,139,255,.25);
+      border-radius: 20px;
+      padding: 5px 14px;
+      margin-bottom: 24px;
+    }
+    .eyebrow-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--purple-light);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: .45; transform: scale(.8); }
+    }
+
+    .hero-h1 {
+      font-family: var(--serif);
+      font-size: clamp(46px, 5.5vw, 78px);
+      line-height: 1.02;
+      letter-spacing: -.03em;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+    .hero-h1 em { font-style: italic; color: var(--purple-light); }
+
+    .hero-sub {
+      font-size: clamp(16px, 1.7vw, 18px);
+      color: rgba(255,255,255,.58);
+      line-height: 1.65;
+      max-width: 440px;
+      margin-bottom: 36px;
+    }
+    @media (max-width: 860px) { .hero-sub { margin: 0 auto 36px; } }
+
+    .hero-cta-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+    }
+    @media (max-width: 860px) { .hero-cta-row { justify-content: center; } }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--purple);
+      color: #fff;
+      font-family: var(--sans);
+      font-size: 16px;
+      font-weight: 600;
+      padding: 15px 32px;
+      border-radius: 50px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(110,78,214,.5);
+      transition: background .18s, transform .18s, box-shadow .18s;
+      letter-spacing: .01em;
+      white-space: nowrap;
+    }
+    .btn-primary:hover { background: var(--purple-dark); transform: translateY(-2px); box-shadow: 0 14px 40px rgba(110,78,214,.6); }
+    .btn-arrow { display: inline-block; transition: transform .18s; }
+    .btn-primary:hover .btn-arrow { transform: translateX(4px); }
+
+    .hero-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 860px) { .hero-badges { justify-content: center; } }
+    .hero-badge { font-size: 13px; color: rgba(255,255,255,.45); display: flex; align-items: center; gap: 6px; }
+    .hero-badge svg { opacity: .6; }
+    .hero-badge-sep { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.2); }
+
+    /* EMAIL MOCKUP */
+    .hero-mockup-wrap {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px 20px 40px;
+    }
+
+    .email-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 40px 90px rgba(0,0,0,.45), 0 10px 28px rgba(110,78,214,.35);
+      width: 100%;
+      max-width: 380px;
+      overflow: hidden;
+      transform: rotate(1.8deg);
+      transition: transform .4s ease;
+    }
+    .email-card:hover { transform: rotate(0deg) scale(1.02); }
+
+    .ec-header {
+      background: linear-gradient(140deg, var(--indigo-deep) 0%, #2D1E72 100%);
+      padding: 18px 20px 14px;
+    }
+    .ec-from-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .ec-icon {
+      width: 30px; height: 30px;
+      background: var(--purple);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .ec-from-name  { font-size: 11.5px; font-weight: 700; color: rgba(255,255,255,.9); line-height: 1.2; }
+    .ec-from-addr  { font-size: 10.5px; color: rgba(255,255,255,.38); margin-top: 1px; }
+    .ec-subject    { font-size: 13.5px; font-weight: 600; color: #fff; line-height: 1.3; }
+
+    .ec-body { padding: 16px 20px 4px; }
+    .ec-greeting {
+      font-size: 12.5px;
+      color: var(--gray);
+      margin-bottom: 12px;
+      padding-bottom: 11px;
+      border-bottom: 1px solid rgba(110,78,214,.08);
+      line-height: 1.5;
+    }
+    .ec-greeting strong { color: var(--text); }
+
+    .ec-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(110,78,214,.06);
+    }
+    .ec-row:last-of-type { border-bottom: none; }
+    .ec-badge {
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .ec-b-cognitive { background: rgba(79,70,229,.1);   color: #4F46E5; }
+    .ec-b-screening { background: rgba(8,145,178,.1);   color: #0891B2; }
+    .ec-b-motor     { background: var(--amber-bg);       color: #D97706; }
+    .ec-title { font-size: 12.5px; font-weight: 600; color: var(--text); line-height: 1.35; }
+
+    .ec-windows {
+      margin: 10px 0;
+      background: rgba(110,78,214,.05);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--purple);
+      font-weight: 600;
+    }
+
+    .ec-footer { padding: 12px 20px 16px; border-top: 1px solid rgba(110,78,214,.08); }
+    .ec-cal-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: var(--purple);
+      color: #fff;
+      font-family: var(--sans);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 9px 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Floating calendar notification */
+    .cal-notif {
+      position: absolute;
+      bottom: 10px;
+      left: 0px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.22), 0 2px 8px rgba(0,0,0,.1);
+      width: 210px;
+      animation: floatUp 3.5s ease-in-out infinite;
+    }
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-7px); }
+    }
+    .cn-icon {
+      width: 34px; height: 34px;
+      background: rgba(5,150,105,.1);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 16px;
+    }
+    .cn-title { font-size: 11.5px; font-weight: 700; color: var(--text); }
+    .cn-sub   { font-size: 10.5px; color: var(--gray); margin-top: 1px; }
+    .cn-check {
+      margin-left: auto;
+      width: 20px; height: 20px;
+      background: #059669;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ══ STATS STRIP ══ */
+    .stats-strip {
+      background: rgba(255,255,255,.03);
+      border-top: 1px solid rgba(255,255,255,.05);
+      border-bottom: 1px solid rgba(255,255,255,.05);
+      padding: 36px var(--rx);
+    }
+    .stats-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    @media (max-width: 640px) { .stats-inner { grid-template-columns: 1fr 1fr; } }
+    .stat-item { text-align: center; }
+    .stat-number {
+      font-family: var(--serif);
+      font-size: clamp(38px, 4vw, 54px);
+      font-style: italic;
+      color: var(--amber);
+      line-height: 1;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .stat-label { font-size: 13px; color: rgba(255,255,255,.45); font-weight: 500; line-height: 1.4; }
+
+    /* ══ SHARED SECTION STYLES ══ */
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--purple);
+      display: block;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .section-h2 {
+      font-family: var(--serif);
+      font-size: clamp(34px, 4.5vw, 52px);
+      line-height: 1.08;
+      letter-spacing: -.025em;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .section-h2 em { font-style: italic; color: var(--purple); }
+    .section-sub {
+      font-size: 17px;
+      color: var(--gray);
+      text-align: center;
+      max-width: 440px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ══ TRY IT NOW ══ */
+    .demo-section { background: var(--white); padding: 96px var(--rx) 112px; }
+    .demo-inner { max-width: 660px; margin: 0 auto; }
+
+    .demo-widget {
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: 0 4px 40px rgba(30,18,72,.1), 0 1px 3px rgba(30,18,72,.06);
+      overflow: hidden;
+      border: 1px solid rgba(110,78,214,.08);
+      margin-top: 48px;
+    }
+    .demo-input-area {
+      padding: 32px 36px 28px;
+      border-bottom: 1px solid rgba(110,78,214,.08);
+      background: rgba(110,78,214,.04);
+    }
+    .demo-input-label { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
+    .demo-date-row { display: flex; gap: 10px; margin-bottom: 18px; }
+    .demo-select-wrap { position: relative; flex: 1; }
+    .demo-select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 13px; top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid var(--purple);
+      pointer-events: none;
+    }
+    .demo-select {
+      width: 100%; appearance: none; -webkit-appearance: none;
+      background: #fff; border: 1.5px solid rgba(110,78,214,.25);
+      border-radius: 10px; padding: 12px 36px 12px 14px;
+      font-family: var(--sans); font-size: 15px; font-weight: 500;
+      color: var(--text); cursor: pointer; outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .demo-select:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(110,78,214,.12); }
+
+    .demo-expecting-label { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+    .demo-checkbox { display: none; }
+    .demo-expecting-check {
+      width: 20px; height: 20px;
+      border: 1.5px solid rgba(110,78,214,.3);
+      border-radius: 6px; background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background .15s, border-color .15s;
+    }
+    .demo-expecting-check svg { opacity: 0; transition: opacity .15s; }
+    .demo-checkbox:checked + .demo-expecting-check { background: var(--purple); border-color: var(--purple); }
+    .demo-checkbox:checked + .demo-expecting-check svg { opacity: 1; }
+    .demo-expecting-text { font-size: 14px; font-weight: 500; color: var(--gray); }
+
+    .demo-results { padding: 32px 36px 36px; animation: fadeSlideUp .4s ease; }
+    @keyframes fadeSlideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+    .demo-age-summary {
+      background: linear-gradient(135deg, rgba(110,78,214,.07), rgba(110,78,214,.02));
+      border: 1px solid rgba(110,78,214,.12);
+      border-radius: 14px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+    }
+    .demo-age-main { font-size: 19px; font-weight: 700; color: var(--text); line-height: 1.35; }
+    .demo-age-main em { font-style: normal; color: var(--purple); }
+
+    .demo-preview-label { font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--purple); margin-bottom: 12px; }
+    .demo-milestone-grid { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .demo-milestone-card {
+      background: var(--off-white); border-radius: 12px;
+      padding: 14px 16px; border: 1px solid rgba(30,18,72,.06);
+      display: flex; align-items: flex-start; gap: 12px;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .demo-milestone-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(30,18,72,.07); }
+    .demo-milestone-badge {
+      display: inline-flex; align-items: center;
+      padding: 3px 9px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .05em; text-transform: uppercase;
+      white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+    }
+    .demo-milestone-body { flex: 1; min-width: 0; }
+    .demo-milestone-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; line-height: 1.3; }
+    .demo-milestone-desc  { font-size: 12.5px; color: var(--gray); line-height: 1.5; }
+
+    .demo-open-windows {
+      background: rgba(110,78,214,.04); border: 1px solid rgba(110,78,214,.1);
+      border-radius: 10px; padding: 12px 16px;
+      font-size: 14px; color: #4B5563; line-height: 1.55; margin-bottom: 24px;
+    }
+    .demo-open-windows strong { color: var(--text); }
+
+    .demo-cta-block { display: flex; flex-direction: column; gap: 14px; }
+    .demo-cta-promise {
+      display: flex; align-items: flex-start; gap: 10px;
+      background: rgba(110,78,214,.04); border-radius: 10px;
+      padding: 12px 14px; font-size: 13px; color: var(--gray); line-height: 1.6;
+    }
+    .demo-cta-promise strong { color: var(--text); }
+    .demo-cta-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--purple); color: #fff; font-family: var(--sans);
+      font-size: 15px; font-weight: 600; padding: 14px 28px;
+      border-radius: 50px; text-decoration: none; width: 100%;
+      box-shadow: 0 6px 24px rgba(110,78,214,.4);
+      transition: background .18s, transform .18s, box-shadow .18s;
+    }
+    .demo-cta-btn:hover { background: var(--purple-dark); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(110,78,214,.5); }
+
+    .demo-error { padding: 48px 36px; text-align: center; animation: fadeSlideUp .4s ease; }
+    .demo-error-icon { font-size: 48px; margin-bottom: 16px; }
+    .demo-error-title { font-family: var(--serif); font-size: 26px; color: var(--text); margin-bottom: 12px; }
+    .demo-error-desc { font-size: 15px; color: var(--gray); line-height: 1.65; max-width: 400px; margin: 0 auto; }
+
+    @media (max-width: 540px) {
+      .demo-input-area, .demo-results, .demo-error { padding-left: 20px; padding-right: 20px; }
+      .demo-date-row { flex-wrap: wrap; }
+      .demo-select-wrap { flex: none; width: calc(50% - 5px); }
+      .demo-select-wrap:first-child { width: 100%; }
+    }
+
+    /* ══ HOW IT WORKS ══ */
+    .how-section {
+      background: var(--off-white);
+      padding: 96px var(--rx) 112px;
+      border-top: 1px solid rgba(110,78,214,.06);
+      border-bottom: 1px solid rgba(110,78,214,.06);
+    }
+    .how-inner { max-width: var(--max); margin: 0 auto; }
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 48px;
+      margin-top: 64px;
+      position: relative;
+    }
+    @media (max-width: 860px) {
+      .how-grid { grid-template-columns: 1fr; gap: 44px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    }
+    /* Connector lines between steps on desktop */
+    @media (min-width: 860px) {
+      .how-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 28px;
+        right: -24px;
+        width: 48px;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(245,158,11,.4), rgba(245,158,11,.1));
+        pointer-events: none;
+      }
+    }
+    .how-step { position: relative; }
+    .how-step-number {
+      font-family: var(--serif);
+      font-size: 68px;
+      font-style: italic;
+      color: var(--amber);
+      line-height: 1;
+      margin-bottom: 20px;
+      display: block;
+      opacity: .85;
+    }
+    .how-step-icon {
+      width: 48px; height: 48px;
+      background: var(--purple-pale);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+    }
+    .how-step-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 12px; line-height: 1.2; }
+    .how-step-desc  { font-size: 15px; color: var(--gray); line-height: 1.65; }
+
+    /* ══ WHY SCOUT ══ */
+    .why-section { background: var(--white); padding: 96px var(--rx) 112px; }
+    .why-inner { max-width: var(--max); margin: 0 auto; }
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 64px;
+    }
+    @media (max-width: 860px) { .why-grid { grid-template-columns: 1fr; } }
+    .why-card {
+      background: var(--off-white);
+      border-radius: 20px;
+      padding: 32px 28px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border-top: 4px solid var(--purple);
+      box-shadow: 0 2px 12px rgba(30,18,72,.05);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .why-card:nth-child(2) { border-top-color: #059669; }
+    .why-card:nth-child(3) { border-top-color: var(--amber); }
+    .why-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(30,18,72,.1); }
+    .why-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+    .why-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 12px; line-height: 1.2; }
+    .why-desc  { font-size: 15px; color: var(--gray); line-height: 1.65; }
+
+    /* ══ TESTIMONIALS ══ */
+    .testi-section { background: var(--indigo-deep); padding: 96px var(--rx) 112px; }
+    .testi-inner { max-width: var(--max); margin: 0 auto; }
+    .testi-eyebrow { color: var(--purple-light); }
+    .testi-h2 { color: #fff; }
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 64px;
+    }
+    @media (max-width: 860px) { .testi-grid { grid-template-columns: 1fr; max-width: 520px; margin-left: auto; margin-right: auto; } }
+    .testi-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      padding: 32px 28px;
+      transition: background .2s, transform .2s;
+    }
+    .testi-card:hover { background: rgba(255,255,255,.09); transform: translateY(-3px); }
+    .testi-quote-mark {
+      font-family: var(--serif);
+      font-size: 60px;
+      line-height: .65;
+      color: var(--purple-light);
+      margin-bottom: 20px;
+      display: block;
+      opacity: .7;
+    }
+    .testi-quote {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-style: italic;
+      color: rgba(255,255,255,.85);
+      line-height: 1.62;
+      margin-bottom: 20px;
+    }
+    .testi-tag { font-size: 12px; font-weight: 600; color: rgba(255,255,255,.3); letter-spacing: .05em; text-transform: uppercase; }
+
+    /* ══ FINAL CTA ══ */
+    .final-section {
+      background: linear-gradient(145deg, #1A0F42 0%, #2D1E72 40%, #3D22A0 70%, #1E1248 100%);
+      padding: 100px var(--rx) 112px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .final-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 700px 350px at 50% 60%, rgba(110,78,214,.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .final-inner { max-width: 580px; margin: 0 auto; position: relative; z-index: 1; }
+    .final-h2 {
+      font-family: var(--serif);
+      font-size: clamp(38px, 5vw, 62px);
+      line-height: 1.05;
+      letter-spacing: -.025em;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .final-h2 em { font-style: italic; color: var(--purple-light); }
+    .final-sub { font-size: 17px; color: rgba(255,255,255,.52); margin-bottom: 40px; line-height: 1.6; }
+    .final-badges {
+      display: flex; align-items: center; justify-content: center;
+      gap: 6px; flex-wrap: wrap; margin-top: 24px;
+    }
+    .final-badge { font-size: 13px; color: rgba(255,255,255,.38); display: flex; align-items: center; gap: 6px; }
+    .final-badge-sep { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.18); }
+
+    /* ══ FOOTER ══ */
+    /* inline styles used */
+
+    /* ══ MOCKUP NOTE ══ */
+    .mockup-note {
+      background: var(--gray-light);
+      text-align: center;
+      padding: 14px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--purple-light);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav class="nav" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="logo" aria-label="FamilyForce Home">
+      <svg width="13" height="15" viewBox="0 0 14 16" fill="none" aria-hidden="true">
+        <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>Family<span class="logo-s">Force</span></span>
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="/milestones">Milestones</a></li>
+      <li><a href="/blog">Blog</a></li>
+    </ul>
+    <a href="/sign-in.html?intent=trial" class="btn-nav">Sign up free</a>
+    <button class="hamburger" aria-label="Open menu"><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-inner">
+
+    <!-- Left: copy -->
+    <div class="hero-copy">
+      <div class="fade-up">
+        <div style="display:flex; margin-bottom:24px">
+          <span class="hero-eyebrow">
+            <span class="eyebrow-dot"></span>
+            Scout by FamilyForce
+          </span>
+        </div>
+      </div>
+      <h1 class="hero-h1 fade-up d1">Baby milestones,<br><em>delivered.</em></h1>
+      <p class="hero-sub fade-up d2">One email a month. 200+ developmental windows tracked. Everything your child needs to thrive — sent straight to your inbox and calendar.</p>
+      <div class="hero-cta-row fade-up d3">
+        <a href="/sign-in.html?intent=trial" class="btn-primary">Get your first digest free <span class="btn-arrow">→</span></a>
+      </div>
+      <div class="hero-badges fade-up d4">
+        <span class="hero-badge">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Free forever
+        </span>
+        <span class="hero-badge-sep"></span>
+        <span class="hero-badge">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          No app required
+        </span>
+        <span class="hero-badge-sep"></span>
+        <span class="hero-badge">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#A78BFF" stroke-width="1.5"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Pediatrician reviewed
+        </span>
+      </div>
+    </div>
+
+    <!-- Right: email mockup -->
+    <div class="hero-mockup-wrap fade-up d2">
+      <div class="email-card">
+        <!-- Header -->
+        <div class="ec-header">
+          <div class="ec-from-row">
+            <div class="ec-icon">
+              <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+                <path d="M1 15 L7 1 L13 15" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <div class="ec-from-name">Scout by FamilyForce</div>
+              <div class="ec-from-addr">scout@getfamilyforce.com</div>
+            </div>
+          </div>
+          <div class="ec-subject">Your 4-month digest is ready 🎉</div>
+        </div>
+        <!-- Body -->
+        <div class="ec-body">
+          <div class="ec-greeting">Hi there 👋 <strong>Liam is 4 months old today.</strong> Here's what matters this month.</div>
+          <div class="ec-row">
+            <span class="ec-badge ec-b-cognitive">Cognitive</span>
+            <span class="ec-title">The 4-month sleep regression</span>
+          </div>
+          <div class="ec-row">
+            <span class="ec-badge ec-b-screening">Screening</span>
+            <span class="ec-title">4-month well-child visit</span>
+          </div>
+          <div class="ec-row">
+            <span class="ec-badge ec-b-motor">Motor</span>
+            <span class="ec-title">Rolling: tummy to back</span>
+          </div>
+          <div class="ec-windows">+ 25 other open windows this month</div>
+        </div>
+        <!-- Footer -->
+        <div class="ec-footer">
+          <button class="ec-cal-btn">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2.5" width="12" height="10" rx="2" stroke="#fff" stroke-width="1.4"/><path d="M1 6h12" stroke="#fff" stroke-width="1.4"/><path d="M4 1v2.5M10 1v2.5" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
+            Add to Calendar
+          </button>
+        </div>
+      </div>
+
+      <!-- Floating calendar notification -->
+      <div class="cal-notif">
+        <div class="cn-icon">📅</div>
+        <div>
+          <div class="cn-title">Scout · Month 4</div>
+          <div class="cn-sub">Added to your calendar</div>
+        </div>
+        <div class="cn-check">
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4l2.5 2.5L9 1" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ STATS STRIP ══ -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-item fade-up">
+      <span class="stat-number">200+</span>
+      <span class="stat-label">Milestone windows tracked</span>
+    </div>
+    <div class="stat-item fade-up d1">
+      <span class="stat-number">36</span>
+      <span class="stat-label">Months fully covered</span>
+    </div>
+    <div class="stat-item fade-up d2">
+      <span class="stat-number">1</span>
+      <span class="stat-label">Email per month — that's it</span>
+    </div>
+    <div class="stat-item fade-up d3">
+      <span class="stat-number">$0</span>
+      <span class="stat-label">Free forever, no catch</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TRY IT NOW ══ -->
+<section class="demo-section">
+  <div class="demo-inner">
+    <span class="section-eyebrow fade-up">Try It Now</span>
+    <h2 class="section-h2 fade-up d1">See what Scout<br><em>sends you.</em></h2>
+    <p class="section-sub fade-up d2">Enter your child's birthday for a live preview of their next monthly digest.</p>
+
+    <div class="demo-widget fade-up d3">
+      <!-- INPUT AREA -->
+      <div class="demo-input-area" id="demoInputArea">
+        <p class="demo-input-label">When was your baby born?</p>
+        <div class="demo-date-row">
+          <div class="demo-select-wrap">
+            <select id="demoDay" class="demo-select"><option value="">Day</option></select>
+          </div>
+          <div class="demo-select-wrap">
+            <select id="demoMonth" class="demo-select">
+              <option value="">Month</option>
+              <option value="1">January</option><option value="2">February</option>
+              <option value="3">March</option><option value="4">April</option>
+              <option value="5">May</option><option value="6">June</option>
+              <option value="7">July</option><option value="8">August</option>
+              <option value="9">September</option><option value="10">October</option>
+              <option value="11">November</option><option value="12">December</option>
+            </select>
+          </div>
+          <div class="demo-select-wrap">
+            <select id="demoYear" class="demo-select"><option value="">Year</option></select>
+          </div>
+        </div>
+        <label class="demo-expecting-label">
+          <input type="checkbox" id="demoExpecting" class="demo-checkbox">
+          <span class="demo-expecting-check">
+            <svg width="11" height="9" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1.5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="demo-expecting-text">My baby hasn't arrived yet</span>
+        </label>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="demo-results" id="demoResults" style="display:none">
+        <div class="demo-age-summary" id="demoAgeSummary"></div>
+        <div class="demo-preview-label" id="demoPreviewLabel"></div>
+        <div class="demo-milestone-grid" id="demoMilestoneGrid"></div>
+        <div class="demo-open-windows" id="demoOpenWindows"></div>
+        <div class="demo-cta-block">
+          <div class="demo-cta-promise">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0;margin-top:1px">
+              <path d="M9 2L4 5v5c0 3.3 2.4 6.3 5 7 2.6-.7 5-3.7 5-7V5Z" fill="rgba(110,78,214,.1)" stroke="#6E4ED6" stroke-width="1.4" stroke-linejoin="round"/>
+              <path d="M6.5 9.5L8 11l3.5-3.5" stroke="#6E4ED6" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p>Your email and calendar are sacred. Scout sends <strong>one email per month</strong> — with a calendar invite — covering everything important for your child's development. No spam. Only the stuff you need to know. <strong>We promise.</strong></p>
+          </div>
+          <a href="/sign-in.html" class="demo-cta-btn">Track with Scout — it's free →</a>
+        </div>
+      </div>
+
+      <!-- ERROR -->
+      <div class="demo-error" id="demoError" style="display:none">
+        <div class="demo-error-icon">🎉</div>
+        <h3 class="demo-error-title">Sounds like they're growing up fast!</h3>
+        <p class="demo-error-desc">Scout tracks developmental windows from birth to 36 months. Your child has graduated — which means you've made it through the most milestone-dense years. Well done.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="how-section">
+  <div class="how-inner">
+    <span class="section-eyebrow fade-up">How It Works</span>
+    <h2 class="section-h2 fade-up d1">Three steps.<br><em>Zero effort.</em></h2>
+    <p class="section-sub fade-up d2">Scout does the tracking. You do the parenting.</p>
+
+    <div class="how-grid">
+
+      <div class="how-step fade-up d1">
+        <span class="how-step-number">1</span>
+        <div class="how-step-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <rect x="3" y="3" width="16" height="16" rx="4" stroke="#6E4ED6" stroke-width="1.7" fill="none"/>
+            <path d="M7 11h8M11 7v8" stroke="#6E4ED6" stroke-width="1.7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="how-step-title">Tell us your baby's birthday.</h3>
+        <p class="how-step-desc">Enter your child's date of birth — or due date if they're on the way. That's the only setup required. Scout takes it from there.</p>
+      </div>
+
+      <div class="how-step fade-up d2">
+        <span class="how-step-number">2</span>
+        <div class="how-step-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <rect x="2" y="5" width="18" height="13" rx="3" stroke="#6E4ED6" stroke-width="1.7" fill="none"/>
+            <path d="M2 9l9 5.5 9-5.5" stroke="#6E4ED6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="how-step-title">Get your monthly digest.</h3>
+        <p class="how-step-desc">On your child's monthly birthday, a digest lands in your inbox. Three priority milestones, plus every developmental window currently open for their exact age.</p>
+      </div>
+
+      <div class="how-step fade-up d3">
+        <span class="how-step-number">3</span>
+        <div class="how-step-icon">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <rect x="3" y="4" width="16" height="15" rx="3" stroke="#6E4ED6" stroke-width="1.7" fill="none"/>
+            <path d="M3 9h16" stroke="#6E4ED6" stroke-width="1.7"/>
+            <path d="M8 2v3M14 2v3" stroke="#6E4ED6" stroke-width="1.7" stroke-linecap="round"/>
+            <path d="M7 14l2 2 4-4.5" stroke="#6E4ED6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="how-step-title">Your calendar stays updated.</h3>
+        <p class="how-step-desc">Every digest includes a calendar invite. One click and the month's key windows land on your schedule — automatically. Nothing gets buried in your inbox.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHY SCOUT ══ -->
+<section class="why-section">
+  <div class="why-inner">
+    <span class="section-eyebrow fade-up">Why Scout?</span>
+    <h2 class="section-h2 fade-up d1">You only get one shot<br><em>at these years.</em></h2>
+    <p class="section-sub fade-up d2">Scout shows up in your inbox every month — so you can stay present, not stressed.</p>
+
+    <div class="why-grid">
+
+      <div class="why-card fade-up d1">
+        <div class="why-icon" style="background:rgba(110,78,214,.1)">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+            <path d="M13 4L13 18M7 10L13 4L19 10" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 22L20 22" stroke="#6E4ED6" stroke-width="1.8" stroke-linecap="round" opacity=".4"/>
+          </svg>
+        </div>
+        <div class="why-title">A step ahead.</div>
+        <div class="why-desc">Most milestone windows open and close before parents even know they exist. Scout tracks what's active for your child's exact age — language, motor, cognitive, nutrition — so you're always informed, never catching up.</div>
+      </div>
+
+      <div class="why-card fade-up d2">
+        <div class="why-icon" style="background:rgba(5,150,105,.1)">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+            <circle cx="13" cy="11" r="7" stroke="#059669" stroke-width="1.8" fill="rgba(5,150,105,.08)"/>
+            <path d="M13 8C13 8 11 9.5 11 11.5c0 1.1.9 2 2 2s2-.9 2-2c0-2-2-3.5-2-3.5Z" stroke="#059669" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+            <circle cx="13" cy="16" r="1" fill="#059669"/>
+            <path d="M8 21c0 0 2-2 5-2s5 2 5 2" stroke="#059669" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <div class="why-title">Smarter guidance.</div>
+        <div class="why-desc">Skip the rabbit hole of generic searches. Scout's content is pediatrician-reviewed and timed to your child's age to the month — so what you read is relevant to right now, not babies in general.</div>
+      </div>
+
+      <div class="why-card fade-up d3">
+        <div class="why-icon" style="background:rgba(245,158,11,.1)">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
+            <rect x="3" y="6" width="20" height="14" rx="3" stroke="#D97706" stroke-width="1.7" fill="none"/>
+            <path d="M3 11L13 16L23 11" stroke="#D97706" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M9 3L9 7M17 3L17 7" stroke="#D97706" stroke-width="1.6" stroke-linecap="round" opacity=".5"/>
+          </svg>
+        </div>
+        <div class="why-title">It just shows up.</div>
+        <div class="why-desc">No app to open. No reminders to set. Scout lands in your inbox and calendar on your child's monthly birthday — automatically. The right information, exactly when you need it.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section class="testi-section">
+  <div class="testi-inner">
+    <span class="section-eyebrow testi-eyebrow fade-up">What parents are saying</span>
+    <h2 class="section-h2 testi-h2 fade-up d1">You're in good company.</h2>
+
+    <div class="testi-grid">
+
+      <div class="testi-card fade-up d1">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-quote">I had no idea the peanut introduction window existed. Scout flagged it at 4 months — we acted in time. Our pediatrician said we did exactly the right thing.</p>
+        <span class="testi-tag">First-time mum</span>
+      </div>
+
+      <div class="testi-card fade-up d2">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-quote">One email a month. That's it. I actually read it — every single time. It's the only parenting resource I haven't ignored after week one.</p>
+        <span class="testi-tag">Parent of a 9-month-old</span>
+      </div>
+
+      <div class="testi-card fade-up d3">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-quote">My husband and I are finally on the same page developmentally. We feel prepared going into each new month instead of scrambling to catch up.</p>
+        <span class="testi-tag">Mum of two</span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ FINAL CTA ══ -->
+<section class="final-section">
+  <div class="final-inner">
+    <h2 class="final-h2 fade-up">Ready to stop<br><em>guessing?</em></h2>
+    <p class="final-sub fade-up d1">Join thousands of parents who never miss a milestone.</p>
+    <a href="/sign-in.html?intent=trial" class="btn-primary fade-up d2" style="display:inline-flex">
+      Get your first digest free <span class="btn-arrow">→</span>
+    </a>
+    <div class="final-badges fade-up d3">
+      <span class="final-badge">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="rgba(255,255,255,.4)" stroke-width="1.4"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="rgba(255,255,255,.4)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Free forever
+      </span>
+      <span class="final-badge-sep"></span>
+      <span class="final-badge">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="rgba(255,255,255,.4)" stroke-width="1.4"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="rgba(255,255,255,.4)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        No app required
+      </span>
+      <span class="final-badge-sep"></span>
+      <span class="final-badge">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="rgba(255,255,255,.4)" stroke-width="1.4"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="rgba(255,255,255,.4)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Pediatrician reviewed
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer style="background:#1E1248;border-top:1px solid rgba(255,255,255,.08);padding:20px clamp(20px,5vw,64px);padding-bottom:max(20px,env(safe-area-inset-bottom,0px))">
+  <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px">
+    <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none">
+      <svg width="14" height="16" viewBox="0 0 14 16" fill="none"><path d="M1 15L7 1L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;color:rgba(255,255,255,.9)">Family<span style="color:#A78BFF">Force</span></span>
+    </a>
+    <nav style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center">
+      <a href="/milestones" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Milestones</a>
+      <a href="/blog"       style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Blog</a>
+      <a href="/about"      style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">About</a>
+      <a href="/privacy"    style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Privacy</a>
+      <a href="/terms"      style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Terms</a>
+      <a href="/contact"    style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Contact Us</a>
+    </nav>
+    <span style="font-size:12px;color:rgba(255,255,255,.25);text-align:right;display:block">© 2026 FamilyForce. All rights reserved.</span>
+  </div>
+  <div style="padding:8px 20px;text-align:center">
+    <p style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.6;margin:0">For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</p>
+    <p style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.6;margin:6px 0 0">Developmental windows medically reviewed by <a href="/medical-review" style="color:rgba(255,255,255,.45);text-decoration:underline;text-underline-offset:2px">Karina Sanchez Mercado, MD, Pediatrician and Newborn Medicine Specialist</a> · April 2026</p>
+  </div>
+</footer>
+
+<div class="mockup-note">Mockup v2 — Not live on getfamilyforce.com</div>
+
+<!-- ══ SCRIPTS ══ -->
+<script>
+/* ── Scroll animations ── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+/* ── Widget ── */
+(function() {
+  const M = {
+    'safety-safe-sleep-setup':       { title:'Safe sleep setup — before baby arrives', desc:'Your baby\'s sleep space should be ready before you leave the hospital: firm mattress, no soft objects, same room as parents.', cat:'safety' },
+    'safety-car-seat-install-check': { title:'Car seat installation check', desc:'Get your rear-facing car seat checked by a certified technician before your due date. Most are installed incorrectly.', cat:'safety' },
+    'safety-infant-cpr':             { title:'Parent infant CPR training', desc:'Infant CPR is different from adult CPR. Take a certified class before your baby arrives — most hospitals offer them free.', cat:'safety' },
+    'screening-visit-1month':            { title:'1-month well-child visit', desc:'The first check-up after the newborn visit — covers feeding, weight gain, and a postpartum depression screen.', cat:'screening' },
+    'motor-tummy-time-build':            { title:'Tummy time — build to 15–30 min/day', desc:'Daily tummy time strengthens the neck and shoulder muscles your baby needs to roll, sit, and crawl.', cat:'motor' },
+    'social-parent-depression-screening':{ title:'Screen for postpartum depression', desc:'Postpartum depression peaks in the first 2 months. Ask your doctor, answer honestly — it\'s treatable and common.', cat:'social' },
+    'screening-visit-2months':     { title:'2-month well-child visit', desc:'The most vaccine-heavy visit of the first year — six immunizations, plus full developmental assessment.', cat:'screening' },
+    'social-social-smile-appears': { title:'Social smile — first intentional interaction', desc:'Around 6–8 weeks, your baby\'s smile becomes a genuine response to you — the beginning of real communication.', cat:'social' },
+    'language-serve-return':       { title:'Serve and return — the foundation of language', desc:'Every time you respond to your baby\'s coo or gesture, you\'re wiring the neural pathways that build language and trust.', cat:'language' },
+    'motor-head-control':              { title:'Head control — holds head steady upright', desc:'Steady head control is the foundation for rolling, sitting, and every major motor milestone that follows.', cat:'motor' },
+    'language-laughing':               { title:'First real laughs', desc:'The first genuine laugh — usually around 3–4 months — is your baby\'s first social milestone beyond the smile.', cat:'language' },
+    'social-bedtime-routine-security': { title:'Start a bedtime routine now', desc:'A consistent, short bedtime routine at 3 months lays the groundwork for better sleep through the entire first year.', cat:'social' },
+    'cognitive-sleep-regression-4month': { title:'The 4-month sleep regression', desc:'Most babies who slept well suddenly start waking more — the brain is permanently restructuring its sleep architecture. This is progress.', cat:'cognitive' },
+    'screening-visit-4months':           { title:'4-month well-child visit', desc:'Motor, social, and vision development are assessed at this visit — plus the second round of vaccines.', cat:'screening' },
+    'motor-roll-tummy-to-back':          { title:'Rolling: tummy to back', desc:'Most babies roll tummy-to-back between 3–5 months. Once rolling begins, swaddling must stop immediately.', cat:'motor' },
+    'nutrition-solids-readiness':          { title:'Watch for solid food readiness signs', desc:'Readiness appears between 4–6 months — look for head control, interest in food, and loss of the tongue-thrust reflex.', cat:'nutrition' },
+    'nutrition-iron-supplement-breastfed': { title:'Iron supplement for breastfed babies', desc:'Breast milk is low in iron. The AAP recommends 1mg/kg/day of iron drops from 4 months until iron-rich solids are established.', cat:'nutrition' },
+    'social-primary-attachment':           { title:'Primary attachment formation', desc:'Your baby is forming a deep bond with their primary caregivers. Responsiveness now shapes lifelong emotional security.', cat:'social' },
+    'screening-visit-6months': { title:'6-month well-child visit', desc:'Iron levels, fluoride, and developmental milestones assessed — plus the third round of vaccines and flu shot season.', cat:'screening' },
+    'nutrition-first-purees':  { title:'First solids — single-ingredient purees', desc:'Start with single-ingredient purees, waiting 3–5 days between new foods to identify any reactions.', cat:'nutrition' },
+    'motor-sitting-unsupported':{ title:'Sits without support', desc:'Most babies sit unsupported around 6–8 months. Maximising floor time helps them build the core strength to get there.', cat:'motor' },
+    'safety-babyproofing':       { title:'Babyproof before crawling begins', desc:'The window to babyproof is before your baby starts moving. Locks, outlet covers, and gates should be in place now.', cat:'safety' },
+    'language-responds-to-name': { title:'Responds to their own name', desc:'Consistent response to name by 7 months is an important social-communication milestone to flag if absent.', cat:'language' },
+    'nutrition-dairy-intro':     { title:'Introduce dairy products', desc:'Yogurt and cheese can be introduced around 6–8 months. Whole cow\'s milk as a drink waits until 12 months.', cat:'nutrition' },
+    'nutrition-egg-intro':       { title:'⚠️ Introduce eggs — early allergen', desc:'Eggs are a top allergen. Early introduction between 6–11 months significantly reduces lifelong allergy risk.', cat:'nutrition' },
+    'language-babbling':         { title:'Babbling — consonant sounds (ba, da, ma)', desc:'Varied babbling mixing consonants and vowels is a strong predictor of vocabulary development in the second year.', cat:'language' },
+    'nutrition-tree-nut-intro':  { title:'⚠️ Introduce tree nuts — early allergen', desc:'Tree nut butters thinned to a safe consistency can be introduced around 6–11 months to reduce allergy risk.', cat:'nutrition' },
+    'screening-visit-9months': { title:'9-month well-child visit', desc:'Formal developmental screen and first autism flags. No vaccines at this one.', cat:'screening' },
+    'nutrition-peanut-intro':  { title:'⚠️ Peanut introduction window', desc:'Early peanut introduction between 4–11 months reduces lifelong peanut allergy risk by up to 80%. This window matters.', cat:'nutrition' },
+    'nutrition-sesame-intro':  { title:'⚠️ Introduce sesame — early allergen', desc:'Sesame is now a top-9 allergen. Early introduction in the first year is recommended to reduce lifelong allergy risk.', cat:'nutrition' },
+    'nutrition-fish-intro':   { title:'⚠️ Introduce fish — early allergen', desc:'Fish is a top allergen and key source of DHA for brain development. The window to introduce safely is before 12 months.', cat:'nutrition' },
+    'social-peek-a-boo':      { title:'Peek-a-boo — object permanence arrives', desc:'Your baby\'s delight in peek-a-boo signals they\'ve grasped that things exist even when they can\'t be seen.', cat:'social' },
+    'motor-pull-to-stand':    { title:'Pulls to standing', desc:'Pulling to stand — usually 8–12 months — is the precursor to cruising and first independent steps.', cat:'motor' },
+    'motor-cruising':               { title:'Cruising along furniture', desc:'Stepping sideways while holding furniture typically appears 1–3 months before independent walking begins.', cat:'motor' },
+    'language-mama-dada-specific':  { title:'Uses "mama" and "dada" specifically', desc:'Using mama and dada for the right parent — not randomly — is a language milestone arriving around 9–12 months.', cat:'language' },
+    'screening-dental-first-visit': { title:'First dental visit by age 1', desc:'The AAP recommends the first dental visit within 6 months of the first tooth, or by the first birthday.', cat:'screening' },
+    'screening-visit-12months': { title:'12-month well-child visit', desc:'Lead and anemia screening, full developmental assessment, and MMR and chickenpox vaccines at the 1-year visit.', cat:'screening' },
+    'language-read-aloud-daily': { title:'Read aloud every day — build the habit', desc:'Daily reading from birth to age 5 is one of the strongest predictors of school-age literacy and vocabulary.', cat:'language' },
+    'nutrition-cows-milk-switch':{ title:'Switch to whole cow\'s milk', desc:'At 12 months, whole cow\'s milk replaces formula or breast milk as the main drink. Target: 16–24 oz per day.', cat:'nutrition' },
+    'motor-first-steps':        { title:'First steps', desc:'Most babies take first independent steps between 9–12 months, with a normal range up to 15 months.', cat:'motor' },
+    'language-first-words':     { title:'First words beyond mama and dada', desc:'Intentional words beyond mama and dada typically emerge between 10–14 months — the beginning of real vocabulary.', cat:'language' },
+    'nutrition-bottle-weaning': { title:'Wean off the bottle', desc:'Bottle weaning should be complete by 15–18 months. Prolonged bottle use raises ear infection and dental cavity risk.', cat:'nutrition' },
+    'language-joint-attention-pointing':{ title:'Pointing — joint attention', desc:'Pointing to share interest is one of the strongest early predictors of language development.', cat:'language' },
+    'motor-walking-independent':        { title:'Walking independently', desc:'Most children walk independently by 15 months. Consistent falling to one side or toe-walking is worth mentioning.', cat:'motor' },
+    'cognitive-identifies-body-parts':  { title:'Identifies body parts when named', desc:'Pointing to nose, eyes, and mouth when asked typically emerges between 12–18 months.', cat:'cognitive' },
+    'screening-visit-15months':    { title:'15-month well-child visit', desc:'Autism screening, developmental assessment, and three vaccines — including DTaP and Hib.', cat:'screening' },
+    'language-vocab-10-words':     { title:'Vocabulary: 10 words', desc:'Having 10 words by 15 months is the clinical benchmark. Fewer than 5 words should be discussed with your pediatrician.', cat:'language' },
+    'cognitive-pretend-play-emerging':{ title:'Pretend play beginning to emerge', desc:'Early pretend play — feeding a doll, talking on a toy phone — is one of the most important cognitive milestones of the second year.', cat:'cognitive' },
+    'social-label-big-feelings': { title:'Name and label your toddler\'s emotions', desc:'Labeling emotions builds emotional regulation. It\'s one of the most evidence-backed parenting strategies there is.', cat:'social' },
+    'language-1step-commands':   { title:'Follows one-step commands', desc:'Following a simple one-step instruction without a gesture should be consistent by 15–18 months.', cat:'language' },
+    'motor-stair-climbing':      { title:'Climbing stairs', desc:'Most toddlers attempt stairs around 15–18 months. Two hands on the rail, close supervision, until at least age 3.', cat:'motor' },
+    'social-separation-anxiety': { title:'Separation anxiety — peak and strategy', desc:'Separation anxiety peaks between 10–18 months. Predictable goodbyes — never sneaking away — is the evidence-backed approach.', cat:'social' },
+    'nutrition-spoon-self-feeding':{ title:'Self-feeding with a spoon', desc:'Encouraging self-feeding with a spoon from 12–18 months builds motor skills and a healthy relationship with food.', cat:'nutrition' },
+    'social-parallel-play':       { title:'Parallel play — near but not yet with', desc:'Toddlers play alongside peers before they play with them. Parallel play is developmentally right on time.', cat:'social' },
+    'screening-visit-18months-autism':{ title:'18-month well-child visit + autism screen', desc:'The M-CHAT autism screening tool is administered at 18 months. Answer it carefully and honestly.', cat:'screening' },
+    'language-2-word-combinations':   { title:'Two-word combinations', desc:'Putting two words together ("more milk", "daddy go") by 18–24 months is a key language benchmark.', cat:'language' },
+    'social-tantrums-peak':           { title:'Tantrum peak — response strategy matters', desc:'Tantrums peak between 18 months and 3 years. How you respond consistently now shapes the trajectory.', cat:'social' },
+    'social-independence-me-do-it': { title:'The "me do it" phase — foster it', desc:'The drive for independence at 18–24 months is cognitive development in action. Offer choices, not battles.', cat:'social' },
+    'language-vocab-50-words':      { title:'Vocabulary: 50 words — the 50-word gate', desc:'50 words by 24 months is the developmental benchmark. Reaching this gate predicts strong vocabulary growth ahead.', cat:'language' },
+    'social-self-regulation':       { title:'Self-regulation — the foundation of behaviour', desc:'The ability to manage impulses starts forming in toddlerhood and predicts school readiness more reliably than IQ.', cat:'social' },
+    'language-question-asking':       { title:'The "what\'s that?" phase — answer every time', desc:'Question-asking signals growing curiosity. Answer every question — it builds language faster than almost anything else.', cat:'language' },
+    'cognitive-matches-shapes-colors':{ title:'Matches shapes and colors', desc:'Sorting and matching shapes and colors by 18–24 months shows emerging categorisation and cognitive organisation.', cat:'cognitive' },
+    'language-body-parts-5':          { title:'Names at least 5 body parts', desc:'Naming body parts when asked (not just pointing) shows vocabulary advancing from recognition to production.', cat:'language' },
+    'language-speech-clarity-family':{ title:'Speech clarity — understood by family', desc:'By 24 months, familiar caregivers should understand about 50% of speech. Less is worth flagging at the next visit.', cat:'language' },
+    'social-empathy-emerging':       { title:'Empathy beginning to emerge', desc:'True empathy — responding to others\' distress — begins to appear around 18–24 months. A significant cognitive leap.', cat:'social' },
+    'cognitive-function-of-objects': { title:'Understands function of everyday objects', desc:'Using objects correctly (brush on hair, phone to ear) shows symbolic understanding underlying language and play.', cat:'cognitive' },
+    'language-vocab-200-words': { title:'Vocabulary: 200+ words', desc:'The vocabulary explosion typically hits between 18–24 months. Reaching 200+ words by 24 months is the upper benchmark.', cat:'language' },
+    'language-2step-commands':  { title:'Follows two-step commands', desc:'Following two-step instructions without gestures typically develops by 24 months.', cat:'language' },
+    'language-pronouns':        { title:'First pronouns — me, mine, I', desc:'"Mine" at 18–24 months isn\'t selfishness — it\'s the first sign your child understands themselves as distinct from others.', cat:'language' },
+    'motor-jumping-both-feet':       { title:'Jumps with both feet leaving the ground', desc:'Jumping with both feet simultaneously appears around 22–26 months — a key gross motor milestone.', cat:'motor' },
+    'cognitive-pretend-play-complex':{ title:'Complex pretend play', desc:'Multi-step pretend play shows narrative thinking closely linked to language development.', cat:'cognitive' },
+    'cognitive-big-little':          { title:'Understands "big" and "little"', desc:'Grasping size concepts by 24 months shows early abstract thinking and vocabulary moving beyond nouns.', cat:'cognitive' },
+    'screening-visit-24months-autism':{ title:'24-month well-child visit + autism screen', desc:'The second formal autism screen at 24 months is the most important developmental assessment of the toddler years.', cat:'screening' },
+    'nutrition-2pct-milk-switch':     { title:'Switch from whole milk to 2% milk', desc:'At 24 months, the AAP recommends switching to reduced-fat milk for children growing normally.', cat:'nutrition' },
+    'cognitive-same-different':       { title:'Understands "same" and "different"', desc:'Grasping same vs. different is foundational for sorting, categorisation, and eventually reading and early math.', cat:'cognitive' },
+    'language-3-word-sentences':     { title:'Three-word sentences', desc:'Three-word sentences by 24–30 months show grammar is beginning to develop alongside vocabulary.', cat:'language' },
+    'cognitive-memory-recalls-events':{ title:'Recalls past events', desc:'Talking about things that happened earlier shows episodic memory forming — the cognitive basis of storytelling.', cat:'cognitive' },
+    'social-cooperative-play':        { title:'Cooperative play — playing with others', desc:'Playing with rather than alongside peers emerges around 24–36 months — a meaningful shift in social development.', cat:'social' },
+    'language-stranger-understands-50pct':{ title:'Strangers understand 50% of speech', desc:'By 24 months, at least 50% of speech should be understandable to an unfamiliar listener. Less is worth flagging.', cat:'language' },
+    'language-names-colors':              { title:'Names basic colors', desc:'Naming colors (not just matching them) typically appears between 24–30 months as vocabulary expands into adjectives.', cat:'language' },
+    'cognitive-counts-to-10':             { title:'Beginning to count', desc:'Reciting the count sequence emerges around 24–36 months — "counting" words precede true quantity understanding.', cat:'cognitive' },
+    'self-help-potty-readiness':           { title:'Potty readiness signs to watch for', desc:'Staying dry for 2+ hours, interest in the toilet, and communicating the need are the readiness signs — not age alone.', cat:'motor' },
+    'motor-catching-ball':                 { title:'Catches a large ball with arms', desc:'Catching a large ball by 24–30 months shows developing hand-eye coordination and spatial awareness.', cat:'motor' },
+    'language-stranger-understands-75pct': { title:'Strangers understand 75% of speech', desc:'By 36 months, 75% of speech should be understandable to someone who doesn\'t know your child — the clinical benchmark.', cat:'language' },
+    'cognitive-humor-jokes':    { title:'Early humour — intentional jokes', desc:'Around 24–30 months, children start making intentional jokes — a sign of theory of mind developing.', cat:'cognitive' },
+    'cognitive-time-concepts':  { title:'Time concepts: today, yesterday, later', desc:'Basic time language begins to appear around 24–36 months as memory and narrative thinking develop.', cat:'cognitive' },
+    'social-named-friendships': { title:'Named friendships emerging', desc:'Referring to specific children as friends marks a new level of social and emotional development.', cat:'social' },
+    'cognitive-preschool-readiness':{ title:'Preschool readiness', desc:'Separation, following group instructions, and basic self-care matter more for preschool readiness than any academic skill.', cat:'cognitive' },
+    'motor-balance-one-foot':       { title:'Balance on one foot briefly', desc:'Balancing on one foot for 1–2 seconds typically appears around 28–36 months — a key precursor for jumping and sport.', cat:'motor' },
+    'language-counts-objects-5':    { title:'Counts 5 objects correctly', desc:'One-to-one correspondence — each number word refers to exactly one object — typically appears by 30–36 months.', cat:'language' },
+    'screening-visit-30months':     { title:'30-month well-child visit', desc:'Developmental screening, preschool readiness assessment, and a review of speech clarity — no vaccines at this visit.', cat:'screening' },
+    'safety-crib-to-bed-transition':{ title:'Crib to bed transition', desc:'When your child can climb out of the crib, it\'s time. Most transition between 18 months and 3 years.', cat:'safety' },
+    'self-help-daytime-dryness':    { title:'Daytime dryness — the potty training finish line', desc:'Reliable daytime dryness typically arrives between 30–36 months. Median: 32.5 months for girls, 35 for boys.', cat:'motor' },
+    'social-peer-friendships':          { title:'Real friendships forming', desc:'By 30–36 months, children develop genuine preference for specific peers — the beginning of true friendship.', cat:'social' },
+    'cognitive-number-quantity':        { title:'Number and quantity concepts', desc:'Understanding that "three" means three things — not just reciting numbers — solidifies between 30–36 months.', cat:'cognitive' },
+    'self-help-dressing-simple-clothes':{ title:'Dresses in simple clothing independently', desc:'Putting on and removing simple clothing by 30–36 months builds independence and fine motor skills.', cat:'motor' },
+    'language-knows-name-age': { title:'States full name and age when asked', desc:'Saying their full name and age is a milestone that typically arrives between 30–36 months.', cat:'language' },
+    'motor-hopping-one-foot':  { title:'Hops on one foot', desc:'Hopping on one foot typically appears around 30–36 months — real balance, coordination, and strength required.', cat:'motor' },
+    'self-help-tooth-brushing':{ title:'Tooth brushing compliance', desc:'Twice-daily brushing, with parental help until age 6–7, should be an established routine by age 3.', cat:'motor' },
+    'social-imaginary-friends':     { title:'Imaginary friends — normal and healthy', desc:'Imaginary companions in 2–5 year olds are associated with creativity and social development. A feature, not a bug.', cat:'social' },
+    'language-tells-stories':       { title:'Tells simple stories about their day', desc:'Narrating past events in sequence is an early literacy skill that directly predicts reading comprehension in school.', cat:'language' },
+    'language-complex-instructions':{ title:'Follows 3-step instructions', desc:'Following three-part instructions without reminders shows working memory and attention developing on track.', cat:'language' },
+    'motor-drawing-circle':             { title:'Draws a recognisable circle', desc:'Drawing a circle — distinct from scribbling — typically appears around 30–36 months. A meaningful fine motor milestone.', cat:'motor' },
+    'social-gratitude-empathy-practice':{ title:'Practice gratitude and empathy daily', desc:'Modelling thank-you, noticing others\' feelings, and naming acts of kindness builds the lifelong habit of empathy.', cat:'social' },
+    'motor-tricycle-balance-bike':      { title:'Rides a tricycle or balance bike', desc:'Pedaling a tricycle or scooting a balance bike by age 3 builds coordination, confidence, and gross motor independence.', cat:'motor' },
+    'safety-forward-facing-transition':{ title:'Car seat: forward-facing transition', desc:'Children can move forward-facing when they\'ve outgrown their rear-facing seat. Keep rear-facing as long as the seat allows.', cat:'safety' },
+    'language-counts-to-3':           { title:'Counts 3 objects correctly', desc:'True one-to-one counting typically solidifies by 30–36 months.', cat:'language' },
+    'social-sharing-scaffolding':     { title:'Sharing — gentle scaffolding now works', desc:'Genuine voluntary sharing doesn\'t emerge until 3–3.5 years. This is the right time to scaffold it without forcing it.', cat:'social' },
+    'screening-visit-36months':    { title:'3-year well-child visit', desc:'Vision screening, full developmental assessment, and often the last vaccines before school entry at the 3-year visit.', cat:'screening' },
+    'language-full-sentences':     { title:'Full sentences of 4+ words', desc:'Sentences of 4 or more words, using grammar correctly, should be consistent and clear by 36 months.', cat:'language' },
+    'social-consistent-discipline':{ title:'Consistent discipline — the approach matters', desc:'Consistent, predictable responses to behaviour — same rules, same consequences — matter more than any specific technique.', cat:'social' }
+  };
+
+  const ED = {
+    0:  ['safety-safe-sleep-setup','safety-car-seat-install-check','safety-infant-cpr'],
+    1:  ['screening-visit-1month','motor-tummy-time-build','social-parent-depression-screening'],
+    2:  ['screening-visit-2months','social-social-smile-appears','language-serve-return'],
+    3:  ['motor-head-control','language-laughing','social-bedtime-routine-security'],
+    4:  ['cognitive-sleep-regression-4month','screening-visit-4months','motor-roll-tummy-to-back'],
+    5:  ['nutrition-solids-readiness','nutrition-iron-supplement-breastfed','social-primary-attachment'],
+    6:  ['screening-visit-6months','nutrition-first-purees','motor-sitting-unsupported'],
+    7:  ['safety-babyproofing','language-responds-to-name','nutrition-dairy-intro'],
+    8:  ['nutrition-egg-intro','language-babbling','nutrition-tree-nut-intro'],
+    9:  ['screening-visit-9months','nutrition-peanut-intro','nutrition-sesame-intro'],
+    10: ['nutrition-fish-intro','social-peek-a-boo','motor-pull-to-stand'],
+    11: ['motor-cruising','language-mama-dada-specific','screening-dental-first-visit'],
+    12: ['screening-visit-12months','language-read-aloud-daily','nutrition-cows-milk-switch'],
+    13: ['motor-first-steps','language-first-words','nutrition-bottle-weaning'],
+    14: ['language-joint-attention-pointing','motor-walking-independent','cognitive-identifies-body-parts'],
+    15: ['screening-visit-15months','language-vocab-10-words','cognitive-pretend-play-emerging'],
+    16: ['social-label-big-feelings','language-1step-commands','motor-stair-climbing'],
+    17: ['social-separation-anxiety','nutrition-spoon-self-feeding','social-parallel-play'],
+    18: ['screening-visit-18months-autism','language-2-word-combinations','social-tantrums-peak'],
+    19: ['social-independence-me-do-it','language-vocab-50-words','social-self-regulation'],
+    20: ['language-question-asking','cognitive-matches-shapes-colors','language-body-parts-5'],
+    21: ['language-speech-clarity-family','social-empathy-emerging','cognitive-function-of-objects'],
+    22: ['language-vocab-200-words','language-2step-commands','language-pronouns'],
+    23: ['motor-jumping-both-feet','cognitive-pretend-play-complex','cognitive-big-little'],
+    24: ['screening-visit-24months-autism','nutrition-2pct-milk-switch','cognitive-same-different'],
+    25: ['language-3-word-sentences','cognitive-memory-recalls-events','social-cooperative-play'],
+    26: ['language-stranger-understands-50pct','language-names-colors','cognitive-counts-to-10'],
+    27: ['self-help-potty-readiness','motor-catching-ball','language-stranger-understands-75pct'],
+    28: ['cognitive-humor-jokes','cognitive-time-concepts','social-named-friendships'],
+    29: ['cognitive-preschool-readiness','motor-balance-one-foot','language-counts-objects-5'],
+    30: ['screening-visit-30months','safety-crib-to-bed-transition','self-help-daytime-dryness'],
+    31: ['social-peer-friendships','cognitive-number-quantity','self-help-dressing-simple-clothes'],
+    32: ['language-knows-name-age','motor-hopping-one-foot','self-help-tooth-brushing'],
+    33: ['social-imaginary-friends','language-tells-stories','language-complex-instructions'],
+    34: ['motor-drawing-circle','social-gratitude-empathy-practice','motor-tricycle-balance-bike'],
+    35: ['safety-forward-facing-transition','language-counts-to-3','social-sharing-scaffolding'],
+    36: ['screening-visit-36months','language-full-sentences','social-consistent-discipline']
+  };
+
+  const OW = {
+    0:16,1:18,2:20,3:22,4:25,5:27,6:28,7:26,8:28,9:30,
+    10:28,11:25,12:22,13:20,14:20,15:18,16:18,17:17,18:20,
+    19:18,20:17,21:16,22:15,23:15,24:18,25:15,26:14,27:15,
+    28:13,29:12,30:14,31:12,32:11,33:10,34:10,35:9,36:8
+  };
+
+  const CAT = {
+    screening:{ label:'Screening', bg:'rgba(8,145,178,.1)',   color:'#0891B2' },
+    nutrition: { label:'Nutrition',  bg:'rgba(5,150,105,.1)',   color:'#059669' },
+    motor:     { label:'Motor',      bg:'rgba(245,158,11,.12)', color:'#D97706' },
+    language:  { label:'Language',   bg:'rgba(110,78,214,.1)',  color:'#6E4ED6' },
+    social:    { label:'Social',     bg:'rgba(219,39,119,.1)',  color:'#DB2777' },
+    cognitive: { label:'Cognitive',  bg:'rgba(79,70,229,.1)',   color:'#4F46E5' },
+    safety:    { label:'Safety',     bg:'rgba(234,88,12,.1)',   color:'#EA580C' }
+  };
+
+  const TODAY = new Date(2026, 3, 21);
+
+  function calcAge(d, m, y) {
+    const birth = new Date(y, m - 1, d);
+    let months = (TODAY.getFullYear() - birth.getFullYear()) * 12 + (TODAY.getMonth() - birth.getMonth());
+    let days = TODAY.getDate() - birth.getDate();
+    if (days < 0) { months--; const prev = new Date(TODAY.getFullYear(), TODAY.getMonth(), 0); days += prev.getDate(); }
+    return { months, days };
+  }
+  function weeksUntil(m, y) {
+    const due = new Date(y, m - 1, 15);
+    return Math.max(0, Math.round((due - TODAY) / (7 * 86400000)));
+  }
+  function ordinal(n) { return n + (['st','nd','rd'][((n+90)%100-10)%10-1]||'th'); }
+
+  function renderMilestones(monthKey) {
+    return (ED[monthKey] || ED[1]).map(slug => {
+      const ms = M[slug]; if (!ms) return '';
+      const cat = CAT[ms.cat] || CAT.cognitive;
+      return `<div class="demo-milestone-card">
+        <span class="demo-milestone-badge" style="background:${cat.bg};color:${cat.color}">${cat.label}</span>
+        <div class="demo-milestone-body">
+          <div class="demo-milestone-title">${ms.title}</div>
+          <div class="demo-milestone-desc">${ms.desc}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function update() {
+    const d = parseInt(document.getElementById('demoDay').value);
+    const m = parseInt(document.getElementById('demoMonth').value);
+    const y = parseInt(document.getElementById('demoYear').value);
+    const exp = document.getElementById('demoExpecting').checked;
+    const results = document.getElementById('demoResults');
+    const error   = document.getElementById('demoError');
+    results.style.display = error.style.display = 'none';
+
+    if (exp) {
+      if (!m || !y) return;
+      const weeks = weeksUntil(m, y);
+      document.getElementById('demoAgeSummary').innerHTML = `<div class="demo-age-main">Your baby arrives in approximately <em>${weeks} week${weeks!==1?'s':''}.</em></div>`;
+      document.getElementById('demoPreviewLabel').textContent = "Here's a preview of your pre-birth digest 👇";
+      document.getElementById('demoMilestoneGrid').innerHTML = renderMilestones(0);
+      document.getElementById('demoOpenWindows').innerHTML = `<strong>${OW[0]} pre-birth windows</strong> are open right now — safety prep, planning, and things to get in place before your baby arrives. Scout will send you everything in one clear email.`;
+      results.style.display = 'block'; return;
+    }
+
+    if (!d || !m || !y) return;
+    const { months, days } = calcAge(d, m, y);
+    if (months < 0) return;
+    if (months >= 36) { error.style.display = 'block'; return; }
+
+    const next = Math.min(months + 1, 36);
+    document.getElementById('demoAgeSummary').innerHTML = `<div class="demo-age-main">Your child is <em>${months} month${months!==1?'s':''} and ${days} day${days!==1?'s':''} old.</em></div>`;
+    document.getElementById('demoPreviewLabel').textContent = `Here's a preview of their ${ordinal(next)}-month digest 👇`;
+    document.getElementById('demoMilestoneGrid').innerHTML = renderMilestones(next);
+    document.getElementById('demoOpenWindows').innerHTML = `There are also <strong>${OW[months]||15} other open windows</strong> to be aware of at this age — milestones currently active across language, motor, nutrition, and more.`;
+    results.style.display = 'block';
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    const dayEl = document.getElementById('demoDay');
+    for (let i = 1; i <= 31; i++) { const o = document.createElement('option'); o.value = i; o.textContent = i; dayEl.appendChild(o); }
+
+    function populateYears(exp) {
+      const el = document.getElementById('demoYear');
+      const prev = el.value; el.innerHTML = '<option value="">Year</option>';
+      const cur = TODAY.getFullYear();
+      if (exp) { for (let y=cur; y<=cur+1; y++) { const o=document.createElement('option'); o.value=y; o.textContent=y; el.appendChild(o); } }
+      else     { for (let y=cur; y>=cur-3; y--) { const o=document.createElement('option'); o.value=y; o.textContent=y; el.appendChild(o); } }
+      if (prev) el.value = prev;
+    }
+    populateYears(false);
+
+    ['demoDay','demoMonth','demoYear'].forEach(id => document.getElementById(id).addEventListener('change', update));
+    document.getElementById('demoExpecting').addEventListener('change', function() {
+      document.getElementById('demoDay').closest('.demo-select-wrap').style.display = this.checked ? 'none' : '';
+      document.getElementById('demoInputArea').querySelector('.demo-input-label').textContent = this.checked ? 'When is your baby due?' : 'When was your baby born?';
+      populateYears(this.checked);
+      document.getElementById('demoResults').style.display = document.getElementById('demoError').style.display = 'none';
+      update();
+    });
+  });
+})();
+</script>
+</body>
+</html>
