@@ -2047,7 +2047,7 @@ button { font: inherit; cursor: pointer; }
         submitBtn.style.display = 'none';
         // Encode email to prevent XSS — innerHTML is used in showSuccess
         var safeEmail = email.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-        showSuccess('Reset link sent to <strong>' + safeEmail + '</strong>. Check your inbox (and spam folder).<br><br><span style="font-size:13px;font-weight:400;display:block;margin-top:4px">Originally signed up with Google? <a href="#" onclick="signinSwitchMode('sign-in');return false" style="color:var(--terra);font-weight:600">Sign in with Google instead →</a><br>Wrong email? <a href="#" onclick="signinSwitchMode('forgot');return false" style="color:var(--terra);font-weight:600">Try again →</a></span>');
+        showSuccess('Reset link sent to <strong>' + safeEmail + '</strong>. Check your inbox (and spam folder).<br><br><span style="font-size:13px;font-weight:400;display:block;margin-top:4px">Originally signed up with Google? <a href="#" onclick="signinSwitchMode(\'sign-in\');return false" style="color:var(--terra);font-weight:600">Sign in with Google instead →</a><br>Wrong email? <a href="#" onclick="signinSwitchMode(\'forgot\');return false" style="color:var(--terra);font-weight:600">Try again →</a></span>');
       });
       return;
     }
