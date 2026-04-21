@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Scout Hero — Mockup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #0D0827;
+      min-height: 100vh;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 900px 500px at 50% 20%, rgba(110,78,214,0.28) 0%, transparent 70%),
+        linear-gradient(170deg, #0D0827 0%, #1E1248 40%, #2A1760 70%, #130930 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 96px 24px 120px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle star field */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1.2px 1.2px at 12% 18%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 33% 8%, rgba(255,255,255,0.35) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 67% 12%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 82% 28%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1.2px 1.2px at 22% 55%, rgba(255,255,255,0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 91% 62%, rgba(255,255,255,0.35) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 48% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
+        radial-gradient(1px 1px at 76% 85%, rgba(255,255,255,0.3) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* Decorative circles */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      border: 1px solid rgba(110,78,214,0.12);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -58%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      width: 100%;
+    }
+
+    /* ── Eyebrow ── */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #A78BFF;
+      background: rgba(167,139,255,0.1);
+      border: 1px solid rgba(167,139,255,0.25);
+      border-radius: 20px;
+      padding: 5px 14px;
+      margin-bottom: 28px;
+    }
+    .eyebrow-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #A78BFF;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* ── Headline ── */
+    h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(52px, 8vw, 88px);
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: #fff;
+      margin-bottom: 22px;
+    }
+    h1 em {
+      font-style: italic;
+      color: #A78BFF;
+    }
+
+    /* ── Subhead ── */
+    .subhead {
+      font-size: clamp(17px, 2.2vw, 21px);
+      font-weight: 400;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.55;
+      max-width: 520px;
+      margin: 0 auto 44px;
+    }
+
+    /* ── CTA ── */
+    .cta-wrap {
+      margin-bottom: 72px;
+    }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: #6E4ED6;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      padding: 16px 38px;
+      border-radius: 50px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(110,78,214,0.5), 0 0 0 0 rgba(110,78,214,0.3);
+      transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
+      letter-spacing: 0.01em;
+    }
+    .cta-btn:hover {
+      background: #5B3CC4;
+      transform: translateY(-2px);
+      box-shadow: 0 14px 42px rgba(110,78,214,0.6);
+    }
+    .cta-arrow { transition: transform 0.18s; display: inline-block; }
+    .cta-btn:hover .cta-arrow { transform: translateX(4px); }
+
+    /* ── Badges ── */
+    .badges {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 138px;
+    }
+
+    .badge-circle {
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(167,139,255,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      box-shadow:
+        0 8px 28px rgba(0,0,0,0.35),
+        0 0 0 5px rgba(110,78,214,0.07),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      /* inner glow ring */
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .badge:hover .badge-circle {
+      transform: translateY(-3px);
+      box-shadow:
+        0 16px 40px rgba(0,0,0,0.4),
+        0 0 0 5px rgba(110,78,214,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    /* Inner ring detail */
+    .badge-circle::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      border: 1px solid rgba(167,139,255,0.15);
+      pointer-events: none;
+    }
+
+    /* ── Ribbon ── */
+    .ribbon-wrap {
+      width: 138px;
+      margin-top: -3px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ribbon-body {
+      width: 100%;
+      background: linear-gradient(135deg, #7B5CE6 0%, #6044C8 100%);
+      padding: 8px 10px;
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1.35;
+      position: relative;
+      /* Swallowtail ends: pointed left and right */
+      clip-path: polygon(
+        12px 0%,
+        calc(100% - 12px) 0%,
+        100% 50%,
+        calc(100% - 12px) 100%,
+        12px 100%,
+        0% 50%
+      );
+    }
+
+    /* Ribbon tail fold shadow */
+    .ribbon-fold {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px;
+    }
+    .ribbon-fold-l,
+    .ribbon-fold-r {
+      width: 0; height: 0;
+      border-top: 8px solid #3D2890;
+    }
+    .ribbon-fold-l {
+      border-right: 10px solid transparent;
+    }
+    .ribbon-fold-r {
+      border-left: 10px solid transparent;
+    }
+
+    /* ── Mockup label ── */
+    .mockup-badge {
+      display: inline-block;
+      margin-top: 64px;
+      background: rgba(255,200,50,0.12);
+      border: 1px solid rgba(255,200,50,0.3);
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,200,100,0.7);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .badges { gap: 28px; }
+      .badge { width: 120px; }
+      .badge-circle { width: 100px; height: 100px; }
+      .ribbon-wrap { width: 120px; }
+    }
+  </style>
+</head>
+<body>
+<section class="hero">
+  <div class="hero-inner">
+
+    <!-- Eyebrow -->
+    <div style="display:flex;justify-content:center;margin-bottom:28px">
+      <span class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Scout by FamilyForce
+      </span>
+    </div>
+
+    <!-- Headline -->
+    <h1>Baby milestones,<br><em>delivered.</em></h1>
+
+    <!-- Subhead -->
+    <p class="subhead">Your pediatrician tracks milestones.<br>Now your calendar does too.</p>
+
+    <!-- CTA -->
+    <div class="cta-wrap">
+      <a href="#" class="cta-btn">
+        Start for free <span class="cta-arrow">→</span>
+      </a>
+    </div>
+
+    <!-- Badges -->
+    <div class="badges">
+
+      <!-- 1: Free -->
+      <div class="badge">
+        <div class="badge-circle">
+          <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+            <!-- Star -->
+            <path d="M21 4 L24.6 14.2 L35.6 14.2 L26.9 20.7 L30 31 L21 24.6 L12 31 L15.1 20.7 L6.4 14.2 L17.4 14.2 Z"
+                  fill="rgba(167,139,255,0.18)" stroke="#A78BFF" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="ribbon-wrap">
+          <div class="ribbon-body">Free</div>
+          <div class="ribbon-fold">
+            <div class="ribbon-fold-l"></div>
+            <div class="ribbon-fold-r"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2: Pediatrician Reviewed -->
+      <div class="badge">
+        <div class="badge-circle">
+          <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+            <!-- Stethoscope -->
+            <circle cx="21" cy="12" r="5.5" stroke="#A78BFF" stroke-width="1.6" fill="rgba(167,139,255,0.15)"/>
+            <!-- Tube going down and curving -->
+            <path d="M15.5 12 C15.5 12 9 14 9 22 C9 29 15 34 21 34 C27 34 33 29 33 22 C33 14 26.5 12 26.5 12"
+                  stroke="#A78BFF" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+            <!-- Chest piece -->
+            <circle cx="21" cy="34" r="5" stroke="#A78BFF" stroke-width="1.5" fill="rgba(167,139,255,0.15)"/>
+            <path d="M18.5 34 L23.5 34 M21 31.5 L21 36.5" stroke="#A78BFF" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="ribbon-wrap">
+          <div class="ribbon-body">Dr. Reviewed</div>
+          <div class="ribbon-fold">
+            <div class="ribbon-fold-l"></div>
+            <div class="ribbon-fold-r"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3: No App / No Download -->
+      <div class="badge">
+        <div class="badge-circle">
+          <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+            <!-- Envelope (email-native: no app needed) -->
+            <rect x="5" y="11" width="32" height="22" rx="3.5" stroke="#A78BFF" stroke-width="1.6" fill="rgba(167,139,255,0.12)"/>
+            <path d="M5 16 L21 25 L37 16" stroke="#A78BFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Checkmark badge indicating "it works" / approved -->
+            <circle cx="32" cy="32" r="6" fill="#1E1248" stroke="#A78BFF" stroke-width="1.4"/>
+            <path d="M29 32 L31.2 34.2 L35 30" stroke="#A78BFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="ribbon-wrap">
+          <div class="ribbon-body">No App<br>Needed</div>
+          <div class="ribbon-fold">
+            <div class="ribbon-fold-l"></div>
+            <div class="ribbon-fold-r"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4: Share with Family -->
+      <div class="badge">
+        <div class="badge-circle">
+          <svg width="42" height="42" viewBox="0 0 42 42" fill="none">
+            <!-- Three people -->
+            <!-- Center person (slightly bigger) -->
+            <circle cx="21" cy="13" r="5" stroke="#A78BFF" stroke-width="1.6" fill="rgba(167,139,255,0.18)"/>
+            <path d="M12 34 C12 27 16 24 21 24 C26 24 30 27 30 34" stroke="#A78BFF" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+            <!-- Left person -->
+            <circle cx="9" cy="16" r="3.5" stroke="#A78BFF" stroke-width="1.3" fill="rgba(167,139,255,0.1)"/>
+            <path d="M4 33 C4 28 6.5 26 9 26 C10.5 26 12 26.8 13.5 28.5" stroke="#A78BFF" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+            <!-- Right person -->
+            <circle cx="33" cy="16" r="3.5" stroke="#A78BFF" stroke-width="1.3" fill="rgba(167,139,255,0.1)"/>
+            <path d="M38 33 C38 28 35.5 26 33 26 C31.5 26 30 26.8 28.5 28.5" stroke="#A78BFF" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <div class="ribbon-wrap">
+          <div class="ribbon-body">Share w/<br>Family</div>
+          <div class="ribbon-fold">
+            <div class="ribbon-fold-l"></div>
+            <div class="ribbon-fold-r"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /badges -->
+
+    <div style="display:flex;justify-content:center">
+      <span class="mockup-badge">Mockup — Not live</span>
+    </div>
+
+  </div>
+</section>
+</body>
+</html>
