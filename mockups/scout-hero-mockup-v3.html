@@ -296,6 +296,8 @@
       border-radius: 18px;
       padding: 28px 26px 30px;
       transition: background .2s, transform .2s;
+      display: flex;
+      flex-direction: column;
     }
     .cq-card:hover { background: rgba(255,255,255,.07); transform: translateY(-3px); }
     .cq-top {
@@ -350,6 +352,7 @@
       padding-top: 14px;
       border-top: 1px solid rgba(255,255,255,.07);
       margin-bottom: 14px;
+      flex: 1;
     }
     .cq-consequence strong { color: rgba(255,255,255,.85); }
     .cq-source {
@@ -357,8 +360,9 @@
       color: rgba(255,255,255,.28);
       line-height: 1.5;
       display: flex;
-      align-items: flex-start;
-      gap: 5px;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: auto;
     }
     .cq-source-label {
       font-weight: 700;
@@ -368,6 +372,7 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
+    .cq-source span { flex: 1; }
 
     /* ══ STATS STRIP ══ */
     .stats-strip {
@@ -857,7 +862,7 @@
           <span class="cq-bar-label">Window open</span>
         </div>
         <div class="cq-consequence">Introducing peanuts early reduces lifelong allergy risk by <strong>up to 80%.</strong> Miss this window and that protection is gone — permanently.</div>
-        <div class="cq-source"><span class="cq-source-label">Source</span> LEAP Study, Du Toit et al. · <em>NEJM</em> 2015 · NIAID/AAP Guidelines 2023</div>
+        <div class="cq-source"><span class="cq-source-label">Source</span><span>LEAP Study, Du Toit et al. · NEJM 2015 · NIAID/AAP Guidelines 2023</span></div>
       </div>
 
       <div class="cq-card fade-up d2">
@@ -871,7 +876,7 @@
           <span class="cq-bar-label">Window open</span>
         </div>
         <div class="cq-consequence">Early identification changes outcomes. <strong>Intervention before age 3</strong> is the most effective — but only if you know to ask for the M-CHAT screen.</div>
-        <div class="cq-source"><span class="cq-source-label">Source</span> AAP Bright Futures Periodicity Schedule · M-CHAT, Robins et al. · CDC Early Intervention 2024</div>
+        <div class="cq-source"><span class="cq-source-label">Source</span><span>AAP Bright Futures Periodicity Schedule · M-CHAT, Robins et al. · CDC Early Intervention 2024</span></div>
       </div>
 
       <div class="cq-card fade-up d3">
@@ -885,7 +890,7 @@
           <span class="cq-bar-label">Window open</span>
         </div>
         <div class="cq-consequence">The brain permanently restructures sleep at 4 months. <strong>How you respond now shapes their sleep for years.</strong> Most parents don't know it's coming.</div>
-        <div class="cq-source"><span class="cq-source-label">Source</span> Anders &amp; Keener, 1985 · Mindell et al. 2010 · AAP Safe Sleep Guidelines 2022</div>
+        <div class="cq-source"><span class="cq-source-label">Source</span><span>Anders &amp; Keener, 1985 · Mindell et al. 2010 · AAP Safe Sleep Guidelines 2022</span></div>
       </div>
 
     </div>
