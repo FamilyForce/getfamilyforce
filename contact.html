@@ -1331,24 +1331,25 @@ button { font: inherit; cursor: pointer; }
 
 
 <!-- ═══ FOOTER (matched exactly from playbook-potty-training.html) ═══ -->
-<footer style="background:#1E1248;border-top:1px solid rgba(255,255,255,.08);padding:20px 24px;padding-bottom:max(20px,env(safe-area-inset-bottom,0px))">
+<footer style="background:#1E1248;border-top:1px solid rgba(255,255,255,.08);padding:20px clamp(20px,5vw,64px);padding-bottom:max(20px,env(safe-area-inset-bottom,0px))">
   <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px">
     <a href="/" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none" aria-label="FamilyForce home">
       <svg width="14" height="16" viewBox="0 0 14 16" fill="none" aria-hidden="true"><path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span style="font-family:'Outfit',system-ui,sans-serif;font-size:16px;font-weight:700;color:rgba(255,255,255,.9)">Family<span style="color:#A78BFF">Force</span></span>
+      <span style="font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;color:rgba(255,255,255,.9)">Family<span style="color:#A78BFF">Force</span></span>
     </a>
-    <nav style="display:flex;flex-wrap:wrap;gap:10px 18px" aria-label="Footer links">
-      <a href="/about" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none">About Us</a>
-      <a href="https://www.getfamilyforce.com/privacy" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none">Privacy</a>
-      <a href="https://www.getfamilyforce.com/terms" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none">Terms</a>
-      
-      <a href="/contact" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Contact Us</a>
+    <nav style="display:flex;gap:24px;flex-wrap:wrap;justify-content:center" aria-label="Footer links">
+      <a href="/milestones" style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Milestones</a>
+      <a href="/blog"       style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Blog</a>
+      <a href="/about"      style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">About</a>
+      <a href="/privacy"    style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Privacy</a>
+      <a href="/terms"      style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Terms</a>
+      <a href="/contact"    style="font-size:13px;color:rgba(255,255,255,.45);text-decoration:none" onmouseover="this.style.color='rgba(255,255,255,.8)'" onmouseout="this.style.color='rgba(255,255,255,.45)'">Contact Us</a>
     </nav>
-    <span style="font-size:12px;color:rgba(255,255,255,.25)">&#169; 2026 FamilyForce. All rights reserved.</span>
+    <span style="font-size:12px;color:rgba(255,255,255,.25);text-align:right;display:block">© 2026 FamilyForce. All rights reserved.</span>
   </div>
   <div style="padding:8px 20px;text-align:center">
     <p style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.6;margin:0">For educational purposes only. Every child develops at their own pace. Consult your pediatrician with any concerns.</p>
-    <p style="font-size:11px;color:rgba(255,255,255,.2);line-height:1.6;margin:6px 0 0">Developmental windows medically reviewed by <a href="/medical-review" style="color:rgba(255,255,255,.3);text-decoration:underline;text-underline-offset:2px">Karina Sanchez Mercado, MD, Pediatrician and Newborn Medicine Specialist</a> · April 2026</p>
+    <p style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.6;margin:6px 0 0">Developmental windows medically reviewed by <a href="/medical-review" style="color:rgba(255,255,255,.45);text-decoration:underline;text-underline-offset:2px">Karina Sanchez Mercado, MD, Pediatrician and Newborn Medicine Specialist</a> · April 2026</p>
   </div>
 </footer>
 
