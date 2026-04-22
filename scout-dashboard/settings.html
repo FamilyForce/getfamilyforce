@@ -645,43 +645,6 @@ function openPortal(e) {
   })
 }
 
-// ── Display name ─────────────────────────────────────────────────────────────
-function saveDisplayName() {
-  var input = document.getElementById('displayNameInput')
-  var btn   = document.getElementById('saveNameBtn')
-  function setBtn(text, bg) {
-    if (!btn) return
-    btn.disabled = (text === 'Saving…')
-    btn.textContent = text
-    btn.style.background = bg || 'var(--terra)'
-  }
-  try {
-    var name = input ? input.value.trim() : ''
-    if (!name) { setBtn('Enter a name', '#CC4400'); setTimeout(function(){ setBtn('Save') }, 2000); return }
-    var user = ScoutDash.getUser()
-    if (!user || !user.id) { setBtn('Not signed in', '#CC4400'); setTimeout(function(){ setBtn('Save') }, 2000); return }
-    var sb = ScoutDash.getSb()
-    if (!sb) { setBtn('No connection', '#CC4400'); setTimeout(function(){ setBtn('Save') }, 2000); return }
-    setBtn('Saving…')
-    sb.from('profiles').upsert({ id: user.id, name: name }, { onConflict: 'id' }).then(function (res) {
-      if (res.error) {
-        setBtn(res.error.message.substring(0,20), '#CC4400')
-        setTimeout(function(){ setBtn('Save') }, 3000)
-        return
-      }
-      localStorage.setItem('ff_user_name', name)
-      setBtn('Saved ✓', '#15803D')
-      setTimeout(function(){ setBtn('Save') }, 2000)
-    }).catch(function (err) {
-      setBtn('Error — retry', '#CC4400')
-      setTimeout(function(){ setBtn('Save') }, 3000)
-    })
-  } catch(e) {
-    setBtn(String(e).substring(0,20), '#CC4400')
-    setTimeout(function(){ setBtn('Save') }, 3000)
-  }
-}
-
 // ── Referral code ─────────────────────────────────────────────────────────────
 function _genReferralCode() {
   var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'  // no O/0, I/1 to avoid confusion
@@ -947,6 +910,43 @@ function loadReferralCode() {}
 function toggleReferralEntry() {}
 function applyReferralCode() {}
 function removeReferralCode() {}
+
+// ── Display name ─────────────────────────────────────────────────────────────
+function saveDisplayName() {
+  var input = document.getElementById('displayNameInput')
+  var btn   = document.getElementById('saveNameBtn')
+  function setBtn(text, bg) {
+    if (!btn) return
+    btn.disabled = (text === 'Saving…')
+    btn.textContent = text
+    btn.style.background = bg || 'var(--terra)'
+  }
+  try {
+    var name = input ? input.value.trim() : ''
+    if (!name) { setBtn('Enter a name', '#CC4400'); setTimeout(function(){ setBtn('Save') }, 2000); return }
+    var user = ScoutDash.getUser()
+    if (!user || !user.id) { setBtn('Not signed in', '#CC4400'); setTimeout(function(){ setBtn('Save') }, 2000); return }
+    var sb = ScoutDash.getSb()
+    if (!sb) { setBtn('No connection', '#CC4400'); setTimeout(function(){ setBtn('Save') }, 2000); return }
+    setBtn('Saving…')
+    sb.from('profiles').upsert({ id: user.id, name: name }, { onConflict: 'id' }).then(function (res) {
+      if (res.error) {
+        setBtn(res.error.message.substring(0,20), '#CC4400')
+        setTimeout(function(){ setBtn('Save') }, 3000)
+        return
+      }
+      localStorage.setItem('ff_user_name', name)
+      setBtn('Saved ✓', '#15803D')
+      setTimeout(function(){ setBtn('Save') }, 2000)
+    }).catch(function (err) {
+      setBtn('Error — retry', '#CC4400')
+      setTimeout(function(){ setBtn('Save') }, 3000)
+    })
+  } catch(e) {
+    setBtn(String(e).substring(0,20), '#CC4400')
+    setTimeout(function(){ setBtn('Save') }, 3000)
+  }
+}
 
 // ── Sign out ──────────────────────────────────────────────────────────────────
 function signOut() {
