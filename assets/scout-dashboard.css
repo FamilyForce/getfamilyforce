@@ -194,6 +194,7 @@ input, textarea, select { font-family: var(--sans); }
   gap: 3px; font-size: 10px; font-weight: 600; color: var(--text-dim);
   text-decoration: none; cursor: pointer;
   transition: color var(--transition);
+  -webkit-tap-highlight-color: transparent;
 }
 .bottom-nav-item.active { color: var(--terra); }
 .bottom-nav-icon { font-size: 20px; line-height: 1; }
