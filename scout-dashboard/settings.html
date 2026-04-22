@@ -647,14 +647,23 @@ function openPortal(e) {
 // ── Display name ─────────────────────────────────────────────────────────────
 function saveDisplayName() {
   var input = document.getElementById('displayNameInput')
+  var btn   = document.querySelector('button[onclick="saveDisplayName()"]')
   var name  = input ? input.value.trim() : ''
   if (!name) return
   var user = ScoutDash.getUser()
-  ScoutDash.getSb().from('profiles').upsert({ id: user.id, name: name }, { onConflict: 'id' }).then(function (res) {
-    if (res.error) { ScoutDash.toast('Could not save name.', 'error'); return }
-    // Mirror to ff_user_name so it populates the certificate name on /dashboard.html
+  if (!user || !user.id) { ScoutDash.toast('Not signed in. Please refresh and try again.', 'error'); return }
+  var sb = ScoutDash.getSb()
+  if (!sb) { ScoutDash.toast('Connection error. Please refresh.', 'error'); return }
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…' }
+  sb.from('profiles').upsert({ id: user.id, name: name }, { onConflict: 'id' }).then(function (res) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Save' }
+    if (res.error) { ScoutDash.toast('Could not save name: ' + res.error.message, 'error'); return }
     localStorage.setItem('ff_user_name', name)
     ScoutDash.toast('Name saved.', 'success')
+  }).catch(function (err) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Save' }
+    ScoutDash.toast('Could not save name. Please try again.', 'error')
+    console.error('[saveDisplayName]', err)
   })
 }
 
