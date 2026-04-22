@@ -143,19 +143,6 @@ Deno.serve(async (req: Request) => {
     hasUrgent = true
   }
 
-  // ─── Setup funnel ──────────────────────────────────────────────────────────
-  const { count: trialStartedTotal } = await sb
-    .from('scout_events')
-    .select('id', { count: 'exact', head: true })
-    .eq('event_type', 'trial_started')
-
-  const { count: signupCompletedTotal } = await sb
-    .from('scout_events')
-    .select('id', { count: 'exact', head: true })
-    .eq('event_type', 'signup_completed')
-
-  const stuckInSetup = Math.max(0, (trialStartedTotal ?? 0) - (signupCompletedTotal ?? 0))
-
   // ─── Re-engagement (last 30 days) ─────────────────────────────────────────
   const { count: reengagementLast30 } = await sb
     .from('scout_events')
@@ -176,11 +163,6 @@ Deno.serve(async (req: Request) => {
   report.push(`Users`)
   report.push(`  Active: ${activeCount ?? 0}`)
   report.push(`  New signups today: ${newSignupsToday ?? 0}`)
-  report.push('')
-  report.push(`Setup funnel`)
-  report.push(`  Started setup: ${trialStartedTotal ?? 0}`)
-  report.push(`  Setup complete: ${signupCompletedTotal ?? 0}`)
-  report.push(`  Stuck in setup: ${stuckInSetup}`)
   report.push('')
   report.push(`Digest cron`)
   report.push(`  Ran today: ${cronRanToday ? '✅ yes' : '❌ no'}`)
@@ -208,7 +190,7 @@ Deno.serve(async (req: Request) => {
     ok:      true,
     alerts:  alerts.length,
     urgent:  hasUrgent,
-    report:  { activeCount, newSignupsToday, trialStartedTotal, signupCompletedTotal, stuckInSetup, cronRanToday, monthlyDigestsToday, signupDigestsToday, reengagementLast30, bounceRate, failures: failures?.length ?? 0 },
+    report:  { activeCount, newSignupsToday, cronRanToday, monthlyDigestsToday, signupDigestsToday, reengagementLast30, bounceRate, failures: failures?.length ?? 0 },
   }), {
     status:  200,
     headers: { ...CORS, 'Content-Type': 'application/json' },
