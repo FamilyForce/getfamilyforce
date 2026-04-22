@@ -649,31 +649,36 @@ function openPortal(e) {
 function saveDisplayName() {
   var input = document.getElementById('displayNameInput')
   var btn   = document.getElementById('saveNameBtn')
-  var msg   = document.getElementById('saveNameMsg')
-  function showMsg(text, color) {
-    if (msg) { msg.textContent = text; msg.style.color = color || 'var(--text-dim)'; msg.style.display = 'block' }
-    if (btn) { btn.disabled = false; btn.textContent = 'Save' }
+  function setBtn(text, bg) {
+    if (!btn) return
+    btn.disabled = (text === 'Saving…')
+    btn.textContent = text
+    btn.style.background = bg || 'var(--terra)'
   }
   try {
     var name = input ? input.value.trim() : ''
-    if (!name) { showMsg('Please enter a name.', 'var(--red)'); return }
+    if (!name) { setBtn('Enter a name', '#CC4400'); setTimeout(function(){ setBtn('Save') }, 2000); return }
     var user = ScoutDash.getUser()
-    if (!user || !user.id) { showMsg('Not signed in — please refresh.', 'var(--red)'); return }
+    if (!user || !user.id) { setBtn('Not signed in', '#CC4400'); setTimeout(function(){ setBtn('Save') }, 2000); return }
     var sb = ScoutDash.getSb()
-    if (!sb) { showMsg('Connection error — please refresh.', 'var(--red)'); return }
-    if (btn) { btn.disabled = true; btn.textContent = 'Saving…' }
-    if (msg) msg.style.display = 'none'
+    if (!sb) { setBtn('No connection', '#CC4400'); setTimeout(function(){ setBtn('Save') }, 2000); return }
+    setBtn('Saving…')
     sb.from('profiles').upsert({ id: user.id, name: name }, { onConflict: 'id' }).then(function (res) {
-      if (res.error) { showMsg('DB error: ' + res.error.message, 'var(--red)'); return }
+      if (res.error) {
+        setBtn(res.error.message.substring(0,20), '#CC4400')
+        setTimeout(function(){ setBtn('Save') }, 3000)
+        return
+      }
       localStorage.setItem('ff_user_name', name)
-      showMsg('Saved!', '#15803D')
-      if (btn) btn.textContent = 'Save'
-      setTimeout(function () { if (msg) msg.style.display = 'none' }, 3000)
+      setBtn('Saved ✓', '#15803D')
+      setTimeout(function(){ setBtn('Save') }, 2000)
     }).catch(function (err) {
-      showMsg('Network error: ' + (err && err.message ? err.message : String(err)), 'var(--red)')
+      setBtn('Error — retry', '#CC4400')
+      setTimeout(function(){ setBtn('Save') }, 3000)
     })
   } catch(e) {
-    showMsg('Unexpected error: ' + (e && e.message ? e.message : String(e)), 'var(--red)')
+    setBtn(String(e).substring(0,20), '#CC4400')
+    setTimeout(function(){ setBtn('Save') }, 3000)
   }
 }
 
