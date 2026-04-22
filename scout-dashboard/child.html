@@ -242,9 +242,10 @@ document.addEventListener('DOMContentLoaded', function () {
       var toggleWrap = document.getElementById('expectingToggle') && document.getElementById('expectingToggle').closest('div')
       if (toggleWrap) toggleWrap.style.display = 'none'
 
+      var userId = session.user.id
       Promise.all([
         sb.from('children').select('*').eq('id', _editChildId).single(),
-        sb.from('scout_subscriptions').select('id').eq('child_id', _editChildId).limit(1).maybeSingle(),
+        sb.from('scout_subscriptions').select('id').eq('user_id', userId).limit(1).maybeSingle(),  // user-level sub (child_id is null)
         sb.from('scout_events').select('id', { count: 'exact', head: true }).eq('child_id', _editChildId).eq('event_type', 'dob_changed'),
       ]).then(function (results) {
         var child      = results[0].data

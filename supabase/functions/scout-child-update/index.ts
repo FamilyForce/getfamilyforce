@@ -180,10 +180,11 @@ Deno.serve(async (req: Request) => {
   let dobLocked = false
   if (dobChanging) {
     // We just used the one allowed change — it's now locked
+    // Subscriptions are user-level (child_id is null), query by user_id
     const { data: postSub } = await sb
       .from('scout_subscriptions')
       .select('id')
-      .eq('child_id', childId)
+      .eq('user_id', user.id)
       .limit(1)
       .maybeSingle()
     dobLocked = !!postSub
