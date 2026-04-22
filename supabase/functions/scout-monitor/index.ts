@@ -4,7 +4,7 @@
 //
 // Checks:
 //   1. Job failures in the last 2 hours → alert immediately
-//   2. Zero digests sent when active subscribers exist → alert
+//   2. Zero digests sent when active users exist → alert
 //   3. Bounce rate > 2% in last 24 hours → alert
 //   4. Summary report (counts + health status) → Telegram daily
 //
@@ -51,6 +51,7 @@ Deno.serve(async (req: Request) => {
   const twoHoursAgo  = new Date(now.getTime() - 2  * 60 * 60 * 1000).toISOString()
   const twentyFourHA = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString()
   const todayStart   = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())).toISOString()
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
   const sb = createClient(
     Deno.env.get('SUPABASE_URL')!,
@@ -81,36 +82,33 @@ Deno.serve(async (req: Request) => {
     alerts.push(`${failures.length} job failure(s) in last 2 hours:\n${summary}`)
   }
 
-  // ─── Check 2: Digest cron health — did scout-digest actually run today? ───
+  // ─── Check 2: Total active users (have a subscription record = setup complete) ───
   const { count: activeCount } = await sb
     .from('scout_subscriptions')
     .select('user_id', { count: 'exact', head: true })
     .eq('status', 'active')
 
-  const { count: trialingCount } = await sb
-    .from('scout_subscriptions')
-    .select('user_id', { count: 'exact', head: true })
-    .eq('status', 'trialing')
+  // New signups today (trial_started = user completed setup)
+  const { count: newSignupsToday } = await sb
+    .from('scout_events')
+    .select('id', { count: 'exact', head: true })
+    .eq('event_type', 'trial_started')
+    .gte('occurred_at', todayStart)
 
-  const totalSubscribers = (activeCount ?? 0) + (trialingCount ?? 0)
-
-  // Check if scout-digest logged a cron completion event today.
-  // This is more reliable than counting emails (monthly digests only fire on birthdays,
-  // so 0 emails on a given day is often perfectly normal).
-  const { count: cronRanCount } = await sb
+  // ─── Check 2b: Digest cron health ──────────────────────────────────────────
+  const cronRanCount_r = await sb
     .from('scout_events')
     .select('id', { count: 'exact', head: true })
     .eq('event_type', 'digest_cron_completed')
     .gte('occurred_at', todayStart)
+  const cronRanToday = ((cronRanCount_r.count) ?? 0) > 0
 
-  const cronRanToday = (cronRanCount ?? 0) > 0
-
-  if (totalSubscribers >= 1 && !cronRanToday) {
+  if ((activeCount ?? 0) >= 1 && !cronRanToday) {
     alerts.push(`Digest cron did not run today. scout-digest has not logged a completion event since ${todayStart}. Check pg_cron and Supabase function logs.`)
     hasUrgent = true
   }
 
-  // Digest counts for the report (informational only — not used for alerting)
+  // Digest counts (informational)
   const { count: monthlyDigestsToday } = await sb
     .from('scout_digest_log')
     .select('id', { count: 'exact', head: true })
@@ -122,20 +120,6 @@ Deno.serve(async (req: Request) => {
     .select('id', { count: 'exact', head: true })
     .in('digest_type', ['signup', 'birth_signup'])
     .gte('sent_at', todayStart)
-
-  // ─── Check 2b: Trials expiring in next 7 days ──────────────────────────────
-  const sevenDaysOut = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString()
-  const { count: trialsExpiringSoon } = await sb
-    .from('scout_subscriptions')
-    .select('user_id', { count: 'exact', head: true })
-    .eq('status', 'trialing')
-    .gte('trial_end', now.toISOString())
-    .lte('trial_end', sevenDaysOut)
-
-  if ((trialsExpiringSoon ?? 0) > 0) {
-    alerts.push(`${trialsExpiringSoon} trial(s) expiring in the next 7 days. Consider retention check.`)
-    // Not urgent — informational alert
-  }
 
   // ─── Check 3: Bounce rate in last 24 hours ─────────────────────────────────
   const { count: deliveredCount } = await sb
@@ -159,22 +143,7 @@ Deno.serve(async (req: Request) => {
     hasUrgent = true
   }
 
-  // ─── Check 4: Trial-end emails sent today ──────────────────────────────────
-  const { count: trialEndToday } = await sb
-    .from('scout_digest_log')
-    .select('id', { count: 'exact', head: true })
-    .eq('digest_type', 'trial_end')
-    .gte('sent_at', todayStart)
-
-  // ─── Check 5: Reengagement emails sent (last 30 days) ────────────────────
-  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString()
-  const { count: reengagementLast30 } = await sb
-    .from('scout_events')
-    .select('id', { count: 'exact', head: true })
-    .eq('event_type', 'reengagement_sent')
-    .gte('occurred_at', thirtyDaysAgo)
-
-  // ─── Check 5b: Setup funnel — trial started vs signup completed ───────────
+  // ─── Setup funnel ──────────────────────────────────────────────────────────
   const { count: trialStartedTotal } = await sb
     .from('scout_events')
     .select('id', { count: 'exact', head: true })
@@ -185,21 +154,14 @@ Deno.serve(async (req: Request) => {
     .select('id', { count: 'exact', head: true })
     .eq('event_type', 'signup_completed')
 
-  const stuckInSetup = (trialStartedTotal ?? 0) - (signupCompletedTotal ?? 0)
+  const stuckInSetup = Math.max(0, (trialStartedTotal ?? 0) - (signupCompletedTotal ?? 0))
 
-  // ─── Check 6: New trials started today ────────────────────────────────────
-  const { count: newTrialsToday } = await sb
+  // ─── Re-engagement (last 30 days) ─────────────────────────────────────────
+  const { count: reengagementLast30 } = await sb
     .from('scout_events')
     .select('id', { count: 'exact', head: true })
-    .eq('event_type', 'trial_started')
-    .gte('occurred_at', todayStart)
-
-  // ─── Check 7: Conversions today ───────────────────────────────────────────
-  const { count: conversionsToday } = await sb
-    .from('scout_events')
-    .select('id', { count: 'exact', head: true })
-    .eq('event_type', 'trial_converted')
-    .gte('occurred_at', todayStart)
+    .eq('event_type', 'reengagement_sent')
+    .gte('occurred_at', thirtyDaysAgo)
 
   // ─── Build daily report ────────────────────────────────────────────────────
   const todayStr   = now.toISOString().split('T')[0]
@@ -211,23 +173,19 @@ Deno.serve(async (req: Request) => {
 
   report.push(`<b>Scout Daily Report — ${todayStr}</b>`)
   report.push('')
-  report.push(`Subscribers`)
-  report.push(`  Active (paid): ${activeCount ?? 0}`)
-  report.push(`  Trialing: ${trialingCount ?? 0}`)
-  report.push(`  Trials expiring in 7 days: ${trialsExpiringSoon ?? 0}`)
-  report.push(`  New trials today: ${newTrialsToday ?? 0}`)
-  report.push(`  Conversions today: ${conversionsToday ?? 0}`)
+  report.push(`Users`)
+  report.push(`  Active: ${activeCount ?? 0}`)
+  report.push(`  New signups today: ${newSignupsToday ?? 0}`)
   report.push('')
   report.push(`Setup funnel`)
-  report.push(`  Trial started: ${trialStartedTotal ?? 0}`)
+  report.push(`  Started setup: ${trialStartedTotal ?? 0}`)
   report.push(`  Setup complete: ${signupCompletedTotal ?? 0}`)
-  report.push(`  Stuck in setup: ${stuckInSetup > 0 ? stuckInSetup : 0}`)
+  report.push(`  Stuck in setup: ${stuckInSetup}`)
   report.push('')
   report.push(`Digest cron`)
   report.push(`  Ran today: ${cronRanToday ? '✅ yes' : '❌ no'}`)
   report.push(`  Monthly digests: ${monthlyDigestsToday ?? 0}`)
   report.push(`  Signup digests: ${signupDigestsToday ?? 0}`)
-  report.push(`  Trial-end emails: ${trialEndToday ?? 0}`)
   report.push(`  Re-engagement (30d): ${reengagementLast30 ?? 0}`)
   report.push('')
   report.push(`Deliverability (24h)`)
@@ -250,7 +208,7 @@ Deno.serve(async (req: Request) => {
     ok:      true,
     alerts:  alerts.length,
     urgent:  hasUrgent,
-    report:  { activeCount, trialingCount, totalSubscribers, trialsExpiringSoon, cronRanToday, monthlyDigestsToday, signupDigestsToday, trialEndToday, reengagementLast30, newTrialsToday, conversionsToday, stuckInSetup, bounceRate, failures: failures?.length ?? 0 },
+    report:  { activeCount, newSignupsToday, trialStartedTotal, signupCompletedTotal, stuckInSetup, cronRanToday, monthlyDigestsToday, signupDigestsToday, reengagementLast30, bounceRate, failures: failures?.length ?? 0 },
   }), {
     status:  200,
     headers: { ...CORS, 'Content-Type': 'application/json' },
