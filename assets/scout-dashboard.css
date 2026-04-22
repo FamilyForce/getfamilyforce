@@ -865,12 +865,7 @@ input, textarea, select { font-family: var(--sans); }
 /* Fix #5: bottom nav labels — 10px → 11px (legible minimum) */
 .bottom-nav-item { font-size: 11px; }
 
-/* Fix #19: bottom nav active state — subtle pill behind icon */
-.bottom-nav-item.active .bottom-nav-icon {
-  background: var(--terra-tint);
-  border-radius: 12px;
-  padding: 3px 12px;
-}
+/* Fix #19: bottom nav active state — color change only (pill removed) */
 
 /* 2-col cards on tablet; 1-col only on small phones */
 @media (max-width: 559px) {
