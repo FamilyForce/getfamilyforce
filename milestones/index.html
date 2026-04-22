@@ -78,11 +78,46 @@ a { color: inherit; text-decoration: none; }
 .faq-a { font-size: 15px; color: var(--text-mid); line-height: 1.7; }
 
 /* CTA BANNER */
-.cta-banner { background: var(--indigo-deep); color: #fff; padding: 64px var(--rx); text-align: center; }
-.cta-banner h2 { font-size: 30px; font-weight: 800; margin-bottom: 12px; }
-.cta-banner p { font-size: 17px; color: rgba(255,255,255,.7); margin-bottom: 32px; max-width: 480px; margin-left: auto; margin-right: auto; }
-.btn-primary { display: inline-block; background: var(--terra); color: #fff; font-weight: 700; font-size: 16px; padding: 14px 32px; border-radius: 100px; transition: background .15s; }
-.btn-primary:hover { background: #8b6ef0; }
+.cta-banner {
+  background: linear-gradient(145deg, #1A0F42 0%, #2D1E72 40%, #3D22A0 70%, #1E1248 100%);
+  padding: 100px var(--rx) 112px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 700px 350px at 50% 60%, rgba(110,78,214,.35) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-inner { max-width: 580px; margin: 0 auto; position: relative; z-index: 1; }
+.cta-h2 {
+  font-family: var(--serif);
+  font-size: clamp(38px, 5vw, 62px);
+  line-height: 1.05;
+  letter-spacing: -.025em;
+  color: #fff;
+  margin-bottom: 16px;
+}
+.cta-h2 em { font-style: italic; color: #A78BFF; }
+.cta-sub { font-size: 17px; color: rgba(255,255,255,.52); margin-bottom: 40px; line-height: 1.6; }
+.cta-badges { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin-top: 24px; }
+.cta-badge { font-size: 13px; color: rgba(255,255,255,.38); display: flex; align-items: center; gap: 6px; }
+.cta-badge-sep { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,.18); }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: #6E4ED6; color: #fff; font-weight: 600; font-size: 16px;
+  padding: 15px 32px; border-radius: 50px; text-decoration: none;
+  border: none; cursor: pointer;
+  box-shadow: 0 8px 28px rgba(110,78,214,.5);
+  transition: background .18s, transform .18s, box-shadow .18s;
+  letter-spacing: .01em; white-space: nowrap;
+}
+@media (hover: hover) { .btn-primary:hover { background: #5B3CC4; transform: translateY(-2px); box-shadow: 0 14px 40px rgba(110,78,214,.6); } }
+.btn-arrow { display: inline-block; transition: transform .18s; }
+@media (hover: hover) { .btn-primary:hover .btn-arrow { transform: translateX(4px); } }
+@media (max-width: 540px) { .cta-h2 { font-size: clamp(30px, 9vw, 38px); } .cta-banner { padding-top: 72px; padding-bottom: 80px; } }
 
 /* FOOTER */
 footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,.08); padding: 20px var(--rx); padding-bottom: max(20px, env(safe-area-inset-bottom, 0px)); }
@@ -567,9 +602,32 @@ footer { background: var(--indigo-deep); border-top: 1px solid rgba(255,255,255,
 
 <!-- CTA BANNER -->
 <section class="cta-banner" aria-label="Try Scout">
-  <h2>Never miss a developmental window again</h2>
-  <p>Scout sends a monthly email + calendar invite timed to your baby's exact age. From birth to age 3.</p>
-  <a href="/sign-in?intent=trial" class="btn-primary">Try Scout Free →</a>
+  <div class="cta-inner">
+    <h2 class="cta-h2">The window is<br><em>open right now.</em></h2>
+    <p class="cta-sub">Join thousands of parents who never miss a milestone.</p>
+    <a href="/sign-in.html?intent=trial" class="btn-primary" style="display:inline-flex">
+      Get your first digest free <span class="btn-arrow">→</span>
+    </a>
+    <p style="margin-top:20px;font-size:13px;color:rgba(255,255,255,.35);line-height:1.5">
+      Content reviewed by <strong style="color:rgba(255,255,255,.55)">Karina Sanchez Mercado, MD</strong><br>Pediatrician &amp; Newborn Medicine Specialist
+    </p>
+    <div class="cta-badges">
+      <span class="cta-badge">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="rgba(255,255,255,.4)" stroke-width="1.4"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="rgba(255,255,255,.4)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Free forever
+      </span>
+      <span class="cta-badge-sep"></span>
+      <span class="cta-badge">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="rgba(255,255,255,.4)" stroke-width="1.4"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="rgba(255,255,255,.4)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        No app required
+      </span>
+      <span class="cta-badge-sep"></span>
+      <span class="cta-badge">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="rgba(255,255,255,.4)" stroke-width="1.4"/><path d="M4.5 7l1.8 1.8 3.2-3.6" stroke="rgba(255,255,255,.4)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Pediatrician reviewed
+      </span>
+    </div>
+  </div>
 </section>
 
 <!-- FOOTER -->
