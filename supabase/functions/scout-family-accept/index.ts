@@ -169,7 +169,7 @@ Deno.serve(async (req: Request) => {
 
     // 6. Fetch child name for notification (non-blocking if missing)
     const { data: child } = await sb
-      .from('scout_children')
+      .from('children')
       .select('name')
       .eq('id', childId)
       .maybeSingle()
