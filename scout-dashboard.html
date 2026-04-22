@@ -583,6 +583,12 @@ function collapsibleSection(key, labelHtml, contentHtml, defaultOpen) {
     '</div>' +
     '<div class="section-body" id="secBody-' + key + '">' + contentHtml + '</div>'
 }
+function staticSection(labelHtml, contentHtml) {
+  return '<div class="section-header" style="cursor:default">' +
+    labelHtml +
+    '</div>' +
+    '<div class="section-body">' + contentHtml + '</div>'
+}
 
 function renderSections(sections, allWindows, child, sub, ageM, name) {
   // Update window count line
@@ -646,10 +652,9 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
   } else {
     thisMonthContent = '<p class="section-empty">All windows for this age are either complete or coming up.</p>'
   }
-  html += collapsibleSection('month',
+  html += staticSection(
     '<span class="section-label section-label-month">This month</span><span class="section-count">(' + sections.thisMonth.length + ')</span>',
-    thisMonthContent,
-    true)  // default open — primary content
+    thisMonthContent)  // always expanded — primary content
 
   // Coming up
   /* PAID_FEATURE: access gating + paywall — restore when re-enabling paid plans
