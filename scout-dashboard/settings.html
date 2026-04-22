@@ -190,8 +190,9 @@ PAID_FEATURE end -->
             <input type="text" id="displayNameInput" maxlength="40" placeholder="e.g. Michael"
               style="flex:1;min-width:0;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--sans);font-size:16px;color:var(--text);outline:none;"
               onfocus="this.style.borderColor='var(--terra)'" onblur="this.style.borderColor='var(--border)'">
-            <button onclick="saveDisplayName()" style="flex-shrink:0;padding:10px 18px;background:var(--terra);color:#fff;border:none;border-radius:8px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;min-height:44px">Save</button>
+            <button id="saveNameBtn" onclick="saveDisplayName()" style="flex-shrink:0;padding:10px 18px;background:var(--terra);color:#fff;border:none;border-radius:8px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;min-height:44px">Save</button>
           </div>
+          <p id="saveNameMsg" style="display:none;font-size:13px;margin-top:6px"></p>
         </div>
         <div class="settings-row">
           <p class="settings-row-label">Sign out</p>
@@ -647,22 +648,31 @@ function openPortal(e) {
 // ── Display name ─────────────────────────────────────────────────────────────
 function saveDisplayName() {
   var input = document.getElementById('displayNameInput')
-  var btn   = document.querySelector('button[onclick="saveDisplayName()"]')
-  var name  = input ? input.value.trim() : ''
-  if (!name) return
+  var btn   = document.getElementById('saveNameBtn')
+  var msg   = document.getElementById('saveNameMsg')
+  function showMsg(text, color) {
+    if (!msg) return
+    msg.textContent = text
+    msg.style.color = color || 'var(--text-dim)'
+    msg.style.display = 'block'
+  }
+  var name = input ? input.value.trim() : ''
+  if (!name) { showMsg('Please enter a name.', 'var(--red)'); return }
   var user = ScoutDash.getUser()
-  if (!user || !user.id) { ScoutDash.toast('Not signed in. Please refresh and try again.', 'error'); return }
+  if (!user || !user.id) { showMsg('Not signed in. Please refresh.', 'var(--red)'); return }
   var sb = ScoutDash.getSb()
-  if (!sb) { ScoutDash.toast('Connection error. Please refresh.', 'error'); return }
+  if (!sb) { showMsg('Connection error. Please refresh.', 'var(--red)'); return }
   if (btn) { btn.disabled = true; btn.textContent = 'Saving…' }
+  if (msg) msg.style.display = 'none'
   sb.from('profiles').upsert({ id: user.id, name: name }, { onConflict: 'id' }).then(function (res) {
     if (btn) { btn.disabled = false; btn.textContent = 'Save' }
-    if (res.error) { ScoutDash.toast('Could not save name: ' + res.error.message, 'error'); return }
+    if (res.error) { showMsg('Error: ' + res.error.message, 'var(--red)'); return }
     localStorage.setItem('ff_user_name', name)
-    ScoutDash.toast('Name saved.', 'success')
+    showMsg('Saved!', '#15803D')
+    setTimeout(function () { if (msg) msg.style.display = 'none' }, 3000)
   }).catch(function (err) {
     if (btn) { btn.disabled = false; btn.textContent = 'Save' }
-    ScoutDash.toast('Could not save name. Please try again.', 'error')
+    showMsg('Could not save. Please try again.', 'var(--red)')
     console.error('[saveDisplayName]', err)
   })
 }
