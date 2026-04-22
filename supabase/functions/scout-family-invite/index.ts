@@ -35,7 +35,8 @@ Deno.serve(async (req: Request) => {
     })
     if (!authRes.ok) return err(401, 'Invalid or expired session')
     const authData = await authRes.json()
-    const userId = authData.id as string
+    const userId    = authData.id    as string
+    const userEmail = (authData.email as string ?? '').toLowerCase().trim()
 
     const sb = createClient(SUPABASE_URL, SERVICE_ROLE)
 
@@ -43,6 +44,9 @@ Deno.serve(async (req: Request) => {
     if (!inviteeEmail || !childId) return err(400, 'Missing inviteeEmail or childId')
 
     const email = inviteeEmail.toLowerCase().trim()
+
+    // 0. Prevent self-invite
+    if (email === userEmail) return err(400, 'You cannot invite yourself to your own Family Circle.')
 
     // 1. Verify inviter owns this child
     const { data: child } = await sb.from('children').select('user_id').eq('id', childId).single()
