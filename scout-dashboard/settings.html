@@ -651,30 +651,30 @@ function saveDisplayName() {
   var btn   = document.getElementById('saveNameBtn')
   var msg   = document.getElementById('saveNameMsg')
   function showMsg(text, color) {
-    if (!msg) return
-    msg.textContent = text
-    msg.style.color = color || 'var(--text-dim)'
-    msg.style.display = 'block'
+    if (msg) { msg.textContent = text; msg.style.color = color || 'var(--text-dim)'; msg.style.display = 'block' }
+    if (btn) { btn.disabled = false; btn.textContent = 'Save' }
   }
-  var name = input ? input.value.trim() : ''
-  if (!name) { showMsg('Please enter a name.', 'var(--red)'); return }
-  var user = ScoutDash.getUser()
-  if (!user || !user.id) { showMsg('Not signed in. Please refresh.', 'var(--red)'); return }
-  var sb = ScoutDash.getSb()
-  if (!sb) { showMsg('Connection error. Please refresh.', 'var(--red)'); return }
-  if (btn) { btn.disabled = true; btn.textContent = 'Saving…' }
-  if (msg) msg.style.display = 'none'
-  sb.from('profiles').upsert({ id: user.id, name: name }, { onConflict: 'id' }).then(function (res) {
-    if (btn) { btn.disabled = false; btn.textContent = 'Save' }
-    if (res.error) { showMsg('Error: ' + res.error.message, 'var(--red)'); return }
-    localStorage.setItem('ff_user_name', name)
-    showMsg('Saved!', '#15803D')
-    setTimeout(function () { if (msg) msg.style.display = 'none' }, 3000)
-  }).catch(function (err) {
-    if (btn) { btn.disabled = false; btn.textContent = 'Save' }
-    showMsg('Could not save. Please try again.', 'var(--red)')
-    console.error('[saveDisplayName]', err)
-  })
+  try {
+    var name = input ? input.value.trim() : ''
+    if (!name) { showMsg('Please enter a name.', 'var(--red)'); return }
+    var user = ScoutDash.getUser()
+    if (!user || !user.id) { showMsg('Not signed in — please refresh.', 'var(--red)'); return }
+    var sb = ScoutDash.getSb()
+    if (!sb) { showMsg('Connection error — please refresh.', 'var(--red)'); return }
+    if (btn) { btn.disabled = true; btn.textContent = 'Saving…' }
+    if (msg) msg.style.display = 'none'
+    sb.from('profiles').upsert({ id: user.id, name: name }, { onConflict: 'id' }).then(function (res) {
+      if (res.error) { showMsg('DB error: ' + res.error.message, 'var(--red)'); return }
+      localStorage.setItem('ff_user_name', name)
+      showMsg('Saved!', '#15803D')
+      if (btn) btn.textContent = 'Save'
+      setTimeout(function () { if (msg) msg.style.display = 'none' }, 3000)
+    }).catch(function (err) {
+      showMsg('Network error: ' + (err && err.message ? err.message : String(err)), 'var(--red)')
+    })
+  } catch(e) {
+    showMsg('Unexpected error: ' + (e && e.message ? e.message : String(e)), 'var(--red)')
+  }
 }
 
 // ── Referral code ─────────────────────────────────────────────────────────────
