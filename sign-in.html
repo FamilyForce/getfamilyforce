@@ -1960,11 +1960,11 @@ button { font: inherit; cursor: pointer; }
     } else if (mode === 'invite') {
       // Magic-link only flow for family circle invites — no password needed
       headingEl.textContent  = 'Join the Family Circle';
-      subtextEl.textContent  = 'We\'ll send a link to your email. One click and you\'re in — no password needed.';
+      subtextEl.textContent  = 'Tap below and we\'ll send a one-click join link to your inbox in seconds.';
       pwGroup.style.display  = 'none';
       confirmGroup.style.display = 'none';
       forgotBtn.style.display = 'none';
-      submitBtn.textContent  = 'Send join link →';
+      submitBtn.textContent  = 'Email me my join link →';
       modeToggle.innerHTML   = 'Already have an account?&nbsp;<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">Sign in →</a>'
         + '&ensp;·&ensp;<a href="#" onclick="signinSwitchMode(\'create\');return false">Prefer a password →</a>';
     }
@@ -2100,11 +2100,14 @@ button { font: inherit; cursor: pointer; }
         + '?invite_child=' + encodeURIComponent(_invChild)
         + '&invite_email=' + encodeURIComponent(_invEmail);
       setLoading('Sending link…');
+      // Always use the invite email (not the form field) — prevents a mismatch
+      // between the authenticated user's email and the invite record's invited_email,
+      // which would cause scout-family-accept to return 403.
       sb.auth.signInWithOtp({
-        email: email,
+        email: _invEmail,
         options: { emailRedirectTo: _invRedirect, shouldCreateUser: true }
       }).then(function(res) {
-        clearLoading('Send join link →');
+        clearLoading('Email me my join link →');
         if (res.error) { showBanner(res.error.message || 'Something went wrong. Please try again.'); return; }
         try { sessionStorage.setItem('ff_pending_email', email); } catch(_) {}
         var confirmAddrEl = document.getElementById('confirm-email-address');
@@ -2662,27 +2665,52 @@ button { font: inherit; cursor: pointer; }
   /* ── Resend from expired-link overlay ── */
   window.resendFromExpired = function() {
     var sb    = window._supabaseClient;
-    var email = sessionStorage.getItem('ff_pending_email') || localStorage.getItem('ff_user_email');
     var btn    = document.getElementById('expired-resend-btn');
     var status = document.getElementById('expired-resend-status');
     if (!sb) { if (status) status.textContent = 'Something went wrong. Please refresh and try again.'; return; }
+
+    // For invite users: use the invite email + signInWithOtp (works for both new and existing users)
+    // For regular users: fall back to stored email + resend({ type: 'signup' })
+    var inviteChild = localStorage.getItem('ff_invite_child');
+    var inviteEmail = localStorage.getItem('ff_invite_email');
+    var isInviteFlow = !!(inviteChild && inviteEmail);
+
+    var email = isInviteFlow
+      ? inviteEmail
+      : (sessionStorage.getItem('ff_pending_email') || localStorage.getItem('ff_user_email'));
+
     if (!email) {
-      // No email in storage — hide overlay, let user sign in to re-trigger
       document.getElementById('expired-link-overlay').style.display = 'none';
       if (status) status.textContent = '';
       showBanner('Enter your email below and we\'ll send a fresh link.');
       return;
     }
+
     btn.disabled    = true;
     btn.textContent = 'Sending...';
-    sb.auth.resend({ type: 'signup', email: email }).then(function(res) {
+
+    var sendPromise;
+    if (isInviteFlow) {
+      // Invite flow: signInWithOtp works for new + confirmed users; resend({ type:'signup' }) doesn't
+      var _invRedirect = 'https://getfamilyforce.com/sign-in.html'
+        + '?invite_child=' + encodeURIComponent(inviteChild)
+        + '&invite_email=' + encodeURIComponent(inviteEmail);
+      sendPromise = sb.auth.signInWithOtp({
+        email: email,
+        options: { emailRedirectTo: _invRedirect, shouldCreateUser: true }
+      });
+    } else {
+      sendPromise = sb.auth.resend({ type: 'signup', email: email });
+    }
+
+    sendPromise.then(function(res) {
       if (res.error) {
         btn.disabled    = false;
         btn.textContent = 'Send a new link →';
         if (status) status.textContent = 'Could not send: ' + res.error.message;
       } else {
         btn.textContent = '✓ New link sent!';
-        if (status) status.textContent = 'Check your inbox (and spam folder). Link expires in 24 hours.';
+        if (status) status.textContent = 'Check your inbox (and spam folder).';
         setTimeout(function() {
           btn.disabled    = false;
           btn.textContent = 'Send another link →';
