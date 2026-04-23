@@ -338,14 +338,24 @@ Deno.serve(async (req: Request) => {
         }
       }
 
-      const completedWindows = (windows ?? [])
-        .filter(w => {
-          if (!completedWindowIds.has(w.id)) return false
+      // 3I — "What you've done": fetch ALL windows the parent completed since last digest,
+      // including closed windows not in the current open set (e.g. newborn windows at mo.1).
+      const recentlyCompletedIds = (progressRows ?? [])
+        .filter(p => {
+          if (p.status !== 'completed') return false
           if (!lastDigestDate) return true   // first digest ever — show all completed
-          const completedAt = progressByWindow[w.id]
-          return completedAt && completedAt >= lastDigestDate
+          return new Date(p.updated_at) >= lastDigestDate
         })
-        .map(w => ({ title: w.title, close_age_weeks: w.close_age_weeks }))
+        .map(p => p.window_id)
+
+      let completedWindows: { title: string; close_age_weeks: number }[] = []
+      if (recentlyCompletedIds.length > 0) {
+        const { data: completedWindowData } = await sb
+          .from('milestone_windows')
+          .select('id, title, close_age_weeks')
+          .in('id', recentlyCompletedIds)
+        completedWindows = (completedWindowData ?? []).map(w => ({ title: w.title, close_age_weeks: w.close_age_weeks }))
+      }
 
       const isActiveTrack = completedWindowIds.size > 0
 
