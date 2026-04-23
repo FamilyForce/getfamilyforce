@@ -562,9 +562,29 @@ function renderHome(child, sub) {
 }
 
 // Collapse state: persisted in localStorage per section key
+// Section collapse state — keyed by child ID to avoid cross-child bleed.
+// Auto-expands all sections after 7 days of inactivity (fresh session reset).
+var _sectionChildId = null
+function _initSectionState(childId) {
+  _sectionChildId = childId
+  var lastVisitKey = 'scout_last_visit_' + childId
+  var lastVisit = parseInt(localStorage.getItem(lastVisitKey) || '0', 10)
+  var now = Date.now()
+  var SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000
+  if (now - lastVisit > SEVEN_DAYS) {
+    // Fresh session — clear any stored collapse prefs so sections default open
+    Object.keys(localStorage).forEach(function(k) {
+      if (k.startsWith('scout_section_' + childId + '_')) localStorage.removeItem(k)
+    })
+  }
+  localStorage.setItem(lastVisitKey, String(now))
+}
+function _sectionKey(key) {
+  return _sectionChildId ? _sectionChildId + '_' + key : key
+}
 function isSectionOpen(key, defaultVal) {
   var def = defaultVal !== undefined ? defaultVal : true
-  var stored = localStorage.getItem('scout_section_' + key)
+  var stored = localStorage.getItem('scout_section_' + _sectionKey(key))
   return stored === null ? def : stored === '1'
 }
 function toggleSection(key) {
@@ -573,7 +593,7 @@ function toggleSection(key) {
   if (!header || !body) return
   var opening = header.classList.contains('section-collapsed')
   header.classList.toggle('section-collapsed', !opening)
-  localStorage.setItem('scout_section_' + key, opening ? '1' : '0')
+  localStorage.setItem('scout_section_' + _sectionKey(key), opening ? '1' : '0')
 }
 function collapsibleSection(key, labelHtml, contentHtml, defaultOpen) {
   var open = isSectionOpen(key, defaultOpen)
@@ -591,6 +611,9 @@ function staticSection(labelHtml, contentHtml) {
 }
 
 function renderSections(sections, allWindows, child, sub, ageM, name) {
+  // Init section state: namespace keys by child ID + auto-expand after 7-day gap
+  _initSectionState(child.id)
+
   // Update window count line
   var totalOpen   = sections.closing.length + sections.thisMonth.length
   var pickedCount = Math.min(5, totalOpen)
@@ -637,7 +660,7 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
   html += collapsibleSection('closing',
     '<span class="section-label section-label-closing">Heads up</span><span class="section-count">(' + _sectionCountLabel + ')</span>',
     closingContent,
-    true)  // default expanded; user can collapse
+    sections.closing.length > 0)  // open when there are closing windows; collapsed when empty
 
   // This month
   var thisMonthContent
