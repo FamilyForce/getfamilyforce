@@ -1204,9 +1204,10 @@ button { font: inherit; cursor: pointer; }
       // Normal browser: Google button already visible by default (CSS), no action needed
     })();
 
+    window._SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ';
     window._supabaseClient = supabase.createClient(
       'https://ewjqbafaxeasyvknxmof.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ',
+      window._SUPABASE_ANON_KEY,
       { auth: { flowType: 'pkce' } }
     );
     // Already signed in? Go straight to dashboard
@@ -2132,7 +2133,10 @@ button { font: inherit; cursor: pointer; }
       if (_inviteChild && _inviteEmail) {
         fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-join', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (window._SUPABASE_ANON_KEY || '')
+          },
           body: JSON.stringify({ childId: _inviteChild, inviteEmail: _inviteEmail, password: pw })
         }).then(function(joinRes) {
           return joinRes.json().then(function(b) {
@@ -2145,7 +2149,7 @@ button { font: inherit; cursor: pointer; }
                 showBanner('You already have a FamilyForce account. Sign in below to join the Family Circle.');
                 return;
               }
-              showBanner(b.error || 'Something went wrong. Please try again.');
+              showBanner(b.error || b.message || 'Something went wrong. Please try again.');
               return;
             }
             // alreadyAccepted: user revisited an old invite link — they already have an account.
