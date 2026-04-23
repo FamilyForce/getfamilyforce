@@ -1219,6 +1219,16 @@ button { font: inherit; cursor: pointer; }
       if (ic && ie) {
         localStorage.setItem('ff_invite_child', ic);
         localStorage.setItem('ff_invite_email', ie);
+        // 48-hour TTL — prevents stale params auto-triggering on future sign-ins
+        localStorage.setItem('ff_invite_expires', String(Date.now() + 48 * 60 * 60 * 1000));
+      } else {
+        // Purge expired invite params on every page load
+        var _exp = parseInt(localStorage.getItem('ff_invite_expires') || '0', 10);
+        if (_exp && Date.now() > _exp) {
+          localStorage.removeItem('ff_invite_child');
+          localStorage.removeItem('ff_invite_email');
+          localStorage.removeItem('ff_invite_expires');
+        }
       }
       var gc = p.get('gift_code');
       if (gc) localStorage.setItem('ff_gift_code', gc);
@@ -1230,12 +1240,21 @@ button { font: inherit; cursor: pointer; }
     if (!_justSignedOut && !_isAuthCallback) {
       window._supabaseClient.auth.getSession().then(({ data }) => {
         if (!data.session) return;
-        // If there are pending invite params, handle acceptance before redirecting
+        // If there are pending invite params (and not expired), handle acceptance before redirecting
         var _pic = localStorage.getItem('ff_invite_child');
         var _pie = localStorage.getItem('ff_invite_email');
+        var _pexp = parseInt(localStorage.getItem('ff_invite_expires') || '0', 10);
+        if (_pexp && Date.now() > _pexp) {
+          // Expired — clear silently, don't attempt accept
+          localStorage.removeItem('ff_invite_child');
+          localStorage.removeItem('ff_invite_email');
+          localStorage.removeItem('ff_invite_expires');
+          _pic = null; _pie = null;
+        }
         if (_pic && _pie) {
           localStorage.removeItem('ff_invite_child');
           localStorage.removeItem('ff_invite_email');
+          localStorage.removeItem('ff_invite_expires');
           var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
           fetch(FUNCTIONS_URL + '/scout-family-accept', {
             method: 'POST',

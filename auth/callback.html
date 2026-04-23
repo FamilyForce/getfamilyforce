@@ -77,6 +77,9 @@
         const urlInviteEmail = urlParams.get('invite_email');
         if (urlInviteChild) localStorage.setItem('ff_invite_child', urlInviteChild);
         if (urlInviteEmail) localStorage.setItem('ff_invite_email', urlInviteEmail);
+        if (urlInviteChild && urlInviteEmail) {
+          localStorage.setItem('ff_invite_expires', String(Date.now() + 48 * 60 * 60 * 1000));
+        }
 
         // Parse hash for type — check for error fragments first
         const hash   = window.location.hash.substring(1);
