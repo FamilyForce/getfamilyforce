@@ -1965,7 +1965,8 @@ button { font: inherit; cursor: pointer; }
       confirmGroup.style.display = 'none';
       forgotBtn.style.display = 'none';
       submitBtn.textContent  = 'Send join link →';
-      modeToggle.innerHTML   = 'Already have an account?&nbsp;<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">Sign in →</a>';
+      modeToggle.innerHTML   = 'Already have an account?&nbsp;<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">Sign in →</a>'
+        + '&ensp;·&ensp;<a href="#" onclick="signinSwitchMode(\'create\');return false">Prefer a password →</a>';
     }
     // Google button only makes sense on sign-in, create, and invite modes
     // AND only when not in an in-app browser (detection runs at page load)
