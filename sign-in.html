@@ -1941,14 +1941,15 @@ button { font: inherit; cursor: pointer; }
       submitBtn.textContent  = 'Sign In →';
       modeToggle.innerHTML   = 'New here?&nbsp;<a href="#" onclick="signinSwitchMode(\'create\');return false">Create a free account →</a>';
     } else if (mode === 'create') {
-      headingEl.textContent  = 'Create your free account';
-      subtextEl.textContent  = 'Join thousands of parents getting ahead.';
+      var _hasInvite = localStorage.getItem('ff_invite_child') && localStorage.getItem('ff_invite_email');
+      headingEl.textContent  = _hasInvite ? 'Join the Family Circle' : 'Create your free account';
+      subtextEl.textContent  = _hasInvite ? 'Create a free account to accept your invitation.' : 'Join thousands of parents getting ahead.';
       pwGroup.style.display  = 'block';
       confirmGroup.style.display = 'block';
       forgotBtn.style.display = 'none';
       pwEl.setAttribute('autocomplete','new-password');
       pwEl.placeholder       = 'Choose a password (8+ characters)';
-      submitBtn.textContent  = 'Create account →';
+      submitBtn.textContent  = _hasInvite ? 'Create account & join →' : 'Create account →';
       modeToggle.innerHTML   = 'Already have an account?&nbsp;<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">Sign in →</a>';
     } else if (mode === 'forgot') {
       headingEl.textContent  = 'Reset your password';
@@ -1957,18 +1958,8 @@ button { font: inherit; cursor: pointer; }
       confirmGroup.style.display = 'none';
       submitBtn.textContent  = 'Send reset link →';
       modeToggle.innerHTML   = '<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">← Back to sign in</a>';
-    } else if (mode === 'invite') {
-      // Magic-link only flow for family circle invites — no password needed
-      headingEl.textContent  = 'Join the Family Circle';
-      subtextEl.textContent  = 'Tap below and we\'ll send a one-click join link to your inbox in seconds.';
-      pwGroup.style.display  = 'none';
-      confirmGroup.style.display = 'none';
-      forgotBtn.style.display = 'none';
-      submitBtn.textContent  = 'Email me my join link →';
-      modeToggle.innerHTML   = 'Already have an account?&nbsp;<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">Sign in →</a>'
-        + '&ensp;·&ensp;<a href="#" onclick="signinSwitchMode(\'create\');return false">Prefer a password →</a>';
     }
-    // Google button only makes sense on sign-in, create, and invite modes
+    // Google button only makes sense on sign-in and create modes
     // AND only when not in an in-app browser (detection runs at page load)
     var googleWrap = document.getElementById('signin-google-wrap');
     var ua = navigator.userAgent || '';
@@ -2056,8 +2047,8 @@ button { font: inherit; cursor: pointer; }
       : '✓ Email confirmed! Sign in below to access your account.';
     showBanner(confirmMsg);
   } else if (hasInvite && modeParam !== 'signin') {
-    // Fresh invite link — use magic-link invite mode (no password)
-    signinSwitchMode('invite');
+    // Fresh invite link — use password create-account mode (reliable on all devices)
+    signinSwitchMode('create');
   } else if (modeParam === 'create') {
     signinSwitchMode('create');
   }
@@ -2087,35 +2078,6 @@ button { font: inherit; cursor: pointer; }
     if (!isValidEmail(email)) { fieldError('signin-email-error','Please enter a valid email address.'); emailEl.focus(); return; }
 
     var sb = window._supabaseClient;
-
-    /* ── Invite mode — magic link, no password ── */
-    if (mode === 'invite') {
-      var _invChild = localStorage.getItem('ff_invite_child');
-      var _invEmail = localStorage.getItem('ff_invite_email');
-      if (!_invChild || !_invEmail) {
-        showBanner('Invite details missing. Please use the original invite link.');
-        return;
-      }
-      var _invRedirect = 'https://getfamilyforce.com/sign-in.html'
-        + '?invite_child=' + encodeURIComponent(_invChild)
-        + '&invite_email=' + encodeURIComponent(_invEmail);
-      setLoading('Sending link…');
-      // Always use the invite email (not the form field) — prevents a mismatch
-      // between the authenticated user's email and the invite record's invited_email,
-      // which would cause scout-family-accept to return 403.
-      sb.auth.signInWithOtp({
-        email: _invEmail,
-        options: { emailRedirectTo: _invRedirect, shouldCreateUser: true }
-      }).then(function(res) {
-        clearLoading('Email me my join link →');
-        if (res.error) { showBanner(res.error.message || 'Something went wrong. Please try again.'); return; }
-        try { sessionStorage.setItem('ff_pending_email', email); } catch(_) {}
-        var confirmAddrEl = document.getElementById('confirm-email-address');
-        if (confirmAddrEl) confirmAddrEl.textContent = email;
-        if (typeof showStep === 'function') showStep('confirm-email');
-      });
-      return;
-    }
 
     /* ── Forgot password mode ── */
     if (mode === 'forgot') {
@@ -2516,6 +2478,18 @@ button { font: inherit; cursor: pointer; }
             _authListener.data.subscription.unsubscribe();
           }
           _dismissVerifyOverlay();
+          // Special case: user confirmed their email (confirmed=1 in URL) but PKCE exchange failed
+          // because the link was opened in iOS Mail (different WebKit context than the browser
+          // where they created the account). Email IS confirmed — they just need to sign in.
+          var _isConfirmedReturn = new URLSearchParams(window.location.search).get('confirmed') === '1';
+          if (_isConfirmedReturn) {
+            if (typeof signinSwitchMode === 'function') signinSwitchMode('sign-in');
+            var _hasInviteCtx = localStorage.getItem('ff_invite_child') && localStorage.getItem('ff_invite_email');
+            showBanner(_hasInviteCtx
+              ? '✓ Email confirmed! Sign in below to join the Family Circle.'
+              : '✓ Email confirmed! Sign in below to access your account.');
+            return;
+          }
           // PKCE cross-device failure: the code can only be redeemed in the browser that
           // requested the link (verifier not present here). Show a targeted message.
           var msg = _isPkceCallback
