@@ -1270,9 +1270,9 @@ button { font: inherit; cursor: pointer; }
 <!-- ═══ EARLY HASH CHECK — runs before paint to avoid sign-in flash on email verification ═══ -->
 <!-- Expired / already-used verification link overlay -->
 <div id="expired-link-overlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#F7F5FF;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center">
-  <div style="font-size:40px;line-height:1">⏰</div>
-  <p style="font-family:Arial,sans-serif;font-size:19px;font-weight:700;color:#1A0F3A;margin:0">That link has expired</p>
-  <p style="font-family:Arial,sans-serif;font-size:14px;color:#6B7280;margin:0;max-width:320px;line-height:1.6">Verification links expire after 24 hours. Request a new one and you'll be all set.</p>
+  <div id="expired-link-icon" style="font-size:40px;line-height:1">⏰</div>
+  <p id="expired-link-title" style="font-family:Arial,sans-serif;font-size:19px;font-weight:700;color:#1A0F3A;margin:0">That link has expired</p>
+  <p id="expired-link-subtitle" style="font-family:Arial,sans-serif;font-size:14px;color:#6B7280;margin:0;max-width:320px;line-height:1.6">Verification links expire after 24 hours. Request a new one and you'll be all set.</p>
   <button onclick="resendFromExpired()" id="expired-resend-btn" style="margin-top:8px;background:#6E4ED6;color:#fff;font-family:Arial,sans-serif;font-size:15px;font-weight:700;padding:13px 28px;border:none;border-radius:100px;cursor:pointer">Send a new link →</button>
   <p id="expired-resend-status" style="font-family:Arial,sans-serif;font-size:13px;color:#6B7280;margin:0;min-height:20px"></p>
   <p style="font-family:Arial,sans-serif;font-size:13px;color:#6B7280;margin:4px 0 0">Already confirmed? <a href="/scout-dashboard" style="color:#6E4ED6;font-weight:600">Go to dashboard →</a></p>
@@ -2441,8 +2441,8 @@ button { font: inherit; cursor: pointer; }
                     : '';
       if (!errSource) return;
 
-      var isExpired = /otp.expired|link.expired|link.has.already.been.used|expired/i.test(errSource) ||
-                      /access_denied/i.test(errSource);
+      var isAccessDenied = /access_denied/i.test(errSource);
+      var isExpired = /otp.expired|link.expired|link.has.already.been.used|expired/i.test(errSource) || isAccessDenied;
       if (!isExpired) return;
 
       // Clean the URL so a reload doesn't re-trigger
@@ -2451,6 +2451,17 @@ button { font: inherit; cursor: pointer; }
       // Show the expired-link overlay instead of the verifying overlay
       var verifyOverlay = document.getElementById('verifying-overlay');
       if (verifyOverlay) verifyOverlay.style.display = 'none';
+
+      // Tailor the overlay message: access_denied = cross-device/browser PKCE issue;
+      // everything else = genuine expiry or already-used link
+      if (isAccessDenied) {
+        var titleEl    = document.getElementById('expired-link-title');
+        var subtitleEl = document.getElementById('expired-link-subtitle');
+        var iconEl     = document.getElementById('expired-link-icon');
+        if (iconEl)    iconEl.textContent    = '📱';
+        if (titleEl)   titleEl.textContent   = 'Link opened on a different device';
+        if (subtitleEl) subtitleEl.textContent = 'This link only works in the browser where you requested it. Enter your email below to get a fresh link sent to you now.';
+      }
 
       // Show a dedicated expired-link overlay
       var expiredOverlay = document.getElementById('expired-link-overlay');
