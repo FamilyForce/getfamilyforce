@@ -97,11 +97,34 @@
           return;
         }
 
-        const type   = params.get('type') || new URLSearchParams(window.location.search).get('type') || '';
+        const type = params.get('type') || new URLSearchParams(window.location.search).get('type') || '';
 
-        // Let Supabase process the hash and establish session
-        const { data, error } = await sb.auth.getSession();
-        if (error) throw error;
+        // With PKCE flow, the code exchange is async — getSession() called immediately
+        // after init may return null before the exchange completes. Use onAuthStateChange
+        // as primary, fall back to polling getSession, with a 10s hard timeout.
+        const sessionData = await new Promise((resolve) => {
+          let resolved = false
+          const done = (session) => { if (!resolved) { resolved = true; resolve(session) } }
+
+          // Primary: wait for auth state change (fires once exchange completes)
+          const { data: { subscription } } = sb.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' || event === 'PASSWORD_RECOVERY') {
+              subscription.unsubscribe()
+              done(session)
+            }
+          })
+
+          // Fallback: poll in case the SIGNED_IN event already fired before we subscribed
+          sb.auth.getSession().then(({ data }) => { if (data?.session) done(data.session) })
+          setTimeout(() => { sb.auth.getSession().then(({ data }) => done(data?.session || null)) }, 2000)
+
+          // Hard timeout: 10s — something went wrong, resolve with null
+          setTimeout(() => done(null), 10000)
+        })
+
+        if (!sessionData) throw new Error('Session could not be established. Please try again.')
+
+        const { data } = { data: { session: sessionData } }
 
         if (type === 'recovery') {
           // Password reset flow — show the update form, don't redirect yet

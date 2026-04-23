@@ -711,7 +711,7 @@ var PLAN_DATA = {
   triennial: { label: 'Full Journey — 3 Years',      price: '$99.99', osLabel: 'Full Journey — 3 Years',    tierPill: 'Full Journey · $99.99',  valueSup: '99.99', emoji: '✨', css: 'gc-triennial', previewCss: 'preview-triennial', badge: 'Full Journey · $99.99', forLabel: '🌟 A gift for' },
 }
 
-window._supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+window._supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth: { flowType: 'pkce' } })
 var stripe       = null
 var stripeCard   = null
 var selectedPlan = 'annual'
