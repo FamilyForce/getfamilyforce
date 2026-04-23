@@ -2042,9 +2042,15 @@ button { font: inherit; cursor: pointer; }
   if (confirmedFromEmail) {
     // Returning from email confirmation — switch to sign-in and explain
     signinSwitchMode('sign-in');
+    // Pre-fill email so user only needs to enter their password
+    var _cfEmail = localStorage.getItem('ff_invite_email')
+      || sessionStorage.getItem('ff_pending_email')
+      || localStorage.getItem('ff_user_email');
+    if (_cfEmail && emailEl) emailEl.value = _cfEmail;
+    if (pwEl) setTimeout(function() { pwEl.focus(); }, 150);
     var confirmMsg = hasInvite
-      ? '✓ Email confirmed! Sign in below to join the Family Circle.'
-      : '✓ Email confirmed! Sign in below to access your account.';
+      ? '✓ Email confirmed! Enter your password below to join the Family Circle.'
+      : '✓ Email confirmed! Enter your password below to continue.';
     showBanner(confirmMsg);
   } else if (hasInvite && modeParam !== 'signin') {
     // Fresh invite link — returning users go to sign-in mode; new users to create-account mode
@@ -2259,6 +2265,16 @@ button { font: inherit; cursor: pointer; }
   pwEl.addEventListener('input',      function() { fieldError('signin-pw-error',''); });
   confirmEl.addEventListener('input', function() { fieldError('signin-confirm-error',''); });
 
+  // Expose helpers on window so POST-SIGNUP ROUTING IIFE can call them.
+  // showBanner and setSigninEmail were previously out of scope there — all
+  // showBanner() calls in the PKCE timeout were silently throwing ReferenceError,
+  // leaving the user staring at a blank sign-in form with no explanation.
+  window.showBanner = showBanner;
+  window.setSigninEmail = function(val) { if (emailEl && val) emailEl.value = val; };
+  window.focusSigninPassword = function() {
+    if (pwEl) setTimeout(function() { pwEl.focus(); }, 120);
+  };
+
 }());
 
 /* ─────────────────────────────────────────────────────────────────
@@ -2348,6 +2364,11 @@ button { font: inherit; cursor: pointer; }
     var hash          = window.location.hash;
     var _isPkceCallback = new URLSearchParams(window.location.search).has('code');
     if ((hash && hash.indexOf('access_token') !== -1) || _isPkceCallback) {
+      // Show verifying overlay for PKCE flow — early-paint script only handles #access_token
+      if (_isPkceCallback) {
+        var _pkceOvl = document.getElementById('verifying-overlay');
+        if (_pkceOvl) _pkceOvl.style.display = 'flex';
+      }
       var sb = window._supabaseClient;
       if (sb) {
         var _verifyHandled = false;
@@ -2491,11 +2512,20 @@ button { font: inherit; cursor: pointer; }
           // where they created the account). Email IS confirmed — they just need to sign in.
           var _isConfirmedReturn = new URLSearchParams(window.location.search).get('confirmed') === '1';
           if (_isConfirmedReturn) {
-            if (typeof signinSwitchMode === 'function') signinSwitchMode('sign-in');
+            // Email is confirmed — PKCE exchange failed because the confirmation link
+            // was opened in a different browser context (iOS Mail, cross-device, etc.).
+            // User just needs to enter their password; make that obvious.
+            if (typeof window.signinSwitchMode === 'function') window.signinSwitchMode('sign-in');
+            // Pre-fill email so user only has to enter their password
+            var _confirmedEmail = localStorage.getItem('ff_invite_email')
+              || sessionStorage.getItem('ff_pending_email')
+              || localStorage.getItem('ff_user_email');
+            if (typeof window.setSigninEmail === 'function') window.setSigninEmail(_confirmedEmail);
+            if (typeof window.focusSigninPassword === 'function') window.focusSigninPassword();
             var _hasInviteCtx = localStorage.getItem('ff_invite_child') && localStorage.getItem('ff_invite_email');
-            showBanner(_hasInviteCtx
-              ? '✓ Email confirmed! Sign in below to join the Family Circle.'
-              : '✓ Email confirmed! Sign in below to access your account.');
+            if (typeof window.showBanner === 'function') window.showBanner(_hasInviteCtx
+              ? '✓ Email confirmed! Enter your password below to join the Family Circle.'
+              : '✓ Email confirmed! Enter your password below to continue.');
             return;
           }
           // PKCE cross-device failure: the code can only be redeemed in the browser that
@@ -2503,7 +2533,7 @@ button { font: inherit; cursor: pointer; }
           var msg = _isPkceCallback
             ? 'This link was opened on a different device. Enter your email below to get a new one.'
             : 'Verification is taking too long. Please try signing in or request a new link.';
-          showBanner(msg);
+          if (typeof window.showBanner === 'function') window.showBanner(msg);
         }, 6000);
       }
     }
