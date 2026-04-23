@@ -2047,17 +2047,22 @@ button { font: inherit; cursor: pointer; }
       : '✓ Email confirmed! Sign in below to access your account.';
     showBanner(confirmMsg);
   } else if (hasInvite && modeParam !== 'signin') {
-    // Fresh invite link — use password create-account mode (reliable on all devices)
-    signinSwitchMode('create');
+    // Fresh invite link — returning users go to sign-in mode; new users to create-account mode
+    var _hasExistingAccount = localStorage.getItem('ff_user_email') || localStorage.getItem('ff_user_id');
+    signinSwitchMode(_hasExistingAccount ? 'sign-in' : 'create');
   } else if (modeParam === 'create') {
     signinSwitchMode('create');
   }
 
-  // Pre-fill email from invite link
+  // Pre-fill email from invite link — lock the field so the invite email can't be changed.
+  // The invite is tied to a specific email; a mismatch causes scout-family-accept to return 403.
   if (hasInvite) {
     var inviteEmailPrefill = params.get('invite_email') || localStorage.getItem('ff_invite_email');
     if (inviteEmailPrefill && emailEl) {
       emailEl.value = inviteEmailPrefill;
+      emailEl.readOnly = true;
+      emailEl.style.opacity = '0.7';
+      emailEl.style.cursor  = 'not-allowed';
     }
   }
 
@@ -2107,6 +2112,7 @@ button { font: inherit; cursor: pointer; }
     if (mode === 'create') {
       var confirm = confirmEl.value;
       if (pw !== confirm) { fieldError('signin-confirm-error','Passwords don\'t match.'); confirmEl.focus(); return; }
+      var _createBtnText = submitBtn ? submitBtn.textContent : 'Create account →';
       setLoading('Creating account…');
       // Embed invite/gift params in the redirect URL so they survive Mail → Safari context switches
       var _inviteChild = localStorage.getItem('ff_invite_child');
@@ -2128,7 +2134,7 @@ button { font: inherit; cursor: pointer; }
         }
       }).then(function(res) {
         if (res.error) {
-          clearLoading('Create account →');
+          _createBtnText && clearLoading(_createBtnText) || clearLoading('Create account →');
           var errMsg = res.error.message.toLowerCase();
           if (errMsg.includes('already') || errMsg.includes('registered') || errMsg.includes('taken') || errMsg.includes('exist')) {
             showBanner('That email is already registered. <a href="#" onclick="signinSwitchMode(\'sign-in\');return false" style="color:inherit;font-weight:700;text-decoration:underline">Sign in instead →</a>');
@@ -2138,7 +2144,7 @@ button { font: inherit; cursor: pointer; }
           return;
         }
         try { localStorage.setItem('ff_user_email', email); } catch(_) {}
-        clearLoading('Create account →');
+        _createBtnText && clearLoading(_createBtnText) || clearLoading('Create account →');
         if (res.data && res.data.session) {
           // Email confirmation disabled — session available immediately
           generateAndSaveReferralCode(res.data.session.user.id, email);
@@ -2151,6 +2157,7 @@ button { font: inherit; cursor: pointer; }
           } else if (_ic && _ie) {
             localStorage.removeItem('ff_invite_child');
             localStorage.removeItem('ff_invite_email');
+            localStorage.removeItem('ff_invite_expires');
             fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
@@ -2201,6 +2208,7 @@ button { font: inherit; cursor: pointer; }
           if (_sic && _sie) {
             localStorage.removeItem('ff_invite_child');
             localStorage.removeItem('ff_invite_email');
+            localStorage.removeItem('ff_invite_expires');
             fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
@@ -2383,7 +2391,7 @@ button { font: inherit; cursor: pointer; }
             try { inviteChild = localStorage.getItem('ff_invite_child'); inviteEmail = localStorage.getItem('ff_invite_email'); } catch(_) {}
             if (inviteChild && inviteEmail) {
               var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
-              try { localStorage.removeItem('ff_invite_child'); localStorage.removeItem('ff_invite_email'); } catch(_) {}
+              try { localStorage.removeItem('ff_invite_child'); localStorage.removeItem('ff_invite_email'); localStorage.removeItem('ff_invite_expires'); } catch(_) {}
               // AbortController timeout — edge function hangs won't hold the overlay open
               var _inviteAbort = new AbortController();
               var _inviteTimer = setTimeout(function() { _inviteAbort.abort(); }, 8000);
@@ -2562,6 +2570,7 @@ button { font: inherit; cursor: pointer; }
           var FUNCTIONS_URL = 'https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1';
           localStorage.removeItem('ff_invite_child');
           localStorage.removeItem('ff_invite_email');
+          localStorage.removeItem('ff_invite_expires');
           fetch(FUNCTIONS_URL + '/scout-family-accept', {
             method: 'POST',
             headers: {
@@ -2613,6 +2622,18 @@ button { font: inherit; cursor: pointer; }
       if (res.error) {
         btn.disabled    = false;
         btn.textContent = 'Resend confirmation email';
+        // If email is already confirmed (e.g. scanner pre-fetched the link),
+        // don't show a cryptic error — switch to sign-in mode with a helpful message
+        var errMsg = (res.error.message || '').toLowerCase();
+        if (errMsg.includes('already confirmed') || errMsg.includes('email already')) {
+          if (typeof showStep === 'function') showStep('auth');
+          var _hasInvNow = localStorage.getItem('ff_invite_child') && localStorage.getItem('ff_invite_email');
+          if (typeof signinSwitchMode === 'function') signinSwitchMode('sign-in');
+          if (typeof showBanner === 'function') showBanner(_hasInvNow
+            ? '✓ Email already confirmed! Sign in below to join the Family Circle.'
+            : '✓ Email already confirmed! Sign in below to access your account.');
+          return;
+        }
         alert('Could not resend: ' + res.error.message);
       } else {
         var hasInviteParams = localStorage.getItem('ff_invite_child') && localStorage.getItem('ff_invite_email');
