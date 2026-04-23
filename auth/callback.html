@@ -70,6 +70,14 @@
 
     async function handleCallback() {
       try {
+        // Persist invite params from URL into localStorage so they survive cross-context
+        // email opens (iOS Mail WebKit, new browser tab, etc.)
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlInviteChild = urlParams.get('invite_child');
+        const urlInviteEmail = urlParams.get('invite_email');
+        if (urlInviteChild) localStorage.setItem('ff_invite_child', urlInviteChild);
+        if (urlInviteEmail) localStorage.setItem('ff_invite_email', urlInviteEmail);
+
         // Parse hash for type — check for error fragments first
         const hash   = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
