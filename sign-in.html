@@ -1386,9 +1386,9 @@ button { font: inherit; cursor: pointer; }
         </span>
       </div>
 
-      <!-- Heading + subtext -->
-      <h1 class="signin-heading" id="signin-heading">Sign in to Scout</h1>
-      <p class="signin-subtext" id="signin-subtext">Enter your email and we'll send a 6-digit code. No password needed.</p>
+      <!-- Heading + subtext — changes by mode -->
+      <h1 class="signin-heading" id="signin-heading">Welcome back</h1>
+      <p class="signin-subtext" id="signin-subtext">Sign in to your FamilyForce account.</p>
 
       <!-- WeChat browser notice -->
       <div class="wechat-notice" id="wechat-notice">
@@ -1429,43 +1429,75 @@ button { font: inherit; cursor: pointer; }
           <span id="signin-email-error" class="signin-error-msg" role="alert" aria-live="polite"></span>
         </div>
 
+        <!-- Password -->
+        <div class="signin-form-group" id="signin-pw-group">
+          <label for="signin-password" class="signin-label">Password</label>
+          <div class="signin-pw-wrap">
+            <input
+              type="password" id="signin-password" name="password"
+              class="signin-input" placeholder="Your password"
+              autocomplete="current-password" minlength="8"
+              required aria-required="true" aria-describedby="signin-pw-error"
+            >
+            <button type="button" class="signin-pw-toggle" id="signin-pw-toggle" aria-label="Show password" onclick="signinTogglePw('signin-password','signin-pw-toggle')">
+              <svg id="signin-pw-eye" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span id="signin-pw-error" class="signin-error-msg" role="alert" aria-live="polite"></span>
+          <!-- Forgot password — sign-in mode only -->
+          <button type="button" class="signin-forgot-link" id="signin-forgot-btn" onclick="signinSwitchMode('forgot')">Forgot password?</button>
+        </div>
+
+        <!-- Confirm password — create-account mode only -->
+        <div class="signin-form-group" id="signin-confirm-group" style="display:none">
+          <label for="signin-confirm" class="signin-label">Confirm password</label>
+          <div class="signin-pw-wrap">
+            <input
+              type="password" id="signin-confirm" name="confirm"
+              class="signin-input" placeholder="Confirm your password"
+              autocomplete="new-password"
+              aria-describedby="signin-confirm-error"
+            >
+            <button type="button" class="signin-pw-toggle" aria-label="Show confirm password" onclick="signinTogglePw('signin-confirm',this)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span id="signin-confirm-error" class="signin-error-msg" role="alert" aria-live="polite"></span>
+        </div>
+
         <!-- Primary CTA -->
         <button type="submit" class="btn-primary signin-btn" id="signin-submit-btn">
-          Send me a code →
+          Sign In →
         </button>
 
       </form>
 
+      <!-- Mode toggle -->
+      <p class="signin-account-link" id="signin-mode-toggle">
+        New here?&nbsp;<a href="#" onclick="signinSwitchMode('create');return false">Create a free account →</a>
+      </p>
+
     </div><!-- /.signin-card -->
 
-    <!-- ═══ STEP: ENTER OTP CODE ═══ -->
-    <div class="signup-step" id="step-confirm-email" role="region" aria-label="Enter your code">
+    <!-- ═══ STEP: CONFIRM EMAIL ═══ -->
+    <div class="signup-step" id="step-confirm-email" role="region" aria-label="Confirm your email">
       <div class="step-card" style="text-align:center">
-        <span class="step-success-icon">✉️</span>
-        <h2 class="step-h step-success-h">Enter your code</h2>
-        <p class="step-success-sub">We sent a 6-digit code to <strong id="confirm-email-address"></strong>. Enter it below to sign in.</p>
-        <div style="max-width:320px;margin:0 auto 20px">
-          <input
-            type="text" id="otp-input"
-            inputmode="numeric" pattern="[0-9]*" maxlength="6"
-            autocomplete="one-time-code"
-            placeholder="000000"
-            style="width:100%;box-sizing:border-box;font-size:32px;font-weight:700;letter-spacing:0.25em;text-align:center;padding:14px 12px;border:2px solid var(--border);border-radius:12px;outline:none;color:var(--text);background:var(--surface);font-family:monospace;transition:border-color .2s"
-            oninput="this.value=this.value.replace(/[^0-9]/g,'');if(this.value.length===6)verifyOtpCode()"
-            onfocus="this.style.borderColor='var(--terra)'"
-            onblur="this.style.borderColor='var(--border)'"
-            aria-label="6-digit verification code"
-          >
-          <span id="otp-error" style="display:block;font-size:13px;color:#DC2626;margin-top:8px;min-height:20px" role="alert" aria-live="polite"></span>
+        <span class="step-success-icon">📬</span>
+        <h2 class="step-h step-success-h">Check your inbox</h2>
+        <p class="step-success-sub">We sent a confirmation link to <strong id="confirm-email-address"></strong>. Click it to activate your account.</p>
+        <p style="font-size:13px;color:var(--text-dim);margin-bottom:20px">Can't find it? Check your spam folder. The link expires in <strong>24 hours</strong>.</p>
+        <button class="step-btn-primary" onclick="resendConfirmation()" id="resend-btn" style="max-width:320px;margin:0 auto 12px;display:block">Resend confirmation email</button>
+        <!-- Google escape hatch: covers case where user already signed up via Google OAuth -->
+        <div style="display:flex;align-items:center;gap:10px;max-width:320px;margin:16px auto 4px">
+          <div style="flex:1;height:1px;background:var(--border)"></div>
+          <span style="font-size:12px;color:var(--text-dim);white-space:nowrap">or if you used Google</span>
+          <div style="flex:1;height:1px;background:var(--border)"></div>
         </div>
-        <button class="step-btn-primary" onclick="verifyOtpCode()" id="otp-verify-btn" style="max-width:320px;margin:0 auto 16px;display:block">Verify →</button>
-        <p style="font-size:13px;color:var(--text-dim);margin-bottom:4px">
-          <button type="button" id="otp-resend-btn" onclick="resendOtp()" style="background:none;border:none;padding:0;font-size:13px;color:var(--terra);font-weight:600;cursor:pointer;font-family:inherit;text-decoration:underline">Resend code</button>
-          <span id="otp-resend-status" style="color:var(--text-dim)"></span>
-        </p>
-        <p style="font-size:13px;color:var(--text-dim);margin-top:4px">
-          <button type="button" onclick="showStep('auth')" style="background:none;border:none;padding:0;font-size:13px;color:var(--text-dim);cursor:pointer;font-family:inherit;text-decoration:underline">Wrong email? Go back</button>
-        </p>
+        <button id="confirm-email-google-btn" onclick="(function(){var ua=navigator.userAgent||'';var inApp=/MicroMessenger|FBAN|FBAV|Instagram|LinkedInApp|Line\\/|Snapchat|Twitter|TikTok/i.test(ua);if(inApp){alert('Please open this page in Safari or Chrome to sign in with Google.');return;}signinWithGoogle();})()" class="step-btn-secondary" style="max-width:320px;margin:8px auto 12px;display:flex;align-items:center;justify-content:center;gap:8px;background:#fff;border:1.5px solid var(--border);color:var(--text)">
+          <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          Sign in with Google instead
+        </button>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:8px">Already confirmed? <a href="#" onclick="checkSessionAndRoute();return false" style="color:var(--terra)">Continue →</a></p>
       </div>
     </div>
 
@@ -1810,160 +1842,368 @@ button { font: inherit; cursor: pointer; }
 }());
 
 
-/* ─── SIGN-IN FORM (OTP — email code) ─── */
+/* ─── SIGN-IN FORM (email + password) ─── */
 (function () {
 
+  /* ── State ── */
+  var mode = 'sign-in'; // 'sign-in' | 'create-account' | 'forgot'
+
   /* ── Refs ── */
-  var form      = document.getElementById('signin-form');
-  var emailEl   = document.getElementById('signin-email');
-  var submitBtn = document.getElementById('signin-submit-btn');
-  var bannerEl  = document.getElementById('signin-banner');
+  var form          = document.getElementById('signin-form');
+  var headingEl     = document.getElementById('signin-heading');
+  var subtextEl     = document.getElementById('signin-subtext');
+  var emailEl       = document.getElementById('signin-email');
+  var pwEl          = document.getElementById('signin-password');
+  var pwGroup       = document.getElementById('signin-pw-group');
+  var confirmEl     = document.getElementById('signin-confirm');
+  var confirmGroup  = document.getElementById('signin-confirm-group');
+  var forgotBtn     = document.getElementById('signin-forgot-btn');
+  var submitBtn     = document.getElementById('signin-submit-btn');
+  var modeToggle    = document.getElementById('signin-mode-toggle');
+  var bannerEl      = document.getElementById('signin-banner');
+  var successBanner = document.getElementById('signin-success-banner');
 
   /* ── Helpers ── */
-  function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
-  function showBanner(msg) { bannerEl.innerHTML = msg; bannerEl.style.display = 'block'; }
-  function clearBanner()   { bannerEl.style.display = 'none'; }
-  function setLoading(text) {
-    submitBtn.disabled = true; submitBtn.setAttribute('aria-disabled','true'); submitBtn.textContent = text;
+  function isValidEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
   }
-  function clearLoading() {
-    submitBtn.disabled = false; submitBtn.removeAttribute('aria-disabled'); submitBtn.textContent = 'Send me a code →';
+  function fieldError(id, msg) {
+    var el = document.getElementById(id);
+    el.textContent = msg;
+    el.classList.toggle('visible', !!msg);
+    var input = el.previousElementSibling || el.parentElement.querySelector('input');
+    if (input && input.tagName === 'INPUT') {
+      input.classList.toggle('error', !!msg);
+      input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+    }
+  }
+  function clearAll() {
+    ['signin-email-error','signin-pw-error','signin-confirm-error'].forEach(function(id){fieldError(id,'');});
+    bannerEl.style.display = 'none';
+    successBanner.style.display = 'none';
+    // Restore form fields hidden after reset success
+    var emailGrp = document.querySelector('#signin-email')?.closest('.signin-form-group');
+    if (emailGrp) emailGrp.style.display = '';
+    if (submitBtn) submitBtn.style.display = '';
+  }
+  function showBanner(msg) {
+    bannerEl.innerHTML = msg;
+    bannerEl.style.display = 'block';
+    successBanner.style.display = 'none';
+  }
+  function showSuccess(msg) {
+    successBanner.innerHTML = msg;
+    successBanner.style.display = 'block';
+    bannerEl.style.display = 'none';
+  }
+  function setLoading(text) {
+    submitBtn.setAttribute('disabled','true');
+    submitBtn.setAttribute('aria-disabled','true');
+    submitBtn.textContent = text;
+  }
+  function clearLoading(text) {
+    submitBtn.removeAttribute('disabled');
+    submitBtn.removeAttribute('aria-disabled');
+    submitBtn.textContent = text;
   }
 
-  /* ── Persist ?next param ── */
+  /* ── Mode switching ── */
+  window.signinSwitchMode = function(newMode) {
+    try {
+    clearAll();
+    mode = newMode;
+    if (mode === 'sign-in') {
+      headingEl.textContent  = 'Welcome back';
+      subtextEl.textContent  = 'Sign in to your FamilyForce account.';
+      pwGroup.style.display  = 'block';
+      confirmGroup.style.display = 'none';
+      forgotBtn.style.display = 'inline-block';
+      pwEl.setAttribute('autocomplete','current-password');
+      submitBtn.textContent  = 'Sign In →';
+      modeToggle.innerHTML   = 'New here?&nbsp;<a href="#" onclick="signinSwitchMode(\'create\');return false">Create a free account →</a>';
+    } else if (mode === 'create') {
+      headingEl.textContent  = 'Create your free account';
+      subtextEl.textContent  = 'Join thousands of parents getting ahead.';
+      pwGroup.style.display  = 'block';
+      confirmGroup.style.display = 'block';
+      forgotBtn.style.display = 'none';
+      pwEl.setAttribute('autocomplete','new-password');
+      pwEl.placeholder       = 'Choose a password (8+ characters)';
+      submitBtn.textContent  = 'Create account →';
+      modeToggle.innerHTML   = 'Already have an account?&nbsp;<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">Sign in →</a>';
+    } else if (mode === 'forgot') {
+      headingEl.textContent  = 'Reset your password';
+      subtextEl.textContent  = 'Enter your email and we\'ll send you a reset link.';
+      pwGroup.style.display  = 'none';
+      confirmGroup.style.display = 'none';
+      submitBtn.textContent  = 'Send reset link →';
+      modeToggle.innerHTML   = '<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">← Back to sign in</a>';
+    }
+    // Google button only makes sense on sign-in and create-account modes
+    // AND only when not in an in-app browser (detection runs at page load)
+    var googleWrap = document.getElementById('signin-google-wrap');
+    var ua = navigator.userAgent || '';
+    var isInApp = /MicroMessenger|FBAN|FBAV|Instagram|LinkedInApp|Line\/|Snapchat|Twitter|TikTok/i.test(ua);
+    var _inApp = document.documentElement.classList.contains('ff-inapp');
+    if (googleWrap) googleWrap.style.display = (_inApp || mode === 'forgot') ? 'none' : 'block';
+    } catch(e) {
+      // Mode switch failed — force-show the create account form directly
+      console.error('[signinSwitchMode] error:', e);
+      if (newMode === 'create') {
+        var h = document.getElementById('signin-heading');
+        var s = document.getElementById('signin-subtext');
+        var cg = document.getElementById('signin-confirm-group');
+        var fb = document.getElementById('signin-forgot-btn');
+        var sb2 = document.getElementById('signin-submit-btn');
+        var mt = document.getElementById('signin-mode-toggle');
+        if (h)  h.textContent  = 'Create your free account';
+        if (s)  s.textContent  = 'Join thousands of parents getting ahead.';
+        if (cg) cg.style.display = 'block';
+        if (fb) fb.style.display = 'none';
+        if (sb2) sb2.textContent = 'Create account \u2192';
+        if (mt) mt.innerHTML = 'Already have an account?&nbsp;<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">Sign in \u2192</a>';
+      }
+    }
+  };
+
+  /* ── Google OAuth ── */
+  window.signinWithGoogle = function() {
+    var sb = window._supabaseClient;
+    if (!sb) { alert('Auth not ready. Please refresh.'); return; }
+    // Redirect back to sign-in.html after Google OAuth — carry intent param
+    var intent     = sessionStorage.getItem('ff_intent') || new URLSearchParams(window.location.search).get('intent') || '';
+    var redirectTo = 'https://getfamilyforce.com/sign-in.html' + (intent ? '?intent=' + intent : '');
+
+    var btn = document.getElementById('signin-google-btn');
+    if (btn) { btn.disabled = true; btn.textContent = 'Redirecting…'; }
+    sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: redirectTo }
+    }).then(function(res) {
+      if (res.error) {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg> Continue with Google'; }
+        showBanner(res.error.message || 'Google sign-in failed. Please try again.');
+      }
+      // On success Supabase redirects automatically — no action needed
+    });
+  };
+
+  /* ── Toggle password visibility ── */
+  window.signinTogglePw = function(inputId, btn) {
+    var input = document.getElementById(inputId);
+    var show  = input.type === 'password';
+    input.type = show ? 'text' : 'password';
+    if (btn && btn.setAttribute) {
+      btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+    }
+  };
+
+  /* ── Persist ?next / ?redirect param (both accepted) ── */
   var params = new URLSearchParams(window.location.search);
-  var next = params.get('next') || params.get('redirect');
+  var next = params.get('next') || params.get('redirect'); // gift redeem uses ?redirect=
   if (next) sessionStorage.setItem('ff_signin_next', next);
 
-  /* ── Pre-fill email from invite / gift links ── */
-  var hasInvite = params.get('invite_child') && params.get('invite_email');
-  if (hasInvite) {
-    var invPrefill = params.get('invite_email') || localStorage.getItem('ff_invite_email');
-    if (invPrefill && emailEl) emailEl.value = invPrefill;
+  /* ── Capture inbound referral / promo code (from share links or gift emails) ── */
+  /* PAID_FEATURE: inbound referral capture (?via= ?ref= ?promo=) — restore when re-enabling paid plans
+  // ?via= is Rewardful's tracking parameter; ?ref= is our legacy parameter (both supported)
+  var inboundRef = params.get('via') || params.get('ref') || params.get('promo');
+  if (inboundRef && /^[A-Za-z]+-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}$/.test(inboundRef)) {
+    localStorage.setItem('ff_inbound_referral', inboundRef.toUpperCase());
   }
-  var giftPrefill = params.get('prefill_email') || localStorage.getItem('ff_prefill_email');
-  if (giftPrefill && emailEl && !emailEl.value) {
-    emailEl.value = giftPrefill;
+  PAID_FEATURE end */
+
+  /* ── Detect returning user mode from ?mode= param ── */
+  var modeParam = params.get('mode');
+  // Invited family members land with ?invite_child= — default to create mode
+  // unless the URL explicitly forces signin (?mode=signin)
+  var hasInvite = params.get('invite_child') && params.get('invite_email');
+  if (modeParam === 'create' || (hasInvite && modeParam !== 'signin')) signinSwitchMode('create');
+
+  // Pre-fill email from invite link
+  if (hasInvite) {
+    var inviteEmailPrefill = params.get('invite_email') || localStorage.getItem('ff_invite_email');
+    if (inviteEmailPrefill && emailEl) {
+      emailEl.value = inviteEmailPrefill;
+    }
+  }
+
+  // Pre-fill email from gift redeem link (?prefill_email= or localStorage ff_prefill_email)
+  var giftEmailPrefill = params.get('prefill_email') || localStorage.getItem('ff_prefill_email');
+  if (giftEmailPrefill && emailEl && !emailEl.value) {
+    emailEl.value = giftEmailPrefill;
     try { localStorage.removeItem('ff_prefill_email'); } catch(e) {}
   }
 
-  /* ── Form submission: send OTP ── */
-  form.addEventListener('submit', function(e) {
+  /* ── Form submission ── */
+  form.addEventListener('submit', function (e) {
     e.preventDefault();
-    clearBanner();
-    var email = (emailEl.value || '').trim();
-    if (!email)               { showBanner('Please enter your email address.'); emailEl.focus(); return; }
-    if (!isValidEmail(email)) { showBanner('Please enter a valid email address.'); emailEl.focus(); return; }
+    clearAll();
+
+    var email = emailEl.value.trim();
+    if (!email)            { fieldError('signin-email-error','Please enter your email address.'); emailEl.focus(); return; }
+    if (!isValidEmail(email)) { fieldError('signin-email-error','Please enter a valid email address.'); emailEl.focus(); return; }
 
     var sb = window._supabaseClient;
-    if (!sb) { showBanner('Auth not ready. Please refresh the page.'); return; }
 
-    setLoading('Sending code…');
-    try { sessionStorage.setItem('ff_pending_email', email); } catch(_) {}
-    try { localStorage.setItem('ff_user_email', email); } catch(_) {}
-
-    sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } })
-      .then(function(res) {
-        clearLoading();
-        if (res.error) { showBanner(res.error.message || 'Something went wrong. Please try again.'); return; }
-        // Show OTP entry step
-        var addrEl = document.getElementById('confirm-email-address');
-        if (addrEl) addrEl.textContent = email;
-        var otpInput = document.getElementById('otp-input');
-        if (typeof showStep === 'function') showStep('confirm-email');
-        if (otpInput) setTimeout(function() { otpInput.focus(); }, 300);
-        // Start resend cooldown
-        _startResendCooldown();
+    /* ── Forgot password mode ── */
+    if (mode === 'forgot') {
+      setLoading('Sending…');
+      sb.auth.resetPasswordForEmail(email, {
+        redirectTo: 'https://getfamilyforce.com/auth/callback?type=recovery'
+      }).then(function(res) {
+        clearLoading('Send reset link →');
+        if (res.error) { showBanner('Something went wrong. Please try again.'); return; }
+        // Collapse the form — makes it clear the action completed
+        var emailGroup = document.getElementById('signin-email')?.closest('.signin-form-group');
+        if (emailGroup) emailGroup.style.display = 'none';
+        submitBtn.style.display = 'none';
+        // Encode email to prevent XSS — innerHTML is used in showSuccess
+        var safeEmail = email.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        showSuccess('Reset link sent to <strong>' + safeEmail + '</strong>. Check your inbox (and spam folder).<br><br><span style="font-size:13px;font-weight:400;display:block;margin-top:4px">Originally signed up with Google? <a href="#" onclick="signinSwitchMode(\'sign-in\');return false" style="color:var(--terra);font-weight:600">Sign in with Google instead →</a><br>Wrong email? <a href="#" onclick="signinSwitchMode(\'forgot\');return false" style="color:var(--terra);font-weight:600">Try again →</a></span>');
       });
+      return;
+    }
+
+    /* ── Password validation ── */
+    var pw = pwEl.value;
+    if (!pw)              { fieldError('signin-pw-error','Please enter your password.'); pwEl.focus(); return; }
+    if (pw.length < 8)    { fieldError('signin-pw-error','Password must be at least 8 characters.'); pwEl.focus(); return; }
+
+    /* ── Create account mode ── */
+    if (mode === 'create') {
+      var confirm = confirmEl.value;
+      if (pw !== confirm) { fieldError('signin-confirm-error','Passwords don\'t match.'); confirmEl.focus(); return; }
+      setLoading('Creating account…');
+      // Embed invite/gift params in the redirect URL so they survive Mail → Safari context switches
+      var _inviteChild = localStorage.getItem('ff_invite_child');
+      var _inviteEmail = localStorage.getItem('ff_invite_email');
+      var _giftCode    = localStorage.getItem('ff_gift_code');
+      var _redirectUrl = 'https://getfamilyforce.com/sign-in.html';
+      if (_inviteChild && _inviteEmail) {
+        _redirectUrl += '?invite_child=' + encodeURIComponent(_inviteChild) + '&invite_email=' + encodeURIComponent(_inviteEmail);
+      } else if (_giftCode) {
+        _redirectUrl += '?gift_code=' + encodeURIComponent(_giftCode);
+      }
+      sb.auth.signUp({
+        email: email,
+        password: pw,
+        options: {
+          emailRedirectTo: _redirectUrl
+        }
+      }).then(function(res) {
+        if (res.error) {
+          clearLoading('Create account →');
+          var errMsg = res.error.message.toLowerCase();
+          if (errMsg.includes('already') || errMsg.includes('registered') || errMsg.includes('taken') || errMsg.includes('exist')) {
+            showBanner('That email is already registered. <a href="#" onclick="signinSwitchMode(\'sign-in\');return false" style="color:inherit;font-weight:700;text-decoration:underline">Sign in instead →</a>');
+          } else {
+            showBanner(res.error.message || 'Something went wrong. Please try again.');
+          }
+          return;
+        }
+        try { localStorage.setItem('ff_user_email', email); } catch(_) {}
+        clearLoading('Create account →');
+        if (res.data && res.data.session) {
+          // Email confirmation disabled — session available immediately
+          generateAndSaveReferralCode(res.data.session.user.id, email);
+          var _gc = localStorage.getItem('ff_gift_code');
+          var _ic = localStorage.getItem('ff_invite_child');
+          var _ie = localStorage.getItem('ff_invite_email');
+          if (_gc) {
+            localStorage.removeItem('ff_gift_code');
+            window.location.href = 'scout-gift-checkout.html?redeem=' + encodeURIComponent(_gc);
+          } else if (_ic && _ie) {
+            localStorage.removeItem('ff_invite_child');
+            localStorage.removeItem('ff_invite_email');
+            fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
+              body: JSON.stringify({ childId: _ic, inviteEmail: _ie }),
+            }).then(function() {
+              localStorage.setItem('scout_active_child_id', _ic);
+              window.location.href = 'scout-dashboard.html';
+            }).catch(function() { window.location.href = 'scout-dashboard.html'; });
+          } else if (typeof routeAfterSignup === 'function') {
+            routeAfterSignup();
+          } else {
+            window.location.href = 'scout-dashboard.html';
+          }
+        } else {
+          // Email confirmation required — show check-your-inbox step
+          var confirmAddrEl = document.getElementById('confirm-email-address');
+          if (confirmAddrEl) confirmAddrEl.textContent = email;
+          try { sessionStorage.setItem('ff_pending_email', email); } catch(_) {}
+          if (typeof showStep === 'function') showStep('confirm-email');
+        }
+      });
+      return;
+    }
+
+    /* ── Sign in mode ── */
+    setLoading('Signing in…');
+    sb.auth.signInWithPassword({ email: email, password: pw }).then(function(res) {
+      if (res.error) {
+        clearLoading('Sign In →');
+        var msg = res.error.message || '';
+        if (msg.toLowerCase().includes('invalid') || msg.toLowerCase().includes('credentials')) {
+          showBanner('Incorrect email or password. Try again, or reset your password below.');
+        } else if (msg.toLowerCase().includes('email not confirmed')) {
+          showBanner('Please confirm your email first — check your inbox.');
+        } else {
+          showBanner(msg || 'Something went wrong. Please try again.');
+        }
+        return;
+      }
+      try { localStorage.setItem('ff_user_email', email); } catch(_) {}
+      var signedInUser = res.data.session.user;
+      // Check children + intent before routing — same logic as OAuth/hash path
+      sb.from('children').select('id').eq('user_id', signedInUser.id).limit(1)
+        .then(function(childRes) {
+          var hasChildren = childRes.data && childRes.data.length > 0;
+          var _sic = localStorage.getItem('ff_invite_child');
+          var _sie = localStorage.getItem('ff_invite_email');
+          if (_sic && _sie) {
+            localStorage.removeItem('ff_invite_child');
+            localStorage.removeItem('ff_invite_email');
+            fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
+              body: JSON.stringify({ childId: _sic, inviteEmail: _sie }),
+            }).then(function() {
+              localStorage.setItem('scout_active_child_id', _sic);
+              window.location.href = 'scout-dashboard.html';
+            }).catch(function() { window.location.href = 'scout-dashboard.html'; });
+          } else if (!hasChildren) {
+            // No child setup yet (new user or abandoned onboarding) → route to setup
+            routeAfterSignup();
+          } else {
+            var intent = sessionStorage.getItem('ff_intent');
+            /* PAID_FEATURE: intent=subscribe payment routing — restore when re-enabling paid plans
+            if (intent === 'subscribe') {
+              var authCard = document.querySelector('.auth-card');
+              if (authCard) authCard.style.display = 'none';
+              var planIntent = sessionStorage.getItem('ff_plan_intent');
+              var payHeading = document.getElementById('payment-heading');
+              var paySub     = document.getElementById('payment-sub');
+              if (payHeading) payHeading.textContent = 'Continue your Scout subscription';
+              if (paySub) paySub.textContent = planIntent === 'annual'
+                ? 'Annual plan — $49.99/year. That\'s $4.17/month. One payment, no monthly reminders.'
+                : 'Monthly plan — $9.99/month. Cancel any time.';
+              showStep('payment');
+            } else
+            PAID_FEATURE end */
+            {
+              window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
+            }
+          }
+        });
+    });
   });
 
-  emailEl.addEventListener('input', clearBanner);
-
-}());
-
-/* ─── OTP VERIFICATION + RESEND ─── */
-(function() {
-  var _resendTimer = null;
-
-  function _startResendCooldown() {
-    var btn    = document.getElementById('otp-resend-btn');
-    var status = document.getElementById('otp-resend-status');
-    if (!btn || !status) return;
-    btn.style.display = 'none';
-    var secs = 30;
-    status.textContent = ' (resend in ' + secs + 's)';
-    _resendTimer = setInterval(function() {
-      secs--;
-      if (secs <= 0) {
-        clearInterval(_resendTimer);
-        btn.style.display = '';
-        status.textContent = '';
-      } else {
-        status.textContent = ' (resend in ' + secs + 's)';
-      }
-    }, 1000);
-  }
-
-  window._startResendCooldown = _startResendCooldown;
-
-  window.verifyOtpCode = function() {
-    var sb    = window._supabaseClient;
-    var email = sessionStorage.getItem('ff_pending_email') || localStorage.getItem('ff_user_email') || '';
-    var input = document.getElementById('otp-input');
-    var btn   = document.getElementById('otp-verify-btn');
-    var errEl = document.getElementById('otp-error');
-    if (!input || !errEl) return;
-    var token = (input.value || '').replace(/\D/g,'').trim();
-    if (token.length !== 6) { errEl.textContent = 'Please enter the full 6-digit code.'; return; }
-    if (!email) { errEl.textContent = 'Session lost — please go back and enter your email again.'; return; }
-    errEl.textContent = '';
-    if (btn) { btn.disabled = true; btn.textContent = 'Verifying…'; }
-
-    sb.auth.verifyOtp({ email: email, token: token, type: 'email' })
-      .then(function(res) {
-        if (btn) { btn.disabled = false; btn.textContent = 'Verify →'; }
-        if (res.error) {
-          var msg = res.error.message || 'Invalid code. Please try again.';
-          if (msg.toLowerCase().includes('expired')) msg = 'That code has expired. Tap "Resend code" to get a new one.';
-          if (msg.toLowerCase().includes('invalid')) msg = 'Incorrect code. Double-check and try again.';
-          errEl.textContent = msg;
-          if (input) { input.value = ''; input.focus(); }
-          return;
-        }
-        // Signed in — route
-        var session = res.data && res.data.session;
-        if (session && typeof _routeVerifiedSession === 'function') {
-          _routeVerifiedSession(session);
-        } else if (session) {
-          window.location.href = sessionStorage.getItem('ff_signin_next') || 'scout-dashboard.html';
-        }
-      });
-  };
-
-  window.resendOtp = function() {
-    var sb    = window._supabaseClient;
-    var email = sessionStorage.getItem('ff_pending_email') || localStorage.getItem('ff_user_email') || '';
-    var btn   = document.getElementById('otp-resend-btn');
-    var errEl = document.getElementById('otp-error');
-    if (!email || !sb) { if (errEl) errEl.textContent = 'Go back and enter your email again.'; return; }
-    if (btn) btn.style.display = 'none';
-    if (errEl) errEl.textContent = '';
-    sb.auth.signInWithOtp({ email: email, options: { shouldCreateUser: true } })
-      .then(function(res) {
-        if (res.error) {
-          if (errEl) errEl.textContent = 'Could not resend: ' + (res.error.message || 'Please try again.');
-          if (btn) btn.style.display = '';
-          return;
-        }
-        var input = document.getElementById('otp-input');
-        if (input) { input.value = ''; input.focus(); }
-        if (errEl) errEl.textContent = '';
-        _startResendCooldown();
-      });
-  };
-
-  // Legacy alias (used by resendFromExpired overlay)
-  window.resendConfirmation = window.resendOtp;
+  /* ── Clear field errors on input ── */
+  emailEl.addEventListener('input',   function() { fieldError('signin-email-error',''); });
+  pwEl.addEventListener('input',      function() { fieldError('signin-pw-error',''); });
+  confirmEl.addEventListener('input', function() { fieldError('signin-confirm-error',''); });
 
 }());
 
