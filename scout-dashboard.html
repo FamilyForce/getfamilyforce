@@ -666,10 +666,7 @@ function renderSections(sections, allWindows, child, sub, ageM, name) {
   var thisMonthContent
   if (sections.thisMonth.length > 0) {
     // Framing note when total open exceeds what the digest surfaces
-    var framingNote = totalOpen > 5
-      ? '<p class="section-framing">Your digest covers the top ' + pickedCount + '. Everything else is here when you\'re ready.</p>'
-      : ''
-    thisMonthContent = framingNote + '<div class="window-grid">'
+    thisMonthContent = '<div class="window-grid">'
     sections.thisMonth.forEach(function (w) { thisMonthContent += ScoutDash.renderCard(w) })
     thisMonthContent += '</div>'
   } else {
