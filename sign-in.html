@@ -2120,14 +2120,80 @@ button { font: inherit; cursor: pointer; }
       if (pw !== confirm) { fieldError('signin-confirm-error','Passwords don\'t match.'); confirmEl.focus(); return; }
       var _createBtnText = submitBtn ? submitBtn.textContent : 'Create account →';
       setLoading('Creating account…');
-      // Embed invite/gift params in the redirect URL so they survive Mail → Safari context switches
+
       var _inviteChild = localStorage.getItem('ff_invite_child');
       var _inviteEmail = localStorage.getItem('ff_invite_email');
       var _giftCode    = localStorage.getItem('ff_gift_code');
-      var _redirectUrl = 'https://getfamilyforce.com/sign-in.html';
+
+      // ── Invite path: use scout-family-join ──────────────────────────────────
+      // Creates a pre-confirmed account server-side (no confirmation email).
+      // The invite link is email proof — a second confirmation is redundant and
+      // breaks on iOS Mail → Safari due to PKCE cross-context failures.
       if (_inviteChild && _inviteEmail) {
-        _redirectUrl += '?invite_child=' + encodeURIComponent(_inviteChild) + '&invite_email=' + encodeURIComponent(_inviteEmail) + '&confirmed=1';
-      } else if (_giftCode) {
+        fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-join', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ childId: _inviteChild, inviteEmail: _inviteEmail, password: pw })
+        }).then(function(joinRes) {
+          return joinRes.json().then(function(b) {
+            if (!joinRes.ok) {
+              clearLoading(_createBtnText || 'Create account & join →');
+              if (b.error === 'already_registered') {
+                // Existing user — switch to sign-in mode
+                signinSwitchMode('sign-in');
+                if (emailEl) emailEl.value = email;
+                showBanner('You already have a FamilyForce account. Sign in below to join the Family Circle.');
+                return;
+              }
+              showBanner(b.error || 'Something went wrong. Please try again.');
+              return;
+            }
+            // Account created (or already accepted) — sign in immediately
+            var _joinedChildId = b.childId;
+            var _acceptFailed  = b.acceptFailed;
+            localStorage.removeItem('ff_invite_child');
+            localStorage.removeItem('ff_invite_email');
+            localStorage.removeItem('ff_invite_expires');
+            try { localStorage.setItem('ff_user_email', email); } catch(_) {}
+            sb.auth.signInWithPassword({ email: email, password: pw }).then(function(signInRes) {
+              if (signInRes.error) {
+                clearLoading(_createBtnText || 'Create account & join →');
+                showBanner('Account created! Please sign in below.');
+                if (typeof signinSwitchMode === 'function') signinSwitchMode('sign-in');
+                if (emailEl) emailEl.value = email;
+                if (pwEl) { pwEl.value = ''; setTimeout(function() { pwEl.focus(); }, 100); }
+                return;
+              }
+              localStorage.setItem('scout_active_child_id', _joinedChildId);
+              if (_acceptFailed) {
+                // Retry invite accept with session token
+                fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + signInRes.data.session.access_token
+                  },
+                  body: JSON.stringify({ childId: _joinedChildId, inviteEmail: email })
+                }).then(function() {
+                  window.location.href = 'scout-dashboard.html';
+                }).catch(function() {
+                  window.location.href = 'scout-dashboard.html';
+                });
+              } else {
+                window.location.href = 'scout-dashboard.html';
+              }
+            });
+          });
+        }).catch(function() {
+          clearLoading(_createBtnText || 'Create account & join →');
+          showBanner('Network error. Please check your connection and try again.');
+        });
+        return;
+      }
+
+      // ── Standard signUp path (non-invite users) ─────────────────────────────
+      var _redirectUrl = 'https://getfamilyforce.com/sign-in.html';
+      if (_giftCode) {
         _redirectUrl += '?gift_code=' + encodeURIComponent(_giftCode) + '&confirmed=1';
       } else {
         _redirectUrl += '?confirmed=1';
@@ -2140,7 +2206,7 @@ button { font: inherit; cursor: pointer; }
         }
       }).then(function(res) {
         if (res.error) {
-          _createBtnText && clearLoading(_createBtnText) || clearLoading('Create account →');
+          clearLoading(_createBtnText || 'Create account →');
           var errMsg = res.error.message.toLowerCase();
           if (errMsg.includes('already') || errMsg.includes('registered') || errMsg.includes('taken') || errMsg.includes('exist')) {
             showBanner('That email is already registered. <a href="#" onclick="signinSwitchMode(\'sign-in\');return false" style="color:inherit;font-weight:700;text-decoration:underline">Sign in instead →</a>');
@@ -2150,28 +2216,14 @@ button { font: inherit; cursor: pointer; }
           return;
         }
         try { localStorage.setItem('ff_user_email', email); } catch(_) {}
-        _createBtnText && clearLoading(_createBtnText) || clearLoading('Create account →');
+        clearLoading(_createBtnText || 'Create account →');
         if (res.data && res.data.session) {
           // Email confirmation disabled — session available immediately
           generateAndSaveReferralCode(res.data.session.user.id, email);
           var _gc = localStorage.getItem('ff_gift_code');
-          var _ic = localStorage.getItem('ff_invite_child');
-          var _ie = localStorage.getItem('ff_invite_email');
           if (_gc) {
             localStorage.removeItem('ff_gift_code');
             window.location.href = 'scout-gift-checkout.html?redeem=' + encodeURIComponent(_gc);
-          } else if (_ic && _ie) {
-            localStorage.removeItem('ff_invite_child');
-            localStorage.removeItem('ff_invite_email');
-            localStorage.removeItem('ff_invite_expires');
-            fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
-              body: JSON.stringify({ childId: _ic, inviteEmail: _ie }),
-            }).then(function() {
-              localStorage.setItem('scout_active_child_id', _ic);
-              window.location.href = 'scout-dashboard.html';
-            }).catch(function() { window.location.href = 'scout-dashboard.html'; });
           } else if (typeof routeAfterSignup === 'function') {
             routeAfterSignup();
           } else {
