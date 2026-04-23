@@ -2148,36 +2148,60 @@ button { font: inherit; cursor: pointer; }
               showBanner(b.error || 'Something went wrong. Please try again.');
               return;
             }
-            // Account created (or already accepted) — sign in immediately
+            // alreadyAccepted: user revisited an old invite link — they already have an account.
+            // DON'T attempt signInWithPassword with the newly typed password (it's wrong).
+            // Switch to sign-in mode and tell them they're already a member.
+            if (b.alreadyAccepted) {
+              clearLoading(_createBtnText || 'Create account & join →');
+              // Keep invite params in localStorage so _routeVerifiedSession can accept after sign-in
+              signinSwitchMode('sign-in');
+              if (emailEl) emailEl.value = _inviteEmail;
+              if (pwEl) { pwEl.value = ''; setTimeout(function() { pwEl.focus(); }, 100); }
+              showBanner('You\'re already a member of this Family Circle! Sign in with your FamilyForce password to continue.');
+              return;
+            }
+
+            // Account created — sign in immediately (no email confirmation needed)
             var _joinedChildId = b.childId;
             var _acceptFailed  = b.acceptFailed;
+            // Use _inviteEmail (canonical) not form email to guard against autofill divergence
+            var _joinEmail = _inviteEmail || email;
             localStorage.removeItem('ff_invite_child');
             localStorage.removeItem('ff_invite_email');
             localStorage.removeItem('ff_invite_expires');
-            try { localStorage.setItem('ff_user_email', email); } catch(_) {}
-            sb.auth.signInWithPassword({ email: email, password: pw }).then(function(signInRes) {
+            try { localStorage.setItem('ff_user_email', _joinEmail); } catch(_) {}
+            sb.auth.signInWithPassword({ email: _joinEmail, password: pw }).then(function(signInRes) {
               if (signInRes.error) {
                 clearLoading(_createBtnText || 'Create account & join →');
-                showBanner('Account created! Please sign in below.');
+                showBanner('Account ready! Sign in below to continue.');
                 if (typeof signinSwitchMode === 'function') signinSwitchMode('sign-in');
-                if (emailEl) emailEl.value = email;
+                if (emailEl) emailEl.value = _joinEmail;
                 if (pwEl) { pwEl.value = ''; setTimeout(function() { pwEl.focus(); }, 100); }
                 return;
               }
+              // Generate referral code for new family member (same as regular signup path)
+              try { generateAndSaveReferralCode(signInRes.data.session.user.id, _joinEmail); } catch(_) {}
               localStorage.setItem('scout_active_child_id', _joinedChildId);
               if (_acceptFailed) {
-                // Retry invite accept with session token
+                // Server-side invite accept failed — retry with session token
                 fetch('https://ewjqbafaxeasyvknxmof.supabase.co/functions/v1/scout-family-accept', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + signInRes.data.session.access_token
                   },
-                  body: JSON.stringify({ childId: _joinedChildId, inviteEmail: email })
-                }).then(function() {
+                  body: JSON.stringify({ childId: _joinedChildId, inviteEmail: _joinEmail })
+                }).then(function(retryRes) {
+                  if (!retryRes.ok) {
+                    // Both attempts failed — tell the user rather than showing empty dashboard
+                    clearLoading(_createBtnText || 'Create account & join →');
+                    showBanner('Account created but could not join the Family Circle. Ask the owner to re-send the invite.');
+                    return;
+                  }
                   window.location.href = 'scout-dashboard.html';
                 }).catch(function() {
-                  window.location.href = 'scout-dashboard.html';
+                  clearLoading(_createBtnText || 'Create account & join →');
+                  showBanner('Account created but could not join the Family Circle. Please try signing in again.');
                 });
               } else {
                 window.location.href = 'scout-dashboard.html';
