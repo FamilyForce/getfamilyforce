@@ -544,9 +544,18 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
 
   const remainingCount = allCaughtUp ? 0 : Math.max(0, allWindowCount - topWindows.length - completedWindows.length)
 
-  // "What you did" section — split into closing-this-month vs everything else
-  const closingDone  = completedWindows.filter(w => w.close_age_weeks - ageWeeks <= 4)
-  const regularDone  = completedWindows.filter(w => w.close_age_weeks - ageWeeks > 4)
+  // "What you did" section — three buckets:
+  //   alreadyClosed : window's close date has passed (close_age_weeks < ageWeeks) — use soft language
+  //   closingSoon   : window still open but closing within 4 weeks — "got it done in time" is accurate
+  //   regularDone   : window has plenty of time left — generic celebration
+  const alreadyClosed = completedWindows.filter(w => w.close_age_weeks < ageWeeks)
+  const closingSoon   = completedWindows.filter(w => w.close_age_weeks >= ageWeeks && w.close_age_weeks - ageWeeks <= 4)
+  const regularDone   = completedWindows.filter(w => w.close_age_weeks - ageWeeks > 4)
+
+  const renderWindowList = (windows: { title: string }[]) => windows.map(w => `
+              <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0 0 6px;padding-left:18px;position:relative;font-weight:600">
+                <span style="position:absolute;left:0;color:${C.green}">✓</span>${w.title}
+              </p>`).join('')
 
   const completedSection = completedWindows.length > 0 ? `
     <tr>
@@ -554,21 +563,21 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
         <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.greenBg};border:1px solid #BBF7D0;border-radius:12px">
           <tr>
             <td style="padding:18px 20px">
-              ${closingDone.length > 0 ? `
-              <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.green};margin:0 0 4px">Completed before ${closingDone.length === 1 ? 'it closed' : 'they closed'}</p>
-              <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textMid};margin:0 0 10px;line-height:1.5">${closingDone.length === 1 ? 'This window was' : 'These windows were'} closing this month. You got ${closingDone.length === 1 ? 'it' : 'them'} done in time.</p>
-              ${closingDone.map(w => `
-              <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0 0 6px;padding-left:18px;position:relative;font-weight:600">
-                <span style="position:absolute;left:0;color:${C.green}">✓</span>${w.title}
-              </p>`).join('')}
+              ${alreadyClosed.length > 0 ? `
+              <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.green};margin:0 0 4px">Marked as done</p>
+              <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textMid};margin:0 0 10px;line-height:1.5">You marked ${alreadyClosed.length === 1 ? 'this' : 'these'} as done this month.</p>
+              ${renderWindowList(alreadyClosed)}
+              ${(closingSoon.length > 0 || regularDone.length > 0) ? `<div style="border-top:1px solid #BBF7D0;margin:14px 0"></div>` : ''}
+              ` : ''}
+              ${closingSoon.length > 0 ? `
+              <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.green};margin:0 0 4px">Completed before ${closingSoon.length === 1 ? 'it closed' : 'they closed'}</p>
+              <p style="font-family:Arial,sans-serif;font-size:12px;color:${C.textMid};margin:0 0 10px;line-height:1.5">${closingSoon.length === 1 ? 'This window was' : 'These windows were'} closing this month. You got ${closingSoon.length === 1 ? 'it' : 'them'} done in time.</p>
+              ${renderWindowList(closingSoon)}
               ${regularDone.length > 0 ? `<div style="border-top:1px solid #BBF7D0;margin:14px 0"></div>` : ''}
               ` : ''}
               ${regularDone.length > 0 ? `
-              <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.green};margin:0 0 10px">${closingDone.length > 0 ? 'Also completed' : 'What you did this month'}</p>
-              ${regularDone.map(w => `
-              <p style="font-family:Arial,sans-serif;font-size:14px;color:${C.text};margin:0 0 6px;padding-left:18px;position:relative">
-                <span style="position:absolute;left:0;color:${C.green}">✓</span>${w.title}
-              </p>`).join('')}
+              <p style="font-family:Arial,sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:${C.green};margin:0 0 10px">${(alreadyClosed.length > 0 || closingSoon.length > 0) ? 'Also completed' : 'What you did this month'}</p>
+              ${renderWindowList(regularDone)}
               ` : ''}
             </td>
           </tr>

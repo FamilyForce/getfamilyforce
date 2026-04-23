@@ -415,11 +415,17 @@ Deno.serve(async (req: Request) => {
         continue
       }
 
-      // If every open window is completed, aboveFold will be empty — don't send a blank email
+      // If every open window is completed, aboveFold will be empty.
+      // If the parent also has no recently completed windows to celebrate, skip silently.
+      // If they DO have completed windows, fall through to send the "all caught up" email
+      // (buildDigestEmail triggers the all-caught-up variant when aboveFold is empty + digestType=monthly).
       if (aboveFold.length === 0) {
-        console.log(`[scout-digest] All open windows completed for child ${child.id} — skipping digest`)
-        results.skipped++
-        continue
+        if (completedWindows.length === 0) {
+          console.log(`[scout-digest] All open windows completed for child ${child.id}, nothing to celebrate — skipping`)
+          results.skipped++
+          continue
+        }
+        console.log(`[scout-digest] All open windows completed for child ${child.id} — sending all-caught-up email with ${completedWindows.length} completed windows`)
       }
 
       // 3J — Overdue in_progress: windows still marked in_progress but already closed
