@@ -1957,8 +1957,17 @@ button { font: inherit; cursor: pointer; }
       confirmGroup.style.display = 'none';
       submitBtn.textContent  = 'Send reset link →';
       modeToggle.innerHTML   = '<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">← Back to sign in</a>';
+    } else if (mode === 'invite') {
+      // Magic-link only flow for family circle invites — no password needed
+      headingEl.textContent  = 'Join the Family Circle';
+      subtextEl.textContent  = 'We\'ll send a link to your email. One click and you\'re in — no password needed.';
+      pwGroup.style.display  = 'none';
+      confirmGroup.style.display = 'none';
+      forgotBtn.style.display = 'none';
+      submitBtn.textContent  = 'Send join link →';
+      modeToggle.innerHTML   = 'Already have an account?&nbsp;<a href="#" onclick="signinSwitchMode(\'sign-in\');return false">Sign in →</a>';
     }
-    // Google button only makes sense on sign-in and create-account modes
+    // Google button only makes sense on sign-in, create, and invite modes
     // AND only when not in an in-app browser (detection runs at page load)
     var googleWrap = document.getElementById('signin-google-wrap');
     var ua = navigator.userAgent || '';
@@ -2038,15 +2047,17 @@ button { font: inherit; cursor: pointer; }
   var hasInvite = params.get('invite_child') && params.get('invite_email');
   var confirmedFromEmail = params.get('confirmed') === '1';
 
-  if (confirmedFromEmail && hasInvite) {
-    // Returning from invite signup confirmation — switch to sign-in mode
+  if (confirmedFromEmail) {
+    // Returning from email confirmation — switch to sign-in and explain
     signinSwitchMode('sign-in');
-    showBanner('✓ Email confirmed! Sign in below to join the Family Circle.');
-  } else if (confirmedFromEmail) {
-    // Returning from regular or gift signup confirmation — switch to sign-in mode
-    signinSwitchMode('sign-in');
-    showBanner('✓ Email confirmed! Sign in below to access your account.');
-  } else if (modeParam === 'create' || (hasInvite && modeParam !== 'signin')) {
+    var confirmMsg = hasInvite
+      ? '✓ Email confirmed! Sign in below to join the Family Circle.'
+      : '✓ Email confirmed! Sign in below to access your account.';
+    showBanner(confirmMsg);
+  } else if (hasInvite && modeParam !== 'signin') {
+    // Fresh invite link — use magic-link invite mode (no password)
+    signinSwitchMode('invite');
+  } else if (modeParam === 'create') {
     signinSwitchMode('create');
   }
 
@@ -2075,6 +2086,32 @@ button { font: inherit; cursor: pointer; }
     if (!isValidEmail(email)) { fieldError('signin-email-error','Please enter a valid email address.'); emailEl.focus(); return; }
 
     var sb = window._supabaseClient;
+
+    /* ── Invite mode — magic link, no password ── */
+    if (mode === 'invite') {
+      var _invChild = localStorage.getItem('ff_invite_child');
+      var _invEmail = localStorage.getItem('ff_invite_email');
+      if (!_invChild || !_invEmail) {
+        showBanner('Invite details missing. Please use the original invite link.');
+        return;
+      }
+      var _invRedirect = 'https://getfamilyforce.com/sign-in.html'
+        + '?invite_child=' + encodeURIComponent(_invChild)
+        + '&invite_email=' + encodeURIComponent(_invEmail);
+      setLoading('Sending link…');
+      sb.auth.signInWithOtp({
+        email: email,
+        options: { emailRedirectTo: _invRedirect, shouldCreateUser: true }
+      }).then(function(res) {
+        clearLoading('Send join link →');
+        if (res.error) { showBanner(res.error.message || 'Something went wrong. Please try again.'); return; }
+        try { sessionStorage.setItem('ff_pending_email', email); } catch(_) {}
+        var confirmAddrEl = document.getElementById('confirm-email-address');
+        if (confirmAddrEl) confirmAddrEl.textContent = email;
+        if (typeof showStep === 'function') showStep('confirm-email');
+      });
+      return;
+    }
 
     /* ── Forgot password mode ── */
     if (mode === 'forgot') {
