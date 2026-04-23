@@ -100,9 +100,29 @@ Deno.serve(async (req: Request) => {
     })
     if (insertErr) return err(500, `Could not create invite: ${insertErr.message}`)
 
-    // 4. Send invitation email via Resend (branded purple card template)
-    const siteUrl   = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
-    const inviteUrl = `${siteUrl}/sign-in.html?invite_child=${childId}&invite_email=${encodeURIComponent(email)}`
+    // 4. Generate a Supabase magic link for the invitee via Admin API
+    //    This makes the invite email itself the authentication link — one click
+    //    in the email → verified session → invite accepted → dashboard.
+    //    Falls back to a plain sign-in URL if generation fails.
+    const siteUrl     = Deno.env.get('SITE_URL') ?? 'https://getfamilyforce.com'
+    const landingUrl  = `${siteUrl}/sign-in.html?invite_child=${childId}&invite_email=${encodeURIComponent(email)}`
+
+    let inviteUrl = landingUrl  // fallback
+    try {
+      const { data: linkData, error: linkErr } = await sb.auth.admin.generateLink({
+        type: 'magiclink',
+        email,
+        options: { redirectTo: landingUrl },
+      })
+      if (!linkErr && linkData?.properties?.action_link) {
+        inviteUrl = linkData.properties.action_link
+      } else if (linkErr) {
+        console.warn('[scout-family-invite] generateLink failed, using fallback URL:', linkErr.message)
+      }
+    } catch (e) {
+      console.warn('[scout-family-invite] generateLink threw, using fallback URL:', e)
+    }
+
     const resendKey = Deno.env.get('RESEND_API_KEY')!
     const fromEmail = Deno.env.get('RESEND_FROM_EMAIL') ?? 'scout@getfamilyforce.com'
     const fromName  = Deno.env.get('RESEND_FROM_NAME')  ?? 'FamilyForce'
@@ -168,7 +188,7 @@ Deno.serve(async (req: Request) => {
 
           <!-- Footer note -->
           <p style="margin:0;font-size:13px;color:#8B85A8;line-height:1.65;">
-            Don't have a FamilyForce account? You'll be guided to create one after clicking the button above.
+            This link signs you in automatically — no password needed. It expires in 24 hours.
           </p>
 
         </td></tr>
