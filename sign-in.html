@@ -2020,10 +2020,13 @@ button { font: inherit; cursor: pointer; }
   var confirmedFromEmail = params.get('confirmed') === '1';
 
   if (confirmedFromEmail && hasInvite) {
-    // Coming back from email confirmation after invite signup — switch to sign-in mode
-    // and prompt them to sign in to complete the invite accept
+    // Returning from invite signup confirmation — switch to sign-in mode
     signinSwitchMode('sign-in');
     showBanner('✓ Email confirmed! Sign in below to join the Family Circle.');
+  } else if (confirmedFromEmail) {
+    // Returning from regular or gift signup confirmation — switch to sign-in mode
+    signinSwitchMode('sign-in');
+    showBanner('✓ Email confirmed! Sign in below to access your account.');
   } else if (modeParam === 'create' || (hasInvite && modeParam !== 'signin')) {
     signinSwitchMode('create');
   }
@@ -2091,7 +2094,9 @@ button { font: inherit; cursor: pointer; }
       if (_inviteChild && _inviteEmail) {
         _redirectUrl += '?invite_child=' + encodeURIComponent(_inviteChild) + '&invite_email=' + encodeURIComponent(_inviteEmail) + '&confirmed=1';
       } else if (_giftCode) {
-        _redirectUrl += '?gift_code=' + encodeURIComponent(_giftCode);
+        _redirectUrl += '?gift_code=' + encodeURIComponent(_giftCode) + '&confirmed=1';
+      } else {
+        _redirectUrl += '?confirmed=1';
       }
       sb.auth.signUp({
         email: email,
@@ -2178,7 +2183,17 @@ button { font: inherit; cursor: pointer; }
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + res.data.session.access_token },
               body: JSON.stringify({ childId: _sic, inviteEmail: _sie }),
-            }).then(function() {
+            }).then(function(acceptRes) {
+              if (!acceptRes.ok) {
+                acceptRes.json().then(function(b) {
+                  clearLoading('Sign In →');
+                  showBanner((b && b.error) ? b.error : 'Could not join the Family Circle. Please ask the owner to re-send the invite.');
+                }).catch(function() {
+                  clearLoading('Sign In →');
+                  showBanner('Could not join the Family Circle. Please ask the owner to re-send the invite.');
+                });
+                return;
+              }
               localStorage.setItem('scout_active_child_id', _sic);
               window.location.href = 'scout-dashboard.html';
             }).catch(function() { window.location.href = 'scout-dashboard.html'; });
@@ -2566,7 +2581,19 @@ button { font: inherit; cursor: pointer; }
         btn.textContent = 'Resend confirmation email';
         alert('Could not resend: ' + res.error.message);
       } else {
+        var hasInviteParams = localStorage.getItem('ff_invite_child') && localStorage.getItem('ff_invite_email');
         btn.textContent = '✓ Sent! Check your inbox.';
+        if (hasInviteParams) {
+          // Invite users: resent email redirect won't include invite params — tell them what to do
+          var note = document.getElementById('resend-note');
+          if (!note) {
+            note = document.createElement('p');
+            note.id = 'resend-note';
+            note.style.cssText = 'font-size:13px;color:#6B7280;margin-top:10px;text-align:center;';
+            btn.parentNode.appendChild(note);
+          }
+          note.textContent = 'After confirming, sign in with your password to join the Family Circle.';
+        }
         setTimeout(function() {
           btn.disabled    = false;
           btn.textContent = 'Resend confirmation email';
