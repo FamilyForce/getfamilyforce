@@ -165,17 +165,28 @@ function loadFamilyCircle(user, child) {
 
     if (_isPrimary) {
       document.getElementById('inviteCard').style.display = 'block'
+      renderMembers(members, user, child, primaryName, '')
     } else {
       document.getElementById('leaveSection').style.display = 'block'
       var me = members.find(function (m) { return m.member_user_id === user.id })
       if (me) _familyMemberId = me.id
+      // Fetch owner email via RPC (family members only — SECURITY DEFINER enforces access)
+      sb.rpc('get_owner_info_for_family_member', { p_child_id: child.id })
+        .then(function (rpcRes) {
+          var ownerEmail = (rpcRes.data && rpcRes.data[0]) ? (rpcRes.data[0].owner_email || '') : ''
+          var ownerNameFromRpc = (rpcRes.data && rpcRes.data[0]) ? (rpcRes.data[0].owner_name || '') : ''
+          // Prefer name already fetched from profiles; RPC name is a fallback
+          var resolvedName = primaryName !== 'Primary account' ? primaryName : (ownerNameFromRpc || '')
+          renderMembers(members, user, child, resolvedName, ownerEmail)
+        })
+        .catch(function () {
+          renderMembers(members, user, child, primaryName, '')
+        })
     }
-
-    renderMembers(members, user, child, primaryName)
   })
 }
 
-function renderMembers(members, user, child, primaryName) {
+function renderMembers(members, user, child, primaryName, ownerEmail) {
   var list = document.getElementById('membersList')
   if (!list) return
 
@@ -192,13 +203,12 @@ function renderMembers(members, user, child, primaryName) {
     var profileMap = {}
     ;(profileRes.data || []).forEach(function (p) { profileMap[p.id] = p.name })
 
-    // Primary account holder — always label as "Primary account", name in parentheses if available
-    var primaryLabel = 'Primary account'
+    // Primary account holder row
     var hasPrimaryName = primaryName && primaryName !== 'Primary account'
     var html = renderMemberRow({
-      name:      hasPrimaryName ? 'Primary account' : 'Primary account',
-      nameNote:  hasPrimaryName ? primaryName : '',
-      email:     '',
+      name:      hasPrimaryName ? primaryName : 'Primary account',
+      nameNote:  '',
+      email:     ownerEmail || '',
       isPrimary: true,
       isYou:     child.user_id === user.id,
       status:    'active',
