@@ -2072,9 +2072,10 @@ button { font: inherit; cursor: pointer; }
       : '✓ Email confirmed! Enter your password below to continue.';
     showBanner(confirmMsg);
   } else if (hasInvite && modeParam !== 'signin') {
-    // Fresh invite link — returning users go to sign-in mode; new users to create-account mode
-    var _hasExistingAccount = localStorage.getItem('ff_user_email') || localStorage.getItem('ff_user_id');
-    signinSwitchMode(_hasExistingAccount ? 'sign-in' : 'create');
+    // Invite link — always default to create account.
+    // Family members receiving an invite are almost always new users.
+    // If they already have an account they can tap "Sign in →" below the form.
+    signinSwitchMode('create');
   } else if (modeParam === 'create') {
     signinSwitchMode('create');
   }
