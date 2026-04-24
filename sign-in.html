@@ -1210,6 +1210,17 @@ button { font: inherit; cursor: pointer; }
       window._SUPABASE_ANON_KEY,
       { auth: { flowType: 'pkce' } }
     );
+    // Separate implicit-flow client used ONLY for signUp().
+    // Implicit flow sends #access_token=... in the confirmation email link —
+    // no PKCE verifier needed, so auth/callback works in iOS Mail and any browser.
+    // The email-scanner risk (token pre-fetched before user taps) is acceptable for
+    // signup confirmation: scanner confirms the email, user signs in with password.
+    // This is far less severe than scanner consuming a magic-link sign-in token.
+    window._signupClient = supabase.createClient(
+      'https://ewjqbafaxeasyvknxmof.supabase.co',
+      window._SUPABASE_ANON_KEY,
+      { auth: { flowType: 'implicit', persistSession: false } }
+    );
     // Already signed in? Go straight to dashboard
     // — but NOT if there's a session hash in the URL (post-confirmation/OAuth redirect)
     // — and NOT if ?signedout=1 (user just signed out — session may still be clearing)
@@ -2227,14 +2238,15 @@ button { font: inherit; cursor: pointer; }
       }
 
       // ── Standard signUp path (non-invite users) ─────────────────────────────
-      // Redirect to auth/callback so PKCE exchange happens on a clean dedicated page.
-      // gift_code is passed as a param so callback.html can persist it to localStorage
-      // before routing the new user to sign-in.html?onboard=1 for child setup.
+      // Uses the implicit-flow client (_signupClient) so the confirmation email
+      // delivers #access_token=... — no PKCE verifier required, works in iOS Mail.
+      // auth/callback.html reads the token from the hash and routes to onboarding.
+      var _signupSb = window._signupClient || sb;
       var _redirectUrl = 'https://getfamilyforce.com/auth/callback';
       if (_giftCode) {
         _redirectUrl += '?gift_code=' + encodeURIComponent(_giftCode);
       }
-      sb.auth.signUp({
+      _signupSb.auth.signUp({
         email: email,
         password: pw,
         options: {

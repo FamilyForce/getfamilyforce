@@ -66,7 +66,10 @@
   <script>
     const SUPABASE_URL  = 'https://ewjqbafaxeasyvknxmof.supabase.co';
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ';
-    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth: { flowType: 'pkce' } });
+    // Use implicit flow here so this callback page handles BOTH:
+    // - #access_token=... (signup confirmation via implicit-flow client)
+    // - ?code=...         (OAuth / other PKCE flows — handled via onAuthStateChange)
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth: { flowType: 'implicit' } });
 
     // Detect iOS Mail / in-app browser (WKWebView).
     // These open links in an isolated storage context — the PKCE verifier stored
@@ -97,21 +100,6 @@
         // Gift code — passed as ?gift_code= when user signed up with a gift
         const urlGiftCode = urlParams.get('gift_code');
         if (urlGiftCode) localStorage.setItem('ff_gift_code', urlGiftCode);
-
-        // ── iOS Mail / in-app browser: PKCE exchange will fail here ─────────────
-        // The PKCE verifier is stored in Safari's localStorage, which is isolated from
-        // iOS Mail's WKWebView. Detect this early and show a clear path forward
-        // instead of waiting 10s and showing a generic error.
-        if (isInAppBrowser() && urlParams.has('code')) {
-          document.getElementById('msg').innerHTML = `
-            ✓ Email confirmed!<br><br>
-            <strong style="color:#1A1523">One more step</strong><br>
-            <span style="font-size:13px;color:#6B7280">iOS Mail opens links in a restricted browser.<br>
-            Sign in with your password to finish setting up your account.</span><br><br>
-            <a href="/sign-in.html" style="display:inline-block;background:#6E4ED6;color:#fff;padding:12px 24px;border-radius:100px;font-weight:700;font-size:14px;text-decoration:none">Sign in →</a>
-          `;
-          return;
-        }
 
         // Parse hash for type — check for error fragments first
         const hash   = window.location.hash.substring(1);
