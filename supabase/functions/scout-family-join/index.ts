@@ -120,6 +120,20 @@ Deno.serve(async (req) => {
     })
   }
 
+  // ── 4. Send welcome digest to the new family member ───────────────────────
+  // Fire-and-forget — don't block the response on email delivery.
+  // Uses digestType 'signup' scoped to this userId+childId so it won't
+  // collide with the primary account's own signup digest.
+  const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`
+  fetch(`${FUNCTIONS_URL}/scout-signup-delivery`, {
+    method: 'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': `Bearer ${SERVICE_KEY}`,
+    },
+    body: JSON.stringify({ userId, childId }),
+  }).catch(() => { /* non-fatal — digest failure doesn't block account creation */ })
+
   return new Response(JSON.stringify({ ok: true, childId }), {
     status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
   })
