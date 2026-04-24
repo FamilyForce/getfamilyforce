@@ -68,6 +68,20 @@
     const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV3anFiYWZheGVhc3l2a254bW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNDUyMDMsImV4cCI6MjA4ODYyMTIwM30.5_NCJP7r5BZSFXcA_WMBiK13vs5Q2bLVdcOZkzyvsWQ';
     const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, { auth: { flowType: 'pkce' } });
 
+    // Detect iOS Mail / in-app browser (WKWebView).
+    // These open links in an isolated storage context — the PKCE verifier stored
+    // in Safari is not accessible, so the code exchange will always fail here.
+    function isInAppBrowser() {
+      const ua = navigator.userAgent || '';
+      // iOS in-app: has iPhone/iPad but NOT "Safari" in UA (Safari adds "Safari/...")
+      const isiOS = /iPhone|iPad|iPod/.test(ua);
+      const hasSafariToken = /Safari\//.test(ua);
+      const hasCriOS = /CriOS/.test(ua);   // Chrome on iOS
+      const hasFxiOS = /FxiOS/.test(ua);   // Firefox on iOS
+      // In-app browser: iOS device, no Safari token, not Chrome/Firefox on iOS
+      return isiOS && !hasSafariToken && !hasCriOS && !hasFxiOS;
+    }
+
     async function handleCallback() {
       try {
         // Persist invite params + gift code from URL into localStorage so they survive
@@ -83,6 +97,21 @@
         // Gift code — passed as ?gift_code= when user signed up with a gift
         const urlGiftCode = urlParams.get('gift_code');
         if (urlGiftCode) localStorage.setItem('ff_gift_code', urlGiftCode);
+
+        // ── iOS Mail / in-app browser: PKCE exchange will fail here ─────────────
+        // The PKCE verifier is stored in Safari's localStorage, which is isolated from
+        // iOS Mail's WKWebView. Detect this early and show a clear path forward
+        // instead of waiting 10s and showing a generic error.
+        if (isInAppBrowser() && urlParams.has('code')) {
+          document.getElementById('msg').innerHTML = `
+            ✓ Email confirmed!<br><br>
+            <strong style="color:#1A1523">One more step</strong><br>
+            <span style="font-size:13px;color:#6B7280">iOS Mail opens links in a restricted browser.<br>
+            Sign in with your password to finish setting up your account.</span><br><br>
+            <a href="/sign-in.html" style="display:inline-block;background:#6E4ED6;color:#fff;padding:12px 24px;border-radius:100px;font-weight:700;font-size:14px;text-decoration:none">Sign in →</a>
+          `;
+          return;
+        }
 
         // Parse hash for type — check for error fragments first
         const hash   = window.location.hash.substring(1);
@@ -211,8 +240,12 @@
         }
       } catch (err) {
         document.getElementById('spinner') && (document.getElementById('spinner').style.display = 'none');
-        document.getElementById('msg').innerHTML =
-          '<span class="error">Sign-in failed. <a href="/sign-in">Try again →</a></span>';
+        // If we're in an in-app browser (iOS Mail), the PKCE exchange failed due to
+        // isolated storage. Guide them to sign in with password instead.
+        const friendlyMsg = isInAppBrowser()
+          ? '✓ Email confirmed! <a href="/sign-in.html" style="color:#6E4ED6;font-weight:700">Sign in to continue →</a>'
+          : 'Sign-in failed. <a href="/sign-in" style="color:#6E4ED6;font-weight:700">Try again →</a>';
+        document.getElementById('msg').innerHTML = '<span>' + friendlyMsg + '</span>';
       }
     }
 
