@@ -464,14 +464,9 @@ Deno.serve(async (req: Request) => {
       ])
       const ownerName = profileRes.data?.name?.trim() || null
       const memberIds = (familyRes.data || []).map((m: { member_user_id: string }) => m.member_user_id).filter(Boolean)
-      let parentName = ownerName
-      if (memberIds.length > 0) {
-        const { data: memberProfiles } = await sb.from('profiles').select('name').in('id', memberIds)
-        const memberNames = (memberProfiles || []).map((p: { name: string }) => p.name?.trim()).filter(Boolean)
-        if (memberNames.length > 0 && ownerName) {
-          parentName = ownerName + ' and ' + memberNames[0]
-        }
-      }
+      // Owner's digest addresses the owner only — family members receive their own
+      // separate digests addressed to them individually (see family member loop below).
+      const parentName = ownerName
 
       // 7. Build email HTML
       const nextBirthday = nextMonthlyBirthday(childDob, now)
