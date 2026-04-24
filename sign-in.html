@@ -2039,9 +2039,13 @@ button { font: inherit; cursor: pointer; }
   // unless the URL explicitly forces signin (?mode=signin)
   var hasInvite = params.get('invite_child') && params.get('invite_email');
   var confirmedFromEmail = params.get('confirmed') === '1';
+  // If ?code= is also present this is a live PKCE callback — let the exchange run first.
+  // Only show the "enter your password" banner as the 6s fallback if PKCE fails.
+  var _hasPkceCode = params.has('code');
 
-  if (confirmedFromEmail) {
-    // Returning from email confirmation — switch to sign-in and explain
+  if (confirmedFromEmail && !_hasPkceCode) {
+    // Returning from email confirmation WITHOUT a PKCE code — manual/resend path.
+    // Email is confirmed; user just needs to sign in.
     signinSwitchMode('sign-in');
     // Pre-fill email so user only needs to enter their password
     var _cfEmail = localStorage.getItem('ff_invite_email')
