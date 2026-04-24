@@ -70,8 +70,8 @@
 
     async function handleCallback() {
       try {
-        // Persist invite params from URL into localStorage so they survive cross-context
-        // email opens (iOS Mail WebKit, new browser tab, etc.)
+        // Persist invite params + gift code from URL into localStorage so they survive
+        // cross-context email opens (iOS Mail WebKit, new browser tab, etc.)
         const urlParams = new URLSearchParams(window.location.search);
         const urlInviteChild = urlParams.get('invite_child');
         const urlInviteEmail = urlParams.get('invite_email');
@@ -80,6 +80,9 @@
         if (urlInviteChild && urlInviteEmail) {
           localStorage.setItem('ff_invite_expires', String(Date.now() + 48 * 60 * 60 * 1000));
         }
+        // Gift code — passed as ?gift_code= when user signed up with a gift
+        const urlGiftCode = urlParams.get('gift_code');
+        if (urlGiftCode) localStorage.setItem('ff_gift_code', urlGiftCode);
 
         // Parse hash for type — check for error fragments first
         const hash   = window.location.hash.substring(1);
@@ -195,8 +198,9 @@
           const hasChildren = children && children.length > 0;
 
           if (!hasChildren) {
-            // New user — go to sign-in to complete child setup
-            window.location.href = '../sign-in.html' + (intent ? '?intent=' + intent : '');
+            // New user — session established, send to sign-in with ?onboard=1 so
+            // routeAfterSignup() triggers immediately (skips the dashboard redirect).
+            window.location.href = '../sign-in.html?onboard=1' + (intent ? '&intent=' + intent : '');
           } else if (intent === 'subscribe') {
             window.location.href = '../sign-in.html?intent=subscribe';
           } else {

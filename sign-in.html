@@ -1238,7 +1238,10 @@ button { font: inherit; cursor: pointer; }
     var _justSignedOut = new URLSearchParams(window.location.search).get('signedout') === '1';
     var _isAuthCallback = window.location.hash.indexOf('access_token') !== -1
                        || new URLSearchParams(window.location.search).has('code');
-    if (!_justSignedOut && !_isAuthCallback) {
+    // ?onboard=1 is set by auth/callback.html for new users — session is already established,
+    // skip the dashboard redirect and let routeAfterSignup() trigger onboarding instead.
+    var _pendingOnboard = new URLSearchParams(window.location.search).get('onboard') === '1';
+    if (!_justSignedOut && !_isAuthCallback && !_pendingOnboard) {
       window._supabaseClient.auth.getSession().then(({ data }) => {
         if (!data.session) return;
         // If there are pending invite params (and not expired), handle acceptance before redirecting
@@ -2224,11 +2227,12 @@ button { font: inherit; cursor: pointer; }
       }
 
       // ── Standard signUp path (non-invite users) ─────────────────────────────
-      var _redirectUrl = 'https://getfamilyforce.com/sign-in.html';
+      // Redirect to auth/callback so PKCE exchange happens on a clean dedicated page.
+      // gift_code is passed as a param so callback.html can persist it to localStorage
+      // before routing the new user to sign-in.html?onboard=1 for child setup.
+      var _redirectUrl = 'https://getfamilyforce.com/auth/callback';
       if (_giftCode) {
-        _redirectUrl += '?gift_code=' + encodeURIComponent(_giftCode) + '&confirmed=1';
-      } else {
-        _redirectUrl += '?confirmed=1';
+        _redirectUrl += '?gift_code=' + encodeURIComponent(_giftCode);
       }
       sb.auth.signUp({
         email: email,
@@ -2877,6 +2881,12 @@ button { font: inherit; cursor: pointer; }
       showStep('intent');
     }
   };
+
+  // New user arriving from auth/callback.html (email confirmed, session established).
+  // Session check was skipped above; trigger onboarding now that routeAfterSignup is defined.
+  if (typeof _pendingOnboard !== 'undefined' && _pendingOnboard) {
+    routeAfterSignup();
+  }
 
   /* ── Intent selection ── */
   window.handleIntent = function(intent) {
