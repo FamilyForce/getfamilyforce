@@ -120,19 +120,83 @@ Deno.serve(async (req) => {
     })
   }
 
-  // ── 4. Send welcome digest to the new family member ───────────────────────
-  // Fire-and-forget — don't block the response on email delivery.
-  // Uses digestType 'signup' scoped to this userId+childId so it won't
-  // collide with the primary account's own signup digest.
+  // ── 4. Fire-and-forget: welcome digest + owner notification ───────────────
   const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`
+
+  // 4a. Welcome digest for the new family member
+  // childId passed explicitly so scout-signup-delivery doesn't filter by user_id
+  // (family members don't own the child row — child.user_id belongs to the primary)
   fetch(`${FUNCTIONS_URL}/scout-signup-delivery`, {
     method: 'POST',
-    headers: {
-      'Content-Type':  'application/json',
-      'Authorization': `Bearer ${SERVICE_KEY}`,
-    },
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${SERVICE_KEY}` },
     body: JSON.stringify({ userId, childId }),
-  }).catch(() => { /* non-fatal — digest failure doesn't block account creation */ })
+  }).catch(() => { /* non-fatal */ })
+
+  // 4b. Notify the primary account owner that someone joined
+  // Fetch child name + owner email, then send the family_joined email
+  ;(async () => {
+    try {
+      const RESEND_KEY  = Deno.env.get('RESEND_API_KEY')
+      const FROM_EMAIL  = Deno.env.get('RESEND_FROM_EMAIL') ?? 'scout@getfamilyforce.com'
+      const FROM_NAME   = Deno.env.get('RESEND_FROM_NAME')  ?? 'FamilyForce'
+      const SITE_URL    = Deno.env.get('SITE_URL')          ?? 'https://getfamilyforce.com'
+      if (!RESEND_KEY) return
+
+      // Get child name
+      const { data: childRow } = await sb.from('children').select('name, user_id').eq('id', childId).maybeSingle()
+      if (!childRow) return
+      const childName   = childRow.name || 'your child'
+      const ownerUserId = childRow.user_id
+
+      // Get owner email
+      const ownerRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${ownerUserId}`, {
+        headers: { 'Authorization': `Bearer ${SERVICE_KEY}`, 'apikey': SERVICE_KEY },
+      })
+      if (!ownerRes.ok) return
+      const ownerData  = await ownerRes.json()
+      const ownerEmail = ownerData.email as string
+      if (!ownerEmail) return
+
+      const familyUrl  = `${SITE_URL}/scout-dashboard/family.html`
+      const html = `
+        <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:32px 24px;color:#1C1B2E">
+          <div style="text-align:center;margin-bottom:28px">
+            <svg width="36" height="40" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 15 L7 1 L13 15" stroke="#6E4ED6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h2 style="color:#6E4ED6;margin:0 0 12px;font-size:22px">${email} joined ${childName}'s Family Circle 🎉</h2>
+          <p style="font-size:16px;line-height:1.6;color:#3D3B52;margin:0 0 20px">
+            <strong>${email}</strong> just accepted your invitation and can now see ${childName}'s Scout dashboard.
+            They'll get the same monthly milestone updates you do.
+          </p>
+          <div style="text-align:center;margin:32px 0">
+            <a href="${familyUrl}" style="background:#6E4ED6;color:white;padding:14px 28px;border-radius:100px;text-decoration:none;font-weight:700;font-size:15px;display:inline-block">
+              View Family Circle →
+            </a>
+          </div>
+          <p style="font-size:13px;color:#8A879A;line-height:1.5;margin:0">
+            You can manage your Family Circle at any time from your Scout dashboard settings.
+          </p>
+        </div>
+      `
+
+      await fetch('https://api.resend.com/emails', {
+        method:  'POST',
+        headers: { 'Authorization': `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from:     `${FROM_NAME} <${FROM_EMAIL}>`,
+          to:       [ownerEmail],
+          reply_to: ['support@getfamilyforce.com'],
+          subject:  `${email} joined ${childName}'s Family Circle 🎉`,
+          html,
+          tags: [{ name: 'email_type', value: 'family_joined' }],
+        }),
+      })
+    } catch (e) {
+      console.error('[scout-family-join] owner notify error:', e)
+    }
+  })()
 
   return new Response(JSON.stringify({ ok: true, childId }), {
     status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' }

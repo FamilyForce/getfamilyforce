@@ -142,17 +142,21 @@ Deno.serve(async (req: Request) => {
     const { data: { user }, error: userErr } = await sb.auth.admin.getUserById(userId)
     if (userErr || !user?.email) throw new Error(`Could not load user: ${userErr?.message}`)
 
-    // 3. Load child record — use child_id from record/direct-call if available
+    // 3. Load child record — use child_id from record/direct-call if available.
+    // When childId is provided (e.g. family member signup), fetch by ID only —
+    // do NOT filter by user_id because family members don't own the child row.
     step = 'load-child'
     const targetChildId = (record.child_id ?? null) as string | null
     let childQuery = sb
       .from('children')
       .select('id, name, dob, due_date, is_expecting, gender')
-      .eq('user_id', userId)
     if (targetChildId) {
       childQuery = childQuery.eq('id', targetChildId).limit(1)
     } else {
-      childQuery = childQuery.order('created_at', { ascending: true }).limit(1)
+      childQuery = childQuery
+        .eq('user_id', userId)
+        .order('created_at', { ascending: true })
+        .limit(1)
     }
     const { data: children, error: childErr } = await childQuery
 
