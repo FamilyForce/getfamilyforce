@@ -105,7 +105,7 @@ export function renderBullets(text: string): string {
     // Bold any inline **text** spans remaining in the line
     const bolded = clean.replace(/\*\*([^*]+)\*\*/g, `<strong style="color:${C.text}">$1</strong>`)
     // Inline › with non-breaking spaces — works reliably in all email clients
-    return `<p style="font-family:Arial,sans-serif;font-size:14px;color:${C.textMid};margin:0 0 13px;line-height:1.65"><span style="color:${C.terra}">›&nbsp;&nbsp;</span>${bolded}</p>`
+    return `<p class="bp"><span style="color:${C.terra}">›&nbsp;&nbsp;</span>${bolded}</p>`
   }).filter(Boolean)
   return items.join('')
 }
@@ -137,43 +137,28 @@ function windowCard(w: DigestWindow, ageMonths: number, dashboardUrl: string, is
   <tr>
     <td style="padding-bottom:10px">
       <table width="100%" cellpadding="0" cellspacing="0" style="background:${C.surface};border:1px solid #ece8f0;border-radius:14px;overflow:hidden">
-        <!-- Window inner: flag + title + why -->
         <tr>
           <td style="padding:18px 20px 12px">
             <table width="100%" cellpadding="0" cellspacing="0">
-              <!-- Win-flag (plain text, matches mockup) -->
-              <tr>
-                <td style="padding-bottom:6px">
-                  <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:${flagColor};text-transform:uppercase;letter-spacing:.1em;margin:0">${flagText}</p>
-                </td>
-              </tr>
-              <!-- Title (Arial bold 16px, matches mockup) -->
-              <tr>
-                <td style="padding-bottom:7px">
-                  <p style="font-family:Arial,sans-serif;font-size:16px;font-weight:700;color:#1a0f3e;margin:0;line-height:1.3">${w.title}</p>
-                </td>
-              </tr>
-              <!-- Jack bridge (italic gray, between title and why — matches mockup) -->
-              ${bridge ? `
-              <tr>
-                <td style="padding-bottom:9px">
-                  <p style="font-family:Arial,sans-serif;font-size:13px;color:#888;font-style:italic;margin:0;line-height:1.5">${bridge}</p>
-                </td>
-              </tr>` : ''}
-              <!-- Why it matters (full text, no truncation) -->
-              <tr>
-                <td>
-                  <p style="font-family:Arial,sans-serif;font-size:14px;color:#555;margin:0;line-height:1.65">${whyText}</p>
-                </td>
-              </tr>
+              <tr><td style="padding-bottom:6px">
+                <p class="wf" style="color:${flagColor}">${flagText}</p>
+              </td></tr>
+              <tr><td style="padding-bottom:7px">
+                <p class="wt">${w.title}</p>
+              </td></tr>
+              ${bridge ? `<tr><td style="padding-bottom:9px">
+                <p class="wb">${bridge}</p>
+              </td></tr>` : ''}
+              <tr><td>
+                <p class="wy">${whyText}</p>
+              </td></tr>
             </table>
           </td>
         </tr>
-        <!-- The move: separate section with deeper purple background + left border for Gmail contrast -->
         ${whatToDo ? `
         <tr>
           <td style="background:#ede8ff;border-top:1px solid #d4c8f0;border-left:3px solid ${C.terra};padding:14px 20px 16px">
-            <p style="font-family:Arial,sans-serif;font-size:10px;font-weight:700;color:${C.terra};text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px">The move</p>
+            <p class="wm" style="color:${C.terra}">The move</p>
             ${renderBullets(whatToDo)}
           </td>
         </tr>` : ''}
@@ -660,6 +645,30 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
   <noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
   <![endif]-->
   <style>
+    /* Base font applied globally to cut inline font-family repetition */
+    body,p,td,th,span,a { font-family: Arial, sans-serif; }
+    /* Window card classes */
+    .wf  { font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 }
+    .wt  { font-size:16px;font-weight:700;color:#1a0f3e;margin:0;line-height:1.3 }
+    .wb  { font-size:13px;color:#888;font-style:italic;margin:0;line-height:1.5 }
+    .wy  { font-size:14px;color:#555;margin:0;line-height:1.65 }
+    .wm  { font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin:0 0 10px }
+    .bp  { font-size:14px;color:#555;margin:0 0 7px;line-height:1.65 }
+    .bp:last-child { margin-bottom:0 }
+    /* Hero text classes */
+    .he  { font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.45);margin:0 0 18px }
+    .hg  { font-size:15px;color:rgba(255,255,255,.8);line-height:1.7;margin:0 0 10px }
+    .ho  { font-size:15px;color:rgba(255,255,255,.65);line-height:1.7;margin:0 0 14px }
+    /* Section header */
+    .sh  { font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#6E4ED6;margin:0 0 14px }
+    /* Footer */
+    .fd  { font-size:12px;color:#8A879A;margin:0 0 6px;line-height:1.6 }
+    .fa  { color:#8A879A;text-decoration:none }
+    /* DYK card */
+    .dk  { font-size:14px;color:#1a3d32;margin:0 0 12px;line-height:1.65 }
+    /* Completed window */
+    .cw  { font-size:14px;font-weight:700;color:#111827;margin:0 0 2px }
+    .cs  { font-size:13px;color:#4B5563;margin:0;line-height:1.6 }
     @media only screen and (max-width: 480px) {
       .email-wrap { padding: 0 !important; }
       .email-outer { border-radius: 0 !important; }
@@ -692,11 +701,11 @@ export function buildDigestEmail(opts: DigestEmailOptions): string {
             <table width="100%" cellpadding="0" cellspacing="0">
               <tr>
                 <td>
-                  <p style="font-family:Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.45);margin:0 0 18px">Scout</p>
+                  <p class="he">Scout</p>
                   <p style="font-family:Arial,sans-serif;font-size:34px;font-weight:700;color:#fff;margin:0 0 4px;line-height:1.1">${isExpecting ? `Getting ready for ${childName}` : ageMonths === 0 ? `${childName} is here! 🎉` : `Month ${ageMonths}${heroBirthdaySuffix}`}</p>
                   <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.55);margin:0 0 22px">${childName} · ${isExpecting ? 'arriving soon' : ageMonths === 0 ? 'newborn' : `${ageMonths} month${ageMonths === 1 ? '' : 's'} old`}</p>
-                  <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.8);line-height:1.7;margin:0 0 10px">${greeting}</p>
-                  <p style="font-family:Arial,sans-serif;font-size:15px;color:rgba(255,255,255,.65);line-height:1.7;margin:0 0 14px">${openingParagraph}</p>
+                  <p class="hg">${greeting}</p>
+                  <p class="ho">${openingParagraph}</p>
                   ${contextLine ? `<p style="font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.4);font-style:italic;margin:0;border-top:1px solid rgba(255,255,255,.1);padding-top:14px">${contextLine}</p>` : ''}
                   ${birthdayShareBlock ? `<div style="margin-top:16px">${birthdayShareBlock}</div>` : ''}
                 </td>
